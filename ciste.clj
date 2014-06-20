@@ -12,7 +12,6 @@
   "ciste.service.aleph"
   "ciste.services.nrepl"
   "ciste.service.swank"
-  "ciste.service.tigase"
   "jiksnu.plugins.google-analytics"
   ]
  }

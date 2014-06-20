@@ -108,13 +108,6 @@
                                         :domain domain})]
        (maker user))))
 
-;; deprecated
-;; TODO: Split the jid into it's parts and fetch.
-(defn fetch-by-jid
-  [jid]
-  (get-user (.getLocalpart jid)
-            (.getDomain jid)))
-
 (defn fetch-by-uri
   "Fetch user by their acct uri"
   [uri]

@@ -1,19 +1,16 @@
 (ns jiksnu.model.subscription
-  (:use [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
-        [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of]])
-  (:require
-   ;; [clj-tigase.core :as tigase]
-   ;;          [clj-tigase.element :as element]
-            [clj-time.core :as time]
+  (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.templates.model :as templates.model]
+            [jiksnu.transforms :refer [set-_id set-updated-time set-created-time]]
+            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [monger.query :as mq])
+            [monger.query :as mq]
+            [slingshot.slingshot :refer [throw+]]
+            [validateur.validation :refer [validation-set presence-of]])
   (:import jiksnu.model.Subscription
            org.bson.types.ObjectId
            org.joda.time.DateTime))
@@ -98,24 +95,3 @@
   [subscription]
   (true? (:pending subscription)))
 
-(defn subscriptions-request
-  "returns a xmpp packet requesting subscriptions"
-  [from to]
-  #_(tigase/make-packet
-   {:to (tigase/make-jid to)
-    :from (tigase/make-jid from)
-    :type :get
-    :body (element/make-element
-           ["pubsub" {"xmlns" ns/pubsub}
-            ["subscriptions" {"node" ns/microblog}]])}))
-
-(defn subscribers-request
-  [from to]
-  #_(tigase/make-packet
-   {:to (tigase/make-jid to)
-    :from (tigase/make-jid from)
-    :type :get
-    ;; :id (fseq :id)
-    :body (element/make-element
-           "pubsub" {"xmlns" ns/pubsub}
-           ["subscribers" {"node" ns/microblog}])}))

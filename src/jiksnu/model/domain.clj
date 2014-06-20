@@ -1,20 +1,17 @@
 (ns jiksnu.model.domain
-  (:use [ciste.config :only [config]]
-        [clojure.core.incubator :only [-?>>]]
-        [jiksnu.transforms :only [set-updated-time set-created-time]]
-        [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [acceptance-of presence-of valid? validation-set]])
-  (:require
-   ;; [clj-tigase.core :as tigase]
-   ;; [clj-tigase.element :as element]
+  (:require [ciste.config :refer [config]]
+            [clojure.core.incubator :refer [-?>>]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
+            [jiksnu.transforms :refer [set-updated-time set-created-time]]
             [jiksnu.util :as util]
+            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [monger.core :as mg])
+            [monger.core :as mg]
+            [slingshot.slingshot :refer [throw+]]
+            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]])
   (:import jiksnu.model.Domain
            org.bson.types.ObjectId
            org.joda.time.DateTime))
@@ -53,15 +50,8 @@
   [domain links]
   ;; TODO: This should push only if the link is not yet there
   (mc/update collection-name
-    (select-keys domain #{:_id})
-    {:$pushAll {:links links}}))
-
-(defn ping-request
-  [domain]
-  #_{:type :get
-   :to (tigase/make-jid "" (:_id domain))
-   :from (tigase/make-jid "" (config :domain))
-   :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
+             (select-keys domain #{:_id})
+             {:$pushAll {:links links}}))
 
 (defn get-xrd-url
   [domain user-uri]

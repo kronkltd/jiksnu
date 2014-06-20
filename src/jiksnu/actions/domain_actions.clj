@@ -1,10 +1,8 @@
 (ns jiksnu.actions.domain-actions
-  (:use [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [slingshot.slingshot :only [throw+ try+]])
-  (:require [ciste.model :as cm]
-            ;; [clj-tigase.core :as tigase]
+  (:require [ciste.config :only [config]]
+            [ciste.core :only [defaction]]
+            [ciste.initializer :only [definitializer]]
+            [ciste.model :as cm]
             [clj-time.core :as time]
             [clojure.core.incubator :refer [-?>>]]
             [clojure.data.json :as json]
@@ -19,7 +17,8 @@
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as lt]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :only [throw+ try+]])
   (:import java.net.URL
            jiksnu.model.Domain))
 
@@ -117,7 +116,7 @@
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.domain
-                      :sort-clause {:username 1}))
+                                  :sort-clause {:username 1}))
 
 (defaction index
   [& options]
@@ -160,14 +159,6 @@
         (set-discovered! domain)
         domain)
     (log/warnf "Could not get webfinger for domain: %s" (:_id domain))))
-
-(defn discover-onesocialweb
-  [domain url]
-  #_(-> domain
-      model.domain/ping-request
-      tigase/make-packet
-      tigase/deliver-packet!)
-  domain)
 
 (defn discover-statusnet-config
   [domain url]

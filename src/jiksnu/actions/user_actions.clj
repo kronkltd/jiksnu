@@ -356,16 +356,6 @@
     (log/warn "user does not have an update source"))
   user)
 
-;; TODO: This is the job of the filter
-(defn find-or-create-by-jid
-  [
-   ;; ^JID
-   jid]
-  ;; {:pre [(instance? JID jid)]}
-  (let [[username domain] (split-jid jid)]
-    (find-or-create {:username username
-                     :domain domain})))
-
 (defn discover-user-meta
   [user & [options]]
   (doseq [params @(l/merge-results
