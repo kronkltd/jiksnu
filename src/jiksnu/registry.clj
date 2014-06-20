@@ -46,7 +46,7 @@
    "pubsub"
    "request-token"
    "resource"
-   "salmon"
+   ;; "salmon"
    "search"
    "setting"
    "site"
