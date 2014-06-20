@@ -45,10 +45,6 @@
 (def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
 
-(defn salmon-link
-  [user]
-  #_(named-url "user salmon" {:id (:_id user)}))
-
 (defn get-uri
   ([^User user] (get-uri user true))
   ([^User user use-scheme?]

@@ -7,7 +7,6 @@
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [clojurewerkz.route-one.core :refer [*base-url*]]
             [crypto.random :as random]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]

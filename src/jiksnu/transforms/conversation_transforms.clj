@@ -1,14 +1,13 @@
 (ns jiksnu.transforms.conversation-transforms
-  (:use [ciste.config :only [config]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
-            [clojurewerkz.route-one.core :as r]
+  (:require [ciste.config :only [config]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.routes.helpers :as rh]
             [jiksnu.util :as util]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :only [throw+]])
   (:import java.net.URI))
 
 (defn local-url?
@@ -32,13 +31,6 @@
         (assoc item :update-source (:_id source))
         (throw+ "could not determine source"))
       (throw+ "Could not determine url"))))
-
-(defn set-url
-  [item]
-  (if (:url item)
-    item
-    (when (:local item)
-      (assoc item :url "" #_(r/named-url "show conversation" {:id (:_id item)})))))
 
 (defn set-domain
   [item]

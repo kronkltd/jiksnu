@@ -2,7 +2,6 @@
   (:require [ciste.config :refer [config describe-config environment]]
             [ciste.initializer :refer [definitializer]]
             [clojure.tools.logging :as log]
-            [clojurewerkz.route-one.core :refer [*base-url*]]
             [inflections.core :as inf]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -37,10 +36,6 @@
 ;; initializer
 
 (definitializer
-  (let [url (format "http://%s" (config :domain))]
-    (alter-var-root #'*base-url*
-                    (constantly url)))
-
   (set-database!)
 
   (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE))

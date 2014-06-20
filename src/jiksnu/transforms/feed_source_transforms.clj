@@ -1,18 +1,9 @@
 (ns jiksnu.transforms.feed-source-transforms
-  (:use #_[clojurewerkz.route-one.core :only [named-url]]
-        [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util]))
-
-(defn set-hub
-  [item]
-  (if (:hub item)
-    item
-    (if (:local item)
-      (assoc item :hub "" #_(named-url "hub dispatch"))
-      item)))
+            [jiksnu.util :as util]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn set-domain
   [source]

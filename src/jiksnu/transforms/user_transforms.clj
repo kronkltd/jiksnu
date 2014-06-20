@@ -1,17 +1,16 @@
 (ns jiksnu.transforms.user-transforms
-  (:use [ciste.config :only [config]]
-        [clj-gravatar.core :only [gravatar-image]]
-        ;; [clojurewerkz.route-one.core :only [named-url]]
-        [jiksnu.routes.helpers :only [formatted-url]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.config :refer [config]]
+            [ciste.model :as cm]
+            [clj-gravatar.core :refer [gravatar-image]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.routes.helpers :refer [formatted-url]]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util])
+            [jiksnu.util :as util]
+            [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI))
 
 (defn set-_id
@@ -32,12 +31,6 @@
           (assoc user :_id id))
         (throw+ "could not determine domain"))
       (throw+ "could not determine username"))))
-
-(defn set-url
-  [user]
-  (if (:url user)
-    user
-    (assoc user :url "" #_(named-url "local user timeline" user))))
 
 (defn set-avatar-url
   [user]
