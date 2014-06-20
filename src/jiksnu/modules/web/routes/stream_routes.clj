@@ -26,7 +26,7 @@
    [[:get  "/api/user/:username/inbox/major"]         {:action #'actions.stream/inbox-major        :format :as}]
    [[:get  "/api/user/:username/inbox/minor"]         {:action #'actions.stream/inbox-minor        :format :as}]
 
-   [[:post "/main/push/callback"]                     #'actions.stream/callback-publish]
+   ;; [[:post "/main/push/callback"]                     #'actions.stream/callback-publish]
 
    [[:get  "/remote-user/*"]                          #'actions.stream/user-timeline]
    [[:post "/streams"]                                #'actions.stream/create]

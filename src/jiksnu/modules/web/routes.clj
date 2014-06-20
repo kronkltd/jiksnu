@@ -32,7 +32,10 @@
 (defn load-module
   [module-name]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" module-name))]
-    (require route-sym)
+    (try
+      (require route-sym)
+      (catch Exception ex
+        (log/error ex)))
 
     (when-let [page-fn (ns-resolve route-sym 'pages)]
       (when-let [matchers (page-fn)]
@@ -68,8 +71,13 @@
 (def http-routes
   (->> registry/action-group-names
        (map load-module)
+       (log/spy :info)
        (reduce concat)
-       make-matchers))
+       (log/spy :info)
+       make-matchers
+       (log/spy :info)
+
+       ))
 
 (compojure/defroutes all-routes
   (compojure/GET "/websocket" _
@@ -114,7 +122,8 @@
           (wrap-resource "public")
           ;; (wrap-resource "/META-INF/resources")
           file-info/wrap-file-info
-          jm/wrap-stat-logging))))
+          ;; jm/wrap-stat-logging
+          ))))
 
   (doseq [model-name registry/action-group-names]
     (doseq [module-name registry/module-names]

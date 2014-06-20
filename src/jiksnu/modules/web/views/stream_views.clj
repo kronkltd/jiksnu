@@ -3,7 +3,6 @@
             [ciste.core :refer [with-format]]
             [ciste.views :refer [apply-view defview]]
             [ciste.sections.default :refer [index-section show-section]]
-            [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -19,13 +18,13 @@
 
 ;; callback-publish
 
-(defview #'actions-stream/callback-publish :html
-  [request params]
-  {:status 202
+;; (defview #'actions.stream/callback-publish :html
+;;   [request params]
+;;   {:status 202
 
-   :template false})
+;;    :template false})
 
-(defview #'actions-stream/create :html
+(defview #'actions.stream/create :html
   [request item]
   (-> (response/redirect-after-post "/")
       (assoc :template false)
@@ -33,7 +32,7 @@
 
 ;; group-timeline
 
-(defview #'actions-stream/group-timeline :html
+(defview #'actions.stream/group-timeline :html
   [request [group {:keys [items] :as page}]]
   {:title (str (:nickname group) " group")
    :post-form true
@@ -47,13 +46,13 @@
 
 ;; home-timeline
 
-(defview #'actions-stream/home-timeline :html
+(defview #'actions.stream/home-timeline :html
   [request activities]
   {:title "Home Timeline"
    :post-form true
    :body (index-section activities)})
 
-(defview #'actions-stream/public-timeline :html
+(defview #'actions.stream/public-timeline :html
   [request {:keys [items] :as page}]
   {:title "Public Timeline"
    :post-form true
@@ -69,12 +68,12 @@
 
 ;; stream
 
-(defview #'stream :html
-  [request response-fn]
-  {:body response-fn
-   :template false})
+;; (defview #'actions.stream/stream :html
+;;   [request response-fn]
+;;   {:body response-fn
+;;    :template false})
 
-(defview #'user-timeline :html
+(defview #'actions.stream/user-timeline :html
   [request [user {:keys [items] :as page}]]
   (let [items (if *dynamic* [(Activity.)] items)]
     {:user user
