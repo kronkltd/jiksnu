@@ -13,8 +13,6 @@
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [monger.query :as mq]
-            [plaza.rdf.core :as plaza ]
-            [plaza.rdf.sparql :as sp]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [acceptance-of validation-set presence-of]])
   (:import java.net.URI
@@ -156,23 +154,6 @@
   (if-let [link (or (get-link user ns/updates-from "application/atom+xml")
                     (get-link user ns/updates-from nil))]
     (:href link)))
-
-;; FIXME: This does not work yet
-(defn foaf-query
-  "Extract user information from a foaf document"
-  []
-  (sp/defquery
-    (sp/query-set-vars [:?user :?nick :?name :?bio :?img-url])
-    (sp/query-set-type :select)
-    (sp/query-set-pattern
-     (sp/make-pattern
-      [
-       [:?uri    plaza/rdf:type                     :foaf/Document]
-       [:?uri    :foaf:PrimaryTopic    :?user]
-       (plaza/optional [:?user :foaf/nick            :?nick])
-       (plaza/optional [:?user :foaf/name            :?name])
-       (plaza/optional [:?user :dcterms/descriptions :?bio])
-       (plaza/optional [:?user :foaf/depiction       :?img-url])]))))
 
 (defn ensure-indexes
   []

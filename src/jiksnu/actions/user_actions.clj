@@ -26,8 +26,6 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [jiksnu.util :as util]
-            [plaza.rdf.core :as plaza]
-            [plaza.rdf.sparql :as sp]
             [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI
            jiksnu.model.User))
@@ -90,12 +88,6 @@
     ;; TODO: this should be calling a key action
     (model.key/set-armored-key (:_id user) n e)))
 
-(defn split-jid
-  [
-   ;; ^JID
-   jid]
-  #_[(tigase/get-id jid) (tigase/get-domain jid)])
-
 
 (defn get-user-meta
   "Returns an enlive document for the user's xrd file"
@@ -106,42 +98,6 @@
         (cm/string->document body)
         (throw+ "Could not get response")))
     (throw+ "User does not have a meta link")))
-
-;; TODO: This is a special case of the discover action for users that
-;; support xmpp discovery
-(defn request-vcard!
-  "Send a vcard request to the xmpp endpoint of the user"
-  [user]
-  #_(let [body (element/make-element
-                "query" {"xmlns" ns/vcard-query})]
-      (-> {:from (tigase/make-jid "" (config :domain))
-           :to (tigase/make-jid user)
-           :id "JIKSNU1"
-           :type :get
-           :body body}
-          tigase/make-packet
-          tigase/deliver-packet!)))
-
-(defaction discover-user-rdf
-  "Discover user information from their rdf feeds"
-  [user]
-  ;; TODO: alternately, check user meta
-  (let [uri (:foaf-uri user)
-        model (plaza/document->model uri :xml)
-        query (model.user/foaf-query)]
-    (sp/model-query-triples model query)))
-
-(defn fetch-updates-xmpp
-  [user]
-  ;; TODO: send user timeline request
-  #_(let [packet (tigase/make-packet
-                  {:to (tigase/make-jid user)
-                   :from (tigase/make-jid "" (config :domain))
-                   :type :get
-                   :body (element/make-element
-                          ["pubsub" {"xmlns" ns/pubsub}
-                           ["items" {"node" ns/microblog}]])})]
-      (tigase/deliver-packet! packet)))
 
 ;; actions
 
@@ -443,13 +399,6 @@
   "perform a discovery on the user"
   [^User user & [options]]
   @(util/safe-task (discover* user options)))
-
-;; TODO: xmpp case of update
-(defaction fetch-remote
-  [user]
-  (let [domain (get-domain user)]
-    (if (:xmpp domain)
-      (request-vcard! user))))
 
 (defaction register
   "Register a new user"
