@@ -236,7 +236,7 @@
    :callback (fseq :uri)})
 
 (deffactory :group
-  {:nickname (fseq :group-name)})
+  {:name (fseq :group-name)})
 
 (deffactory :like
   {:user #'user-id

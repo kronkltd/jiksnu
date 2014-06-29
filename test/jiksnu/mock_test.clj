@@ -54,7 +54,6 @@
    (mock/a-group-exists) => (partial instance? Group))
 
  (context #'mock/a-request-token-exists
-   (mock/a-request-token-exists) => (partial instance? RequestToken)
-   )
+   (mock/a-request-token-exists) => (partial instance? RequestToken))
 
  )

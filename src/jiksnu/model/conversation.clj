@@ -21,7 +21,7 @@
 (def create-validators
   (validation-set
    (type-of :_id           ObjectId)
-   (type-of :url           String)
+   ;; (type-of :url           String)
    (type-of :created       DateTime)
    (type-of :updated       DateTime)
    (type-of :domain        String)
