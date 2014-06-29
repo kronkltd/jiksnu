@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.access-token-routes-test
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.middleware :as m]
+            [jiksnu.modules.web.middleware :as m]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]

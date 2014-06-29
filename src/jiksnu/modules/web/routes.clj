@@ -11,7 +11,7 @@
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.model :as model]
-            [jiksnu.middleware :as jm]
+            [jiksnu.modules.web.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]

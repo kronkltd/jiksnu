@@ -1,4 +1,4 @@
-(ns jiksnu.middleware
+(ns jiksnu.modules.web.middleware
   (:require [ciste.config :refer [config]]
             [clojure.tools.logging :as log]
             [clojure.stacktrace :refer [print-stack-trace]]

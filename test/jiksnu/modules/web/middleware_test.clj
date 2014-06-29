@@ -1,5 +1,5 @@
-(ns jiksnu.middleware-test
-  (:require [jiksnu.middleware :as m]
+(ns jiksnu.modules.web.middleware-test
+  (:require [jiksnu.modules.web.middleware :as m]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [jiksnu.util :as util]
