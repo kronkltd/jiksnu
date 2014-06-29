@@ -63,7 +63,7 @@
       transforms.activity/set-tags
       transforms.activity/set-object-type
       transforms.activity/set-parent
-      transforms.activity/set-url
+      ;; transforms.activity/set-url
       transforms.activity/set-id
       transforms.activity/set-recipients
       transforms.activity/set-resources

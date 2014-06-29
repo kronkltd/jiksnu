@@ -35,9 +35,12 @@
    :invite-only false},
   :swank {:port "4005"},
   :services
-  ["ciste.service.aleph"
-   "ciste.services.nrepl"
-   "jiksnu.plugins.google-analytics"],
+  [
+   ;; "ciste.service.aleph"
+   ;; "ciste.services.nrepl"
+   ;; "jiksnu.plugins.google-analytics"
+
+   ],
   :xmpp
   {:c2s [5222],
    :s2s [5269],
@@ -53,23 +56,7 @@
   :modules [],
   :debug false,
   :admins ["admin"],
- :development
- {:registration-enabled false,
-  :print
-  {:actions true,
-   :trigers true,
-   :packet true,
-   :routes false,
-   :request false,
-   :triggers false},
-  :database {:name "renfer_name"},
-  :site {:theme "classic", :name "Renfer.name", :email nil},
-  :domain "renfer.name",
-  :xmpp {:c2s [5222 5235], :s2s [5269 5275]},
-  :http {:port 8082},
-  :jiksnu.plugins.google-analytics/account-id "UA-93750-5",
-  :admins ["daniel"],
-  :htmlOnly false},
+  }
  :test
  {:database {:name "jiksnu_test"},
   :domain "localhost",
@@ -78,14 +65,5 @@
   :htmlOnly true,
   :services [],
   :print {:request true},
-  :run-triggers false},
- :integration
- {:database {:name "jiksnu_integration"},
-  :domain "localhost",
-  :ciste.services.nrepl/port 7890,
-  :http {:port 8175},
-  :htmlOnly true,
-  :print
-  {:actions true, :request false, :routes false, :triggers false},
-  :services ["ciste.service.aleph"],
-  :run-triggers true}}
+  :run-triggers false}
+ }

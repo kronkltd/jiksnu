@@ -1,7 +1,7 @@
 (ns jiksnu.actions.domain-actions
-  (:require [ciste.config :only [config]]
-            [ciste.core :only [defaction]]
-            [ciste.initializer :only [definitializer]]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [defaction]]
+            [ciste.initializer :refer [definitializer]]
             [ciste.model :as cm]
             [clj-time.core :as time]
             [clojure.core.incubator :refer [-?>>]]
@@ -18,7 +18,7 @@
             [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace]
-            [slingshot.slingshot :only [throw+ try+]])
+            [slingshot.slingshot :refer [throw+ try+]])
   (:import java.net.URL
            jiksnu.model.Domain))
 

@@ -1,5 +1,5 @@
 (ns jiksnu.transforms.conversation-transforms
-  (:require [ciste.config :only [config]]
+  (:require [ciste.config :refer [config]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -7,7 +7,7 @@
             [jiksnu.routes.helpers :as rh]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
-            [slingshot.slingshot :only [throw+]])
+            [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI))
 
 (defn local-url?

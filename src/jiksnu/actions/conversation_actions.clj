@@ -24,7 +24,7 @@
        transforms/set-_id
        transforms/set-updated-time
        transforms/set-created-time
-       transforms.conversation/set-url
+       ;; transforms.conversation/set-url
        transforms.conversation/set-domain
        transforms/set-local
        ;; transforms.conversation/set-update-source
