@@ -113,19 +113,3 @@
   [action {params :params}]
   (action params))
 
-;; user-meta
-
-(deffilter #'actions.user/user-meta :http
-  [action request]
-  (->> request :params :uri
-       util/split-uri
-       (apply model.user/get-user)
-       action))
-
-;; (deffilter #'actions.user/update-hub :http
-;;   [action request]
-;;   (let [{params :params} request
-;;         {username :id} params
-;;         user (model.user/fetch-by-id username)]
-;;     (action user)))
-

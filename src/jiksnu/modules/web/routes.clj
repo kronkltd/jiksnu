@@ -1,9 +1,11 @@
 (ns jiksnu.modules.web.routes
   (:require [aleph.http :as http]
+            [ciste.config :refer [config]]
             [ciste.initializer :refer [definitializer]]
             [ciste.middleware :as middleware]
             [ciste.routes :refer [resolve-routes]]
             [clojure.tools.logging :as log]
+            [clojurewerkz.route-one.core :refer [*base-url*]]
             [compojure.core :as compojure]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -37,17 +39,26 @@
       (catch Exception ex
         (log/error ex)))
 
-    (when-let [page-fn (ns-resolve route-sym 'pages)]
+    (when-let [page-fn (try
+                         (ns-resolve route-sym 'pages)
+                         (catch Exception ex
+                           (log/error ex)))]
       (when-let [matchers (page-fn)]
         (dosync
          (alter predicates/*page-matchers* concat matchers))))
 
-    (when-let [page-fn (ns-resolve route-sym 'sub-pages)]
+    (when-let [page-fn (try
+                         (ns-resolve route-sym 'sub-pages)
+                         (catch Exception ex
+                           (log/error ex))) ]
       (when-let [matchers (page-fn)]
         (dosync
          (alter predicates/*sub-page-matchers* concat matchers))))
 
-    (when-let [route-fn (ns-resolve route-sym 'routes)]
+    (when-let [route-fn (try
+                          (ns-resolve route-sym 'routes)
+                          (catch Exception ex
+                            (log/error ex)))]
       (route-fn))))
 
 (defn make-matchers
@@ -104,6 +115,10 @@
       (assoc-in response [:headers "Connection"] "close"))))
 
 (definitializer
+  (let [url (format "http://%s" (config :domain))]
+    (alter-var-root #'*base-url*
+                    (constantly url)))
+
   (def app
     (http/wrap-ring-handler
      (compojure/routes

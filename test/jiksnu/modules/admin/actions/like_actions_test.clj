@@ -1,9 +1,9 @@
 (ns jiksnu.modules.admin.actions.like-actions-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [jiksnu.modules.admin.actions.like-actions :only [delete index]]
-        [midje.sweet :only [falsey => contains]])
-  (:require [jiksnu.model.like :as model.like]))
+  (:require [clj-factory.core :refer [factory fseq]]
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.model.like :as model.like]
+            [jiksnu.modules.admin.actions.like-actions :refer [delete index]]
+            [midje.sweet :refer [falsey => contains]]))
 
 (test-environment-fixture
 
