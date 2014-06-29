@@ -34,32 +34,39 @@
 (defn load-module
   [module-name]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" module-name))]
+    (log/debug (str "Loading routes for: " route-sym))
+
     (try
       (require route-sym)
+
+      (when-let [page-fn (try
+                           (ns-resolve route-sym 'pages)
+                           (catch Exception ex
+                             (log/error ex)))]
+        (when-let [matchers (page-fn)]
+          (dosync
+           (alter predicates/*page-matchers* concat matchers))))
+
+      (when-let [page-fn (try
+                           (ns-resolve route-sym 'sub-pages)
+                           (catch Exception ex
+                             (log/error ex))) ]
+        (when-let [matchers (page-fn)]
+          (dosync
+           (alter predicates/*sub-page-matchers* concat matchers))))
+
+      (when-let [route-fn (try
+                            (ns-resolve route-sym 'routes)
+                            (catch Exception ex
+                              (log/error ex)))]
+        (route-fn))
+
+
+
       (catch Exception ex
         (log/error ex)))
 
-    (when-let [page-fn (try
-                         (ns-resolve route-sym 'pages)
-                         (catch Exception ex
-                           (log/error ex)))]
-      (when-let [matchers (page-fn)]
-        (dosync
-         (alter predicates/*page-matchers* concat matchers))))
-
-    (when-let [page-fn (try
-                         (ns-resolve route-sym 'sub-pages)
-                         (catch Exception ex
-                           (log/error ex))) ]
-      (when-let [matchers (page-fn)]
-        (dosync
-         (alter predicates/*sub-page-matchers* concat matchers))))
-
-    (when-let [route-fn (try
-                          (ns-resolve route-sym 'routes)
-                          (catch Exception ex
-                            (log/error ex)))]
-      (route-fn))))
+    ))
 
 (defn make-matchers
   [handlers]
@@ -82,13 +89,8 @@
 (def http-routes
   (->> registry/action-group-names
        (map load-module)
-       (log/spy :info)
        (reduce concat)
-       (log/spy :info)
-       make-matchers
-       (log/spy :info)
-
-       ))
+       make-matchers))
 
 (compojure/defroutes all-routes
   (compojure/GET "/websocket" _

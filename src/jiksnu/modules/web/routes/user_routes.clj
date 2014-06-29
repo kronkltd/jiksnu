@@ -21,7 +21,7 @@
    [[:post   "/main/profile"]                   #'user/update-profile]
    [[:get    "/main/register"]                  #'user/register-page]
    [[:post   "/main/register"]                  #'user/register]
-   [[:get    "/main/xrd"]                       #'user/user-meta]
+   ;; [[:get    "/main/xrd"]                       #'user/user-meta]
 
    [[:get    "/model/users/:id"]                #'user/show]
 
