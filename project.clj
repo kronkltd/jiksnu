@@ -6,20 +6,23 @@
   :dependencies [[aleph "0.3.2"]
 
                  [ciste "0.5.0-SNAPSHOT"]
+
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"
                   :exclusions [ciste/ciste-core]]
+
                  [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"
                   :exclusions [ciste/ciste-core]]
-                 [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"
-                  :exclusions [ciste/ciste-core]]
-                 [ciste/ciste-service-swank "0.4.0-SNAPSHOT"
-                  :exclusions [ciste/ciste-core]]
+
+                 ;; [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"
+                 ;;  :exclusions [ciste/ciste-core]]
+
+                 ;; [ciste/ciste-service-swank "0.4.0-SNAPSHOT"
+                 ;;  :exclusions [ciste/ciste-core]]
+
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [clj-time "0.7.0"]
                  [clj-http "0.9.2"]
                  [clojurewerkz/route-one "1.1.0"]
-                 ;; [clojurewerkz/urly "1.0.0"
-                 ;;  :exclusions [com.google.guava/guava]]
                  [clojurewerkz/mailer "1.0.0"]
 
                  [clojure-complete "0.2.3"
@@ -77,21 +80,7 @@
                  ;; I know you really want to upgrade this one, but
                  ;; you can't. :(
                  [xml-apis "1.4.01"]
-
-
-
                  [org.clojure/clojurescript "0.0-2156"]
-
-                 ;; [lolg "0.1.0-SNAPSHOT"
-                 ;;  :exclusions [org.clojure/google-closure-library]]
-                 ;; [net.kronkltd/waltz "0.1.2-SNAPSHOT"
-                 ;;  :exclusions [org.clojure/google-closure-library]]
-
-
-
-
-
-                 #_[org.apache.httpcomponents/httpclient "4.2.5"]
 ]
   :plugins [
             [lein-cljsbuild "1.0.2"]
@@ -114,38 +103,19 @@
                  :optimizations :whitespace
                  :pretty-print true
                  }}
-               ;; {:source-paths ["src-cljs"]
-               ;;  :compiler
-               ;;  {:output-to "resources/public/assets/js/jiksnu.min.js"
-               ;;   :optimizations :advanced
-               ;;   :pretty-print true
-               ;;   }}
-
                ]}
-
-
-  ;; :exclusions [org.clojure/google-closure-library]
-  ;; :aot [jiksnu.model
-  ;;       ;; ciste.runner
-  ;;       ;; jiksnu.modules.xmpp.plugin
-  ;;       ;; jiksnu.modules.xmpp.channels
-  ;;       ;; jiksnu.modules.xmpp.user-repository
-  ;;       ]
   ;; :hooks [leiningen.cljsbuild]
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
              "-Dfile.encoding=UTF-8"
-             ;; "-Dcom.sun.management.jmxremote"
-             ;; "-Dcom.sun.management.jmxremote.port=9010"
-             ;; "-Dcom.sun.management.jmxremote.local.only=false"
-             ;; "-Dcom.sun.management.jmxremote.authenticate=false"
-             ;; "-Dcom.sun.management.jmxremote.ssl=false"
              ]
-  :repositories {"stuart"                "http://stuartsierra.com/maven2"
-                 "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
+  :repositories {
+                 ;; "stuart"                "http://stuartsierra.com/maven2"
+                 ;; "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
                  "tigase-snapshots" "http://maven.tigase.org/"
-                 "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"}
+                 ;; "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"
+                 }
   :warn-on-reflection false
 
   :profiles {:dev
@@ -158,7 +128,7 @@
               :dependencies
               [[midje         "1.6.3"]
                [ring-mock     "0.1.5"]]}}
-  :lesscss-output-path "resources/public/assets/themes/classic/"
+  :lesscss-output-path "target/themes/classic/"
 
   :source-paths ["src" "src-cljs"]
   :lis-opts {

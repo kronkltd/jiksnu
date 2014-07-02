@@ -24,23 +24,6 @@
   [item]
   (#{#'actions.activity/create}     (:action item)))
 
-(defn notify-activity
-  [recipient ^Activity activity]
-  (log/info (str "Sending notice to: " (model.user/get-uri recipient false)))
-  (let [author (model.activity/get-author activity)
-        ele (element/make-element
-             ["body" {}
-              (str (model.user/get-uri author false) ":  "
-                   (:title activity))])
-        packet-map {:to (tigase/make-jid (:username recipient) (:domain recipient))
-                    :from (tigase/make-jid "updates" (config :domain))
-                    :type :chat
-                    ;; FIXME: generate an id for this case
-                    :id "JIKSNU1"
-                    :body ele}
-        message (tigase/make-packet packet-map)]
-    (tigase/deliver-packet! message)))
-
 (defn create-trigger
   [m]
   (if-let [activity (:records m)]
@@ -52,18 +35,6 @@
       (when-let [id (:conversation activity)]
         (when-let [conversation (model.conversation/fetch-by-id id)]
           (actions.conversation/add-activity conversation activity)))
-
-      ;; notify users
-      (let [mentioned-users (map model.user/fetch-by-id (filter identity (:mentioned activity)))
-            to-notify (->> (model.subscription/subscribers author)
-                           (map model.subscription/get-actor)
-                           (concat mentioned-users)
-                           (filter :local)
-                           (into #{}))]
-        (doseq [user to-notify]
-          (notify-activity user activity)))
-
-      ;; TODO: ping feed subscriptions
       )))
 
 (defn init-receivers

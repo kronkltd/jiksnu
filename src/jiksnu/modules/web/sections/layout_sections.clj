@@ -182,7 +182,9 @@
      (if (= theme "classic")
        "/webjars/bootstrap/3.1.1/css/bootstrap.min.css"
        (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
-     "/assets/themes/classic/standard.css")))
+     "/themes/classic/standard.css"
+
+     )))
 
 (defn get-prefixes
   []
@@ -255,7 +257,7 @@
       "/webjars/underscorejs/1.6.0/underscore-min.js"
       "/webjars/jquery/2.1.1/jquery.min.js"
 
-      "/assets/js/jquery.timeago/1.3.0/jquery.timeago.js"
+      ;; "/assets/js/jquery.timeago/1.3.0/jquery.timeago.js"
 
       "/webjars/knockout/3.1.0/knockout.debug.js"
 

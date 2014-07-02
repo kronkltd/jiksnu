@@ -127,7 +127,7 @@
       (->  (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
            close-connection
            )
-
+      (route/resources "/themes/" {:root "themes/"})
       (-> all-routes
           jm/wrap-authentication-handler
           jm/wrap-user-binding
