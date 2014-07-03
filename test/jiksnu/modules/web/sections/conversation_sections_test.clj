@@ -17,8 +17,7 @@
   (:import jiksnu.model.Conversation
            org.apache.abdera.i18n.iri.IRI
            org.apache.abdera.model.Person
-           org.joda.time.DateTime
-           tigase.xml.Element))
+           org.joda.time.DateTime))
 
 (test-environment-fixture
 

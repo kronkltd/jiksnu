@@ -6,8 +6,7 @@
         jiksnu.modules.web.sections.activity-sections
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=>]])
-  (:require [clj-tigase.element :as element]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
@@ -21,8 +20,7 @@
            org.apache.abdera.i18n.iri.IRI
            org.apache.abdera.model.Entry
            org.apache.abdera.model.Person
-           org.joda.time.DateTime
-           tigase.xml.Element))
+           org.joda.time.DateTime))
 
 (test-environment-fixture
 

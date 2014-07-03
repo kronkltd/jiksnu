@@ -2,7 +2,6 @@
   (:require [ciste.config :refer [config]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section uri]]
-            [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.ko :refer [*dynamic*]]

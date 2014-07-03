@@ -1,12 +1,8 @@
 (ns jiksnu.modules.web.views.subscription-views-test
-  (:use [ciste.core :only [with-serialization with-format]]
-        [ciste.filters :only [filter-action]]
-        [ciste.views :only [apply-view]]
-        [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=>]])
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
+  (:require [ciste.core :refer [with-serialization with-format]]
+            [ciste.filters :refer [filter-action]]
+            [ciste.views :refer [apply-view]]
+            [clj-factory.core :refer [factory]]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.subscription-actions :as actions.subscription]
@@ -15,7 +11,9 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [midje.sweet :refer [=>]]))
 
 (test-environment-fixture
 

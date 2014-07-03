@@ -1,8 +1,7 @@
 (ns jiksnu.modules.core.triggers.subscription-triggers
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]])
-  (:require [clj-tigase.element :as element]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.channels :as ch]
             [jiksnu.model.user :as model.user]

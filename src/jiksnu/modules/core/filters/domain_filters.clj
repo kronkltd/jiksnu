@@ -6,8 +6,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain])
-  (:import tigase.xml.Element))
+            [jiksnu.model.domain :as model.domain]))
 
 (deffilter #'index :page
   [action request]

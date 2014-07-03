@@ -2,7 +2,6 @@
   (:require [ciste.core :refer [with-format]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [uri index-section show-section]]
-            [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]

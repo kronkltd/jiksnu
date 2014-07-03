@@ -5,8 +5,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [bind-to format-page-info with-page with-sub-page
                                             pagination-links]])
-  (:require [clj-tigase.core :as tigase]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.modules.core.sections.subscription-sections :as sections.subscription]
             [jiksnu.modules.web.sections.subscription-sections :refer [ostatus-sub-form]])

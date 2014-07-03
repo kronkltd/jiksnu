@@ -1,7 +1,5 @@
 (ns jiksnu.modules.core.triggers.user-triggers
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
