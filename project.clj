@@ -12,25 +12,32 @@
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [clj-time "0.7.0"]
                  [clj-http "0.9.2"]
+                 [clj-webdriver "0.6.1"
+                  :exclusions [xalan]]
                  [clojurewerkz/route-one "1.1.0"]
                  [clojurewerkz/mailer "1.0.0"]
                  [clojure-complete "0.2.3"
                   :exclusions [org.clojure/clojure]]
-                 [clojurewerkz/support "0.20.0"]
+                 [clojurewerkz/support "1.0.0"]
                  [com.novemberain/monger "1.8.0"]
                  [com.novemberain/validateur "1.7.0"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.7"]
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
+                 [im.chit/purnam "0.4.3"]
                  [lamina "0.5.2"]
+                 [lolg "0.1.0-SNAPSHOT"
+                  :exclusions [org.clojure/google-closure-library]]
                  [net.kronkltd/clj-airbrake "2.0.1-SNAPSHOT"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
                   :exclusions [xalan]]
                  [net.kronkltd/plaza "0.3.0-SNAPSHOT"]
+                 [onlyafly/waltz "0.1.2"]
                  [org.apache.abdera/abdera-client "1.1.3"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
                  [org.clojure/clojure "1.6.0"]
+                 [org.clojure/clojurescript "0.0-2261"]
                  [org.clojure/core.cache "0.6.3"]
                  [org.clojure/tools.logging "0.2.6"]
                  [org.clojure/tools.reader "0.8.3"]
@@ -45,22 +52,18 @@
                  [org.webjars/knockout "3.1.0"]
                  [org.webjars/momentjs "2.6.0-2"]
                  [org.webjars/underscorejs "1.6.0-3"]
+                 [prismatic/dommy "0.1.2"]
                  [ring "1.2.2"]
                  [ring/ring-core "1.1.8"]
                  [ring-basic-authentication "1.0.5"]
                  [rmarianski/tidy-up "0.0.2"]
                  [slingshot "0.10.3"]
-                 [prismatic/dommy "0.1.2"]
-                 [clj-webdriver "0.6.1"
-                  :exclusions [xalan]]
-                 [im.chit/purnam "0.4.3"]
                  [xerces/xercesImpl "2.11.0"]
                  ;; I know you really want to upgrade this one, but
                  ;; you can't. :(
-                 [xml-apis "1.4.01"]
-                 [org.clojure/clojurescript "0.0-2156"]]
-  :plugins [[lein-cljsbuild "1.0.2"]
-            [codox          "0.8.8"]
+                 [xml-apis "1.4.01"]]
+  :plugins [[lein-cljsbuild "1.0.3"]
+            [codox          "0.8.10"]
             [lein-cucumber  "1.0.2"]
             [lein-lesscss   "1.2"]
             [lein-midje     "3.1.3"]]
@@ -73,8 +76,8 @@
               [{:source-paths ["src-cljs"]
                 :compiler
                 {
-                 :output-to "resources/public/assets/cljs/jiksnu.js"
-                 :output-dir "resources/public/assets/cljs/"
+                 :output-to "resources/public/cljs/jiksnu.js"
+                 :output-dir "resources/public/cljs/"
                  :optimizations :whitespace
                  :pretty-print true
                  }}
@@ -94,7 +97,7 @@
               :dependencies
               [[midje         "1.6.3"]
                [ring-mock     "0.1.5"]]}}
-  :lesscss-output-path "target/themes/classic/"
+  :lesscss-output-path "resources/public/css"
 
   :source-paths ["src" "src-cljs"]
   :lis-opts {
