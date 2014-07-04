@@ -100,8 +100,8 @@
     [:span.format-icon
      [:img (merge {:alt ""}
                   (if *dynamic*
-                    {:data-bind "attr: {src: '/assets/themes/classic/' + icon}"}
-                    {:src (str "/assets/themes/classic/" (:icon format))}))]]
+                    {:data-bind "attr: {src: '/themes/classic/' + icon}"}
+                    {:src (str "/themes/classic/" (:icon format))}))]]
     [:span.format-label
      (display-property format :label)]]])
 
@@ -182,8 +182,7 @@
      (if (= theme "classic")
        "/webjars/bootstrap/3.1.1/css/bootstrap.min.css"
        (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
-     "/themes/classic/standard.css"
-
+     "/css/standard.css"
      )))
 
 (defn get-prefixes
@@ -256,18 +255,13 @@
      (p/include-js
       "/webjars/underscorejs/1.6.0/underscore-min.js"
       "/webjars/jquery/2.1.1/jquery.min.js"
-
-      ;; "/assets/js/jquery.timeago/1.3.0/jquery.timeago.js"
-
       "/webjars/knockout/3.1.0/knockout.debug.js"
-
       "/webjars/bootstrap/3.1.1/js/bootstrap.min.js"
-
-      "/assets/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
+      "/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
       "/webjars/backbonejs/1.1.2/backbone-min.js"
-      "/assets/supermodel/0.0.4/supermodel.js"
-      "/assets/js/knockback/0.17.2/knockback.js"
-      "/assets/cljs/jiksnu.js")
+      "/js/supermodel/0.0.4/supermodel.js"
+      "/js/knockback/0.17.2/knockback.js"
+      "/cljs/jiksnu.js")
      (doall
       (map (fn [hook]
              (hook request response))

@@ -61,8 +61,6 @@
                               (log/error ex)))]
         (route-fn))
 
-
-
       (catch Exception ex
         (log/error ex)))
 
@@ -124,22 +122,19 @@
   (def app
     (http/wrap-ring-handler
      (compojure/routes
-      (->  (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
-           close-connection
-           )
-      (route/resources "/themes/" {:root "themes/"})
+      (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
       (-> all-routes
           jm/wrap-authentication-handler
+          (file/wrap-file "resources/public/")
+          file-info/wrap-file-info
           jm/wrap-user-binding
           jm/wrap-dynamic-mode
           jm/wrap-oauth-user-binding
           jm/wrap-authorization-header
           (handler/site {:session {:store (ms/session-store)}})
           jm/wrap-stacktrace
-          (wrap-resource "public")
-          ;; (wrap-resource "/META-INF/resources")
-          file-info/wrap-file-info
-          ;; jm/wrap-stat-logging
+          ;; (wrap-resource "public")
+          ;; file-info/wrap-file-info
           ))))
 
   (doseq [model-name registry/action-group-names]
