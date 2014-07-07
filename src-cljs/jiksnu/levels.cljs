@@ -3,11 +3,11 @@
 (def logging-levels
   {
    ;; "waltz.state"        :finest
-    "jiksnu.core"        :fine
-    "jiksnu.events"      :finer
-    "jiksnu.model"       :fine
+    "jiksnu.core"        :finest
+    "jiksnu.events"      :finest
+    "jiksnu.model"       :info
     "jiksnu.routes"      :finest
-    "jiksnu.websocket"   :warning
-    "goog.net.WebSocket" :warning
+    "jiksnu.websocket"   :finest
+    "goog.net.WebSocket" :finest
    })
 

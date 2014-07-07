@@ -42,11 +42,11 @@
 
 (defmethod ws/process-event "model-updated"
   [event]
-  (log/finest *logger* "model updated")
   (let [data (.-body event)
         id (.-_id data)
         model-name (.-type event)
         m (model/get-model-obj model-name id)]
+    (log/finest *logger* (str "model updated: " model-name "(" id ")"))
     (.set m data)
     (.set m (obj :loaded true))))
 
