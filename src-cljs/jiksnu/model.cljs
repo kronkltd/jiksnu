@@ -70,35 +70,35 @@
 
 (defn fetch-model
   "Sends a request for the given Model"
-  [this]
-  (let [model-name (get-model-name this)]
+  [_this]
+  (let [model-name (get-model-name _this)]
     ;; TODO: trigger an event to do this
-    (ws/send "get-model" (array model-name (.-id this)))))
+    (ws/send "get-model" (array model-name (.-id _this)))))
 
 (defn page-add
-  [this id]
-  (let [a (.get this "items")]
-    (.set this "items" (clj->js (concat [id] a)))))
+  [_this id]
+  (let [a (.get _this "items")]
+    (.set _this "items" (clj->js (concat [id] a)))))
 
 ;; Model helpers
 
 (defn initializer
   "used for logging initialization of a model"
   [m coll]
-  (this-as this
-    (let [n (.-type this)]
+  (this-as _this
+    (let [n (.-type _this)]
       (log/finer *logger* (str "Creating record: " n
                                " " (json/serialize m))))))
 
 ;; Protocols
 
 (defprotocol Collection2
-  ;; (fetch [this])
+  ;; (fetch [_this])
   )
 
 (defprotocol Model2
-  (fetch [this])
-  (-fetch2 [this]))
+  (fetch [_this])
+  (-fetch2 [_this]))
 
 ;; Models
 
@@ -271,8 +271,8 @@
   :updated      nil)
 
 (defvar PostForm
-  [this]
-  (doto this
+  [_this]
+  (doto _this
     (ko/assoc-observable "visible" false)
     (ko/assoc-observable "currentPage" "note")))
 
@@ -307,7 +307,7 @@
   []
   (str "/model/"
        (.-stub this) "/"
-       (.-id this) ".model"))
+       (.-id this) ".model") )
 
 (def.n Notification.prototype.dismiss
   []

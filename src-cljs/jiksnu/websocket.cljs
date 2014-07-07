@@ -147,14 +147,14 @@
 (doto ws-state
   (defevent :connect
     []
-    (state/transition ws-state :closed :connecting)
+    (state/set-ex ws-state :closed :connecting)
     (let [socket (configure (create))]
       (if-let [socket (open-socket socket)]
         (do (reset! default-connection socket)))))
 
   (defevent :connected
     []
-    (state/transition ws-state :connecting :idle)
+    (state/set-ex ws-state :connecting :idle)
     ;; The connection isn't really opened till we send a command
     (send "connect" (array)))
 
@@ -162,25 +162,28 @@
     []
     (let [socket @default-connection]
       (. socket (close))
-      (state/transition ws-state :idle :closed)))
+      (state/set-ex ws-state :idle :closed)))
 
   (defevent :send
     [m command & args]
-    (state/transition ws-state :idle :sending)
+    (state/set-ex ws-state :idle :sending)
     (let [message (str command (when (seq args) (apply str " " args)))]
       (log/fine *logger* (str "sending message: " message))
       (emit! @default-connection message))
-    (state/transition ws-state :sending :idle))
+    (state/set-ex ws-state :sending :idle))
 
   (defevent :receive
     [m event]
     (if event
-      (do (state/transition ws-state :idle :receiving)
+      (do (state/set-ex ws-state :idle :receiving)
           (let [message (.-message event)]
             (let [parsed-event (parse-json message)]
               (when (.isLoggable *logger* goog.debug.Logger.Level.FINE)
                 (.debug js/console "Receiving message" parsed-event))
               (process-event parsed-event)
-              (state/transition ws-state :receiving :idle)
+              (state/set-ex ws-state :receiving :idle)
               parsed-event)))
-      (log/warning *logger* "undefined event"))))
+      (do
+        #_(.error js/console "undefined event" m event)
+        #_(log/warning *logger* "undefined event")
+        (.error js/console (.parse js/JSON (.-message m)))))))
