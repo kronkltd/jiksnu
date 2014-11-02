@@ -253,10 +253,11 @@
       (format "WEBSOCKET_PATH = '%s';" websocket-path)
       "var CLOSURE_NO_DEPS = true;"]
      (p/include-js
-      "/webjars/underscorejs/1.6.0/underscore-min.js"
+      ;; TODO: Pull the version numbers out, load from
+      "/webjars/underscorejs/1.7.0/underscore-min.js"
       "/webjars/jquery/2.1.1/jquery.min.js"
-      "/webjars/knockout/3.1.0/knockout.debug.js"
-      "/webjars/bootstrap/3.1.1/js/bootstrap.min.js"
+      "/webjars/knockout/3.2.0/knockout.debug.js"
+      "/webjars/bootstrap/3.3.0/js/bootstrap.min.js"
       "/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
       "/webjars/backbonejs/1.1.2/backbone-min.js"
       "/js/supermodel/0.0.4/supermodel.js"

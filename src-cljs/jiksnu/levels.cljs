@@ -4,10 +4,10 @@
   {
    ;; "waltz.state"        :finest
     "jiksnu.core"        :finest
-    "jiksnu.events"      :finest
+    "jiksnu.events"      :info
     "jiksnu.model"       :info
     "jiksnu.routes"      :finest
-    "jiksnu.websocket"   :finest
-    "goog.net.WebSocket" :finest
+    "jiksnu.websocket"   :info
+    "goog.net.WebSocket" :warning
    })
 

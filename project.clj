@@ -82,7 +82,7 @@
                  :pretty-print true
                  }}
                ]}
-  ;; :hooks [leiningen.cljsbuild]
+  :hooks [leiningen.cljsbuild]
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"

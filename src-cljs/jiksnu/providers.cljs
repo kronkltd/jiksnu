@@ -3,7 +3,7 @@
             [lolg :as log]
             [jiksnu.logging :as jl]
             [jiksnu.util.ko :as ko])
-  (:use-macros [dommy.macros :only [sel sel1]]
+  (:use-macros [dommy.core :only [sel sel1]]
                [jiksnu.macros :only [defvar]]
                [purnam.core :only [? ?> ! !> f.n def.n do.n this self
                                    obj arr def* do*n def*n f*n]]))

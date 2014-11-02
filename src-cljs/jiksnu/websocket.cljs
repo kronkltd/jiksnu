@@ -8,7 +8,7 @@
             [jiksnu.logging :as jl]
             [jiksnu.util.underscore :as _]
             [waltz.state :as state])
-  (:use-macros [dommy.macros :only [sel sel1]]
+  (:use-macros [dommy.core :only [sel sel1]]
                [waltz.macros :only [in out defstate defevent]]))
 
 (def *logger* (log/get-logger "jiksnu.websocket"))

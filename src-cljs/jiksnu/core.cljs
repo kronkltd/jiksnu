@@ -18,7 +18,7 @@
             [jiksnu.util.ko :as ko]
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws])
-  (:use-macros [dommy.macros :only [sel sel1]]
+  (:use-macros [dommy.core :only [sel sel1]]
                [jiksnu.macros :only [defvar]]
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
