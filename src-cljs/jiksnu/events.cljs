@@ -52,10 +52,9 @@
 
 (defmethod ws/process-event "page-updated"
   [event]
-  (log/finest *logger* "page updated")
   (let [data (.-body event)
-        id (.-id data)
-        type (.-type event)]
+        id (.-id data)]
+    (log/finest *logger* (str "page updated: " id))
     (if-let [page (.get model/pages id)]
       (do (.set page data)
           (.set page "loaded" "true"))
@@ -63,7 +62,6 @@
 
 (defmethod ws/process-event "sub-page-updated"
   [event]
-  (log/finest *logger* "sub page updated")
   (let [data (.-body event)]
     (if-let [page-name (.-id data)]
       (let [model-name (.-model event)
@@ -74,6 +72,7 @@
                    (.set page data)
                    (do (.add coll data)
                        (.get coll page-name)))]
+        (log/finest *logger* (str  "sub page updated: " model-name "(" id ") => " page-name))
         (.set page "loaded" "true")
         page)
       (throw "Page name is undefined"))))

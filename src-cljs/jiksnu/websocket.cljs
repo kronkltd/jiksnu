@@ -74,13 +74,19 @@
       (let [parsed-event (parse-json message)]
         (process-event parsed-event)
         parsed-event))
-    (.error js/console (.parse js/JSON (.-message m)))))
+    (.error js/console (.parse js/JSON (.-message event)))))
+
+(defn on-connected
+  []
+  (state/set-ex ws-state :connecting :connected)
+  ;; The connection isn't really opened till we send a command
+  (send "connect" (array)))
 
 (defn configure
   "Configures WebSocket"
   [socket]
   (doto socket
-    (events/listen websocket-event/OPENED  #(state/trigger ws-state :connected))
+    (events/listen websocket-event/OPENED  on-connected)
     (events/listen websocket-event/CLOSED  #(state/set ws-state :closed))
     (events/listen websocket-event/ERROR   #(state/set ws-state :error))
     (events/listen websocket-event/MESSAGE receive-message)))
@@ -117,12 +123,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Events
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defevent ws-state :connected
-  []
-  (state/set-ex ws-state :connecting :connected)
-  ;; The connection isn't really opened till we send a command
-  (send "connect" (array)))
 
 (defevent ws-state :close
   []
