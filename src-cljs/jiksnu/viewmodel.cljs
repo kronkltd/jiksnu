@@ -40,9 +40,5 @@
   (update-post-form data)
   (update-targets   data)
 
-  #_(.set model/_model "loaded" true)
-  #_(.addClass (js/$ "html") "bound")
-
-  (.markdown (js/$ "*[data-provide='markdown']"))
-  )
+  (.markdown (js/$ "*[data-provide='markdown']")))
 

@@ -329,15 +329,8 @@
        (style-section)
        (links-section request response)]
       [:body {:data-dynamic (str *dynamic*)}
-       [:ul {:ng-controller "JiksnuCtrl"}
-        [:li {:ng-repeat "phone in phones"}
-         [:span "{{phone.name}}"]
-         [:p "{{phone.snippet}}"]]]
-       [:p "1 + 2 = {{ 1 + 2 }}"]
        (navbar-section request response)
-       [:div.container-fluid.dynamic-load
-        (when *dynamic*
-          {:data-bind "if: loaded"})
+       [:div.container-fluid
         [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
         [:div.row
          [:div#content.col-sm-10.col-sm-push-2
