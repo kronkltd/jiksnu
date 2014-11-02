@@ -335,7 +335,7 @@
          [:p "{{phone.snippet}}"]]]
        [:p "1 + 2 = {{ 1 + 2 }}"]
        (navbar-section request response)
-       [:div.container-fluid
+       [:div.container-fluid.dynamic-load
         (when *dynamic*
           {:data-bind "if: loaded"})
         [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
