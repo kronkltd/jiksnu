@@ -1,7 +1,5 @@
 (ns jiksnu.handlers
   (:require [dommy.core :as dommy]
-            [dommy.attrs :refer [attr]]
-            ;; dommy.template
             [jiksnu.logging :as jl]
             [jiksnu.model :refer [_model]]
             [jiksnu.viewmodel :as vm]
@@ -27,14 +25,14 @@
 (defn invoke-action
   [e]
   (let [target (.-selectedTarget e)
-        action (attr target "data-action")
+        action (dommy/attr target "data-action")
         ;; action (.data target "action")
         parent (dommy/closest target "*[data-id]")
-        model (attr parent "data-model")
-        id (attr parent "data-id")
+        model (dommy/attr parent "data-model")
+        id (dommy/attr parent "data-id")
         target-element (sel1 parent "*[data-target]")
         target (when target-element
-                 (attr target-element "data-target"))]
+                 (dommy/attr target-element "data-target"))]
     (let [message (str action " >> " model "(" id ")")]
       (ws/send "invoke-action"
                (array model action id target))
