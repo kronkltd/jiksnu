@@ -58,6 +58,10 @@
 
 ;; Protocol helpers
 
+(defn extend
+  [m1 m2]
+  (.extend js/_ m1 m2))
+
 (defn get-model-name
   "Returns the (lower-cased) name of the given model"
   [model]
@@ -135,19 +139,27 @@
 (defcollection Pages Page)
 
 (def PageModel
-  (.extend
-   Model
-   (obj
-    :defaults (fn []
-                (.extend js/_
-                         (obj
-                          :_id   nil
-                          :pages (Pages.))
-                         (.defaults (.-prototype Model)))))))
+  (let [defaults (fn []
+                   (extend (obj
+                            :_id   nil
+                            :pages (Pages.))
+                     (?> Model.prototype.defaults)))]
+    (.extend Model (obj :defaults defaults))))
 
 (def pages         (Pages.))
 
+
+
 ;; Models
+
+(def App
+  (.extend
+   Model
+   (obj
+    :loaded false
+    :name ""
+    :currentUser nil
+    )))
 
 (defmodel Activity "activities"
   :_id           ""
@@ -376,6 +388,7 @@
    backbone/Model
    (obj
     :defaults {
+               :app                      nil
                :activities               activities
                :authenticationMechanisms authentication-mechanisms
                :conversations            conversations

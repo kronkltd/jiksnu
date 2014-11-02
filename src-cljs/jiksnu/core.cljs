@@ -49,6 +49,8 @@
     (catch js/Error ex
       (log/severe *logger* ex))))
 
+(def _app nil)
+
 (defn main
   []
 
@@ -59,8 +61,15 @@
   (! ko/binding-provider.instance (providers/DataModelProvider.))
   (! ko/binding-provider.instance (providers/PageProvider.))
   (! ko/binding-provider.instance (providers/SubPageProvider.))
+
+
   (set! model/_model              (model/AppViewModel.))
   (! js/window.model              model/_model)
+
+  (let [app (model/App.)]
+    (.set model/_model "app" app)
+    (! js/window._app app))
+
   (set! model/_view               (.viewModel js/kb model/_model))
   (! js/window._view              model/_view)
   (set! _router                   (routes/Router.))
@@ -75,6 +84,8 @@
   (handlers/setup-handlers)
 
   (doseq [model-name model/model-names]
-    (! ko/observables.|model-name| (obj))))
+    (! ko/observables.|model-name| (obj)))
+
+  )
 
 (main)

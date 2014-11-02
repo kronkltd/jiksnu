@@ -35,6 +35,12 @@
   (.set model/_model "title"       (.-title data))
   (.set model/_model "formats"     (.-formats data))
   (.set model/_model "currentUser" (.-currentUser data))
+
+  (let [app (.get model/_model "app")]
+    (.set app "loaded" true)
+    (.set app "currentUser" (.-currentUser data))
+    )
+
   ;; (update-pages     data)
   (update-page-info data)
   (update-post-form data)
