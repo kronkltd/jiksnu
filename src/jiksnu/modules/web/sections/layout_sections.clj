@@ -262,6 +262,7 @@
       "/webjars/backbonejs/1.1.2/backbone-min.js"
       "/js/supermodel/0.0.4/supermodel.js"
       "/js/knockback/0.17.2/knockback.js"
+      "/webjars/angularjs/1.3.0/angular.js"
       "/cljs/jiksnu.js")
      (doall
       (map (fn [hook]

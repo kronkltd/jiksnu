@@ -5,15 +5,14 @@
             [jiksnu.util.ko :as ko])
   (:use-macros [dommy.core :only [sel sel1]]
                [jiksnu.macros :only [defvar]]
-               [purnam.core :only [? ?> ! !> f.n def.n do.n this self
-                                   obj arr def* do*n def*n f*n]]))
+               [purnam.core :only [? ?> ! !> f.n def.n do.n obj arr def* do*n def*n f*n]]))
 
 (def *logger* (log/get-logger "jiksnu.providers"))
 
 (defvar DataModelProvider
-  [this]
+  [provider]
   (let [underlying-provider (.-instance ko/binding-provider)]
-   (doto this
+   (doto provider
      (aset "nodeHasBindings"
            (fn [node context]
              (or (and
@@ -33,31 +32,31 @@
                (.getBindings underlying-provider node context)))))))
 
 (defvar PageProvider
-  [self]
+  [provider]
   (let [underlying-provider (.-instance ko/binding-provider)]
-   (aset self "nodeHasBindings"
-         (fn [node context]
-           (or (and
-                (= (.-nodeType node) 1)
-                (dommy/attr node "data-page"))
-               (.nodeHasBindings underlying-provider node context))))
+    (doto provider
+      (aset "nodeHasBindings"
+            (fn [node context]
+              (or (and
+                   (= (.-nodeType node) 1)
+                   (dommy/attr node "data-page"))
+                  (.nodeHasBindings underlying-provider node context))))
 
-   (aset self "getBindings"
-         (fn [node context]
-           (if-let [page-name (and
-                               (= (.-nodeType node) 1)
-                               (dommy/attr node "data-page"))]
-             (if-let [data (.-$data context)]
-               (js-obj
-                "withPage" (obj
-                            :type page-name)))
-             (.getBindings underlying-provider node context)))
-         )))
+      (aset "getBindings"
+            (fn [node context]
+              (if-let [page-name (and
+                                  (= (.-nodeType node) 1)
+                                  (dommy/attr node "data-page"))]
+                (if-let [data (.-$data context)]
+                  (js-obj
+                   "withPage" (obj
+                               :type page-name)))
+                (.getBindings underlying-provider node context)))))))
 
 (defvar SubPageProvider
-  [this]
+  [provider]
   (let [underlying-provider (.-instance ko/binding-provider)]
-   (doto this
+   (doto provider
      (aset "nodeHasBindings"
            (fn [node context]
              (or (and

@@ -8,8 +8,8 @@
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws])
   (:use-macros [jiksnu.macros :only [defvar]]
-               [purnam.core :only [? ?> ! !> f.n def.n do.n this self
-                                   obj arr def* do*n def*n f*n]]))
+               [purnam.core :only [? ?> ! !> f.n def.n do.n obj arr def* do*n
+                                   def*n f*n]]))
 
 (def *logger* (log/get-logger "jiksnu.events"))
 

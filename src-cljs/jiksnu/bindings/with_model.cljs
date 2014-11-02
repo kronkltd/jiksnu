@@ -3,8 +3,8 @@
             [jiksnu.model :as model]
             [jiksnu.util.ko :as ko]
             [lolg :as log])
-  (:use-macros [purnam.core :only [? ?> ! !> f.n def.n do.n this self
-                                   obj arr def* do*n def*n f*n]]))
+  (:use-macros [purnam.core :only [? ?> ! !> f.n def.n do.n obj arr def* do*n
+                                   def*n f*n]]))
 
 (def *logger* (log/get-logger "jiksnu.bindings.with-model"))
 

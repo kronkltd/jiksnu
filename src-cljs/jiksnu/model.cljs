@@ -6,8 +6,8 @@
             [jiksnu.websocket :as ws]
             [lolg :as log])
   (:use-macros [jiksnu.macros :only [defcollection defmodel defvar]]
-               [purnam.core :only [? ?> ! !> f.n def.n do.n this self
-                                   obj arr def* do*n def*n f*n]]))
+               [purnam.core :only [? ?> ! !> f.n def.n do.n obj arr def* do*n
+                                   def*n f*n]]))
 
 (def *logger* (log/get-logger "jiksnu.model"))
 
@@ -70,35 +70,34 @@
 
 (defn fetch-model
   "Sends a request for the given Model"
-  [_this]
-  (let [model-name (get-model-name _this)]
+  [model]
+  (let [model-name (get-model-name model)]
     ;; TODO: trigger an event to do this
-    (ws/send "get-model" (array model-name (.-id _this)))))
+    (ws/send "get-model" (array model-name (.-id model)))))
 
 (defn page-add
-  [_this id]
-  (let [a (.get _this "items")]
-    (.set _this "items" (clj->js (concat [id] a)))))
+  [model id]
+  (let [a (.get model "items")]
+    (.set model "items" (clj->js (concat [id] a)))))
 
 ;; Model helpers
 
 (defn initializer
   "used for logging initialization of a model"
   [m coll]
-  (this-as _this
-    (let [n (.-type _this)]
-      (log/finer *logger* (str "Creating record: " n
-                               " " (json/serialize m))))))
+  (let [n (.-type (js* "this"))]
+    (log/finer *logger* (str "Creating record: " n
+                             " " (json/serialize m)))))
 
 ;; Protocols
 
 (defprotocol Collection2
-  ;; (fetch [_this])
+  ;; (fetch [model])
   )
 
 (defprotocol Model2
-  (fetch [_this])
-  (-fetch2 [_this]))
+  (fetch [model])
+  (-fetch2 [model]))
 
 ;; Models
 
@@ -271,8 +270,8 @@
   :updated      nil)
 
 (defvar PostForm
-  [_this]
-  (doto _this
+  [model]
+  (doto model
     (ko/assoc-observable "visible" false)
     (ko/assoc-observable "currentPage" "note")))
 
@@ -301,57 +300,57 @@
 
 (def.n Model.prototype.fetch
   []
-  (fetch-model this))
+  (fetch-model (js* "this")))
 
 (def.n Model.prototype.url
   []
   (str "/model/"
-       (.-stub this) "/"
-       (.-id this) ".model") )
+       (.-stub (js* "this")) "/"
+       (.-id (js* "this")) ".model") )
 
 (def.n Notification.prototype.dismiss
   []
-  (.remove (.-collection this) this))
+  (.remove (.-collection (js* "this")) (js* "this")))
 
 (def.n Notifications.prototype.addNotification
   [message]
   (let [notification (Notification.)]
     (.set notification "message" message)
-    (.push this notification)))
+    (.push (js* "this") notification)))
 
 (def.n Page.prototype.hasNext
   []
-  (< (* (.page this)
-        (.pageSize this))
-     (.totalRecords this)))
+  (< (* (.page (js* "this"))
+        (.pageSize (js* "this")))
+     (.totalRecords (js* "this"))))
 
 (def.n Page.prototype.popItem
   []
-  (let [a (.get this "items")
+  (let [a (.get (js* "this") "items")
         i (first a)]
-    (.set this "items" (clj->js (rest a)))
+    (.set (js* "this") "items" (clj->js (rest a)))
     i))
 
 (def.n Page.prototype.fetch
   []
-  (when-not (.-loaded this)
-    (! this.loaded true)
-    (ws/send "get-page" (arr (.get this "id")))))
+  (when-not (.-loaded (js* "this"))
+    (aset (js* "this") "loaded" true)
+    (ws/send "get-page" (arr (.get (js* "this") "id")))))
 
 (def.n Page.prototype.addItem
   [id]
-  (page-add this id))
+  (page-add (js* "this") id))
 
 (def.n Pages.prototype.getPage
   [name]
-  (.get this name))
+  (.get (js* "this") name))
 
 ;; Type extensions
 
 (extend-type Model
   Model2
 
-  (fetch [this] (fetch-model this)))
+  (fetch [model] (fetch-model model)))
 
 ;; Collection references
 ;; TODO: remove

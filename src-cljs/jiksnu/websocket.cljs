@@ -14,7 +14,6 @@
 (def *logger* (log/get-logger "jiksnu.websocket"))
 
 (def default-connection (atom nil))
-(def *interface* (sel1 :.connection-info))
 (def ws-state (state/machine "websocket state"))
 
 (defn parse-json
@@ -108,17 +107,18 @@
 
 (defstate ws-state :connected
   (in []
-      (do (dommy/set-text! *interface* "Connected")
-          (if (state/in? ws-state :queued)
-            (do
-              (log/finer *logger* "processing backlog")
-              (let [message (first @queued-messages)]
-                (swap! queued-messages rest)
-                (if (empty? @queued-messages)
-                  (state/unset ws-state :queued))
-                (let [[command args] message]
-                  (.info js/console "retrying message:" message)
-                  (send command args))))))))
+      (do
+        ;; (dommy/set-text! (sel1 :.connection-info) "Connected")
+        (if (state/in? ws-state :queued)
+          (do
+            (log/finer *logger* "processing backlog")
+            (let [message (first @queued-messages)]
+              (swap! queued-messages rest)
+              (if (empty? @queued-messages)
+                (state/unset ws-state :queued))
+              (let [[command args] message]
+                (.info js/console "retrying message:" message)
+                (send command args))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Events
