@@ -199,25 +199,31 @@
         (fn [[prefix uri]] (format "%s: %s" prefix uri)))
        (string/join " ")))
 
+(defn nav-bar-expand-button
+  [target desc]
+  [:button.navbar-toggle
+   {:type "button"
+    :data-toggle "collapse"
+    :data-target target}
+   [:span.sr-only desc]
+   [:span.icon-bar]
+   [:span.icon-bar]
+   [:span.icon-bar]])
+
 (defn navbar-section
   [request response]
   [:nav.navbar.navbar-default.navbar-inverse
    ;; .navbar-fixed-top
-   {:role "navigation"}
+   {:role "navigation"
+    :ng-controller "NavBarCtrl"}
    [:div.container-fluid
     [:div.navbar-header
-     [:button.navbar-toggle
-      {:type "button"
-       :data-toggle "collapse"
-       :data-target "#main-navbar-collapsw-1"}
-      [:span.sr-only "Toggle Navigation"]
-      [:span.icon-bar]
-      [:span.icon-bar]
-      [:span.icon-bar]]
+     (navbar-expand-button "#main-navbar-collapsw-1" "Toggle Navigation")
      [:a.navbar-brand.home {:href "/" :rel "top"}
-      (config :site :name)]]
+      (config :site :name) {{app.name}}]]
     [:div#main-navbar-collapse-1.navbar-collapse.collapse
      ;; (navbar-search-form)
+     [:ul.nav.navbar-nav.navbar-right (sections.auth/ng-login-section response)]
      [:ul.nav.navbar-nav.navbar-right (sections.auth/login-section response)]
      #_[:div.navbar-text.connection-info.navbar-right]
      #_[:div.navbar-text.navbar-right

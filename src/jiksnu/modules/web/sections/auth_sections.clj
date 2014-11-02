@@ -43,6 +43,12 @@
     (logout-button authenticated)
     (login-button)))
 
+(defn login-section
+  [response]
+  (if-let [authenticated (current-user)]
+    (logout-button authenticated)
+    (login-button)))
+
 (defn password-page
   [user]
   [:form.well {:method "post" :action "/main/login"}
