@@ -24,6 +24,7 @@
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.7"]
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
+                 [im.chit/gyr "0.3.1"]
                  [im.chit/purnam "0.5.1"]
                  [lamina "0.5.5"]
                  [lolg "0.1.0-SNAPSHOT"

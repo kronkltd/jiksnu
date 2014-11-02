@@ -78,6 +78,10 @@
 (defn side-navigation
   []
   [:ul.nav.nav-list
+   {:ng-controller "NavCtrl"}
+   [:li {:ng-repeat "item in items"}
+    [:a {:href "{{item.href}}"} "{{item.label}}"]
+    ]
    (->> (nav-info)
         (map navigation-group)
         (reduce concat))])
@@ -310,6 +314,7 @@
               ;; :version "HTML+RDFa 1.1"
               :lang "en"
               :xml:lang "en"
+              :ng-app "jiksnuApp"
               :prefix (get-prefixes) })
       [:head
        [:meta {:charset "UTF-8"}]
@@ -324,6 +329,11 @@
        (style-section)
        (links-section request response)]
       [:body {:data-dynamic (str *dynamic*)}
+       [:ul {:ng-controller "JiksnuCtrl"}
+        [:li {:ng-repeat "phone in phones"}
+         [:span "{{phone.name}}"]
+         [:p "{{phone.snippet}}"]]]
+       [:p "1 + 2 = {{ 1 + 2 }}"]
        (navbar-section request response)
        [:div.container-fluid
         (when *dynamic*
