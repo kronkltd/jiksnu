@@ -37,7 +37,7 @@
    [:li.divider-vertical]
    [:li [:a.register-link {:href "/main/register"} "Register"]]))
 
-(defn login-section
+(defn ng-login-section
   [response]
   (if-let [authenticated (current-user)]
     (logout-button authenticated)

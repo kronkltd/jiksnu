@@ -36,3 +36,11 @@
         ]
     (.log js/console "items" items)
     (! $scope.items items)))
+
+(def.controller jiksnuApp.NavBarCtrl
+  [$scope]
+
+  ;; TODO: pull from app config on page
+  (! $scope.app.name "Jiksnu")
+  )
+

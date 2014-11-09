@@ -10,6 +10,7 @@
             [jiksnu.actions.site-actions :as actions.site]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.ko :refer [*dynamic*]]
+            [jiksnu.modules.web.actions.core-actions :as actions.web.core]
             [jiksnu.modules.web.sections :refer [bind-to display-property dump-data
                                                  pagination-links with-sub-page]]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
@@ -22,38 +23,6 @@
             [jiksnu.session :as session])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
-
-(defn nav-info
-  []
-  [["Home"
-    [["/"     "Public"]
-     ["/users"         "Users"]
-     ;; ["/main/conversations" "Conversations"]
-     ["/main/feed-sources"  "Feeds"]
-     ["/main/domains"       "Domains"]
-     ["/main/groups"        "Groups"]
-     ["/resources"     "Resources"]]]
-   ["Settings"
-    [["/admin/settings"           "Settings"]]]
-   (when (session/is-admin?)
-     ["Admin"
-      [
-       ["/admin/activities"         "Activities"]
-       ["/admin/auth"               "Auth"]
-       ["/admin/clients"            "Clients"]
-       ["/admin/conversations"      "Conversations"]
-       ["/admin/feed-sources"       "Feed Sources"]
-       ["/admin/feed-subscriptions" "Feed Subscriptions"]
-       ["/admin/groups"             "Groups"]
-       ["/admin/group-memberships"  "Group Memberships"]
-       ["/admin/keys"               "Keys"]
-       ["/admin/likes"              "Likes"]
-       ["/admin/request-tokens"     "Request Tokens"]
-       ["/admin/streams"            "Streams"]
-       ["/admin/subscriptions"      "Subscriptions"]
-       ["/admin/users"              "Users"]
-       ["/admin/workers"            "Workers"]
-       ]])])
 
 (defn user-info-section
   [user]
@@ -82,7 +51,7 @@
    [:li {:ng-repeat "item in items"}
     [:a {:href "{{item.href}}"} "{{item.label}}"]
     ]
-   (->> (nav-info)
+   (->> (actions.web.core/nav-info)
         (map navigation-group)
         (reduce concat))])
 
@@ -199,7 +168,7 @@
         (fn [[prefix uri]] (format "%s: %s" prefix uri)))
        (string/join " ")))
 
-(defn nav-bar-expand-button
+(defn navbar-expand-button
   [target desc]
   [:button.navbar-toggle
    {:type "button"
@@ -220,7 +189,7 @@
     [:div.navbar-header
      (navbar-expand-button "#main-navbar-collapsw-1" "Toggle Navigation")
      [:a.navbar-brand.home {:href "/" :rel "top"}
-      (config :site :name) {{app.name}}]]
+      (config :site :name) "{{app.name}}"]]
     [:div#main-navbar-collapse-1.navbar-collapse.collapse
      ;; (navbar-search-form)
      [:ul.nav.navbar-nav.navbar-right (sections.auth/ng-login-section response)]
@@ -256,7 +225,7 @@
 
 (defn scripts-section
   [request response]
-  (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")]
+  (let [websocket-path (str "ws://" (config :domain) "/")]
     (list
      [:script {:type "text/javascript"}
       ;; "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"

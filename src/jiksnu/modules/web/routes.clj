@@ -93,8 +93,10 @@
 (compojure/defroutes all-routes
   (compojure/GET "/websocket" _
                  (http/wrap-aleph-handler stream/websocket-handler))
-  (compojure/GET "/main/events" _
-                 stream/stream-handler)
+  (compojure/GET "/" request
+                 (when (:websocket? request)
+                   ((http/wrap-aleph-handler stream/websocket-handler) request)))
+  (compojure/GET "/main/events" [] stream/stream-handler)
   (compojure/ANY "/admin*" request
                  (if (session/is-admin?)
                    ((middleware/wrap-log-request
