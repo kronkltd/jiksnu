@@ -220,7 +220,8 @@
      [:th "Id"]
      [:th "Domain"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (let [items (if *dynamic* [(User.)] items)]
       (map #(admin-index-line % page) items))]])
 

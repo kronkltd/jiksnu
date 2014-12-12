@@ -130,7 +130,9 @@
                ;; [:select {:data-bind "selectModel: 'fullname',
                ;;                       optionsText: 'fullname',
                ;;                       optionsValue: '_id'"}]
-               [:select {:data-bind "options: _.map($data.items(), function(item) {return jiksnu.model.get_model(\"group\", item).fullname();})"}])])
+               [:select
+                (when *dynamic*
+                  {:data-bind "options: _.map($data.items(), function(item) {return jiksnu.model.get_model(\"group\", item).fullname();})"})])])
 
    ))
 
@@ -485,7 +487,8 @@
      [:th "User"]
      [:th "Content"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (map admin-index-line activities)]])
 
 ;; admin-index-line
@@ -520,8 +523,7 @@
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
-   (when *dynamic*
-     {:data-bind "foreach: items"})
+   (when *dynamic* {:data-bind "foreach: items"})
    (map #(index-line % options) records)])
 
 (defsection index-line [Activity :html]

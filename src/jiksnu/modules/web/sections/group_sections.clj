@@ -43,12 +43,15 @@
             {:href (str "/users/" (:_id user) "/groups")}) "Groups"]
       " "
       (with-sub-page "groups"
-        [:span {:data-bind "text: totalRecords"}])]
+        [:span
+         (when *dynamic*
+           {:data-bind "text: totalRecords"})])]
      (let [items (if *dynamic*
                    [(Group.)]
                    (actions.group/fetch-by-user user))]
        (with-sub-page "groups"
-         [:ul {:data-bind "foreach: items"}
+         [:ul
+          (when *dynamic* {:data-bind "foreach: items"})
           (map
            (fn [item]
              [:li {:data-model "group"}
@@ -101,8 +104,7 @@
 (defsection index-block [Group :html]
   [groups & _]
   [:ul.profiles
-   (when *dynamic*
-     {:data-bind "foreach: items"})
+   (when *dynamic* {:data-bind "foreach: items"})
    (map index-line groups)])
 
 (defsection index-line [Group :html]
@@ -159,7 +161,7 @@
     [:p (bind-property "updated")]
     [:div
      [:h3 "Admins " (count (:admins group))]
-     [:ul {:data-bind "foreach: admins"}
+     [:ul (when *dynamic* {:data-bind "foreach: admins"})
       (let [items (if *dynamic* [(User.)]
                       (map model.user/fetch-by-id (:admins group)))]
         (map
@@ -169,7 +171,7 @@
          items))]]
     [:div
      [:h3 "Members " (count (:members group))]
-     [:ul {:data-bind "foreach: members"}
+     [:ul (when *dynamic* {:data-bind "foreach: members"})
       (let [items (if *dynamic* [(User.)]
                       (map model.user/fetch-by-id (:members group)))]
         (map

@@ -21,7 +21,8 @@
      [:th "Id"]
      [:th "Created"]
      [:th "Updated"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (map admin-index-line items)]])
 
 (defsection admin-index-line [Client :html]

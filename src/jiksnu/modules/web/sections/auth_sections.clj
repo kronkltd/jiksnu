@@ -88,7 +88,8 @@
      [:th "User"]
      [:th "Value"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (map #(admin-index-line % page) items)]])
 
 ;; admin-index-line

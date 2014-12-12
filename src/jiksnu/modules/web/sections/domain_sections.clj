@@ -78,7 +78,8 @@
      [:th "Host Meta"]
      [:th "# Links"]
      ]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (map index-line domains)]])
 
 ;; index-line

@@ -75,7 +75,8 @@
      [:th "Last Updated"]
      [:th "Record Updated"]
      [:th #_"Actions"]]]
-   [:tbody {:data-bind "foreach: items"}
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (doall (map #(admin-index-line % page) items))]])
 
 ;; admin-index-line
@@ -129,7 +130,8 @@
   [items & [page]]
   [:div
    [:a#showComments.btn {:href "#"} "Show Comments"]
-   [:div.conversations (when *dynamic* {:data-bind "foreach: items"})
+   [:div.conversations
+    (when *dynamic* {:data-bind "foreach: items"})
     (map index-line items)]])
 
 ;; show-section
@@ -180,21 +182,6 @@
          (bind-to "$data['update-source']"
            [:div {:data-model "feed-source"} (link-to source)]))]]]]))
 
-;; (defn comments-section
-;;   [activity]
-;;   (bind-to "comments"
-;;     (if-let [comments (if *dynamic*
-;;                         [(Activity.)]
-;;                         (seq (second (actions.comment/fetch-comments activity))))]
-;;       [:section.comments
-;;        [:ul.unstyled.comments
-;;         (when *dynamic*
-;;           {:data-bind "foreach: items"})
-;;         (map (fn [comment]
-;;                [:li
-;;                 (show-comment comment)])
-;;              comments)]])))
-
 (defn show-comment
   [activity]
   (let [author (if *dynamic*
@@ -228,7 +215,8 @@
        (list
         (bind-to "$data.parent"
           (show-section parent))
-        [:div {:data-bind "if: _view.showComments()"}
+        [:div
+         (when *dynamic* {:data-bind "if: _view.showComments()"})
          (with-sub-page "activities"
            #_(if-let [item (first items)]
              (bind-to "items()[0]"
@@ -236,7 +224,8 @@
              [:p "The parent activity for this conversation could not be found"])
            (when-let [comments (next items)]
              [:section.comments.clearfix
-              [:div (when *dynamic* {:data-bind "foreach: items().slice(1)"})
+              [:div
+               (when *dynamic* {:data-bind "foreach: items().slice(1)"})
                (map show-comment comments)]]))]))]))
 
 ;; update-button

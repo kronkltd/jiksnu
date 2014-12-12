@@ -50,7 +50,7 @@
                    (count subscriptions))])]
        (with-sub-page "subscribers"
          [:ul.unstyled
-          (if *dynamic* {:data-bind "foreach: items"})
+          (when *dynamic* {:data-bind "foreach: items"})
           (map (fn [subscription]
                  [:li {:data-model "subscription"}
                   (bind-to "from"
@@ -78,7 +78,8 @@
                    {:data-bind "text: items().length"}
                    (count subscriptions))])]
        (with-sub-page "subscriptions"
-         [:ul (when *dynamic* {:data-bind "foreach: items"})
+         [:ul
+          (when *dynamic* {:data-bind "foreach: items"})
           (map (fn [subscription]
                  [:li {:data-model "subscription"}
                   (bind-to "to"
@@ -142,7 +143,8 @@
      [:th "pending"]
      [:th "local"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (map #(admin-index-line % options) items)]])
 
 (defsection edit-button [Subscription :html]
@@ -182,7 +184,8 @@
 
 (defsection subscriptions-block [Subscription :html]
   [items & [options & _]]
-  [:ul.subscriptions {:data-bind "foreach: items"}
+  [:ul.subscriptions
+   (when *dynamic* {:data-bind "foreach: items"})
    (map (fn [item] (subscriptions-line item options)) items)])
 
 (defsection subscriptions-section [Subscription :html]
@@ -199,7 +202,8 @@
 
 (defsection subscribers-block [Subscription :html]
   [items & [options & _]]
-  [:ul.subscriptions {:data-bind "foreach: items"}
+  [:ul.subscriptions
+   (when *dynamic* {:data-bind "foreach: items"})
    (map (fn [item] (subscribers-line item options)) items)])
 
 (defsection subscribers-section [Subscription :html]

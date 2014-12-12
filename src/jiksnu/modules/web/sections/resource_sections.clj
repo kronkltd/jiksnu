@@ -70,7 +70,8 @@
      [:th "Requires Auth"]
      #_[:th "Created"]
      [:th "Updated"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (doall (map #(index-line % page) items))]])
 
 ;; index-line

@@ -25,7 +25,8 @@
    [:thead
     [:tr
      [:th "Name"]]]
-   [:tbody {:data-bind "foreach: items"}
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (for [item items]
       [:tr {:data-model "stream"}
        [:td (display-property item :name)]])]])
@@ -42,7 +43,8 @@
                (actions.stream/fetch-by-user user))]
     [:div
      [:h3 "Streams " (display-property page :totalRecords)]
-     [:ul {:data-bind "foreach: items"}
+     [:ul
+      (when *dynamic* {:data-bind "foreach: items"})
       (for [item (:items page)]
         [:li {:data-model "stream"}
          (display-property item :name)])]]))

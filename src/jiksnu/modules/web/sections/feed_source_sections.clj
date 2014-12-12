@@ -33,7 +33,8 @@
              (count (:watchers source)))]]
    (bind-to "watchers"
      [:table.table
-      [:tbody {:data-bind "foreach: items"}
+      [:tbody
+       (when *dynamic* {:data-bind "foreach: items"})
        (let [watchers (if *dynamic* [""] (:watchers source))]
          (map
           (fn [id]
@@ -128,8 +129,8 @@
      [:th "Topic"]
      [:th "Status"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic*
-             {:data-bind "foreach: items"})
+   [:tbody
+    (when *dynamic* {:data-bind "foreach: items"})
     (map admin-index-line items)]])
 
 ;; admin-index-line
@@ -182,8 +183,7 @@
      [:th "Updated"]
      [:th "Actions"]]]
    [:tbody
-    (when *dynamic*
-      {:data-bind "foreach: items"})
+    (when *dynamic* {:data-bind "foreach: items"})
     (map index-line sources)]])
 
 ;; index-line
