@@ -47,15 +47,15 @@
            :height size
            :alt ""}
           (if *dynamic*
-            {:data-bind "attr: {src: avatarUrl}"}
+            {:src "{{avatarUrl}}"}
             {:src (model.user/image-link user)}))])
 
 (defn display-avatar
   ([user] (display-avatar user 64))
   ([user size]
      [:a.url (if *dynamic*
-               {:data-bind (str "attr: {href: '/remote-user/' + username() + '@' + domain(), "
-                                "title: 'acct:' + username() + '@' + domain()}")}
+               {:href "/remote-user/{{username}}@{{domain}}"
+                :title "acct:{{username}}@{{domain}}"}
                {:href (full-uri user)
                 :title (model.user/get-uri user)})
       (display-avatar-img user size)]))
@@ -164,23 +164,21 @@
        {:data-bind "foreach: links"})
      (map
       (fn [link]
-        [:tr
-         [:td (if *dynamic* (bind-property "title") (:title link))]
-         [:td (if *dynamic* (bind-property "rel")   (:rel link))]
-         [:td (if *dynamic* (bind-property "href")  (:href link))]
+        [:tr {:ng-repeat "link in links"}
+         [:td "{{link.title}}"]
+         [:td "{{link.rel}}"]
+         [:td "{{link.href}}"]
          [:td (link-actions-section link)]])
       links)]]])
 
 (defn model-button
   [user]
-  [:a (when *dynamic*
-        {:data-bind "attr: {href: '/model/users/' + $data._id() + '.model'}"})
+  [:a {:href "/model/users/{{user.id}}.model"}
    "Model"])
 
 (defn admin-button
   [user]
-  [:a (when *dynamic*
-        {:data-bind "attr: {href: '/admin/users/' + $data._id()}"})
+  [:a {:href "/admin/users/{{user.id}}"}
    "Admin"])
 
 (defn get-buttons
@@ -208,8 +206,6 @@
   [user & [page & _]]
   (actions-section user page))
 
-;; admin-index-block
-
 (defsection admin-index-block [User :html]
   [items & [page]]
   [:table.users.table
@@ -236,9 +232,10 @@
    [:td (display-property user :username)]
    [:td
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/users/' + ko.utils.unwrapObservable(_id)}, text: _id"}
+          {:href "/admin/users/{{user.id}}"}
           {:href (format "/admin/users/%s" (:_id user))})
-     (when-not *dynamic*
+     (if *dynamic*
+       "{{user.id}}"
        (:_id user))]]
    [:td
     (bind-to "domain"
@@ -266,7 +263,7 @@
     [:tr
      [:th "Username"]
      [:td (if *dynamic*
-            {:data-bind "text: username"}
+            "{{user.username}}"
             (:username item))]]
 
     [:tr
@@ -342,7 +339,8 @@
 
 (defsection index-line [User :html]
   [user & _]
-  [:tr (merge {:data-model "user"}
+  [:tr (merge {:ng-repeat "user in users"
+               :data-model "user"}
               (if *dynamic*
                 {}
                 {:data-id (:_id user)}))
@@ -352,40 +350,19 @@
     ;; TODO: call a show section here?
     [:div
      [:p (link-to user)]
-     [:p
-      [:span
-       (if *dynamic*
-         {:data-bind "text: username"}
-         (:username user))]
-      "@"
-      [:span
-       (if *dynamic*
-         {:data-bind "text: domain"}
-         (:domain user))]]
-     [:p (when *dynamic* {:data-bind "text: displayName"})]
-     [:p
-      (if *dynamic*
-        {:data-bind "text: uri"}
-        (:uri user))]
-     [:p
-      (if *dynamic*
-        {:data-bind "text: bio"}
-        (:bio user))]]]
+     [:p "{{user.username}}@{{user.domain}}"]
+     [:p "{{user.displayName}}"]
+     [:p "{{user.uri}}"]
+     [:p "{{user.bio}}"]]]
    [:td (actions-section user)]])
 
 (defsection link-to [User :html]
   [record & options]
-  (let [options-map (apply hash-map options)]
-    [:a (if *dynamic*
-          {:data-bind (str "attr: {href: '/remote-user/' + username() + '@' + domain(), "
-                           "title: 'acct:' + username() + '@' + domain()}")}
-          {:href (uri record)})
-     [:span (merge {:property "dc:title"}
-                   (if *dynamic*
-                     {:data-bind "attr: {about: url}, text: displayName() || name() || username()"}
-                     {:about (uri record)}))
-      (when-not *dynamic*
-        (or (:title options-map) (title record)))]]))
+  [:a {:href "/remote-user/{{user.username}}@{{user.domain}}"
+       :title "acct:{{user.username}}@{{user.domain}}"}
+   [:span {:property "dc:title"
+           :about "{{user.url}}"}
+    "{{user.displayName}}"]])
 
 (defsection show-section-minimal [User :html]
   [user & _]
@@ -399,22 +376,15 @@
   [user & options]
   (list
    [:div.vcard.user-full
-    (merge {:data-model "user"}
-           (if *dynamic*
-             {}
-             {:data-id (:_id user)}))
+    {:data-model "user"
+     :data-id "{{user.id}}"}
     (actions-section user)
     [:div (display-avatar user 96)]
     [:p
-     [:span.nickname.fn.n
-      (display-property user :displayName)]
-     " ("
-     (display-property user :username)
-     "@"
-     (display-property user :domain)
-     ")"]
+     [:span.nickname.fn.n "{{user.displayName}}"]
+     " ({{user.username}}@{{user.domain}})"]
     [:div.adr
-     [:p.locality (display-property user :location)]]
+     [:p.locality "{{user.location}}"]]
     [:p.note (display-property user :bio)]
     (if-let [source (if *dynamic* (FeedSource.) nil)]
       (bind-to "updateSource"

@@ -14,7 +14,7 @@
   [:form
    (merge {:method "post" }
           (if *dynamic*
-            {:data-bind "attr: {action: '/users/' + _id() + '/streams'}"}
+            {:action "/users/{{user.id}}/streams"}
             {:action (format "/users/%s/streams" (:_id user))}))
    [:input {:type "text" :name "name"}]
    [:input {:type "submit"}]])
@@ -26,14 +26,31 @@
     [:tr
      [:th "Name"]]]
    [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
+
     (for [item items]
-      [:tr {:data-model "stream"}
+      [:tr {:data-model "stream"
+            :ng-repeat "conversation in conversations"
+            }
        [:td (display-property item :name)]])]])
 
 (defsection admin-index-section [Stream :html]
   [items & [page]]
-  (admin-index-block items page))
+[:table.table
+   [:thead
+    [:tr
+     [:th "Name"]]]
+   [:tbody
+
+    (for [item items]
+      [:tr {:data-model "stream"
+            :ng-repeat "conversation in conversations"
+            }
+       [:td (display-property item :name)]])]]
+
+
+
+
+ )
 
 
 (defn streams-widget
@@ -44,7 +61,6 @@
     [:div
      [:h3 "Streams " (display-property page :totalRecords)]
      [:ul
-      (when *dynamic* {:data-bind "foreach: items"})
       (for [item (:items page)]
-        [:li {:data-model "stream"}
+        [:li {:ng-repeat "stream in streams"}
          (display-property item :name)])]]))

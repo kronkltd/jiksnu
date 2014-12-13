@@ -229,8 +229,7 @@
 
 (defsection show-section [FeedSource :html]
   [source & options]
-  (let [{:keys [topic callback challenge mode hub
-                verify-token lease-seconds created updated]} source]
+  (let [{:keys [verify-token lease-seconds ]} source]
     [:div {:data-model "feed-source"}
      (actions-section source)
      [:table.table
@@ -238,22 +237,15 @@
        [:tr
         [:th "Topic:"]
         [:td
-         [:a
-          (if *dynamic*
-            {:data-bind "attr: {href: topic}, text: topic"}
-            {:href topic})
-          (when-not *dynamic*
-            topic)]]]
+         [:a {:href "{{source.topic}}"}
+          "{{source.topic}}"]]]
        [:tr
         [:th "Domain:"]
         [:td (display-property source :domain)]]
        [:tr
         [:th "Hub:"]
-        [:td [:a (if *dynamic*
-                   {:data-bind "attr: {href: hub}, text: hub"}
-                   {:href hub})
-              (when-not *dynamic*
-                hub)]]]
+        [:td [:a {:href "{{hub}}"}
+              "{{hub}}"]]]
        [:tr
         [:th "Callback:"]
         [:td (display-property source :callback)]]

@@ -59,8 +59,6 @@
   [item]
   (dropdown-menu item (get-buttons)))
 
-;; admin-index-block
-
 (defsection admin-index-block [Conversation :html]
   [items & [page]]
   [:table.table
@@ -77,13 +75,15 @@
      [:th #_"Actions"]]]
    [:tbody
     (when *dynamic* {:data-bind "foreach: items"})
-    (doall (map #(admin-index-line % page) items))]])
+    (let [item (first items)]
+      (admin-index-line item page))]])
 
 ;; admin-index-line
 
 (defsection admin-index-line [Conversation :html]
   [item & [page]]
-  [:tr {:data-model "conversation"}
+  [:tr {:data-model "conversation"
+        :ng-repeat "conversation in conversations"}
    [:td (link-to item)]
    [:td
     (let [domain (if *dynamic* (Domain.) (model.domain/fetch-by-id (:domain item)))]
@@ -91,50 +91,33 @@
         [:div {:data-model "domain"}
          (link-to domain)]))]
    [:td
-    [:a (if *dynamic*
-          {:data-bind "attr: {href: url}, text: url"}
-          {:href (:url item)})
-     (when-not *dynamic*
-       (:url item))]]
+    [:a {:href "{{conversation.url}}"}
+     "{{conversation.url}}"]]
    [:td (display-property item :parent)]
-   [:td (display-property item :itemCount)]
+   [:td "{{conversation.itemCount}}"]
    ;; [:td (display-property item :created)]
    [:td (display-timestamp item :lastUpdated)]
    [:td (display-timestamp item :updated)]
    [:td (actions-section item)]])
 
-;; delete-button
-
 (defsection delete-button [Conversation :html]
   [user & _]
   (action-link "conversation" "delete" (:_id user)))
 
-;; link-to
-
 (defsection link-to [Conversation :html]
   [item & options]
   (let [options-map (apply hash-map options)]
-    [:a (if *dynamic*
-          {:data-bind "attr: {href: '/main/conversations/' + _id()}"}
-          {:href (uri item)})
-     [:span (merge {:property "dc:title"}
-                   (if *dynamic*
-                     {:data-bind "attr: {about: uri}, text: _id"}
-                     {:about (uri item)}))
-      (when-not *dynamic*
-        (or (:title options-map) (title item)))]]))
-
-;; index-block
+    [:a {:href "/main/conversations/{{conversation.id}}"}
+     [:span {:property "dc:title"
+             :about "{{conversatio.uri}}"}
+      "{{conversation.id}}"]]))
 
 (defsection index-block [Conversation :html]
   [items & [page]]
-  [:div
+  [:div {:ng-controller "conversationListCtrl"}
    [:a#showComments.btn {:href "#"} "Show Comments"]
    [:div.conversations
-    (when *dynamic* {:data-bind "foreach: items"})
     (map index-line items)]])
-
-;; show-section
 
 (defn show-details
   [item & [page]]
@@ -155,20 +138,17 @@
      [:tr
       [:th "Url"]
       [:td
-       [:a (if *dynamic*
-             {:data-bind "attr: {href: url}, text: url"}
-             {:href (:url item)})
-        (when-not *dynamic*
-          (:url item))]]]
+       [:a {:href "{{conversation.url}}"}
+        "{{conversation.url}}"]]]
      [:tr
       [:th "Item Count"]
-      [:td (display-property item :itemCount)]]
+      [:td "{{conversation.itemCount}}"]]
      [:tr
       [:th "Created"]
-      [:td (display-timestamp item :created)]]
+      [:td "{{conversation.created}}"]]
      [:tr
       [:th "Updated"]
-      [:td (display-timestamp item :updated)]]
+      [:td "{{conversation.updated}}"]]
      [:tr
       [:th "Last Updated"]
       [:td (display-timestamp item :lastUpdated)]]
@@ -205,11 +185,10 @@
                 [(Activity.) (Activity.)]
                 (:items (actions.activity/fetch-by-conversation item)))]
     [:div.conversation-section
-     (merge {:typeof "sioc:Container"
-             :data-model "conversation"}
-            (when-not *dynamic*
-              {:about about-uri
-               :data-id (:_id item)}))
+     {:typeof "sioc:Container"
+      :data-model "conversation"
+      :about "{{conversation.url}}"
+      :data-id "{{conversation.id}}"}
      ;; (show-details item)
      (let [parent (first items)]
        (list

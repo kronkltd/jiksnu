@@ -477,8 +477,6 @@
       (privacy-select activity)
       [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])
 
-;; admin-index-block
-
 (defsection admin-index-block [Activity :html]
   [activities & [options & _]]
   [:table.table

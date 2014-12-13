@@ -77,8 +77,6 @@
      [:div.actions
       [:input.btn.btn-primary {:type "submit" :value "Add"}]]]]])
 
-;; admin-index-block
-
 (defsection admin-index-block [AuthenticationMechanism :html]
   [items & [page]]
   [:table.table

@@ -133,7 +133,7 @@
   [page]
   [:a.next (merge {:rel "next"}
                   (if *dynamic*
-                    {:data-bind "attr: {href: '?page=' + (1 + page())}"}
+                    {:href "?page={{page+1}}"}
                     {:href (str "?page=" (inc page))}))
    "Next "
    [:i.icon-right-arrow]])
@@ -142,18 +142,14 @@
   [page]
   [:a.previous (merge {:rel "prev"}
                       (if *dynamic*
-                        {:data-bind "attr: {href: '?page=' + (0 + page() - 1)}"}
+                        {:href "?page={{(page-1}}"}
                         {:href (str "?page=" (dec page)) }))
    [:i.icon-left-arrow] " Previous"])
 
 (defn display-property
   [item property]
   (if *dynamic*
-    (list
-     (format "<!-- ko text: %s -->"
-             (let [k (name property)]
-               (format "typeof($data.%s) !== 'undefined' ? %s : ''" k k)))
-     "<!-- /ko -->")
+    (str "{{" (name property) "}}")
     (str (get item (keyword property)))))
 
 (defn display-timestamp
@@ -162,12 +158,10 @@
    (merge
     {:data-toggle "timeago"}
     (if *dynamic*
-      {:data-bind
-       (format "attr: {datetime: %s}, text: %s"
-               (name property)
-               (name property))}
+      {:datetime (str "{{" property "}}")}
       {:datetime (str (get item (keyword property)))}))
-   (when-not *dynamic*
+   (if *dynamic*
+     (str "{{" (name property) "}}")
      (str (get item (keyword property))))])
 
 (defn dropdown-menu
@@ -199,13 +193,13 @@
                  page)]
       ". (showing " [:span
                      (if *dynamic*
-                       {:data-bind "text: ((page() - 1) * pageSize()) + 1"}
+                       "{{((page - 1) * pageSize) + 1}}"
                        (inc (* (dec page) page-size)))]
       " to " [:span (if *dynamic*
-                      {:data-bind "text: (page() * pageSize())"}
+                      "{{page * pageSize}}"
                       (* page page-size))]
       " of " [:span (if *dynamic*
-                      {:data-bind "text: totalRecords"}
+                      "{{totalRecords}}"
                       total-records)]
       " records)"]
      [:div.pull-right

@@ -34,32 +34,28 @@
 
 (defn subscribers-widget
   [user]
-  (when user
-    (let [subscriptions (if *dynamic*
-                          [(Subscription.)]
-                          (model.subscription/subscribers user))]
-      [:div.subscribers
-       [:h3
-        [:a (if *dynamic*
-              {:data-bind "attr: {href: '/users/' + _id() + '/subscribers'}"}
-              {:href (str "/users/" (:_id user) "/subscribers")}) "Followers"]
-        " "
-        (with-sub-page "subscribers"
-          [:span (if *dynamic*
-                   {:data-bind "text: items().length"}
-                   (count subscriptions))])]
-       (with-sub-page "subscribers"
-         [:ul.unstyled
-          (when *dynamic* {:data-bind "foreach: items"})
-          (map (fn [subscription]
-                 [:li {:data-model "subscription"}
-                  (bind-to "from"
+  (let [subscriptions (if *dynamic*
+                        [(Subscription.)]
+                        (model.subscription/subscribers user))]
+    [:div.subscribers
+     [:h3
+      [:a (if *dynamic*
+            {:data-bind "attr: {href: '/users/' + _id() + '/subscribers'}"}
+            {:href (str "/users/" (:_id user) "/subscribers")}) "Followers"]
+      " "
+      (with-sub-page "subscribers"
+        [:span "{{page.items.length}}"])]
+     (with-sub-page "subscribers"
+       [:ul.unstyled
+        (let [subscription (first subscriptions)]
+          [:li {:data-model "subscription"
+                :ng-repeat "subscription in subscriptions"}
+           (bind-to "from"
                     [:div {:data-model "user"}
                      (let [user (if *dynamic*
                                   (User.)
                                   (model.subscription/get-actor subscription))]
-                       (sections.user/display-avatar user "24"))])])
-               subscriptions)])])))
+                       (sections.user/display-avatar user "24"))])])])]))
 
 (defn subscriptions-widget
   [user]
@@ -69,25 +65,21 @@
                           (model.subscription/subscriptions user))]
       [:div.subscriptions
        [:h3
-        [:a (if *dynamic*
-              {:data-bind "attr: {href: '/users/' + _id() + '/subscriptions'}"}
-              {:href (str (full-uri user) "/subscriptions")}) "Following"]
+        [:a {:href "/users/{{user.id}}/subscriptions"} "Following"]
         " "
         (with-sub-page "subscriptions"
-          [:span (if *dynamic*
-                   {:data-bind "text: items().length"}
-                   (count subscriptions))])]
+          [:span "{{page.items.length}}"])]
        (with-sub-page "subscriptions"
          [:ul
-          (when *dynamic* {:data-bind "foreach: items"})
-          (map (fn [subscription]
-                 [:li {:data-model "subscription"}
-                  (bind-to "to"
-                    [:div {:data-model "user"}
-                     (let [user (if *dynamic*
-                                  (User.)
-                                  (model.subscription/get-target subscription))]
-                       (sections.user/display-avatar user "24"))])]) subscriptions)])
+          (let [subscription (first subscriptions)]
+            [:li {:data-model "subscription"
+                  :ng-repeat "subscription in subscriptions"}
+             (bind-to "to"
+                      [:div {:data-model "user"}
+                       (let [user (if *dynamic*
+                                    (User.)
+                                    (model.subscription/get-target subscription))]
+                         (sections.user/display-avatar user "24"))])])])
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
 
@@ -98,38 +90,6 @@
     [:span.caret]]
    [:ul.dropdown-menu.pull-right
     [:li (delete-button subscription)]]])
-
-;; admin-index-line
-
-(defsection admin-index-line [Subscription :html]
-  [subscription & [options & _]]
-  [:tr (merge {:data-model "subscription"}
-              (when-not *dynamic*
-                {:data-id (str (:_id subscription))}))
-   [:td
-    (link-to subscription)]
-   [:td
-    (bind-to "from"
-      [:div {:data-model "user"}
-       (if-let [user (if *dynamic*
-                       (User.)
-                       (model.subscription/get-actor subscription))]
-         (link-to user)
-         "unknown")])]
-   [:td
-    (bind-to "to"
-      [:div {:data-model "user"}
-       (if-let [user (if *dynamic*
-                       (User.)
-                       (model.subscription/get-target subscription))]
-         (link-to user)
-         "unknown")])]
-   [:td (if *dynamic* {:data-bind "text: created"} (:created subscription))]
-   [:td (if *dynamic* {:data-bind "text: pending"} (:pending subscription))]
-   [:td (if *dynamic* {:data-bind "text: local"} (:local subscription))]
-   [:td (actions-section subscription)]])
-
-;; admin-index-block
 
 (defsection admin-index-block [Subscription :html]
   [items & [options & _]]
@@ -144,8 +104,32 @@
      [:th "local"]
      [:th "Actions"]]]
    [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
-    (map #(admin-index-line % options) items)]])
+    (let [subscription (first items)]
+      [:tr {:ng-repeat "subscription in subscriptions"
+            :data-model "subscription"
+            :data-id "{{subscription.id}}"}
+       [:td
+        (link-to subscription)]
+       [:td
+        (bind-to "from"
+                 [:div {:data-model "user"}
+                  (if-let [user (if *dynamic*
+                                  (User.)
+                                  (model.subscription/get-actor subscription))]
+                    (link-to user)
+                    "unknown")])]
+       [:td
+        (bind-to "to"
+                 [:div {:data-model "user"}
+                  (if-let [user (if *dynamic*
+                                  (User.)
+                                  (model.subscription/get-target subscription))]
+                    (link-to user)
+                    "unknown")])]
+       [:td "{{subscription.created}}"]
+       [:td "{{subscription.pending}}"]
+       [:td "{{subscription.local}}"]
+       [:td (actions-section subscription)]])]])
 
 (defsection edit-button [Subscription :html]
   [item & _]
@@ -157,16 +141,10 @@
 
 (defsection link-to [Subscription :html]
   [record & options]
-  (let [options-map (apply hash-map options)]
-    [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/subscriptions/' + ko.utils.unwrapObservable(_id)}"}
-          {:href (uri record)})
-     [:span (merge {:about (uri record)
-                    :property "dc:title"}
-                   (if *dynamic*
-                     {:data-bind "text: _id"}))
-      (when-not *dynamic*
-        (or (:title options-map) (title record)))] ]))
+  [:a {:href "/admin/subscriptions/{{subscription.id}}"}
+   [:span {:about "{{subscription.uri}}"
+           :property "dc:title"}
+    "{{subscription.id}}"]])
 
 ;; show-section
 
@@ -174,38 +152,27 @@
   [item & _]
   item)
 
-(defsection subscriptions-line [Subscription :html]
-  [item & [options & _]]
-  [:li.subscription {:data-model "subscription"}
-   (bind-to "to"
-     (if-let [user (if *dynamic* (User.) (model.subscription/get-target item))]
-       (show-section user)
-       "unknown"))])
-
-(defsection subscriptions-block [Subscription :html]
-  [items & [options & _]]
-  [:ul.subscriptions
-   (when *dynamic* {:data-bind "foreach: items"})
-   (map (fn [item] (subscriptions-line item options)) items)])
-
 (defsection subscriptions-section [Subscription :html]
   [items & [options & _]]
-  (subscriptions-block items options))
-
-(defsection subscribers-line [Subscription :html]
-  [item & [options & _]]
-  [:li.subscription {:data-model "subscription"}
-   (bind-to "from"
-     (if-let [user (if *dynamic* (User.) (model.subscription/get-actor item))]
-       (show-section user)
-       "unknown"))])
-
-(defsection subscribers-block [Subscription :html]
-  [items & [options & _]]
   [:ul.subscriptions
-   (when *dynamic* {:data-bind "foreach: items"})
-   (map (fn [item] (subscribers-line item options)) items)])
+   (let [item (first items)]
+     [:li.subscription {:data-model "subscription"
+                        :ng-repeat "subscription in subscriptions"}
+      (bind-to "to"
+               (if-let [user (if *dynamic* (User.)
+                                 (model.subscription/get-target item))]
+                 (show-section user)
+                 "unknown"))])])
 
 (defsection subscribers-section [Subscription :html]
   [items & [options & _]]
-  (subscribers-block items options))
+  [:ul.subscriptions
+   (let [item (first items)]
+     [:li.subscription {:data-model "subscription"
+                        :ng-repeat "subscriber in subscribers"}
+      (bind-to "from"
+               (if-let [user (if *dynamic* (User.) (model.subscription/get-actor item))]
+                 (show-section user)
+                 "unknown"))])]
+
+  )
