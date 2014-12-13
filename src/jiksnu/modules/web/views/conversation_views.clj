@@ -4,7 +4,7 @@
         [ciste.sections.default :only [index-section]]
         jiksnu.actions.conversation-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to dump-data pagination-links with-page
+        [jiksnu.modules.web.sections :only [bind-to pagination-links with-page
                                             with-sub-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]

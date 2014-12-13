@@ -27,7 +27,7 @@
             [jiksnu.modules.web.sections :refer [action-link bind-to
                                                  control-line
                                                  display-property display-timestamp dropdown-menu
-                                                 dump-data format-links pagination-links
+                                                 format-links pagination-links
                                                  with-sub-page]]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.web.sections.user-sections :as sections.user]

@@ -93,13 +93,12 @@
 
 (defn with-page
   [page-name & body]
-  [:span (when *dynamic*
-           {:data-page page-name})
+  [:span {:data-page page-name}
    body])
 
 (defn with-sub-page
   [page-name & body]
-  [:span (when *dynamic* {:data-sub-page page-name})
+  [:span {:data-sub-page page-name}
    body])
 
 (defn bind-property
@@ -110,11 +109,6 @@
         ") !== 'undefined' ? "
         property
         " : ''")})
-
-(defn dump-data
-  []
-  [:pre.prettyprint
-   {:data-bind "text: JSON.stringify(ko.toJS($data), undefined, 2)"}])
 
 (defn control-line
   [label name type & {:as options}]

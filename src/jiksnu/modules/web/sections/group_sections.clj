@@ -12,8 +12,7 @@
             [jiksnu.session :as session]
             [jiksnu.modules.web.sections :refer [action-link bind-property
                                                  control-line display-property
-                                                 dropdown-menu dump-data
-                                                 with-sub-page]])
+                                                 dropdown-menu xwith-sub-page]])
   (:import jiksnu.model.Group
            jiksnu.model.User))
 

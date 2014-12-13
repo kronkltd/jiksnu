@@ -5,7 +5,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
         [jiksnu.modules.web.sections :only [action-link bind-to control-line display-property
-                                            display-timestamp dropdown-menu dump-data
+                                            display-timestamp dropdown-menu
                                             pagination-links with-page with-sub-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]

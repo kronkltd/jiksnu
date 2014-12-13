@@ -74,7 +74,7 @@
   (! js/window._view              model/_view)
   (set! _router                   (routes/Router.))
 
-  (when (dommy/attr (sel1 :body) "data-dynamic")
+  #_(when (dommy/attr (sel1 :body) "data-dynamic")
     (ko/apply-bindings model/_view))
 
   (initialize-connection)
@@ -83,7 +83,7 @@
 
   (handlers/setup-handlers)
 
-  (doseq [model-name model/model-names]
+  #_(doseq [model-name model/model-names]
     (! ko/observables.|model-name| (obj)))
 
   )

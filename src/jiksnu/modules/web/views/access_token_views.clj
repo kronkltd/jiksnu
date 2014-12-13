@@ -5,7 +5,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.access-token-actions :as actions.access-token]
             [jiksnu.ko :refer [*dynamic*]]
-            [jiksnu.modules.web.sections :refer [bind-to dump-data pagination-links with-page]]
+            [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
             [ring.util.response :as response]))
 
 (defview #'actions.access-token/get-access-token :text

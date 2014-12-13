@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.sections.link-sections
   (:use [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [display-property dump-data]]))
+        [jiksnu.modules.web.sections :only [display-property]]))
 
 (defn index-line
   [link]

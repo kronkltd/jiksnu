@@ -7,7 +7,7 @@
           [jiksnu.modules.core.sections :only [admin-index-line]]
           [jiksnu.modules.web.sections :only [action-link bind-to control-line
                                               display-property display-timestamp dropdown-menu
-                                              dump-data pagination-links]])
+                                              pagination-links]])
     (:require [ciste.model :as cm]
               [clojure.tools.logging :as log]
               [jiksnu.modules.web.sections.link-sections :as sections.link]

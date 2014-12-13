@@ -3,7 +3,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.admin.actions.activity-actions :only [index]]
         [jiksnu.modules.core.sections :only [admin-index-section]]
-        [jiksnu.modules.web.sections :only [bind-to dump-data format-page-info
+        [jiksnu.modules.web.sections :only [bind-to format-page-info
                                             pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity])

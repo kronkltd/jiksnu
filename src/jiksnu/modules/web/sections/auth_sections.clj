@@ -4,8 +4,7 @@
                                        index-line link-to]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
-        [jiksnu.modules.web.sections :only [bind-to control-line display-property
-                                            dump-data]]
+        [jiksnu.modules.web.sections :only [bind-to control-line display-property]]
         [jiksnu.session :only [current-user]]
         [jiksnu.modules.web.sections.user-sections :only [display-avatar-img]])
   (:require [clojure.tools.logging :as log]

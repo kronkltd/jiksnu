@@ -15,7 +15,7 @@
                                                  admin-index-line admin-index-section
                                                  admin-show-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-property bind-to control-line
-                                                display-property dropdown-menu dump-data
+                                                display-property dropdown-menu
                                                 pagination-links]]
             [jiksnu.session :as session]
             [lamina.trace :as trace]

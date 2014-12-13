@@ -9,7 +9,7 @@
             [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block
                                                  admin-index-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
-                                                display-timestamp dropdown-menu dump-data
+                                                display-timestamp dropdown-menu
                                                 format-links pagination-links]])
   (:import jiksnu.model.Client))
 

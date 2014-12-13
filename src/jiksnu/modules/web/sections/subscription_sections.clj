@@ -17,7 +17,7 @@
                                                                         subscriptions-block
                                                                         subscriptions-line
                                                                         subscriptions-section]]
-            [jiksnu.modules.web.sections :refer [action-link bind-to control-line dump-data
+            [jiksnu.modules.web.sections :refer [action-link bind-to control-line
                                                  with-page with-sub-page]]
             [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Subscription
