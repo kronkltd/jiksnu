@@ -123,23 +123,6 @@
               (when checked
                 {:checked "checked"}))]]]))
 
-(defn next-link
-  [page]
-  [:a.next (merge {:rel "next"}
-                  (if *dynamic*
-                    {:href "?page={{page+1}}"}
-                    {:href (str "?page=" (inc page))}))
-   "Next "
-   [:i.icon-right-arrow]])
-
-(defn prev-link
-  [page]
-  [:a.previous (merge {:rel "prev"}
-                      (if *dynamic*
-                        {:href "?page={{(page-1}}"}
-                        {:href (str "?page=" (dec page)) }))
-   [:i.icon-left-arrow] " Previous"])
-
 (defn display-property
   [item property]
   (if *dynamic*
@@ -149,14 +132,9 @@
 (defn display-timestamp
   [item property]
   [:time.timeago
-   (merge
-    {:data-toggle "timeago"}
-    (if *dynamic*
-      {:datetime (str "{{" property "}}")}
-      {:datetime (str (get item (keyword property)))}))
-   (if *dynamic*
-     (str "{{" (name property) "}}")
-     (str (get item (keyword property))))])
+   {:data-toggle "timeago"
+    :datetime (str "{{" property "}}")}
+   (str "{{" (name property) "}}")])
 
 (defn dropdown-menu
   [item buttons]
@@ -172,33 +150,20 @@
 
 (defn pagination-links
   [options]
-  ;; TODO: page should always be there from now on
-  (let [page (get options :page 1)
-        page-size (get options :page-size 20)
-        ;; If no total, no pagination
-        total-records (get options :totalRecords 0)]
-    [:div
-     [:div.pull-left
-      (prev-link page)]
-     [:p.pull-left
-      "Page " [:span
-               (if *dynamic*
-                 {:data-bind "text: page"}
-                 page)]
-      ". (showing " [:span
-                     (if *dynamic*
-                       "{{((page - 1) * pageSize) + 1}}"
-                       (inc (* (dec page) page-size)))]
-      " to " [:span (if *dynamic*
-                      "{{page * pageSize}}"
-                      (* page page-size))]
-      " of " [:span (if *dynamic*
-                      "{{totalRecords}}"
-                      total-records)]
-      " records)"]
-     [:div.pull-right
-      (next-link page)]
-     [:div.clearfix]]))
-
-;; (defmethod show-section-type )
-
+  [:div
+   [:div.pull-left
+    [:a.previous {:rel "prev"
+                  :href "?page={{page.page - 1}}"}
+     [:i.icon-left-arrow] " Previous"]]
+   [:p.pull-left
+    "Page {{page.page}}"
+    ". (showing {{((page.page - 1) * page.pageSize) + 1}}"
+    " to {{page.page * page.pageSize}}"
+    " of {{page.totalRecords}}"
+    " records)"]
+   [:div.pull-right
+    [:a.next {:rel "next"
+              :href "?page={{page.page + 1}}"}
+     "Next "
+     [:i.icon-right-arrow]]]
+   [:div.clearfix]])
