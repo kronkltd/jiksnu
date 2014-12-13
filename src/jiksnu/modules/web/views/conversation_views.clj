@@ -1,13 +1,12 @@
 (ns jiksnu.modules.web.views.conversation-views
-  (:use [ciste.core :only [with-format]]
-        [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section]]
-        jiksnu.actions.conversation-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to pagination-links with-page
-                                            with-sub-page]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-section]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.conversation-actions :refer [index show]]
+            [jiksnu.ko :refer [*dynamic*]]
+            [jiksnu.modules.web.sections :refer [bind-to pagination-links
+                                                 with-page with-sub-page]]
             [jiksnu.modules.web.sections.conversation-sections :as sections.conversation]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity
@@ -19,24 +18,20 @@
   [request {:keys [items] :as page}]
   {:title "Conversations"
    :body
-   (let [items (if *dynamic*
-                 [(Conversation.)]
-                 items)]
+   (let [items [(Conversation.)]]
      (with-page "conversations"
        (pagination-links page)
-       (doall (index-section items page))))})
+       (index-section items page)))})
 
 ;; show
 
 (defview #'show :html
   [request item]
   {:body
-   (let [item (if *dynamic* (Conversation.) item)]
+   (let [item (Conversation.)]
      (bind-to "targetConversation"
        [:div {:data-model "conversation"}
         (sections.conversation/show-details item)
         (with-sub-page "activities"
-          (let [items (if *dynamic*
-                        [(Activity.)]
-                        (:items (actions.activity/fetch-by-conversation item)))]
+          (let [items [(Activity.)]]
             (index-section items)))]))})

@@ -12,15 +12,13 @@
             [jiksnu.session :as session]
             [jiksnu.modules.web.sections :refer [action-link bind-property
                                                  control-line display-property
-                                                 dropdown-menu xwith-sub-page]])
+                                                 dropdown-menu with-sub-page]])
   (:import jiksnu.model.Group
            jiksnu.model.User))
 
 (defn model-button
   [activity]
-  [:a (if *dynamic*
-        {:data-bind "attr: {href: '/model/groups/' + _id() + '.model'}"}
-        {:href (format "/model/groups/%s.model" (str (:_id activity)))})
+  [:a {:href "/model/groups/{{group.id}}.model"}
    "Model"])
 
 (defn get-buttons
@@ -37,25 +35,17 @@
   (when user
     [:div.groups
      [:h3
-      [:a (if *dynamic*
-            {:data-bind "attr: {href: '/users/' + _id() + '/groups'}"}
-            {:href (str "/users/" (:_id user) "/groups")}) "Groups"]
+      [:a {:href "/users/{{user.id}}/groups"} "Groups"]
       " "
       (with-sub-page "groups"
-        [:span
-         (when *dynamic*
-           {:data-bind "text: totalRecords"})])]
-     (let [items (if *dynamic*
-                   [(Group.)]
-                   (actions.group/fetch-by-user user))]
+        [:span "{{page.totalRecords}}"])]
+     (let [items [(Group.)]]
        (with-sub-page "groups"
          [:ul
-          (when *dynamic* {:data-bind "foreach: items"})
-          (map
-           (fn [item]
-             [:li {:data-model "group"}
-              (link-to item)])
-           items)]))]))
+          (let [item (first items)]
+            [:li {:data-model "group"
+                  :ng-repeat "group in groups"}
+             (link-to item)])]))]))
 
 (defn join-button
   [item]
@@ -103,50 +93,27 @@
 (defsection index-block [Group :html]
   [groups & _]
   [:ul.profiles
-   (when *dynamic* {:data-bind "foreach: items"})
-   (map index-line groups)])
-
-(defsection index-line [Group :html]
-  [group & _]
-  [:li
-   [:section.profile.hentry.vcard
-    {:data-model "group"}
-    [:p
-     [:a.url.entry-title
-      (if *dynamic*
-        {:data-bind "attr: {href: '/main/groups/' + nickname()}"}
-        {:href (str "/main/groups/" (:nickname group))})
-      [:img {:src (:avatarUrl group) }]
-      [:span.nickname
-       [:span
-        (if *dynamic*
-          {:data-bind "text: fullname"}
-          (:fullname group))] " ("
-       [:span (if *dynamic*
-                {:data-bind "text: nickname"}
-                (:nickname group))] ")"]]]
-    [:a.url
-     (if *dynamic*
-       {:data-bind "attr: {href: homepage}, text: homepage"}
-       {:href (:homepage group)})
-     (when-not *dynamic*
-       (:homepage group))]
-    [:p.note (:description group)]]])
+   (let [group (first groups)]
+     [:li {:ng-repeat "group in groups"}
+      [:section.profile.hentry.vcard
+       {:data-model "group"}
+       [:p
+        [:a.url.entry-title
+         {:href "/main/groups/{{group.nickname}}"}
+         [:img {:src "{{group.avatarUrl}}"}]
+         [:span.nickname
+          "{{group.fullname}} ({{group.nickname}})"]]]
+       [:a.url {:href "{{group.homepage}}"}
+        "{{group.homepage}}"]
+       [:p.note (:description group)]]])])
 
 (defsection link-to [Group :html]
   [item & options]
-  (let [options-map (apply hash-map options)
-        url (str "/main/groups/" (:nickname item))
-        ]
-    [:a (if *dynamic*
-          {:data-bind "attr: {href: '/main/groups/' + ko.utils.unwrapObservable(nickname)}"}
-          {:href url})
-     [:span (merge {:about url
-                    :property "dc:title"}
-                   (if *dynamic*
-                     {:data-bind "text: nickname"}))
-      (when-not *dynamic*
-        (or (:fullname options-map)))] ]))
+  [:a
+   {:href "/main/groups/{{group.nickname}}"}
+   [:span {:about "{{group.url}}"
+           :property "dc:title"}
+    "{{group.nickname}}"]])
 
 (defsection show-section [Group :html]
   [group & _]
@@ -160,27 +127,20 @@
     [:p (bind-property "updated")]
     [:div
      [:h3 "Admins " (count (:admins group))]
-     [:ul (when *dynamic* {:data-bind "foreach: admins"})
-      (let [items (if *dynamic* [(User.)]
-                      (map model.user/fetch-by-id (:admins group)))]
-        (map
-         (fn [admin]
-           [:li {:data-model "user"}
-            (link-to admin)])
-         items))]]
+     [:ul
+      (let [items [(User.)]
+            admin (first items)]
+        [:li {:data-model "user"
+              :ng-repeat "admin in admins"}
+         (link-to admin)])]]
     [:div
      [:h3 "Members " (count (:members group))]
-     [:ul (when *dynamic* {:data-bind "foreach: members"})
-      (let [items (if *dynamic* [(User.)]
-                      (map model.user/fetch-by-id (:members group)))]
-        (map
-         (fn [admin]
-           [:li {:data-model "user"}
-            (link-to admin)])
-         items))]]
-    ]])
-
-;; update-button
+     [:ul
+      (let [items [(User.)]
+            admin (first items)]
+        [:li {:data-model "user"
+              :ng-repeat "user in members"}
+         (link-to admin)])]]]])
 
 (defsection update-button [Group :html]
   [item & _]

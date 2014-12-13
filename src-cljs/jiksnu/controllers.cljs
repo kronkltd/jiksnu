@@ -44,3 +44,9 @@
   (! $scope.app.name "Jiksnu")
   )
 
+(def.controller jiksnuApp.conversationListCtrl
+  [$scope]
+
+(! $scope.conversations (arr (obj) (obj)))
+
+  )

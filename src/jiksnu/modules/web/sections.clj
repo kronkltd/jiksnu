@@ -133,7 +133,7 @@
   [item property]
   [:time.timeago
    {:data-toggle "timeago"
-    :datetime (str "{{" property "}}")}
+    :datetime (str "{{" (name property) "}}")}
    (str "{{" (name property) "}}")])
 
 (defn dropdown-menu

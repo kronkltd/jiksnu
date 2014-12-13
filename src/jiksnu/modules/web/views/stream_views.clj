@@ -16,21 +16,11 @@
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 
-;; callback-publish
-
-;; (defview #'actions.stream/callback-publish :html
-;;   [request params]
-;;   {:status 202
-
-;;    :template false})
-
 (defview #'actions.stream/create :html
   [request item]
   (-> (response/redirect-after-post "/")
       (assoc :template false)
       (assoc :flash "user has been created")))
-
-;; group-timeline
 
 (defview #'actions.stream/group-timeline :html
   [request [group {:keys [items] :as page}]]
@@ -44,8 +34,6 @@
                (pagination-links (if *dynamic* {} page))
                (index-section items))])})
 
-;; home-timeline
-
 (defview #'actions.stream/home-timeline :html
   [request activities]
   {:title "Home Timeline"
@@ -53,29 +41,21 @@
    :body (index-section activities)})
 
 (defview #'actions.stream/public-timeline :html
-  [request {:keys [items] :as page}]
-  {:title "Public Timeline"
-   :post-form true
-   :links [{:rel "next"
-            :href (str "?page=" (inc (:page page)))
-            :title "Next Page"
-            :type "text/html"}]
-   :formats (sections.activity/index-formats items)
-   :body (let [items (if *dynamic* [(Conversation.)] items)]
-           (with-page "public-timeline"
-             (pagination-links page)
-             (index-section items page)))})
-
-;; stream
-
-;; (defview #'actions.stream/stream :html
-;;   [request response-fn]
-;;   {:body response-fn
-;;    :template false})
+  [request page]
+  (let [items [(Conversation.)]]
+    {:title "Public Timeline"
+     :post-form true
+     ;; :links [{:rel "next"
+     ;;          :href (str "?page=" (inc (:page page)))
+     ;;          :title "Next Page"
+     ;;          :type "text/html"}]
+     :formats (sections.activity/index-formats items)
+     :body (with-page "public-timeline"
+             (index-section items page))}))
 
 (defview #'actions.stream/user-timeline :html
   [request [user {:keys [items] :as page}]]
-  (let [items (if *dynamic* [(Activity.)] items)]
+  (let [items [(Activity.)]]
     {:user user
      :title (:name user)
      :post-form true
