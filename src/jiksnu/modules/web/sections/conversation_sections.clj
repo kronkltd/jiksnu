@@ -74,7 +74,7 @@
    [:tbody
     (let [item (first items)]
       [:tr {:data-model "conversation"
-            :ng-repeat "conversation in conversations"}
+            :ng-repeat "conversation in page.items"}
        [:td (link-to item)]
        [:td
         (let [domain (Domain.)]
@@ -159,45 +159,40 @@
 
 (defsection show-section [Conversation :html]
   [item & [page]]
-  (let [items (if *dynamic*
-                [(Activity.) (Activity.)]
-                (:items (actions.activity/fetch-by-conversation item)))]
+  (let [items [(Activity.) (Activity.)]
+        parent (first items)
+        comments (next items)
+        activity (first comments)
+        author (User.)]
     [:div.conversation-section
      {:typeof "sioc:Container"
       :data-model "conversation"
-      :ng-repeat "conversation in conversations"
+      :ng-repeat "conversation in page.items"
       :about "{{conversation.url}}"
       :data-id "{{conversation.id}}"}
      ;; (show-details item)
-     (let [parent (first items)]
-       (list
-        (bind-to "$data.parent"
-                 (show-section parent))
-        [:div
-         (when *dynamic* {:data-bind "if: _view.showComments()"})
-         (with-sub-page "activities"
-           #_(if-let [item (first items)]
-               (bind-to "items()[0]"
-                        (show-section item))
-               [:p "The parent activity for this conversation could not be found"])
-           (when-let [comments (next items)]
-             [:section.comments.clearfix
-              [:div
-               (when *dynamic* {:data-bind "foreach: items().slice(1)"})
-               (let [activity (first comments)]
-                 (let [author (if *dynamic*
-                                (User.)
-                                (model.activity/get-author activity))]
-                   [:div.comment (merge {:data-model "activity"}
-                                        (when-not *dynamic*
-                                          {:data-id (:_id author)}))
-                    (bind-to "author"
-                             [:div {:data-model "user"}
-                              [:a.pull-left
-                               (sections.user/display-avatar author)]
-                              (link-to author)])
-                    [:span.comment-content
-                     (display-property activity "content")]]))]]))]))]))
+     (list
+      [:p "parent id: "
+       [:a {:href "/notice/{{conversation.parent}}"}
+        "{{conversation.parent}}"
+        ]
+       ]
+      (bind-to "$data.parent"
+               (show-section parent))
+      [:div {:data-bind "if: _view.showComments()"}
+       (with-sub-page "activities"
+         [:section.comments.clearfix
+          [:div.comment {:data-model "activity"
+                         :ng-repeat "comment in conversation.comments"
+                         :data-id "{{comment.id}}"}
+           (bind-to "author"
+                    [:div {:data-model "user"}
+                     [:a.pull-left
+                      (sections.user/display-avatar author)]
+                     (link-to author)])
+           [:span.comment-content
+            "{{comment.content}}"
+            ]]])])]))
 
 (defsection update-button [Conversation :html]
   [item & _]

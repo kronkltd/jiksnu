@@ -77,7 +77,7 @@
   #_(when (dommy/attr (sel1 :body) "data-dynamic")
     (ko/apply-bindings model/_view))
 
-  (initialize-connection)
+  ;; (initialize-connection)
 
   (.start (.-history js/Backbone) (obj :pushState true))
 

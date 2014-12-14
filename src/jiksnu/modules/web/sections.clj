@@ -157,9 +157,9 @@
      [:i.icon-left-arrow] " Previous"]]
    [:p.pull-left
     "Page {{page.page}}"
-    ". (showing {{((page.page - 1) * page.pageSize) + 1}}"
-    " to {{page.page * page.pageSize}}"
-    " of {{page.totalRecords}}"
+    ". (showing {{((page.page - 1) * page.itemsPerPage) + 1}}"
+    " to {{page.page * page.itemsPerPage}}"
+    " of {{page.totalItems}} {{page.itemsPerPage}}"
     " records)"]
    [:div.pull-right
     [:a.next {:rel "next"

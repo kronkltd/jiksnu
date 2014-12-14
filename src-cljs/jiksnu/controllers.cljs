@@ -45,8 +45,43 @@
   )
 
 (def.controller jiksnuApp.conversationListCtrl
-  [$scope]
+  [$scope $http]
 
-(! $scope.conversations (arr (obj) (obj)))
+  (! $scope.init
+     (fn []
+       (.success (.get $http "/main/conversations.json")
+                 (fn [data]
+                   (.info js/console "Data" data)
+                   (! $scope.page data)
+                   )
+                 )
 
+       )
+     )
+
+  (.init $scope)
+
+
+  )
+
+(def.controller jiksnuApp.ShowActivityCtrl
+  [$scope $http]
+
+  (! $scope.init
+     (fn [id]
+       (-> $http
+           (.get  (str "/notice/" id ".json"))
+           (.success
+            (fn [data]
+              (.info js/console "Data" data)
+              (! $scope.activity data)
+
+              )
+            )
+           )
+
+       )
+     )
+
+  (.init $scope "53967919b7609432045de504")
   )
