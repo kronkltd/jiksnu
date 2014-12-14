@@ -2,6 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [full-uri show-section]])
   (:require [ciste.config :refer [config]]
+            [clojure.tools.logging :as log]
             [jiksnu.model.activity :as model.activity])
   (:import jiksnu.model.Activity))
 
@@ -12,12 +13,13 @@
 
 ;; show-section
 
-(defsection show-section [Activity :as]
+(defsection show-section [Activity :json]
   [activity & _]
-  (merge {:actor (show-section (model.activity/get-author activity))
+  (merge {:actor (show-section (model.activity/get-author (log/spy :info activity)))
           :content (:content activity)
           :id (:id activity)
-          :local-id (:_id activity)
+          :localId (:_id activity)
+          :source (:source activity)
           :object (let [object (:object activity)
                         object-link (format "https://%s/api/%s/%s" (config :domain)
                                             (:type object)

@@ -53,7 +53,7 @@
   [request activity]
   {:body
    (let [activity (if *dynamic* (Activity.) activity)]
-     [:div {:ng-controller "ShowActivityCtrl"}
+     [:div {:ng-controller "ShowActivityController"}
       (bind-to "targetActivity"
                (show-section activity))])})
 

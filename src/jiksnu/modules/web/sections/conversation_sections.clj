@@ -105,7 +105,7 @@
 
 (defsection index-block [Conversation :html]
   [items & [page]]
-  [:div {:ng-controller "conversationListCtrl"}
+  [:div {:ng-controller "ConversationListController"}
    [:a#showComments.btn {:href "#"} "Show Comments"]
    (pagination-links page)
    [:div.conversations

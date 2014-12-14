@@ -104,7 +104,7 @@
   [items & [page]]
   (index-block items page))
 
-(defsection show-section [Activity :json]
+(defsection show-section [Activity :twitter]
   [activity & _]
   (merge
    {:text (:title activity)

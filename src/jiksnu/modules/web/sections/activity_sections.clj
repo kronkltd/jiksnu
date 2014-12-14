@@ -146,9 +146,7 @@
 
 (defn model-button
   [activity]
-  [:a (if *dynamic*
-        {:data-bind "attr: {href: '/model/activities/' + _id() + '.model'}"}
-        {:href (format "/model/activities/%s.model" (str (:_id activity)))})
+  [:a {:href "/model/activities/{{activity.id}}.model" }
    "Model"])
 
 (defn get-buttons
@@ -184,7 +182,8 @@
 
 (defn links-section
   [activity]
-  (cm/implement))
+  [:h3 "Links"]
+  )
 
 (defn maps-section
   [activity]
@@ -260,72 +259,45 @@
 (defn published-link
   [activity]
   (let [published (:published activity)]
-    (when (or *dynamic* published)
-      (list
-       (display-timestamp activity :published)
-       #_[:time {:datetime published
-                 :title published
-                 :property "dc:published"}
-          [:a (merge {:href (uri activity)}
-                     (when *dynamic*
-                       {:data-bind "text: published, attr: {href: '/notice/' + _id()}"}))
-           (when-not *dynamic*
-             (-> published .toDate util/prettyify-time))]]))))
+    [:time {:datetime "{{activity.published}}"
+            :title "{{activity.published}}"
+            :property "dc:published"}
+     [:a (merge {:href (uri activity)}
+                (when *dynamic*
+                  {:data-bind "text: published, attr: {href: '/notice/' + _id()}"}))
+      "{{activity.published}}"
+      ]]))
 
 (defn source-link
   [activity]
-  (when-let [source (if *dynamic* {} (:source activity))]
-    (list
-     "using "
-     (bind-to "source"
-       (display-property source :name)))))
+  [:span {:ng-if "activity.source"}
+   "using {{activity.source}}"])
 
 (defn service-link
   [activity]
-  (when (or *dynamic* (not (:local activity)))
-    (let [url (if *dynamic*
-                "#"
-                (->> activity
-                     :links
-                     (filter #(= (:rel %) "alternate"))
-                     (filter #(= (:type %) "text/html"))
-                     first :href))]
-      [:span (when *dynamic*
-               {:data-bind "if: !local()"})
-       "via a "
-       [:a {:href url}
-        "foreign service"]])))
+  [:span {:ng-if "!activity.localId"}
+   "via a "
+   [:a {:href "{{activity.service}}"}
+    "foreign service"]])
 
 (defn context-link
   [activity]
-  (when-let [conversation (if *dynamic*
-                            (Conversation.)
-                            (model.conversation/fetch-by-id (:conversation activity)))]
-    (bind-to "conversation"
-      [:a (if *dynamic*
-            {:data-bind "attr: {href: '/main/conversations/' + $data}"}
-            {:href (uri conversation)})
-       "in context"])))
+  (bind-to "conversation"
+           [:a {:href "/main/conversations/{{activity.conversation}}"}
+            "in context"]))
 
 (defn geo-link
   [activity]
-  (when-let [geo (if *dynamic* {} (:geo activity))]
-    (bind-to "geo"
-      "near "
-      [:a.geo-link {:href "#"}
-       (display-property geo :latitude)
-       ", "
-       (display-property geo :longitude)])))
+  (bind-to "geo"
+           [:span {:ng-if "activity.location.latitude && activity.location.longitude"}
+            "near "
+            [:a.geo-link {:href "#"}
+             "{{activity.location.latitude}}, {{activity.location.longitude}}"]]))
 
 (defn posted-link-section
   [activity]
   [:span.posted
-   ;; TODO: Use the relevant verb
-   (display-property activity :verb) "ed a "
-   [:span (if *dynamic*
-            {:data-bind "text: $data.object().type"}
-            (-> activity :object :type))]
-   " "
+   "{{activity.verb}}ed a {{activity.object.objectType}} "
    (->> [#'visibility-link
          #'published-link
          #'source-link
@@ -534,20 +506,21 @@
 
 (defsection show-section [Activity :html]
   [activity & _]
-  (let [activity-uri (uri activity)
-        user (if *dynamic*
-               (User.)
-               (model.activity/get-author activity))]
+  (let [user (User.)]
     [:article.hentry
-     (merge {:typeof "sioc:Post"
-             :data-model "activity"}
-            (when-not *dynamic*
-              {:about activity-uri
-               :data-id (:_id activity)}))
+     {:typeof "sioc:Post"
+      :data-model "activity"
+      :about "{{activity.url}}"
+      :data-id "{{activity.id}}"}
      (actions-section activity)
      [:div.pull-left.avatar-section
+      [:p "Loaded: {{loaded}}"]
       (bind-to "author"
-        [:div {:data-model "user"}
+               [:div {:data-model "user"
+                      :ng-controller "ShowUserController"
+                      :data-id "{{activity.actor.localId}}"
+                      ;; :ng-init "user = $parent.activity.actor"
+                      }
          (sections.user/display-avatar user)])]
      [:div
       [:header
@@ -555,13 +528,8 @@
          [:div {:data-model "user"}
           (link-to user)])
        (recipients-section activity)]
-      [:div.entry-content
-       (merge {:property "dc:title"}
-              (when *dynamic*
-                {:data-bind "html: content"}))
-       (when-not *dynamic*
-         (or (:title activity)
-             (:content activity)))]
+      [:div.entry-content {:property "dc:title"}
+       "{{activity.content}}"]
       (map #(% activity) post-sections)]]))
 
 ;; update-button

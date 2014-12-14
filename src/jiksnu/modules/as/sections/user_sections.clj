@@ -9,7 +9,7 @@
 
 ;; show-section
 
-(defsection show-section [User :as]
+(defsection show-section [User :json]
   [user & options]
   (let [{:keys [display-name id avatar-url]} user
         avatar-url (or avatar-url (model.user/image-link user))

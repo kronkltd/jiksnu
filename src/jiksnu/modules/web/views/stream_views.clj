@@ -50,7 +50,9 @@
      ;;          :title "Next Page"
      ;;          :type "text/html"}]
      :formats (sections.activity/index-formats items)
-     :body (with-page "public-timeline"
+     :body
+     [:div [:ng-view]]
+     #_(with-page "public-timeline"
              (index-section items page))}))
 
 (defview #'actions.stream/user-timeline :html

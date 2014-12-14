@@ -8,9 +8,21 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
-(def.module jiksnuApp [])
+(def.module jiksnuApp [ngRoute
+                       ;; ui ui.bootstrap
+                       ])
 
-(def.controller jiksnuApp.JiksnuCtrl
+(def.config jiksnuApp [$locationProvider $routeProvider]
+  (doto $locationProvider (.hashPrefix "!"))
+  (doto $routeProvider
+    (.when "/notice/:id" (obj
+                          :templateUrl "/partials/activity/show.html"
+                          :controller "ShowActivityController"
+                          ))
+    (.when "" (obj :redirectTo "/home")))
+  )
+
+(def.controller jiksnuApp.JiksnuController
   [$scope]
   (! $scope.phones
      (clj->js [{:name "Nexus Foo"
@@ -18,7 +30,7 @@
                {:name "bar"
                 :snippet "bar"}])))
 
-(def.controller jiksnuApp.NavCtrl
+(def.controller jiksnuApp.NavController
   [$scope]
   (let [items
         [["/"                  "Public"]
@@ -37,35 +49,30 @@
     (.log js/console "items" items)
     (! $scope.items items)))
 
-(def.controller jiksnuApp.NavBarCtrl
+(def.controller jiksnuApp.NavBarController
   [$scope]
 
   ;; TODO: pull from app config on page
-  (! $scope.app.name "Jiksnu")
-  )
+  (! $scope.app.name "Jiksnu"))
 
-(def.controller jiksnuApp.conversationListCtrl
+(def.controller jiksnuApp.ConversationListController
   [$scope $http]
 
   (! $scope.init
      (fn []
-       (.success (.get $http "/main/conversations.json")
-                 (fn [data]
-                   (.info js/console "Data" data)
-                   (! $scope.page data)
-                   )
-                 )
+       (-> $http
+           (.get "/main/conversations.json")
+           (.success
+            (fn [data]
+              (.info js/console "Data" data)
+              (! $scope.page data))))))
 
-       )
-     )
+  (.init $scope))
 
-  (.init $scope)
-
-
-  )
-
-(def.controller jiksnuApp.ShowActivityCtrl
+(def.controller jiksnuApp.ShowActivityController
   [$scope $http]
+
+  (! $scope.loaded false)
 
   (! $scope.init
      (fn [id]
@@ -75,13 +82,25 @@
             (fn [data]
               (.info js/console "Data" data)
               (! $scope.activity data)
+              (! $scope.loaded true)
+              )))))
 
-              )
-            )
-           )
+  (.init $scope "53967919b7609432045de504"))
 
-       )
-     )
+(def.controller jiksnuApp.ShowUserController
+  [$scope $http $attrs]
 
-  (.init $scope "53967919b7609432045de504")
-  )
+  (.log js/console (? $scope.$parent.activity))
+
+  (! $scope.user (? $scope.$parent.activity.actor))
+  (.log js/console (? $scope.$parent.loaded))
+
+  (! $scope.init
+     (fn [id]
+       (-> $http
+           (.get (str "/main/users/" id ".json"))
+           (.success
+            (fn [data]
+              (! $scope.user data))))))
+
+  #_(.init $scope ""))

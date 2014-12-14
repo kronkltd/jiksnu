@@ -47,7 +47,7 @@
 (defn side-navigation
   []
   [:ul.nav.nav-list
-   {:ng-controller "NavCtrl"}
+   {:ng-controller "NavController"}
    [:li {:ng-repeat "item in items"}
     [:a {:href "{{item.href}}"} "{{item.label}}"]
     ]
@@ -184,7 +184,7 @@
   [:nav.navbar.navbar-default.navbar-inverse
    ;; .navbar-fixed-top
    {:role "navigation"
-    :ng-controller "NavBarCtrl"}
+    :ng-controller "NavBarController"}
    [:div.container-fluid
     [:div.navbar-header
      (navbar-expand-button "#main-navbar-collapsw-1" "Toggle Navigation")
@@ -241,7 +241,8 @@
       "/webjars/backbonejs/1.1.2/backbone-min.js"
       "/js/supermodel/0.0.4/supermodel.js"
       "/js/knockback/0.17.2/knockback.js"
-      "/webjars/angularjs/1.3.0/angular.js"
+      "/webjars/angularjs/1.3.0/angular.min.js"
+      "/webjars/angularjs/1.3.0/angular-route.min.js"
       "/cljs/jiksnu.js")
      (doall
       (map (fn [hook]
