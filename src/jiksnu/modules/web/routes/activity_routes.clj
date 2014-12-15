@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.activity-routes
-  (:require [jiksnu.actions.activity-actions :as activity]))
+  (:require [jiksnu.actions.activity-actions :as activity]
+            [jiksnu.modules.web.actions.template-actions :as templates]))
 
 (defn routes
   []
@@ -9,6 +10,7 @@
    [[:get    "/main/oembed"]                   #'activity/oembed]
    [[:get    "/notice/:id.:format"]            #'activity/show]
    [[:get    "/notice/:id"]                    #'activity/show]
+   [[:get    "/partials/show-activity.html"]   #'templates/show-activity]
    [[:post   "/notice/new"]                    #'activity/post]
    [[:post   "/notice/:id"]                    #'activity/edit]
    [[:delete "/notice/:id.:format"]            #'activity/delete]

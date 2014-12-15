@@ -51,7 +51,9 @@
      ;;          :type "text/html"}]
      :formats (sections.activity/index-formats items)
      :body
-     [:div [:ng-view]]
+     [:div {:ui-view ""}
+      "View goes here"
+      ]
      #_(with-page "public-timeline"
              (index-section items page))}))
 

@@ -4,33 +4,60 @@
 
 (defaction nav-info
   []
-  [["Home"
-    [["/"     "Public"]
-     ["/users"         "Users"]
-     ;; ["/main/conversations" "Conversations"]
-     ["/main/feed-sources"  "Feeds"]
-     ["/main/domains"       "Domains"]
-     ["/main/groups"        "Groups"]
-     ["/resources"     "Resources"]]]
-   ["Settings"
-    [["/admin/settings"           "Settings"]]]
+  [{:label "Home"
+    :items
+    [{:title "Public"
+      :href "/"
+      :state "home"}
+     {:title "Users"
+      :href "/users"
+      :state "indexUsers"}
+     {:title "Feeds"
+      :href "/main/feed-sources"
+      :state "indexFeedSources"}
+     {:title "Domains"
+      :href "/main/domains"
+      :state "indexDomains"}
+     {:title "Groups"
+      :href "/main/groups"
+      :state "indexGroups"}
+     {:title "Resources"
+      :href "/resources"
+      :state "indexResources"}]}
+   {:label "Settings"
+    :items
+    [{:href "/admin/settings"
+      :title "Settings"}]}
    (when (session/is-admin?)
-     ["Admin"
-      [
-       ["/admin/activities"         "Activities"]
-       ["/admin/auth"               "Auth"]
-       ["/admin/clients"            "Clients"]
-       ["/admin/conversations"      "Conversations"]
-       ["/admin/feed-sources"       "Feed Sources"]
-       ["/admin/feed-subscriptions" "Feed Subscriptions"]
-       ["/admin/groups"             "Groups"]
-       ["/admin/group-memberships"  "Group Memberships"]
-       ["/admin/keys"               "Keys"]
-       ["/admin/likes"              "Likes"]
-       ["/admin/request-tokens"     "Request Tokens"]
-       ["/admin/streams"            "Streams"]
-       ["/admin/subscriptions"      "Subscriptions"]
-       ["/admin/users"              "Users"]
-       ["/admin/workers"            "Workers"]
-       ]]
-  )])
+     {:label "Admin"
+      :items
+      [{:href "/admin/activities"
+        :title "Activities"}
+       {:href "/admin/auth"
+        :title "Auth"}
+       {:href "/admin/clients"
+        :title "Clients"}
+       {:href "/admin/conversations"
+        :title "Conversations"}
+       {:href "/admin/feed-sources"
+        :title "Feed Sources"}
+       {:href "/admin/feed-subscriptions"
+        :title "Feed Subscriptions"}
+       {:href "/admin/groups"
+        :title "Groups"}
+       {:href "/admin/group-memberships"
+        :title "Group Memberships"}
+       {:href "/admin/keys"
+        :title "Keys"}
+       {:href "/admin/likes"
+        :title "Likes"}
+       {:href "/admin/request-tokens"
+        :title "Request Tokens"}
+       {:href "/admin/streams"
+        :title "Streams"}
+       {:href "/admin/subscriptions"
+        :title "Subscriptions"}
+       {:href "/admin/users"
+        :title "Users"}
+       {:href "/admin/workers"
+        :title "Workers"}]})])

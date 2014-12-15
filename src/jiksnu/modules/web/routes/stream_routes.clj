@@ -1,12 +1,15 @@
 (ns jiksnu.modules.web.routes.stream-routes
   (:require [ciste.commands :refer [add-command!]]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.stream-actions :as actions.stream]))
+            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.modules.web.actions.template-actions :as actions.templates]))
 
 (defn routes
   []
   [
    [[:get  "/"]                                       #'actions.stream/public-timeline]
+   [[:get  "/partials/public-timeline.html"]          #'actions.templates/public-timeline]
+
 
    [[:get  "/api/direct_messages.:format"]            #'actions.stream/direct-message-timeline]
    ;; FIXME: identicurse sends a post. seems wrong to me.

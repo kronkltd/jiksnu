@@ -105,7 +105,8 @@
 
 (defsection index-block [Conversation :html]
   [items & [page]]
-  [:div {:ng-controller "ConversationListController"}
+  [:div
+   ;; {:ng-controller "ConversationListController"}
    [:a#showComments.btn {:href "#"} "Show Comments"]
    (pagination-links page)
    [:div.conversations
@@ -173,7 +174,8 @@
      ;; (show-details item)
      (list
       [:p "parent id: "
-       [:a {:href "/notice/{{conversation.parent}}"}
+       [:a {:ui-sref "showActivity({id: conversation.parent })"
+            }
         "{{conversation.parent}}"
         ]
        ]

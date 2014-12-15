@@ -9,18 +9,36 @@
                                    obj arr def* do*n def*n f*n]]))
 
 (def.module jiksnuApp [ngRoute
-                       ;; ui ui.bootstrap
+                       ;; ui
+                       ui.router
                        ])
 
-(def.config jiksnuApp [$locationProvider $routeProvider]
-  (doto $locationProvider (.hashPrefix "!"))
-  (doto $routeProvider
-    (.when "/notice/:id" (obj
-                          :templateUrl "/partials/activity/show.html"
-                          :controller "ShowActivityController"
-                          ))
-    (.when "" (obj :redirectTo "/home")))
-  )
+(def.config jiksnuApp [
+                       $stateProvider $urlRouterProvider
+                       ;; $locationProvider $routeProvider
+                       ]
+
+  (.otherwise $urlRouterProvider "/")
+
+  (doto $stateProvider
+
+    (.state "home"
+            (obj
+             :url ""
+             :templateUrl "/partials/public-timeline.html"
+             :controller "ConversationListController"))
+
+    (.state "showActivity"
+            (obj
+             :url "/notice/:id"
+             :templateUrl "/partials/show-activity.html"
+             :controller "ShowActivityController"))
+
+    (.state "indexUsers"
+            (obj
+             :url "/users"
+             :templateUrl "/partials/index-users.html"
+             :controller "UserIndexController"))))
 
 (def.controller jiksnuApp.JiksnuController
   [$scope]
@@ -58,6 +76,8 @@
 (def.controller jiksnuApp.ConversationListController
   [$scope $http]
 
+  (.log js/console "Indexing conversations")
+
   (! $scope.init
      (fn []
        (-> $http
@@ -72,6 +92,7 @@
 (def.controller jiksnuApp.ShowActivityController
   [$scope $http]
 
+  (.info js/console "Showing Activity")
   (! $scope.loaded false)
 
   (! $scope.init
@@ -90,10 +111,10 @@
 (def.controller jiksnuApp.ShowUserController
   [$scope $http $attrs]
 
-  (.log js/console (? $scope.$parent.activity))
+  ;; (.log js/console (? $scope.$parent.activity))
 
   (! $scope.user (? $scope.$parent.activity.actor))
-  (.log js/console (? $scope.$parent.loaded))
+  ;; (.log js/console (? $scope.$parent.loaded))
 
   (! $scope.init
      (fn [id]
@@ -104,3 +125,18 @@
               (! $scope.user data))))))
 
   #_(.init $scope ""))
+
+(def.controller jiksnuApp.UserIndexController
+  [$scope $http]
+
+  (.info js/console "Indexing users")
+
+  (! $scope.init
+     (fn []
+       (-> $http
+           (.get "/users.json")
+           (.success
+            (fn [data]
+              (! $scope.page data))))))
+
+  (.init $scope))

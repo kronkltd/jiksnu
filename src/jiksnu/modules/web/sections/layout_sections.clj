@@ -37,12 +37,16 @@
     (sections.group/groups-widget user)]))
 
 (defn navigation-group
-  [[header links]]
-  (concat [[:li.nav-header header]]
+  [group]
+  (concat [[:li.nav-header (:title group)]]
           (map
-           (fn [[url label]]
-             [:li [:a {:href url} label]])
-           links)))
+           (fn [link]
+             [:li [:a
+                   (if-let [state (:state link)]
+                     {:ui-sref state}
+                     {:href (:href link)})
+                   (:title link)]])
+           (:items group))))
 
 (defn side-navigation
   []
@@ -243,6 +247,9 @@
       "/js/knockback/0.17.2/knockback.js"
       "/webjars/angularjs/1.3.0/angular.min.js"
       "/webjars/angularjs/1.3.0/angular-route.min.js"
+      "/webjars/angular-ui/0.4.0/angular-ui.min.js"
+      "/webjars/angular-ui-router/0.2.13/angular-ui-router.min.js"
+      "/webjars/angular-moment/0.8.2-1/angular-moment.min.js"
       "/cljs/jiksnu.js")
      (doall
       (map (fn [hook]

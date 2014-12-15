@@ -3,7 +3,8 @@
             [jiksnu.actions.group-actions :as group]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as sub]
-            [jiksnu.actions.user-actions :as user])
+            [jiksnu.actions.user-actions :as user]
+            [jiksnu.modules.web.actions.template-actions :as templates])
   (:import jiksnu.model.User))
 
 (defn routes
@@ -27,6 +28,7 @@
 
    [[:get    "/users.:format"]                  #'user/index]
    [[:get    "/users"]                          #'user/index]
+   [[:get "/partials/index-users.html"]         #'templates/index-users]
    [[:delete "/users/:id"]                      #'user/delete]
    [[:post   "/users/:id/discover.:format"]     #'user/discover]
    [[:post   "/users/:id/discover"]             #'user/discover]

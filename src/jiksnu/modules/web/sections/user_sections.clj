@@ -43,21 +43,16 @@
 (defn display-avatar-img
   [user size]
   [:img.avatar.photo
-   (merge {:width size
-           :height size
-           :alt ""}
-          (if *dynamic*
-            {:src "{{avatarUrl}}"}
-            {:src (model.user/image-link user)}))])
+   {:width size
+    :height size
+    :alt ""
+    :src "{{user.image[0].url}}"}])
 
 (defn display-avatar
   ([user] (display-avatar user 64))
   ([user size]
-     [:a.url (if *dynamic*
-               {:href "/remote-user/{{username}}@{{domain}}"
-                :title "acct:{{username}}@{{domain}}"}
-               {:href (full-uri user)
-                :title (model.user/get-uri user)})
+     [:a.url {:href "/remote-user/{{user.username}}@{{user.domain}}"
+              :title "acct:{{user.username}}@{{user.domain}}"}
       (display-avatar-img user size)]))
 
 (defn register-form
@@ -327,23 +322,22 @@
 
 (defsection index-block [User :html]
   [users & [page]]
-  [:table.table.users
-   [:thead]
-   [:tbody (merge {:data-bag "users"}
-                  (when *dynamic* {:data-bind "foreach: items"}))
-    ;; TODO: handle this higher up
-    (let [users (if *dynamic* [(User.)] users)]
-      (map #(index-line % page) users))]])
+  [:div
+   [:h2 "Index Users"]
+   [:table.table.users
+    [:thead]
+    [:tbody {:data-bag "users"}
+     ;; TODO: handle this higher up
+     (let [users [(User.)]]
+       (map #(index-line % page) users))]]])
 
 ;; index-line
 
 (defsection index-line [User :html]
   [user & _]
-  [:tr (merge {:ng-repeat "user in users"
-               :data-model "user"}
-              (if *dynamic*
-                {}
-                {:data-id (:_id user)}))
+  [:tr {:ng-repeat "user in page.items"
+        :data-model "user"
+        :data-id "{{user.id}}"}
    [:td
     [:div
      (display-avatar user)]
@@ -351,6 +345,7 @@
     [:div
      [:p (link-to user)]
      [:p "{{user.username}}@{{user.domain}}"]
+     [:p "{{user.id}}"]
      [:p "{{user.displayName}}"]
      [:p "{{user.uri}}"]
      [:p "{{user.bio}}"]]]
