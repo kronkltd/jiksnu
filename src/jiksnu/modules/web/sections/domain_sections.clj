@@ -14,7 +14,7 @@
 
 (defn favicon-link
   [domain]
-  [:img {:src "http://{{domain.id}}/favicon.ico"}])
+  [:img {:src "http://{{domain._id}}/favicon.ico"}])
 
 (defn discover-button
   [item]
@@ -86,8 +86,10 @@
 
 (defsection link-to [Domain :html]
   [domain & _]
-  [:a {:href "/main/domains/{{domain.id}}"}
-   "{{domain.id}}"])
+  [:a {:ui-sref "showDomain({id : domain['_id']})"
+       ;; :href "/main/domains/{{domain['_id']}}"
+       }
+   "{{domain['_id']}}"])
 
 ;; show-section
 
@@ -137,6 +139,6 @@
               :title (:title license)}
           [:img {:src (:image license)
                  :alt (:title license)}]]]]]]
-     (when-let [links (if *dynamic* [{}] (seq (:links domain)))]
+     (when-let [links [{}]]
        (bind-to "links"
                 (sections.link/index-section links)))]))

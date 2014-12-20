@@ -44,58 +44,54 @@
   ;; TODO: pull from app config on page
   (! $scope.app.name "Jiksnu"))
 
-(def.controller jiksnuApp.ConversationListController
-  [$scope $http]
-
-  (.log js/console "Indexing conversations")
-
-  (! $scope.init
-     (fn []
-       (-> $http
-           (.get "/main/conversations.json")
-           (.success
-            (fn [data]
-              (.info js/console "Data" data)
-              (! $scope.page data))))))
-
-  (.init $scope))
-
 (def.controller jiksnuApp.ShowActivityController
-  [$scope $http]
+  [$scope $http $stateParams]
+  (let [id (.-id $stateParams)
+        url (str "/notice/" id ".json")]
+    (.info js/console "Showing Activity")
+    (! $scope.loaded false)
+    (! $scope.init
+       (fn [id]
+         (-> $http
+             (.get url)
+             (.success
+              (fn [data]
+                (.info js/console "Data" data)
+                (! $scope.activity data)
+                (! $scope.loaded true))))))
+    (.init $scope id)))
 
-  (.info js/console "Showing Activity")
-  (! $scope.loaded false)
-
-  (! $scope.init
-     (fn [id]
-       (-> $http
-           (.get  (str "/notice/" id ".json"))
-           (.success
-            (fn [data]
-              (.info js/console "Data" data)
-              (! $scope.activity data)
-              (! $scope.loaded true)
-              )))))
-
-  (.init $scope "53967919b7609432045de504"))
+(def.controller jiksnuApp.ShowDomainController
+  [$scope $http $stateParams]
+  (let [id (.-id $stateParams)
+        url (str "/main/domains/" id ".json")]
+    (.info js/console "Showing Domain")
+    (! $scope.loaded false)
+    (! $scope.init
+       (fn [id]
+         (-> $http
+             (.get url)
+             (.success
+              (fn [data]
+                (.info js/console "Data" data)
+                (! $scope.domain data)
+                (! $scope.loaded true))))))
+    (.init $scope id)))
 
 (def.controller jiksnuApp.ShowUserController
-  [$scope $http $attrs]
-
-  ;; (.log js/console (? $scope.$parent.activity))
-
-  (! $scope.user (? $scope.$parent.activity.actor))
-  ;; (.log js/console (? $scope.$parent.loaded))
-
-  (! $scope.init
-     (fn [id]
-       (-> $http
-           (.get (str "/main/users/" id ".json"))
-           (.success
-            (fn [data]
-              (! $scope.user data))))))
-
-  #_(.init $scope ""))
+  [$scope $http $stateParams]
+  (let [id (.-id $stateParams)
+        url (str "/users/" id ".json")]
+    ;; (! $scope.user (? $scope.$parent.activity.actor))
+    (! $scope.loaded false)
+    (! $scope.init
+       (fn [id]
+         (-> $http
+             (.get url)
+             (.success
+              (fn [data]
+                (! $scope.user data))))))
+    (.init $scope id)))
 
 (defn fetch-page
   [$scope $http url]
@@ -105,6 +101,12 @@
         (.success
          (fn [data]
            (! $scope.page data))))))
+
+(def.controller jiksnuApp.ConversationListController
+  [$scope $http]
+  (.log js/console "Indexing conversations")
+  (! $scope.init (fetch-page $scope $http "/main/conversations.json"))
+  (.init $scope))
 
 (def.controller jiksnuApp.IndexDomainsController
   [$scope $http]
@@ -130,7 +132,7 @@
 
     (.state "home"
             (obj
-             :url ""
+             :url "/"
              :templateUrl "/partials/public-timeline.html"
              :controller "ConversationListController"))
 
@@ -139,13 +141,13 @@
             (obj
              :url "/main/domains"
              :templateUrl "/partials/index-domains.html"
-             :controller jiksnuApp.IndexDomainsController))
+             :controller "IndexDomainsController"))
 
     (.state "indexUsers"
             (obj
              :url "/users"
              :templateUrl "/partials/index-users.html"
-             :controller jiksnuApp.IndexUsersController))
+             :controller "IndexUsersController"))
 
 
 
@@ -155,6 +157,17 @@
              :templateUrl "/partials/show-activity.html"
              :controller "ShowActivityController"))
 
+    (.state "showDomain"
+            (obj
+             :url "/main/domains/:id"
+             :templateUrl "/partials/show-domain.html"
+             :controller "ShowDomainController"))
+
+    (.state "showUser"
+            (obj
+             :url "/users/:id"
+             :templateUrl "/partials/show-user.html"
+             :controller "ShowUserController"))
 
     )
 

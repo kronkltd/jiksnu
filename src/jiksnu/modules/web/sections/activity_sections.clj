@@ -179,26 +179,26 @@
   (let [geo {}]
     [:div.map-section
      (bind-to "geo"
-       #_[:img.map
-          {:alt ""
-           :src
-           ;; TODO: use urly to construct this
-           ;; TODO: Move this to cljs
-           (str "https://maps.googleapis.com/maps/api/staticmap?"
-                (string/join "&amp;"
-                             ["size=200x200"
-                              "zoom=11"
-                              "sensor=true"
-                              (str "markers=color:red|"
-                                   (:latitude geo)
-                                   ","
-                                   (:longitude geo))]))}]
-       [:p "Latitude: " [:span (if *dynamic*
-                                 {:data-bind "text: latitude"}
-                                 (:latitude geo))]]
-       [:p "Longitude: " [:span (if *dynamic*
-                                  {:data-bind "text: longitude"}
-                                  (:longitude geo))]])]))
+              #_[:img.map
+                 {:alt ""
+                  :src
+                  ;; TODO: use urly to construct this
+                  ;; TODO: Move this to cljs
+                  (str "https://maps.googleapis.com/maps/api/staticmap?"
+                       (string/join "&amp;"
+                                    ["size=200x200"
+                                     "zoom=11"
+                                     "sensor=true"
+                                     (str "markers=color:red|"
+                                          (:latitude geo)
+                                          ","
+                                          (:longitude geo))]))}]
+              [:p "Latitude: " [:span (if *dynamic*
+                                        {:data-bind "text: latitude"}
+                                        (:latitude geo))]]
+              [:p "Longitude: " [:span (if *dynamic*
+                                         {:data-bind "text: longitude"}
+                                         (:longitude geo))]])]))
 
 (defn likes-section
   [activity]
@@ -468,9 +468,15 @@
      [:div.pull-left.avatar-section
       [:p "Loaded: {{loaded}}"]
       [:div {:data-model "user"
-             :ng-controller "ShowUserController"
+             ;; :ng-controller "ShowUserController"
              :data-id "{{activity.actor.localId}}"}
-       (sections.user/display-avatar user)]]
+       [:a.url {:href "/remote-user/{{activity.actor.username}}@{{activity.actor.domain}}"
+                :title "acct:{{activity.actor.username}}@{{activity.actor.domain}}"}
+        [:img.avatar.photo
+         {:width 64
+          :height 64
+          :alt ""
+          :src "{{activity.actor.image[0].url}}"}]]]]
      [:div
       [:header
        [:div {:data-model "user"}
