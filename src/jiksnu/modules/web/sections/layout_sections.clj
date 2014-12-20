@@ -70,23 +70,15 @@
 (defn formats-section*
   [format]
   [:li.format-line
-   [:a
-    (if *dynamic*
-      {:data-bind "attr: {href: href}"}
-      {:href (:href format)})
+   [:a {:href "{{format.href}}"}
     [:span.format-icon
-     [:img (merge {:alt ""}
-                  (if *dynamic*
-                    {:data-bind "attr: {src: '/themes/classic/' + icon}"}
-                    {:src (str "/themes/classic/" (:icon format))}))]]
-    [:span.format-label
-     (display-property format :label)]]])
+     [:img {:alt ""
+            :src "/themes/classic/{{format.icon}}"}]]
+    [:span.format-label "{{format.label}}"]]])
 
 (defn formats-section
   [response]
-  (when-let [formats (if *dynamic*
-                       [{}]
-                       (:formats response))]
+  (let [formats [{}]]
     [:div
      [:h3 "Formats"]
      [:ul.unstyled
@@ -128,9 +120,8 @@
 (defn new-post-section
   [request response]
   (bind-to "postForm"
-    [:div (when *dynamic* {:data-bind "if: visible"})
-     (when (or *dynamic* (:post-form response))
-       (add-form (Activity.)))]))
+           [:div {:ng-if "postForm.visible"}
+            (add-form (Activity.))]))
 
 (defn title-section
   [request response]

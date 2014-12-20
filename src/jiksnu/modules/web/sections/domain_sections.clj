@@ -34,13 +34,9 @@
    (when (session/is-admin?)
      [#'delete-button])))
 
-;; actions-section
-
 (defsection actions-section [Domain :html]
   [item]
   (dropdown-menu item (get-buttons)))
-
-;; add-form
 
 (defsection add-form [Domain :html]
   [domain & _]
@@ -52,13 +48,9 @@
      [:button.btn.primary.add-button {:type "submit"}
       "Add"]]]])
 
-;; delete-button
-
 (defsection delete-button [Domain :html]
   [item & _]
   (action-link "domain" "delete" (:_id item)))
-
-;; index-block
 
 (defsection index-block [Domain :html]
   [domains & _]

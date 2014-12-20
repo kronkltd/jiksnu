@@ -9,7 +9,6 @@
             [clojure.tools.logging :as log]
             [inflections.core :as inf]))
 
-;; (declare-section actions-section)
 (declare-section admin-actions-section)
 (declare-section admin-index-section :seq)
 (declare-section admin-index-block :seq)

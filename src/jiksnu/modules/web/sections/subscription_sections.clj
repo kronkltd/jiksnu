@@ -5,7 +5,6 @@
                                             index-block index-line index-section link-to
                                             show-section title uri]]
             [clojure.tools.logging :as log]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
@@ -34,14 +33,10 @@
 
 (defn subscribers-widget
   [user]
-  (let [subscriptions (if *dynamic*
-                        [(Subscription.)]
-                        (model.subscription/subscribers user))]
+  (let [subscriptions [(Subscription.)]]
     [:div.subscribers
      [:h3
-      [:a (if *dynamic*
-            {:data-bind "attr: {href: '/users/' + _id() + '/subscribers'}"}
-            {:href (str "/users/" (:_id user) "/subscribers")}) "Followers"]
+      [:a {:href "/users/{{user.id}}/subscribers"} "Followers"]
       " "
       (with-sub-page "subscribers"
         [:span "{{page.items.length}}"])]
@@ -52,36 +47,27 @@
                 :ng-repeat "subscription in subscriptions"}
            (bind-to "from"
                     [:div {:data-model "user"}
-                     (let [user (if *dynamic*
-                                  (User.)
-                                  (model.subscription/get-actor subscription))]
+                     (let [user (User.)]
                        (sections.user/display-avatar user "24"))])])])]))
 
 (defn subscriptions-widget
   [user]
-  (when user
-    (let [subscriptions (if *dynamic*
-                          [(Subscription.)]
-                          (model.subscription/subscriptions user))]
-      [:div.subscriptions
-       [:h3
-        [:a {:href "/users/{{user.id}}/subscriptions"} "Following"]
-        " "
-        (with-sub-page "subscriptions"
-          [:span "{{page.items.length}}"])]
-       (with-sub-page "subscriptions"
-         [:ul
-          (let [subscription (first subscriptions)]
-            [:li {:data-model "subscription"
-                  :ng-repeat "subscription in subscriptions"}
-             (bind-to "to"
-                      [:div {:data-model "user"}
-                       (let [user (if *dynamic*
-                                    (User.)
-                                    (model.subscription/get-target subscription))]
-                         (sections.user/display-avatar user "24"))])])])
-       [:p
-        [:a {:href "/main/ostatussub"} "Add Remote"]]])))
+  [:div.subscriptions
+   [:h3
+    [:a {:href "/users/{{user.id}}/subscriptions"} "Following"]
+    " "
+    (with-sub-page "subscriptions"
+      [:span "{{page.items.length}}"])]
+   (with-sub-page "subscriptions"
+     [:ul
+      [:li {:data-model "subscription"
+            :ng-repeat "subscription in subscriptions"}
+       (bind-to "to"
+                [:div {:data-model "user"}
+                 (let [user (User.)]
+                   (sections.user/display-avatar user "24"))])]])
+   [:p
+    [:a {:href "/main/ostatussub"} "Add Remote"]]])
 
 (defsection actions-section [Subscription :html]
   [subscription]
@@ -104,7 +90,8 @@
      [:th "local"]
      [:th "Actions"]]]
    [:tbody
-    (let [subscription (first items)]
+    (let [subscription (first items)
+          user (User.)]
       [:tr {:ng-repeat "subscription in subscriptions"
             :data-model "subscription"
             :data-id "{{subscription.id}}"}
@@ -113,19 +100,13 @@
        [:td
         (bind-to "from"
                  [:div {:data-model "user"}
-                  (if-let [user (if *dynamic*
-                                  (User.)
-                                  (model.subscription/get-actor subscription))]
-                    (link-to user)
-                    "unknown")])]
+                  (link-to user)
+                  "unknown"])]
        [:td
         (bind-to "to"
                  [:div {:data-model "user"}
-                  (if-let [user (if *dynamic*
-                                  (User.)
-                                  (model.subscription/get-target subscription))]
-                    (link-to user)
-                    "unknown")])]
+                  (link-to user)
+                  "unknown"])]
        [:td "{{subscription.created}}"]
        [:td "{{subscription.pending}}"]
        [:td "{{subscription.local}}"]
@@ -155,24 +136,21 @@
 (defsection subscriptions-section [Subscription :html]
   [items & [options & _]]
   [:ul.subscriptions
-   (let [item (first items)]
+   (let [item (first items)
+         user (User.)]
      [:li.subscription {:data-model "subscription"
                         :ng-repeat "subscription in subscriptions"}
       (bind-to "to"
-               (if-let [user (if *dynamic* (User.)
-                                 (model.subscription/get-target item))]
-                 (show-section user)
-                 "unknown"))])])
+               (show-section user)
+               "unknown")])])
 
 (defsection subscribers-section [Subscription :html]
   [items & [options & _]]
   [:ul.subscriptions
-   (let [item (first items)]
+   (let [item (first items)
+         user (User.)]
      [:li.subscription {:data-model "subscription"
                         :ng-repeat "subscriber in subscribers"}
       (bind-to "from"
-               (if-let [user (if *dynamic* (User.) (model.subscription/get-actor item))]
-                 (show-section user)
-                 "unknown"))])]
-
-  )
+               (show-section user)
+               "unknown")])])

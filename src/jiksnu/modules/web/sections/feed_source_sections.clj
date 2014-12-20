@@ -5,7 +5,6 @@
                                             update-button]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-show-section
                                                   admin-index-block admin-index-line
@@ -27,32 +26,25 @@
 (defn index-watchers
   [source]
   [:div.watchers
-   [:h3 "Watchers "
-    [:span (if *dynamic*
-             {:data-bind "text: watchers.length"}
-             (count (:watchers source)))]]
+   [:h3 "Watchers {{source.watchers.length}}"]
    (bind-to "watchers"
      [:table.table
       [:tbody
-       (when *dynamic* {:data-bind "foreach: items"})
-       (let [watchers [""]
-             id (first watchers)
-             user (User.)]
-         [:tr {:data-model "user"}
+       (let [user (User.)]
+         [:tr {:data-model "user"
+               :ng-repeat "watcher in source.watchers"}
           [:td (link-to user)]
           [:td
            (action-link "feed-source" "remove-watcher" (:_id source)
                         {:target (:_id user)
                          :icon "trash"
-                         :title "Delete"})]]
-         )]])])
+                         :title "Delete"})]])]])])
 
 (defn add-watcher-form
   [source]
   [:form.well.form-horizontal
    {:method "post"
-    :action (format "/admin/feed-sources/%s/watchers"
-                    (:_id source))}
+    :action "/admin/feed-sources/{{source.id}}/watchers"}
    [:fieldset
     [:legend "Add Watcher"]
     (control-line "Acct id"
@@ -69,9 +61,7 @@
 
 (defn model-button
   [item]
-  [:a (if *dynamic*
-        {:data-bind "attr: {href: '/model/feed-sources/' + _id() + '.model'}"}
-        {:href (format "/model/feed-sources/%s.model" (:_id item))})
+  [:a {:href "/model/feed-sources/{{source.id}}.model"}
    "Model"])
 
 (defn get-buttons
@@ -87,13 +77,9 @@
    (when (session/is-admin?)
      [#'delete-button])))
 
-;; actions-section
-
 (defsection actions-section [FeedSource :html]
   [item]
   (dropdown-menu item (get-buttons)))
-
-;; add-form
 
 (defsection add-form [FeedSource :html]
   [source & options]
@@ -122,38 +108,29 @@
      [:th "Topic"]
      [:th "Status"]
      [:th "Actions"]]]
-   [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody {:data-bind "foreach: items"}
     (map admin-index-line items)]])
 
 (defsection admin-index-line [FeedSource :html]
   [item & [page]]
-  [:tr (merge {:data-model "feed-source"}
-              (when-not *dynamic*
-                {:data-id (:_id item)}))
+  [:tr {:data-model "feed-source"
+        :data-id "{{source.id}}"}
    [:td
     (link-to item)]
    [:td
-    [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/feed-sources/' + _id()}, text: title"}
-          {:title (:title item)
-           :href (str "/admin/feed-sources/" (:_id item))})
-     (when-not *dynamic*
-       (:title item))]]
-   [:td (display-property item :domain)]
+    [:a {:title "{{source.title}}"
+         :href "/admin/feed-sources/{{source.id}}" }
+     "{{source.title}}"]]
+   [:td "{{source.domain}}"]
    [:td
-    [:a (if *dynamic*
-          {:data-bind "attr: {href: topic}, text: topic"}
-          {:href (:topic item)})
-     (when-not *dynamic* (:topic item))]]
-   [:td (display-property item :status)]
+    [:a {:href "{{source.topic}}"}
+     "{{source.topic}}"]]
+   [:td "{{source.status}}"]
    [:td (actions-section item)]])
 
 (defsection admin-show-section [FeedSource :html]
   [item & [page]]
   (show-section item))
-
-;; delete-button
 
 (defsection delete-button [FeedSource :html]
   [item & _]
@@ -173,11 +150,8 @@
      [:th "Watchers"]
      [:th "Updated"]
      [:th "Actions"]]]
-   [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody {:data-bind "foreach: items"}
     (map index-line sources)]])
-
-;; index-line
 
 (defsection index-line [FeedSource :html]
   [source & _]
@@ -189,77 +163,63 @@
      "{{source.topic}}"]]
    [:td (display-property source :hub)]
    #_[:td (:mode source)]
-   [:td (if *dynamic*
-          {:data-bind "text: status"}
-          (str (:status source)))]
-   [:td (if *dynamic*
-          {:data-bind "text: ko.utils.unwrapObservable(watchers).length"}
-          (count (:watchers source)))]
+   [:td "{{source.status}}"
+    ]
+   [:td "{{source.watchers.length}}"]
    [:td (display-property source :updated)]
    [:td (actions-section source)]])
-
-;; index-section
 
 (defsection index-section [FeedSource :html]
   [sources & [options & _]]
   (index-block sources options))
 
-;; link-to
-
 (defsection link-to [FeedSource :html]
   [source & _]
-  [:a (if *dynamic*
-        {:data-bind "attr: {href: '/main/feed-sources/' + _id()}, text: title"}
-        {:href (str "/admin/feed-sources/" (:_id source))})
+  [:a {:href "/admin/feed-sources/{{source.id}}"}
    (:topic source)])
-
-;; show-section
 
 (defsection show-section [FeedSource :html]
   [source & options]
-  (let [{:keys [verify-token lease-seconds ]} source]
-    [:div {:data-model "feed-source"}
-     (actions-section source)
-     [:table.table
-      [:tbody
-       [:tr
-        [:th "Topic:"]
-        [:td
-         [:a {:href "{{source.topic}}"}
-          "{{source.topic}}"]]]
-       [:tr
-        [:th "Domain:"]
-        [:td (display-property source :domain)]]
-       [:tr
-        [:th "Hub:"]
-        [:td [:a {:href "{{hub}}"}
-              "{{hub}}"]]]
-       [:tr
-        [:th "Callback:"]
-        [:td (display-property source :callback)]]
-       [:tr
-        [:th  "Challenge:"]
-        [:td (display-property source :challenge)]]
-       [:tr
-        [:th "Mode:"]
-        [:td (display-property source :mode)]]
-       [:tr
-        [:th "Status:"]
-        [:td (display-property source :status)]]
-       [:tr
-        [:th "Verify Token:"]
-        [:td verify-token]]
-       [:tr
-        [:th "Created:"]
-        [:td (display-property source :created)]]
-       [:tr
-        [:th "Updated:"]
-        [:td (display-property source :updated)]]
-       [:tr
-        [:th "Lease Seconds:"]
-        [:td lease-seconds]]]]]))
-
-;; update-button
+  [:div {:data-model "feed-source"}
+   (actions-section source)
+   [:table.table
+    [:tbody
+     [:tr
+      [:th "Topic:"]
+      [:td
+       [:a {:href "{{source.topic}}"}
+        "{{source.topic}}"]]]
+     [:tr
+      [:th "Domain:"]
+      [:td "{{source.domain}}"]]
+     [:tr
+      [:th "Hub:"]
+      [:td [:a {:href "{{hub}}"}
+            "{{hub}}"]]]
+     [:tr
+      [:th "Callback:"]
+      [:td "{{source.callback}}"]]
+     [:tr
+      [:th  "Challenge:"]
+      [:td "{{source.challenge}}"]]
+     [:tr
+      [:th "Mode:"]
+      [:td "{{source.mode}}"]]
+     [:tr
+      [:th "Status:"]
+      [:td "{{source.status}}"]]
+     [:tr
+      [:th "Verify Token:"]
+      [:td "{{source.verifyToken}}"]]
+     [:tr
+      [:th "Created:"]
+      [:td "{{source.created}}"]]
+     [:tr
+      [:th "Updated:"]
+      [:td "{{source.updated}}"]]
+     [:tr
+      [:th "Lease Seconds:"]
+      [:td "{{source.leaseSeconds}}"]]]]])
 
 (defsection update-button [FeedSource :html]
   [item & _]

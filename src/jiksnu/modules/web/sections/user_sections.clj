@@ -6,7 +6,6 @@
             [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
@@ -136,18 +135,11 @@
   (when-not (:local user)
     [:p "This is a cached copy of information for a user on a different system"]))
 
-(defn link-actions-section
-  [link]
-  [:ul.buttons
-   [:li "delete"]])
-
 (defn links-table
   [links]
-  [:div
+  [:div {:ng-if "user.links"}
    [:h3 "Links"]
    [:table.table
-    (when *dynamic*
-      {:data-bind "if: links"})
     [:thead
      [:tr
       [:th "title"]
@@ -155,16 +147,13 @@
       [:th "href"]
       [:th "Actions"]]]
     [:tbody
-     (when *dynamic*
-       {:data-bind "foreach: links"})
-     (map
-      (fn [link]
-        [:tr {:ng-repeat "link in links"}
-         [:td "{{link.title}}"]
-         [:td "{{link.rel}}"]
-         [:td "{{link.href}}"]
-         [:td (link-actions-section link)]])
-      links)]]])
+     [:tr {:ng-repeat "link in links"}
+      [:td "{{link.title}}"]
+      [:td "{{link.rel}}"]
+      [:td "{{link.href}}"]
+      [:td
+       [:ul.buttons
+        [:li "delete"]]]]]]])
 
 (defn model-button
   [user]
@@ -212,30 +201,24 @@
      [:th "Domain"]
      [:th "Actions"]]]
    [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
-    (let [items (if *dynamic* [(User.)] items)]
+    (let [items [(User.)]]
       (map #(admin-index-line % page) items))]])
 
 ;; admin-index-line
 
 (defsection admin-index-line [User :html]
   [user & [page & _]]
-  [:tr (merge {:data-model "user"}
-              (when-not *dynamic*
-                {:data-id (:_id user)}))
+  [:tr {:data-model "user"
+        :data-id "{{user.id}}"}
    [:td (display-avatar user)]
-   [:td (display-property user :username)]
+   [:td "{{user.username}}"]
    [:td
-    [:a (if *dynamic*
-          {:href "/admin/users/{{user.id}}"}
-          {:href (format "/admin/users/%s" (:_id user))})
-     (if *dynamic*
-       "{{user.id}}"
-       (:_id user))]]
+    [:a {:href "/admin/users/{{user.id}}"}
+     "{{user.id}}"]]
    [:td
     (bind-to "domain"
       [:div {:data-model "domain"}
-       (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
+       (let [domain (Domain.)]
          (link-to domain))])]
    [:td (actions-section user)]])
 
@@ -257,46 +240,41 @@
      [:td (display-avatar item)]]
     [:tr
      [:th "Username"]
-     [:td (if *dynamic*
-            "{{user.username}}"
-            (:username item))]]
+     [:td "{{user.username}}"]]
 
     [:tr
      [:th  "Domain"]
      [:td
       (bind-to "domain"
         [:div {:data-model "domain"}
-         (let [domain (if *dynamic* (Domain.)
-                          (actions.user/get-domain item))]
+         (let [domain (Domain.)]
            (link-to domain))])]]
     [:tr
      [:th "Bio"]
-     [:td (display-property item :bio)]]
+     [:td "{{user.bio}}"]]
     [:tr
      [:th  "Location"]
-     [:td (display-property item :location)]]
+     [:td "{{user.location}}"]]
     [:tr
      [:th  "Url"]
-     [:td (display-property item :url)]]
+     [:td "{{user.url}}"]]
     [:tr
      [:th  "Id"]
-     [:td (display-property item :id)]]
+     [:td "{{user.id}}"]]
     [:tr
      [:th  "Discovered"]
-     [:td (display-property item :discovered)]]
+     [:td "{{user.discovered}}"]]
     [:tr
      [:th  "Created"]
-     [:td (display-property item :created)]]
+     [:td "{{user.created}}"]]
     [:tr
      [:th "Updated"]
-     [:td (display-property item :updated)]]
+     [:td "{{user.updated}}"]]
     [:tr
      [:th "Update Source"]
      [:td
       (bind-to "updateSource"
-        (when-let [source (if *dynamic*
-                            (FeedSource.)
-                            (-?> item :update-source model.feed-source/fetch-by-id))]
+        (let [source (FeedSource.)]
           (link-to source)))]]]))
 
 
@@ -381,20 +359,14 @@
     [:div.adr
      [:p.locality "{{user.location}}"]]
     [:p.note (display-property user :bio)]
-    (if-let [source (if *dynamic* (FeedSource.) nil)]
+    (let [source (FeedSource.)]
       (bind-to "updateSource"
         [:div {:data-model "feed-source"}
          (link-to source) ]))
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
-    (when (:discovered user)
-      (if-let [key (if *dynamic*
-                     (Key.)
-                     (try+  (model.key/get-key-for-user user)
-                            (catch Object ex
-                              (trace/trace "errors:handled" ex)
-                              nil)))]
-        (show-section key)))]))
+    (let [key (Key.)]
+      (show-section key))]))
 
 ;; update-button
 

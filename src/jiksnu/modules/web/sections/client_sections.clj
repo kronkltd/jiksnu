@@ -5,7 +5,6 @@
                                             show-section-minimal show-section link-to uri title
                                             index-block index-line index-section update-button]]
             [clojure.tools.logging :as log]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block
                                                  admin-index-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
@@ -22,14 +21,13 @@
      [:th "Created"]
      [:th "Updated"]]]
    [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
     (map admin-index-line items)]])
 
 (defsection admin-index-line [Client :html]
   [item & [options & _]]
-  [:tr (merge {:data-model "client"}
-              (when-not *dynamic*
-                { :data-id (:_id item)}))
+  [:tr {:data-model "client"
+        :data-id "{{client.id}}"
+        :ng-repeat "client in clients"}
    [:td (display-property item :_id)]
    [:td (display-timestamp item :created)]
    [:td (display-timestamp item :updated)]

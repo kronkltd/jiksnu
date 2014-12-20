@@ -5,7 +5,6 @@
                                             index-block index-line index-section
                                             show-section update-button]]
             [clojure.tools.logging :as log]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
@@ -55,13 +54,9 @@
   [item]
   (action-link "group" "leave" (:_id item) {:title "Leave"}))
 
-;; actions-section
-
 (defsection actions-section [Group :html]
   [item]
   (dropdown-menu item (get-buttons)))
-
-;; add-form
 
 (defsection add-form [Group :html]
   [group & _]

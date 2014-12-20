@@ -2,7 +2,6 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [actions-section delete-button title index-line
                                        index-block index-line link-to show-section update-button]]
-        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
         [jiksnu.modules.web.sections :only [action-link bind-to control-line display-property
                                             display-timestamp dropdown-menu pagination-links
@@ -124,10 +123,7 @@
      [:tr
       [:th "Domain"]
       [:td
-       (if-let [domain (if *dynamic*
-                         (Domain.)
-                         (if-let [domain-name (:domain item)]
-                           (model.domain/fetch-by-id domain-name)))]
+       (if-let [domain (Domain.)]
          (bind-to "domain"
                   [:div {:data-model "domain"}
                    (link-to domain)]))]]
@@ -151,12 +147,10 @@
      [:tr
       [:th "Source"]
       [:td
-       (let [source (if *dynamic*
-                      (FeedSource.)
-                      (if-let [id (:update-source item)]
-                        (model.feed-source/fetch-by-id id)))]
+       (let [source (FeedSource.)]
          (bind-to "$data['update-source']"
-                  [:div {:data-model "feed-source"} (link-to source)]))]]]]))
+                  [:div {:data-model "feed-source"}
+                   (link-to source)]))]]]]))
 
 (defsection show-section [Conversation :html]
   [item & [page]]

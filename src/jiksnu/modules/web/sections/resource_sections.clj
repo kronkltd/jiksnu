@@ -3,7 +3,6 @@
           [ciste.sections.default :only [actions-section delete-button index-line
                                          index-block index-line link-to
                                          show-section update-button]]
-          [jiksnu.ko :only [*dynamic*]]
           [jiksnu.modules.core.sections :only [admin-index-line]]
           [jiksnu.modules.web.sections :only [action-link bind-to control-line
                                               display-property display-timestamp dropdown-menu
@@ -69,37 +68,26 @@
      #_[:th "Created"]
      [:th "Updated"]]]
    [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
-    (doall (map #(index-line % page) items))]])
-
-;; index-line
-
-(defsection index-line [Resource :html]
-  [item & [page]]
-  [:tr {:data-model "resource"}
-   [:td (link-to item)]
-   [:td "{{resource.domain}}"]
-   [:td
-    [:a {:href "{{resource.url}}"}
-     "{{resource.url}}"]]
-   [:td "{{resource.status}}"]
-   [:td "{{resource.contentType}}"]
-   [:td (display-property item :encoding)]
-   [:td (display-property item :requiresAuth)]
-   #_[:td (if *dynamic*
-          {:data-bind "text: created"}
-          (:created item))]
-   [:td (display-timestamp item :updated)]
-   [:td (actions-section item)]])
-
-;; link-to
+    (let [item (first items)]
+      [:tr {:data-model "resource"
+            :ng-repeat "resource in page.items"}
+       [:td (link-to item)]
+       [:td "{{resource.domain}}"]
+       [:td
+        [:a {:href "{{resource.url}}"}
+         "{{resource.url}}"]]
+       [:td "{{resource.status}}"]
+       [:td "{{resource.contentType}}"]
+       [:td "{{resource.encoding}}"]
+       [:td "{{resource.requiresAuth}}"]
+       #_[:td "{{resource.created}}"]
+       [:td "{{resource.updated}}"]
+       [:td (actions-section item)]])]])
 
 (defsection link-to [Resource :html]
   [source & _]
   [:a {:href "/resources/{{resource.id}}"}
    "{{resource.topic}}"])
-
-;; show-section
 
 (defsection show-section [Resource :html]
   [item & _]
@@ -112,35 +100,30 @@
       [:td ]]
      [:tr
       [:th "Title"]
-      [:td (display-property item :title)]]
+      [:td "{{resource.title}}"]]
      [:tr
       [:th "Url"]
       [:td
-       [:a (if *dynamic*
-             {:data-bind "attr: {href: url}, text: url"}
-             {:href (:url item)})
-        (when-not *dynamic*
-          (:url item))]]]
+       [:a {:href "{{resource.url}}"}
+        "{{resource.url}}"]]]
      [:tr
       [:th "Status"]
-      [:td (display-property item :status)]]
+      [:td "{{resource.status}}"]]
      [:tr
       [:th "Location"]
-      [:td (display-property item :location)]]
+      [:td "{{resource.location}}"]]
      [:tr
       [:th "Content Type"]
-      [:td (if *dynamic*
-             {:data-bind "text: contentType"}
-             (:content-type item))]]
+      [:td "{{resource.contentType}}"]]
      [:tr
       [:th "Encoding"]
-      [:td (display-property item :encoding)]]
+      [:td "{{resource.encoding}}"]]
      [:tr
       [:th "Created"]
-      [:td (display-property item :created)]]
+      [:td "{{resource.created}}"]]
      [:tr
       [:th "Updated"]
-      [:td (display-property item :updated)]]]]
+      [:td "{{resource.updated}}"]]]]
    (bind-to "links"
             (sections.link/index-section links))))
 

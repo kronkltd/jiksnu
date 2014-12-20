@@ -1,20 +1,4 @@
-(ns jiksnu.modules.web.sections.link-sections
-  (:use [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [display-property]]))
-
-(defn index-line
-  [link]
-  [:tr
-   [:td (display-property link :href)
-    #_[:a (if *dynamic*
-          {:data-bind "attr: {href: href}, text: href"}
-          {:href (:href link)})
-     (when-not *dynamic*
-       (:href link))]]
-   [:td (display-property link :rel)]
-   [:td (display-property link :type)]
-   [:td (display-property link :template)]
-   [:td (display-property link :lang)]])
+(ns jiksnu.modules.web.sections.link-sections)
 
 (defn index-section
   [links]
@@ -26,6 +10,12 @@
      [:th "Type"]
      [:th "Template"]
      [:th "Lang"]]]
-   [:tbody (when *dynamic*
-             {:data-bind "foreach: $data"})
-    (map index-line links)]])
+   [:tbody
+    [:tr {:ng-repeat "link in links"}
+     [:td
+      [:a {:href "{{link.href}}"}
+       "{{link.href}}"]]
+     [:td "{{link.rel}}"]
+     [:td "{{link.type}}"]
+     [:td "{{link.template}}"]
+     [:td "{{link.lang}}"]]]])

@@ -49,21 +49,15 @@
 
 (defn show-comment
   [activity]
-  (let [author (if *dynamic*
-                 (User.)
-                 #_(model.activity/get-author activity))]
+  (let [author (User.)]
     [:div.comment {:data-model "activity"}
      [:p
-      [:span (when *dynamic*
-               {:data-bind "with: author"})
+      [:span {:data-bind "with: author"}
        [:span {:data-model "user"}
         (sections.user/display-avatar author)
         (link-to author)]]
       ": "
-      [:span
-       (if *dynamic*
-         {:data-bind "text: title"}
-         (h/h (:title activity)))]]
+      [:span "{{activity.title}}"]]
      #_[:p (posted-link-section activity)]]))
 
 ;; specific sections
@@ -165,20 +159,14 @@
 
 (defn recipients-section
   [activity]
-  (let [ids (if *dynamic*
-              [nil]
-              (:mentioned activity))]
-    [:ul.unstyled (when *dynamic* {:data-bind "foreach: mentioned"})
-     (map
-      (fn [id]
-        [:li {:data-model "user"}
-         [:i.icon-chevron-right]
-         (if-let [user (if *dynamic*
-                         (User.)
-                         (model.user/fetch-by-id id))]
-           (link-to user)
-           [:a {:href id :rel "nofollow"} id])])
-      ids)]))
+  (let [ids [nil]]
+    [:ul.unstyled {:data-bind "foreach: mentioned"}
+     (let [id (first ids)]
+       [:li {:data-model "user"}
+        [:i.icon-chevron-right]
+        (if-let [user (User.)]
+          (link-to user)
+          [:a {:href id :rel "nofollow"} id])])]))
 
 (defn links-section
   [activity]
@@ -188,9 +176,7 @@
 (defn maps-section
   [activity]
 
-  (if-let [geo (if *dynamic*
-                 {}
-                 (:geo activity))]
+  (let [geo {}]
     [:div.map-section
      (bind-to "geo"
        #_[:img.map
@@ -216,9 +202,7 @@
 
 (defn likes-section
   [activity]
-  (when-let [likes (if *dynamic*
-                     [{}]
-                     (model.like/get-likes activity))]
+  (when-let [likes [{}]]
     [:section.likes
      (when *dynamic*
        {:data-bind "if: $data['like-count']"})
@@ -233,40 +217,27 @@
 
 (defn tags-section
   [activity]
-  (when-let [tags (if *dynamic*
-                    [{}]
-                    (:tags activity))]
-    [:div.tags (when *dynamic* {:data-bind "visible: ko.utils.unwrapObservable(tags).length > 0"})
-     [:span "Tags: "]
-     [:ul.tags (when *dynamic*
-                 {:data-bind "foreach: tags"})
-      (map
-       (fn [tag]
-         [:li [:a (merge {:rel "tag"}
-                         (if *dynamic*
-                           {:data-bind "attr: {href: '/tags/' + $data}, text: $data"}
-                           {:href (str "/tags/" tag) }))
-               (when-not *dynamic*
-                 tag)]])
-       tags)]]))
+  [:div.tags {:ng-if "activity.tags.length > 0"}
+   [:span "Tags: "]
+   [:ul.tags
+    [:li {:ng-repeat "tag in activity.tags"}
+     [:a {:rel "tag"
+          :href "/tags/{{tag}}"}
+      "{{tag}}"]]]])
 
 (defn visibility-link
   [activity]
   ;; TODO: handle other visibilities
-  (when-not (:public activity)
-    "privately"))
+  [:span {:ng-if "!activity.public"}
+   "privately"])
 
 (defn published-link
   [activity]
-  (let [published (:published activity)]
-    [:time {:datetime "{{activity.published}}"
-            :title "{{activity.published}}"
-            :property "dc:published"}
-     [:a (merge {:href (uri activity)}
-                (when *dynamic*
-                  {:data-bind "text: published, attr: {href: '/notice/' + _id()}"}))
-      "{{activity.published}}"
-      ]]))
+  [:time {:datetime "{{activity.published}}"
+          :title "{{activity.published}}"
+          :property "dc:published"}
+   [:a {:href "{{activity.uri}}"}
+    "{{activity.published}}"]])
 
 (defn source-link
   [activity]
@@ -282,17 +253,15 @@
 
 (defn context-link
   [activity]
-  (bind-to "conversation"
-           [:a {:href "/main/conversations/{{activity.conversation}}"}
-            "in context"]))
+  [:a {:href "/main/conversations/{{activity.conversation}}"}
+   "in context"])
 
 (defn geo-link
   [activity]
-  (bind-to "geo"
-           [:span {:ng-if "activity.location.latitude && activity.location.longitude"}
-            "near "
-            [:a.geo-link {:href "#"}
-             "{{activity.location.latitude}}, {{activity.location.longitude}}"]]))
+  [:span {:ng-if "activity.location.latitude && activity.location.longitude"}
+   "near "
+   [:a.geo-link {:href "#"}
+    "{{activity.location.latitude}}, {{activity.location.longitude}}"]])
 
 (defn posted-link-section
   [activity]
@@ -378,36 +347,21 @@
 
 (defn enclosures-section
   [activity]
-  (when-let [resources (if *dynamic*
-                         [(Resource.)]
-                         (map
-                          model.resource/fetch-by-id
-                          (:resources activity)))]
-    [:ul.unstyled
-     (when *dynamic* {:data-bind "foreach: resources"})
-     (map
-      (fn [resource]
-        [:li {:data-model "resource"}
-         [:div (when *dynamic*
-                 {:data-bind "if: properties"})
-          [:div (when *dynamic*
-                  {:data-bind "if: properties()['og:type'] === 'video'"})
-           [:div.video-embed
-            [:iframe
-             (merge {:frameborder "0"
-                     :allowfullscreen "allowfullscreen"}
-                    (if *dynamic*
-                      {:data-bind "attr: {src: properties()['og:video']}"}))]]]]
-         [:a (merge {:rel "lightbox"}
-                    (if *dynamic*
-                      {:data-bind "attr: {href: url}"}
-                      {:href (:url resource)}))
-          [:img.enclosure
-           (merge {:alt ""}
-                  (if *dynamic*
-                    {:data-bind "attr: {src: url}"}
-                    {:src (:url resource)}))]]])
-      resources)]))
+  [:ul.unstyled
+   [:li {:data-model "resource"
+         :ng-repeat "resource in resources"}
+    [:div {:ng-if "resource.properties"}
+     [:div {:data-bind "if: properties()['og:type'] === 'video'"}
+      [:div.video-embed
+       [:iframe
+        {:frameborder "0"
+         :allowfullscreen "allowfullscreen"
+         :data-bind "attr: {src: properties()['og:video']}"}]]]]
+    [:a {:rel "lightbox"
+         :href "{{resource.url}}"}
+     [:img.enclosure
+      {:alt ""
+       :src "{{resource.url}}"}]]]])
 
 (def post-sections
   [#'enclosures-section
@@ -465,14 +419,12 @@
 
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
-  [:tr (merge {:data-model "activity"}
-              (when-not *dynamic*
-                { :data-id (:_id activity)}))
+  [:tr {:data-model "activity"
+        :data-id "{{activity.id}}"}
    [:td
-    (bind-to "author"
-      (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-        [:span {:data-model "user"}
-         (link-to user)]))]
+    (let [user (User.)]
+      [:span {:data-model "user"}
+       (link-to user)])]
    [:td (display-property activity :content)]
    [:td (actions-section activity)]])
 
@@ -515,18 +467,14 @@
      (actions-section activity)
      [:div.pull-left.avatar-section
       [:p "Loaded: {{loaded}}"]
-      (bind-to "author"
-               [:div {:data-model "user"
-                      :ng-controller "ShowUserController"
-                      :data-id "{{activity.actor.localId}}"
-                      ;; :ng-init "user = $parent.activity.actor"
-                      }
-         (sections.user/display-avatar user)])]
+      [:div {:data-model "user"
+             :ng-controller "ShowUserController"
+             :data-id "{{activity.actor.localId}}"}
+       (sections.user/display-avatar user)]]
      [:div
       [:header
-       (bind-to "author"
-         [:div {:data-model "user"}
-          (link-to user)])
+       [:div {:data-model "user"}
+        (link-to user)]
        (recipients-section activity)]
       [:div.entry-content {:property "dc:title"}
        "{{activity.content}}"]

@@ -86,27 +86,19 @@
      [:th "Value"]
      [:th "Actions"]]]
    [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
     (map #(admin-index-line % page) items)]])
 
 ;; admin-index-line
 
 (defsection admin-index-line [AuthenticationMechanism :html]
   [item & [page]]
-  [:tr {:data-model "authentication-mechanism"}
-   [:td
-    (if *dynamic*
-      {:data-bind "text: _id"}
-      (:_id item))]
+  [:tr {:data-model "authentication-mechanism"
+        :ng-repeat "mech in page.items"}
+   [:td "{{mech.id}}"]
    [:td
     (bind-to "user"
       [:div {:data-model "user"}
-       (let [user (if *dynamic*
-                    (User.)
-                    (model.user/fetch-by-id (:user item)))]
+       (let [user (User.)]
          (link-to user))])]
-   [:td
-    (if *dynamic*
-      {:data-bind "text: value"}
-      (:value item))]
+   [:td "{{mech.value}}"]
    [:td (actions-section item)]])
