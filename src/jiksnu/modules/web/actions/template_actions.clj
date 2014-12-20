@@ -1,7 +1,8 @@
 (ns jiksnu.modules.web.actions.template-actions
   (:require [ciste.filters :refer [deffilter]]
             [ciste.sections.default :refer [index-section show-section]]
-            [ciste.views :refer [defview]])
+            [ciste.views :refer [defview]]
+            [jiksnu.modules.web.sections.layout-sections :as sections.layout])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Domain
@@ -22,6 +23,7 @@
 (defn index-group-members      [] {})
 (defn index-resources          [] {})
 (defn index-users              [] {})
+(defn left-nav                 [] {})
 (defn public-timeline          [] {})
 (defn show-activity            [] {})
 (defn show-domain              [] {})
@@ -65,6 +67,10 @@
   (action))
 
 (deffilter #'index-users :http
+  [action request]
+  (action))
+
+(deffilter #'left-nav :http
   [action request]
   (action))
 
@@ -145,6 +151,11 @@
   {:template false
    :body
    (index-section [(User.)] {})})
+
+(defview #'left-nav :html
+  [_ _]
+  {:template false
+   :body (sections.layout/side-navigation)})
 
 (defview #'public-timeline :html
   [_ _]

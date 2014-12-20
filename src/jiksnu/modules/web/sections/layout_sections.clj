@@ -239,6 +239,7 @@
       "/webjars/angularjs/1.3.0/angular.min.js"
       "/webjars/angularjs/1.3.0/angular-route.min.js"
       "/webjars/angular-ui/0.4.0/angular-ui.min.js"
+      "/webjars/angular-ui-bootstrap/0.12.0/angular-ui-bootstrap.min.js"
       "/webjars/angular-ui-router/0.2.13/angular-ui-router.min.js"
       "/webjars/angular-moment/0.8.2-1/angular-moment.min.js"
       "/cljs/jiksnu.js")

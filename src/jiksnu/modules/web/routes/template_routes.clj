@@ -14,6 +14,9 @@
    [[:get "/partials/index-group-members.html"]      #'templates/index-group-members]
    [[:get "/partials/index-resources.html"]          #'templates/index-resources]
    [[:get "/partials/index-users.html"]              #'templates/index-users]
+
+   [[:get "/partials/left-nav.html"]                 #'templates/left-nav]
+
    [[:get "/partials/public-timeline.html"]          #'templates/public-timeline]
    [[:get "/partials/show-activity.html"]            #'templates/show-activity]
    [[:get "/partials/show-domain.html"]              #'templates/show-domain]

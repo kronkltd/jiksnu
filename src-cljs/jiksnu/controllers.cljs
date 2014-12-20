@@ -114,6 +114,12 @@
   (! $scope.init (fetch-page $scope $http "/main/domains.json"))
   (.init $scope))
 
+(def.controller jiksnuApp.IndexGroupsController
+  [$scope $http]
+  (.info js/console "Indexing groups")
+  (! $scope.init (fetch-page $scope $http "/main/groups.json"))
+  (.init $scope))
+
 (def.controller jiksnuApp.IndexUsersController
   [$scope $http]
   (.info js/console "Indexing users")
@@ -142,6 +148,12 @@
              :url "/main/domains"
              :templateUrl "/partials/index-domains.html"
              :controller "IndexDomainsController"))
+
+    (.state "indexGroups"
+            (obj
+             :url "/main/groups"
+             :templateUrl "/partials/index-groups.html"
+             :controller "IndexGroupsController"))
 
     (.state "indexUsers"
             (obj

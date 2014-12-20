@@ -49,6 +49,7 @@
                  [org.slf4j/slf4j-log4j12 "1.7.7"]
                  [org.webjars/angularjs "1.3.0"]
                  [org.webjars/angular-moment "0.8.2-1"]
+                 [org.webjars/angular-notify "2.0.2"]
                  [org.webjars/angular-ui "0.4.0-3"]
                  [org.webjars/angular-ui-bootstrap "0.12.0"]
                  [org.webjars/angular-ui-router "0.2.13"]
