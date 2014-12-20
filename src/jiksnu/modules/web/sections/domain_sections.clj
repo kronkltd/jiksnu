@@ -14,10 +14,7 @@
 
 (defn favicon-link
   [domain]
-  [:img
-   (if *dynamic*
-     {:data-bind "attr: {src: 'http://' + _id() + '/favicon.ico'}"}
-     {:src (str "http://" (:_id domain) "/favicon.ico")})])
+  [:img {:src "http://{{domain.id}}/favicon.ico"}])
 
 (defn discover-button
   [item]
@@ -25,9 +22,7 @@
 
 (defn model-button
   [item]
-  [:a (if *dynamic*
-        {:data-bind "attr: {href: '/model/domains/' + _id() + '.model'}"}
-        {:href (str "/model/domains/" (:_id item) ".model")})
+  [:a {:href "/model/domains/{{domain.id}}.model"}
    "Model"])
 
 (defn get-buttons
@@ -87,86 +82,75 @@
 (defsection index-line [Domain :html]
   [domain & _]
   [:tr {:data-model "domain"}
+
    [:td
     (favicon-link domain)
     (link-to domain)]
-   [:td (display-property domain :http)]
-   [:td (display-property domain :https)]
-   [:td (display-property domain :xmpp)]
-   [:td (if *dynamic*
-          {:data-bind "text: '' + !!ko.utils.unwrapObservable($data.discovered)"}
-          (:discovered domain))]
+   [:td "{{domain.http}}"]
+   [:td "{{domain.https}}"]
+   [:td "{{domain.xmpp}}"]
+   [:td "{{domain.discovered}}"]
    [:td
-    [:a
-     (if *dynamic*
-       {:data-bind "attr: {href: 'http://' + _id() + '/.well-known/host-meta'}"}
-       {:href (str "http://" (:_id domain) "/.well-known/host-meta")})
+    [:a {:href "http://{{domain.id}}/.well-known/host-meta"}
      "Host-Meta"]]
-   [:td
-    (if *dynamic*
-      {:data-bind "text: links().length"}
-      (count (:links domain)))]
+   [:td "{{domain.links.length}}"]
    [:th (actions-section domain)]])
 
 ;; link-to
 
 (defsection link-to [Domain :html]
   [domain & _]
-  [:a (if *dynamic*
-        {:data-bind "attr: {href: '/main/domains/' + _id()}, text: _id"}
-        {:href (uri domain)})
-   (when-not *dynamic*
-     (:_id domain))])
+  [:a {:href "/main/domains/{{domain.id}}"}
+   "{{domain.id}}"])
 
 ;; show-section
 
 (defsection show-section [Domain :html]
   [domain & _]
-  [:div {:data-model "domain"}
-   (actions-section domain)
-   [:table.table
-    [:thead]
-    [:tbody
-     [:tr
-      [:th "Id"]
-      [:td
-       (favicon-link domain)
-       [:span.domain-id (:_id domain)]]]
-     [:tr
-      [:th "XMPP"]
-      [:td (:xmpp domain)]]
-     [:tr
-      [:th "Discovered"]
-      [:td (:discovered domain)]]
-     [:tr
-      [:th "Created"]
-      [:td (display-property domain :created)]]
-     [:tr
-      [:th "Updated"]
-      [:td (display-property domain :updated)]]
-     (when-let [sc (:statusnet-config domain)]
-       (list
-        [:tr
-         [:th "Closed"]
-         [:td (-> sc :site :closed)]]
-        [:tr
-         [:th "Private"]
-         [:td (-> sc :site :private)]]
-        [:tr
-         [:th "Invite Only"]
-         [:td (-> sc :site :inviteonly)]]
-        [:tr
-         [:th "Admin"]
-         [:td (-> sc :site :email)]]
-        (when-let [license (:license sc)]
-          [:tr
-           [:th "License"]
-           [:td
-            ;; RDFa
-            [:a {:href (:url license)
-                 :title (:title license)}
-             [:img {:src (:image license)
-                    :alt (:title license)}]]]])))]]
-   (when-let [links (if *dynamic* [{}] (seq (:links domain)))]
-     (bind-to "links"
-       (sections.link/index-section links)))])
+  (let [sc (:statusnet-config domain)
+        license (:license sc)]
+    [:div {:data-model "domain"}
+     (actions-section domain)
+     [:table.table
+      [:thead]
+      [:tbody
+       [:tr
+        [:th "Id"]
+        [:td
+         (favicon-link domain)
+         [:span.domain-id "{{domain.id}}"]]]
+       [:tr
+        [:th "XMPP"]
+        [:td "{{domain.xmpp}}"]]
+       [:tr
+        [:th "Discovered"]
+        [:td "{{domain.discovered}}"]]
+       [:tr
+        [:th "Created"]
+        [:td "{{domain.created}}"]]
+       [:tr
+        [:th "Updated"]
+        [:td "{{domain.updated}}"]]
+       [:tr
+        [:th "Closed"]
+        [:td (-> sc :site :closed)]]
+       [:tr
+        [:th "Private"]
+        [:td (-> sc :site :private)]]
+       [:tr
+        [:th "Invite Only"]
+        [:td (-> sc :site :inviteonly)]]
+       [:tr
+        [:th "Admin"]
+        [:td (-> sc :site :email)]]
+       [:tr
+        [:th "License"]
+        [:td
+         ;; RDFa
+         [:a {:href (:url license)
+              :title (:title license)}
+          [:img {:src (:image license)
+                 :alt (:title license)}]]]]]]
+     (when-let [links (if *dynamic* [{}] (seq (:links domain)))]
+       (bind-to "links"
+                (sections.link/index-section links)))]))

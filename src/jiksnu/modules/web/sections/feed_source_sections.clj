@@ -35,24 +35,17 @@
      [:table.table
       [:tbody
        (when *dynamic* {:data-bind "foreach: items"})
-       (let [watchers (if *dynamic* [""] (:watchers source))]
-         (map
-          (fn [id]
-            (let [user (if *dynamic* (User.) (model.user/fetch-by-id id))]
-              [:tr (merge
-                    {:data-model "user"}
-                    #_(if *dynamic*
-                        {:data-bind
-                         (string/join ", "
-                                      ["if: $data"
-                                       "attr: {'data-target': $data}"])}))
-               [:td (link-to user)]
-               [:td
-                (action-link "feed-source" "remove-watcher" (:_id source)
-                             {:target (:_id user)
-                              :icon "trash"
-                              :title "Delete"})]]))
-          watchers))]])])
+       (let [watchers [""]
+             id (first watchers)
+             user (User.)]
+         [:tr {:data-model "user"}
+          [:td (link-to user)]
+          [:td
+           (action-link "feed-source" "remove-watcher" (:_id source)
+                        {:target (:_id user)
+                         :icon "trash"
+                         :title "Delete"})]]
+         )]])])
 
 (defn add-watcher-form
   [source]
@@ -133,8 +126,6 @@
     (when *dynamic* {:data-bind "foreach: items"})
     (map admin-index-line items)]])
 
-;; admin-index-line
-
 (defsection admin-index-line [FeedSource :html]
   [item & [page]]
   [:tr (merge {:data-model "feed-source"}
@@ -194,11 +185,8 @@
    [:td (link-to source)]
    [:td (display-property source :domain)]
    [:td
-    [:a (if *dynamic*
-          {:data-bind "attr: {href: topic}, text: topic"}
-          {:href (:topic source)})
-     (when-not *dynamic*
-       (:topic source))]]
+    [:a {:href "{{source.topic}}"}
+     "{{source.topic}}"]]
    [:td (display-property source :hub)]
    #_[:td (:mode source)]
    [:td (if *dynamic*

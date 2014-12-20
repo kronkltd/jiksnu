@@ -38,7 +38,15 @@
             (obj
              :url "/users"
              :templateUrl "/partials/index-users.html"
-             :controller "UserIndexController"))))
+             :controller "UserIndexController"))
+
+    (.state "indexDomains"
+            (obj
+             :url "/main/domains"
+             :templateUrl "/partials/index-domains.html"
+             :controller "DomainIndexController"))
+
+    ))
 
 (def.controller jiksnuApp.JiksnuController
   [$scope]
@@ -65,7 +73,7 @@
                items)
         ]
     (.log js/console "items" items)
-    (! $scope.items items)))
+    #_(! $scope.items items)))
 
 (def.controller jiksnuApp.NavBarController
   [$scope]
@@ -135,6 +143,21 @@
      (fn []
        (-> $http
            (.get "/users.json")
+           (.success
+            (fn [data]
+              (! $scope.page data))))))
+
+  (.init $scope))
+
+(def.controller jiksnuApp.DomainIndexController
+  [$scope $http]
+
+  (.info js/console "Indexing domains")
+
+  (! $scope.init
+     (fn []
+       (-> $http
+           (.get "/main/domains.json")
            (.success
             (fn [data]
               (! $scope.page data))))))

@@ -23,9 +23,7 @@
 
 (defn model-button
   [item]
-  [:a (if *dynamic*
-        {:data-bind "attr: {href: '/model/resources/' + ko.utils.unwrapObservable(_id) + '.model'}"}
-        {:href (format "/model/resources/%s.model" (:_id item))})
+  [:a {:href "/model/resources/{{resource.id}}.model"}
    "Model"])
 
 (defn get-buttons
@@ -80,21 +78,12 @@
   [item & [page]]
   [:tr {:data-model "resource"}
    [:td (link-to item)]
-   [:td (if *dynamic*
-          {:data-bind "text: domain"}
-          (:domain item))]
+   [:td "{{resource.domain}}"]
    [:td
-    [:a (when *dynamic*
-          {:data-bind "attr: {href: url}, text: url"})
-     (when-not *dynamic*
-       [:a {:href (:url item)}
-        (:url item)])]]
-   [:td (if *dynamic*
-          {:data-bind "text: status"}
-          (:status item))]
-   [:td (if *dynamic*
-          {:data-bind "text: contentType"}
-          (:contentType item))]
+    [:a {:href "{{resource.url}}"}
+     "{{resource.url}}"]]
+   [:td "{{resource.status}}"]
+   [:td "{{resource.contentType}}"]
    [:td (display-property item :encoding)]
    [:td (display-property item :requiresAuth)]
    #_[:td (if *dynamic*
@@ -107,16 +96,14 @@
 
 (defsection link-to [Resource :html]
   [source & _]
-  [:a (if *dynamic*
-        {:data-bind "attr: {href: '/resources/' + ko.utils.unwrapObservable(_id)}, text: _id"}
-        {:href (str "/resources/" (:_id source))})
-   (:topic source)])
+  [:a {:href "/resources/{{resource.id}}"}
+   "{{resource.topic}}"])
 
 ;; show-section
 
 (defsection show-section [Resource :html]
   [item & _]
-  (list
+  (let [links [{}]]
    (actions-section item)
    [:table.table
     [:tbody
@@ -154,9 +141,8 @@
      [:tr
       [:th "Updated"]
       [:td (display-property item :updated)]]]]
-   (when-let [links (if *dynamic* [{}] (seq (:links item)))]
-     (bind-to "links"
-       (sections.link/index-section links)))))
+   (bind-to "links"
+            (sections.link/index-section links))))
 
 ;; update-button
 
