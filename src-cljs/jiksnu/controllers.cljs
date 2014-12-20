@@ -8,45 +8,8 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
-(def.module jiksnuApp [ngRoute
-                       ;; ui
-                       ui.router
-                       ])
+(def.module jiksnuApp [ui.router])
 
-(def.config jiksnuApp [
-                       $stateProvider $urlRouterProvider
-                       ;; $locationProvider $routeProvider
-                       ]
-
-  (.otherwise $urlRouterProvider "/")
-
-  (doto $stateProvider
-
-    (.state "home"
-            (obj
-             :url ""
-             :templateUrl "/partials/public-timeline.html"
-             :controller "ConversationListController"))
-
-    (.state "showActivity"
-            (obj
-             :url "/notice/:id"
-             :templateUrl "/partials/show-activity.html"
-             :controller "ShowActivityController"))
-
-    (.state "indexUsers"
-            (obj
-             :url "/users"
-             :templateUrl "/partials/index-users.html"
-             :controller "UserIndexController"))
-
-    (.state "indexDomains"
-            (obj
-             :url "/main/domains"
-             :templateUrl "/partials/index-domains.html"
-             :controller "DomainIndexController"))
-
-    ))
 
 (def.controller jiksnuApp.JiksnuController
   [$scope]
@@ -134,32 +97,66 @@
 
   #_(.init $scope ""))
 
-(def.controller jiksnuApp.UserIndexController
+(defn fetch-page
+  [$scope $http url]
+  (fn []
+    (-> $http
+        (.get url)
+        (.success
+         (fn [data]
+           (! $scope.page data))))))
+
+(def.controller jiksnuApp.IndexDomainsController
   [$scope $http]
-
-  (.info js/console "Indexing users")
-
-  (! $scope.init
-     (fn []
-       (-> $http
-           (.get "/users.json")
-           (.success
-            (fn [data]
-              (! $scope.page data))))))
-
-  (.init $scope))
-
-(def.controller jiksnuApp.DomainIndexController
-  [$scope $http]
-
   (.info js/console "Indexing domains")
-
-  (! $scope.init
-     (fn []
-       (-> $http
-           (.get "/main/domains.json")
-           (.success
-            (fn [data]
-              (! $scope.page data))))))
-
+  (! $scope.init (fetch-page $scope $http "/main/domains.json"))
   (.init $scope))
+
+(def.controller jiksnuApp.IndexUsersController
+  [$scope $http]
+  (.info js/console "Indexing users")
+  (! $scope.init (fetch-page $scope $http "/users.json"))
+  (.init $scope))
+
+
+
+(def.config jiksnuApp [
+                       $stateProvider $urlRouterProvider
+                       ;; $locationProvider $routeProvider
+                       ]
+
+  (.otherwise $urlRouterProvider "/")
+  (doto $stateProvider
+
+    (.state "home"
+            (obj
+             :url ""
+             :templateUrl "/partials/public-timeline.html"
+             :controller "ConversationListController"))
+
+
+    (.state "indexDomains"
+            (obj
+             :url "/main/domains"
+             :templateUrl "/partials/index-domains.html"
+             :controller jiksnuApp.IndexDomainsController))
+
+    (.state "indexUsers"
+            (obj
+             :url "/users"
+             :templateUrl "/partials/index-users.html"
+             :controller jiksnuApp.IndexUsersController))
+
+
+
+    (.state "showActivity"
+            (obj
+             :url "/notice/:id"
+             :templateUrl "/partials/show-activity.html"
+             :controller "ShowActivityController"))
+
+
+    )
+
+)
+

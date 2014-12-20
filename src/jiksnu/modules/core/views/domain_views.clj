@@ -59,7 +59,7 @@
   {:title "Domains"
    :single true
    :body
-   (let [domains (if *dynamic* [(Domain.)] items)]
+   (let [domains [(Domain.)]]
      (with-page "domains"
        (pagination-links page)
        (index-section domains page)))})
@@ -77,6 +77,11 @@
   [request {:keys [items] :as page}]
   {:body {:title "Domains"
           :pages {:domains (format-page-info page)}}})
+
+(defview #'index :json
+  [request {:keys [items] :as page}]
+  {:body
+   {:items (index-section items page)}})
 
 ;; show
 

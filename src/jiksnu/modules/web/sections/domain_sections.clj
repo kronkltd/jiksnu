@@ -66,27 +66,21 @@
      [:th "# Links"]
      ]]
    [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
-    (map index-line domains)]])
-
-;; index-line
-
-(defsection index-line [Domain :html]
-  [domain & _]
-  [:tr {:data-model "domain"}
-
-   [:td
-    (favicon-link domain)
-    (link-to domain)]
-   [:td "{{domain.http}}"]
-   [:td "{{domain.https}}"]
-   [:td "{{domain.xmpp}}"]
-   [:td "{{domain.discovered}}"]
-   [:td
-    [:a {:href "http://{{domain.id}}/.well-known/host-meta"}
-     "Host-Meta"]]
-   [:td "{{domain.links.length}}"]
-   [:th (actions-section domain)]])
+    (let [domain (first domains)]
+      [:tr {:data-model "domain"
+            :ng-repeat "domain in page.items"}
+       [:td
+        (favicon-link domain)
+        (link-to domain)]
+       [:td "{{domain.http}}"]
+       [:td "{{domain.https}}"]
+       [:td "{{domain.xmpp}}"]
+       [:td "{{domain.discovered}}"]
+       [:td
+        [:a {:href "http://{{domain.id}}/.well-known/host-meta"}
+         "Host-Meta"]]
+       [:td "{{domain.links.length}}"]
+       [:th (actions-section domain)]])]])
 
 ;; link-to
 

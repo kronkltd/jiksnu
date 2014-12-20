@@ -38,7 +38,7 @@
 
 (defsection show-section [Domain :json]
   [item & [page]]
-  (with-format :jrd (show-section item page)))
+  item)
 
 (defsection show-section [Domain :model]
   [item & [page]]
