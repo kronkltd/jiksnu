@@ -45,7 +45,7 @@
    {:width size
     :height size
     :alt ""
-    :src "{{user.image[0].url}}"}])
+    :ng-src "{{user.image[0].url}}"}])
 
 (defn display-avatar
   ([user] (display-avatar user 64))

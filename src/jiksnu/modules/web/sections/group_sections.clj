@@ -89,13 +89,13 @@
   [groups & _]
   [:ul.profiles
    (let [group (first groups)]
-     [:li {:ng-repeat "group in groups"}
+     [:li {:ng-repeat "group in page.items"}
       [:section.profile.hentry.vcard
        {:data-model "group"}
        [:p
         [:a.url.entry-title
          {:href "/main/groups/{{group.nickname}}"}
-         [:img {:src "{{group.avatarUrl}}"}]
+         [:img {:ng-src "{{group.avatarUrl}}"}]
          [:span.nickname
           "{{group.fullname}} ({{group.nickname}})"]]]
        [:a.url {:href "{{group.homepage}}"}

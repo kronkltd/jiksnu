@@ -361,7 +361,7 @@
          :href "{{resource.url}}"}
      [:img.enclosure
       {:alt ""
-       :src "{{resource.url}}"}]]]])
+       :ng-src "{{resource.url}}"}]]]])
 
 (def post-sections
   [#'enclosures-section
@@ -476,7 +476,7 @@
          {:width 64
           :height 64
           :alt ""
-          :src "{{activity.actor.image[0].url}}"}]]]]
+          :ng-src "{{activity.actor.image[0].url}}"}]]]]
      [:div
       [:header
        [:div {:data-model "user"}

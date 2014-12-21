@@ -8,10 +8,10 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
-(def.module jiksnuApp [ui.router])
+(def.module jiksnuApp [ui.router ui.bootstrap])
 
 
-(def.controller jiksnuApp.JiksnuController
+(def.controller jiksnuApp.AppController
   [$scope]
   (! $scope.phones
      (clj->js [{:name "Nexus Foo"
@@ -44,6 +44,20 @@
   ;; TODO: pull from app config on page
   (! $scope.app.name "Jiksnu"))
 
+(def.controller jiksnuApp.LeftColumnController
+  [$scope]
+  (! $scope.loaded false)
+  )
+
+(def.controller jiksnuApp.RightColumnController
+  [$scope]
+  (! $scope.loaded false)
+  )
+
+(def.controller jiksnuApp.NewPostController
+  [$scope]
+  (! $scope.loaded false)
+  )
 (def.controller jiksnuApp.ShowActivityController
   [$scope $http $stateParams]
   (let [id (.-id $stateParams)
@@ -108,6 +122,12 @@
   (! $scope.init (fetch-page $scope $http "/main/conversations.json"))
   (.init $scope))
 
+(def.controller jiksnuApp.IndexClientsController
+  [$scope $http]
+  (.info js/console "Indexing clients")
+  (! $scope.init (fetch-page $scope $http "/main/clients.json"))
+  (.init $scope))
+
 (def.controller jiksnuApp.IndexDomainsController
   [$scope $http]
   (.info js/console "Indexing domains")
@@ -120,66 +140,98 @@
   (! $scope.init (fetch-page $scope $http "/main/groups.json"))
   (.init $scope))
 
+(def.controller jiksnuApp.IndexResourcesController
+  [$scope $http]
+  (.info js/console "Indexing resources")
+  (! $scope.init (fetch-page $scope $http "/resources.json"))
+  (.init $scope))
+
 (def.controller jiksnuApp.IndexUsersController
   [$scope $http]
   (.info js/console "Indexing users")
   (! $scope.init (fetch-page $scope $http "/users.json"))
   (.init $scope))
 
+(defn with-template
+  [o]
+  (clj->js
+   (merge
+    {"leftColumn" {:templateUrl "/partials/left-column.html"
+                   :controller "LeftColumnController"}
+     "rightColumn" {:templateUrl "/partials/right-column.html"
+                    :controller "RightColumnController"}}
+    o)))
 
-
-(def.config jiksnuApp [
-                       $stateProvider $urlRouterProvider
-                       ;; $locationProvider $routeProvider
-                       ]
+(def.config jiksnuApp [$stateProvider $urlRouterProvider]
 
   (.otherwise $urlRouterProvider "/")
+
   (doto $stateProvider
 
-    (.state "home"
+    (.state "root"
             (obj
              :url "/"
-             :templateUrl "/partials/public-timeline.html"
-             :controller "ConversationListController"))
-
+             ;; :abstract true
+             :views
+             (with-template
+               {"" {:templateUrl "/partials/public-timeline.html"
+                    :controller "ConversationListController"}})))
 
     (.state "indexDomains"
             (obj
              :url "/main/domains"
-             :templateUrl "/partials/index-domains.html"
-             :controller "IndexDomainsController"))
+             :views
+             (with-template
+               {"" {:templateUrl "/partials/index-domains.html"
+                    :controller "IndexDomainsController"}})))
 
     (.state "indexGroups"
             (obj
              :url "/main/groups"
-             :templateUrl "/partials/index-groups.html"
-             :controller "IndexGroupsController"))
+             :views
+             (with-template
+               {"" {:templateUrl "/partials/index-groups.html"
+                    :controller "IndexGroupsController"}})))
+
+    (.state "indexResources"
+            (obj
+             :url "/resources"
+             :views
+             (with-template
+               {"" {:templateUrl "/partials/index-resources.html"
+                    :controller "IndexResourcesController"}})))
 
     (.state "indexUsers"
             (obj
              :url "/users"
-             :templateUrl "/partials/index-users.html"
-             :controller "IndexUsersController"))
-
-
+             :views
+             (with-template
+               {"" {:templateUrl "/partials/index-users.html"
+                    :controller "IndexUsersController"}})))
 
     (.state "showActivity"
             (obj
              :url "/notice/:id"
-             :templateUrl "/partials/show-activity.html"
-             :controller "ShowActivityController"))
+             :views
+             (with-template
+               {"" {:templateUrl "/partials/show-activity.html"
+                    :controller "ShowActivityController"}})))
 
     (.state "showDomain"
             (obj
              :url "/main/domains/:id"
-             :templateUrl "/partials/show-domain.html"
-             :controller "ShowDomainController"))
+             :views
+             (with-template
+               {"" {:templateUrl "/partials/show-domain.html"
+                    :controller "ShowDomainController"}})))
 
     (.state "showUser"
             (obj
              :url "/users/:id"
-             :templateUrl "/partials/show-user.html"
-             :controller "ShowUserController"))
+             :views
+             (with-template
+               {"" {:templateUrl "/partials/show-user.html"
+                    :controller "ShowUserController"}})))
 
     )
 

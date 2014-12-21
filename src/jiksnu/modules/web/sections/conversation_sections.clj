@@ -173,9 +173,10 @@
         "{{conversation.parent}}"
         ]
        ]
-      (bind-to "$data.parent"
+      [:show-activity {:data-id "{{conversation.parent}}"}]
+      #_(bind-to "$data.parent"
                (show-section parent))
-      [:div {:data-bind "if: _view.showComments()"}
+      #_[:div {:data-bind "if: _view.showComments()"}
        (with-sub-page "activities"
          [:section.comments.clearfix
           [:div.comment {:data-model "activity"

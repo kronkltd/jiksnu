@@ -2,7 +2,8 @@
   (:require [ciste.filters :refer [deffilter]]
             [ciste.sections.default :refer [index-section show-section]]
             [ciste.views :refer [defview]]
-            [jiksnu.modules.web.sections.layout-sections :as sections.layout])
+            [jiksnu.modules.web.sections.layout-sections :as sections.layout]
+            [hiccup.core :as h])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Domain
@@ -175,3 +176,11 @@
    :body
    (show-section (Domain.) {})})
 
+
+(defn left-column
+  [_]
+  (h/html (sections.layout/left-column-section)))
+
+(defn right-column
+  [_]
+  (h/html (sections.layout/right-column-section)))

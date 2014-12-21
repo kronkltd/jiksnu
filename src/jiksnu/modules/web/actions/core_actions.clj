@@ -8,7 +8,7 @@
     :items
     [{:title "Public"
       :href "/"
-      :state "home"}
+      :state "root"}
      {:title "Users"
       :href "/users"
       :state "indexUsers"}

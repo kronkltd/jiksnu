@@ -14,6 +14,7 @@
             [jiksnu.modules.web.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
+            [jiksnu.modules.web.actions.template-actions :as templates]
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
@@ -84,6 +85,15 @@
            :path route} o])))
    handlers))
 
+(defn template-routes
+  []
+  (compojure/routes
+   (compojure/GET "/partials/left-column.html" [] #'templates/left-column)
+   (compojure/GET "/partials/right-column.html" [] #'templates/right-column)
+   )
+
+  )
+
 (def http-routes
   (->> registry/action-group-names
        (map load-module)
@@ -97,6 +107,7 @@
                  (when (:websocket? request)
                    ((http/wrap-aleph-handler stream/websocket-handler) request)))
   (compojure/GET "/main/events" [] stream/stream-handler)
+  (template-routes)
   (compojure/ANY "/admin*" request
                  (if (session/is-admin?)
                    ((middleware/wrap-log-request

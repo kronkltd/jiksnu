@@ -67,24 +67,18 @@
    [:ul
     [:li [:a {:href "#"} "#"]]]])
 
-(defn formats-section*
-  [format]
-  [:li.format-line
-   [:a {:href "{{format.href}}"}
-    [:span.format-icon
-     [:img {:alt ""
-            :src "/themes/classic/{{format.icon}}"}]]
-    [:span.format-label "{{format.label}}"]]])
-
 (defn formats-section
-  [response]
-  (let [formats [{}]]
-    [:div
-     [:h3 "Formats"]
-     [:ul.unstyled
-      (when *dynamic*
-        {:data-bind "foreach: formats"})
-      (map formats-section* formats)]]))
+  []
+  [:div
+   [:h3 "Formats"]
+   [:ul.unstyled
+    [:li.format-line
+     {:ng-repeat "format in formats"}
+     [:a {:href "{{format.href}}"}
+      [:span.format-icon
+       [:img {:alt ""
+              :ng-src "/themes/classic/{{format.icon}}"}]]
+      [:span.format-label "{{format.label}}"]]]]])
 
 (defn devel-warning
   [response]
@@ -119,9 +113,9 @@
 
 (defn new-post-section
   [request response]
-  (bind-to "postForm"
-           [:div {:ng-if "postForm.visible"}
-            (add-form (Activity.))]))
+  [:div {:ng-controller "NewPostController"}
+   [:div {:ng-if "postForm.visible"}
+    (add-form (Activity.))]])
 
 (defn title-section
   [request response]
@@ -179,21 +173,21 @@
   [:nav.navbar.navbar-default.navbar-inverse
    ;; .navbar-fixed-top
    {:role "navigation"
-    :ng-controller "NavBarController"}
+    :ng-controller "NavBarController"
+    :ui-view "navbar"
+    }
    [:div.container-fluid
     [:div.navbar-header
      (navbar-expand-button "#main-navbar-collapsw-1" "Toggle Navigation")
      [:a.navbar-brand.home {:href "/" :rel "top"}
-      (config :site :name) "{{app.name}}"]]
+      "{{app.name}}"]]
     [:div#main-navbar-collapse-1.navbar-collapse.collapse
      ;; (navbar-search-form)
-     [:ul.nav.navbar-nav.navbar-right (sections.auth/ng-login-section response)]
-     [:ul.nav.navbar-nav.navbar-right (sections.auth/login-section response)]
-     #_[:div.navbar-text.connection-info.navbar-right]
-     #_[:div.navbar-text.navbar-right
-        (if *dynamic* "dynamic" "static")]
+     [:ul.nav.navbar-nav.navbar-right
+      {:ng-if "user"}
+      (sections.auth/ng-login-section response)]
      #_[:div.visible-tablet.visible-phone
-      (side-navigation)]]]])
+        (side-navigation)]]]])
 
 (defn links-section
   [request response]
@@ -239,7 +233,7 @@
       "/webjars/angularjs/1.3.0/angular.min.js"
       "/webjars/angularjs/1.3.0/angular-route.min.js"
       "/webjars/angular-ui/0.4.0/angular-ui.min.js"
-      "/webjars/angular-ui-bootstrap/0.12.0/angular-ui-bootstrap.min.js"
+      "/webjars/angular-ui-bootstrap/0.12.0/ui-bootstrap.min.js"
       "/webjars/angular-ui-router/0.2.13/angular-ui-router.min.js"
       "/webjars/angular-moment/0.8.2-1/angular-moment.min.js"
       "/cljs/jiksnu.js")
@@ -253,12 +247,10 @@
        [:script (cemerick.austin.repls/browser-connected-repl-js)]))))
 
 (defn right-column-section
-  [response]
-  (let [user (if *dynamic*
-               (User.)
-               (or (:user response)
-                   (session/current-user)))]
-    (list
+  []
+  (let [user (User.)]
+    [:h3 "Right column"]
+    #_(list
      (bind-to "$root.targetUser() || $root.currentUser()"
        (user-info-section user))
      (:aside response))))
@@ -266,12 +258,19 @@
 (defn main-content
   [request response]
   [:section#main
-   (notification-area request response)
+   ;; (notification-area request response)
    (when (session/current-user)
      (new-post-section request response))
    (title-section request response)
-   (:body response)
-   ])
+   (:body response)])
+
+(defn left-column-section
+  []
+  (list
+   [:div#mainNav
+    (side-navigation)]
+   [:hr]
+   (formats-section)))
 
 (defn page-template-content
   [request response]
@@ -281,16 +280,15 @@
     "<!DOCTYPE html" ">"
     (h/html
      [:html
-      ;; TODO: Read the list of declared namespaces
-      (merge {:xmlns:sioc ns/sioc
-              :xmlns:dc ns/dc
-              :xmlns:foaf ns/foaf
-              :xmlns:dcterms ns/dcterms
-              ;; :version "HTML+RDFa 1.1"
-              :lang "en"
-              :xml:lang "en"
-              :ng-app "jiksnuApp"
-              :prefix (get-prefixes) })
+      {:xmlns:sioc ns/sioc
+       :xmlns:dc ns/dc
+       :xmlns:foaf ns/foaf
+       :xmlns:dcterms ns/dcterms
+       ;; :version "HTML+RDFa 1.1"
+       :lang "en"
+       :xml:lang "en"
+       :ng-app "jiksnuApp"
+       :prefix (get-prefixes) }
       [:head
        [:meta {:charset "UTF-8"}]
        [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
@@ -304,7 +302,8 @@
                (config :site :name)))]
        (style-section)
        (links-section request response)]
-      [:body {:data-dynamic (str *dynamic*)}
+      [:body
+       ;; {:ng-controller "AppController"}
        (navbar-section request response)
        [:div.container-fluid
         [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
@@ -313,16 +312,15 @@
           [:div.row
            (if-not (:single response)
              (list [:div.col-md-10 (main-content request response)]
-                   [:div.col-md-2 (right-column-section response)])
+                   [:div.col-md-2 {:ui-view "rightColumn"}
+                    #_(right-column-section response)])
              [:div.col-md-12 (main-content request response)])]]
 
 
          [:div.col-sm-2.col-sm-pull-10
-          [:aside#left-column.sidebar
-           [:div#mainNav
-            (side-navigation)]
-           [:hr]
-           (formats-section response)]]]
+          [:aside#left-column.sidebar {:ui-view "leftColumn"}
+           ;; (left-column-section)
+           ]]]
         [:footer.row.page-footer
          [:p "Copyright © 2011 KRONK Ltd."]
          [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"}

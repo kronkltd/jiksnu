@@ -51,6 +51,10 @@
   [user & _]
   (action-link "conversation" "delete" (:_id user)))
 
+(defsection show-section [Resource :json]
+  [user & _]
+  user)
+
 ;; index-block
 
 (defsection index-block [Resource :html]
