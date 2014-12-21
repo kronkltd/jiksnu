@@ -19,10 +19,17 @@
          (-> (req/request :get path)
              as-admin response-for)) =>
              (check [response]
-               response => map?
-               (:status response) => status/success?
-               (let [body (:body response)]
-                 body => (re-pattern (:username user))
-                 #_(let [doc (hiccup->doc body)]
-                     (enlive/select doc [:.user]) => truthy))))))
+
+                    response => map?
+
+                    (:status response) => status/success?
+
+                    (let [body (:body response)]
+                      body => (re-pattern (:username user))
+
+                      #_(let [doc (hiccup->doc body)]
+                          (enlive/select doc [:.user]) => truthy)
+                      )
+                    )
+             )))
  )

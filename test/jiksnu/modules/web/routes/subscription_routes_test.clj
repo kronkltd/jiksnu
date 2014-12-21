@@ -49,7 +49,7 @@
                                                    (model/map->Domain {:_id domain-name}))))))
      ))
 
- (context "get-subscriptions"
+ (future-context "get-subscriptions"
    (let [user (mock/a-user-exists)
          subscription (mock/a-subscription-exists {:from user})
          path (str "/users/" (:_id user) "/subscriptions")]

@@ -89,7 +89,7 @@
                  :pretty-print true
                  }}
                ]}
-  :hooks [leiningen.cljsbuild]
+  ;; :hooks [leiningen.cljsbuild]
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
@@ -102,7 +102,7 @@
                              :port 7888}
               :plugins [[com.cemerick/austin "0.1.4"]]
               :dependencies
-              [[midje         "1.6.3"]
+              [[midje         "1.7.0-SNAPSHOT"]
                [ring-mock     "0.1.5"]]}}
   :lesscss-output-path "resources/public/css"
 

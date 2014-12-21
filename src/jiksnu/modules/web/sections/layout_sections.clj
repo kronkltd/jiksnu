@@ -171,23 +171,18 @@
 (defn navbar-section
   [request response]
   [:nav.navbar.navbar-default.navbar-inverse
-   ;; .navbar-fixed-top
    {:role "navigation"
     :ng-controller "NavBarController"
-    :ui-view "navbar"
-    }
+    :ui-view "navbar"}
    [:div.container-fluid
     [:div.navbar-header
      (navbar-expand-button "#main-navbar-collapsw-1" "Toggle Navigation")
      [:a.navbar-brand.home {:href "/" :rel "top"}
       "{{app.name}}"]]
     [:div#main-navbar-collapse-1.navbar-collapse.collapse
-     ;; (navbar-search-form)
      [:ul.nav.navbar-nav.navbar-right
       {:ng-if "user"}
-      (sections.auth/ng-login-section response)]
-     #_[:div.visible-tablet.visible-phone
-        (side-navigation)]]]])
+      (sections.auth/ng-login-section response)]]]])
 
 (defn links-section
   [request response]
@@ -199,14 +194,14 @@
            [{:href "/rsd.xml"
              :type "application/rsd+xml"
              :rel "EditURI"}
-            #_{:href "/opensearch/notices"
-               :title "Notice Search"
-               :type "application/opensearchdescription+xml"
-               :rel "search"}
-            #_{:href "/opensearch/people"
-               :title "People Search"
-               :type "application/opensearchdescription+xml"
-               :rel "search"}
+            ;; {:href "/opensearch/notices"
+            ;;  :title "Notice Search"
+            ;;  :type "application/opensearchdescription+xml"
+            ;;  :rel "search"}
+            ;; {:href "/opensearch/people"
+            ;;  :title "People Search"
+            ;;  :type "application/opensearchdescription+xml"
+            ;;  :rel "search"}
             {:href (str "http://" (config :domain) "/favicon.ico")
              :rel "shortcut icon"}])))
 
@@ -258,7 +253,6 @@
 (defn main-content
   [request response]
   [:section#main
-   ;; (notification-area request response)
    (when (session/current-user)
      (new-post-section request response))
    (title-section request response)

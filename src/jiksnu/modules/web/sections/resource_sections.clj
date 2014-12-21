@@ -69,7 +69,6 @@
      [:th "Content Type"]
      [:th "Encoding"]
      [:th "Requires Auth"]
-     #_[:th "Created"]
      [:th "Updated"]]]
    [:tbody
     (let [item (first items)]
@@ -84,7 +83,6 @@
        [:td "{{resource.contentType}}"]
        [:td "{{resource.encoding}}"]
        [:td "{{resource.requiresAuth}}"]
-       #_[:td "{{resource.created}}"]
        [:td "{{resource.updated}}"]
        [:td (actions-section item)]])]])
 

@@ -40,28 +40,28 @@
 (defn authorization-header
   "Given an auth map, returns an authorization header"
   [params]
-  (let [oauth-token (get params "oauth_token")
+  (let [callback         (get params "oauth_callback")
+        signature-method (get params "oauth_signature_method")
+        consumer-key     (get params "oauth_consumer_key")
+        version          (get params "oauth_version")
+        oauth-token      (get params "oauth_token")
+        timestamp        (get params "oauth_timestamp")
+        nonce            (get params "oauth_nonce")
+        signature        (get params "oauth_signature")
         format-str (str "OAuth "
-                        "oauth_callback=\"%s\", "
-                        "oauth_signature_method=\"%s\", "
-                        "oauth_consumer_key=\"%s\", "
-                        "oauth_version=\"%s\", "
-                        (when oauth-token
-                          "oauth_token=\"%s\", ")
-                        "oauth_timestamp=\"%s\", "
-                        "oauth_nonce=\"%s\", "
-                        "oauth_signature=\"%s\"")]
+                        (when callback         "oauth_callback=\"%s\", ")
+                        (when signature-method "oauth_signature_method=\"%s\", ")
+                        (when consumer-key     "oauth_consumer_key=\"%s\", ")
+                        (when version          "oauth_version=\"%s\", ")
+                        (when oauth-token      "oauth_token=\"%s\", ")
+                        (when timestamp        "oauth_timestamp=\"%s\", ")
+                        (when nonce            "oauth_nonce=\"%s\", ")
+                        (when signature        "oauth_signature=\"%s\""))]
     (apply format format-str
            (filter identity
-                   [(get params "oauth_callback")
-                    (get params "oauth_signature_method")
-                    (get params "oauth_consumer_key")
-                    (get params "oauth_version")
-                    (when oauth-token
-                      oauth-token)
-                    (get params "oauth_timestamp")
-                    (get params "oauth_nonce")
-                    (get params "oauth_signature")]))))
+                   [callback signature-method consumer-key
+                    version oauth-token timestamp nonce
+                    signature]))))
 
 (defn parse-authorization-header
   [header]

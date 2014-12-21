@@ -105,7 +105,7 @@
 (defn should-see-n-users
   [n]
   (check-response
-   (let [users (webdriver/find-elements {:data-model "user"} #_"*[data-model='user']")]
+   (let [users (webdriver/find-elements {:data-model "user"})]
      (count users) => n)))
 
 (defn should-see-domain

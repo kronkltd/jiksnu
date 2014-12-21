@@ -77,7 +77,7 @@
        [:td "{{domain.xmpp}}"]
        [:td "{{domain.discovered}}"]
        [:td
-        [:a {:href "http://{{domain.id}}/.well-known/host-meta"}
+        [:a {:href "http://{{domain._id}}/.well-known/host-meta"}
          "Host-Meta"]]
        [:td "{{domain.links.length}}"]
        [:th (actions-section domain)]])]])
@@ -86,10 +86,8 @@
 
 (defsection link-to [Domain :html]
   [domain & _]
-  [:a {:ui-sref "showDomain({id : domain['_id']})"
-       ;; :href "/main/domains/{{domain['_id']}}"
-       }
-   "{{domain['_id']}}"])
+  [:a {:ui-sref "showDomain({id : domain._id})"}
+   "{{domain._id}}"])
 
 ;; show-section
 
@@ -106,7 +104,7 @@
         [:th "Id"]
         [:td
          (favicon-link domain)
-         [:span.domain-id "{{domain.id}}"]]]
+         [:span.domain-id "{{domain._id}}"]]]
        [:tr
         [:th "XMPP"]
         [:td "{{domain.xmpp}}"]]

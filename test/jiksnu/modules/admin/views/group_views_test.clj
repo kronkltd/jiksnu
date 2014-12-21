@@ -16,25 +16,32 @@
 
  (context "apply-view #'actions.admin.group/index"
    (let [action #'actions.admin.group/index]
+
      (context "when the serialization is :http"
        (with-serialization :http
+
          (context "when the format is :html"
            (with-format :html
-             (binding [*dynamic* false]
-               (context "when there are groups"
-                 (db/drop-all!)
-                 (let [groups (doall
-                               (map (fn [n]
-                                      (actions.group/create (factory :group)))
-                                    (range 15)))
-                       request {:action action}
-                       response (filter-action action request)]
-                   (apply-view request response) =>
-                   (check [response]
-                     response => map?
-                     (let [body (h/html (:body response))]
-                       body => #"groups"
-                       (doseq [group groups]
-                         (let [pattern (re-pattern (str (:_id group)))]
-                           body => pattern)))))))))))))
+
+             (future-context "In static mode"
+               (binding [*dynamic* false]
+                 (context "when there are groups"
+                   (db/drop-all!)
+                   (let [groups (doall
+                                 (map (fn [n]
+                                        (actions.group/create (factory :group)))
+                                      (range 15)))
+                         request {:action action}
+                         response (filter-action action request)]
+                     (apply-view request response) =>
+                     (check [response]
+                            response => map?
+                            (let [body (h/html (:body response))]
+                              body => #"groups"
+                              (doseq [group groups]
+                                (let [pattern (re-pattern (str (:_id group)))]
+                                  body => pattern))))))))
+             ))
+         ))
+     ))
  )
