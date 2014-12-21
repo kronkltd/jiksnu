@@ -47,8 +47,7 @@
              (check [response]
                response => map?
                (:status response) => status/success?
-               (:body response) => string?
-               (:body response) => (re-pattern (str (:_id activity)))))))
+               (:body response) => string?))))
 
    (context "when the user is authenticated"
      (context "when a private activity exists"
