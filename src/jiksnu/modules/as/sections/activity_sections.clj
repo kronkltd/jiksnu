@@ -15,7 +15,7 @@
 
 (defsection show-section [Activity :json]
   [activity & _]
-  (merge {:actor (show-section (model.activity/get-author (log/spy :info activity)))
+  (merge {:actor (show-section (model.activity/get-author activity))
           :content (:content activity)
           :id (:id activity)
           :localId (:_id activity)
@@ -23,59 +23,33 @@
           :object (let [object (:object activity)
                         object-link (format "https://%s/api/%s/%s" (config :domain)
                                             (:type object)
-                                            (:_id object)
-                                            )
+                                            (:_id object))
                         likes-link (str object-link "/likes")
                         replies-link (str object-link "/replies")
-                        shares-link (str object-link "/shares")
-                        ]
+                        shares-link (str object-link "/shares")]
                     {:name (:title activity)
                      :id (:id object)
                      :type (:type object)
                      :objectType (:type object)
-                     :links {
-                             :self {
-                                    :href object-link
-                                    }
-                             }
-                     :likes {
-                             :url likes-link
+                     :links {:self {:href object-link}}
+                     :likes {:url likes-link
                              :totalItems 0
-                             :pump_io {
-                                       :proxyURL (proxy-url likes-link)
-                                       }
-
-                             }
-                     :replies {
-                             :url replies-link
-                             :totalItems 0
-                             :pump_io {
-                                       :proxyURL (proxy-url replies-link)
-                                       }
-
-
-                               }
-                     :shares {
-                             :url shares-link
-                             :totalItems 0
-                             :pump_io {
-                                       :proxyURL (proxy-url shares-link)
-                                       }
-
-
-                               }
+                             :pump_io {:proxyURL (proxy-url likes-link)}}
+                     :replies {:url replies-link
+                               :totalItems 0
+                               :pump_io {:proxyURL (proxy-url replies-link)}}
+                     :shares {:url shares-link
+                              :totalItems 0
+                              :pump_io {:proxyURL (proxy-url shares-link)}}
                      :content (or (:content object)
-                                  (:content activity)
-                                  )
+                                  (:content activity))
                      :updated (or (:updated object)
                                   (:updated activity))
                      :published (or (:created object)
-                                  (:created activity))
+                                    (:created activity))
                      :url (:id object)
-                     :pump_io {
-                               :shared false
-                               :proxyUrl (proxy-url (:id object))
-                               }
+                     :pump_io {:shared false
+                               :proxyUrl (proxy-url (:id object))}
                      :liked false
 
                      :tags (map

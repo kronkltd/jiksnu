@@ -1,13 +1,10 @@
 (ns jiksnu.modules.admin.sections.group-sections
   (:require [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section delete-button]]
+            [ciste.sections.default :refer [actions-section]]
             [clojure.tools.logging :as log]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.modules.core.sections :refer [admin-index-block
-                                                  admin-index-line]]
-            [jiksnu.modules.web.sections :refer [display-property]])
-  (:import jiksnu.model.Group
-           jiksnu.model.User))
+                                                  admin-index-line]])
+  (:import jiksnu.model.Group))
 
 (defsection admin-index-block [Group :html]
   [groups & [options & _]]
@@ -17,17 +14,16 @@
      [:th "Name"]
      [:th "Full Name"]
      [:th "Homepage"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody
     (map #(admin-index-line % options) groups)]])
 
 (defsection admin-index-line [Group :html]
   [group & [options & _]]
-  [:tr (merge {:data-model "group"}
-              (if *dynamic*
-                {}
-                {:data-id (:_id group)}))
-   [:td (display-property group :nickname)]
-   [:td (display-property group :fullname)]
-   [:td (display-property group :homepage)]
+  [:tr {:data-model "group"
+        :ng-repeat "group in page.items"
+        :data-id "{{group.id}}"}
+   [:td "{{group.nickname}}"]
+   [:td "{{group.fullname}}"]
+   [:td "{{group.homepage}}"]
    [:td (actions-section group)]])
 

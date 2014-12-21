@@ -1,10 +1,11 @@
 (ns jiksnu.modules.web.sections.conversation-sections
   (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section delete-button title index-line
-                                       index-block index-line link-to show-section update-button]]
+        [ciste.sections.default :only [actions-section delete-button title
+                                       index-line index-block index-line link-to
+                                       show-section update-button]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
-        [jiksnu.modules.web.sections :only [action-link bind-to control-line display-property
-                                            display-timestamp dropdown-menu pagination-links
+        [jiksnu.modules.web.sections :only [action-link bind-to control-line
+                                            dropdown-menu pagination-links
                                             with-sub-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
@@ -85,7 +86,7 @@
          "{{conversation.url}}"]]
        [:td "{{conversation.parent}"]
        [:td "{{conversation.itemCount}}"]
-       ;; [:td (display-property item :created)]
+       ;; [:td "{{conversation.created}}"]
        [:td "{{conversation.lastUpdated}}"]
        [:td "{{conversation.updated}}"]
        [:td (actions-section item)]])]])
@@ -105,13 +106,11 @@
 (defsection index-block [Conversation :html]
   [items & [page]]
   [:div
-   ;; {:ng-controller "ConversationListController"}
-   [:a#showComments.btn {:href "#"} "Show Comments"]
+   [:a#showComments.btn {:ng-click "showComments"}
+    "Show Comments"]
    (pagination-links page)
    [:div.conversations
     (let [item (first items)]
-
-
       (index-line item))]])
 
 (defn show-details
@@ -143,7 +142,7 @@
       [:td "{{conversation.updated}}"]]
      [:tr
       [:th "Last Updated"]
-      [:td (display-timestamp item :lastUpdated)]]
+      [:td "{{conversation.lastUpdated}}"]]
      [:tr
       [:th "Source"]
       [:td

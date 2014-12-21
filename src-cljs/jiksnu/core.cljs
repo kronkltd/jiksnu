@@ -57,34 +57,34 @@
   (initialize-logging)
   (log/info *logger* "init")
 
-  (! ko/binding-provider.instance (providers/DataModelProvider.))
-  (! ko/binding-provider.instance (providers/DataModelProvider.))
-  (! ko/binding-provider.instance (providers/PageProvider.))
-  (! ko/binding-provider.instance (providers/SubPageProvider.))
+  ;; (! ko/binding-provider.instance (providers/DataModelProvider.))
+  ;; (! ko/binding-provider.instance (providers/DataModelProvider.))
+  ;; (! ko/binding-provider.instance (providers/PageProvider.))
+  ;; (! ko/binding-provider.instance (providers/SubPageProvider.))
 
 
-  (set! model/_model              (model/AppViewModel.))
-  (! js/window.model              model/_model)
+  ;; (set! model/_model              (model/AppViewModel.))
+  ;; (! js/window.model              model/_model)
 
-  (let [app (model/App.)]
-    (.set model/_model "app" app)
-    (! js/window._app app))
+  ;; (let [app (model/App.)]
+  ;;   (.set model/_model "app" app)
+  ;;   (! js/window._app app))
 
-  (set! model/_view               (.viewModel js/kb model/_model))
-  (! js/window._view              model/_view)
-  (set! _router                   (routes/Router.))
+  ;; (set! model/_view               (.viewModel js/kb model/_model))
+  ;; (! js/window._view              model/_view)
+  ;; (set! _router                   (routes/Router.))
 
-  #_(when (dommy/attr (sel1 :body) "data-dynamic")
-    (ko/apply-bindings model/_view))
+  ;; (when (dommy/attr (sel1 :body) "data-dynamic")
+  ;;   (ko/apply-bindings model/_view))
 
   ;; (initialize-connection)
 
-  (.start (.-history js/Backbone) (obj :pushState true))
+  ;; (.start (.-history js/Backbone) (obj :pushState true))
 
-  (handlers/setup-handlers)
+  ;; (handlers/setup-handlers)
 
-  #_(doseq [model-name model/model-names]
-    (! ko/observables.|model-name| (obj)))
+  ;; (doseq [model-name model/model-names]
+  ;;   (! ko/observables.|model-name| (obj)))
 
   )
 

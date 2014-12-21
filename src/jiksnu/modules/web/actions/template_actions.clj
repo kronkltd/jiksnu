@@ -1,7 +1,9 @@
 (ns jiksnu.modules.web.actions.template-actions
-  (:require [ciste.filters :refer [deffilter]]
+  (:require [ciste.core :refer [with-serialization with-format]]
+            [ciste.filters :refer [deffilter]]
             [ciste.sections.default :refer [index-section show-section]]
             [ciste.views :refer [defview]]
+            [jiksnu.modules.core.sections :refer [admin-index-section]]
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [hiccup.core :as h])
   (:import jiksnu.model.Activity
@@ -184,3 +186,13 @@
 (defn right-column
   [_]
   (h/html (sections.layout/right-column-section)))
+
+(defn admin-activity
+  [_]
+  (h/html (admin-index-section [(Activity.)] {})))
+
+(defn admin-conversations
+  [_]
+  (with-serialization  :http
+    (with-format :html
+      (h/html (admin-index-section [(Conversation.)] {})))))

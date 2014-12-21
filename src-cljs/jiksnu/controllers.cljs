@@ -152,6 +152,24 @@
   (! $scope.init (fetch-page $scope $http "/users.json"))
   (.init $scope))
 
+(def.controller jiksnuApp.AdminConversationsController
+  [$scope $http]
+  (! $scope.init (fetch-page $scope $http "/admin/conversations.json"))
+  (.init $scope))
+
+(def.directive jiksnuApp.showActivity
+  [$http]
+  (obj
+   :templateUrl "/partials/show-activity.html"
+   :link (fn [$scope element attrs]
+           (let [id (.-id attrs)]
+             (.log js/console "running link" id)
+
+             (-> $http
+                 (.get (str "/notice/" id ".json"))
+                 (.success (fn [data]
+                             (! $scope.activity data))))))))
+
 (defn with-template
   [o]
   (clj->js
@@ -162,9 +180,14 @@
                     :controller "RightColumnController"}}
     o)))
 
-(def.config jiksnuApp [$stateProvider $urlRouterProvider]
+(def.config jiksnuApp [$stateProvider $urlRouterProvider
+                       $locationProvider]
 
   (.otherwise $urlRouterProvider "/")
+
+  (-> $locationProvider
+      (.hashPrefix "!")
+      (.html5Mode true))
 
   (doto $stateProvider
 
@@ -233,7 +256,13 @@
                {"" {:templateUrl "/partials/show-user.html"
                     :controller "ShowUserController"}})))
 
-    )
+    (.state "adminConversations"
+            (obj
+             :url "/admin/conversations"
+             :views
+             (with-template
+               {"" {:templateUrl "/partials/admin-conversations.html"
+                    :controller "AdminConversationsController"}})))
 
-)
+    ))
 

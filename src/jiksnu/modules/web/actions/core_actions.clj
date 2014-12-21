@@ -38,7 +38,8 @@
        {:href "/admin/clients"
         :title "Clients"}
        {:href "/admin/conversations"
-        :title "Conversations"}
+        :title "Conversations"
+        :state "adminConversations"}
        {:href "/admin/feed-sources"
         :title "Feed Sources"}
        {:href "/admin/feed-subscriptions"

@@ -6,7 +6,7 @@
             [ciste.routes :refer [resolve-routes]]
             [clojure.tools.logging :as log]
             [clojurewerkz.route-one.core :refer [*base-url*]]
-            [compojure.core :as compojure]
+            [compojure.core :as compojure :refer [GET]]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
@@ -88,11 +88,11 @@
 (defn template-routes
   []
   (compojure/routes
-   (compojure/GET "/partials/left-column.html" [] #'templates/left-column)
-   (compojure/GET "/partials/right-column.html" [] #'templates/right-column)
-   )
+   (GET "/partials/left-column.html"         [] #'templates/left-column)
+   (GET "/partials/right-column.html"        [] #'templates/right-column)
+   (GET "/partials/admin-conversations.html" [] #'templates/admin-conversations)
 
-  )
+   ))
 
 (def http-routes
   (->> registry/action-group-names

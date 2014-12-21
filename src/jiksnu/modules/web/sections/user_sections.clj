@@ -1,13 +1,12 @@
 (ns jiksnu.modules.web.sections.user-sections
   (:require [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section title uri full-uri show-section add-form
+            [ciste.sections.default :refer [actions-section title show-section add-form
                                             edit-button delete-button link-to index-line
                                             show-section-minimal update-button index-block]]
             [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-actions-section admin-index-block
@@ -17,7 +16,6 @@
                                                 display-property dropdown-menu
                                                 pagination-links]]
             [jiksnu.session :as session]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
@@ -178,13 +176,9 @@
       #'admin-button
       #'delete-button])))
 
-;; actions-section
-
 (defsection actions-section [User :html]
   [item]
   (dropdown-menu item (get-buttons)))
-
-;; admin-actions-section
 
 (defsection admin-actions-section [User :html]
   [user & [page & _]]
@@ -204,8 +198,6 @@
     (let [items [(User.)]]
       (map #(admin-index-line % page) items))]])
 
-;; admin-index-line
-
 (defsection admin-index-line [User :html]
   [user & [page & _]]
   [:tr {:data-model "user"
@@ -222,13 +214,9 @@
          (link-to domain))])]
    [:td (actions-section user)]])
 
-;; admin-index-section
-
 (defsection admin-index-section [User :html]
   [items & [page & _]]
   (admin-index-block items page))
-
-;; admin-show-section
 
 (defsection admin-show-section [User :html]
   [item & [response]]

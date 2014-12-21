@@ -32,45 +32,30 @@
              (context "when the conversation is empty"
                (let [item (Conversation.)]
 
-                 (context "when dynamic is false"
-                   (binding [ko/*dynamic* false]
+                 (show-section item) =>
+                 (check [response]
+                        (let [resp-str (h/html response)]
+                          resp-str => string?)
 
-                     (show-section item) =>
-                     (check [response]
-                       (let [resp-str (h/html response)]
-                         resp-str => string?)
-
-                       (let [doc (hiccup->doc response)]
-                         (count doc) => 1
-                         doc => (partial every? map?)))
-                     ))
-                 ))
+                        (let [doc (hiccup->doc response)]
+                          (count doc) => 1
+                          doc => (partial every? map?)))))
 
              (context "when given a real conversation"
                (let [item (mock/a-conversation-exists)
                      activity (mock/there-is-an-activity {:conversation item})]
 
-                 (context "when dynamic is false"
-                   (binding [ko/*dynamic* false]
+                 (show-section item) =>
+                 (check [response]
+                        (let [resp-str (h/html response)]
+                          resp-str => string?)
 
-                     (show-section item) =>
-                     (check [response]
-                       (let [resp-str (h/html response)]
-                         resp-str => string?)
+                        (let [doc (hiccup->doc response)]
+                          (count doc) => 1
+                          doc => (partial every? map?)
 
-                       (let [doc (hiccup->doc response)]
-                         (count doc) => 1
-                         doc => (partial every? map?)
-
-                         (let [conv-elts (enlive/select doc [:.conversation-section])]
-                           (count conv-elts) => 1
-
-                           (doseq [elt conv-elts]
-                             (get-in elt [:attrs :data-id]) => (str (:_id item))))
-
-                         (let [conv-elts (select-by-model doc "activity")]
-                           (count conv-elts) => 1)))))
-                 ))
+                          (let [conv-elts (enlive/select doc [:.conversation-section])]
+                            (count conv-elts) => 1)))))
              ))
          )))
    )
