@@ -15,3 +15,6 @@
   [action request]
   (action (current-user-id)))
 
+(deffilter #'actions.site/status :http
+  [action request]
+  (action))

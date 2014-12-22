@@ -39,10 +39,20 @@
     #_(! $scope.items items)))
 
 (def.controller jiksnuApp.NavBarController
-  [$scope]
+  [$scope $http]
 
   ;; TODO: pull from app config on page
-  (! $scope.app.name "Jiksnu"))
+  ;; (! $scope.app.name "Jiksnu")
+
+  (-> $http
+      (.get "/status")
+      (.success (fn [data]
+                  (! $scope.app data)
+                  ))
+      )
+
+
+  )
 
 (def.controller jiksnuApp.LeftColumnController
   [$scope]

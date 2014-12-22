@@ -12,9 +12,9 @@
      {:title "Users"
       :href "/users"
       :state "indexUsers"}
-     {:title "Feeds"
-      :href "/main/feed-sources"
-      :state "indexFeedSources"}
+     ;; {:title "Feeds"
+     ;;  :href "/main/feed-sources"
+     ;;  :state "indexFeedSources"}
      {:title "Domains"
       :href "/main/domains"
       :state "indexDomains"}

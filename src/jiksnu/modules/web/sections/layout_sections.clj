@@ -106,10 +106,8 @@
   [request response]
   [:div#flash
    [:ul.unstyled
-    (when *dynamic* {:data-bind "foreach: notifications"})
-    (if *dynamic*
-      (notification-line nil)
-      (when-let [flash (:flash request)] (notification-line flash)))]])
+    {:data-bind "foreach: notifications"}
+    (notification-line nil)]])
 
 (defn new-post-section
   [request response]
@@ -119,9 +117,7 @@
 
 (defn title-section
   [request response]
-  [:h1 (if *dynamic*
-         {:data-bind "text: title"}
-         (:title response))])
+  [:h1 {:data-bind "text: title"}])
 
 (defn fork-me-link
   []
@@ -180,9 +176,25 @@
      [:a.navbar-brand.home {:href "/" :rel "top"}
       "{{app.name}}"]]
     [:div#main-navbar-collapse-1.navbar-collapse.collapse
-     [:ul.nav.navbar-nav.navbar-right
-      {:ng-if "user"}
-      (sections.auth/ng-login-section response)]]]])
+     [::ul.nav.navbar-nav.navbar-right {:ng-if "app.user"}
+      [:li.dropdown
+       [:a.dropdown-toggle (merge {:href "#" :data-toggle "dropdown"})
+        [:span
+         [:span {:data-model "user"}
+          [:show-avatar {:data-id "{{app.user}}"}]
+          "{{app.user}}"
+          [:link-to {:data-id "{{app.user}}" :data-model "user"}]]]
+        [:b.caret]]
+       [:ul.dropdown-menu
+        [:li
+         [:a.settings-link {:href "/main/settings"} "Settings"]
+         [:a.profile-link {:href "/main/profile"} "Profile"]
+         [:a.logout-link {:href "/main/logout?_method=POST"
+                          :target "_self"} "Log out"]]]]]
+     [::ul.nav.navbar-nav.navbar-right {:ng-if "!app.user"}
+      [:li.unauthenticated [:a.login-link {:href "/main/login"} "Login"]]
+      [:li.divider-vertical]
+      [:li [:a.register-link {:href "/main/register"} "Register"]]]]]])
 
 (defn links-section
   [request response]

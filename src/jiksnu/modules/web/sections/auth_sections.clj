@@ -12,41 +12,10 @@
   (:import jiksnu.model.AuthenticationMechanism
            jiksnu.model.User))
 
-(defn logout-button
-  [user]
-  [:li.dropdown
-   [:a.dropdown-toggle (merge {:href "#" :data-toggle "dropdown"})
-    [:span
-     (if *dynamic* {:data-bind "with: currentUser"})
-     [:span {:data-model "user"}
-      (display-avatar-img user 18)
-      (display-property user :name)]]
-    [:b.caret]]
-   [:ul.dropdown-menu
-    [:li
-     [:a.settings-link {:href "/main/settings"} "Settings"]
-     [:a.profile-link {:href "/main/profile"} "Profile"]
-     ;; TODO: need a better way to do this when there is no javascript
-     [:a.logout-link {:href "/main/logout?_method=POST"} "Log out"]]]])
-
-(defn login-button
+(defn ng-login-section
   []
   (list
-   [:li.unauthenticated [:a.login-link {:href "/main/login"} "Login"]]
-   [:li.divider-vertical]
-   [:li [:a.register-link {:href "/main/register"} "Register"]]))
-
-(defn ng-login-section
-  [response]
-  (if-let [authenticated (current-user)]
-    (logout-button authenticated)
-    (login-button)))
-
-(defn login-section
-  [response]
-  (if-let [authenticated (current-user)]
-    (logout-button authenticated)
-    (login-button)))
+   ))
 
 (defn password-page
   [user]
@@ -97,8 +66,8 @@
    [:td "{{mech.id}}"]
    [:td
     (bind-to "user"
-      [:div {:data-model "user"}
-       (let [user (User.)]
-         (link-to user))])]
+             [:div {:data-model "user"}
+              (let [user (User.)]
+                (link-to user))])]
    [:td "{{mech.value}}"]
    [:td (actions-section item)]])
