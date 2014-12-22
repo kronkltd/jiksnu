@@ -17,9 +17,9 @@
    [[:get    "/api/user/:username/profile"]     {:action #'user/show
                                                  :format :as}]
 
-   [[:get    "/main/profile"]                   #'user/profile]
+   ;; [[:get    "/main/profile"]                   #'user/profile]
    [[:post   "/main/profile"]                   #'user/update-profile]
-   [[:get    "/main/register"]                  #'user/register-page]
+   ;; [[:get    "/main/register"]                  #'user/register-page]
    [[:post   "/main/register"]                  #'user/register]
    ;; [[:get    "/main/xrd"]                       #'user/user-meta]
 

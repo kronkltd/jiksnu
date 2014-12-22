@@ -69,8 +69,6 @@
   {:title "Edit Profile"
    :body [:div (sections.user/edit-form user)]})
 
-;; register
-
 (defview #'actions.user/register :html
   [request user]
   (-> "/"
@@ -79,22 +77,11 @@
       (assoc :flash "user has been created")
       (assoc :session {:id (:_id user)})))
 
-;; register-page
-
-(defview #'actions.user/register-page :html
-  [request user]
-  {:title "Register"
-   :body (sections.user/register-form user)})
-
-;; show
-
 (defview #'actions.user/show :html
   [request user]
   {:template false
    :body (with-format :as
            (show-section user))})
-
-;; update
 
 (defview #'actions.user/update :html
   [request user]
@@ -102,8 +89,6 @@
    :template false
    :flash "User updated"
    :headers {"Location" (uri user)}})
-
-;; update-profile
 
 (defview #'actions.user/update-profile :html
   [request user]

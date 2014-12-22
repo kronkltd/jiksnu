@@ -5,16 +5,12 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.modules.web.sections.auth-sections :as sections.auth]))
 
-;; guest-login
-
 (defview #'actions.auth/guest-login :html
   [request user]
   {:status 303
    :template false
    :session {:pending-id (:_id user)}
    :headers {"Location" "/main/password"}})
-
-;; login
 
 (defview #'actions.auth/login :html
   [request user]
@@ -34,37 +30,12 @@
   {:session {:id (:_id user)}
    :body (format "logged in as %s" (:username user))})
 
-;; login-page
-
 (defview #'actions.auth/login-page :html
   [request _]
   {:title "Login"
    :body
-   [:div
-    [:div
-     [:form {:method "post" :action "/main/login"}
-      [:fieldset
-       [:legend "Login"]
-       [:div.clearfix
-        [:label {:for "username"} "Username"]
-        [:div.input
-         [:input {:type "text" :name "username"}]]]
-       [:div.clearfix
-        [:label {:for "password"} "Password"]
-        [:div.input
-         [:input {:type "password" :name "password"}]]]
-       [:div.actions
-        [:input.btn.primary {:type "submit" :value "Login"}]]]]]
-    [:div
-     [:form {:method "post" :action "/main/guest-login"}
-      [:fieldset
-       [:legend "Guest Login"]
-       [:div.clearfix
-        [:label {:for "webid"} "Web Id"]
-        [:div.input
-         [:input {:type "text" :name "webid"}]]]
-       [:div.actions
-        [:input.btn.primary {:type "submit" :value "Login"}]]]]]]})
+   (sections.auth/login-page)
+   })
 
 (defview #'actions.auth/login-page :viewmodel
   [request _]

@@ -1,5 +1,7 @@
 (ns jiksnu.controllers
-  (:require [purnam.native.functions :refer [js-map]])
+  (:require [jiksnu.templates :as templates]
+            [hipo :as hipo :include-macros true]
+            [purnam.native.functions :refer [js-map]])
   (:use-macros [gyr.core :only [def.module def.controller
                                 def.value def.constant
                                 def.filter def.factory
@@ -132,6 +134,18 @@
   (! $scope.init (fetch-page $scope $http "/main/conversations.json"))
   (.init $scope))
 
+(def.controller jiksnuApp.LoginPageController
+  [$scope]
+
+  )
+
+
+(def.controller jiksnuApp.RegisterPageController
+  [$scope]
+
+  )
+
+
 (def.controller jiksnuApp.IndexClientsController
   [$scope $http]
   (.info js/console "Indexing clients")
@@ -190,6 +204,25 @@
                     :controller "RightColumnController"}}
     o)))
 
+(def states
+  [
+   ["registerPage" "/main/register" "RegisterPage" templates/register-page]
+   ["loginPage"    "/main/login"    "LoginPage"    templates/login-page]
+   ]
+  )
+
+(defn add-states
+  [$stateProvider data]
+  (doseq [[state uri controller template] data]
+    (.state $stateProvider
+            (obj
+             :name state
+             :url uri
+             :views
+             (with-template
+               {"" {:controller (str controller "Controller")
+                    :template (hipo/create template)}})))))
+
 (def.config jiksnuApp [$stateProvider $urlRouterProvider
                        $locationProvider]
 
@@ -200,6 +233,7 @@
       (.html5Mode true))
 
   (doto $stateProvider
+    (add-states states)
 
     (.state "root"
             (obj

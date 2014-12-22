@@ -6,7 +6,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-show-section admin-index-block admin-index-line
                                              admin-index-section]]
-        [jiksnu.modules.web.sections :only [action-link bind-property control-line display-property
+        [jiksnu.modules.web.sections :only [action-link bind-property display-property
                                             dropdown-menu]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]

@@ -10,15 +10,11 @@
             [slingshot.slingshot :refer [throw+]]
             ))
 
-;; guest-login
-
 (deffilter #'actions.auth/guest-login :http
   [action request]
   (when-let [uri (-> request :params :webid)]
     (when-let [user (actions.user/find-or-create {:_id uri})]
       (action user))))
-
-;; login
 
 (deffilter #'actions.auth/login :http
   [action {{:keys [username password]} :params}]
@@ -26,19 +22,13 @@
     (action user password)
     (throw+ {:type :authentication :message "user not found"})))
 
-;; login-page
-
 (deffilter #'actions.auth/login-page :http
   [action request]
   (action))
 
-;; logout
-
 (deffilter #'actions.auth/logout :http
   [action request]
   (action))
-
-;; password-page
 
 (deffilter #'actions.auth/password-page :http
   [action request]
@@ -46,15 +36,11 @@
     (when-let [user (model.user/fetch-by-id id)]
       (action user))))
 
-;; show
-
 (deffilter #'actions.auth/show :http
   [action request]
   (let [{{id :id} :params} request]
     (if-let [item (model.auth/fetch-by-id id)]
       (action item))))
-
-;; verify-credentials
 
 (deffilter #'actions.auth/verify-credentials :http
   [action request]

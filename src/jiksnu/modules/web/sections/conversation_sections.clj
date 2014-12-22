@@ -4,7 +4,7 @@
                                        index-line index-block index-line link-to
                                        show-section update-button]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
-        [jiksnu.modules.web.sections :only [action-link bind-to control-line
+        [jiksnu.modules.web.sections :only [action-link bind-to
                                             dropdown-menu pagination-links
                                             with-sub-page]])
   (:require [ciste.model :as cm]

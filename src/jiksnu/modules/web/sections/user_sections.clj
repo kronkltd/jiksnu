@@ -52,25 +52,6 @@
               :title "acct:{{user.username}}@{{user.domain}}"}
       (display-avatar-img user size)]))
 
-(defn register-form
-  [user]
-  [:form.well.form-horizontal.register-form
-   {:method "post" :action "/main/register"}
-   [:fieldset
-    [:legend "Register"]
-    (map
-     (fn [[label field type]]
-       (control-line label field type))
-     [["Username"               "username"         "text"]
-      ["Password"               "password"         "password"]
-      ["Confirm Password"       "confirm-password" "password"]
-      ["Email"                  "email"            "email"]
-      ["Display Name"           "display-name"     "text"]
-      ["Location"               "location"         "text"]
-      ["I have checked the box" "accepted"         "checkbox"]])
-    [:div.actions
-     [:input.btn.primary {:type "submit" :value "Register"}]]]])
-
 (defn edit-form
   [user]
   [:form.well.form-horizontal {:method "post" :action "/main/profile"}

@@ -192,7 +192,7 @@
          [:a.logout-link {:href "/main/logout?_method=POST"
                           :target "_self"} "Log out"]]]]]
      [::ul.nav.navbar-nav.navbar-right {:ng-if "!app.user"}
-      [:li.unauthenticated [:a.login-link {:href "/main/login"} "Login"]]
+      [:li.unauthenticated [:a.login-link {:ui-sref "loginPage"} "Login"]]
       [:li.divider-vertical]
       [:li [:a.register-link {:href "/main/register"} "Register"]]]]]])
 

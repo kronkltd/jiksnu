@@ -26,16 +26,6 @@
           (:status response) => status/success?
           (:body response) => string?))
 
- (context "registration page"
-   (->> "/main/register"
-        (req/request :get)
-        response-for) =>
-        (check [response]
-          response => map?
-          (:status response) => status/success?
-          (:body response) => string?
-          (:body response) => #".*register-form.*"))
-
  (context "commands"
 
    (context "get-model"

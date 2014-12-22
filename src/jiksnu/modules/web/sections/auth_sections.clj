@@ -71,3 +71,4 @@
                 (link-to user))])]
    [:td "{{mech.value}}"]
    [:td (actions-section item)]])
+
