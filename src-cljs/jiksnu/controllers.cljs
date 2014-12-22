@@ -10,7 +10,50 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
+(defn with-template
+  [o]
+  (clj->js
+   (merge
+    {"leftColumn" {:templateUrl "/partials/left-column.html"
+                   :controller "LeftColumnController"}
+     "rightColumn" {:templateUrl "/partials/right-column.html"
+                    :controller "RightColumnController"}}
+    o)))
+
+(defn add-states
+  [$stateProvider data]
+  (doseq [[state uri controller template] data]
+    (.state $stateProvider
+            (obj
+             :name state
+             :url uri
+             :views
+             (with-template
+               {"" {:controller (str controller "Controller")
+                    :template (hipo/create template)}})))))
+
+(defn fetch-page
+  [$scope $http url]
+  (fn []
+    (-> $http
+        (.get url)
+        (.success
+         (fn [data]
+           (! $scope.page data))))))
+
+
 (def.module jiksnuApp [ui.router ui.bootstrap])
+
+(def states
+  [
+   ["registerPage" "/main/register" "RegisterPage" templates/register-page]
+   ["loginPage"    "/main/login"    "LoginPage"    templates/login-page]
+   ]
+  )
+
+
+
+
 
 
 (def.controller jiksnuApp.AppController
@@ -42,34 +85,17 @@
 
 (def.controller jiksnuApp.NavBarController
   [$scope $http]
-
-  ;; TODO: pull from app config on page
-  ;; (! $scope.app.name "Jiksnu")
-
   (-> $http
       (.get "/status")
       (.success (fn [data]
-                  (! $scope.app data)
-                  ))
-      )
+                  (! $scope.app data)))))
 
+(def.controller jiksnuApp.LoginPageController [])
+(def.controller jiksnuApp.RegisterPageController [])
+(def.controller jiksnuApp.LeftColumnController [])
+(def.controller jiksnuApp.RightColumnController [])
+(def.controller jiksnuApp.NewPostController [])
 
-  )
-
-(def.controller jiksnuApp.LeftColumnController
-  [$scope]
-  (! $scope.loaded false)
-  )
-
-(def.controller jiksnuApp.RightColumnController
-  [$scope]
-  (! $scope.loaded false)
-  )
-
-(def.controller jiksnuApp.NewPostController
-  [$scope]
-  (! $scope.loaded false)
-  )
 (def.controller jiksnuApp.ShowActivityController
   [$scope $http $stateParams]
   (let [id (.-id $stateParams)
@@ -119,31 +145,14 @@
                 (! $scope.user data))))))
     (.init $scope id)))
 
-(defn fetch-page
-  [$scope $http url]
-  (fn []
-    (-> $http
-        (.get url)
-        (.success
-         (fn [data]
-           (! $scope.page data))))))
-
 (def.controller jiksnuApp.ConversationListController
   [$scope $http]
   (.log js/console "Indexing conversations")
   (! $scope.init (fetch-page $scope $http "/main/conversations.json"))
   (.init $scope))
 
-(def.controller jiksnuApp.LoginPageController
-  [$scope]
-
-  )
 
 
-(def.controller jiksnuApp.RegisterPageController
-  [$scope]
-
-  )
 
 
 (def.controller jiksnuApp.IndexClientsController
@@ -181,6 +190,10 @@
   (! $scope.init (fetch-page $scope $http "/admin/conversations.json"))
   (.init $scope))
 
+
+
+
+
 (def.directive jiksnuApp.showActivity
   [$http]
   (obj
@@ -194,34 +207,13 @@
                  (.success (fn [data]
                              (! $scope.activity data))))))))
 
-(defn with-template
-  [o]
-  (clj->js
-   (merge
-    {"leftColumn" {:templateUrl "/partials/left-column.html"
-                   :controller "LeftColumnController"}
-     "rightColumn" {:templateUrl "/partials/right-column.html"
-                    :controller "RightColumnController"}}
-    o)))
-
-(def states
-  [
-   ["registerPage" "/main/register" "RegisterPage" templates/register-page]
-   ["loginPage"    "/main/login"    "LoginPage"    templates/login-page]
-   ]
+(def.directive jiksnuApp.StreamsWidget []
+  (obj)
+  )
+(def.directive jiksnuApp.AddStreamForm []
+  (obj)
   )
 
-(defn add-states
-  [$stateProvider data]
-  (doseq [[state uri controller template] data]
-    (.state $stateProvider
-            (obj
-             :name state
-             :url uri
-             :views
-             (with-template
-               {"" {:controller (str controller "Controller")
-                    :template (hipo/create template)}})))))
 
 (def.config jiksnuApp [$stateProvider $urlRouterProvider
                        $locationProvider]

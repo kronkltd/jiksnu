@@ -58,3 +58,29 @@
       ["I have checked the box" "accepted"         "checkbox"]])
     [:div.actions
      [:input.btn.primary {:type "submit" :value "Register"}]]]])
+
+(def streams-widget
+  [:div
+   [:h3 "Streams {{page.totalRecords}}"]
+   [:ul
+    [:li {:ng-repeat "stream in streams"}
+     "{{stream.name}}"]]])
+
+(def admin-streams
+  [items & [page]]
+  [:table.table
+   [:thead
+    [:tr
+     [:th "Name"]]]
+   [:tbody
+    [:tr {:data-model "stream"
+          :ng-repeat "conversation in conversations"}
+     [:td "{{conversation.name}}"]]]])
+
+(defn add-stream-form
+  [user]
+  [:form {:method "post"
+          :action "/users/{{user.id}}/streams"}
+   [:input {:type "text" :name "name"}]
+   [:input {:type "submit"}]])
+

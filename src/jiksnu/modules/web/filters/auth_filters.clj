@@ -22,10 +22,6 @@
     (action user password)
     (throw+ {:type :authentication :message "user not found"})))
 
-(deffilter #'actions.auth/login-page :http
-  [action request]
-  (action))
-
 (deffilter #'actions.auth/logout :http
   [action request]
   (action))

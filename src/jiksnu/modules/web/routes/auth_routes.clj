@@ -5,7 +5,6 @@
   []
   [[[:get  "/api/account/verify_credentials.:format"]          #'auth/verify-credentials]
    [[:post "/main/guest-login"]                    #'auth/guest-login]
-   ;; [[:get  "/main/login"]                          #'auth/login-page]
    [[:post "/main/login"]                          #'auth/login]
    ;; [[:get  "/main/logout"]                         #'auth/logout]
    [[:post "/main/logout"]                         #'auth/logout]
