@@ -183,7 +183,7 @@
     (with-format :html
       (h/html (admin-index-section [(Conversation.)] {})))))
 
-(defn new-form
+(defn new-post
   [_]
   (h/html
    (with-serialization :http

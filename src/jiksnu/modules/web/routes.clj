@@ -90,7 +90,7 @@
   (compojure/routes
    (GET "/partials/right-column.html"        [] #'templates/right-column)
    (GET "/partials/admin-conversations.html" [] #'templates/admin-conversations)
-   (GET "/partials/new-form.html"            [] #'templates/new-form)
+   (GET "/partials/new-post.html"            [] #'templates/new-post)
    ))
 
 (def http-routes
