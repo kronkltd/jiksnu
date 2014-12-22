@@ -88,10 +88,9 @@
 (defn template-routes
   []
   (compojure/routes
-   (GET "/partials/left-column.html"         [] #'templates/left-column)
    (GET "/partials/right-column.html"        [] #'templates/right-column)
    (GET "/partials/admin-conversations.html" [] #'templates/admin-conversations)
-
+   (GET "/partials/new-form.html"            [] #'templates/new-form)
    ))
 
 (def http-routes

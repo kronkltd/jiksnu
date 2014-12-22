@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.actions.template-actions
   (:require [ciste.core :refer [with-serialization with-format]]
             [ciste.filters :refer [deffilter]]
-            [ciste.sections.default :refer [index-section show-section]]
+            [ciste.sections.default :refer [add-form index-section show-section]]
             [ciste.views :refer [defview]]
             [jiksnu.modules.core.sections :refer [admin-index-section]]
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
@@ -26,7 +26,6 @@
 (defn index-group-members      [] {})
 (defn index-resources          [] {})
 (defn index-users              [] {})
-(defn left-nav                 [] {})
 (defn public-timeline          [] {})
 (defn show-activity            [] {})
 (defn show-domain              [] {})
@@ -70,10 +69,6 @@
   (action))
 
 (deffilter #'index-users :http
-  [action request]
-  (action))
-
-(deffilter #'left-nav :http
   [action request]
   (action))
 
@@ -155,11 +150,6 @@
    :body
    (index-section [(User.)] {})})
 
-(defview #'left-nav :html
-  [_ _]
-  {:template false
-   :body (sections.layout/side-navigation)})
-
 (defview #'public-timeline :html
   [_ _]
   {:template false
@@ -179,10 +169,6 @@
    (show-section (Domain.) {})})
 
 
-(defn left-column
-  [_]
-  (h/html (sections.layout/left-column-section)))
-
 (defn right-column
   [_]
   (h/html (sections.layout/right-column-section)))
@@ -196,3 +182,10 @@
   (with-serialization  :http
     (with-format :html
       (h/html (admin-index-section [(Conversation.)] {})))))
+
+(defn new-form
+  [_]
+  (h/html
+   (with-serialization :http
+     (with-format :html
+       (h/html (add-form (Activity.)))))))

@@ -64,10 +64,7 @@
 
 (defn pictures-section
   [activity]
-  [:div.pictures-line.control-group.hidden
-   [:label.control-label {:for "pictures"} "Pictures"]
-   [:div.controls
-    [:input {:type "file" :name "pictures"}]]])
+  )
 
 (defn tag-section
   [activity]
@@ -89,26 +86,6 @@
     [:div.input
      [:input {:type "text" :name "geo.longitude"}]]]])
 
-
-(defn add-button-section
-  [activity]
-  [:fieldset.add-buttons
-   [:legend "Add:"]
-   [:div.btn-group
-    [:a.btn {:href "#"}
-     [:i.icon-tag] [:span.button-text "Tags"]]
-
-    [:a.btn {:href "#"}
-     [:i.icon-user] [:span.button-text "Recipients"]]
-
-    [:a.btn {:href "#"}
-     [:i.icon-map-marker] [:span.button-text "Location"]]
-
-    [:a.btn {:href "#"}
-     [:i.icon-bookmark] [:span.button-text "Links"]]
-
-    [:a.btn {:href "#"}
-     [:i.icon-picture] [:span.button-text "Pictures"]]]])
 
 (defn privacy-select
   [activity]
@@ -237,7 +214,8 @@
           :title "{{activity.published}}"
           :property "dc:published"}
    [:a {:href "{{activity.uri}}"}
-    "{{activity.published}}"]])
+    [:span {:am-time-ago "activity.published"
+            :am-preprocess "utc"}]]])
 
 (defn source-link
   [activity]
@@ -250,11 +228,6 @@
    "via a "
    [:a {:href "{{activity.service}}"}
     "foreign service"]])
-
-(defn context-link
-  [activity]
-  [:a {:href "/main/conversations/{{activity.conversation}}"}
-   "in context"])
 
 (defn geo-link
   [activity]
@@ -272,9 +245,12 @@
          #'source-link
          #'geo-link
          #'service-link
-         #'context-link]
+         ]
         (map #(% activity))
-        (interpose " "))])
+        (interpose " "))
+   [:a {:href "/main/conversations/{{activity.conversation}}"}
+    "in context"]
+   ])
 
 (defn poll-form
   [activity]
@@ -287,29 +263,6 @@
    (control-line "Answer" "answer[3]" "text")
    (control-line "Answer" "answer[4]" "text")))
 
-(defn note-form
-  [activity]
-  (let [{:keys [id parent-id content title]} activity]
-    (list
-     [:legend "Post an activity"]
-     (when (:id activity)
-       [:div.control-group
-        [:input {:type "hidden" :name "_id" :value id}]])
-     (when parent-id
-       [:div.control-group
-        [:input {:type "hidden" :name "parent" :value parent-id}]])
-     #_(control-line "Title" "title" "text")
-     [:div.control-group
-      [:label.control-label {:for "content"} "Content"]
-      [:div.controls
-       [:textarea {:name "content" :rows "10"
-                   :data-provide "markdown"}
-        content]]]
-     (add-button-section activity)
-     (pictures-section activity)
-     (location-section activity)
-     (tag-section activity))))
-
 (defn status-form
   [activity]
   (cm/implement))
@@ -319,31 +272,6 @@
   (list
    [:legend "Post an event"]
    (control-line "Title" "title" "type")))
-
-(defn type-line
-  [activity]
-  [:div.type-line
-   [:ul.nav.nav-tabs
-    [:li
-     [:a {:href "#post-note" :data-toggle "tab"} "Note"]]
-
-    [:li
-     [:a {:href "#post-status" :data-toggle "tab"} "Status"]]
-
-    ;; [:li
-    ;;  [:a {:href "#post-checkin" :data-toggle "tab"} "Checkin"]]
-
-    ;; [:li
-    ;;  [:a {:href "#post-picture" :data-toggle "tab"} "Picture"]]
-
-    [:li
-     [:a {:href "#post-event" :data-toggle "tab"} "Event"]]
-
-    ;; [:li
-    ;;  [:a {:href "#post-bookmark" :data-toggle "tab"} "Bookmark"]]
-
-    [:li
-     [:a {:href "#post-poll" :data-toggle "tab"} "Poll"]]]])
 
 (defn enclosures-section
   [activity]
@@ -372,18 +300,22 @@
    #'posted-link-section
    ])
 
-;; actions-section
-
 (defsection actions-section [Activity :html]
   [item]
   (dropdown-menu item (get-buttons)))
 
-;; add-form
-
 (defsection add-form [Activity :html]
   [activity & _]
   [:div.post-form
-   (type-line activity)
+   [:div.type-line
+    [:ul.nav.nav-tabs
+     [:li [:a {:href "#post-note" :data-toggle "tab"} "Note"]]
+     [:li [:a {:href "#post-status" :data-toggle "tab"} "Status"]]
+     [:li [:a {:href "#post-checkin" :data-toggle "tab"} "Checkin"]]
+     [:li [:a {:href "#post-picture" :data-toggle "tab"} "Picture"]]
+     [:li [:a {:href "#post-event" :data-toggle "tab"} "Event"]]
+     [:li [:a {:href "#post-bookmark" :data-toggle "tab"} "Bookmark"]]
+     [:li [:a {:href "#post-poll" :data-toggle "tab"} "Poll"]]]]
    [:form {:method "post"
            :action "/notice/new"
            :enctype "multipart/form-data"}
@@ -391,7 +323,40 @@
     [:fieldset
      [:div.tab-content
       [:div#post-note.tab-pane.active
-       (note-form activity)]
+       [:legend "Post an activity"]
+       [:input {:type "hidden" :name "_id" :value "{{activity.id}}"}]
+       [:input {:type "hidden" :name "parent" :value "{{activity.parent}}"}]
+       (control-line "Title" "title" "text")
+       [:div.control-group
+        [:label.control-label {:for "content"} "Content"]
+        [:div.controls
+         [:textarea {:name "content" :rows "10"
+                     :data-provide "markdown"}
+          "{{activity.content}}"]]]
+       [:fieldset.add-buttons
+        [:legend "Add:"]
+        [:div.btn-group
+         [:a.btn {:href "#"}
+          [:i.icon-tag]
+          [:span.button-text "Tags"]]
+         [:a.btn {:href "#"}
+          [:i.icon-user]
+          [:span.button-text "Recipients"]]
+         [:a.btn {:href "#"}
+          [:i.icon-map-marker]
+          [:span.button-text "Location"]]
+         [:a.btn {:href "#"}
+          [:i.icon-bookmark]
+          [:span.button-text "Links"]]
+         [:a.btn {:href "#"}
+          [:i.icon-picture]
+          [:span.button-text "Pictures"]]]]
+       [:div.pictures-line.control-group.hidden
+        [:label.control-label {:for "pictures"} "Pictures"]
+        [:div.controls
+         [:input {:type "file" :name "pictures"}]]]
+       (location-section activity)
+       (tag-section activity)]
       ;; [:div#post-status.tab-pane
       ;;  (status-form activity)]
       ;; [:div#post-poll.tab-pane
@@ -466,9 +431,7 @@
       :data-id "{{activity.id}}"}
      (actions-section activity)
      [:div.pull-left.avatar-section
-      [:p "Loaded: {{loaded}}"]
       [:div {:data-model "user"
-             ;; :ng-controller "ShowUserController"
              :data-id "{{activity.actor.localId}}"}
        [:a.url {:href "/remote-user/{{activity.actor.username}}@{{activity.actor.domain}}"
                 :title "acct:{{activity.actor.username}}@{{activity.actor.domain}}"}

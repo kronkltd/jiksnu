@@ -14,7 +14,11 @@
   [o]
   (clj->js
    (merge
-    {"leftColumn" {:templateUrl "/partials/left-column.html"
+    {"navbar" {:template (hipo/create templates/navbar-section)
+               :controller "NavBarController"}
+     "newPost" {:templateUrl "/partials/new-post.html"
+                :controller "NewPostController"}
+     "leftColumn" {:template (hipo/create templates/left-column-section)
                    :controller "LeftColumnController"}
      "rightColumn" {:templateUrl "/partials/right-column.html"
                     :controller "RightColumnController"}}
@@ -42,7 +46,7 @@
            (! $scope.page data))))))
 
 
-(def.module jiksnuApp [ui.router ui.bootstrap])
+(def.module jiksnuApp [ui.router ui.bootstrap angularMoment])
 
 (def states
   [
@@ -64,25 +68,6 @@
                {:name "bar"
                 :snippet "bar"}])))
 
-(def.controller jiksnuApp.NavController
-  [$scope]
-  (let [items
-        [["/"                  "Public"]
-         ["/users"             "Users"]
-         ["/main/feed-sources" "Feeds"]
-         ["/main/domains"      "Domains"]
-         ["/main/groups"       "Groups"]
-         ["/resources"         "Resources"]]
-        items (js-map
-               (fn [line]
-                 (obj
-                  :label (nth line 1)
-                  :href (nth line 0)))
-               items)
-        ]
-    (.log js/console "items" items)
-    #_(! $scope.items items)))
-
 (def.controller jiksnuApp.NavBarController
   [$scope $http]
   (-> $http
@@ -90,9 +75,17 @@
       (.success (fn [data]
                   (! $scope.app data)))))
 
+(def.controller jiksnuApp.LeftColumnController
+  [$scope $http]
+
+  (-> $http
+      (.get "/nav.js")
+      (.success (fn [data]
+                  (! $scope.groups data)))))
+
+
 (def.controller jiksnuApp.LoginPageController [])
 (def.controller jiksnuApp.RegisterPageController [])
-(def.controller jiksnuApp.LeftColumnController [])
 (def.controller jiksnuApp.RightColumnController [])
 (def.controller jiksnuApp.NewPostController [])
 

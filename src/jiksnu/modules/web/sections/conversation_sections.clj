@@ -164,31 +164,20 @@
       :ng-repeat "conversation in page.items"
       :about "{{conversation.url}}"
       :data-id "{{conversation.id}}"}
-     ;; (show-details item)
-     (list
-      [:p "parent id: "
-       [:a {:ui-sref "showActivity({id: conversation.parent })"
-            }
-        "{{conversation.parent}}"
-        ]
-       ]
-      [:show-activity {:data-id "{{conversation.parent}}"}]
-      #_(bind-to "$data.parent"
-               (show-section parent))
-      #_[:div {:data-bind "if: _view.showComments()"}
-       (with-sub-page "activities"
-         [:section.comments.clearfix
-          [:div.comment {:data-model "activity"
-                         :ng-repeat "comment in conversation.comments"
-                         :data-id "{{comment.id}}"}
-           (bind-to "author"
-                    [:div {:data-model "user"}
-                     [:a.pull-left
-                      (sections.user/display-avatar author)]
-                     (link-to author)])
-           [:span.comment-content
-            "{{comment.content}}"
-            ]]])])]))
+     [:show-activity {:data-id "{{conversation.parent}}"}]
+     [:div {:data-bind "if: _view.showComments()"}
+      #_(with-sub-page "activities"
+          [:section.comments.clearfix
+           [:div.comment {:data-model "activity"
+                          :ng-repeat "comment in conversation.comments"
+                          :data-id "{{comment.id}}"}
+            (bind-to "author"
+                     [:div {:data-model "user"}
+                      [:a.pull-left
+                       (sections.user/display-avatar author)]
+                      (link-to author)])
+            [:span.comment-content
+             "{{comment.content}}"]]])]]))
 
 (defsection update-button [Conversation :html]
   [item & _]
