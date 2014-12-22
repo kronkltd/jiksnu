@@ -12,7 +12,6 @@
             [jiksnu.levels :as levels]
             [jiksnu.logging :as jl]
             [jiksnu.model :as model]
-            [jiksnu.providers :as providers]
             [jiksnu.routes :as routes]
             [jiksnu.util.backbone :as backbone]
             [jiksnu.util.ko :as ko]
@@ -56,11 +55,6 @@
 
   (initialize-logging)
   (log/info *logger* "init")
-
-  ;; (! ko/binding-provider.instance (providers/DataModelProvider.))
-  ;; (! ko/binding-provider.instance (providers/DataModelProvider.))
-  ;; (! ko/binding-provider.instance (providers/PageProvider.))
-  ;; (! ko/binding-provider.instance (providers/SubPageProvider.))
 
 
   ;; (set! model/_model              (model/AppViewModel.))
