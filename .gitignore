@@ -24,7 +24,7 @@ newrelic
 out
 pom.xml
 resources/public/assets/js/jiksnu*
-resources/public/assets/cljs/
+resources/public/cljs/
 resources/public/assets/themes/
 target
 repl
