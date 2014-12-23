@@ -1,8 +1,6 @@
 (ns jiksnu.handlers
   (:require [dommy.core :as dommy]
             [jiksnu.logging :as jl]
-            [jiksnu.model :refer [_model]]
-            [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws]
             [lolg :as log])
   (:use-macros [dommy.core :only [sel sel1]]
@@ -18,7 +16,7 @@
 
 (defn add-notification
   [message]
-  (.add (.get _model "notifications")
+  #_(.add (.get _model "notifications")
         (obj
          :message message)))
 
@@ -41,7 +39,7 @@
 
 (defn show-comments
   []
-  (.set _model
+  #_(.set _model
         "showComments" true))
 
 (defn setup-handlers

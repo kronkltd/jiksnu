@@ -2,7 +2,6 @@
   (:require [clojure.string :as string]
             [lolg :as log]
             [jiksnu.logging :as jl]
-            [jiksnu.util.backbone :as backbone]
             [jiksnu.websocket :as ws]))
 
 (def *logger* (log/get-logger "jiksnu.routes"))
@@ -42,25 +41,4 @@
              ))
     result)
   )
-
-(def Router
-  (.extend backbone/Router
-           (js-obj
-            "routes" (js-obj "*actions" "defaultRoute")
-            "defaultRoute" (fn [path-string]
-                             (log/fine *logger* (str "default route: " path-string))
-                             (let [p (.-search (.-location js/document))]
-                               (ws/send "fetch-viewmodel"
-                                        (parse-route (jl/spy (str path-string p))))))
-            ;; "_extractParameters" (fn [route fragment]
-            ;;                        (log/fine "fragment")
-            ;;                        (jl/spy fragment)
-            ;;                        (let [result (jl/spy
-            ;;                                      (.slice
-            ;;                                       (.exec route fragment) 1))]
-            ;;                          (.unshift result
-            ;;                                    (deparam (aget result (dec (.-length result)))))
-            ;;                          (.slice result 0 -1)))
-
-            )))
 

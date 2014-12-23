@@ -46,7 +46,8 @@
            (! $scope.page data))))))
 
 
-(def.module jiksnuApp [ui.router ui.bootstrap angularMoment])
+(def.module jiksnuApp [ui.router ui.bootstrap angularMoment
+                       ui.bootstrap.tabs])
 
 (def states
   [

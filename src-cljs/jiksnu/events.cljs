@@ -4,11 +4,8 @@
             [lolg :as log]
             [jiksnu.logging :as jl]
             [jiksnu.model :as model]
-            [jiksnu.util.ko :as ko]
-            [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws])
-  (:use-macros [jiksnu.macros :only [defvar]]
-               [purnam.core :only [? ?> ! !> f.n def.n do.n obj arr def* do*n
+  (:use-macros [purnam.core :only [? ?> ! !> f.n def.n do.n obj arr def* do*n
                                    def*n f*n]]))
 
 (def *logger* (log/get-logger "jiksnu.events"))
@@ -20,7 +17,7 @@
 (defmethod ws/process-event "update viewmodel"
   [event]
   (log/fine *logger* "updating viewmodel")
-  (vm/process-viewmodel (.-body event)))
+  )
 
 (defmethod ws/process-event "error"
   [event]
@@ -42,7 +39,7 @@
 
 (defmethod ws/process-event "model-updated"
   [event]
-  (let [data (.-body event)
+  #_(let [data (.-body event)
         id (.-_id data)
         model-name (.-type event)
         m (model/get-model-obj model-name id)]
@@ -52,7 +49,7 @@
 
 (defmethod ws/process-event "page-updated"
   [event]
-  (let [data (.-body event)
+  #_(let [data (.-body event)
         id (.-id data)]
     (log/finest *logger* (str "page updated: " id))
     (if-let [page (.get model/pages id)]
@@ -62,7 +59,7 @@
 
 (defmethod ws/process-event "sub-page-updated"
   [event]
-  (let [data (.-body event)]
+  #_(let [data (.-body event)]
     (if-let [page-name (.-id data)]
       (let [model-name (.-model event)
             id (.-id event)
@@ -79,7 +76,7 @@
 
 (defmethod ws/process-event "page-add"
   [event]
-  (let [id (.-body event)
+  #_(let [id (.-body event)
         page-name (.-name event)]
     (log/fine *logger* (str "adding page: " page-name " << " id))
     (if-let [page (.get model/pages page-name)]

@@ -307,63 +307,52 @@
 (defsection add-form [Activity :html]
   [activity & _]
   [:div.post-form
-   [:div.type-line
-    [:ul.nav.nav-tabs
-     [:li [:a {:href "#post-note" :data-toggle "tab"} "Note"]]
-     [:li [:a {:href "#post-status" :data-toggle "tab"} "Status"]]
-     [:li [:a {:href "#post-checkin" :data-toggle "tab"} "Checkin"]]
-     [:li [:a {:href "#post-picture" :data-toggle "tab"} "Picture"]]
-     [:li [:a {:href "#post-event" :data-toggle "tab"} "Event"]]
-     [:li [:a {:href "#post-bookmark" :data-toggle "tab"} "Bookmark"]]
-     [:li [:a {:href "#post-poll" :data-toggle "tab"} "Poll"]]]]
    [:form {:method "post"
            :action "/notice/new"
            :enctype "multipart/form-data"}
     [:input {:type "hidden" :name "source" :value "web"}]
     [:fieldset
-     [:div.tab-content
-      [:div#post-note.tab-pane.active
+     [:tabset
+      [:tab {:heading "Note"}
        [:legend "Post an activity"]
-       [:input {:type "hidden" :name "_id" :value "{{activity.id}}"}]
-       [:input {:type "hidden" :name "parent" :value "{{activity.parent}}"}]
+       ;; [:input {:type "hidden" :name "_id" :value "{{activity.id}}"}]
+       ;; [:input {:type "hidden" :name "parent" :value "{{activity.parent}}"}]
        (control-line "Title" "title" "text")
        [:div.control-group
         [:label.control-label {:for "content"} "Content"]
         [:div.controls
-         [:textarea {:name "content" :rows "10"
-                     :data-provide "markdown"}
-          "{{activity.content}}"]]]
+         [:textarea {:name "content" :rows "3"
+                     :data-provide "markdown"
+                     :ng-model "activity.content"}
+          ]]]
        [:fieldset.add-buttons
         [:legend "Add:"]
-        [:div.btn-group
-         [:a.btn {:href "#"}
-          [:i.icon-tag]
-          [:span.button-text "Tags"]]
-         [:a.btn {:href "#"}
-          [:i.icon-user]
-          [:span.button-text "Recipients"]]
-         [:a.btn {:href "#"}
-          [:i.icon-map-marker]
-          [:span.button-text "Location"]]
-         [:a.btn {:href "#"}
-          [:i.icon-bookmark]
-          [:span.button-text "Links"]]
-         [:a.btn {:href "#"}
-          [:i.icon-picture]
-          [:span.button-text "Pictures"]]]]
-       [:div.pictures-line.control-group.hidden
+        [:div.button-group
+         [:label.btn.btn-primary {:ng-model "add.tags" :btn-checkbox ""}
+          [:i.icon-tag]        [:span.button-text "Tags"]]
+         [:label.btn.btn-primary {:ng-model "add.recipients" :btn-checkbox ""}
+          [:i.icon-user]       [:span.button-text "Recipients"]]
+         [:label.btn.btn-primary {:ng-model "add.location" :btn-checkbox ""}
+          [:i.icon-map-marker] [:span.button-text "Location"]]
+         [:label.btn.btn-primary {:ng-model "add.links" :btn-checkbox ""}
+          [:i.icon-bookmark]   [:span.button-text "Links"]]
+         [:label.btn.btn-primary {:ng-model "add.pictures" :btn-checkbox ""}
+          [:i.icon-picture]    [:span.button-text "Pictures"]]]]
+
+       [:div.control-group {:collapse "!add.pictures"}
         [:label.control-label {:for "pictures"} "Pictures"]
         [:div.controls
          [:input {:type "file" :name "pictures"}]]]
        (location-section activity)
        (tag-section activity)]
-      ;; [:div#post-status.tab-pane
-      ;;  (status-form activity)]
-      ;; [:div#post-poll.tab-pane
-      ;;  (poll-form activity)]
-      ;; [:div#post-event.tab-pane
-      ;;  (event-form activity)]
-      ]
+      [:tab {:heading "Status"}
+       #_(status-form activity)
+       ]
+      [:tab {:heading "Poll"}
+       #_ (poll-form activity)
+       ]
+      [:tab {:heading "Event"}
+       #_(event-form activity)]]
      [:div.actions
       (privacy-select activity)
       [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])

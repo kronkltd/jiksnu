@@ -137,29 +137,19 @@
       (format "WEBSOCKET_PATH = '%s';" websocket-path)
       "var CLOSURE_NO_DEPS = true;"]
      (p/include-js
-      ;; TODO: Pull the version numbers out, load from
       "/webjars/underscorejs/1.7.0/underscore-min.js"
       "/webjars/momentjs/2.8.3/min/moment.min.js"
       "/webjars/jquery/2.1.1/jquery.min.js"
-      "/webjars/knockout/3.2.0/knockout.debug.js"
-      "/webjars/bootstrap/3.3.0/js/bootstrap.min.js"
-      "/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
-      "/webjars/backbonejs/1.1.2/backbone-min.js"
-      "/js/supermodel/0.0.4/supermodel.js"
-      "/js/knockback/0.17.2/knockback.js"
       "/webjars/angularjs/1.3.0/angular.min.js"
-      "/webjars/angular-ui-bootstrap/0.12.0/ui-bootstrap.min.js"
+      "/webjars/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js"
       "/webjars/angular-ui-router/0.2.13/angular-ui-router.min.js"
       "/webjars/angular-moment/0.8.2-1/angular-moment.min.js"
       "/cljs/jiksnu.js")
-     (doall
-      (map (fn [hook]
-             (hook request response))
-           @scripts-section-hook))
+     (doall (map (fn [hook]
+                   (hook request response))
+                 @scripts-section-hook))
      [:script {:type "text/javascript"}
-      "goog.require('jiksnu.core');"]
-     (if (= "true" (:repl (:params request)))
-       [:script (cemerick.austin.repls/browser-connected-repl-js)]))))
+      "goog.require('jiksnu.core');"])))
 
 (defn right-column-section
   []
