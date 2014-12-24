@@ -306,7 +306,7 @@
 
 (defsection add-form [Activity :html]
   [activity & _]
-  [:div.post-form
+  [:div.post-form {:collapse "!form.shown"}
    [:form {:method "post"
            :action "/notice/new"
            :enctype "multipart/form-data"}

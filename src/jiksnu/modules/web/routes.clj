@@ -115,6 +115,7 @@
                    (throw+ {:type :authentication :message "Must be admin"})))
   (middleware/wrap-log-request
    (resolve-routes [predicates/http] http-routes))
+  (GET "/*" [] #'templates/index)
   (route/not-found (not-found-msg)))
 
 (declare app)
@@ -137,16 +138,16 @@
       (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
       (-> all-routes
           jm/wrap-authentication-handler
-          (file/wrap-file "resources/public/")
-          file-info/wrap-file-info
+          ;; (file/wrap-file "resources/public/")
+          ;; file-info/wrap-file-info
           jm/wrap-user-binding
           jm/wrap-dynamic-mode
           jm/wrap-oauth-user-binding
           jm/wrap-authorization-header
           (handler/site {:session {:store (ms/session-store)}})
           jm/wrap-stacktrace
-          ;; (wrap-resource "public")
-          ;; file-info/wrap-file-info
+          (wrap-resource "public")
+          file-info/wrap-file-info
           ))))
 
   (doseq [model-name registry/action-group-names]

@@ -189,3 +189,7 @@
    (with-serialization :http
      (with-format :html
        (h/html (add-form (Activity.)))))))
+
+(defn index
+  [_]
+  (sections.layout/page-template-content {} {}))

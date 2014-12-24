@@ -40,17 +40,6 @@
                          :icon "trash"
                          :title "Delete"})]])]])])
 
-(defn add-watcher-form
-  [source]
-  [:form.well.form-horizontal
-   {:method "post"
-    :action "/admin/feed-sources/{{source.id}}/watchers"}
-   [:fieldset
-    [:legend "Add Watcher"]
-    (control-line "Acct id"
-                  :user_id "text")
-    [:input {:type "submit"}]]])
-
 (defn watch-button
   [item]
   (action-link "feed-source" "watch" (:_id item)))
@@ -83,19 +72,7 @@
 
 (defsection add-form [FeedSource :html]
   [source & options]
-  [:form.well.form-horizontal {:method "post" :action "/admin/feed-sources"}
-   [:fieldset
-    [:legend "Add Source"]
-    (control-line "Topic"  "topic" "text")
-    (control-line "Callback" "callback" "text")
-    (control-line "Challenge" "challenge" "text")
-    ;; TODO: radio buttons?
-    (control-line "Mode" "mode" "text")
-    (control-line "User" "user" "text")
-
-    [:div.form-actions
-     [:button.btn.btn-primary
-      {:type "submit"} "Add"]]]])
+  )
 
 (defsection admin-index-block [FeedSource :html]
   [items & [options & _]]
@@ -109,24 +86,21 @@
      [:th "Status"]
      [:th "Actions"]]]
    [:tbody {:data-bind "foreach: items"}
-    (map admin-index-line items)]])
-
-(defsection admin-index-line [FeedSource :html]
-  [item & [page]]
-  [:tr {:data-model "feed-source"
-        :data-id "{{source.id}}"}
-   [:td
-    (link-to item)]
-   [:td
-    [:a {:title "{{source.title}}"
-         :href "/admin/feed-sources/{{source.id}}" }
-     "{{source.title}}"]]
-   [:td "{{source.domain}}"]
-   [:td
-    [:a {:href "{{source.topic}}"}
-     "{{source.topic}}"]]
-   [:td "{{source.status}}"]
-   [:td (actions-section item)]])
+    (let [item (first items)]
+      [:tr {:data-model "feed-source"
+            :data-id "{{source.id}}"
+            :ng-repeat "source in page.items"}
+       [:td (link-to item)]
+       [:td
+        [:a {:title "{{source.title}}"
+             :href "/admin/feed-sources/{{source.id}}" }
+         "{{source.title}}"]]
+       [:td "{{source.domain}}"]
+       [:td
+        [:a {:href "{{source.topic}}"}
+         "{{source.topic}}"]]
+       [:td "{{source.status}}"]
+       [:td (actions-section item)]])]])
 
 (defsection admin-show-section [FeedSource :html]
   [item & [page]]
@@ -150,24 +124,27 @@
      [:th "Watchers"]
      [:th "Updated"]
      [:th "Actions"]]]
-   [:tbody {:data-bind "foreach: items"}
+   [:tbody
+    (let [source (first sources)]
+      [:tr {:ng-repeat "source in page.items"}
+       [:td (link-to source)]
+       [:td "{{source.domain}}"]
+       [:td
+        [:a {:href "{{source.topic}}"}
+         "{{source.topic}}"]]
+       [:td "{{source.hub}}"]
+       #_[:td "{{source.mode}}"]
+       [:td "{{source.status}}"
+        ]
+       [:td "{{source.watchers.length}}"]
+       [:td "{{source.updated}}"]
+       [:td (actions-section source)]])
+
     (map index-line sources)]])
 
 (defsection index-line [FeedSource :html]
   [source & _]
-  [:tr {:data-model "feed-source"}
-   [:td (link-to source)]
-   [:td (display-property source :domain)]
-   [:td
-    [:a {:href "{{source.topic}}"}
-     "{{source.topic}}"]]
-   [:td (display-property source :hub)]
-   #_[:td (:mode source)]
-   [:td "{{source.status}}"
-    ]
-   [:td "{{source.watchers.length}}"]
-   [:td (display-property source :updated)]
-   [:td (actions-section source)]])
+  )
 
 (defsection index-section [FeedSource :html]
   [sources & [options & _]]
@@ -186,9 +163,8 @@
     [:tbody
      [:tr
       [:th "Topic:"]
-      [:td
-       [:a {:href "{{source.topic}}"}
-        "{{source.topic}}"]]]
+      [:td [:a {:href "{{source.topic}}"}
+            "{{source.topic}}"]]]
      [:tr
       [:th "Domain:"]
       [:td "{{source.domain}}"]]

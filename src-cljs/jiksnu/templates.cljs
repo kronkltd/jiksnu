@@ -14,6 +14,52 @@
               (when checked
                 {:checked "checked"}))]]]))
 
+
+
+(def add-feed-source-form
+  [:form.well.form-horizontal {:method "post" :action "/admin/feed-sources"}
+   [:fieldset
+    [:legend "Add Source"]
+    (control-line "Topic"  "topic" "text")
+    (control-line "Callback" "callback" "text")
+    (control-line "Challenge" "challenge" "text")
+    ;; TODO: radio buttons?
+    (control-line "Mode" "mode" "text")
+    (control-line "User" "user" "text")
+    [:div.form-actions
+     [:button.btn.btn-primary
+      {:type "submit"} "Add"]]]])
+
+(def add-stream-form
+  [:form {:method "post"
+          :action "/users/{{user.id}}/streams"}
+   [:input {:type "text" :name "name"}]
+   [:input {:type "submit"}]])
+
+(def add-watcher-form
+  [:form.well.form-horizontal
+   {:method "post"
+    :action "/admin/feed-sources/{{source.id}}/watchers"}
+   [:fieldset
+    [:legend "Add Watcher"]
+    (control-line "Acct id"
+                  :user_id "text")
+    [:input {:type "submit"}]]])
+
+
+
+(def admin-streams
+  [:table.table
+   [:thead
+    [:tr
+     [:th "Name"]]]
+   [:tbody
+    [:tr {:data-model "stream"
+          :ng-repeat "conversation in conversations"}
+     [:td "{{conversation.name}}"]]]])
+
+
+
 (def login-page
   [:div
    [:div
@@ -66,22 +112,8 @@
     [:li {:ng-repeat "stream in streams"}
      "{{stream.name}}"]]])
 
-(def admin-streams
-  [:table.table
-   [:thead
-    [:tr
-     [:th "Name"]]]
-   [:tbody
-    [:tr {:data-model "stream"
-          :ng-repeat "conversation in conversations"}
-     [:td "{{conversation.name}}"]]]])
 
-(defn add-stream-form
-  [user]
-  [:form {:method "post"
-          :action "/users/{{user.id}}/streams"}
-   [:input {:type "text" :name "name"}]
-   [:input {:type "submit"}]])
+
 
 (def navbar-section
   [:nav.navbar.navbar-default.navbar-inverse
@@ -100,43 +132,33 @@
       "{{app.name}}"]]
     [:div#main-navbar-collapse-1.navbar-collapse.collapse
      [::ul.nav.navbar-nav.navbar-right {:ng-if "app.user"}
-      [:li.dropdown
-       [:a.dropdown-toggle (merge {:href "#" :data-toggle "dropdown"})
-        [:span
-         [:span {:data-model "user"}
-          [:show-avatar {:data-id "{{app.user}}"}]
-          "{{app.user}}"
-          [:link-to {:data-id "{{app.user}}" :data-model "user"}]]]
+      [:li.dropdown {:dropdown ""}
+       [:a.dropdown-toggle
+        {:dropdown-toggle ""}
+        [:span {:data-model "user"}
+         [:show-avatar {:data-id "{{app.user}}"}]
+         "{{app.user}}"
+         [:link-to {:data-id "{{app.user}}" :data-model "user"}]]
         [:b.caret]]
-       [:ul.dropdown-menu
-        [:li
-         [:a.settings-link {:href "/main/settings"} "Settings"]
-         [:a.profile-link {:href "/main/profile"} "Profile"]
-         [:a.logout-link {:href "/main/logout?_method=POST"
-                          :target "_self"} "Log out"]]]]]
+       [:ul.dropdown-menu {:role "menu"}
+        [:li [:a {:ui-sref "settings"} "Settings"]]
+        [:li [:a {:ui-sref "profile"}  "Profile"]]
+        [:li [:a {:ui-sref "logout"}   "Log out"]]]]]
      [::ul.nav.navbar-nav.navbar-right {:ng-if "!app.user"}
-      [:li.unauthenticated [:a.login-link {:ui-sref "loginPage"} "Login"]]
+      [:li [:a {:ui-sref "loginPage"} "Login"]]
       [:li.divider-vertical]
-      [:li [:a.register-link {:href "/main/register"} "Register"]]]]]]
-  )
+      [:li [:a {:ui-sref "register"} "Register"]]]]]])
 
 (def left-column-section
   [:div#mainNav
-   [:p "Nav"]
-   [:ul.nav.nav-list
-    [:li {:ng-repeat "group in groups"}
-     [:li.nav-header "{{group.label}}"]
-     [:ul
-      [:li {:ng-repeat "item in group.items"}
-       ;; "<!--  -->"
-       [:span {:ng-if "item.state"}
-        [:a {:ui-sref "{{item.state}}"}
-         "{{item.title}}"]]
-       [:span {:ng-if "!item.state"}
-        "stateless"
-        ]
-       ;; "<!-- /ngIf -->"
-       ]]]]
+   [:div.panel.panel-default {:ng-repeat "group in groups"}
+    [:div.panel-heading.text-center "{{group.label}}"]
+    [:div.list-group
+     [:a.list-group-item
+      {:ng-repeat "item in group.items"
+       :ng-if "item.state"
+       :ui-sref "{{item.state}}"}
+      "{{item.title}}"]]]
    [:hr]
    [:div
     [:h3 "Formats"]
