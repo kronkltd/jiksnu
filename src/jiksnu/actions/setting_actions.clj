@@ -48,10 +48,6 @@
   Boolean
   "Can unauthenticated users view this site?")
 
-(describe-config [:site :theme]
-  String
-  "The name of the theme to use")
-
 
 (defaction config-output
   []
@@ -59,8 +55,7 @@
    {
     :name (config :site :name)
     :server (config :domain)
-    ;; TODO: theme name
-    :theme (config :site :theme)
+    :theme "classic"
     ;; TODO: logo
     :logo ""
     :fancy "1"

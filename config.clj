@@ -18,20 +18,6 @@
    :private false,
    :email "admin@jiksnu.com",
    :limit {:text 140, :dupe 60},
-   :theme "classic",
-   :available-themes
-   ["amelia"
-    "cerulean"
-    "classic"
-    "cyborg"
-    "journal"
-    "readable"
-    "simplex"
-    "slate"
-    "spacelab"
-    "spruce"
-    "superhero"
-    "united"],
    :invite-only false},
   :swank {:port "4005"},
   :services
