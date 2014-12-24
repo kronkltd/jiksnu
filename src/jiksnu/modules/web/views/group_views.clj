@@ -36,7 +36,7 @@
 (defview #'actions.group/fetch-by-user :html
   [request {:keys [items] :as response}]
   {:body
-   (let [items (if *dynamic* [(Group.)] items)]
+   (let [items [(Group.)]]
      (with-page "groups"
        (pagination-links response)
        (index-section items response)))})
@@ -48,7 +48,7 @@
   {:title "Groups"
    :body
    (with-page "groups"
-     (let [items (if *dynamic* [(Group.)] items)]
+     (let [items [(Group.)]]
        (list
         (pagination-links response)
         (index-section items response)
@@ -72,9 +72,7 @@
 
 (defn conversation-sub-page
   [group]
-  (let [{:keys [items] :as page} (if *dynamic*
-                                   {:items []}
-                                   (cm/implement {:items []}))]
+  (let [{:keys [items] :as page} {:items []}]
     (with-sub-page "conversations"
       (pagination-links page)
       (index-section items page))))

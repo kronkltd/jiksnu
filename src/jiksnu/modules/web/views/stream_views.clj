@@ -45,17 +45,10 @@
   (let [items [(Conversation.)]]
     {:title "Public Timeline"
      :post-form true
-     ;; :links [{:rel "next"
-     ;;          :href (str "?page=" (inc (:page page)))
-     ;;          :title "Next Page"
-     ;;          :type "text/html"}]
      :formats (sections.activity/index-formats items)
      :body
      [:div {:ui-view ""}
-      "View goes here"
-      ]
-     #_(with-page "public-timeline"
-             (index-section items page))}))
+      "View goes here"]}))
 
 (defview #'actions.stream/user-timeline :html
   [request [user {:keys [items] :as page}]]

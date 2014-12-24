@@ -46,8 +46,6 @@
                   :user_id "text")
     [:input {:type "submit"}]]])
 
-
-
 (def admin-streams
   [:table.table
    [:thead
@@ -58,7 +56,16 @@
           :ng-repeat "conversation in conversations"}
      [:td "{{conversation.name}}"]]]])
 
-
+(def avatar-page
+  [:form {:method "post" :action "/settings/avatar"}
+   [:fieldset
+    [:legend "Upload Avatar"]
+    [:div.clearfix
+     [:label {:for "avatar"} "Image"]
+     [:div.input
+      [:input {:type "file" :name "avatar"}]]]
+    [:div.actions
+     [:input {:type "submit" :value "Submit"}]]]])
 
 (def login-page
   [:div

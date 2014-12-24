@@ -9,7 +9,7 @@
 
 (defview #'index :html
   [request {:keys [items] :as page}]
-  (let [items (if *dynamic* [(Group.)] items)]
+  (let [items [(Group.)]]
     {:single true
      :title "Groups"
      :body (with-page "groups"

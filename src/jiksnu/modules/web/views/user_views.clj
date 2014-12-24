@@ -5,10 +5,6 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.ko :refer [*dynamic*]]
-            [jiksnu.namespace :as ns]
-            [jiksnu.model.webfinger :as model.webfinger]
-            [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
             [ring.util.response :as response]))
@@ -19,41 +15,23 @@
       (assoc :template false)
       (assoc :flash "stream has been created")))
 
-;; create
-
 (defview #'actions.user/create :html
   [request user]
   (-> (response/redirect-after-post (uri user))
       (assoc :template false)
       (assoc :flash "user has been created")))
 
-;; delete
-
 (defview #'actions.user/delete :html
   [request _]
-  (-> "/"
-      response/redirect-after-post
+  (-> (response/redirect-after-post "/")
       (assoc :template false)
       (assoc :flash "user has been deleted")))
 
-;; discover
-
 (defview #'actions.user/discover :html
-  [request user]
-  (-> "/users"
-      response/redirect-after-post
+  [request _]
+  (-> (response/redirect-after-post "/users")
       (assoc :template false)
       (assoc :flash "discovering user")))
-
-;; fetch-updates
-
-;; (defview #'actions.user/fetch-updates :html
-;;   [request user]
-;;   (-> (response/redirect-after-post (uri user))
-;;       (assoc :template false)
-;;       (assoc :flash "fetching updates")))
-
-;; index
 
 (defview #'actions.user/index :html
   [request {:keys [items] :as page}]
@@ -62,8 +40,6 @@
            (pagination-links page)
            (index-section items page))})
 
-;; profile
-
 (defview #'actions.user/profile :html
   [request user]
   {:title "Edit Profile"
@@ -71,8 +47,7 @@
 
 (defview #'actions.user/register :html
   [request user]
-  (-> "/"
-      response/redirect-after-post
+  (-> (response/redirect-after-post "/")
       (assoc :template false)
       (assoc :flash "user has been created")
       (assoc :session {:id (:_id user)})))
@@ -92,8 +67,7 @@
 
 (defview #'actions.user/update-profile :html
   [request user]
-  {:status 303
-   :template false
-   :flash "Profile updated"
-   :headers {"Location" "/main/profile"}})
+  (-> (response/redirect-after-post "/main/profile")
+      (assoc :template false)
+      (assoc :flash "Profile updated")))
 

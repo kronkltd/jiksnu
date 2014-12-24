@@ -51,6 +51,7 @@
 
 (def states
   [
+   ["avatarPage"   "/main/avatar"   "AvatarPage"   templates/avatar-page]
    ["registerPage" "/main/register" "RegisterPage" templates/register-page]
    ["loginPage"    "/main/login"    "LoginPage"    templates/login-page]
    ]
@@ -68,6 +69,8 @@
                 :snippet "foo"}
                {:name "bar"
                 :snippet "bar"}])))
+
+(def.controller jiksnuApp.AvatarPageController [])
 
 (def.controller jiksnuApp.NavBarController
   [$scope $http]

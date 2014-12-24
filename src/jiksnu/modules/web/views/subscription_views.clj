@@ -23,7 +23,7 @@
   [request [user {:keys [items] :as page}]]
   {:title "Subscribers"
    :body
-   (let [items (if *dynamic* [(Subscription.)] items)]
+   (let [items [(Subscription.)]]
      (bind-to "targetUser"
        [:div {:data-model "user"}
         (with-sub-page "subscribers"
@@ -35,7 +35,7 @@
   {:title "Subscriptions"
    :formats (subscription-formats user)
    :body
-   (if-let [items (seq (if *dynamic* [(Subscription.)] items))]
+   (let [items [(Subscription.)]]
      (bind-to "targetUser"
        [:div {:data-model "user"}
         (with-sub-page "subscriptions"
