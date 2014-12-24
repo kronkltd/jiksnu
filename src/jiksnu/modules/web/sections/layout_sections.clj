@@ -88,12 +88,9 @@
 
 (defn style-section
   []
-  (let [theme (config :site :theme)]
-    (p/include-css
-     (if (= theme "classic")
-       "/webjars/bootstrap/3.3.0/css/bootstrap.min.css"
-       (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
-     "/css/standard.css")))
+  (p/include-css
+   "/webjars/bootstrap/3.3.0/css/bootstrap.min.css"
+   "/css/standard.css"))
 
 (defn get-prefixes
   []
