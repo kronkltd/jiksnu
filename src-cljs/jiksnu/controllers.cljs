@@ -194,8 +194,6 @@
    :templateUrl "/partials/show-activity.html"
    :link (fn [$scope element attrs]
            (let [id (.-id attrs)]
-             (.log js/console "running link" id)
-
              (-> $http
                  (.get (str "/notice/" id ".json"))
                  (.success (fn [data]
@@ -204,9 +202,15 @@
 (def.directive jiksnuApp.StreamsWidget []
   (obj)
   )
+
 (def.directive jiksnuApp.AddStreamForm []
   (obj)
   )
+
+(def.directive jiksnuApp.AddWatcherForm []
+  (obj)
+  )
+
 
 
 (def.config jiksnuApp [$stateProvider $urlRouterProvider
