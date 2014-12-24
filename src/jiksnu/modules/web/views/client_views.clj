@@ -5,13 +5,10 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.client-actions :as actions.client]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.namespace :as ns]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.model.user :as model.user]
-            [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
-            [jiksnu.modules.web.sections.user-sections :as sections.user]
-            [ring.util.response :as response]))
+            [jiksnu.modules.web.sections.user-sections :as sections.user]))
 
 (defview #'actions.client/index :page
   [request response]

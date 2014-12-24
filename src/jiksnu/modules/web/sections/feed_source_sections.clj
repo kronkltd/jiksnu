@@ -142,13 +142,10 @@
 
     (map index-line sources)]])
 
-(defsection index-line [FeedSource :html]
-  [source & _]
-  )
-
 (defsection index-section [FeedSource :html]
-  [sources & [options & _]]
-  (index-block sources options))
+  [sources & [page & _]]
+  (pagination-links page)
+  (index-block sources page))
 
 (defsection link-to [FeedSource :html]
   [source & _]

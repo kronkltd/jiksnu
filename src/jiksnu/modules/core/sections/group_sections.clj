@@ -12,8 +12,6 @@
             [jiksnu.session :as session])
   (:import jiksnu.model.Group))
 
-;; admin-index-block
-
 (defsection admin-index-block [Group]
   [groups & [page]]
   (map #(admin-index-line % page) groups))
@@ -24,19 +22,13 @@
        (map (fn [m] (index-line m page)))
        doall))
 
-;; admin-index-line
-
 (defsection admin-index-line [Group]
   [item & [page]]
   (admin-show-section item page))
 
-;; admin-index-section
-
 (defsection admin-index-section [Group]
   [items & [page]]
   (admin-index-block items page))
-
-;; admin-show-section
 
 (defsection admin-show-section [Group]
   [item & [page]]
@@ -48,19 +40,13 @@
        (map (fn [m] (index-line m page)))
        doall))
 
-;; index-line
-
 (defsection index-line [Group]
   [group & [page]]
   (show-section group page))
 
-;; index-section
-
 (defsection index-section [Group]
   [items & [page]]
   (index-block items page))
-
-;; show-section
 
 (defsection show-section [Group]
   [item & [page]]

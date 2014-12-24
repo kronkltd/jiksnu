@@ -7,39 +7,32 @@
             [jiksnu.modules.core.sections :refer [admin-index-section
                                                   admin-show-section]]
             [jiksnu.modules.web.sections :refer [bind-to format-page-info
-                                                 pagination-links
+                                                 pagination-links redirect
                                                  with-page]]
             [jiksnu.modules.web.sections.feed-source-sections
-             :refer [index-watchers]]
-            [ring.util.response :as response])
+             :refer [index-watchers]])
   (:import jiksnu.model.FeedSource))
 
 (defview #'actions.feed-source/add-watcher :html
   [request source]
-  (-> (response/redirect-after-post (str "/admin/feed-sources/" (:_id source)))
-      (assoc :template false)
-      (assoc :flash "Watcher added")))
+  (redirect (str "/admin/feed-sources/" (:_id source))
+            "Watcher added"))
 
 (defview #'actions.feed-source/delete :html
   [request source]
-  (-> (response/redirect-after-post "/admin/feed-sources")
-      (assoc :template false)
-      (assoc :flash "Feed Source deleted")))
+  (redirect "/admin/feed-sources"
+            "Feed Source deleted"))
 
 (defview #'actions.feed-source/fetch-updates :html
   [request source]
-  (-> (response/redirect-after-post (str "/admin/feed-sources/" (:_id source)))
-      (assoc :template false)
-      (assoc :flash "Fetching updates")))
+  (redirect (str "/admin/feed-sources/" (:_id source))
+            "Fetching updates"))
 
 (defview #'actions.feed-source/index :html
   [request {:keys [items] :as page}]
   {:title "Feed Sources"
    :single true
-   :body (let [sources [(FeedSource.)]]
-           (with-page "feedSources"
-             (pagination-links page)
-             (admin-index-section sources page)))})
+   :body (admin-index-section sources page)})
 
 (defview #'actions.feed-source/index :viewmodel
   [request {:keys [items] :as page}]
@@ -48,9 +41,8 @@
 
 (defview #'actions.feed-source/remove-watcher :html
   [request source]
-  (-> (response/redirect-after-post (str "/admin/feed-sources/" (:_id source)))
-      (assoc :template false)
-      (assoc :flash "Watcher removed")))
+  (redirect (str "/admin/feed-sources/" (:_id source))
+            "Watcher removed"))
 
 (defview #'actions.feed-source/show :html
   [request source]

@@ -2,18 +2,15 @@
   (:require [ciste.views :refer [defview]]
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.modules.admin.actions.stream-actions :as actions.admin.stream]
-            [jiksnu.modules.core.sections :refer [admin-index-section]]
-            [jiksnu.modules.web.sections :refer [pagination-links with-page]])
+            [jiksnu.modules.core.sections :refer [admin-index-section]])
   (:import jiksnu.model.Stream))
 
 (defview #'actions.admin.stream/index :html
   [request page]
-  (let [page (if *dynamic* {:items [(Stream.)]} page)]
+  (let [page {:items [(Stream.)]}]
     {:title "Streams"
      :single true
-     :body (with-page "streams"
-             (pagination-links page)
-             (admin-index-section (:items page) page))}))
+     :body (admin-index-section (:items page) page)}))
 
 (defview #'actions.admin.stream/index :page
   [request page]

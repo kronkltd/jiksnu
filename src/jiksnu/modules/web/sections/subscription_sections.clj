@@ -8,8 +8,7 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
-            [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line
-                                                  admin-index-section]]
+            [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]]
             [jiksnu.modules.core.sections.subscription-sections :refer [subscribers-block
                                                                         subscribers-line
                                                                         subscribers-section

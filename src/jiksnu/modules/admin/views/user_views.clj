@@ -6,7 +6,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-section admin-index-block
                                              admin-show-section]]
-        [jiksnu.modules.web.sections :only [bind-to pagination-links with-page
+        [jiksnu.modules.web.sections :only [bind-to with-page
                                             with-sub-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -21,10 +21,7 @@
   [request {:keys [items] :as page}]
   {:single true
    :title "Users"
-   :body
-   (with-page "users"
-     (pagination-links page)
-     (admin-index-section items page))})
+   :body (admin-index-section items page)})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
@@ -42,23 +39,22 @@
   {:title (title user)
    :single true
    :body
-   (bind-to "targetUser"
-            [:div {:data-model "user"
-                   :data-id "{{user.id}}"}
-             (admin-show-section user)
-             (let [links [{}]]
-               (sections.user/links-table links))
-             (with-sub-page "activities"
-               [:h3 "Activities"]
-               (let [page {}
-                     items [(Activity.)]]
-                 (admin-index-section items page)))
-             (with-sub-page "streams"
-               [:h3 "Streams"]
-               (let [page {}
-                     items [(Stream.)]]
-                 (admin-index-section items page)))
-             [:add-stream-form]])})
+   [:div {:data-model "user"
+          :data-id "{{user.id}}"}
+    (admin-show-section user)
+    (let [links [{}]]
+      (sections.user/links-table links))
+    (with-sub-page "activities"
+      [:h3 "Activities"]
+      (let [page {}
+            items [(Activity.)]]
+        (admin-index-section items page)))
+    (with-sub-page "streams"
+      [:h3 "Streams"]
+      (let [page {}
+            items [(Stream.)]]
+        (admin-index-section items page)))
+    [:add-stream-form]]})
 
 (defview #'show :model
   [request user]

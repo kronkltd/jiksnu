@@ -6,20 +6,17 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
-            [jiksnu.modules.web.sections :refer [bind-to]]
-            [ring.util.response :as response])
+            [jiksnu.modules.web.sections :refer [bind-to redirect]])
   (:import jiksnu.model.Activity))
 
 (defview #'actions.activity/delete :html
   [request activity]
-  (-> (response/redirect-after-post "/")
-      (assoc :template false)))
+  (redirect "/"))
 
 (defview #'actions.activity/edit :html
   [request activity]
   (let [actor (session/current-user)]
-    (-> (response/redirect-after-post (uri actor))
-        (assoc :template false))))
+    (redirect (uri actor))))
 
 (defview #'actions.activity/post :html
   [request activity]
@@ -27,8 +24,7 @@
         url (or (-> request :params :redirect_to)
                 "/"
                 (uri actor))]
-    (-> (response/redirect-after-post url)
-        (assoc :template false))))
+    (redirect url)))
 
 (defview #'actions.activity/show :html
   [request activity]

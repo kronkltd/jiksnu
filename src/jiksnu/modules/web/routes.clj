@@ -24,7 +24,6 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.stacktrace :as stacktrace]
             [monger.ring.session-store :as ms]
-            [ring.util.response :as response]
             [slingshot.slingshot :refer [throw+]])
   (:import javax.security.auth.login.LoginException))
 

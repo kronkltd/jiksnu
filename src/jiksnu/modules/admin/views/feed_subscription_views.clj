@@ -5,19 +5,15 @@
             [jiksnu.model :as model]
             [jiksnu.modules.admin.actions.feed-subscription-actions :refer [delete index show]]
             [jiksnu.modules.core.sections :refer [admin-index-section]]
-            [jiksnu.modules.web.sections :refer [format-page-info pagination-links with-page]]
-            [ring.util.response :as response])
+            [jiksnu.modules.web.sections :refer [format-page-info]])
   (:import jiksnu.model.FeedSubscription))
 
 (defview #'index :html
   [request {:keys [items] :as page}]
-  (let [items [(FeedSubscription.)]]
-    {:title "Feed Subscriptions"
-     :status 200
-     :single true
-     :body (with-page "feedSubscriptions"
-             (pagination-links page)
-             (admin-index-section items page))}))
+  {:title "Feed Subscriptions"
+   :status 200
+   :single true
+   :body (admin-index-section items page)})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

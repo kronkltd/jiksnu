@@ -6,7 +6,8 @@
         [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [inflections.core :as inf]))
+            [inflections.core :as inf]
+            [ring.util.response :as response]))
 
 (def action-icons
   {"update"      "refresh"
@@ -154,3 +155,9 @@
      "Next "
      [:i.icon-right-arrow]]]
    [:div.clearfix]])
+
+(defn redirect
+  [url & [flash]]
+  (-> (response/redirect-after-post url)
+      (assoc :template false)
+      (assoc :flash flash)))

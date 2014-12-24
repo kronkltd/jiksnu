@@ -7,8 +7,7 @@
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
-            [ring.util.response :as response])
+            [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]])
   (:import jiksnu.model.FeedSubscription))
 
 ;; index
@@ -26,7 +25,7 @@
 
 (defview #'actions.feed-subscription/show :html
   [request item]
-  (let [item (if *dynamic* [(FeedSubscription.)] item)]
+  (let [item [(FeedSubscription.)]]
     {:body
      (bind-to "targetFeedSubscription"
        (show-section item))}))

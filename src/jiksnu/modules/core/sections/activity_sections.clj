@@ -52,8 +52,6 @@
     [:rdf  (sections.user/user-timeline-link user "rdf")]
     [:xml  (sections.user/user-timeline-link user "xml")]]))
 
-;; admin-index-block
-
 (defsection admin-index-block [Activity]
   [items & [page]]
   (map #(admin-index-line % page) items))
@@ -64,8 +62,6 @@
        (map (fn [m] (index-line m page)))
        doall))
 
-;; admin-index-section
-
 (defsection admin-index-section [Activity]
   [items & [page]]
   (admin-index-block items page))
@@ -73,8 +69,6 @@
 (defsection admin-index-section [Activity :viewmodel]
   [items & [page]]
   (admin-index-block items page))
-
-;; index-block
 
 (defsection index-block [Activity]
   [items & [page]]
@@ -91,13 +85,9 @@
   [:statuses {:type "array"}
    (map index-line activities)])
 
-;; index-line
-
 (defsection index-line [Activity]
   [activity & [page]]
   (show-section activity page))
-
-;; index-section
 
 (defsection index-section [Activity]
   [items & [page]]
@@ -167,13 +157,9 @@
      ;; TODO: list hashtags
      ]]])
 
-;; title
-
 (defsection title [Activity]
   [activity & options]
   (:title activity))
-
-;; uri
 
 (defsection uri [Activity]
   [activity & options]

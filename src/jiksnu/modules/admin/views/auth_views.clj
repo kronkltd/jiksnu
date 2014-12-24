@@ -1,13 +1,11 @@
 (ns jiksnu.modules.admin.views.auth-views
-  (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [add-form]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.admin.actions.auth-actions :only [index]]
-        [jiksnu.modules.core.sections :only [admin-index-section]]
-        [jiksnu.modules.web.sections :only [bind-to format-page-info
-                                            pagination-links with-page]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model :as model])
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [add-form]]
+            [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
+            [jiksnu.modules.admin.actions.auth-actions :refer [index]]
+            [jiksnu.modules.core.sections :refer [admin-index-section]]
+            [jiksnu.modules.web.sections :refer [format-page-info]])
   (:import jiksnu.model.AuthenticationMechanism))
 
 ;; TODO: This page should use a single column
@@ -15,13 +13,10 @@
   [request {:keys [items] :as response}]
   {:title "Authentication Mechanisms"
    :single true
-   :body (with-page "mechanisms"
-           (pagination-links response)
-           (admin-index-section (if *dynamic*
-                                  [(AuthenticationMechanism.)]
-                                  items)
-                                response)
-           (add-form (model/->AuthenticationMechanism)))})
+   :body
+   [:div
+    (admin-index-section items response)
+    (add-form (model/->AuthenticationMechanism))]})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

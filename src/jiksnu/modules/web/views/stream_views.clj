@@ -10,17 +10,15 @@
             [jiksnu.model :as model]
             [jiksnu.modules.core.sections.activity-sections :as sections.activity]
             [jiksnu.modules.web.sections :refer [bind-to with-page
-                                                 pagination-links
-                                                 with-sub-page]]
-            [ring.util.response :as response])
+                                                 pagination-links redirect
+                                                 with-sub-page]])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 
 (defview #'actions.stream/create :html
   [request item]
-  (-> (response/redirect-after-post "/")
-      (assoc :template false)
-      (assoc :flash "user has been created")))
+  (redirect "/"
+            "user has been created"))
 
 (defview #'actions.stream/group-timeline :html
   [request [group {:keys [items] :as page}]]
@@ -30,9 +28,7 @@
    (bind-to "targetGroup"
             (show-section group)
             [:div {:data-model "group"}
-             (with-sub-page "conversations"
-               (pagination-links (if *dynamic* {} page))
-               (index-section items))])})
+             (index-section items)])})
 
 (defview #'actions.stream/home-timeline :html
   [request activities]
@@ -52,14 +48,13 @@
 
 (defview #'actions.stream/user-timeline :html
   [request [user {:keys [items] :as page}]]
-  (let [items [(Activity.)]]
-    {:user user
-     :title (:name user)
-     :post-form true
-     :body
-     (bind-to "targetUser"
-              [:div {:data-model "user"}
-               (with-sub-page "activities"
-                 (index-section items page))])
-     :formats (sections.activity/timeline-formats user)}))
+  {:user user
+   :title (:name user)
+   :post-form true
+   :body
+   (bind-to "targetUser"
+            [:div {:data-model "user"}
+             (with-sub-page "activities"
+               (index-section items page))])
+   :formats (sections.activity/timeline-formats user)})
 

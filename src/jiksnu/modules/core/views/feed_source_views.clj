@@ -8,13 +8,11 @@
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
-            [jiksnu.modules.web.sections :refer [bind-to format-page-info pagination-links with-page
+            [jiksnu.modules.web.sections :refer [bind-to format-page-info pagination-links redirect with-page
                                                  with-sub-page]]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSource))
-
-;; index
 
 (defview #'actions.feed-source/index :html
   [request {:keys [items] :as page}]
@@ -39,22 +37,14 @@
   {:body {:title "Feed Sources"
           :pages {:feedSources (format-page-info page)}}})
 
-;; process-updates
-
 (defview #'actions.feed-source/process-updates :html
   [request params]
   {:body params
    :template false})
 
-;; unsubscribe
-
 (defview #'actions.feed-source/unsubscribe :html
   [request params]
-  (-> "/main/feed-sources"
-      response/redirect-after-post
-      (assoc :template false)))
-
-;; show
+  (redirect "/main/feed-sources"))
 
 (defview #'actions.feed-source/show :html
   [request item]
@@ -77,10 +67,6 @@
   {:body {:targetFeedSource (:_id item)
           :title (:title item)}})
 
-;; update
-
 (defview #'actions.feed-source/update :html
   [request params]
-  (-> "/main/feed-sources"
-      response/redirect-after-post
-      (assoc :template false)))
+  (redirect "/main/feed-sources"))

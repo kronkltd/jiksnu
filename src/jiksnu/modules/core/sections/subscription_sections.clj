@@ -4,8 +4,7 @@
                                             show-section uri]]
             [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line
-                                                  admin-index-section]])
+            [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]])
   (:import jiksnu.model.Subscription))
 
 ;; subscriptions where the user is the target

@@ -1,20 +1,16 @@
 (ns jiksnu.modules.admin.views.group-membership-views
-  (:use [ciste.views :only [defview]]
-        [jiksnu.modules.admin.actions.group-membership-actions :only [index]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-index-section]]
-        [jiksnu.modules.web.sections :only [format-page-info pagination-links with-page]])
-  (:require [clojure.tools.logging :as log])
+  (:require [ciste.views :refer [defview]]
+            [clojure.tools.logging :as log]
+            [jiksnu.modules.admin.actions.group-membership-actions :refer [index]]
+            [jiksnu.modules.core.sections :refer [admin-index-section]]
+            [jiksnu.modules.web.sections :refer [format-page-info]])
   (:import jiksnu.model.GroupMembership))
 
 (defview #'index :html
   [request {:keys [items] :as page}]
-  (let [items (if *dynamic* [(GroupMembership.)] items)]
-    {:single true
-     :title "Groups Memberships"
-     :body (with-page "group-memberships"
-             (pagination-links page)
-             (admin-index-section items page))}))
+  {:single true
+   :title "Groups Memberships"
+   :body (admin-index-section items page)})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
