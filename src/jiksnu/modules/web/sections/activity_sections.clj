@@ -26,7 +26,7 @@
                                                   admin-index-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-to
                                                  control-line
-                                                 display-property display-timestamp dropdown-menu
+                                                 display-timestamp dropdown-menu
                                                  format-links pagination-links
                                                  with-sub-page]]
             [jiksnu.namespace :as ns]
@@ -379,7 +379,7 @@
     (let [user (User.)]
       [:span {:data-model "user"}
        (link-to user)])]
-   [:td (display-property activity :content)]
+   [:td "{{activity.content}}"]
    [:td (actions-section activity)]])
 
 ;; edit-button

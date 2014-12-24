@@ -1,7 +1,8 @@
 (ns jiksnu.modules.admin.actions.group-actions-test
-    (:use [jiksnu.modules.admin.actions.group-actions :only [index]]
-          [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-          [midje.sweet :only [=>]] ))
+    (:require [jiksnu.modules.admin.actions.group-actions :refer [index]]
+              [jiksnu.test-helper
+               :refer [check context future-context test-environment-fixture]]
+              [midje.sweet :refer [=>]]))
 
 (test-environment-fixture
 

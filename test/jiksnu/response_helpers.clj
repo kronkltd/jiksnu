@@ -1,6 +1,6 @@
 (ns jiksnu.response-helpers
-  (:use [jiksnu.action-helpers :only [current-page check-response]]
-        [midje.sweet :only [=>]]))
+  (:require [jiksnu.action-helpers :refer [current-page check-response]]
+            [midje.sweet :refer [=>]]))
 
 (defn response-should-be-redirect
   []

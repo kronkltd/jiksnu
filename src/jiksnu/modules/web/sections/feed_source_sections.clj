@@ -9,7 +9,7 @@
             [jiksnu.modules.core.sections :refer [admin-show-section
                                                   admin-index-block admin-index-line
                                                   admin-index-section]]
-            [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
+            [jiksnu.modules.web.sections :refer [action-link bind-to control-line
                                                  dropdown-menu]]
             [jiksnu.session :as session])
   (:import jiksnu.model.FeedSource

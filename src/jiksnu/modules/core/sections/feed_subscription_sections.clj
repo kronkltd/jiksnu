@@ -2,8 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [show-section]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
-        [jiksnu.modules.web.sections :only [display-property]])
+        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]])
   (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.FeedSubscription))
 
@@ -18,19 +17,18 @@
      [:th "Url"]
      [:th "Domain"]
      [:th "Callback"]]]
-   [:tbody (when *dynamic*
-             {:data-bind "foreach: items"})
+   [:tbody
     (map #(admin-index-line % options) subscriptions)]])
 
 ;; admin-index-line
 
 (defsection admin-index-line [FeedSubscription :html]
   [item & [options & _]]
-  [:tr {:data-model "feed-subscription"}
-   [:td (display-property item :_id)]
-   [:td (display-property item :url)]
-   [:td (display-property item :domain)]
-   [:td (display-property item :callback)]])
+  [:tr {:ng-repeat "sub in page.items"}
+   [:td "{{sub._id}}"]
+   [:td "{{sub.url}}"]
+   [:td "{{sub.domain}}"]
+   [:td "{{sub.callback}}"]])
 
 (defsection show-section [FeedSubscription :model]
   [item & [page]]

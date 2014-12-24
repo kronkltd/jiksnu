@@ -1,14 +1,12 @@
 (ns jiksnu.modules.web.sections.auth-sections
-  (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section add-form index-block
-                                       index-line link-to]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
-        [jiksnu.modules.web.sections :only [bind-to control-line display-property]]
-        [jiksnu.session :only [current-user]]
-        [jiksnu.modules.web.sections.user-sections :only [display-avatar-img]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model.user :as model.user])
+  (:require [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [actions-section add-form index-block
+                                           index-line link-to]]
+            [clojure.tools.logging :as log]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]]
+            [jiksnu.modules.web.sections :refer [bind-to control-line]]
+            [jiksnu.modules.web.sections.user-sections :refer [display-avatar-img]])
   (:import jiksnu.model.AuthenticationMechanism
            jiksnu.model.User))
 

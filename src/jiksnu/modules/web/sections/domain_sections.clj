@@ -6,7 +6,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.namespace :as ns]
-            [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
+            [jiksnu.modules.web.sections :refer [action-link bind-to control-line
                                                  dropdown-menu]]
             [jiksnu.modules.web.sections.link-sections :as sections.link]
             [jiksnu.session :as session])

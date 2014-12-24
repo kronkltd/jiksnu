@@ -1,14 +1,15 @@
 (ns jiksnu.modules.admin.actions.feed-subscription-actions-test
-  (:use [clj-factory.core :only [factory]]
-        [jiksnu.modules.admin.actions.feed-subscription-actions :only [index]]
-        [jiksnu.test-helper :only [check context test-environment-fixture]]
-        [midje.sweet :only [=>]])
-  (:require [jiksnu.db :as db]
-            [jiksnu.mock :as mock]))
+  (:require [clj-factory.core :refer [factory]]
+            [jiksnu.db :as db]
+            [jiksnu.mock :as mock]
+            [jiksnu.modules.admin.actions.feed-subscription-actions
+             :as actions.feed-subscription]
+            [jiksnu.test-helper :refer [check context test-environment-fixture]]
+            [midje.sweet :refer [=>]]))
 
 (test-environment-fixture
 
- (context #'index
+ (context #'actions.feed-subscription/index
    (context "when there are no sources"
      (db/drop-all!)
 

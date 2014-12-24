@@ -11,8 +11,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.modules.web.actions.core-actions :as actions.web.core]
-            [jiksnu.modules.web.sections :refer [bind-to display-property
-                                                 pagination-links with-sub-page]]
+            [jiksnu.modules.web.sections :refer [bind-to pagination-links with-sub-page]]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
             [jiksnu.modules.web.sections.auth-sections :as sections.auth]
             [jiksnu.modules.web.sections.group-sections :as sections.group]

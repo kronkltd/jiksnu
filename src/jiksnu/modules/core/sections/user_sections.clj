@@ -9,7 +9,7 @@
          [jiksnu.ko :only [*dynamic*]]
          [jiksnu.modules.core.sections :only [admin-index-block admin-index-line admin-index-section
                                               admin-show-section]]
-         [jiksnu.modules.web.sections :only [display-property dropdown-menu pagination-links]]
+         [jiksnu.modules.web.sections :only [dropdown-menu pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]

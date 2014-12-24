@@ -13,7 +13,7 @@
                                                  admin-index-line admin-index-section
                                                  admin-show-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-property bind-to control-line
-                                                display-property dropdown-menu
+                                                dropdown-menu
                                                 pagination-links]]
             [jiksnu.session :as session]
             [slingshot.slingshot :refer [try+]])
@@ -327,7 +327,7 @@
      " ({{user.username}}@{{user.domain}})"]
     [:div.adr
      [:p.locality "{{user.location}}"]]
-    [:p.note (display-property user :bio)]
+    [:p.note "{{user.bio}}"]
     (let [source (FeedSource.)]
       (bind-to "updateSource"
         [:div {:data-model "feed-source"}

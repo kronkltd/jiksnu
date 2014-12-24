@@ -16,7 +16,7 @@
             [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block
                                                   admin-index-section ]]
             [jiksnu.modules.core.sections.user-sections :as sections.user]
-            [jiksnu.modules.web.sections :refer [display-property display-timestamp
+            [jiksnu.modules.web.sections :refer [display-timestamp
                                                  dropdown-menu format-links
                                                  pagination-links]]
             [jiksnu.session :as session]

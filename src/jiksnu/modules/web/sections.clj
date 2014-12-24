@@ -123,12 +123,6 @@
               (when checked
                 {:checked "checked"}))]]]))
 
-(defn display-property
-  [item property]
-  (if *dynamic*
-    (str "{{" (name property) "}}")
-    (str (get item (keyword property)))))
-
 (defn display-timestamp
   [item property]
   [:time.timeago

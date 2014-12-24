@@ -1,21 +1,21 @@
 (ns jiksnu.assertion-helpers
-  (:use [aleph.formats :only [channel-buffer->string]]
-        [ciste.config :only [config]]
-        [clj-webdriver.taxi :only [current-url elements exists? find-elements page-source text]]
-        [jiksnu.action-helpers :only [check-response current-page expand-url get-body
-                                      page-names that-stream]]
-        [jiksnu.referrant :only [get-that get-this]]
-        [lamina.core :only [read-channel*]]
-        [midje.sweet :only [=> =not=> checker contains defchecker truthy]]
-        [slingshot.slingshot :only [throw+ try+]])
-  (:require [clj-webdriver.taxi :as webdriver]
+  (:require [aleph.formats :refer [channel-buffer->string]]
+            [ciste.config :refer [config]]
+            [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
             [clojure.data.json :as json]
+            [jiksnu.action-helpers :refer [check-response current-page
+                                           expand-url get-body
+                                           page-names that-stream]]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session])
+            [jiksnu.referrant :refer [get-that get-this]]
+            [jiksnu.session :as session]
+            [lamina.core :refer [read-channel*]]
+            [midje.sweet :refer [=> =not=> checker contains defchecker truthy]]
+            [slingshot.slingshot :refer [throw+ try+]])
   (:import org.openqa.selenium.NoSuchElementException))
 
 (defchecker has-match?
@@ -32,10 +32,9 @@
 (defn should-be-at-page
   [page-name]
   (check-response
-   (let [path (get page-names page-name)]
-     (current-url) => (re-pattern
-                       (str ".*" (expand-url path)
-                            ".*")))))
+   (let [path (get page-names page-name)
+         pattern (re-pattern (str ".*" (expand-url path) ".*"))]
+     (webdriver/current-url) => pattern)))
 
 (defn alias-should-match-uri
   []
