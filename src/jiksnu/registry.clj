@@ -53,6 +53,7 @@
    "stream"
    "subscription"
    "tag"
+   "template"
    "user"
    "user-list"
    ])
