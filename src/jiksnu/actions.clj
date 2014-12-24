@@ -54,7 +54,7 @@
                                    :message message})]
       (l/enqueue ch response))))
 
-(defaction connect
+(defn connect
   [ch]
   (trace/trace :websocket:connections:established 1)
   (let [user-id (:_id (session/current-user))
