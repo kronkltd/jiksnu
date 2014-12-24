@@ -33,7 +33,7 @@
   `(let [var-name# (str ~description)]
      (print (apply str (repeat *depth* "  ")))
      (println var-name#)
-     (fact var-name#
+     (fact ~description
 
        ;; (trace/time*
 
@@ -54,7 +54,7 @@
 (defmacro check
   [bindings & body]
   `(fn ~bindings
-     (fact
+     (fact "checks"
        ~@body)))
 
 (defmacro test-environment-fixture
