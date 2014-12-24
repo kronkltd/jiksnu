@@ -1,8 +1,9 @@
 (ns jiksnu.actions.site-actions
-  (:use [ciste.core :only [defaction]])
-  (:require [clojure.string :as string]
+  (:require [ciste.core :refer [defaction]]
+            [clojure.string :as string]
             [inflections.core :as inf]
-            [jiksnu.actions.domain-actions :as actions.domain]))
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.session :as session]))
 
 (defn get-config
   [path]
@@ -42,3 +43,10 @@
   [id]
   ;; get user
   true)
+
+(defaction status
+  []
+  {:name "Jiksnu"
+   :user (session/current-user-id)
+   }
+  )
