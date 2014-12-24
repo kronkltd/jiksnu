@@ -26,7 +26,7 @@
                                                   admin-index-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-to
                                                  control-line
-                                                 display-timestamp dropdown-menu
+                                                 dropdown-menu
                                                  format-links pagination-links
                                                  with-sub-page]]
             [jiksnu.namespace :as ns]

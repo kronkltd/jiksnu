@@ -123,13 +123,6 @@
               (when checked
                 {:checked "checked"}))]]]))
 
-(defn display-timestamp
-  [item property]
-  [:time.timeago
-   {:data-toggle "timeago"
-    :datetime (str "{{" (name property) "}}")}
-   (str "{{" (name property) "}}")])
-
 (defn dropdown-menu
   [item buttons]
   (when (seq buttons)

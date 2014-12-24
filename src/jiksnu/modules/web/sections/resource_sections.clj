@@ -5,7 +5,7 @@
                                          show-section update-button]]
           [jiksnu.modules.core.sections :only [admin-index-line]]
           [jiksnu.modules.web.sections :only [action-link bind-to
-                                              display-timestamp dropdown-menu
+                                              dropdown-menu
                                               pagination-links]])
     (:require [ciste.model :as cm]
               [clojure.tools.logging :as log]
