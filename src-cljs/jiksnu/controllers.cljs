@@ -57,20 +57,57 @@
    ]
   )
 
+(def templated-states
+  [{:name "root"
+    :url "/"
+    ;; :abstract true
+    :views {:templateUrl "/partials/public-timeline.html"
+            :controller "ConversationListController"}}
+   {:name "indexDomains"
+    :url "/main/domains"
+    :views {:templateUrl "/partials/index-domains.html"
+            :controller "IndexDomainsController"}}
+   {:name  "indexGroups"
+    :url "/main/groups"
+    :views {:templateUrl "/partials/index-groups.html"
+            :controller "IndexGroupsController"}}
+   {:name "indexResources"
+    :url "/resources"
+    :views {:templateUrl "/partials/index-resources.html"
+            :controller "IndexResourcesController"}}
+   {:name  "indexUsers"
+    :url "/users"
+    :views {:templateUrl "/partials/index-users.html"
+            :controller "IndexUsersController"}}
+   {:name  "showActivity"
+    :url "/notice/:id"
+    :views {:templateUrl "/partials/show-activity.html"
+            :controller "ShowActivityController"}}
+   {:name  "showDomain"
+    :url "/main/domains/:id"
+    :views {:templateUrl "/partials/show-domain.html"
+            :controller "ShowDomainController"}}
+   {:name  "showUser"
+    :url "/users/:id"
+    :views {:templateUrl "/partials/show-user.html"
+            :controller "ShowUserController"}}
+   {:name  "adminConversations"
+    :url "/admin/conversations"
+    :views {:templateUrl "/partials/admin-conversations.html"
+            :controller "AdminConversationsController"}}])
 
 
 
 
 
-(def.controller jiksnuApp.AppController
-  [$scope]
-  (! $scope.phones
-     (clj->js [{:name "Nexus Foo"
-                :snippet "foo"}
-               {:name "bar"
-                :snippet "bar"}])))
 
+(def.controller jiksnuApp.AppController [])
 (def.controller jiksnuApp.AvatarPageController [])
+(def.controller jiksnuApp.LoginPageController [])
+(def.controller jiksnuApp.RegisterPageController [])
+(def.controller jiksnuApp.RightColumnController [])
+(def.controller jiksnuApp.NewPostController [])
+
 
 (def.controller jiksnuApp.NavBarController
   [$scope $http]
@@ -88,58 +125,52 @@
                   (! $scope.groups data)))))
 
 
-(def.controller jiksnuApp.LoginPageController [])
-(def.controller jiksnuApp.RegisterPageController [])
-(def.controller jiksnuApp.RightColumnController [])
-(def.controller jiksnuApp.NewPostController [])
-
 (def.controller jiksnuApp.ShowActivityController
   [$scope $http $stateParams]
-  (let [id (.-id $stateParams)
-        url (str "/notice/" id ".json")]
+  (let [id (.-id $stateParams)]
     (.info js/console "Showing Activity")
     (! $scope.loaded false)
     (! $scope.init
        (fn [id]
-         (-> $http
-             (.get url)
-             (.success
-              (fn [data]
-                (.info js/console "Data" data)
-                (! $scope.activity data)
-                (! $scope.loaded true))))))
+         (let [url (str "/notice/" id ".json")]
+           (-> $http
+               (.get url)
+               (.success
+                (fn [data]
+                  (.info js/console "Data" data)
+                  (! $scope.activity data)
+                  (! $scope.loaded true)))))))
     (.init $scope id)))
 
 (def.controller jiksnuApp.ShowDomainController
   [$scope $http $stateParams]
-  (let [id (.-id $stateParams)
-        url (str "/main/domains/" id ".json")]
+  (let [id (.-id $stateParams)]
     (.info js/console "Showing Domain")
     (! $scope.loaded false)
     (! $scope.init
        (fn [id]
-         (-> $http
-             (.get url)
-             (.success
-              (fn [data]
-                (.info js/console "Data" data)
-                (! $scope.domain data)
-                (! $scope.loaded true))))))
+         (let [url (str "/main/domains/" id ".json")]
+           (-> $http
+                     (.get url)
+                     (.success
+                      (fn [data]
+                        (.info js/console "Data" data)
+                        (! $scope.domain data)
+                        (! $scope.loaded true)))))))
     (.init $scope id)))
 
 (def.controller jiksnuApp.ShowUserController
   [$scope $http $stateParams]
-  (let [id (.-id $stateParams)
-        url (str "/users/" id ".json")]
-    ;; (! $scope.user (? $scope.$parent.activity.actor))
+  (let [id (.-id $stateParams)]
     (! $scope.loaded false)
     (! $scope.init
        (fn [id]
-         (-> $http
-             (.get url)
-             (.success
-              (fn [data]
-                (! $scope.user data))))))
+         (let [url (str "/users/" id ".json")]
+           (-> $http
+               (.get url)
+               (.success
+                (fn [data]
+                  (! $scope.user data)))))))
     (.init $scope id)))
 
 (def.controller jiksnuApp.ConversationListController
@@ -203,103 +234,24 @@
                              (! $scope.activity data))))))))
 
 (def.directive jiksnuApp.StreamsWidget []
-  (obj)
-  )
+  (obj))
 
 (def.directive jiksnuApp.AddStreamForm []
-  (obj)
-  )
+  (obj))
 
 (def.directive jiksnuApp.AddWatcherForm []
-  (obj)
-  )
-
+  (obj))
 
 
 (def.config jiksnuApp [$stateProvider $urlRouterProvider
                        $locationProvider]
-
   (.otherwise $urlRouterProvider "/")
-
   (-> $locationProvider
       (.hashPrefix "!")
       (.html5Mode true))
-
-  (doto $stateProvider
-    (add-states states)
-
-    (.state "root"
-            (obj
-             :url "/"
-             ;; :abstract true
-             :views
-             (with-template
-               {"" {:templateUrl "/partials/public-timeline.html"
-                    :controller "ConversationListController"}})))
-
-    (.state "indexDomains"
-            (obj
-             :url "/main/domains"
-             :views
-             (with-template
-               {"" {:templateUrl "/partials/index-domains.html"
-                    :controller "IndexDomainsController"}})))
-
-    (.state "indexGroups"
-            (obj
-             :url "/main/groups"
-             :views
-             (with-template
-               {"" {:templateUrl "/partials/index-groups.html"
-                    :controller "IndexGroupsController"}})))
-
-    (.state "indexResources"
-            (obj
-             :url "/resources"
-             :views
-             (with-template
-               {"" {:templateUrl "/partials/index-resources.html"
-                    :controller "IndexResourcesController"}})))
-
-    (.state "indexUsers"
-            (obj
-             :url "/users"
-             :views
-             (with-template
-               {"" {:templateUrl "/partials/index-users.html"
-                    :controller "IndexUsersController"}})))
-
-    (.state "showActivity"
-            (obj
-             :url "/notice/:id"
-             :views
-             (with-template
-               {"" {:templateUrl "/partials/show-activity.html"
-                    :controller "ShowActivityController"}})))
-
-    (.state "showDomain"
-            (obj
-             :url "/main/domains/:id"
-             :views
-             (with-template
-               {"" {:templateUrl "/partials/show-domain.html"
-                    :controller "ShowDomainController"}})))
-
-    (.state "showUser"
-            (obj
-             :url "/users/:id"
-             :views
-             (with-template
-               {"" {:templateUrl "/partials/show-user.html"
-                    :controller "ShowUserController"}})))
-
-    (.state "adminConversations"
-            (obj
-             :url "/admin/conversations"
-             :views
-             (with-template
-               {"" {:templateUrl "/partials/admin-conversations.html"
-                    :controller "AdminConversationsController"}})))
-
-    ))
-
+  (doseq [state templated-states]
+    (let [views (:views state)]
+      (.state $stateProvider
+              (clj->js (assoc state :views (with-template
+                                             {"" views}))))))
+  (add-states $stateProvider states))

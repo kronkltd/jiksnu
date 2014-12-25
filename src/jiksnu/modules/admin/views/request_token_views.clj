@@ -7,7 +7,7 @@
   (:import jiksnu.model.RequestToken))
 
 (defview #'actions.admin.request-token/index :html
-  [request response]
+  [request page]
   {:title "Request Tokens"
    :body (admin-index-section (:items page) page)})
 

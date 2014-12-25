@@ -10,7 +10,7 @@
                                                   admin-index-block admin-index-line
                                                   admin-index-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-to control-line
-                                                 dropdown-menu]]
+                                                 dropdown-menu pagination-links]]
             [jiksnu.session :as session])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))

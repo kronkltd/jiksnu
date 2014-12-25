@@ -8,12 +8,12 @@
   (:import jiksnu.model.Client))
 
 (defview #'actions.admin.client/index :html
-  [request response]
+  [request page]
   {:title "Clients"
    :body (admin-index-section (:items page) page)})
 
 (defview #'actions.admin.client/index :viewmodel
-  [request response]
+  [request _]
   {:body
    {:title "Clients"}})
 

@@ -32,7 +32,7 @@
   [request {:keys [items] :as page}]
   {:title "Feed Sources"
    :single true
-   :body (admin-index-section sources page)})
+   :body (admin-index-section items page)})
 
 (defview #'actions.feed-source/index :viewmodel
   [request {:keys [items] :as page}]
