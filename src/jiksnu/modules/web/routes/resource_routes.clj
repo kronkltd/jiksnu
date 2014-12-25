@@ -7,9 +7,9 @@
   []
   [
    [[:get    "/resources.:format"]   #'index]
-   [[:get    "/resources"]   #'index]
+   ;; [[:get    "/resources"]   #'index]
    [[:get    "/resources/:id.:format"]     #'show]
-   [[:get    "/resources/:id"]     #'show]
+   ;; [[:get    "/resources/:id"]     #'show]
    [[:post   "/resources/:id/discover.:format"] #'discover]
    [[:post   "/resources/:id/discover"] #'discover]
    [[:post   "/resources/:id/update.:format"]   #'update]

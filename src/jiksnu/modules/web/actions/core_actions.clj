@@ -7,28 +7,28 @@
   [{:label "Home"
     :items
     [{:title "Public"
-      :href "/"
+      ;; :href "/"
       :state "root"}
      {:title "Users"
-      :href "/users"
+      ;; :href "/users"
       :state "indexUsers"}
      ;; {:title "Feeds"
      ;;  :href "/main/feed-sources"
      ;;  :state "indexFeedSources"}
      {:title "Domains"
-      :href "/main/domains"
+      ;; :href "/main/domains"
       :state "indexDomains"}
      {:title "Groups"
-      :href "/main/groups"
+      ;; :href "/main/groups"
       :state "indexGroups"}
      {:title "Resources"
-      :href "/resources"
+      ;; :href "/resources"
       :state "indexResources"}]}
-   {:label "Settings"
+   #_{:label "Settings"
     :items
     [{:href "/admin/settings"
       :title "Settings"}]}
-   (when (session/is-admin?)
+   #_(when (session/is-admin?)
      {:label "Admin"
       :items
       [{:href "/admin/activities"

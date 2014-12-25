@@ -9,9 +9,12 @@
 (defn routes
   []
   [
-   [[:get    "/api/friendships/exists.:format"] #'user/exists?]
-   [[:get    "/api/people/@me/@all"]            #'user/index]
-   [[:get    "/api/people/@me/@all/:id"]        #'user/show]
+   ;; [[:get    "/api/friendships/exists.:format"] #'user/exists?]
+
+   ;; [[:get    "/api/people/@me/@all"]            #'user/index]
+
+   ;; [[:get    "/api/people/@me/@all/:id"]        #'user/show]
+
    [[:get    "/api/user/:username/"]            {:action #'user/show-basic
                                                  :format :as}]
    [[:get    "/api/user/:username/profile"]     {:action #'user/show
@@ -23,10 +26,10 @@
    [[:post   "/main/register"]                  #'user/register]
    ;; [[:get    "/main/xrd"]                       #'user/user-meta]
 
-   [[:get    "/model/users/:id"]                #'user/show]
+   ;; [[:get    "/model/users/:id"]                #'user/show]
 
    [[:get    "/users.:format"]                  #'user/index]
-   [[:get    "/users"]                          #'user/index]
+   ;; [[:get    "/users"]                          #'user/index]
    [[:delete "/users/:id"]                      #'user/delete]
    [[:post   "/users/:id/discover.:format"]     #'user/discover]
    [[:post   "/users/:id/discover"]             #'user/discover]

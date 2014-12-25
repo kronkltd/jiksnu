@@ -94,8 +94,23 @@
    {:name  "adminConversations"
     :url "/admin/conversations"
     :views {:templateUrl "/partials/admin-conversations.html"
-            :controller "AdminConversationsController"}}])
+            :controller "AdminConversationsController"}}
 
+   ])
+
+
+
+(def.config jiksnuApp [$stateProvider $urlRouterProvider $locationProvider]
+  ;; (.otherwise $urlRouterProvider "/")
+  (-> $locationProvider
+      (.hashPrefix "!")
+      (.html5Mode true))
+  (doseq [state templated-states]
+    (let [views (:views state)]
+      (.state $stateProvider
+              (clj->js (assoc state :views (with-template
+                                             {"" views}))))))
+  (add-states $stateProvider states))
 
 
 
@@ -111,9 +126,11 @@
 
 (def.controller jiksnuApp.NavBarController
   [$scope $http]
+  (.info js/console "fetching nav")
   (-> $http
       (.get "/status")
       (.success (fn [data]
+                  (.info js/console "fetched nav")
                   (! $scope.app data)))))
 
 (def.controller jiksnuApp.LeftColumnController
@@ -241,17 +258,3 @@
 
 (def.directive jiksnuApp.AddWatcherForm []
   (obj))
-
-
-(def.config jiksnuApp [$stateProvider $urlRouterProvider
-                       $locationProvider]
-  (.otherwise $urlRouterProvider "/")
-  (-> $locationProvider
-      (.hashPrefix "!")
-      (.html5Mode true))
-  (doseq [state templated-states]
-    (let [views (:views state)]
-      (.state $stateProvider
-              (clj->js (assoc state :views (with-template
-                                             {"" views}))))))
-  (add-states $stateProvider states))

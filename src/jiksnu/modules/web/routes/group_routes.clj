@@ -9,19 +9,19 @@
    [[:get  "/api/statusnet/app/memberships/:id.:format"] #'group/user-list]
 
    [[:get  "/main/groups.:format"]                       #'group/index]
-   [[:get  "/main/groups"]                               #'group/index]
+   ;; [[:get  "/main/groups"]                               #'group/index]
    [[:post "/main/groups"]                               #'group/create]
    [[:get  "/main/groups/new"]                           #'group/new-page]
    [[:get  "/main/groups/:name.:format"]                 #'group/show]
-   [[:get  "/main/groups/:name"]                         #'group/show]
-   [[:get  "/main/groups/:name/edit"]                    #'group/edit-page]
+   ;; [[:get  "/main/groups/:name"]                         #'group/show]
+   ;; [[:get  "/main/groups/:name/edit"]                    #'group/edit-page]
    [[:post "/main/groups/:name/join"]                    #'group/join]
 
    [[:get  "/model/groups/:id.:format"]                  #'group/show]
-   [[:get  "/model/groups/:id"]                          #'group/show]
+   ;; [[:get  "/model/groups/:id"]                          #'group/show]
 
    [[:get  "/users/:id/groups.:format"]                  #'group/fetch-by-user]
-   [[:get  "/users/:id/groups"]                          #'group/fetch-by-user]
+   ;; [[:get  "/users/:id/groups"]                          #'group/fetch-by-user]
    ;; [[:get    "/search/group"]                            #'group/search-page]
    ;; [[:post   "/search/group"]                            #'group/search]
 

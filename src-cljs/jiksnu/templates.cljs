@@ -163,7 +163,7 @@
     [:div.list-group
      [:a.list-group-item
       {:ng-repeat "item in group.items"
-       :ng-if "item.state"
+       ;; :ng-if "item.state"
        :ui-sref "{{item.state}}"}
       "{{item.title}}"]]]
    [:hr]

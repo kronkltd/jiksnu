@@ -15,7 +15,6 @@
    [[:post   "/main/domains/:id/discover"]       #'domain/discover]
    [[:post   "/main/domains/:id/edit"]           #'domain/edit-page]
    [[:post   "/main/domains"]                    #'domain/find-or-create]
-   [[:get    "/model/domains/:id.:format"]       #'domain/show]
    ;; [[:get    "/api/dialback"]                    #'domain/dialback]
    ])
 
