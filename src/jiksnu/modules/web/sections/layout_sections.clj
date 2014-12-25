@@ -85,12 +85,6 @@
    [:input.search-query.col-md-3
     {:type "text" :placeholder "Search" :name "q"}]])
 
-(defn style-section
-  []
-  (p/include-css
-   "/webjars/bootstrap/3.3.0/css/bootstrap.min.css"
-   "/css/standard.css"))
-
 (defn get-prefixes
   []
   (->> [["foaf" ns/foaf]
@@ -124,6 +118,12 @@
 
 (defonce scripts-section-hook (ref []))
 
+(defn style-section
+  []
+  (p/include-css
+   "/webjars/bootstrap/3.3.1/css/bootstrap.min.css"
+   "/css/standard.css"))
+
 (defn scripts-section
   [request response]
   (let [websocket-path (str "ws://" (config :domain) "/")]
@@ -135,8 +135,8 @@
      (p/include-js
       "/webjars/underscorejs/1.7.0/underscore-min.js"
       "/webjars/momentjs/2.8.3/min/moment.min.js"
-      "/webjars/jquery/2.1.1/jquery.min.js"
-      "/webjars/angularjs/1.3.0/angular.min.js"
+      "/webjars/jquery/2.1.3/jquery.min.js"
+      "/webjars/angularjs/1.3.8/angular.min.js"
       "/webjars/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js"
       "/webjars/angular-ui-router/0.2.13/angular-ui-router.min.js"
       "/webjars/angular-moment/0.8.2-1/angular-moment.min.js"

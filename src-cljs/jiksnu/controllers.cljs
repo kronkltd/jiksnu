@@ -10,6 +10,67 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
+(def nav-info
+  [{:label "Home"
+    :items
+    [{:title "Public"
+      ;; :href "/"
+      :state "root"}
+     {:title "Users"
+      ;; :href "/users"
+      :state "indexUsers"}
+     ;; {:title "Feeds"
+     ;;  :href "/main/feed-sources"
+     ;;  :state "indexFeedSources"}
+     {:title "Domains"
+      ;; :href "/main/domains"
+      :state "indexDomains"}
+     {:title "Groups"
+      ;; :href "/main/groups"
+      :state "indexGroups"}
+     {:title "Resources"
+      ;; :href "/resources"
+      :state "indexResources"}]}
+   #_{:label "Settings"
+    :items
+    [{:href "/admin/settings"
+      :title "Settings"}]}
+   #_(when (session/is-admin?)
+     {:label "Admin"
+      :items
+      [{:href "/admin/activities"
+        :title "Activities"}
+       {:href "/admin/auth"
+        :title "Auth"}
+       {:href "/admin/clients"
+        :title "Clients"}
+       {:href "/admin/conversations"
+        :title "Conversations"
+        :state "adminConversations"}
+       {:href "/admin/feed-sources"
+        :title "Feed Sources"}
+       {:href "/admin/feed-subscriptions"
+        :title "Feed Subscriptions"}
+       {:href "/admin/groups"
+        :title "Groups"}
+       {:href "/admin/group-memberships"
+        :title "Group Memberships"}
+       {:href "/admin/keys"
+        :title "Keys"}
+       {:href "/admin/likes"
+        :title "Likes"}
+       {:href "/admin/request-tokens"
+        :title "Request Tokens"}
+       {:href "/admin/streams"
+        :title "Streams"}
+       {:href "/admin/subscriptions"
+        :title "Subscriptions"}
+       {:href "/admin/users"
+        :title "Users"}
+       {:href "/admin/workers"
+        :title "Workers"}]})]
+  )
+
 (defn with-template
   [o]
   (clj->js
@@ -126,20 +187,23 @@
 
 (def.controller jiksnuApp.NavBarController
   [$scope $http]
-  (.info js/console "fetching nav")
   (-> $http
       (.get "/status")
       (.success (fn [data]
-                  (.info js/console "fetched nav")
                   (! $scope.app data)))))
 
 (def.controller jiksnuApp.LeftColumnController
   [$scope $http]
+  (.info js/console "fetching nav")
 
-  (-> $http
-      (.get "/nav.js")
-      (.success (fn [data]
-                  (! $scope.groups data)))))
+  ;; (-> $http
+  ;;     (.get "/nav.js")
+  ;;     (.success (fn [data]
+  ;;                 (.info js/console "fetched nav")
+  ;;                 (! $scope.groups data))))
+
+  (! $scope.groups (clj->js nav-info))
+  )
 
 
 (def.controller jiksnuApp.ShowActivityController
@@ -168,12 +232,12 @@
        (fn [id]
          (let [url (str "/main/domains/" id ".json")]
            (-> $http
-                     (.get url)
-                     (.success
-                      (fn [data]
-                        (.info js/console "Data" data)
-                        (! $scope.domain data)
-                        (! $scope.loaded true)))))))
+               (.get url)
+               (.success
+                (fn [data]
+                  (.info js/console "Data" data)
+                  (! $scope.domain data)
+                  (! $scope.loaded true)))))))
     (.init $scope id)))
 
 (def.controller jiksnuApp.ShowUserController
