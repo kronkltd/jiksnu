@@ -1,17 +1,22 @@
 (ns jiksnu.core
-  (:require [dommy.core :as dommy]
-            [jiksnu.handlers :as handlers]
-            [clojure.browser.repl]
-            [clojure.string :as string]
-            [lolg :as log]
-            [jiksnu.events :as events]
-            [jiksnu.levels :as levels]
-            [jiksnu.logging :as jl]
-            [jiksnu.model :as model]
-            [jiksnu.websocket :as ws])
-  (:use-macros [dommy.core :only [sel sel1]]
-               [purnam.core :only [? ?> ! !> f.n def.n do.n
-                                   obj arr def* do*n def*n f*n]]))
+  ;; (:require
+  ;;  [dommy.core :as dommy]
+  ;;           ;; [jiksnu.handlers :as handlers]
+  ;;           ;; [clojure.browser.repl]
+  ;;           ;; [clojure.string :as string]
+  ;;           ;; [lolg :as log]
+  ;;           ;; [jiksnu.events :as events]
+  ;;           ;; [jiksnu.levels :as levels]
+  ;;           ;; [jiksnu.logging :as jl]
+  ;;           ;; [jiksnu.model :as model]
+  ;;           ;; [jiksnu.websocket :as ws]
+
+  ;;           )
+  ;; (:use-macros [dommy.core :only [sel sel1]]
+  ;;              [purnam.core :only [? ?> ! !> f.n def.n do.n
+  ;;                                  obj arr def* do*n def*n f*n]])
+
+  )
 
 ;; (def *logger* (log/get-logger "jiksnu.core"))
 
