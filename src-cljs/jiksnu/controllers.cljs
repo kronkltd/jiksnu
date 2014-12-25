@@ -10,12 +10,52 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
+(defn with-template
+  [o]
+  (clj->js
+   (merge
+    {"navbar" {:template (hipo/create templates/navbar-section)
+               :controller "NavBarController"}
+     "newPost" {:templateUrl "/partials/new-post.html"
+                :controller "NewPostController"}
+     "leftColumn" {:template (hipo/create templates/left-column-section)
+                   :controller "LeftColumnController"}
+     "rightColumn" {:templateUrl "/partials/right-column.html"
+                    :controller "RightColumnController"}}
+    o)))
+
+(defn add-states
+  [$stateProvider data]
+  (doseq [[state uri controller template] data]
+    (.state $stateProvider
+            (obj
+             :name state
+             :url uri
+             :views
+             (with-template
+               {"" {:controller (str controller "Controller")
+                    :template (hipo/create template)}})))))
+
+(defn fetch-page
+  [$scope $http url]
+  (fn []
+    (-> $http
+        (.get url)
+        (.success
+         (fn [data]
+           (! $scope.page data))))))
+
+
+(def.module jiksnuApp [ui.router ui.bootstrap angularMoment
+                       ui.bootstrap.tabs])
+
+
 (def nav-info
   [{:label "Home"
     :items
     [{:title "Public"
       ;; :href "/"
-      :state "root"}
+      :state "home"}
      {:title "Users"
       ;; :href "/users"
       :state "indexUsers"}
@@ -71,45 +111,6 @@
         :title "Workers"}]})]
   )
 
-(defn with-template
-  [o]
-  (clj->js
-   (merge
-    {"navbar" {:template (hipo/create templates/navbar-section)
-               :controller "NavBarController"}
-     "newPost" {:templateUrl "/partials/new-post.html"
-                :controller "NewPostController"}
-     "leftColumn" {:template (hipo/create templates/left-column-section)
-                   :controller "LeftColumnController"}
-     "rightColumn" {:templateUrl "/partials/right-column.html"
-                    :controller "RightColumnController"}}
-    o)))
-
-(defn add-states
-  [$stateProvider data]
-  (doseq [[state uri controller template] data]
-    (.state $stateProvider
-            (obj
-             :name state
-             :url uri
-             :views
-             (with-template
-               {"" {:controller (str controller "Controller")
-                    :template (hipo/create template)}})))))
-
-(defn fetch-page
-  [$scope $http url]
-  (fn []
-    (-> $http
-        (.get url)
-        (.success
-         (fn [data]
-           (! $scope.page data))))))
-
-
-(def.module jiksnuApp [ui.router ui.bootstrap angularMoment
-                       ui.bootstrap.tabs])
-
 (def states
   [
    ["avatarPage"   "/main/avatar"   "AvatarPage"   templates/avatar-page]
@@ -119,7 +120,13 @@
   )
 
 (def templated-states
-  [{:name "root"
+  [
+   {:name "root"
+    :url ""
+    :abstract true
+    }
+   {:name "root.home"
+    :parent "root"
     :url "/"
     ;; :abstract true
     :views {:templateUrl "/partials/public-timeline.html"
@@ -140,28 +147,36 @@
     :url "/users"
     :views {:templateUrl "/partials/index-users.html"
             :controller "IndexUsersController"}}
-   {:name  "showActivity"
-    :url "/notice/:id"
-    :views {:templateUrl "/partials/show-activity.html"
-            :controller "ShowActivityController"}}
-   {:name  "showDomain"
-    :url "/main/domains/:id"
-    :views {:templateUrl "/partials/show-domain.html"
-            :controller "ShowDomainController"}}
-   {:name  "showUser"
-    :url "/users/:id"
-    :views {:templateUrl "/partials/show-user.html"
-            :controller "ShowUserController"}}
-   {:name  "adminConversations"
-    :url "/admin/conversations"
-    :views {:templateUrl "/partials/admin-conversations.html"
-            :controller "AdminConversationsController"}}
+   ;; {:name  "showActivity"
+   ;;  :url "/notice/:id"
+   ;;  :views {:templateUrl "/partials/show-activity.html"
+   ;;          :controller "ShowActivityController"}}
+   ;; {:name  "showDomain"
+   ;;  :url "/main/domains/:id"
+   ;;  :views {:templateUrl "/partials/show-domain.html"
+   ;;          :controller "ShowDomainController"}}
+   ;; {:name  "showUser"
+   ;;  :url "/users/:id"
+   ;;  :views {:templateUrl "/partials/show-user.html"
+   ;;          :controller "ShowUserController"}}
+   ;; {:name  "adminConversations"
+   ;;  :url "/admin/conversations"
+   ;;  :views {:templateUrl "/partials/admin-conversations.html"
+   ;;          :controller "AdminConversationsController"}}
 
    ])
 
 
+(def.config jiksnuApp [$stateProvider $urlRouterProvider $locationProvider
+                       ;; $rootScope
+                       ;; $compileProvider
+                       ]
 
-(def.config jiksnuApp [$stateProvider $urlRouterProvider $locationProvider]
+  ;; (.on $rootScope "$stateChangeStart"
+  ;;      (fn [e to]
+  ;;        (.log js/console "to:" to)))
+
+
   ;; (.otherwise $urlRouterProvider "/")
   (-> $locationProvider
       (.hashPrefix "!")
