@@ -177,3 +177,7 @@
         [:img {:alt ""
                :ng-src "/themes/classic/{{format.icon}}"}]]
        [:span.format-label "{{format.label}}"]]]]]])
+
+(def right-column-section
+  [:div
+   [:h2 "Right Column"]])

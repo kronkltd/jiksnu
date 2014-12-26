@@ -14,14 +14,16 @@
   [o]
   (clj->js
    (merge
-    {"navbar" {:template (hipo/create templates/navbar-section)
-               :controller "NavBarController"}
+    {
+     ;; "navbar" {:template (hipo/create templates/navbar-section)
+     ;;           :controller "NavBarController"}
      "newPost" {:templateUrl "/partials/new-post.html"
                 :controller "NewPostController"}
-     "leftColumn" {:template (hipo/create templates/left-column-section)
-                   :controller "LeftColumnController"}
-     "rightColumn" {:templateUrl "/partials/right-column.html"
-                    :controller "RightColumnController"}}
+     ;; "leftColumn" {:template (hipo/create templates/left-column-section)
+     ;;               :controller "LeftColumnController"}
+     ;; "rightColumn" {:templateUrl "/partials/right-column.html"
+     ;;                :controller "RightColumnController"}
+     }
     o)))
 
 (defn add-states
@@ -75,40 +77,41 @@
     :items
     [{:href "/admin/settings"
       :title "Settings"}]}
-   #_(when (session/is-admin?)
-     {:label "Admin"
-      :items
-      [{:href "/admin/activities"
-        :title "Activities"}
-       {:href "/admin/auth"
-        :title "Auth"}
-       {:href "/admin/clients"
-        :title "Clients"}
+   {:label "Admin"
+    :items
+    [
+     ;; {:href "/admin/activities"
+     ;;    :title "Activities"}
+     ;;   {:href "/admin/auth"
+     ;;    :title "Auth"}
+     ;;   {:href "/admin/clients"
+     ;;    :title "Clients"}
        {:href "/admin/conversations"
         :title "Conversations"
         :state "adminConversations"}
-       {:href "/admin/feed-sources"
-        :title "Feed Sources"}
-       {:href "/admin/feed-subscriptions"
-        :title "Feed Subscriptions"}
-       {:href "/admin/groups"
-        :title "Groups"}
-       {:href "/admin/group-memberships"
-        :title "Group Memberships"}
-       {:href "/admin/keys"
-        :title "Keys"}
-       {:href "/admin/likes"
-        :title "Likes"}
-       {:href "/admin/request-tokens"
-        :title "Request Tokens"}
-       {:href "/admin/streams"
-        :title "Streams"}
-       {:href "/admin/subscriptions"
-        :title "Subscriptions"}
-       {:href "/admin/users"
-        :title "Users"}
-       {:href "/admin/workers"
-        :title "Workers"}]})]
+       ;; {:href "/admin/feed-sources"
+       ;;  :title "Feed Sources"}
+       ;; {:href "/admin/feed-subscriptions"
+       ;;  :title "Feed Subscriptions"}
+       ;; {:href "/admin/groups"
+       ;;  :title "Groups"}
+       ;; {:href "/admin/group-memberships"
+       ;;  :title "Group Memberships"}
+       ;; {:href "/admin/keys"
+       ;;  :title "Keys"}
+       ;; {:href "/admin/likes"
+       ;;  :title "Likes"}
+       ;; {:href "/admin/request-tokens"
+       ;;  :title "Request Tokens"}
+       ;; {:href "/admin/streams"
+       ;;  :title "Streams"}
+       ;; {:href "/admin/subscriptions"
+       ;;  :title "Subscriptions"}
+       ;; {:href "/admin/users"
+       ;;  :title "Users"}
+       ;; {:href "/admin/workers"
+       ;;  :title "Workers"}
+       ]}]
   )
 
 (def states
@@ -121,12 +124,12 @@
 
 (def templated-states
   [
-   {:name "root"
-    :url ""
-    :abstract true
-    }
-   {:name "root.home"
-    :parent "root"
+   ;; {:name "root"
+   ;;  :url ""
+   ;;  :abstract true
+   ;;  }
+   {:name "home"
+    ;; :parent "root"
     :url "/"
     ;; :abstract true
     :views {:templateUrl "/partials/public-timeline.html"
@@ -147,22 +150,22 @@
     :url "/users"
     :views {:templateUrl "/partials/index-users.html"
             :controller "IndexUsersController"}}
-   ;; {:name  "showActivity"
-   ;;  :url "/notice/:id"
-   ;;  :views {:templateUrl "/partials/show-activity.html"
-   ;;          :controller "ShowActivityController"}}
-   ;; {:name  "showDomain"
-   ;;  :url "/main/domains/:id"
-   ;;  :views {:templateUrl "/partials/show-domain.html"
-   ;;          :controller "ShowDomainController"}}
-   ;; {:name  "showUser"
-   ;;  :url "/users/:id"
-   ;;  :views {:templateUrl "/partials/show-user.html"
-   ;;          :controller "ShowUserController"}}
-   ;; {:name  "adminConversations"
-   ;;  :url "/admin/conversations"
-   ;;  :views {:templateUrl "/partials/admin-conversations.html"
-   ;;          :controller "AdminConversationsController"}}
+   {:name  "showActivity"
+    :url "/notice/:id"
+    :views {:templateUrl "/partials/show-activity.html"
+            :controller "ShowActivityController"}}
+   {:name  "showDomain"
+    :url "/main/domains/:id"
+    :views {:templateUrl "/partials/show-domain.html"
+            :controller "ShowDomainController"}}
+   {:name  "showUser"
+    :url "/users/:id"
+    :views {:templateUrl "/partials/show-user.html"
+            :controller "ShowUserController"}}
+   {:name  "adminConversations"
+    :url "/admin/conversations"
+    :views {:templateUrl "/partials/admin-conversations.html"
+            :controller "AdminConversationsController"}}
 
    ])
 
@@ -177,7 +180,7 @@
   ;;        (.log js/console "to:" to)))
 
 
-  ;; (.otherwise $urlRouterProvider "/")
+  (.otherwise $urlRouterProvider "/")
   (-> $locationProvider
       (.hashPrefix "!")
       (.html5Mode true))
@@ -337,3 +340,18 @@
 
 (def.directive jiksnuApp.AddWatcherForm []
   (obj))
+
+(def.directive jiksnuApp.leftColumn []
+  (obj
+    :template (.-outerHTML (hipo/create templates/left-column-section))
+    :controller "LeftColumnController"))
+
+(def.directive jiksnuApp.navBar []
+  (obj
+    :template (.-outerHTML (hipo/create templates/navbar-section))
+    :controller "NavBarController"))
+
+(def.directive jiksnuApp.rightColumn []
+  (obj
+   :template (.-outerHTML (hipo/create templates/right-column-section))
+   :controller "RightColumnController"))

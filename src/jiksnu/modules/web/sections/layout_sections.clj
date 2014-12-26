@@ -187,18 +187,25 @@
        (links-section request response)
        (scripts-section request response)]
       [:body
-       [:div {:ui-view "navbar"}]
+       [:nav-bar]
        [:div.container-fluid
-        [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
+        ;; [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
         [:div.row
-         [:div.col-sm-2 {:ui-view "leftColumn"}]
+         [:div.col-sm-2
+          #_{:ui-view "leftColumn"}
+          [:left-column]
+          ]
          [:div.col-sm-8
           [:section
            [:div {:ui-view "newPost"}]
            #_(new-post-section request response)
            [:h1 {:data-bind "text: title"}]
-           (:body response)]]
-         [:div.col-sm-2 {:ui-view "rightColumn"}]]]
+           [:div {:ui-view ""}]
+           #_(:body response)]]
+         [:div.col-sm-2
+          #_{:ui-view "rightColumn"}
+          [:right-column]
+          ]]]
        [:footer.row.page-footer
         [:p "Copyright © 2011 KRONK Ltd."]
         [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"}
