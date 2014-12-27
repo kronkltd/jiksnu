@@ -168,49 +168,37 @@
        :xmlns:dc ns/dc
        :xmlns:foaf ns/foaf
        :xmlns:dcterms ns/dcterms
-       ;; :version "HTML+RDFa 1.1"
        :lang "en"
        :xml:lang "en"
-       :ng-app "jiksnuApp"
-       :prefix (get-prefixes) }
+       :ng-app "jiksnu"
+       :prefix (get-prefixes)}
       [:head
        [:meta {:charset "UTF-8"}]
        [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
        [:meta {:name "viewport"
                :content "width=device-width, initial-scale=1.0"}]
        [:base {:href "/"}]
-       [:title {:property "dc:title"}
-        (str (when (:title response)
-               (str (:title response) " - "))
-             (config :site :name))]
+       [:title {:property "dc:title"} (config :site :name)]
        (style-section)
        (links-section request response)
        (scripts-section request response)]
       [:body
-       [:nav-bar]
+       [:jiksnu-nav-bar]
        [:div.container-fluid
         ;; [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
         [:div.row
-         [:div.col-sm-2
-          #_{:ui-view "leftColumn"}
-          [:left-column]
-          ]
+         [:div.col-sm-2 {:jiksnu-left-column ""}]
          [:div.col-sm-8
-          [:section
-           [:div {:ui-view "newPost"}]
-           #_(new-post-section request response)
+          [:div.row {:jiksnu-new-post ""}]
+          [:div.row
            [:h1 {:data-bind "text: title"}]
-           [:div {:ui-view ""}]
-           #_(:body response)]]
-         [:div.col-sm-2
-          #_{:ui-view "rightColumn"}
-          [:right-column]
-          ]]]
+           [:div {:ui-view ""}]]]
+         [:div.col-sm-2 {:jiksnu-right-column ""}]]]
        [:footer.row.page-footer
         [:p "Copyright © 2011 KRONK Ltd."]
-        [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"}
-                           "Jiksnu"]]]
-      ]]))})
+        [:p "Powered by "
+         [:a {:href "https://github.com/duck1123/jiksnu"}
+          "Jiksnu"]]]]]))})
 
 (defmethod apply-template :html
   [request response]

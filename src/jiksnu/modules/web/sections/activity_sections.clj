@@ -68,44 +68,16 @@
 
 (defn tag-section
   [activity]
-  [:div.control-group.hidden
-   [:label.control-label {:for "tags"} "Tags"]
-   [:div.controls
-    [:input {:type "text" :name "tags"}]
-    [:a.btn {:href "#"} "Add Tags"]]])
+)
 
 (defn location-section
   [activity]
-  [:div.control-group.hidden
-   [:label.control-label "Location"]
-   [:div.controls
-    [:label {:for "geo.latitude"} "Latitude"]
-    [:div.input
-     [:input {:type "text" :name "geo.latitude"}]]
-    [:label {:for "geo.longitude"} "Longitude"]
-    [:div.input
-     [:input {:type "text" :name "geo.longitude"}]]]])
+)
 
 
 (defn privacy-select
   [activity]
-  (list
-   [:select {:name "privacy"}
-    [:option {:value "public"} "Public"]
-    [:option {:value "group"} "Group"]
-    [:option {:value "custom"} "Custom"]
-    [:option {:value "private"} "Private"]]
-   (bind-to "$root.currentUser()"
-            [:div {:data-model "user"}
-             (with-sub-page "groups"
-               ;; [:select {:data-bind "selectModel: 'fullname',
-               ;;                       optionsText: 'fullname',
-               ;;                       optionsValue: '_id'"}]
-               [:select
-                (when *dynamic*
-                  {:data-bind "options: _.map($data.items(), function(item) {return jiksnu.model.get_model(\"group\", item).fullname();})"})])])
-
-   ))
+  )
 
 ;; move to model
 
@@ -180,9 +152,7 @@
 (defn likes-section
   [activity]
   (when-let [likes [{}]]
-    [:section.likes
-     (when *dynamic*
-       {:data-bind "if: $data['like-count']"})
+    [:section.likes {:ng-if "likeCount > 0"}
      [:span "Liked by"]
      [:ul
       (map
@@ -204,7 +174,6 @@
 
 (defn visibility-link
   [activity]
-  ;; TODO: handle other visibilities
   [:span {:ng-if "!activity.public"}
    "privately"])
 
@@ -252,27 +221,6 @@
     "in context"]
    ])
 
-(defn poll-form
-  [activity]
-  (list
-   [:legend "Post a question"]
-   (control-line "Question" "question" "text")
-   (control-line "Answer" "answer[0]" "text")
-   (control-line "Answer" "answer[1]" "text")
-   (control-line "Answer" "answer[2]" "text")
-   (control-line "Answer" "answer[3]" "text")
-   (control-line "Answer" "answer[4]" "text")))
-
-(defn status-form
-  [activity]
-  (cm/implement))
-
-(defn event-form
-  [activity]
-  (list
-   [:legend "Post an event"]
-   (control-line "Title" "title" "type")))
-
 (defn enclosures-section
   [activity]
   [:ul.unstyled
@@ -303,59 +251,6 @@
 (defsection actions-section [Activity :html]
   [item]
   (dropdown-menu item (get-buttons)))
-
-(defsection add-form [Activity :html]
-  [activity & _]
-  [:div.post-form {:collapse "!form.shown"}
-   [:form {:method "post"
-           :action "/notice/new"
-           :enctype "multipart/form-data"}
-    [:input {:type "hidden" :name "source" :value "web"}]
-    [:fieldset
-     [:tabset
-      [:tab {:heading "Note"}
-       [:legend "Post an activity"]
-       ;; [:input {:type "hidden" :name "_id" :value "{{activity.id}}"}]
-       ;; [:input {:type "hidden" :name "parent" :value "{{activity.parent}}"}]
-       (control-line "Title" "title" "text")
-       [:div.control-group
-        [:label.control-label {:for "content"} "Content"]
-        [:div.controls
-         [:textarea {:name "content" :rows "3"
-                     :data-provide "markdown"
-                     :ng-model "activity.content"}
-          ]]]
-       [:fieldset.add-buttons
-        [:legend "Add:"]
-        [:div.button-group
-         [:label.btn.btn-primary {:ng-model "add.tags" :btn-checkbox ""}
-          [:i.icon-tag]        [:span.button-text "Tags"]]
-         [:label.btn.btn-primary {:ng-model "add.recipients" :btn-checkbox ""}
-          [:i.icon-user]       [:span.button-text "Recipients"]]
-         [:label.btn.btn-primary {:ng-model "add.location" :btn-checkbox ""}
-          [:i.icon-map-marker] [:span.button-text "Location"]]
-         [:label.btn.btn-primary {:ng-model "add.links" :btn-checkbox ""}
-          [:i.icon-bookmark]   [:span.button-text "Links"]]
-         [:label.btn.btn-primary {:ng-model "add.pictures" :btn-checkbox ""}
-          [:i.icon-picture]    [:span.button-text "Pictures"]]]]
-
-       [:div.control-group {:collapse "!add.pictures"}
-        [:label.control-label {:for "pictures"} "Pictures"]
-        [:div.controls
-         [:input {:type "file" :name "pictures"}]]]
-       (location-section activity)
-       (tag-section activity)]
-      [:tab {:heading "Status"}
-       #_(status-form activity)
-       ]
-      [:tab {:heading "Poll"}
-       #_ (poll-form activity)
-       ]
-      [:tab {:heading "Event"}
-       #_(event-form activity)]]
-     [:div.actions
-      (privacy-select activity)
-      [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])
 
 (defsection admin-index-block [Activity :html]
   [activities & [options & _]]

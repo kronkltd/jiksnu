@@ -83,9 +83,9 @@
                 :compiler
                 {
                  :output-to "resources/public/cljs/jiksnu.js"
-                 :output-dir "resources/public/cljs/"
-                 :optimizations :whitespace
-                 :pretty-print true
+                 ;; :output-dir "resources/public/cljs/"
+                 :optimizations :simple
+                 ;; :pretty-print true
                  }}
                ]}
   ;; :hooks [leiningen.cljsbuild]
