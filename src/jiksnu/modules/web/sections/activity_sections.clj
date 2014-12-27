@@ -289,8 +289,6 @@
   [activity & _]
   (action-link "activity" "delete" (:_id activity)))
 
-;; index-block
-
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
@@ -304,36 +302,6 @@
 (defsection index-section [Activity :html]
   [items & [page]]
   (index-block items page))
-
-(defsection show-section [Activity :html]
-  [activity & _]
-  (let [user (User.)]
-    [:article.hentry
-     {:typeof "sioc:Post"
-      :data-model "activity"
-      :about "{{activity.url}}"
-      :data-id "{{activity.id}}"}
-     (actions-section activity)
-     [:div.pull-left.avatar-section
-      [:div {:data-model "user"
-             :data-id "{{activity.actor.localId}}"}
-       [:a.url {:href "/remote-user/{{activity.actor.username}}@{{activity.actor.domain}}"
-                :title "acct:{{activity.actor.username}}@{{activity.actor.domain}}"}
-        [:img.avatar.photo
-         {:width 64
-          :height 64
-          :alt ""
-          :ng-src "{{activity.actor.image[0].url}}"}]]]]
-     [:div
-      [:header
-       [:div {:data-model "user"}
-        (link-to user)]
-       (recipients-section activity)]
-      [:div.entry-content {:property "dc:title"}
-       "{{activity.content}}"]
-      (map #(% activity) post-sections)]]))
-
-;; update-button
 
 (defsection update-button [Activity :html]
   [activity & _]

@@ -1,6 +1,9 @@
 (ns jiksnu.templates
   (:require [hipo :as hipo :include-macros true]))
 
+(defn config [& _]
+  (.warn js/console "config called"))
+
 (defn control-line
   [label name type & {:as options}]
   (let [{:keys [value checked]} options]
@@ -132,6 +135,38 @@
     (control-line "Acct id"
                   :user_id "text")
     [:input {:type "submit"}]]])
+
+(def admin-conversations
+  [:table.table
+   [:thead
+    [:tr
+     [:th "Id"]
+     [:th "Domain"]
+     [:th "Url"]
+     [:th "Parent"]
+     [:th "Item Count"]
+     #_[:th "Created"]
+     [:th "Last Updated"]
+     [:th "Record Updated"]
+     [:th #_"Actions"]]]
+   [:tbody
+    [:tr {:ng-repeat "conversation in page.items"}
+     [:td
+      [:jiksnu-link-to {:data-id "{{conversation.id}}"
+                        :data-model "Conversation"}]]
+     [:td
+      [:jiksnu-link-to {:data-id "{{conversation.domain}}"
+                        :data-model "Domain"}]]
+     [:td
+      [:a {:href "{{conversation.url}}"}
+       "{{conversation.url}}"]]
+     [:td "{{conversation.parent}}"]
+     [:td "{{conversation.itemCount}}"]
+     ;; [:td "{{conversation.created}}"]
+     [:td "{{conversation.lastUpdated}}"]
+     [:td "{{conversation.updated}}"]
+     [:td #_(actions-section item)]]]]
+  )
 
 (def admin-groups
   [:table.table.groups
@@ -390,7 +425,30 @@
      [::ul.nav.navbar-nav.navbar-right {:ng-if "!app.user"}
       [:li [:a {:ui-sref "loginPage"} "Login"]]
       [:li.divider-vertical]
-      [:li [:a {:ui-sref "register"} "Register"]]]]]])
+      [:li [:a {:ui-sref "registerPage"} "Register"]]]]]])
+
+(def public-timeline
+  [:div
+   ;; [:a#showComments.btn {:ng-click "showComments"}
+   ;;  "Show Comments"]
+   #_(pagination-links page)
+   [:div.conversations
+    [:div.conversation-section
+     {:typeof "sioc:Container"
+      :data-model "conversation"
+      :ng-repeat "conversation in page.items"
+      :about "{{conversation.url}}"
+      :data-id "{{conversation._id}}"}
+     [:jiksnu-show-activity {:data-id "{{conversation.parent}}"}]
+     [:ul.comments.clearfix
+      [:li.comment {:ng-repeat "comment in conversation.comments"}
+       [:div
+        [:a.pull-left
+         [:jiksnu-display-avatar {:data-id "{{comment.actor.id}}"}]]
+        [:jiksnu-link-to {:data-id "{{comment.actor.id}}"
+                          :data-model "User"}]]
+       [:span.comment-content
+        "{{comment.content}}"]]]]]])
 
 (def register-page
   [:form.well.form-horizontal.register-form
@@ -413,9 +471,6 @@
 (def right-column-section
   [:div
    [:h2 "Right Column"]])
-
-(defn config [& _]
-  (.warn js/console "config called"))
 
 (def settings-page
   [:div
@@ -474,6 +529,34 @@
                   :checked (config :htmlOnly))
     [:div.actions
      [:input {:type "submit"}]]]]])
+
+(def show-activity
+  [:article.hentry
+   {:typeof "sioc:Post"
+    :data-model "activity"
+    :about "{{activity.url}}"
+    :data-id "{{activity.id}}"}
+   #_(actions-section activity)
+   [:div.pull-left.avatar-section
+    [:div {:data-model "user"
+           :data-id "{{activity.actor.localId}}"}
+     [:a.url {:href "/remote-user/{{activity.actor.username}}@{{activity.actor.domain}}"
+              :title "acct:{{activity.actor.username}}@{{activity.actor.domain}}"}
+      [:img.avatar.photo
+       {:width 64
+        :height 64
+        :alt ""
+        :ng-src "{{activity.actor.image[0].url}}"}]]]]
+   [:div
+    [:header
+     [:jiksnu-link-to {:data-id "{{activity.actor.id}}"
+                       :data-model "User"}]
+     #_(recipients-section activity)]
+    [:p "{{activity.title}}"]
+    #_[:pre "{{activity}}"]
+    [:div.entry-content {:property "dc:title"}
+     "{{activity.content}}"]
+    #_(map #(% activity) post-sections)]])
 
 (def show-domain
   ;; (let [sc (:statusnet-config domain)
@@ -602,6 +685,27 @@
       [:th "Updated"]
       [:td "{{resource.updated}}"]]]]
    #_(sections.link/index-section links)])
+
+(def show-user
+  [:div.vcard.user-full
+   {:data-model "user"
+    :data-id "{{user.id}}"}
+   #_(actions-section user)
+   [:div
+    [:jiksnu-display-avatar {:data-id "{{user.id}}"
+                             :data-size "96"}]]
+   [:p
+    [:span.nickname.fn.n "{{user.displayName}}"]
+    " ({{user.username}}@{{user.domain}})"]
+   [:div.adr
+    [:p.locality "{{user.location}}"]]
+   [:p.note "{{user.bio}}"]
+   [:jiksnu-link-to {:data-id "{{user.updateSource}}"
+                     :data-model "FeedSource"}]
+   [:p [:a {:href "{{user.id}}"}
+        "{{user.id}}"]]
+   [:p [:a.url {:rel "me" :href "{{user.url}}"}
+        "{{user.url}}"]]])
 
 (def streams-widget
   [:div

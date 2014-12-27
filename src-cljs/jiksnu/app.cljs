@@ -10,6 +10,4 @@
   (-> $locationProvider
       (.hashPrefix "!")
       (.html5Mode true))
-  (doseq [state helpers/templated-states]
-    (.state $stateProvider (clj->js state)))
   (helpers/add-states $stateProvider helpers/states))

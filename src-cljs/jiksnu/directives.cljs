@@ -3,18 +3,25 @@
             [jiksnu.helpers :refer [template-string]]
             [jiksnu.templates :as templates])
   (:use-macros [gyr.core :only [def.directive]]
-               [purnam.core :only [! obj]]))
+               [purnam.core :only [! arr obj]]))
 
-(def.directive jiksnu.showActivity
+(def.directive jiksnu.jiksnuShowActivity
   [$http]
   (obj
-   :templateUrl "/partials/show-activity.html"
+   :template (template-string templates/show-activity)
+   :scope (obj)
+   :controller
+   (arr "$scope"
+        (fn [$scope]
+          (! $scope.init
+             (fn [id]
+               (-> $http
+                   (.get (str "/notice/" id ".json"))
+                   (.success (fn [data]
+                               (! $scope.activity data))))))))
    :link (fn [$scope element attrs]
            (let [id (.-id attrs)]
-             (-> $http
-                 (.get (str "/notice/" id ".json"))
-                 (.success (fn [data]
-                             (! $scope.activity data))))))))
+             (.init $scope id)))))
 
 (def.directive jiksnu.StreamsWidget []
   (obj))

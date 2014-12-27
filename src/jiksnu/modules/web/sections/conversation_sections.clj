@@ -57,40 +57,6 @@
   [item]
   (dropdown-menu item (get-buttons)))
 
-(defsection admin-index-block [Conversation :html]
-  [items & [page]]
-  [:table.table
-   [:thead
-    [:tr
-     [:th "Id"]
-     [:th "Domain"]
-     [:th "Url"]
-     [:th "Parent"]
-     [:th "Item Count"]
-     #_[:th "Created"]
-     [:th "Last Updated"]
-     [:th "Record Updated"]
-     [:th #_"Actions"]]]
-   [:tbody
-    (let [item (first items)]
-      [:tr {:data-model "conversation"
-            :ng-repeat "conversation in page.items"}
-       [:td (link-to item)]
-       [:td
-        (let [domain (Domain.)]
-          (bind-to "domain"
-                   [:div {:data-model "domain"}
-                    (link-to domain)]))]
-       [:td
-        [:a {:href "{{conversation.url}}"}
-         "{{conversation.url}}"]]
-       [:td "{{conversation.parent}"]
-       [:td "{{conversation.itemCount}}"]
-       ;; [:td "{{conversation.created}}"]
-       [:td "{{conversation.lastUpdated}}"]
-       [:td "{{conversation.updated}}"]
-       [:td (actions-section item)]])]])
-
 (defsection delete-button [Conversation :html]
   [user & _]
   (action-link "conversation" "delete" (:_id user)))
@@ -102,16 +68,6 @@
      [:span {:property "dc:title"
              :about "{{conversatio.uri}}"}
       "{{conversation.id}}"]]))
-
-(defsection index-block [Conversation :html]
-  [items & [page]]
-  [:div
-   [:a#showComments.btn {:ng-click "showComments"}
-    "Show Comments"]
-   (pagination-links page)
-   [:div.conversations
-    (let [item (first items)]
-      (index-line item))]])
 
 (defn show-details
   [item & [page]]
@@ -150,34 +106,6 @@
          (bind-to "$data['update-source']"
                   [:div {:data-model "feed-source"}
                    (link-to source)]))]]]]))
-
-(defsection show-section [Conversation :html]
-  [item & [page]]
-  (let [items [(Activity.) (Activity.)]
-        parent (first items)
-        comments (next items)
-        activity (first comments)
-        author (User.)]
-    [:div.conversation-section
-     {:typeof "sioc:Container"
-      :data-model "conversation"
-      :ng-repeat "conversation in page.items"
-      :about "{{conversation.url}}"
-      :data-id "{{conversation.id}}"}
-     [:show-activity {:data-id "{{conversation.parent}}"}]
-     [:div {:data-bind "if: _view.showComments()"}
-      #_(with-sub-page "activities"
-          [:section.comments.clearfix
-           [:div.comment {:data-model "activity"
-                          :ng-repeat "comment in conversation.comments"
-                          :data-id "{{comment.id}}"}
-            (bind-to "author"
-                     [:div {:data-model "user"}
-                      [:a.pull-left
-                       (sections.user/display-avatar author)]
-                      (link-to author)])
-            [:span.comment-content
-             "{{comment.content}}"]]])]]))
 
 (defsection update-button [Conversation :html]
   [item & _]

@@ -3,6 +3,10 @@
             [jiksnu.templates :as templates])
   (:use-macros [purnam.core :only [! obj]]))
 
+(defn template-string
+  [tmpl]
+  (.-outerHTML (hipo/create tmpl)))
+
 (defn add-states
   [$stateProvider data]
   (doseq [[state uri controller template] data]
@@ -11,7 +15,7 @@
              :name state
              :url uri
              :controller (str controller "Controller")
-             :template (.-outerHTML (hipo/create template))))))
+             :template (template-string template)))))
 
 (defn fetch-page
   [$scope $http url]
@@ -64,40 +68,18 @@
   )
 
 (def states
-  [["avatarPage"     "/main/avatar"    "AvatarPage"     templates/avatar-page]
-   ["indexDomains"   "/main/domains"   "IndexDomains"   templates/index-domains]
-   ["indexGroups"    "/main/groups"    "IndexGroups"    templates/index-groups]
-   ["indexResources" "/main/resources" "IndexResources" templates/index-resources]
-   ["indexUsers"     "/main/users"     "IndexUsers"     templates/index-users]
-   ["loginPage"      "/main/login"     "LoginPage"      templates/login-page]
-   ["registerPage"   "/main/register"  "RegisterPage"   templates/register-page]
-   ["settingsPage"   "/main/settings"  "SettingsPage"   templates/settings-page]])
+  [["adminConversations" "/admin/conversations" "AdminConversation" templates/admin-conversations]
 
-(def templated-states
-  [{:name "home"
-    :url "/"
-    :templateUrl "/partials/public-timeline.html"
-    :controller "IndexConversationsController"}
-   {:name  "showActivity"
-    :url "/notice/:id"
-    :templateUrl "/partials/show-activity.html"
-    :controller "ShowActivityController"}
-   {:name  "showDomain"
-    :url "/main/domains/:id"
-    :templateUrl "/partials/show-domain.html"
-    :controller "ShowDomainController"}
-   {:name  "showUser"
-    :url "/users/:id"
-    :templateUrl "/partials/show-user.html"
-    :controller "ShowUserController"}
-   {:name  "adminConversations"
-    :url "/admin/conversations"
-    :templateUrl "/partials/admin-conversations.html"
-    :controller "AdminConversationsController"}
-
+   ["avatarPage"     "/main/avatar"    "AvatarPage"         templates/avatar-page]
+   ["home"           "/"               "IndexConversations" templates/public-timeline]
+   ["indexDomains"   "/main/domains"   "IndexDomains"       templates/index-domains]
+   ["indexGroups"    "/main/groups"    "IndexGroups"        templates/index-groups]
+   ["indexResources" "/main/resources" "IndexResources"     templates/index-resources]
+   ["indexUsers"     "/main/users"     "IndexUsers"         templates/index-users]
+   ["loginPage"      "/main/login"     "LoginPage"          templates/login-page]
+   ["registerPage"   "/main/register"  "RegisterPage"       templates/register-page]
+   ["settingsPage"   "/main/settings"  "SettingsPage"       templates/settings-page]
+   ["showActivity"   "/notice/:id"     "ShowActivity"       templates/show-activity]
+   ["showDomains"    "/main/domains/:id" "ShowDomain"       templates/show-domain]
+   ["showUser"       "/main/users/:id" "ShowUser" templates/show-user]
    ])
-
-
-(defn template-string
-  [tmpl]
-  (.-outerHTML (hipo/create tmpl)))

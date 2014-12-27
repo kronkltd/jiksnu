@@ -314,31 +314,6 @@
     (display-avatar user)
     [:span.fn.n (link-to user)]]))
 
-(defsection show-section [User :html]
-  [user & options]
-  (list
-   [:div.vcard.user-full
-    {:data-model "user"
-     :data-id "{{user.id}}"}
-    (actions-section user)
-    [:div (display-avatar user 96)]
-    [:p
-     [:span.nickname.fn.n "{{user.displayName}}"]
-     " ({{user.username}}@{{user.domain}})"]
-    [:div.adr
-     [:p.locality "{{user.location}}"]]
-    [:p.note "{{user.bio}}"]
-    (let [source (FeedSource.)]
-      (bind-to "updateSource"
-        [:div {:data-model "feed-source"}
-         (link-to source) ]))
-    [:p [:a {:href (:id user)} (:id user)]]
-    [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
-    (let [key (Key.)]
-      (show-section key))]))
-
-;; update-button
-
 (defsection update-button [User :html]
   [item & _]
   (action-link "user" "update" (:_id item)))

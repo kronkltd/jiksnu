@@ -14,8 +14,8 @@
             [jiksnu.modules.web.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
-            [jiksnu.modules.web.actions.template-actions :as templates]
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
+            [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [ring.middleware.file :as file]
@@ -84,19 +84,15 @@
            :path route} o])))
    handlers))
 
-(defn template-routes
-  []
-  (compojure/routes
-   (GET "/partials/right-column.html"        [] #'templates/right-column)
-   (GET "/partials/admin-conversations.html" [] #'templates/admin-conversations)
-   (GET "/partials/new-post.html"            [] #'templates/new-post)
-   ))
-
 (def http-routes
   (->> registry/action-group-names
        (map load-module)
        (reduce concat)
        make-matchers))
+
+(defn index
+  [_]
+  (sections.layout/page-template-content {} {}))
 
 (compojure/defroutes all-routes
   (compojure/GET "/websocket" _
@@ -105,7 +101,6 @@
                  (when (:websocket? request)
                    ((http/wrap-aleph-handler stream/websocket-handler) request)))
   (compojure/GET "/main/events" [] stream/stream-handler)
-  (template-routes)
   (compojure/ANY "/admin*" request
                  (if (session/is-admin?)
                    ((middleware/wrap-log-request
@@ -114,7 +109,7 @@
                    (throw+ {:type :authentication :message "Must be admin"})))
   (middleware/wrap-log-request
    (resolve-routes [predicates/http] http-routes))
-  (GET "/*" [] #'templates/index)
+  (GET "/*" [] #'index)
   (route/not-found (not-found-msg)))
 
 (declare app)

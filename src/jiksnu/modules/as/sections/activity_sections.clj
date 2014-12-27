@@ -16,6 +16,7 @@
 (defsection show-section [Activity :json]
   [activity & _]
   (merge {:actor (show-section (model.activity/get-author activity))
+          :text (:content activity)
           :content (:content activity)
           :id (:id activity)
           :localId (:_id activity)
