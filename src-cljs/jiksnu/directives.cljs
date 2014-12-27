@@ -27,18 +27,21 @@
 
 (def.directive jiksnu.jiksnuLeftColumn []
   (obj
-    :template (template-string templates/left-column-section)
-    :controller "LeftColumnController"))
+   :template (template-string templates/left-column-section)
+   :scope true
+   :controller "LeftColumnController"))
 
 (def.directive jiksnu.jiksnuNavBar []
   (obj
-    :template (template-string templates/navbar-section)
-    :controller "NavBarController"))
+   :template (template-string templates/navbar-section)
+   :scope true
+   :controller "NavBarController"))
 
 (def.directive jiksnu.jiksnuNewPost
   []
   (obj
    :template (template-string templates/add-post-form)
+   :scope true
    :controller "NewPostController"
    )
 
@@ -47,5 +50,6 @@
 (def.directive jiksnu.jiksnuRightColumn []
   (obj
    :template (template-string templates/right-column-section)
+   :scope true
    :controller "RightColumnController"))
 

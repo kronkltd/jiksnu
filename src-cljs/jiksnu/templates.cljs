@@ -14,6 +14,23 @@
               (when checked
                 {:checked "checked"}))]]]))
 
+(def add-group-form
+  [:form.well.form-horizontal {:method "post" :action "/main/groups"}
+   [:fieldset
+    [:legend "Add a Group"]
+    (control-line "Nickname" "nickname" "text")
+    (control-line "Full Name" "fullname" "text")
+    (control-line "Homepage" "homepage" "text")
+    [:div.control-group
+     [:label {:for "description"} "Description"]
+     [:div.controls
+      [:textarea {:name "description"}]]]
+    (control-line "Location" "location" "text")
+    (control-line "Aliases" "aliases" "text")
+    [:div.controls
+     [:input.btn.btn-primary {:type "submit" :value "Add"}]]]]
+  )
+
 (def add-post-form
   [:form  {:ng-submit "submit()"}
    [:input {:type "hidden" :ng-model "activity.source"}]
@@ -133,6 +150,30 @@
      [:td
       #_(actions-section group)]]]])
 
+(def admin-sources
+  [:table.table
+   [:thead
+    [:tr
+     [:th "Id"]
+     [:th "Title"]
+     [:th "Domain"]
+     [:th "Topic"]
+     [:th "Status"]
+     [:th "Actions"]]]
+   [:tbody
+    [:tr {:ng-repeat "source in page.items"}
+     [:td
+      [:jiksnu-link-to {:data-id "{{source.id}}" :data-model "FeedSource"}]]
+     [:td
+      [:a {:title "{{source.title}}" :ui-sref "adminSource(source)"}
+       "{{source.title}}"]]
+     [:td "{{source.domain}}"]
+     [:td
+      [:a {:href "{{source.topic}}"}
+       "{{source.topic}}"]]
+     [:td "{{source.status}}"]
+     [:td #_(actions-section item)]]]])
+
 (def admin-streams
   [:table.table
    [:thead
@@ -153,6 +194,120 @@
       [:input {:type "file" :name "avatar"}]]]
     [:div.actions
      [:input {:type "submit" :value "Submit"}]]]])
+
+(def index-domains
+  [:table.domains.table
+   [:thead
+    [:tr
+     [:th "Name"]
+     [:th "HTTP"]
+     [:th "HTTPS"]
+     [:th "XMPP?"]
+     [:th "Discovered"]
+     [:th "Host Meta"]
+     [:th "# Links"]
+     ]]
+   [:tbody
+    [:tr {:data-model "domain"
+          :ng-repeat "domain in page.items"}
+     [:td
+      #_(favicon-link domain)
+      #_(link-to domain)
+      ]
+     [:td "{{domain.http}}"]
+     [:td "{{domain.https}}"]
+     [:td "{{domain.xmpp}}"]
+     [:td "{{domain.discovered}}"]
+     [:td
+      [:a {:href "http://{{domain._id}}/.well-known/host-meta"}
+       "Host-Meta"]]
+     [:td "{{domain.links.length}}"]
+     [:th #_(actions-section domain)]]]]
+  )
+
+(def index-groups
+  [:ul.profiles
+   [:li {:ng-repeat "group in page.items"}
+    [:section.profile.hentry.vcard
+     {:data-model "group"}
+     [:p
+      [:a.url.entry-title
+       {:href "/main/groups/{{group.nickname}}"}
+       [:img {:ng-src "{{group.avatarUrl}}"}]
+       [:span.nickname
+        "{{group.fullname}} ({{group.nickname}})"]]]
+     [:a.url {:href "{{group.homepage}}"}
+      "{{group.homepage}}"]
+     [:p.note "{{group.description}}"]]]]
+  )
+
+(def index-resources
+  [:table.table
+   [:thead
+    [:tr
+     [:th "Id"]
+     [:th "Domain"]
+     [:th "Url"]
+     [:th "Status"]
+     [:th "Content Type"]
+     [:th "Encoding"]
+     [:th "Requires Auth"]
+     [:th "Updated"]]]
+   [:tbody
+    [:tr {:data-model "resource"
+          :ng-repeat "resource in page.items"}
+     [:td
+      [:jiksnu-link-to {:data-id "{{resource.id}}" :data-model "Resource"}]]
+     [:td "{{resource.domain}}"]
+     [:td
+      [:a {:href "{{resource.url}}"}
+       "{{resource.url}}"]]
+     [:td "{{resource.status}}"]
+     [:td "{{resource.contentType}}"]
+     [:td "{{resource.encoding}}"]
+     [:td "{{resource.requiresAuth}}"]
+     [:td "{{resource.updated}}"]
+     [:td #_(actions-section item)]]]]
+  )
+
+(def index-sources
+  [:div
+   [:jiksnu-pagination-section]
+   [:table.table.feed-sources
+    [:thead
+     [:tr
+      [:th "Title"]
+      [:th "Domain"]
+      [:th "Topic"]
+      [:th "Hub"]
+      #_[:th "Mode"]
+      [:th "Status"]
+      [:th "Watchers"]
+      [:th "Updated"]
+      [:th "Actions"]]]
+    [:tbody
+     [:tr {:ng-repeat "source in page.items"}
+      [:td
+       [:jiksnu-link-to {:data-id "{{source.id}}" :data-model "FeedSouce"}]]
+      [:td "{{source.domain}}"]
+      [:td
+       [:a {:href "{{source.topic}}"}
+        "{{source.topic}}"]]
+      [:td "{{source.hub}}"]
+      #_[:td "{{source.mode}}"]
+      [:td "{{source.status}}"
+       ]
+      [:td "{{source.watchers.length}}"]
+      [:td "{{source.updated}}"]
+      [:td
+       #_(actions-section source)]]]]]
+  )
+
+(def index-users
+  [:div
+   [:h1 "Index Users"]
+   ]
+  )
 
 (def login-page
   [:div
@@ -259,9 +414,194 @@
   [:div
    [:h2 "Right Column"]])
 
+(defn config [& _]
+  (.warn js/console "config called"))
+
 (def settings-page
   [:div
-   [:h1 "Settings"]])
+   [:h1 "Settings"]
+  [:form.well.form-horizontal
+   {:method "post" :action "/admin/settings"}
+   [:fieldset
+    [:legend "Settings Page"]
+    (control-line "Site Name"
+                  "site.name" "text"
+                  :value (config :site :name))
+    (control-line "Domain"
+                  "domain" "text"
+                  :value (config :domain))
+    (control-line "Admin Email"
+                  "site.email" "text"
+                  :value (config :site :email))
+    (control-line "Brought By Name"
+                  "site.brought-by.name" "text"
+                  :value (config :site :brought-by :name))
+    (control-line "Brought By Url"
+                  "site.brought-by.url" "text"
+                  :value (config :site :brought-by :url))
+    (control-line "Print Actions"
+                  "print.actions" "checkbox"
+                  :checked (config :print :actions))
+    (control-line "Print Request"
+                  "print.request" "checkbox"
+                  :checked (config :print :request))
+    (control-line "Print Routes"
+                  "print.routes" "checkbox"
+                  :checked (config :print :routes))
+    (control-line "Print Triggers"
+                  "print.triggers" "checkbox"
+                  :checked (config :print :triggers))
+    (control-line "Allow registration?"
+                  "registration-enabled" "checkbox"
+                  :checked (config :registration-enabled))
+    (control-line "Private"
+                  "site.private" "checkbox"
+                  :checked (config :site :private))
+    (control-line "Closed"
+                  "site.closed" "checkbox"
+                  :checked (config :site :closed))
+    (control-line "Limit"
+                  "site.limit.text" "text"
+                  :value (config :site :limit :text))
+    (control-line "Dupe"
+                  "site.limit.dupe" "text"
+                  :value (config :site :limit :dupe))
+    (control-line "Swank Port"
+                  "swank.port" "text"
+                  :value (config :swank :port))
+    (control-line "HTML only?"
+                  "htmlOnly" "checkbox"
+                  :checked (config :htmlOnly))
+    [:div.actions
+     [:input {:type "submit"}]]]]])
+
+(def show-domain
+  ;; (let [sc (:statusnet-config domain)
+  ;;       license (:license sc)]
+
+    [:div {:data-model "domain"}
+     #_(actions-section domain)
+     [:table.table
+      [:thead]
+      [:tbody
+       [:tr
+        [:th "Id"]
+        [:td
+         #_(favicon-link domain)
+         [:span.domain-id "{{domain._id}}"]]]
+       [:tr
+        [:th "XMPP"]
+        [:td "{{domain.xmpp}}"]]
+       [:tr
+        [:th "Discovered"]
+        [:td "{{domain.discovered}}"]]
+       [:tr
+        [:th "Created"]
+        [:td "{{domain.created}}"]]
+       [:tr
+        [:th "Updated"]
+        [:td "{{domain.updated}}"]]
+       [:tr
+        [:th "Closed"]
+        [:td #_(-> sc :site :closed)]]
+       [:tr
+        [:th "Private"]
+        [:td #_(-> sc :site :private)]]
+       [:tr
+        [:th "Invite Only"]
+        [:td #_(-> sc :site :inviteonly)]]
+       [:tr
+        [:th "Admin"]
+        [:td #_(-> sc :site :email)]]
+       [:tr
+        [:th "License"]
+        [:td
+         ;; RDFa
+         [:a {:href "{{domain.license.url}}"
+              :title "{{domain.license.title}}"}
+          [:img {:src "" #_(:image license)
+                 :alt "" #_(:title license)}]]]]]]
+     #_(when-let [links [{}]]
+       (bind-to "links"
+                (sections.link/index-section links)))]
+    ;; )
+  )
+
+(def show-feed-source
+  [:div {:data-model "feed-source"}
+   #_(actions-section source)
+   [:table.table
+    [:tbody
+     [:tr
+      [:th "Topic:"]
+      [:td [:a {:href "{{source.topic}}"}
+            "{{source.topic}}"]]]
+     [:tr
+      [:th "Domain:"]
+      [:td "{{source.domain}}"]]
+     [:tr
+      [:th "Hub:"]
+      [:td [:a {:href "{{hub}}"}
+            "{{hub}}"]]]
+     [:tr
+      [:th "Callback:"]
+      [:td "{{source.callback}}"]]
+     [:tr
+      [:th  "Challenge:"]
+      [:td "{{source.challenge}}"]]
+     [:tr
+      [:th "Mode:"]
+      [:td "{{source.mode}}"]]
+     [:tr
+      [:th "Status:"]
+      [:td "{{source.status}}"]]
+     [:tr
+      [:th "Verify Token:"]
+      [:td "{{source.verifyToken}}"]]
+     [:tr
+      [:th "Created:"]
+      [:td "{{source.created}}"]]
+     [:tr
+      [:th "Updated:"]
+      [:td "{{source.updated}}"]]
+     [:tr
+      [:th "Lease Seconds:"]
+      [:td "{{source.leaseSeconds}}"]]]]])
+
+(def show-resource
+  [:div #_(actions-section item)
+   [:table.table
+    [:tbody
+     [:tr
+      [:th "Id"]
+      [:td ]]
+     [:tr
+      [:th "Title"]
+      [:td "{{resource.title}}"]]
+     [:tr
+      [:th "Url"]
+      [:td
+       [:a {:href "{{resource.url}}"}
+        "{{resource.url}}"]]]
+     [:tr
+      [:th "Status"]
+      [:td "{{resource.status}}"]]
+     [:tr
+      [:th "Location"]
+      [:td "{{resource.location}}"]]
+     [:tr
+      [:th "Content Type"]
+      [:td "{{resource.contentType}}"]]
+     [:tr
+      [:th "Encoding"]
+      [:td "{{resource.encoding}}"]]
+     [:tr
+      [:th "Created"]
+      [:td "{{resource.created}}"]]
+     [:tr
+      [:th "Updated"]
+      [:td "{{resource.updated}}"]]]]
+   #_(sections.link/index-section links)])
 
 (def streams-widget
   [:div

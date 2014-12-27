@@ -11,7 +11,7 @@
              :name state
              :url uri
              :controller (str controller "Controller")
-             :template (hipo/create template)))))
+             :template (.-outerHTML (hipo/create template))))))
 
 (defn fetch-page
   [$scope $http url]
@@ -64,32 +64,20 @@
   )
 
 (def states
-  [["avatarPage"   "/main/avatar"   "AvatarPage"   templates/avatar-page]
-   ["loginPage"    "/main/login"    "LoginPage"    templates/login-page]
-   ["registerPage" "/main/register" "RegisterPage" templates/register-page]
-   ["settingsPage" "/main/settings" "SettingsPage" templates/settings-page]])
+  [["avatarPage"     "/main/avatar"    "AvatarPage"     templates/avatar-page]
+   ["indexDomains"   "/main/domains"   "IndexDomains"   templates/index-domains]
+   ["indexGroups"    "/main/groups"    "IndexGroups"    templates/index-groups]
+   ["indexResources" "/main/resources" "IndexResources" templates/index-resources]
+   ["indexUsers"     "/main/users"     "IndexUsers"     templates/index-users]
+   ["loginPage"      "/main/login"     "LoginPage"      templates/login-page]
+   ["registerPage"   "/main/register"  "RegisterPage"   templates/register-page]
+   ["settingsPage"   "/main/settings"  "SettingsPage"   templates/settings-page]])
 
 (def templated-states
   [{:name "home"
     :url "/"
     :templateUrl "/partials/public-timeline.html"
     :controller "IndexConversationsController"}
-   {:name "indexDomains"
-    :url "/main/domains"
-    :templateUrl "/partials/index-domains.html"
-    :controller "IndexDomainsController"}
-   {:name  "indexGroups"
-    :url "/main/groups"
-    :templateUrl "/partials/index-groups.html"
-    :controller "IndexGroupsController"}
-   {:name "indexResources"
-    :url "/resources"
-    :templateUrl "/partials/index-resources.html"
-    :controller "IndexResourcesController"}
-   {:name  "indexUsers"
-    :url "/users"
-    :templateUrl "/partials/index-users.html"
-    :controller "IndexUsersController"}
    {:name  "showActivity"
     :url "/notice/:id"
     :templateUrl "/partials/show-activity.html"

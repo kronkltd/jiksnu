@@ -55,81 +55,10 @@
   [user & _]
   user)
 
-;; index-block
-
-(defsection index-block [Resource :html]
-  [items & [page]]
-  [:table.table
-   [:thead
-    [:tr
-     [:th "Id"]
-     [:th "Domain"]
-     [:th "Url"]
-     [:th "Status"]
-     [:th "Content Type"]
-     [:th "Encoding"]
-     [:th "Requires Auth"]
-     [:th "Updated"]]]
-   [:tbody
-    (let [item (first items)]
-      [:tr {:data-model "resource"
-            :ng-repeat "resource in page.items"}
-       [:td (link-to item)]
-       [:td "{{resource.domain}}"]
-       [:td
-        [:a {:href "{{resource.url}}"}
-         "{{resource.url}}"]]
-       [:td "{{resource.status}}"]
-       [:td "{{resource.contentType}}"]
-       [:td "{{resource.encoding}}"]
-       [:td "{{resource.requiresAuth}}"]
-       [:td "{{resource.updated}}"]
-       [:td (actions-section item)]])]])
-
 (defsection link-to [Resource :html]
   [source & _]
   [:a {:href "/resources/{{resource.id}}"}
    "{{resource.topic}}"])
-
-(defsection show-section [Resource :html]
-  [item & _]
-  (let [links [{}]]
-   (actions-section item)
-   [:table.table
-    [:tbody
-     [:tr
-      [:th "Id"]
-      [:td ]]
-     [:tr
-      [:th "Title"]
-      [:td "{{resource.title}}"]]
-     [:tr
-      [:th "Url"]
-      [:td
-       [:a {:href "{{resource.url}}"}
-        "{{resource.url}}"]]]
-     [:tr
-      [:th "Status"]
-      [:td "{{resource.status}}"]]
-     [:tr
-      [:th "Location"]
-      [:td "{{resource.location}}"]]
-     [:tr
-      [:th "Content Type"]
-      [:td "{{resource.contentType}}"]]
-     [:tr
-      [:th "Encoding"]
-      [:td "{{resource.encoding}}"]]
-     [:tr
-      [:th "Created"]
-      [:td "{{resource.created}}"]]
-     [:tr
-      [:th "Updated"]
-      [:td "{{resource.updated}}"]]]]
-   (bind-to "links"
-            (sections.link/index-section links))))
-
-;; update-button
 
 (defsection update-button [Resource :html]
   [item & _]

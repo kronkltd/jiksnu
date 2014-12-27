@@ -1,5 +1,5 @@
 (ns jiksnu.modules.admin.views.group-views
-  (:require [ciste.views :only [defview]]
+  (:require [ciste.views :refer [defview]]
             [clojure.tools.logging :as log]
             [jiksnu.modules.admin.actions.group-actions
              :as actions.admin.groups]

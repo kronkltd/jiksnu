@@ -57,23 +57,6 @@
   [item]
   (dropdown-menu item (get-buttons)))
 
-(defsection add-form [Group :html]
-  [group & _]
-  [:form.well.form-horizontal {:method "post" :action "/main/groups"}
-   [:fieldset
-    [:legend "Add a Group"]
-    (control-line "Nickname" "nickname" "text")
-    (control-line "Full Name" "fullname" "text")
-    (control-line "Homepage" "homepage" "text")
-    [:div.control-group
-     [:label {:for "description"} "Description"]
-     [:div.controls
-      [:textarea {:name "description"}]]]
-    (control-line "Location" "location" "text")
-    (control-line "Aliases" "aliases" "text")
-    [:div.controls
-     [:input.btn.btn-primary {:type "submit" :value "Add"}]]]])
-
 (defsection edit-button [Group :html]
   [item & _]
   (action-link "group" "edit" (:_id item)))
@@ -83,23 +66,6 @@
   (action-link "group" "delete" (:_id item)))
 
 ;; index-block
-
-(defsection index-block [Group :html]
-  [groups & _]
-  [:ul.profiles
-   (let [group (first groups)]
-     [:li {:ng-repeat "group in page.items"}
-      [:section.profile.hentry.vcard
-       {:data-model "group"}
-       [:p
-        [:a.url.entry-title
-         {:href "/main/groups/{{group.nickname}}"}
-         [:img {:ng-src "{{group.avatarUrl}}"}]
-         [:span.nickname
-          "{{group.fullname}} ({{group.nickname}})"]]]
-       [:a.url {:href "{{group.homepage}}"}
-        "{{group.homepage}}"]
-       [:p.note (:description group)]]])])
 
 (defsection link-to [Group :html]
   [item & options]

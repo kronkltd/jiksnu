@@ -7,10 +7,10 @@
             [jiksnu.modules.web.sections :refer [format-page-info]]))
 
 (defview #'index :html
-  [request {:keys [items] :as response}]
+  [request {:keys [items] :as page}]
   {:title "Activities"
    :single true
-   :body (admin-index-section activities response)})
+   :body (admin-index-section items page)})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
