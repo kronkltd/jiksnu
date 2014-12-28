@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.favorite-views
+(ns jiksnu.modules.web.views.favorite-views
   (:use [ciste.views :only [defview]]
         jiksnu.actions.favorite-actions))
 

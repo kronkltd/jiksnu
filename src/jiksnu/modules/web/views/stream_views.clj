@@ -20,6 +20,10 @@
   (redirect "/"
             "user has been created"))
 
+(defview #'actions.stream/direct-message-timeline :json
+  [request data]
+  {:body data})
+
 (defview #'actions.stream/group-timeline :html
   [request [group {:keys [items] :as page}]]
   {:title (str (:nickname group) " group")
@@ -29,6 +33,10 @@
             (show-section group)
             [:div {:data-model "group"}
              (index-section items)])})
+
+(defview #'actions.stream/group-timeline :json
+  [request [group {:keys [items] :as page}]]
+  {:body group})
 
 (defview #'actions.stream/home-timeline :html
   [request activities]
@@ -46,6 +54,12 @@
      [:div {:ui-view ""}
       "View goes here"]}))
 
+(defview #'actions.stream/public-timeline :json
+  [request {:keys [items] :as page}]
+  {:body (let [activity-page (actions.activity/fetch-by-conversations
+                              (map :_id items))]
+           (index-section (:items activity-page) activity-page))})
+
 (defview #'actions.stream/user-timeline :html
   [request [user {:keys [items] :as page}]]
   {:user user
@@ -57,4 +71,8 @@
              (with-sub-page "activities"
                (index-section items page))])
    :formats (sections.activity/timeline-formats user)})
+
+(defview #'actions.stream/user-timeline :json
+  [request [user activities]]
+  {:body (map show-section activities)})
 

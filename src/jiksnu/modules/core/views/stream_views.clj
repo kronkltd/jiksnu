@@ -16,10 +16,6 @@
 
 ;; direct-message-timeline
 
-(defview #'actions.stream/direct-message-timeline :json
-  [request data]
-  {:body data})
-
 (defview #'actions.stream/direct-message-timeline :xml
   [request activities]
   {:body
@@ -36,10 +32,6 @@
             :model "user"
             :id (:_id (:item request))
             :body response}}))
-
-(defview #'actions.stream/group-timeline :json
-  [request [group {:keys [items] :as page}]]
-  {:body group})
 
 (defview #'actions.stream/group-timeline :viewmodel
   [request data]
@@ -75,12 +67,6 @@
 
 ;; public-timeline
 
-(defview #'actions.stream/public-timeline :json
-  [request {:keys [items] :as page}]
-  {:body (let [activity-page (actions.activity/fetch-by-conversations
-                              (map :_id items))]
-           (index-section (:items activity-page) activity-page))})
-
 (defview #'actions.stream/public-timeline :page
   [request response]
   (let [items (:items response)
@@ -101,10 +87,6 @@
 (defview #'actions.stream/public-timeline :xml
   [request {:keys [items] :as page}]
   {:body (index-section items page)})
-
-(defview #'actions.stream/user-timeline :json
-  [request [user activities]]
-  {:body (map show-section activities)})
 
 (defview #'actions.stream/user-timeline :model
   [request [user page]]

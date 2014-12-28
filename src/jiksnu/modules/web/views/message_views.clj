@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.message-views
+(ns jiksnu.modules.web.views.message-views
   (:use [ciste.views :only [defview]]
         jiksnu.actions.message-actions))
 

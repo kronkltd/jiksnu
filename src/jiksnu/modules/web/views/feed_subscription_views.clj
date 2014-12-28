@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.feed-subscription-views
+(ns jiksnu.modules.web.views.feed-subscription-views
   (:require [ciste.config :refer [config]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
@@ -10,21 +10,10 @@
             [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]])
   (:import jiksnu.model.FeedSubscription))
 
-(defview #'actions.feed-subscription/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :body response}}))
-
-(defview #'actions.feed-subscription/show :model
-  [request activity]
-  {:body (show-section activity)})
-
-(defview #'actions.feed-subscription/show :viewmodel
+(defview #'actions.feed-subscription/show :html
   [request item]
-  {:body {:targetFeedSubscription (:_id item)
-          :title (:title item)}})
+  (let [item [(FeedSubscription.)]]
+    {:body
+     (bind-to "targetFeedSubscription"
+       (show-section item))}))
 

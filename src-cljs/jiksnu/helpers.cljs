@@ -73,6 +73,7 @@
    ["avatarPage"     "/main/avatar"    "AvatarPage"         templates/avatar-page]
    ["home"           "/"               "IndexConversations" templates/public-timeline]
    ["indexDomains"   "/main/domains"   "IndexDomains"       templates/index-domains]
+   ["indexFeedSources"    "/main/feed-sources"    "IndexFeedSources"        templates/index-feed-sources]
    ["indexGroups"    "/main/groups"    "IndexGroups"        templates/index-groups]
    ["indexResources" "/main/resources" "IndexResources"     templates/index-resources]
    ["indexUsers"     "/main/users"     "IndexUsers"         templates/index-users]

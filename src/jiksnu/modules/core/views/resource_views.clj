@@ -9,25 +9,6 @@
             [jiksnu.namespace :as ns])
   (:import jiksnu.model.Resource))
 
-(defview #'create :html
-  [request item]
-  (redirect (:url item) "resource has been created"))
-
-(defview #'delete :html
-  [request _]
-  (redirect "/" "resource has been deleted"))
-
-(defview #'index :html
-  [request {:keys [items] :as page}]
-  {:title "Resources"
-   :single true
-   :body (index-section items page)})
-
-(defview #'index :json
-  [request {:keys [items] :as page}]
-  {:body
-   {:items (index-section items page)}})
-
 (defview #'index :page
   [request response]
   (let [items (:items response)
@@ -41,14 +22,6 @@
   [request {:keys [items] :as page}]
   {:body {:title "Resources"
           :pages {:resources (format-page-info page)}}})
-
-(defview #'show :html
-  [request item]
-  {:body
-   (let [item (Resource.)]
-     (bind-to "targetResource"
-       [:div {:data-model "resource"}
-        (show-section item)]))})
 
 (defview #'show :model
   [request item]

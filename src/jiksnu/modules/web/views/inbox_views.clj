@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.inbox-views
+(ns jiksnu.modules.web.views.inbox-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-block]]
         jiksnu.actions.inbox-actions))

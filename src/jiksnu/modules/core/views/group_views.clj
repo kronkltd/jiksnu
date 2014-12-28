@@ -37,11 +37,6 @@
 
 ;; index
 
-(defview #'actions.group/index :json
-  [request {:keys [items] :as page}]
-  {:body
-   {:items (index-section items page)}})
-
 (defview #'actions.group/index :page
   [request response]
   (let [items (:items response)

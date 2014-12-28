@@ -42,6 +42,10 @@
           (pagination-links page)
           (sections.subscription/subscriptions-section items page))]))})
 
+(defview #'get-subscriptions :json
+  [request [user {:keys [items] :as response}]]
+  {:body (sections.subscription/subscriptions-section items response)})
+
 ;; ostatus
 
 (defview #'ostatus :html

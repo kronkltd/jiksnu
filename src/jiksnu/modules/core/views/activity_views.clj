@@ -8,8 +8,6 @@
   [request activity]
   {:body (show-section activity)})
 
-;; fetch-by-conversations
-
 (defview #'actions.activity/fetch-by-conversation :page
   [request response]
   (let [items (:items response)
@@ -21,8 +19,6 @@
             :id (:_id (:item request))
             :body response}}))
 
-;; index
-
 (defview #'actions.activity/index :page
   [request response]
   (let [items (:items response)
@@ -31,13 +27,6 @@
                          :items (map :_id items)})]
     {:body {:action "page-updated"
             :body response}}))
-
-;; oembed
-
-(defview #'actions.activity/oembed :json
-  [request oembed-map]
-  {:status 200
-   :body oembed-map})
 
 (defview #'actions.activity/oembed :xml
   [request m]
@@ -59,10 +48,6 @@
 (defview #'actions.activity/show :clj
   [request activity]
   {:body activity})
-
-(defview #'actions.activity/show :json
-  [request activity]
-  {:body (show-section activity)})
 
 (defview #'actions.activity/show :model
   [request activity]

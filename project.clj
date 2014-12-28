@@ -49,6 +49,7 @@
                  [org.slf4j/slf4j-api "1.7.9"]
                  [org.slf4j/slf4j-log4j12 "1.7.9"]
                  [org.webjars/angularjs "1.3.8"]
+                 [org.webjars/angular-file-upload "2.0.5"]
                  [org.webjars/angular-moment "0.8.2-1"]
                  [org.webjars/angular-notify "2.0.2"]
                  [org.webjars/angular-ui "0.4.0-3"]

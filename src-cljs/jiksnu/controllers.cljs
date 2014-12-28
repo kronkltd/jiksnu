@@ -63,6 +63,12 @@
   (! $scope.init (helpers/fetch-page $scope $http "/main/domains.json"))
   (.init $scope))
 
+(def.controller jiksnu.IndexFeedSourcesController
+  [$scope $http]
+  (.info js/console "Indexing feed sources")
+  (! $scope.init (helpers/fetch-page $scope $http "/main/feed-sources.json"))
+  (.init $scope))
+
 (def.controller jiksnu.IndexGroupsController
   [$scope $http]
   (.info js/console "Indexing groups")

@@ -346,6 +346,18 @@
      [:p.note "{{group.description}}"]]]]
   )
 
+(def index-feed-sources
+  [:div
+   [:h1 "Index Feed Sources"]
+   ]
+  )
+
+(def index-feed-subscriptions
+  [:div
+   [:h1 "Index Feed subscriptions"]
+   ]
+  )
+
 (def index-resources
   [:table.table
    [:thead

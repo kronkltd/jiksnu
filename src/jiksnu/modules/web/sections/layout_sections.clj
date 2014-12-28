@@ -137,6 +137,7 @@
       "/webjars/momentjs/2.8.3/min/moment.min.js"
       "/webjars/jquery/2.1.3/jquery.min.js"
       "/webjars/angularjs/1.3.8/angular.min.js"
+      "/webjars/angular-file-upload/2.0.5/angular-file-upload.min.js"
       "/webjars/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js"
       "/webjars/angular-ui-router/0.2.13/angular-ui-router.min.js"
       "/webjars/angular-moment/0.8.2-1/angular-moment.min.js"
@@ -189,7 +190,7 @@
         [:div.row
          [:div.col-sm-2 {:jiksnu-left-column ""}]
          [:div.col-sm-8
-          ;; [:div.row {:jiksnu-new-post ""}]
+          [:div.row {:jiksnu-new-post ""}]
           [:div.row
            [:h1 {:data-bind "text: title"}]
            [:div {:ui-view ""}]]]

@@ -30,6 +30,11 @@
   {:title "Users"
    :body (index-section items page)})
 
+(defview #'actions.user/index :json
+  [request {:keys [items] :as options}]
+  {:body
+   {:items (index-section items options)}})
+
 (defview #'actions.user/profile :html
   [request user]
   {:title "Edit Profile"

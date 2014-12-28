@@ -1,9 +1,8 @@
 (ns jiksnu.modules.core.views.feed-source-views
   (:require [ciste.config :refer [config]]
             [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [index-section show-section]]
+            [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -13,15 +12,6 @@
             [ring.util.response :as response])
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSource))
-
-(defview #'actions.feed-source/index :html
-  [request {:keys [items] :as page}]
-  {:title "Feed Sources"
-   :body
-   (let [items (if *dynamic* [(FeedSource.)] items)]
-     (with-page "feedSources"
-       (pagination-links page)
-       (doall (index-section items page))))})
 
 (defview #'actions.feed-source/index :page
   [request response]
@@ -37,27 +27,6 @@
   {:body {:title "Feed Sources"
           :pages {:feedSources (format-page-info page)}}})
 
-(defview #'actions.feed-source/process-updates :html
-  [request params]
-  {:body params
-   :template false})
-
-(defview #'actions.feed-source/unsubscribe :html
-  [request params]
-  (redirect "/main/feed-sources"))
-
-(defview #'actions.feed-source/show :html
-  [request item]
-  (let [page (actions.activity/fetch-by-feed-source item)
-        items (if *dynamic* [(Activity.)] (:items page))]
-    {:body
-     (bind-to "targetFeedSource"
-       (show-section item)
-       [:div {:data-model "feed-source"}
-        (with-sub-page "activities"
-          (pagination-links (if *dynamic* {} page))
-          (index-section items))])}))
-
 (defview #'actions.feed-source/show :model
   [request activity]
   {:body (show-section activity)})
@@ -67,6 +36,3 @@
   {:body {:targetFeedSource (:_id item)
           :title (:title item)}})
 
-(defview #'actions.feed-source/update :html
-  [request params]
-  (redirect "/main/feed-sources"))

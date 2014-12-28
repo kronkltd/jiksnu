@@ -41,10 +41,6 @@
 
 ;; get-subscriptions
 
-(defview #'get-subscriptions :json
-  [request [user {:keys [items] :as response}]]
-  {:body (sections.subscription/subscriptions-section items response)})
-
 (defview #'get-subscriptions :page
   [request [user page]]
   (let [items (:items page)

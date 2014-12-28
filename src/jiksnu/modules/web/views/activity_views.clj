@@ -18,6 +18,11 @@
   (let [actor (session/current-user)]
     (redirect (uri actor))))
 
+(defview #'actions.activity/oembed :json
+  [request oembed-map]
+  {:status 200
+   :body oembed-map})
+
 (defview #'actions.activity/post :html
   [request activity]
   (let [actor (session/current-user)
@@ -33,3 +38,8 @@
      [:div
       (bind-to "targetActivity"
                (show-section activity))])})
+
+(defview #'actions.activity/show :json
+  [request activity]
+  {:body (show-section activity)})
+

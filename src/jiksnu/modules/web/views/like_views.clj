@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.like-views
+(ns jiksnu.modules.web.views.like-views
   (:require [ciste.views :refer [defview]]
             [jiksnu.actions.like-actions :as actions.like]))
 
