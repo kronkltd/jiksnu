@@ -30,6 +30,21 @@
 
 (def.controller jiksnu.LoginPageController [])
 
+(def.controller jiksnu.LogoutController
+  [$scope $http]
+
+  (-> $http
+      (.post "/main/logout")
+      (.success (fn [data]
+                  (.log js/console "data:" data)
+
+                  ;; TODO: refresh status
+
+                  ))
+      )
+
+  )
+
 (def.controller jiksnu.IndexClientsController
   [$scope $http]
   (.info js/console "Indexing clients")

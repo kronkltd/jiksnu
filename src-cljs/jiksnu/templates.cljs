@@ -219,6 +219,76 @@
           :ng-repeat "conversation in conversations"}
      [:td "{{conversation.name}}"]]]])
 
+(def admin-user
+  [:div
+   #_(actions-section item)
+   [:table.table
+    [:tr
+     [:th]
+     [:td
+      [:jiksnu-display-avatar {:data-id "{{user.id}}"}]
+      ]]
+    [:tr
+     [:th "Username"]
+     [:td "{{user.username}}"]]
+
+    [:tr
+     [:th  "Domain"]
+     [:td
+      [:jiksnu-link-to {:data-id "{{user.domain}}" :data-model "Domain"}]]]
+    [:tr
+     [:th "Bio"]
+     [:td "{{user.bio}}"]]
+    [:tr
+     [:th  "Location"]
+     [:td "{{user.location}}"]]
+    [:tr
+     [:th  "Url"]
+     [:td "{{user.url}}"]]
+    [:tr
+     [:th  "Id"]
+     [:td "{{user.id}}"]]
+    [:tr
+     [:th  "Discovered"]
+     [:td "{{user.discovered}}"]]
+    [:tr
+     [:th  "Created"]
+     [:td "{{user.created}}"]]
+    [:tr
+     [:th "Updated"]
+     [:td "{{user.updated}}"]]
+    [:tr
+     [:th "Update Source"]
+     [:td
+      [:jiksnu-link-to {:data-id "{{user.updateSource}}"
+                        :data-model "FeedSource"}]]]]])
+
+(def admin-users
+  [:table.users.table
+   [:thead
+    [:tr
+     [:th]
+     [:th "User"]
+     [:th "Id"]
+     [:th "Domain"]
+     [:th "Actions"]]]
+   [:tbody
+    [:tr {:ng-repeat "user in page.items"
+          :data-model "user"
+          :data-id "{{user.id}}"}
+     [:td
+      [:jiksnu-display-avatar {:data-id "{{user.id}}"}]]
+     [:td "{{user.username}}"]
+     [:td
+      [:a {:href "/admin/users/{{user.id}}"}
+       "{{user.id}}"]]
+     [:td
+      [:jiksnu-link-to {:data-id "{{user.domain}}" :data-model "Domain"}]]
+     [:td #_(actions-section user)]]
+    ]]
+
+  )
+
 (def avatar-page
   [:form {:method "post" :action "/settings/avatar"}
    [:fieldset
@@ -335,14 +405,30 @@
       [:td "{{source.watchers.length}}"]
       [:td "{{source.updated}}"]
       [:td
-       #_(actions-section source)]]]]]
-  )
+       #_(actions-section source)]]]]])
 
 (def index-users
   [:div
-   [:h1 "Index Users"]
-   ]
-  )
+   [:h2 "Index Users"]
+   [:table.table.users
+    [:thead]
+    [:tbody {:data-bag "users"}
+     [:tr {:ng-repeat "user in page.items"
+           :data-model "user"
+           :data-id "{{user.id}}"}
+      [:td
+       [:div
+        [:jiksnu-display-avatar {:data-id "{{user.id}}"}]]
+       [:div
+        [:p
+         [:jiksnu-link-to {:data-id "{{user.id}}"
+                           :data-model "User"}]]
+        [:p "{{user.username}}@{{user.domain}}"]
+        [:p "{{user.id}}"]
+        [:p "{{user.displayName}}"]
+        [:p "{{user.uri}}"]
+        [:p "{{user.bio}}"]]]
+      [:td #_(actions-section user)]]]]])
 
 (def login-page
   [:div
@@ -475,60 +561,60 @@
 (def settings-page
   [:div
    [:h1 "Settings"]
-  [:form.well.form-horizontal
-   {:method "post" :action "/admin/settings"}
-   [:fieldset
-    [:legend "Settings Page"]
-    (control-line "Site Name"
-                  "site.name" "text"
-                  :value (config :site :name))
-    (control-line "Domain"
-                  "domain" "text"
-                  :value (config :domain))
-    (control-line "Admin Email"
-                  "site.email" "text"
-                  :value (config :site :email))
-    (control-line "Brought By Name"
-                  "site.brought-by.name" "text"
-                  :value (config :site :brought-by :name))
-    (control-line "Brought By Url"
-                  "site.brought-by.url" "text"
-                  :value (config :site :brought-by :url))
-    (control-line "Print Actions"
-                  "print.actions" "checkbox"
-                  :checked (config :print :actions))
-    (control-line "Print Request"
-                  "print.request" "checkbox"
-                  :checked (config :print :request))
-    (control-line "Print Routes"
-                  "print.routes" "checkbox"
-                  :checked (config :print :routes))
-    (control-line "Print Triggers"
-                  "print.triggers" "checkbox"
-                  :checked (config :print :triggers))
-    (control-line "Allow registration?"
-                  "registration-enabled" "checkbox"
-                  :checked (config :registration-enabled))
-    (control-line "Private"
-                  "site.private" "checkbox"
-                  :checked (config :site :private))
-    (control-line "Closed"
-                  "site.closed" "checkbox"
-                  :checked (config :site :closed))
-    (control-line "Limit"
-                  "site.limit.text" "text"
-                  :value (config :site :limit :text))
-    (control-line "Dupe"
-                  "site.limit.dupe" "text"
-                  :value (config :site :limit :dupe))
-    (control-line "Swank Port"
-                  "swank.port" "text"
-                  :value (config :swank :port))
-    (control-line "HTML only?"
-                  "htmlOnly" "checkbox"
-                  :checked (config :htmlOnly))
-    [:div.actions
-     [:input {:type "submit"}]]]]])
+   [:form.well.form-horizontal
+    {:method "post" :action "/admin/settings"}
+    [:fieldset
+     [:legend "Settings Page"]
+     (control-line "Site Name"
+                   "site.name" "text"
+                   :value (config :site :name))
+     (control-line "Domain"
+                   "domain" "text"
+                   :value (config :domain))
+     (control-line "Admin Email"
+                   "site.email" "text"
+                   :value (config :site :email))
+     (control-line "Brought By Name"
+                   "site.brought-by.name" "text"
+                   :value (config :site :brought-by :name))
+     (control-line "Brought By Url"
+                   "site.brought-by.url" "text"
+                   :value (config :site :brought-by :url))
+     (control-line "Print Actions"
+                   "print.actions" "checkbox"
+                   :checked (config :print :actions))
+     (control-line "Print Request"
+                   "print.request" "checkbox"
+                   :checked (config :print :request))
+     (control-line "Print Routes"
+                   "print.routes" "checkbox"
+                   :checked (config :print :routes))
+     (control-line "Print Triggers"
+                   "print.triggers" "checkbox"
+                   :checked (config :print :triggers))
+     (control-line "Allow registration?"
+                   "registration-enabled" "checkbox"
+                   :checked (config :registration-enabled))
+     (control-line "Private"
+                   "site.private" "checkbox"
+                   :checked (config :site :private))
+     (control-line "Closed"
+                   "site.closed" "checkbox"
+                   :checked (config :site :closed))
+     (control-line "Limit"
+                   "site.limit.text" "text"
+                   :value (config :site :limit :text))
+     (control-line "Dupe"
+                   "site.limit.dupe" "text"
+                   :value (config :site :limit :dupe))
+     (control-line "Swank Port"
+                   "swank.port" "text"
+                   :value (config :swank :port))
+     (control-line "HTML only?"
+                   "htmlOnly" "checkbox"
+                   :checked (config :htmlOnly))
+     [:div.actions
+      [:input {:type "submit"}]]]]])
 
 (def show-activity
   [:article.hentry
@@ -562,52 +648,52 @@
   ;; (let [sc (:statusnet-config domain)
   ;;       license (:license sc)]
 
-    [:div {:data-model "domain"}
-     #_(actions-section domain)
-     [:table.table
-      [:thead]
-      [:tbody
-       [:tr
-        [:th "Id"]
-        [:td
-         #_(favicon-link domain)
-         [:span.domain-id "{{domain._id}}"]]]
-       [:tr
-        [:th "XMPP"]
-        [:td "{{domain.xmpp}}"]]
-       [:tr
-        [:th "Discovered"]
-        [:td "{{domain.discovered}}"]]
-       [:tr
-        [:th "Created"]
-        [:td "{{domain.created}}"]]
-       [:tr
-        [:th "Updated"]
-        [:td "{{domain.updated}}"]]
-       [:tr
-        [:th "Closed"]
-        [:td #_(-> sc :site :closed)]]
-       [:tr
-        [:th "Private"]
-        [:td #_(-> sc :site :private)]]
-       [:tr
-        [:th "Invite Only"]
-        [:td #_(-> sc :site :inviteonly)]]
-       [:tr
-        [:th "Admin"]
-        [:td #_(-> sc :site :email)]]
-       [:tr
-        [:th "License"]
-        [:td
-         ;; RDFa
-         [:a {:href "{{domain.license.url}}"
-              :title "{{domain.license.title}}"}
-          [:img {:src "" #_(:image license)
-                 :alt "" #_(:title license)}]]]]]]
-     #_(when-let [links [{}]]
+  [:div {:data-model "domain"}
+   #_(actions-section domain)
+   [:table.table
+    [:thead]
+    [:tbody
+     [:tr
+      [:th "Id"]
+      [:td
+       #_(favicon-link domain)
+       [:span.domain-id "{{domain._id}}"]]]
+     [:tr
+      [:th "XMPP"]
+      [:td "{{domain.xmpp}}"]]
+     [:tr
+      [:th "Discovered"]
+      [:td "{{domain.discovered}}"]]
+     [:tr
+      [:th "Created"]
+      [:td "{{domain.created}}"]]
+     [:tr
+      [:th "Updated"]
+      [:td "{{domain.updated}}"]]
+     [:tr
+      [:th "Closed"]
+      [:td #_(-> sc :site :closed)]]
+     [:tr
+      [:th "Private"]
+      [:td #_(-> sc :site :private)]]
+     [:tr
+      [:th "Invite Only"]
+      [:td #_(-> sc :site :inviteonly)]]
+     [:tr
+      [:th "Admin"]
+      [:td #_(-> sc :site :email)]]
+     [:tr
+      [:th "License"]
+      [:td
+       ;; RDFa
+       [:a {:href "{{domain.license.url}}"
+            :title "{{domain.license.title}}"}
+        [:img {:src "" #_(:image license)
+               :alt "" #_(:title license)}]]]]]]
+   #_(when-let [links [{}]]
        (bind-to "links"
                 (sections.link/index-section links)))]
-    ;; )
+  ;; )
   )
 
 (def show-feed-source

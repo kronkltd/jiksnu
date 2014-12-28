@@ -1,13 +1,9 @@
 (ns jiksnu.app
   (:require [jiksnu.helpers :as helpers])
-  (:use-macros [gyr.core :only [def.module def.config]]))
+  (:use-macros [gyr.core :only [def.module def.config]]
+               [purnam.core :only [? ?> ! !> f.n def.n do.n
+                                   obj arr def* do*n def*n f*n]]))
 
 (def.module jiksnu [ui.router ui.bootstrap angularMoment
                     ui.bootstrap.tabs])
 
-(def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider]
-  (.otherwise $urlRouterProvider "/")
-  (-> $locationProvider
-      (.hashPrefix "!")
-      (.html5Mode true))
-  (helpers/add-states $stateProvider helpers/states))

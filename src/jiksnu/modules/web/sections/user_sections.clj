@@ -165,87 +165,9 @@
   [user & [page & _]]
   (actions-section user page))
 
-(defsection admin-index-block [User :html]
-  [items & [page]]
-  [:table.users.table
-   [:thead
-    [:tr
-     [:th]
-     [:th "User"]
-     [:th "Id"]
-     [:th "Domain"]
-     [:th "Actions"]]]
-   [:tbody
-    (let [items [(User.)]]
-      (map #(admin-index-line % page) items))]])
-
-(defsection admin-index-line [User :html]
-  [user & [page & _]]
-  [:tr {:data-model "user"
-        :data-id "{{user.id}}"}
-   [:td (display-avatar user)]
-   [:td "{{user.username}}"]
-   [:td
-    [:a {:href "/admin/users/{{user.id}}"}
-     "{{user.id}}"]]
-   [:td
-    (bind-to "domain"
-      [:div {:data-model "domain"}
-       (let [domain (Domain.)]
-         (link-to domain))])]
-   [:td (actions-section user)]])
-
 (defsection admin-index-section [User :html]
   [items & [page & _]]
   (admin-index-block items page))
-
-(defsection admin-show-section [User :html]
-  [item & [response]]
-  (list
-   (actions-section item)
-   [:table.table
-    [:tr
-     [:th]
-     [:td (display-avatar item)]]
-    [:tr
-     [:th "Username"]
-     [:td "{{user.username}}"]]
-
-    [:tr
-     [:th  "Domain"]
-     [:td
-      (bind-to "domain"
-        [:div {:data-model "domain"}
-         (let [domain (Domain.)]
-           (link-to domain))])]]
-    [:tr
-     [:th "Bio"]
-     [:td "{{user.bio}}"]]
-    [:tr
-     [:th  "Location"]
-     [:td "{{user.location}}"]]
-    [:tr
-     [:th  "Url"]
-     [:td "{{user.url}}"]]
-    [:tr
-     [:th  "Id"]
-     [:td "{{user.id}}"]]
-    [:tr
-     [:th  "Discovered"]
-     [:td "{{user.discovered}}"]]
-    [:tr
-     [:th  "Created"]
-     [:td "{{user.created}}"]]
-    [:tr
-     [:th "Updated"]
-     [:td "{{user.updated}}"]]
-    [:tr
-     [:th "Update Source"]
-     [:td
-      (bind-to "updateSource"
-        (let [source (FeedSource.)]
-          (link-to source)))]]]))
-
 
 (defsection add-form [User :html]
   [user & _]
@@ -264,39 +186,6 @@
 (defsection edit-button [User :html]
   [user & _]
   (action-link "user" "edit" (:_id user)))
-
-;; index-block
-
-(defsection index-block [User :html]
-  [users & [page]]
-  [:div
-   [:h2 "Index Users"]
-   [:table.table.users
-    [:thead]
-    [:tbody {:data-bag "users"}
-     ;; TODO: handle this higher up
-     (let [users [(User.)]]
-       (map #(index-line % page) users))]]])
-
-;; index-line
-
-(defsection index-line [User :html]
-  [user & _]
-  [:tr {:ng-repeat "user in page.items"
-        :data-model "user"
-        :data-id "{{user.id}}"}
-   [:td
-    [:div
-     (display-avatar user)]
-    ;; TODO: call a show section here?
-    [:div
-     [:p (link-to user)]
-     [:p "{{user.username}}@{{user.domain}}"]
-     [:p "{{user.id}}"]
-     [:p "{{user.displayName}}"]
-     [:p "{{user.uri}}"]
-     [:p "{{user.bio}}"]]]
-   [:td (actions-section user)]])
 
 (defsection link-to [User :html]
   [record & options]
