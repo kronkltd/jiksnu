@@ -64,6 +64,7 @@
    "atom"
    "as"
    "command"
+   "json"
    "rdf"
    "core"
    "web"
