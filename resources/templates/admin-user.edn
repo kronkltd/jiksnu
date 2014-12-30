@@ -1,0 +1,41 @@
+[:div
+ #_(actions-section item)
+ [:table.table
+  [:tr
+   [:th]
+   [:td
+    [:jiksnu-display-avatar {:data-id "{{user.id}}"}]]]
+  [:tr
+   [:th "Username"]
+   [:td "{{user.username}}"]]
+  [:tr
+   [:th "Domain"]
+   [:td
+    [:jiksnu-link-to
+     {:data-id "{{user.domain}}" :data-model "Domain"}]]]
+  [:tr
+   [:th "Bio"]
+   [:td "{{user.bio}}"]]
+  [:tr
+   [:th "Location"]
+   [:td "{{user.location}}"]]
+  [:tr
+   [:th "Url"]
+   [:td "{{user.url}}"]]
+  [:tr
+   [:th "Id"]
+   [:td "{{user.id}}"]]
+  [:tr
+   [:th "Discovered"]
+   [:td "{{user.discovered}}"]]
+  [:tr
+   [:th "Created"]
+   [:td "{{user.created}}"]]
+  [:tr
+   [:th "Updated"]
+   [:td "{{user.updated}}"]]
+  [:tr
+   [:th "Update Source"]
+   [:td
+    [:jiksnu-link-to
+     {:data-id "{{user.updateSource}}" :data-model "FeedSource"}]]]]]

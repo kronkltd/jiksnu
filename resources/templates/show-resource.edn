@@ -1,0 +1,33 @@
+  [:div #_(actions-section item)
+   [:table.table
+    [:tbody
+     [:tr
+      [:th "Id"]
+      [:td ]]
+     [:tr
+      [:th "Title"]
+      [:td "{{resource.title}}"]]
+     [:tr
+      [:th "Url"]
+      [:td
+       [:a {:href "{{resource.url}}"}
+        "{{resource.url}}"]]]
+     [:tr
+      [:th "Status"]
+      [:td "{{resource.status}}"]]
+     [:tr
+      [:th "Location"]
+      [:td "{{resource.location}}"]]
+     [:tr
+      [:th "Content Type"]
+      [:td "{{resource.contentType}}"]]
+     [:tr
+      [:th "Encoding"]
+      [:td "{{resource.encoding}}"]]
+     [:tr
+      [:th "Created"]
+      [:td "{{resource.created}}"]]
+     [:tr
+      [:th "Updated"]
+      [:td "{{resource.updated}}"]]]]
+   #_(sections.link/index-section links)]

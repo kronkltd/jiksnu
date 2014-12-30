@@ -1,0 +1,23 @@
+  [:table.users.table
+   [:thead
+    [:tr
+     [:th]
+     [:th "User"]
+     [:th "Id"]
+     [:th "Domain"]
+     [:th "Actions"]]]
+   [:tbody
+    [:tr {:ng-repeat "user in page.items"
+          :data-model "user"
+          :data-id "{{user.id}}"}
+     [:td
+      [:jiksnu-display-avatar {:data-id "{{user.id}}"}]]
+     [:td "{{user.username}}"]
+     [:td
+      [:a {:href "/admin/users/{{user.id}}"}
+       "{{user.id}}"]]
+     [:td
+      [:jiksnu-link-to {:data-id "{{user.domain}}" :data-model "Domain"}]]
+     [:td #_(actions-section user)]]
+    ]]
+

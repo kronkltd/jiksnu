@@ -1,0 +1,4 @@
+[:form {:method "post"
+        :action "/users/{{user.id}}/streams"}
+ [:input {:type "text" :name "name"}]
+ [:input {:type "submit"}]]

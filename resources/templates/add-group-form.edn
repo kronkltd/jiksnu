@@ -1,0 +1,14 @@
+[:form.well.form-horizontal {:method "post" :action "/main/groups"}
+ [:fieldset
+  [:legend "Add a Group"]
+  (control-line "Nickname" "nickname" "text")
+  (control-line "Full Name" "fullname" "text")
+  (control-line "Homepage" "homepage" "text")
+  [:div.control-group
+   [:label {:for "description"} "Description"]
+   [:div.controls
+    [:textarea {:name "description"}]]]
+  (control-line "Location" "location" "text")
+  (control-line "Aliases" "aliases" "text")
+  [:div.controls
+   [:input.btn.btn-primary {:type "submit" :value "Add"}]]]]

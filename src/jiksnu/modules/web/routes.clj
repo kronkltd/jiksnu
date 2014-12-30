@@ -4,11 +4,14 @@
             [ciste.initializer :refer [definitializer]]
             [ciste.middleware :as middleware]
             [ciste.routes :refer [resolve-routes]]
+            [clojure.java.io :as io]
             [clojure.tools.logging :as log]
+            [clojure.tools.reader.edn :as edn]
             [clojurewerkz.route-one.core :refer [*base-url*]]
             [compojure.core :as compojure :refer [GET]]
             [compojure.handler :as handler]
             [compojure.route :as route]
+            [hiccup.core :as h]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.model :as model]
             [jiksnu.modules.web.middleware :as jm]
@@ -25,7 +28,8 @@
             [ring.middleware.stacktrace :as stacktrace]
             [monger.ring.session-store :as ms]
             [slingshot.slingshot :refer [throw+]])
-  (:import javax.security.auth.login.LoginException))
+  (:import java.io.PushbackReader
+           javax.security.auth.login.LoginException))
 
 (defn not-found-msg
   []
@@ -90,6 +94,16 @@
        (reduce concat)
        make-matchers))
 
+(defn serve-template
+  [request]
+  (let [template-name (:* (:params request))
+        path (str "templates/" template-name ".edn")
+        url (io/resource path)
+        reader (PushbackReader. (io/reader url))
+        data (edn/read reader)]
+    {:headers {"Content-Type" "text/html"}
+     :body (h/html data) }))
+
 (defn index
   [_]
   (sections.layout/page-template-content {} {}))
@@ -109,6 +123,7 @@
                    (throw+ {:type :authentication :message "Must be admin"})))
   (middleware/wrap-log-request
    (resolve-routes [predicates/http] http-routes))
+  (GET "/templates/*" [] #'serve-template)
   (GET "/*" [] #'index)
   (route/not-found (not-found-msg)))
 

@@ -37,13 +37,18 @@
 (deffilter #'actions.activity/post :http
   [action request]
   (let [body-params (when-let [body (:body request)]
-                      (when-let [body-str (slurp body)]
+                      (when-let [body-str (log/spy :info (slurp body))]
                         (when-not (= body-str "")
                           (json/read-str body-str))))
-        params (-> request :params
-                   (merge body-params)
-                   (dissoc "geo.latitude"))]
-    (action params)))
+        params (->> (-> request :params
+                        (merge body-params)
+                        (dissoc "geo.latitude"))
+                    (map (fn [[k v]]
+                           [(keyword k) v]
+                           ))
+                    (into {})
+                    )]
+    (action (log/spy :info params))))
 
 ;; show
 

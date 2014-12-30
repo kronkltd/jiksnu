@@ -15,7 +15,7 @@
              :name state
              :url uri
              :controller (str controller "Controller")
-             :template (template-string template)))))
+             :templateUrl (str "/templates/" (name template))))))
 
 (defn fetch-page
   [$scope $http url]
@@ -35,52 +35,51 @@
      {:title "Domains"   :state "indexDomains"}
      {:title "Groups"    :state "indexGroups"}
      {:title "Resources" :state "indexResources"}]}
-   {:label "Settings"
+   #_{:label "Settings"
     :items
     [{:title "Settings" :state "settingsPage"}]}
-   {:label "Admin"
+   #_{:label "Admin"
     :items
     [{:title "Activities"    :state "adminActivities"}
      {:title "Auth"          :state "adminAuthentication"}
      {:title "Clients"       :state "adminClients"}
      {:title "Conversations" :state "adminConversations"}
      {:title "Feed Sources"  :state "adminSources"}
-     ;; {:href "/admin/feed-subscriptions"
-     ;;  :title "Feed Subscriptions"}
-     {:title "Groups" :state "adminGroups"}
-     ;; {:href "/admin/group-memberships"
-     ;;  :title "Group Memberships"}
-     ;; {:href "/admin/keys"
-     ;;  :title "Keys"}
-     ;; {:href "/admin/likes"
-     ;;  :title "Likes"}
-     ;; {:href "/admin/request-tokens"
-     ;;  :title "Request Tokens"}
-     ;; {:href "/admin/streams"
-     ;;  :title "Streams"}
-     ;; {:href "/admin/subscriptions"
-     ;;  :title "Subscriptions"}
-     ;; {:href "/admin/users"
-     ;;  :title "Users"}
-     ;; {:href "/admin/workers"
-     ;;  :title "Workers"}
+     {:href "/admin/feed-subscriptions"
+      :title "Feed Subscriptions" :state "adminFeedSubscriptions"}
+     {:title "Groups"             :state "adminGroups"}
+     {:href "/admin/group-memberships"
+      :title "Group Memberships" :state "adminGroupMemberships"}
+     {:href "/admin/keys"
+      :title "Keys"              :state "adminKeys"}
+     {:href "/admin/likes"
+      :title "Likes"             :state "adminLikes"}
+     {:href "/admin/request-tokens"
+      :title "Request Tokens" :state "adminRequestTokens"}
+     {:href "/admin/streams"
+      :title "Streams" :state "adminStreams"}
+     {:href "/admin/subscriptions"
+      :title "Subscriptions" :state "adminSubscriptions"}
+     {:href "/admin/users"
+      :title "Users" :state "adminUsers"}
+     {:href "/admin/workers"
+      :title "Workers" :state "adminWorkers"}
      ]}]
   )
 
 (def states
-  [["adminConversations" "/admin/conversations" "AdminConversation" templates/admin-conversations]
-
-   ["avatarPage"     "/main/avatar"    "AvatarPage"         templates/avatar-page]
-   ["home"           "/"               "IndexConversations" templates/public-timeline]
-   ["indexDomains"   "/main/domains"   "IndexDomains"       templates/index-domains]
-   ["indexFeedSources"    "/main/feed-sources"    "IndexFeedSources"        templates/index-feed-sources]
-   ["indexGroups"    "/main/groups"    "IndexGroups"        templates/index-groups]
-   ["indexResources" "/main/resources" "IndexResources"     templates/index-resources]
-   ["indexUsers"     "/main/users"     "IndexUsers"         templates/index-users]
-   ["loginPage"      "/main/login"     "LoginPage"          templates/login-page]
-   ["registerPage"   "/main/register"  "RegisterPage"       templates/register-page]
-   ["settingsPage"   "/main/settings"  "SettingsPage"       templates/settings-page]
-   ["showActivity"   "/notice/:id"     "ShowActivity"       templates/show-activity]
-   ["showDomains"    "/main/domains/:id" "ShowDomain"       templates/show-domain]
-   ["showUser"       "/main/users/:id" "ShowUser" templates/show-user]
+  [["adminConversations" "/admin/conversations" "AdminConversation"  :admin-conversations]
+   ["avatarPage"         "/main/avatar"         "AvatarPage"         :avatar-page]
+   ["home"               "/"                    "IndexConversations" :public-timeline]
+   ["indexDomains"       "/main/domains"        "IndexDomains"       :index-domains]
+   ["indexFeedSources"   "/main/feed-sources"   "IndexFeedSources"   :index-feed-sources]
+   ["indexGroups"        "/main/groups"         "IndexGroups"        :index-groups]
+   ["indexResources"     "/main/resources"      "IndexResources"     :index-resources]
+   ["indexUsers"         "/main/users"          "IndexUsers"         :index-users]
+   ["loginPage"          "/main/login"          "LoginPage"          :login-page]
+   ["registerPage"       "/main/register"       "RegisterPage"       :register-page]
+   ["settingsPage"       "/main/settings"       "SettingsPage"       :settings-page]
+   ["showActivity"       "/notice/:id"          "ShowActivity"       :show-activity]
+   ["showDomains"        "/main/domains/:id"    "ShowDomain"         :show-domain]
+   ["showUser"           "/main/users/:id"      "ShowUser"           :show-user]
    ])

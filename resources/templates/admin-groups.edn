@@ -1,0 +1,15 @@
+  [:table.table.groups
+   [:thead
+    [:tr
+     [:th "Name"]
+     [:th "Full Name"]
+     [:th "Homepage"]]]
+   [:tbody
+    [:tr {:data-model "group"
+          :ng-repeat "group in page.items"
+          :data-id "{{group.id}}"}
+     [:td "{{group.nickname}}"]
+     [:td "{{group.fullname}}"]
+     [:td "{{group.homepage}}"]
+     [:td
+      #_(actions-section group)]]]]

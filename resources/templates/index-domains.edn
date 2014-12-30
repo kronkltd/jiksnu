@@ -1,0 +1,27 @@
+  [:table.domains.table
+   [:thead
+    [:tr
+     [:th "Name"]
+     [:th "HTTP"]
+     [:th "HTTPS"]
+     [:th "XMPP?"]
+     [:th "Discovered"]
+     [:th "Host Meta"]
+     [:th "# Links"]
+     ]]
+   [:tbody
+    [:tr {:data-model "domain"
+          :ng-repeat "domain in page.items"}
+     [:td
+      #_(favicon-link domain)
+      #_(link-to domain)
+      ]
+     [:td "{{domain.http}}"]
+     [:td "{{domain.https}}"]
+     [:td "{{domain.xmpp}}"]
+     [:td "{{domain.discovered}}"]
+     [:td
+      [:a {:href "http://{{domain._id}}/.well-known/host-meta"}
+       "Host-Meta"]]
+     [:td "{{domain.links.length}}"]
+     [:th #_(actions-section domain)]]]]

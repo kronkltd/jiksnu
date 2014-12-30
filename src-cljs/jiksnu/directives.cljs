@@ -8,7 +8,7 @@
 (def.directive jiksnu.jiksnuShowActivity
   [$http]
   (obj
-   :template (template-string templates/show-activity)
+   :templateUrl "/templates/show-activity"
    :scope (obj)
    :controller
    (arr "$scope"
@@ -32,31 +32,32 @@
 (def.directive jiksnu.AddWatcherForm []
   (obj))
 
+(def.directive jiksnu.jiksnuDisplayAvatar []
+  (obj
+   :templateUrl "/templates/display-avatar"))
+
 (def.directive jiksnu.jiksnuLeftColumn []
   (obj
-   :template (template-string templates/left-column-section)
+   :templateUrl "/templates/left-column-section"
    :scope true
    :controller "LeftColumnController"))
 
 (def.directive jiksnu.jiksnuNavBar []
   (obj
-   :template (template-string templates/navbar-section)
+   :templateUrl "/templates/navbar-section"
    :scope true
    :controller "NavBarController"))
 
 (def.directive jiksnu.jiksnuNewPost
   []
   (obj
-   :template (template-string templates/add-post-form)
+   :templateUrl "/templates/add-post-form"
    :scope true
-   :controller "NewPostController"
-   )
-
-  )
+   :controller "NewPostController"))
 
 (def.directive jiksnu.jiksnuRightColumn []
   (obj
-   :template (template-string templates/right-column-section)
+   :templateUrl "/templates/right-column-section"
    :scope true
    :controller "RightColumnController"))
 

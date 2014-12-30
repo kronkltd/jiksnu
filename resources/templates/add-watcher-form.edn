@@ -1,0 +1,7 @@
+  [:form.well.form-horizontal
+   {:method "post"
+    :action "/admin/feed-sources/{{source.id}}/watchers"}
+   [:fieldset
+    [:legend "Add Watcher"]
+    #_(control-line "Acct id" :user_id "text")
+    [:input {:type "submit"}]]]

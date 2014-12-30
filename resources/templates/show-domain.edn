@@ -1,0 +1,45 @@
+  [:div {:data-model "domain"}
+   #_(actions-section domain)
+   [:table.table
+    [:thead]
+    [:tbody
+     [:tr
+      [:th "Id"]
+      [:td
+       #_(favicon-link domain)
+       [:span.domain-id "{{domain._id}}"]]]
+     [:tr
+      [:th "XMPP"]
+      [:td "{{domain.xmpp}}"]]
+     [:tr
+      [:th "Discovered"]
+      [:td "{{domain.discovered}}"]]
+     [:tr
+      [:th "Created"]
+      [:td "{{domain.created}}"]]
+     [:tr
+      [:th "Updated"]
+      [:td "{{domain.updated}}"]]
+     [:tr
+      [:th "Closed"]
+      [:td #_(-> sc :site :closed)]]
+     [:tr
+      [:th "Private"]
+      [:td #_(-> sc :site :private)]]
+     [:tr
+      [:th "Invite Only"]
+      [:td #_(-> sc :site :inviteonly)]]
+     [:tr
+      [:th "Admin"]
+      [:td #_(-> sc :site :email)]]
+     [:tr
+      [:th "License"]
+      [:td
+       ;; RDFa
+       [:a {:href "{{domain.license.url}}"
+            :title "{{domain.license.title}}"}
+        [:img {:src "" #_(:image license)
+               :alt "" #_(:title license)}]]]]]]
+   #_(when-let [links [{}]]
+       (bind-to "links"
+                (sections.link/index-section links)))]

@@ -1,0 +1,29 @@
+[:table.table
+ [:thead
+  [:tr
+   [:th "Id"]
+   [:th "Domain"]
+   [:th "Url"]
+   [:th "Parent"]
+   [:th "Item Count"]
+   #_[:th "Created"]
+   [:th "Last Updated"]
+   [:th "Record Updated"]
+   [:th #_"Actions"]]]
+ [:tbody
+  [:tr {:ng-repeat "conversation in page.items"}
+   [:td
+    [:jiksnu-link-to
+     {:data-id "{{conversation.id}}" :data-model "Conversation"}]]
+   [:td
+    [:jiksnu-link-to
+     {:data-id "{{conversation.domain}}" :data-model "Domain"}]]
+   [:td
+    [:a {:href "{{conversation.url}}"}
+     "{{conversation.url}}"]]
+   [:td "{{conversation.parent}}"]
+   [:td "{{conversation.itemCount}}"]
+   ;; [:td "{{conversation.created}}"]
+   [:td "{{conversation.lastUpdated}}"]
+   [:td "{{conversation.updated}}"]
+   [:td #_(actions-section item)]]]]

@@ -5,5 +5,5 @@
                                    obj arr def* do*n def*n f*n]]))
 
 (def.module jiksnu [ui.router ui.bootstrap angularMoment
-                    ui.bootstrap.tabs])
+                    ui.bootstrap.tabs geolocation])
 

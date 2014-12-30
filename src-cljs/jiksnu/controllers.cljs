@@ -55,6 +55,13 @@
   [$scope $http]
   (.log js/console "Indexing conversations")
   (! $scope.init (helpers/fetch-page $scope $http "/main/conversations.json"))
+  (.$on $scope
+       "updateConversations"
+       (fn [e]
+         (.log js/console "updateConversations")
+         (.init $scope)
+         )
+       )
   (.init $scope))
 
 (def.controller jiksnu.IndexDomainsController
@@ -95,9 +102,38 @@
                   (! $scope.app data)))))
 
 (def.controller jiksnu.NewPostController
-  [$scope]
-  (! $scope.activity.source "web")
-  (! $scope.activity.privacy "public"))
+  [$scope $http $rootScope geolocation]
+
+  (! $scope.reset
+     (fn []
+       (! $scope.activity
+          (obj
+           :source "web"
+           :privacy "public"
+           :title ""
+           :content ""))
+       (-> geolocation
+           .getLocation
+           (.then (fn [data]
+                    (! $scope.activity.geo.latitude data.coords.latitude)
+                    (! $scope.activity.geo.longitude data.coords.longitude)
+                    ))
+           )
+
+       ))
+
+  (! $scope.submit
+     (fn []
+       (.log js/console "submitting")
+       (-> $http
+           (.post "/notice/new" $scope.activity)
+           (.success
+            (fn [data]
+              (.log js/console "Response " data)
+              (.$broadcast $rootScope "updateConversations")
+              )))))
+
+  (.reset $scope))
 
 
 

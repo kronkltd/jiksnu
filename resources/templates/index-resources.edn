@@ -1,0 +1,26 @@
+  [:table.table
+   [:thead
+    [:tr
+     [:th "Id"]
+     [:th "Domain"]
+     [:th "Url"]
+     [:th "Status"]
+     [:th "Content Type"]
+     [:th "Encoding"]
+     [:th "Requires Auth"]
+     [:th "Updated"]]]
+   [:tbody
+    [:tr {:data-model "resource"
+          :ng-repeat "resource in page.items"}
+     [:td
+      [:jiksnu-link-to {:data-id "{{resource.id}}" :data-model "Resource"}]]
+     [:td "{{resource.domain}}"]
+     [:td
+      [:a {:href "{{resource.url}}"}
+       "{{resource.url}}"]]
+     [:td "{{resource.status}}"]
+     [:td "{{resource.contentType}}"]
+     [:td "{{resource.encoding}}"]
+     [:td "{{resource.requiresAuth}}"]
+     [:td "{{resource.updated}}"]
+     [:td #_(actions-section item)]]]]

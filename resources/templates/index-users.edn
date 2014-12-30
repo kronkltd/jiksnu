@@ -1,0 +1,21 @@
+  [:div
+   [:h2 "Index Users"]
+   [:table.table.users
+    [:thead]
+    [:tbody {:data-bag "users"}
+     [:tr {:ng-repeat "user in page.items"
+           :data-model "user"
+           :data-id "{{user.id}}"}
+      [:td
+       [:div
+        [:jiksnu-display-avatar {:data-id "{{user.id}}"}]]
+       [:div
+        [:p
+         [:jiksnu-link-to {:data-id "{{user.id}}"
+                           :data-model "User"}]]
+        [:p "{{user.username}}@{{user.domain}}"]
+        [:p "{{user.id}}"]
+        [:p "{{user.displayName}}"]
+        [:p "{{user.uri}}"]
+        [:p "{{user.bio}}"]]]
+      [:td #_(actions-section user)]]]]]

@@ -1,0 +1,32 @@
+[:nav.navbar.navbar-default.navbar-inverse
+ {:role "navigation"}
+ [:div.container-fluid
+  [:div.navbar-header
+   [:button.navbar-toggle
+    {:type "button"
+     :data-toggle "collapse"
+     :data-target "#main-navbar-collapsw-1"}
+    [:span.sr-only "Toggle Navigation"]
+    [:span.icon-bar]
+    [:span.icon-bar]
+    [:span.icon-bar]]
+   [:a.navbar-brand.home {:href "/" :rel "top"}
+    "{{app.name}}"]]
+  [:div#main-navbar-collapse-1.navbar-collapse.collapse
+   [:ul.nav.navbar-nav.navbar-right {:ng-if "app.user"}
+    [:li.dropdown {:dropdown ""}
+     [:a.dropdown-toggle
+      {:dropdown-toggle ""}
+      [:span {:data-model "user"}
+       [:jiksnu-show-avatar {:data-id "{{app.user}}"}]
+       "{{app.user}}"
+       [:jiksnu-link-to {:data-id "{{app.user}}" :data-model "user"}]]
+      [:b.caret]]
+     [:ul.dropdown-menu {:role "menu"}
+      [:li [:a {:ui-sref "settings"} "Settings"]]
+      [:li [:a {:ui-sref "profile"}  "Profile"]]
+      [:li [:a {:ui-sref "logout"}   "Log out"]]]]]
+   [:ul.nav.navbar-nav.navbar-right {:ng-if "!app.user"}
+    [:li [:a {:ui-sref "loginPage"} "Login"]]
+    [:li.divider-vertical]
+    [:li [:a {:ui-sref "registerPage"} "Register"]]]]]]

@@ -1,0 +1,21 @@
+  [:div
+   ;; [:a#showComments.btn {:ng-click "showComments"}
+   ;;  "Show Comments"]
+   #_(pagination-links page)
+   [:div.conversations
+    [:div.conversation-section
+     {:typeof "sioc:Container"
+      :data-model "conversation"
+      :ng-repeat "conversation in page.items"
+      :about "{{conversation.url}}"
+      :data-id "{{conversation._id}}"}
+     [:jiksnu-show-activity {:data-id "{{conversation.parent}}"}]
+     [:ul.comments.clearfix
+      [:li.comment {:ng-repeat "comment in conversation.comments"}
+       [:div
+        [:a.pull-left
+         [:jiksnu-display-avatar {:data-id "{{comment.actor.id}}"}]]
+        [:jiksnu-link-to {:data-id "{{comment.actor.id}}"
+                          :data-model "User"}]]
+       [:span.comment-content
+        "{{comment.content}}"]]]]]]

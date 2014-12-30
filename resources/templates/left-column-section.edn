@@ -1,0 +1,20 @@
+  [:div#mainNav
+   [:div.panel.panel-default {:ng-repeat "group in groups"}
+    [:div.panel-heading.text-center "{{group.label}}"]
+    [:div.list-group
+     [:a.list-group-item
+      {:ng-repeat "item in group.items"
+       ;; :ng-if "item.state"
+       :ui-sref "{{item.state}}"}
+      "{{item.title}}"]]]
+   [:hr]
+   [:div
+    [:h3 "Formats"]
+    [:ul.unstyled
+     [:li.format-line
+      {:ng-repeat "format in formats"}
+      [:a {:href "{{format.href}}"}
+       [:span.format-icon
+        [:img {:alt ""
+               :ng-src "/themes/classic/{{format.icon}}"}]]
+       [:span.format-label "{{format.label}}"]]]]]]
