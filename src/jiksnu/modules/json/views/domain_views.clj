@@ -1,10 +1,9 @@
 (ns jiksnu.modules.json.views.domain-views
-  (:require [ciste.sections.default :only [index-section
-                                           show-section]]
-            [ciste.views :only [defview]]
+  (:require [ciste.sections.default :refer [index-section
+                                            show-section]]
+            [ciste.views :refer [defview]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.namespace :as ns]))
+            [jiksnu.actions.domain-actions :as actions.domain]))
 
 (defview #'actions.domain/index :json
   [request {:keys [items] :as page}]
