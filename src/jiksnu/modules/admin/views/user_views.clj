@@ -1,18 +1,18 @@
 (ns jiksnu.modules.admin.views.user-views
-  (:use [ciste.config :only [config]]
-        [ciste.sections.default :only [title]]
-        [ciste.views :only [defview]]
-        [jiksnu.modules.admin.actions.user-actions :only [index show]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-index-section admin-index-block
-                                             admin-show-section]]
-        [jiksnu.modules.web.sections :only [bind-to with-page
-                                            with-sub-page]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.config :refer [config]]
+            [ciste.sections.default :refer [title]]
+            [ciste.views :refer [defview]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.admin.actions.user-actions :refer [index show]]
+            [jiksnu.modules.core.sections :refer [admin-index-section
+                                                  admin-index-block
+                                                  admin-show-section]]
+            [jiksnu.modules.web.sections :refer [bind-to with-page
+                                                 with-sub-page]]
             [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Activity
            jiksnu.model.Stream))
@@ -22,6 +22,10 @@
   {:single true
    :title "Users"
    :body (admin-index-section items page)})
+
+(defview #'index :json
+  [request {:keys [items] :as page}]
+  {:body (admin-index-section items page)})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

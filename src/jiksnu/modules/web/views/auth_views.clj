@@ -20,11 +20,6 @@
      :template false
      :headers {"Location" "/"}}))
 
-(defview #'actions.auth/login :json
-  [request user]
-  {:session {:id (:_id user)}
-   :body (format "logged in as %s" (:username user))})
-
 (defview #'actions.auth/logout :html
   [request successful]
   (if successful
@@ -36,14 +31,3 @@
 (defview #'actions.auth/password-page :html
   [request user]
   {:body (sections.auth/password-page user)})
-
-(defview #'actions.auth/verify-credentials :json
-  [request _]
-  {:body {:action "error"
-          :message "Could not authenticate you"
-          :request (:uri request)}
-   :template false})
-
-(defview #'actions.auth/whoami :json
-  [request user]
-  {:body user})

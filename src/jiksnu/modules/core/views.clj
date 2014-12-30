@@ -16,9 +16,6 @@
   []
   "Command not found")
 
-
-
-
 (defmethod serialize-as :http
   [serialization response-map]
   (let [content-type (or (-> response-map :headers (get "Content-Type"))
@@ -46,36 +43,8 @@
 
    })
 
-;; connect
-
-(defview #'actions/connect :json
-  [request response]
-  {:body {:action "connect"
-          :connection-id response}})
-
-(defview #'actions/get-model :json
-  [request response]
-  {:body {:action "model-updated"
-          :type (first (:args request))
-          :body response}})
-
 (defview #'actions/get-model :clj
   [request response]
   {:body {:action "model-updated"
           :type (first (:args request))
           :body response}})
-
-(defview #'actions/get-page :json
-  [request response]
-  {:body response})
-
-(defview #'actions/get-sub-page :json
-  [request response]
-  {:body response})
-
-;; invoke-action
-
-(defview #'actions/invoke-action :json
-  [request data]
-  {:body data})
-

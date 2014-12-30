@@ -5,23 +5,11 @@
             [jiksnu.actions.activity-actions :as actions.activity])
   (:import jiksnu.model.Conversation))
 
-(defsection index-block [Conversation :json]
-  [items & [page]]
-  (map identity (:items page)))
-
 (defsection index-section [Conversation :atom]
   [items & [page]]
   (let [ids (map :_id items)
         page (actions.activity/fetch-by-conversations ids)]
     (index-block (:items page) page)))
-
-(defsection index-section [Conversation :json]
-  [items & [page]]
-  {"@type" "http://activitystrea.ms/2.0/Collection"
-   :totalItems (:totalRecords page)
-   :itemsPerPage (:page-size page)
-   :items (index-block items page)
-   :page (:page page)})
 
 (defsection uri [Conversation]
   [item & _]

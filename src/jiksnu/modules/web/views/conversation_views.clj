@@ -12,8 +12,6 @@
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 
-;; index
-
 (defview #'index :html
   [request {:keys [items] :as page}]
   {:title "Conversations"
@@ -22,15 +20,6 @@
      (with-page "conversations"
        (pagination-links page)
        (index-section items page)))})
-
-(defview #'index :json
-  [request {:keys [items] :as page}]
-  {:body
-   (merge
-    {:url "/main/conversations.json"}
-    (index-section items page))})
-
-;; show
 
 (defview #'show :html
   [request item]
@@ -42,11 +31,3 @@
         (with-sub-page "activities"
           (let [items [(Activity.)]]
             (index-section items)))]))})
-
-(defview #'show :json
-  [request item]
-  {:body
-   (merge
-    {:url (str "/main/conversations/" (:_id item) ".json")}
-    (index-section item))})
-

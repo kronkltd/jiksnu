@@ -72,21 +72,7 @@
        [:accept "application/atom+xml;type=entry"]
        [:activity:verb "http://activitystrea.ms/schema/1.0/join"]]]])})
 
-
-(defview #'get-stats :json
-  [request stats]
-  {:status 200
-   :type "stats-updated"
-   ;; :template false
-   :body {:type "status-updated"
-          :body stats}})
-
-
 (defview #'get-environment :text
-  [request data]
-  {:body data})
-
-(defview #'get-environment :json
   [request data]
   {:body data})
 
@@ -94,15 +80,7 @@
   [request data]
   {:body data})
 
-(defview #'get-config :json
-  [request data]
-  {:body data})
-
 (defview #'ping :text
-  [request data]
-  {:body data})
-
-(defview #'ping :json
   [request data]
   {:body data})
 

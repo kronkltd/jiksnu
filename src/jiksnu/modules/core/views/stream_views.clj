@@ -41,10 +41,6 @@
             :postForm {:visible true}
             :targetGroup (:_id group)}}))
 
-(defview #'actions.stream/home-timeline :json
-  [request data]
-  {:body data})
-
 (defview #'actions.stream/home-timeline :xml
   [request activities]
   {:body (index-section activities)})

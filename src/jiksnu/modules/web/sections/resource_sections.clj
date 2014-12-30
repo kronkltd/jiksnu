@@ -51,10 +51,6 @@
   [user & _]
   (action-link "conversation" "delete" (:_id user)))
 
-(defsection show-section [Resource :json]
-  [user & _]
-  user)
-
 (defsection link-to [Resource :html]
   [source & _]
   [:a {:href "/resources/{{resource.id}}"}

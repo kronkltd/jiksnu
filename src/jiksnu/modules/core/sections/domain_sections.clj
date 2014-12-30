@@ -35,10 +35,6 @@
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
 
-(defsection show-section [Domain :json]
-  [item & [page]]
-  item)
-
 (defsection show-section [Domain :model]
   [item & [page]]
   item)

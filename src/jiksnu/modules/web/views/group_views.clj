@@ -56,11 +56,6 @@
          [:a {:href "/main/groups/new"}
           "Create a new group"]])))})
 
-(defview #'actions.group/index :json
-  [request {:keys [items] :as page}]
-  {:body
-   {:items (index-section items page)}})
-
 (defview #'actions.group/join :html
   [request group]
   {:status 303

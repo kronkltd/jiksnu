@@ -69,15 +69,6 @@
   [items & [page]]
   (index-block items page))
 
-(defsection show-section [User :json]
-  [user & _]
-  {:name (:name user)
-   :id (:_id user)
-   :screen_name (:username user)
-   :url (:id user)
-   :profile_image_url (:avatarUrl user)
-   :protected false})
-
 (defsection show-section [User :model]
   [user & _]
   user)

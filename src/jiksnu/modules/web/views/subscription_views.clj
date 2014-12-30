@@ -17,8 +17,6 @@
    :template false
    :headers {"Location" "/admin/subscriptions"}})
 
-;; get-subscribers
-
 (defview #'get-subscribers :html
   [request [user {:keys [items] :as page}]]
   {:title "Subscribers"
@@ -42,24 +40,14 @@
           (pagination-links page)
           (sections.subscription/subscriptions-section items page))]))})
 
-(defview #'get-subscriptions :json
-  [request [user {:keys [items] :as response}]]
-  {:body (sections.subscription/subscriptions-section items response)})
-
-;; ostatus
-
 (defview #'ostatus :html
   [request arg]
   {:body ""
    :template false})
 
-;; ostatussub
-
 (defview #'ostatussub :html
   [request arg]
   {:body (ostatus-sub-form)})
-
-;; ostatussub-submit
 
 (defview #'ostatussub-submit :html
   [request subscription]
@@ -68,15 +56,11 @@
    :flash "The request has been sent"
    :template false})
 
-;; subscribe
-
 (defview #'subscribe :html
   [request subscription]
   {:status 302
    :template false
    :headers {"Location" "/"}})
-
-;; unsubscribe
 
 (defview #'unsubscribe :html
   [request subscription]

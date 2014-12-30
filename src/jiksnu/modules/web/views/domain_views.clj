@@ -54,11 +54,6 @@
        (pagination-links page)
        (index-section domains page)))})
 
-(defview #'index :json
-  [request {:keys [items] :as page}]
-  {:body
-   {:items (index-section items page)}})
-
 (defview #'show :html
   [request domain]
   {:title (:_id domain)
@@ -74,8 +69,3 @@
               (with-page "users"
                 (pagination-links {})
                 (index-section users)))])})
-
-(defview #'show :json
-  [request domain]
-  {:body (show-section domain)})
-
