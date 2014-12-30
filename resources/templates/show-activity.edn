@@ -21,5 +21,4 @@
    #_(recipients-section activity)]
   [:p "{{activity.title}}"]
   #_[:pre "{{activity}}"]
-  [:div.entry-content {:property "dc:title"}
-   "{{activity.content}}"]]]
+  [:div.entry-content {:btf-markdown "activity.content"}]]]

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.actions.subscription-actions
-  (:use [ciste.core :only [defaction]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model :as model]

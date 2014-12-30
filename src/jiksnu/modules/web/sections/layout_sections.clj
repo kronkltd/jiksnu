@@ -122,6 +122,8 @@
   []
   (p/include-css
    "/webjars/bootstrap/3.3.1/css/bootstrap.min.css"
+   "/webjars/angular-hotkeys/1.4.0/hotkeys.min.css"
+   "/webjars/angular-notify/2.0.2/angular-notify.min.css"
    "/css/standard.css"))
 
 (defn scripts-section
@@ -136,12 +138,21 @@
       ;; "/webjars/underscorejs/1.7.0/underscore-min.js"
       "/webjars/momentjs/2.8.3/min/moment.min.js"
       "/webjars/jquery/2.1.3/jquery.min.js"
+      "/webjars/underscorejs/1.7.0/underscore-min.js"
       "/webjars/angularjs/1.3.8/angular.min.js"
-      "/webjars/angularjs-geolocation/0.1.1/angularjs-geolocation.min.js"
       "/webjars/angular-file-upload/2.0.5/angular-file-upload.min.js"
+      "/webjars/angularjs-geolocation/0.1.1/angularjs-geolocation.min.js"
       "/webjars/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js"
       "/webjars/angular-ui-router/0.2.13/angular-ui-router.min.js"
       "/webjars/angular-moment/0.8.2-1/angular-moment.min.js"
+      "/webjars/angular-validator/0.2.5/angular-validator.min.js"
+      "/webjars/angular-cache/3.0.2/angular-cache.min.js"
+      "/webjars/angular-google-maps/2.0.11/angular-google-maps.min.js"
+      "/webjars/angular-hotkeys/1.4.0/hotkeys.min.js"
+      "/webjars/angular-markdown-directive/0.3.0/markdown.js"
+      "/webjars/angular-notify/2.0.2/angular-notify.min.js"
+      "/webjars/angular-sanitize/1.2.16/angular-sanitize.min.js"
+      "/webjars/showdown/0.3.1/src/showdown.js"
       "/cljs/jiksnu.js")
      (doall (map (fn [hook]
                    (hook request response))

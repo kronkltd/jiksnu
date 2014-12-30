@@ -57,13 +57,15 @@
   (.init $scope))
 
 (def.controller jiksnu.IndexConversationsController
-  [$scope $http]
+  [$scope $http notify]
   (.log js/console "Indexing conversations")
+  (notify "update conversations")
   (! $scope.init (helpers/fetch-page $scope $http "/main/conversations.json"))
   (.$on $scope
        "updateConversations"
        (fn [e]
          (.log js/console "updateConversations")
+         (notify "update conversations")
          (.init $scope)
          )
        )

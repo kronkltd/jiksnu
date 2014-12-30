@@ -4,6 +4,17 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
-(def.module jiksnu [ui.router ui.bootstrap angularMoment
-                    ui.bootstrap.tabs geolocation])
+(def.module jiksnu
+  [
+   angularFileUpload
+   angularMoment
+   btford.markdown
+   cgNotify
+   geolocation
+   ngSanitize
+   ui.bootstrap
+   ;; ui.bootstrap.tabs
+   ui.router
+   uiGmapgoogle-maps
+   ])
 

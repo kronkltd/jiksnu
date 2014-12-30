@@ -1,7 +1,7 @@
 (ns jiksnu.modules.as.sections.activity-sections
-  (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [full-uri show-section]])
   (:require [ciste.config :refer [config]]
+            [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [full-uri show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.model.activity :as model.activity])
   (:import jiksnu.model.Activity))

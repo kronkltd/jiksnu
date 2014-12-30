@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.actions.auth-actions
-  (:use [ciste.core :only [defaction]])
-  (:require [jiksnu.model :as model]
+  (:require [ciste.core :refer [defaction]]
+            [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
             [jiksnu.templates.actions :as templates.actions]))
 

@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.actions.user-actions
   "This is the namespace for the admin pages for users"
-  (:use [ciste.core :only [defaction]])
-  (:require [jiksnu.actions.user-actions :as actions.user]
+  (:require [ciste.core :refer [defaction]]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.templates.actions :as templates.actions]))

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.actions.worker-actions
-  (:use [ciste.core :only [defaction]])
-  (:require [ciste.workers :as workers]))
+  (:require [ciste.core :refer [defaction]]
+            [ciste.workers :as workers]))
 
 (defn get-worker-info
   [[id {:keys [name stopping host counter]}]]

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.actions.group-actions
-  (:use [ciste.core :only [defaction]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as actions.group]))
 
