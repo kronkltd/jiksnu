@@ -1,24 +1,14 @@
-[:article.hentry
- {:typeof "sioc:Post"
-  :data-model "activity"
-  :about "{{activity.url}}"
-  :data-id "{{activity.id}}"}
- #_(actions-section activity)
- [:div.pull-left.avatar-section
-  [:div {:data-model "user"
-         :data-id "{{activity.actor.localId}}"}
-   [:a.url {:href "/remote-user/{{activity.actor.username}}@{{activity.actor.domain}}"
-            :title "acct:{{activity.actor.username}}@{{activity.actor.domain}}"}
-    [:img.avatar.photo
-     {:width 64
-      :height 64
-      :alt ""
-      :ng-src "{{activity.actor.image[0].url}}"}]]]]
- [:div
-  [:header
-   [:jiksnu-link-to {:data-id "{{activity.actor.id}}"
-                     :data-model "User"}]
-   #_(recipients-section activity)]
-  [:p "{{activity.title}}"]
-  #_[:pre "{{activity}}"]
-  [:div.entry-content {:btf-markdown "activity.content"}]]]
+[:div
+ [:div {:ng-if "!loaded"}
+  [:p "loading"]]
+ [:article.hentry {:ng-if "loaded"}
+  #_(actions-section activity)
+  [:div.pull-left.avatar-section
+   [:display-avatar {:data-id "{{activity.actor.id}}"}]]
+  [:div
+   [:header
+    [:link-to {:data-id "{{activity.actor.id}}" :data-model "User"}]
+    #_(recipients-section activity)]
+   [:p "{{activity.title}}"]
+   #_[:pre "{{activity}}"]
+   [:div.entry-content {:btf-markdown "activity.content"}]]]]

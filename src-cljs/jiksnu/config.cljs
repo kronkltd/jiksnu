@@ -12,7 +12,7 @@
 
   (.log js/console "Foo?: " (.-foo appProvider))
 
-  (.otherwise $urlRouterProvider "/")
+  (.otherwise $urlRouterProvider "/not-found")
   (-> $locationProvider
       (.hashPrefix "!")
       (.html5Mode true))

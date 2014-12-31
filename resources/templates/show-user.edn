@@ -1,19 +1,15 @@
-  [:div.vcard.user-full
-   {:data-model "user"
-    :data-id "{{user.id}}"}
-   #_(actions-section user)
-   [:div
-    [:jiksnu-display-avatar {:data-id "{{user.id}}"
-                             :data-size "96"}]]
-   [:p
-    [:span.nickname.fn.n "{{user.displayName}}"]
-    " ({{user.username}}@{{user.domain}})"]
-   [:div.adr
-    [:p.locality "{{user.location}}"]]
-   [:p.note "{{user.bio}}"]
-   [:jiksnu-link-to {:data-id "{{user.updateSource}}"
-                     :data-model "FeedSource"}]
-   [:p [:a {:href "{{user.id}}"}
-        "{{user.id}}"]]
-   [:p [:a.url {:rel "me" :href "{{user.url}}"}
-        "{{user.url}}"]]]
+[:div.vcard.user-full
+ #_(actions-section user)
+ [:div
+  [:display-avatar {:data-id "{{user.id}}"  :data-size "96"}]]
+ [:p
+  [:span.nickname.fn.n "{{user.displayName}}"]
+  " ({{user.username}}@{{user.domain}})"]
+ [:div.adr
+  [:p.locality "{{user.location}}"]]
+ [:p.note "{{user.bio}}"]
+ [:link-to {:data-id "{{user.updateSource}}" :data-model "FeedSource"}]
+ [:p [:a {:href "{{user.id}}"}
+      "{{user.id}}"]]
+ [:p [:a.url {:rel "me" :href "{{user.url}}"}
+      "{{user.url}}"]]]

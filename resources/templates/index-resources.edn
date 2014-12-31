@@ -13,7 +13,7 @@
     [:tr {:data-model "resource"
           :ng-repeat "resource in page.items"}
      [:td
-      [:jiksnu-link-to {:data-id "{{resource.id}}" :data-model "Resource"}]]
+      [:link-to {:data-id "{{resource.id}}" :data-model "Resource"}]]
      [:td "{{resource.domain}}"]
      [:td
       [:a {:href "{{resource.url}}"}

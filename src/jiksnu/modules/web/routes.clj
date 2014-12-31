@@ -118,7 +118,8 @@
   (compojure/ANY "/admin*" request
                  (if (session/is-admin?)
                    ((middleware/wrap-log-request
-                     (resolve-routes [predicates/http] routes.admin/admin-routes)) request)
+                     (resolve-routes [predicates/http] routes.admin/admin-routes))
+                    request)
                    ;; TODO: move this somewhere else
                    (throw+ {:type :authentication :message "Must be admin"})))
   (middleware/wrap-log-request

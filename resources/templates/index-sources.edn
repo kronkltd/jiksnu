@@ -1,5 +1,5 @@
   [:div
-   [:jiksnu-pagination-section]
+   [:pagination-section]
    [:table.table.feed-sources
     [:thead
      [:tr
@@ -15,7 +15,7 @@
     [:tbody
      [:tr {:ng-repeat "source in page.items"}
       [:td
-       [:jiksnu-link-to {:data-id "{{source.id}}" :data-model "FeedSouce"}]]
+       [:link-to {:data-id "{{source.id}}" :data-model "FeedSouce"}]]
       [:td "{{source.domain}}"]
       [:td
        [:a {:href "{{source.topic}}"}

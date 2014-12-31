@@ -1,8 +1,7 @@
-  [:table.table
-   [:thead
-    [:tr
-     [:th "Name"]]]
-   [:tbody
-    [:tr {:data-model "stream"
-          :ng-repeat "conversation in conversations"}
-     [:td "{{conversation.name}}"]]]]
+[:table.table
+ [:thead
+  [:tr
+   [:th "Name"]]]
+ [:tbody
+  [:tr {:ng-repeat "conversation in conversations"}
+   [:td "{{conversation.name}}"]]]]

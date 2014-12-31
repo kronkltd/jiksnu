@@ -4,15 +4,14 @@
   [:tr
    [:th]
    [:td
-    [:jiksnu-display-avatar {:data-id "{{user.id}}"}]]]
+    [:display-avatar {:data-id "{{user.id}}"}]]]
   [:tr
    [:th "Username"]
    [:td "{{user.username}}"]]
   [:tr
    [:th "Domain"]
    [:td
-    [:jiksnu-link-to
-     {:data-id "{{user.domain}}" :data-model "Domain"}]]]
+    [:link-to {:data-id "{{user.domain}}" :data-model "Domain"}]]]
   [:tr
    [:th "Bio"]
    [:td "{{user.bio}}"]]
@@ -37,5 +36,4 @@
   [:tr
    [:th "Update Source"]
    [:td
-    [:jiksnu-link-to
-     {:data-id "{{user.updateSource}}" :data-model "FeedSource"}]]]]]
+    [:link-to {:data-id "{{user.updateSource}}" :data-model "FeedSource"}]]]]]

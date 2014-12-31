@@ -79,8 +79,12 @@
 
 (deffilter #'actions.user/show :http
   [action request]
-  (when-let [params (:params request)]
-    (let [id (:id params)
+  (when-let [params (:params (log/spy :info request))]
+    (let [id (or (let [{:keys [user domain]} params]
+                   (when (and user domain)
+                     (str user "@" domain)))
+                 (:* params)
+                 (:id params))
           username (:username params)]
       (when (or id username)
         (when-let [user (or (and id       (model.user/fetch-by-id id))

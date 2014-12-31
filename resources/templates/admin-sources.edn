@@ -10,7 +10,7 @@
    [:tbody
     [:tr {:ng-repeat "source in page.items"}
      [:td
-      [:jiksnu-link-to {:data-id "{{source.id}}" :data-model "FeedSource"}]]
+      [:link-to {:data-id "{{source.id}}" :data-model "FeedSource"}]]
      [:td
       [:a {:title "{{source.title}}" :ui-sref "adminSource(source)"}
        "{{source.title}}"]]

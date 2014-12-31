@@ -1,6 +1,7 @@
 (ns jiksnu.controllers
   (:require jiksnu.app
             [jiksnu.helpers :as helpers]
+            jiksnu.services
             [jiksnu.templates :as templates]
             [hipo :as hipo :include-macros true]
             [purnam.native.functions :refer [js-map]])
@@ -119,15 +120,11 @@
            :privacy "public"
            :title ""
            :content ""))
-       (-> geolocation
-           .getLocation
+
+       (-> (.getLocation geolocation)
            (.then (fn [data]
                     (! $scope.activity.geo.latitude data.coords.latitude)
-                    (! $scope.activity.geo.longitude data.coords.longitude)
-                    ))
-           )
-
-       ))
+                    (! $scope.activity.geo.longitude data.coords.longitude))))))
 
   (! $scope.submit
      (fn []
@@ -137,77 +134,52 @@
            (.success
             (fn [data]
               (.log js/console "Response " data)
-              (.$broadcast $rootScope "updateConversations")
-              )))))
+              (.$broadcast $rootScope "updateConversations"))))))
 
   (.reset $scope))
 
-
-
-
 (def.controller jiksnu.RegisterPageController [])
+
 (def.controller jiksnu.RightColumnController [])
-
-
 
 (def.controller jiksnu.ShowActivityController
   [$scope $http $stateParams]
-  (let [id (.-id $stateParams)]
-    (.info js/console "Showing Activity")
-    (! $scope.loaded false)
-    (! $scope.init
-       (fn [id]
-         (let [url (str "/notice/" id ".json")]
-           (-> $http
-               (.get url)
-               (.success
-                (fn [data]
-                  (.info js/console "Data" data)
-                  (! $scope.activity data)
-                  (! $scope.loaded true)))))))
-    (.init $scope id)))
+  (! $scope.loaded false)
+  (! $scope.init
+     (fn [id]
+       (.info js/console "Showing Activity")
+       (let [url (str "/notice/" id ".json")]
+         (-> $http
+             (.get url)
+             (.success
+              (fn [data]
+                (.info js/console "Data" data)
+                (! $scope.activity data)
+                (! $scope.loaded true)))))))
+  (.init $scope (.-id $stateParams)))
 
 (def.controller jiksnu.ShowDomainController
   [$scope $http $stateParams]
-  (let [id (.-id $stateParams)]
-    (.info js/console "Showing Domain")
-    (! $scope.loaded false)
-    (! $scope.init
-       (fn [id]
-         (let [url (str "/main/domains/" id ".json")]
-           (-> $http
-               (.get url)
-               (.success
-                (fn [data]
-                  (.info js/console "Data" data)
-                  (! $scope.domain data)
-                  (! $scope.loaded true)))))))
-    (.init $scope id)))
+  (! $scope.loaded false)
+  (! $scope.init
+     (fn [id]
+       (.info js/console "Showing Domain")
+       (let [url (str "/main/domains/" id ".json")]
+         (-> $http
+             (.get url)
+             (.success
+              (fn [data]
+                (.info js/console "Data" data)
+                (! $scope.domain data)
+                (! $scope.loaded true)))))))
+  (.init $scope (.-id $stateParams)))
 
 (def.controller jiksnu.ShowUserController
-  [$scope $http $stateParams]
-  (let [id (.-id $stateParams)]
-    (! $scope.loaded false)
-    (! $scope.init
-       (fn [id]
-         (let [url (str "/users/" id ".json")]
-           (-> $http
-               (.get url)
-               (.success
-                (fn [data]
-                  (! $scope.user data)))))))
-    (.init $scope id)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  [$scope $http $stateParams userService]
+  (! $scope.loaded false)
+  (! $scope.init
+     (fn [id]
+       (-> userService
+           (.get id)
+           (.then (fn [user] (! $scope.user user))))))
+  (.init $scope (.-id $stateParams)))

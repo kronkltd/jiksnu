@@ -1,39 +1,39 @@
-  [:div {:data-model "feed-source"}
-   #_(actions-section source)
-   [:table.table
-    [:tbody
-     [:tr
-      [:th "Topic:"]
-      [:td [:a {:href "{{source.topic}}"}
-            "{{source.topic}}"]]]
-     [:tr
-      [:th "Domain:"]
-      [:td "{{source.domain}}"]]
-     [:tr
-      [:th "Hub:"]
-      [:td [:a {:href "{{hub}}"}
-            "{{hub}}"]]]
-     [:tr
-      [:th "Callback:"]
-      [:td "{{source.callback}}"]]
-     [:tr
-      [:th  "Challenge:"]
-      [:td "{{source.challenge}}"]]
-     [:tr
-      [:th "Mode:"]
-      [:td "{{source.mode}}"]]
-     [:tr
-      [:th "Status:"]
-      [:td "{{source.status}}"]]
-     [:tr
-      [:th "Verify Token:"]
-      [:td "{{source.verifyToken}}"]]
-     [:tr
-      [:th "Created:"]
-      [:td "{{source.created}}"]]
-     [:tr
-      [:th "Updated:"]
-      [:td "{{source.updated}}"]]
-     [:tr
-      [:th "Lease Seconds:"]
-      [:td "{{source.leaseSeconds}}"]]]]]
+[:div
+ #_(actions-section source)
+ [:table.table
+  [:tbody
+   [:tr
+    [:th "Topic:"]
+    [:td [:a {:href "{{source.topic}}"}
+          "{{source.topic}}"]]]
+   [:tr
+    [:th "Domain:"]
+    [:td "{{source.domain}}"]]
+   [:tr
+    [:th "Hub:"]
+    [:td [:a {:href "{{hub}}"}
+          "{{hub}}"]]]
+   [:tr
+    [:th "Callback:"]
+    [:td "{{source.callback}}"]]
+   [:tr
+    [:th  "Challenge:"]
+    [:td "{{source.challenge}}"]]
+   [:tr
+    [:th "Mode:"]
+    [:td "{{source.mode}}"]]
+   [:tr
+    [:th "Status:"]
+    [:td "{{source.status}}"]]
+   [:tr
+    [:th "Verify Token:"]
+    [:td "{{source.verifyToken}}"]]
+   [:tr
+    [:th "Created:"]
+    [:td "{{source.created}}"]]
+   [:tr
+    [:th "Updated:"]
+    [:td "{{source.updated}}"]]
+   [:tr
+    [:th "Lease Seconds:"]
+    [:td "{{source.leaseSeconds}}"]]]]]

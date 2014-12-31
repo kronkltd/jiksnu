@@ -13,11 +13,9 @@
  [:tbody
   [:tr {:ng-repeat "conversation in page.items"}
    [:td
-    [:jiksnu-link-to
-     {:data-id "{{conversation.id}}" :data-model "Conversation"}]]
+    [:link-to {:data-id "{{conversation.id}}" :data-model "Conversation"}]]
    [:td
-    [:jiksnu-link-to
-     {:data-id "{{conversation.domain}}" :data-model "Domain"}]]
+    [:link-to {:data-id "{{conversation.domain}}" :data-model "Domain"}]]
    [:td
     [:a {:href "{{conversation.url}}"}
      "{{conversation.url}}"]]

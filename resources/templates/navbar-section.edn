@@ -18,9 +18,9 @@
      [:a.dropdown-toggle
       {:dropdown-toggle ""}
       [:span {:data-model "user"}
-       [:jiksnu-show-avatar {:data-id "{{app.user}}"}]
+       [:display-avatar {:data-id "{{app.user}}"}]
        "{{app.user}}"
-       [:jiksnu-link-to {:data-id "{{app.user}}" :data-model "user"}]]
+       [:link-to {:data-id "{{app.user}}" :data-model "user"}]]
       [:b.caret]]
      [:ul.dropdown-menu {:role "menu"}
       [:li [:a {:ui-sref "settings"} "Settings"]]

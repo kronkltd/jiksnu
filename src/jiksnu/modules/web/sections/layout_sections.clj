@@ -190,19 +190,20 @@
        [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
        [:meta {:name "viewport"
                :content "width=device-width, initial-scale=1.0"}]
+       [:meta {:name "google-site-verification" :content "d4_Ko7ZhJ7AWe6G1MdxPvlqK6DQMtlWGuwquq9of0l4"}]
        [:base {:href "/"}]
        [:title {:property "dc:title"} (config :site :name)]
        (style-section)
        (links-section request response)
        (scripts-section request response)]
       [:body
-       [:jiksnu-nav-bar]
+       [:nav-bar]
        [:div.container-fluid
         ;; [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
         [:div.row
-         [:div.col-sm-2 {:jiksnu-left-column ""}]
+         [:div.col-sm-2 {:left-column ""}]
          [:div.col-sm-8
-          [:div.row {:jiksnu-new-post ""}]
+          [:div.row {:add-post-form ""}]
           [:div.row
            [:h1 {:data-bind "text: title"}]
            [:div {:ui-view ""}]]]

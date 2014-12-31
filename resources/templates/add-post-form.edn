@@ -72,6 +72,6 @@
      [:option {:value "custom"} "Custom"]
      [:option {:value "private"} "Private"]]
     ;; TODO: Group dropdown
-    [:jiksnu-group-select]]]
-  [:button.btn.pull-right {:ng-click "form.shown = false"} "Cancel"]
+    [:group-select]]]
+  [:div.btn.pull-right {:ng-click "form.shown = false"} "Cancel"]
   [:button.btn.btn-primary.pull-right {:type "submit"} "Post"]]]

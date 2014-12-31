@@ -10,8 +10,7 @@
      [:th "# Links"]
      ]]
    [:tbody
-    [:tr {:data-model "domain"
-          :ng-repeat "domain in page.items"}
+    [:tr {:ng-repeat "domain in page.items"}
      [:td
       #_(favicon-link domain)
       #_(link-to domain)
