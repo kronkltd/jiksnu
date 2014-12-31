@@ -62,11 +62,13 @@
    :controller
    (arr "$scope"
         (fn [$scope]
+          (! $scope.loaded false)
           (! $scope.init
              (fn [id]
                (-> $http
                    (.get (str "/notice/" id ".json"))
                    (.success (fn [data]
+                               (! $scope.loaded true)
                                (! $scope.activity data))))))))
    :link (fn [$scope element attrs]
            (let [id (.-id attrs)]

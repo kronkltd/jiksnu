@@ -109,6 +109,7 @@
   (sections.layout/page-template-content {} {}))
 
 (compojure/defroutes all-routes
+  (GET "/templates/*" [] #'serve-template)
   (compojure/GET "/websocket" _
                  (http/wrap-aleph-handler stream/websocket-handler))
   (compojure/GET "/" request
@@ -124,7 +125,6 @@
                    (throw+ {:type :authentication :message "Must be admin"})))
   (middleware/wrap-log-request
    (resolve-routes [predicates/http] http-routes))
-  (GET "/templates/*" [] #'serve-template)
   (GET "/*" [] #'index)
   (route/not-found (not-found-msg)))
 

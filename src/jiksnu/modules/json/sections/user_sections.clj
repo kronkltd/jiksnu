@@ -1,6 +1,5 @@
 (ns jiksnu.modules.json.sections.user-sections
-  (:use  [ciste.config :only [config]]
-         [ciste.sections :only [defsection]]
+  (:use  [ciste.sections :only [defsection]]
          [ciste.sections.default :only [title uri show-section edit-button index-line
                                         show-section-minimal update-button index-block
                                         index-section]]
@@ -12,7 +11,8 @@
          [jiksnu.modules.web.sections :only [dropdown-menu pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
-  (:require [clojure.string :as string]
+  (:require [ciste.core :refer [with-format]]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.form :as f]
@@ -32,11 +32,15 @@
            jiksnu.model.Key
            jiksnu.model.User))
 
-(defsection show-section [User :json]
-  [user & _]
-  {:name (:name user)
-   :id (:_id user)
-   :screen_name (:username user)
-   :url (:id user)
-   :profile_image_url (:avatarUrl user)
+(defsection show-section [User :twitter]
+  [item & _]
+  {:name (:name item)
+   :id (:_id item)
+   :screen_name (:username item)
+   :url (:id item)
+   :profile_image_url (:avatarUrl item)
    :protected false})
+
+(defsection show-section [User :json]
+  [item & _]
+  (with-format :model (log/spy :info (show-section item))))

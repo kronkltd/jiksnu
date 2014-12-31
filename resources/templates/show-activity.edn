@@ -1,13 +1,13 @@
 [:div
- [:div {:ng-if "!loaded"}
-  [:p "loading"]]
+ ;; [:div {:ng-if "!loaded"}
+ ;;  [:p "loading"]]
  [:article.hentry {:ng-if "loaded"}
   #_(actions-section activity)
   [:div.pull-left.avatar-section
-   [:display-avatar {:data-id "{{activity.actor.id}}"}]]
+   [:display-avatar {:data-id "{{activity.actor._id}}"}]]
   [:div
    [:header
-    [:link-to {:data-id "{{activity.actor.id}}" :data-model "User"}]
+    [:link-to {:data-id "{{activity.actor._id}}" :data-model "User"}]
     #_(recipients-section activity)]
    [:p "{{activity.title}}"]
    #_[:pre "{{activity}}"]

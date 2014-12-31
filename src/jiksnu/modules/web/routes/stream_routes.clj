@@ -6,7 +6,7 @@
 (defn routes
   []
   [
-   [[:get  "/"]                                       #'actions.stream/public-timeline]
+   ;; [[:get  "/"]                                       #'actions.stream/public-timeline]
 
    [[:get  "/api/direct_messages.:format"]            #'actions.stream/direct-message-timeline]
    ;; FIXME: identicurse sends a post. seems wrong to me.
@@ -28,19 +28,19 @@
 
    ;; [[:post "/main/push/callback"]                     #'actions.stream/callback-publish]
 
-   [[:get  "/remote-user/*"]                          #'actions.stream/user-timeline]
+   ;; [[:get  "/remote-user/*"]                          #'actions.stream/user-timeline]
    [[:post "/streams"]                                #'actions.stream/create]
 
-   [[:get  "/users/:id.:format"]                      #'actions.stream/user-timeline]
-   [[:get  "/users/:id"]                              #'actions.stream/user-timeline]
+   ;; [[:get  "/users/:id.:format"]                      #'actions.stream/user-timeline]
+   ;; [[:get  "/users/:id"]                              #'actions.stream/user-timeline]
 
-   [[:get  "/:username.:format"]                      #'actions.stream/user-timeline]
-   [[:get  "/:username"]                              #'actions.stream/user-timeline]
-   [[:get  "/:username/all"]                          #'actions.stream/home-timeline]
-   [[:get  "/:username/streams"]                      #'actions.stream/user-list]
-   [[:post "/:username/streams"]                      #'actions.stream/add]
-   [[:get  "/:username/microsummary"]                 #'actions.stream/user-microsummary]
-   [[:get  "/:username/streams/new"]                  #'actions.stream/add-stream-page]
+   ;; [[:get  "/:username.:format"]                      #'actions.stream/user-timeline]
+   ;; [[:get  "/:username"]                              #'actions.stream/user-timeline]
+   ;; [[:get  "/:username/all"]                          #'actions.stream/home-timeline]
+   ;; [[:get  "/:username/streams"]                      #'actions.stream/user-list]
+   ;; [[:post "/:username/streams"]                      #'actions.stream/add]
+   ;; [[:get  "/:username/microsummary"]                 #'actions.stream/user-microsummary]
+   ;; [[:get  "/:username/streams/new"]                  #'actions.stream/add-stream-page]
 
    ])
 

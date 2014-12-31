@@ -13,3 +13,8 @@
   [request {:keys [items] :as options}]
   {:body
    {:items (index-section items options)}})
+
+(defview #'actions.user/show :json
+  [request item]
+  {:body (show-section item)})
+

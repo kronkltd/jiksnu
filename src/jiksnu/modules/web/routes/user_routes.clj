@@ -31,7 +31,7 @@
    [[:post   "/main/profile"]                   #'user/update-profile]
    [[:post   "/main/register"]                  #'user/register]
    [[:get    "/users.:format"]                  #'user/index]
-   [[:get    "/users/:id"]              #'user/show]
+   [[:get    "/users/:id"]                      #'user/show]
    [[:get    "/users/:id.:format"]              #'user/show]
    [[:get    "/users/:user@:domain.:format"]    #'user/show]
    [[:delete "/users/:id"]                      #'user/delete]

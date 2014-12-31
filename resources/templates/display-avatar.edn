@@ -4,4 +4,4 @@
     {:width 64
      :height 64
      :alt ""
-     :ng-src "{{user.image[0].url}}"}]]
+     :ng-src "{{user.avatarUrl}}"}]]

@@ -12,25 +12,26 @@
                  (.log js/console (str "id: \"" id "\""))
                  (let [url (str "/users/" id ".json")
                        d (.defer $q)]
-                   (notify "cache miss")
+                   (.log js/console "cache miss" id)
+                   (.put cache id d)
                    (-> $http
                        (.get url)
                        (.success
                         (fn [data]
-                          (notify (str "setting id: " id))
-                          (.put cache id data)
+                          (.log js/console "setting id: " id)
                           (.resolve d data))))
                    (.-promise d))))
     (! s.get (fn [id]
                (let [d (.defer $q)]
                  (if (and id (not= id ""))
-                   (if-let [o (.get cache id)]
-                     (do
-                       (notify "cache hit")
-                       (.resolve d o))
-                     (-> s
-                         (.fetch id)
-                         (.then (fn [o] (.resolve d o)))))
+                   (let [p (if-let [d-prime (.get cache id)]
+                             (do
+                               (.log js/console "cache hit" id)
+                              (.-promise d-prime))
+                             (.fetch s id))]
+                     (.then p
+                            #(.resolve d %)
+                            #(.reject d)))
                    (.reject d "nil id"))
                  (.-promise d))))
     s))
