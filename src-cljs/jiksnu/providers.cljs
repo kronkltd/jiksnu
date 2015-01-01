@@ -8,13 +8,13 @@
 (defn ping
   [app di]
   (fn []
-    (.send (:ws di) "ping")))
+    (.send (? di.ws) "ping")))
 
 (defn fetch-status
   [app di]
   (fn []
     (.log js/console "fetching status")
-    (-> (:$http di)
+    (-> (? di.$http)
         (.get "/status")
         (.success
          (fn [data]
@@ -27,8 +27,8 @@
 (def.n app-service
   [$http ws]
   (let [app {}
-        di {:$http $http
-            :ws ws}]
+        di (obj :$http $http
+                :ws ws)]
     (aset js/window "app" app)
     (doto app
       (aset "data"        {})
