@@ -3,67 +3,50 @@
         [ciste.sections.default :only [index-section uri]]
         jiksnu.actions.subscription-actions
         [jiksnu.modules.web.sections :only [bind-to format-page-info with-page with-sub-page
-                                            pagination-links]])
+                                            redirect pagination-links]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.modules.core.sections.subscription-sections :as sections.subscription]
-            [jiksnu.modules.web.sections.subscription-sections :refer [ostatus-sub-form]])
+            [jiksnu.modules.core.sections.subscription-sections :as sections.subscription])
   (:import jiksnu.model.Subscription))
 
 (defview #'delete :html
   [request _]
-  {:status 302
-   :template false
-   :headers {"Location" "/admin/subscriptions"}})
+  (redirect "/admin/subscriptions"))
 
 (defview #'get-subscribers :html
   [request [user {:keys [items] :as page}]]
   {:title "Subscribers"
    :body
-   (let [items [(Subscription.)]]
-     (bind-to "targetUser"
-       [:div {:data-model "user"}
-        (with-sub-page "subscribers"
-          (pagination-links page)
-          (sections.subscription/subscribers-section items page))]))})
+   (bind-to "targetUser"
+            [:div {:data-model "user"}
+             (with-sub-page "subscribers"
+               (pagination-links page)
+               (sections.subscription/subscribers-section items page))])})
 
 (defview #'get-subscriptions :html
   [request [user {:keys [items] :as page}]]
   {:title "Subscriptions"
    :formats (subscription-formats user)
    :body
-   (let [items [(Subscription.)]]
-     (bind-to "targetUser"
-       [:div {:data-model "user"}
-        (with-sub-page "subscriptions"
-          (pagination-links page)
-          (sections.subscription/subscriptions-section items page))]))})
+   (bind-to "targetUser"
+            [:div {:data-model "user"}
+             (with-sub-page "subscriptions"
+               (pagination-links page)
+               (sections.subscription/subscriptions-section items page))])})
 
 (defview #'ostatus :html
   [request arg]
   {:body ""
    :template false})
 
-(defview #'ostatussub :html
-  [request arg]
-  {:body (ostatus-sub-form)})
-
 (defview #'ostatussub-submit :html
   [request subscription]
-  {:status 303
-   :headers {"Location" "/"}
-   :flash "The request has been sent"
-   :template false})
+  (redirect "/" "The request has been sent"))
 
 (defview #'subscribe :html
   [request subscription]
-  {:status 302
-   :template false
-   :headers {"Location" "/"}})
+  (redirect "/"))
 
 (defview #'unsubscribe :html
   [request subscription]
-  {:status 302
-   :template false
-   :headers {"Location" "/"}})
-
+  (redirect "/"))

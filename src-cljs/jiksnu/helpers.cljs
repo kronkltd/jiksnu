@@ -1,12 +1,6 @@
 (ns jiksnu.helpers
-  (:require [clojure.string :as string]
-            [hipo :as hipo :include-macros true]
-            [jiksnu.templates :as templates])
+  (:require [clojure.string :as string])
   (:use-macros [purnam.core :only [! obj]]))
-
-(defn template-string
-  [tmpl]
-  (.-outerHTML (hipo/create tmpl)))
 
 (defn add-states
   [$stateProvider data]

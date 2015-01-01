@@ -1,7 +1,5 @@
 (ns jiksnu.directives
-  (:require jiksnu.app
-            [jiksnu.helpers :refer [template-string]]
-            [jiksnu.templates :as templates])
+  (:require jiksnu.app)
   (:use-macros [gyr.core :only [def.directive]]
                [purnam.core :only [! arr obj]]))
 

@@ -1,5 +1,4 @@
-(ns jiksnu.templates
-  (:require [hipo :as hipo :include-macros true]))
+(ns jiksnu.templates)
 
 (defn config [& _]
   (.warn js/console "config called"))

@@ -47,7 +47,7 @@
           :data-id "{{user.id}}"}
     (admin-show-section user)
     (let [links [{}]]
-      (sections.user/links-table links))
+      [:links-table])
     (with-sub-page "activities"
       [:h3 "Activities"]
       (let [page {}

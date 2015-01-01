@@ -1,16 +1,44 @@
-  [:form.well.form-horizontal.register-form
-   {:method "post" :action "/main/register"}
-   [:fieldset
-    [:legend "Register"]
-    (map
-     (fn [[label field type]]
-       (control-line label field type))
-     [["Username"               "username"         "text"]
-      ["Password"               "password"         "password"]
-      ["Confirm Password"       "confirm-password" "password"]
-      ["Email"                  "email"            "email"]
-      ["Display Name"           "display-name"     "text"]
-      ["Location"               "location"         "text"]
-      ["I have checked the box" "accepted"         "checkbox"]])
-    [:div.actions
-     [:input.btn.primary {:type "submit" :value "Register"}]]]]
+[:form.well.form-horizontal.register-form
+ {:method "post" :action "/main/register"}
+ [:fieldset
+  [:legend "Register"]
+  [:div.form-group
+   [:label "Username"]
+   [:input.form-control {:ng-model "reg.username" :type "text"}]
+   ]
+  [:div.form-group
+   [:label "Password"]
+   [:input.form-control {:ng-model "reg.password" :type "password"}]
+   ]
+  [:div.form-group
+   [:label "Confirm Password"]
+   [:input.form-control {:ng-model "reg.confirmPassword" :type "password"}]
+   ]
+  [:div.form-group
+   [:label "Email"]
+   [:input.form-control {:ng-model "reg.email" :type "email"}]
+   ]
+  [:div.form-group
+   [:label "Display Name"]
+   [:input.form-control {:ng-model "reg.displayName" :type "text"}]
+   ]
+  [:div.form-group
+   [:label "Location"]
+   [:input.form-control {:ng-model "reg.location" :type "text"}]
+   ]
+  [:div.form-group
+   [:label "I have checked the box"]
+   [:input.form-control {:ng-model "reg.accepted" :type "checkbox"}]
+   ]
+  #_(map
+   (fn [[label field type]]
+     (control-line label field type))
+   [["Username"               "username"         "text"]
+    ["Password"               "password"         "password"]
+    ["Confirm Password"       "confirm-password" "password"]
+    ["Email"                  "email"            "email"]
+    ["Display Name"           "display-name"     "text"]
+    ["Location"               "location"         "text"]
+    ["I have checked the box" "accepted"         "checkbox"]])
+  [:div.actions
+   [:input.btn.primary {:type "submit" :value "Register"}]]]]

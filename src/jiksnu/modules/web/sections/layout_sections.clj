@@ -160,6 +160,7 @@
        :lang "en"
        :xml:lang "en"
        :ng-app "jiksnu"
+       ;; :ng-strict-di ""
        :prefix (get-prefixes)}
       [:head
        [:meta {:charset "UTF-8"}]

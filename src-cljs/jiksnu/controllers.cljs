@@ -3,7 +3,6 @@
             [jiksnu.helpers :as helpers]
             jiksnu.services
             [jiksnu.templates :as templates]
-            [hipo :as hipo :include-macros true]
             [purnam.native.functions :refer [js-map]])
   (:use-macros [gyr.core :only [def.module def.controller
                                 def.value def.constant
@@ -103,12 +102,10 @@
   (.init $scope))
 
 (def.controller jiksnu.NavBarController
-  [$scope $http ws]
-  (.send ws "ping")
-  (-> $http
-      (.get "/status")
-      (.success (fn [data]
-                  (! $scope.app data)))))
+  [$scope ws app]
+  (.log js/console "app:" app)
+  (! $scope.app app.data)
+  (.fetchStatus app))
 
 (def.controller jiksnu.NewPostController
   [$scope $http $rootScope geolocation]
