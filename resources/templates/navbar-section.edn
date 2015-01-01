@@ -1,6 +1,6 @@
 [:nav.navbar.navbar-default.navbar-inverse
  {:role "navigation"}
- [:div.container-fluid
+ [:div.container
   [:div.navbar-header
    [:button.navbar-toggle
     {:type "button"

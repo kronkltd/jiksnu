@@ -17,5 +17,6 @@
    ;; ui.bootstrap.tabs
    ui.router
    uiGmapgoogle-maps
+   ws
    ])
 

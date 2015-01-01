@@ -106,17 +106,6 @@
    (when (session/is-admin?)
      [#'update-button])))
 
-(defn recipients-section
-  [activity]
-  (let [ids [nil]]
-    [:ul.unstyled {:data-bind "foreach: mentioned"}
-     (let [id (first ids)]
-       [:li {:data-model "user"}
-        [:i.icon-chevron-right]
-        (if-let [user (User.)]
-          (link-to user)
-          [:a {:href id :rel "nofollow"} id])])]))
-
 (defn links-section
   [activity]
   [:h3 "Links"]
@@ -171,55 +160,6 @@
      [:a {:rel "tag"
           :href "/tags/{{tag}}"}
       "{{tag}}"]]]])
-
-(defn visibility-link
-  [activity]
-  [:span {:ng-if "!activity.public"}
-   "privately"])
-
-(defn published-link
-  [activity]
-  [:time {:datetime "{{activity.published}}"
-          :title "{{activity.published}}"
-          :property "dc:published"}
-   [:a {:href "{{activity.uri}}"}
-    [:span {:am-time-ago "activity.published"
-            :am-preprocess "utc"}]]])
-
-(defn source-link
-  [activity]
-  [:span {:ng-if "activity.source"}
-   "using {{activity.source}}"])
-
-(defn service-link
-  [activity]
-  [:span {:ng-if "!activity.localId"}
-   "via a "
-   [:a {:href "{{activity.service}}"}
-    "foreign service"]])
-
-(defn geo-link
-  [activity]
-  [:span {:ng-if "activity.location.latitude && activity.location.longitude"}
-   "near "
-   [:a.geo-link {:href "#"}
-    "{{activity.location.latitude}}, {{activity.location.longitude}}"]])
-
-(defn posted-link-section
-  [activity]
-  [:span.posted
-   "{{activity.verb}}ed a {{activity.object.objectType}} "
-   (->> [#'visibility-link
-         #'published-link
-         #'source-link
-         #'geo-link
-         #'service-link
-         ]
-        (map #(% activity))
-        (interpose " "))
-   [:a {:href "/main/conversations/{{activity.conversation}}"}
-    "in context"]
-   ])
 
 (defn enclosures-section
   [activity]

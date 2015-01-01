@@ -24,17 +24,20 @@
    :templateUrl "/templates/display-avatar"
    :link (fn [$scope element attrs]
            (let [id (.-id attrs)]
-             (.log js/console "linking avatar: " id)
+             ;; (.log js/console "linking avatar: " id)
              (.init $scope id)))
    :controller
    (arr "$scope"
         (fn [$scope]
           (! $scope.init
              (fn [id]
+               (! $scope.size 32)
                (when (and id (not= id ""))
                  (-> userService
                      (.get id)
-                     (.then (fn [user] (! $scope.user user)))))))))))
+                     (.then (fn [user]
+                              (! $scope.user user)))))
+               ))))))
 
 (def.directive jiksnu.leftColumn []
   (obj
@@ -55,7 +58,7 @@
    :controller "RightColumnController"))
 
 (def.directive jiksnu.showActivity
-  [$http]
+  [$http activityService]
   (obj
    :templateUrl "/templates/show-activity"
    :scope (obj)
@@ -65,11 +68,12 @@
           (! $scope.loaded false)
           (! $scope.init
              (fn [id]
-               (-> $http
-                   (.get (str "/notice/" id ".json"))
-                   (.success (fn [data]
-                               (! $scope.loaded true)
-                               (! $scope.activity data))))))))
+               (when (and id (not= id ""))
+                 (-> activityService
+                     (.get id)
+                     (.then (fn [activity]
+                              (! $scope.loaded true)
+                              (! $scope.activity activity)))))))))
    :link (fn [$scope element attrs]
            (let [id (.-id attrs)]
              (.init $scope id)))))

@@ -61,6 +61,7 @@
                  [org.webjars/angular-ui-bootstrap "0.12.0"]
                  [org.webjars/angular-ui-router "0.2.13"]
                  [org.webjars/angular-validator "0.2.5"]
+                 [org.webjars/angular-ws "1.1.0-SNAPSHOT"]
                  [org.webjars/bootstrap "3.3.1"]
                  [org.webjars/jquery "2.1.3"]
                  [org.webjars/momentjs "2.8.3"]

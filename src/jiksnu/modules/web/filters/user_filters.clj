@@ -79,7 +79,7 @@
 
 (deffilter #'actions.user/show :http
   [action request]
-  (when-let [params (:params (log/spy :info request))]
+  (when-let [params (:params request)]
     (let [id (or (let [{:keys [user domain]} params]
                    (when (and user domain)
                      (str user "@" domain)))

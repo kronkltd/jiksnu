@@ -1,7 +1,7 @@
-  [:a.url {:href "/remote-user/{{user.username}}@{{user.domain}}"
-           :title "acct:{{user.username}}@{{user.domain}}"}
-   [:img.avatar.photo
-    {:width 64
-     :height 64
-     :alt ""
-     :ng-src "{{user.avatarUrl}}"}]]
+[:a.url {:ui-sref "showUser(user)"
+         :title "acct:{{user.username}}@{{user.domain}}"}
+ [:img
+  {:width "{{size}}"
+   :height "{{size}}"
+   :alt ""
+   :ng-src "{{user.avatarUrl}}"}]]

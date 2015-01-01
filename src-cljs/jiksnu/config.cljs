@@ -7,9 +7,10 @@
                                    obj arr def* do*n def*n f*n]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
-                    appProvider
+                    appProvider wsProvider
                     ]
 
+  (.setUrl wsProvider "wss://renfer.name/")
   (.log js/console "Foo?: " (.-foo appProvider))
 
   (.otherwise $urlRouterProvider "/not-found")

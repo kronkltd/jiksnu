@@ -5,7 +5,7 @@
   [:input {:type "text" :placeholder "What are you doing?"
            :ng-click "form.shown = true"}]]
  [:div.post-form {:collapse "!form.shown"}
-  [:pre "{{activity | json}}"]
+  [:div.close.pull-right {:ng-click "form.shown = false"} "X"]
   [:fieldset
    [:tabset
     [:tab {:heading "Note"}
@@ -55,16 +55,16 @@
        [:a.btn {:ng-click "addTag"}
         "Add Tags"]]]]
     #_[:tab {:heading "Poll"}
-     [:legend "Post a question"]
-     (control-line "Question" "question" "text")
-     (control-line "Answer" "answer[0]" "text")
-     (control-line "Answer" "answer[1]" "text")
-     (control-line "Answer" "answer[2]" "text")
-     (control-line "Answer" "answer[3]" "text")
-     (control-line "Answer" "answer[4]" "text")]
+       [:legend "Post a question"]
+       (control-line "Question" "question" "text")
+       (control-line "Answer" "answer[0]" "text")
+       (control-line "Answer" "answer[1]" "text")
+       (control-line "Answer" "answer[2]" "text")
+       (control-line "Answer" "answer[3]" "text")
+       (control-line "Answer" "answer[4]" "text")]
     #_[:tab {:heading "Event"}
-     [:legend "Post an event"]
-     (control-line "Title" "title" "type")]]
+       [:legend "Post an event"]
+       (control-line "Title" "title" "type")]]
    [:div.actions
     [:select {:name "privacy" :ng-model "activity.privacy"}
      [:option {:value "public"} "Public"]
@@ -73,5 +73,7 @@
      [:option {:value "private"} "Private"]]
     ;; TODO: Group dropdown
     [:group-select]]]
-  [:div.btn.pull-right {:ng-click "form.shown = false"} "Cancel"]
-  [:button.btn.btn-primary.pull-right {:type "submit"} "Post"]]]
+  [:button.btn.btn-primary.pull-right {:type "submit"} "Post"]
+  [:div
+   [:pre "{{activity | json}}"]]
+  ]]

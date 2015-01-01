@@ -43,4 +43,4 @@
 
 (defsection show-section [User :json]
   [item & _]
-  (with-format :model (log/spy :info (show-section item))))
+  (with-format :model (show-section item)))

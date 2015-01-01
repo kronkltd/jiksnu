@@ -152,6 +152,7 @@
       "/webjars/angular-markdown-directive/0.3.0/markdown.js"
       "/webjars/angular-notify/2.0.2/angular-notify.min.js"
       "/webjars/angular-sanitize/1.2.16/angular-sanitize.min.js"
+      "/webjars/angular-ws/1.1.0/angular-ws.min.js"
       "/webjars/showdown/0.3.1/src/showdown.js"
       "/cljs/jiksnu.js")
      (doall (map (fn [hook]
@@ -197,8 +198,8 @@
        (links-section request response)
        (scripts-section request response)]
       [:body
-       [:nav-bar]
-       [:div.container-fluid
+       [:div.container
+        [:nav-bar]
         ;; [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
         [:div.row
          [:div.col-sm-2 {:left-column ""}]

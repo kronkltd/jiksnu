@@ -103,7 +103,8 @@
   (.init $scope))
 
 (def.controller jiksnu.NavBarController
-  [$scope $http]
+  [$scope $http ws]
+  (.send ws "ping")
   (-> $http
       (.get "/status")
       (.success (fn [data]
