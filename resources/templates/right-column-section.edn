@@ -1,2 +1,8 @@
-  [:div
-   [:h2 "Right Column"]]
+[:div
+ [:h2 "Right Column"]
+ [:show-user-section]
+ [:subscriptions-widget]
+ [:subscribers-widget]
+ [:groups-widget]
+ [:streams-widget]
+ ]

@@ -39,6 +39,13 @@
                               (! $scope.user user)))))
                ))))))
 
+(def.directive jiksnu.groupsWidget
+  []
+  (obj
+   :templateUrl "/templates/groups-widget"
+   )
+  )
+
 (def.directive jiksnu.leftColumn []
   (obj
    :templateUrl "/templates/left-column-section"
@@ -80,3 +87,17 @@
 
 (def.directive jiksnu.streamsWidget []
   (obj))
+
+(def.directive jiksnu.subscribersWidget
+  []
+  (obj
+   :templateUrl "/templates/subscribers-widget"
+   )
+  )
+
+(def.directive jiksnu.subscriptionsWidget
+  []
+  (obj
+   :templateUrl "/templates/subscriptions-widget"
+   )
+  )

@@ -5,8 +5,7 @@
         [jiksnu.actions.domain-actions :only [create delete discover find-or-create
                                               index show ping ping-response
                                               ping-error]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links with-page]])
+        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links with-page redirect]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
@@ -18,31 +17,23 @@
 
 (defview #'create :html
   [request domain]
-  {:status 303
-   :template false
-   :flash "Domain has been created"
-   :headers {"Location" "/main/domains"}})
+  (redirect "/main/domains"
+            "Domain has been created"))
 
 (defview #'delete :html
   [request domain]
-  {:status 303
-   :template false
-   :flash "Domain has been deleted"
-   :headers {"Location" "/main/domains"}})
+  (redirect "/main/domains"
+            "Domain has been deleted"))
 
 (defview #'discover :html
   [request domain]
-  {:status 303
-   :template false
-   :flash "Discovering domain"
-   :headers {"Location" "/main/domains"}})
+  (redirect "/main/domains"
+            "Discovering domain"))
 
 ;; TODO: is this actually ever called as a route?
 (defview #'find-or-create :html
   [request domain]
-  {:status 303
-   :template false
-   :headers {"Location" "/main/domains"}})
+  (redirect "/main/domains"))
 
 (defview #'index :html
   [request {:keys [items] :as page}]
@@ -65,7 +56,7 @@
            (show-section domain)
            [:div
             [:h3 "Users"]
-            (let [users (if *dynamic* [(User.)] (model.user/fetch-by-domain domain))]
+            (let [users (model.user/fetch-by-domain domain)]
               (with-page "users"
                 (pagination-links {})
                 (index-section users)))])})

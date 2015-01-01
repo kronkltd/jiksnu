@@ -30,11 +30,6 @@
   {:title "Users"
    :body (index-section items page)})
 
-(defview #'actions.user/profile :html
-  [request user]
-  {:title "Edit Profile"
-   :body [:div (sections.user/edit-form user)]})
-
 (defview #'actions.user/register :html
   [request user]
   (-> (redirect "/" "user has been created")

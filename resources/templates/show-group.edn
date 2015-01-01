@@ -1,0 +1,17 @@
+[:div {:data-model "group"}
+ [:p "{{group.fullname}}"]
+ [:p "{{group.homepage}}"]
+ [:p "{{group.location}}"]
+ [:p "{{group.aliases}}"]
+ [:p "{{group.created}}"]
+ [:p "{{group.updated}}"]
+ [:div
+  [:h3 "Admins {{group.admins.length}}"]
+  [:ul
+   [:li {:ng-repeat "user in group.admins"}
+    (link-to admin)]]]
+ [:div
+  [:h3 "Members {{group.members.length}}"]
+  [:ul
+   [:li {:ng-repeat "user in group.members"}
+    (link-to admin)]]]]

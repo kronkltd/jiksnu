@@ -5,7 +5,6 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]])
   (:import jiksnu.model.FeedSubscription))

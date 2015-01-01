@@ -2,7 +2,6 @@
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section uri]]
         jiksnu.actions.subscription-actions
-        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [bind-to format-page-info with-page with-sub-page
                                             pagination-links]])
   (:require [clojure.tools.logging :as log]

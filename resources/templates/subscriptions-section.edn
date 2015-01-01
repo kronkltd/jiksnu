@@ -1,0 +1,3 @@
+[:ul.subscriptions
+ [:li.subscription {:ng-repeat "subscription in subscriptions"}
+  [:display-avatar {:data-id "{{subscription.to}}"}]]]

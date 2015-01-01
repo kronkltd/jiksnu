@@ -9,7 +9,6 @@
             [hiccup.page :as p]
             [jiksnu.actions.site-actions :as actions.site]
             [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.modules.web.actions.core-actions :as actions.web.core]
             [jiksnu.modules.web.sections :refer [bind-to pagination-links with-sub-page]]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
@@ -25,14 +24,7 @@
 (defn user-info-section
   [user]
   (list
-   (show-section user)
-   [:div {:data-model "user"}
-    (sections.subscription/subscriptions-widget user)
-    (sections.subscription/subscribers-widget user)
-    (sections.group/user-groups user)
-    (with-sub-page "streams"
-      [:streams-widget])
-    (sections.group/groups-widget user)]))
+   ))
 
 (defn navigation-group
   [group]
@@ -46,24 +38,13 @@
                    (:title link)]])
            (:items group))))
 
-;; TODO: this will be dynamically included
-(defn top-users
-  []
-  [:div
-   [:p "Users with most posts"]
-   [:ul
-    [:li [:a {:href "#"} "#"]]]])
-
 (defn notification-line
   [message]
   [:li.alert
-   [:button (merge {:class "close"}
-                   (when *dynamic*
-                     {:data-bind "click: $parent.dismissNotification"}))
+   [:button {:class "close"
+             :data-bind "click: $parent.dismissNotification"}
     "x"]
-   [:span (if *dynamic*
-            {:data-bind "text: message"}
-            message)]])
+   [:span {:data-bind "text: message"}]])
 
 (defn notification-area
   [request response]
@@ -71,12 +52,6 @@
    [:ul.unstyled
     {:data-bind "foreach: notifications"}
     (notification-line nil)]])
-
-(defn new-post-section
-  [request response]
-  [:div {:ng-controller "NewPostController"}
-   [:div {:ng-if "postForm.visible"}
-    (add-form (Activity.))]])
 
 (defn navbar-search-form
   []
@@ -208,7 +183,7 @@
           [:div.row
            [:h1 {:data-bind "text: title"}]
            [:div {:ui-view ""}]]]
-         [:div.col-sm-2 {:jiksnu-right-column ""}]]]
+         [:div.col-sm-2 {:right-column ""}]]]
        [:footer.row.page-footer
         [:p "Copyright © 2011 KRONK Ltd."]
         [:p "Powered by "

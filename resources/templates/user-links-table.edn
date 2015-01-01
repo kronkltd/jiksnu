@@ -1,0 +1,17 @@
+[:div {:ng-if "user.links"}
+ [:h3 "Links"]
+ [:table.table
+  [:thead
+   [:tr
+    [:th "title"]
+    [:th "rel"]
+    [:th "href"]
+    [:th "Actions"]]]
+  [:tbody
+   [:tr {:ng-repeat "link in links"}
+    [:td "{{link.title}}"]
+    [:td "{{link.rel}}"]
+    [:td "{{link.href}}"]
+    [:td
+     [:ul.buttons
+      [:li "delete"]]]]]]]

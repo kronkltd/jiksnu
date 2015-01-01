@@ -14,7 +14,6 @@
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
@@ -131,12 +130,10 @@
                                           (:latitude geo)
                                           ","
                                           (:longitude geo))]))}]
-              [:p "Latitude: " [:span (if *dynamic*
-                                        {:data-bind "text: latitude"}
-                                        (:latitude geo))]]
-              [:p "Longitude: " [:span (if *dynamic*
-                                         {:data-bind "text: longitude"}
-                                         (:longitude geo))]])]))
+              [:p "Latitude: " [:span {:data-bind "text: latitude"}
+                                (:latitude geo)]]
+              [:p "Longitude: " [:span {:data-bind "text: longitude"}
+                                 (:longitude geo)]])]))
 
 (defn likes-section
   [activity]
@@ -201,7 +198,7 @@
      [:th "Content"]
      [:th "Actions"]]]
    [:tbody
-    (when *dynamic* {:data-bind "foreach: items"})
+    {:data-bind "foreach: items"}
     (map admin-index-line activities)]])
 
 ;; admin-index-line
@@ -232,7 +229,7 @@
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
-   (when *dynamic* {:data-bind "foreach: items"})
+   {:data-bind "foreach: items"}
    (map #(index-line % options) records)])
 
 (defsection index-line [Activity :html]

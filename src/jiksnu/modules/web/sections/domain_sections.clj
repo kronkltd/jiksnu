@@ -4,7 +4,6 @@
             [ciste.sections.default :refer [actions-section add-form delete-button index-block
                                             index-line link-to show-section uri]]
             [clojure.tools.logging :as log]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.web.sections :refer [action-link bind-to control-line
                                                  dropdown-menu]]

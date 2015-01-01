@@ -1,0 +1,6 @@
+[:form {:method "post"
+        :action "/main/ostatussub"}
+ (control-line "Username"
+               "profile" "text")
+ [:div.actions
+  [:input.btn.primary {:type "submit" :value "Submit"}]]]

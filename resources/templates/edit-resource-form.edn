@@ -1,0 +1,45 @@
+[:form.well.form-horizontal {:ng-submit "submit()"}
+ [:fieldset
+  [:legend "Edit User"]
+  (control-line "Username"
+                "username" "text"
+                :ng-model "user.username"
+                )
+
+  (control-line "Domain"
+                "domain" "text"
+                :ng-model "user.domain")
+
+  (control-line "Display Name"
+                "display-name" "text"
+                :ng-model "user.name")
+
+  (control-line "First Name:"
+                "first-name" "text"
+                :ng-model "user.firstName")
+
+  (control-line "Last Name"
+                "last-name" "text"
+                :ng-model "user.lastName")
+
+  (control-line "Email"
+                "email" "email"
+                :ng-model "user.email")
+
+  [:div.control-group
+   [:label.control-label {:for "bio"} "Bio"]
+   [:div.controls
+    [:textarea {:name "bio"}
+     "{{user.bio}}"]]]
+
+  [:div.control-group
+   [:label.control-label {:for "location"} "Location"]
+   [:div.controls
+    [:input {:type "text" :name "location" :ng-model "user.location"}]]]
+
+  [:div.control-group
+   [:label.control-label {:for "url"} "Url"]
+   [:div.controls
+    [:input {:type "text" :name "url" :ng-model "user.url"}]]]
+  [:div.controls
+   [:input.btn.btn-primary {:type "submit" :value "submit"}]]]]

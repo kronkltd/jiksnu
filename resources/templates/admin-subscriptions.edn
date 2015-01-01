@@ -1,0 +1,22 @@
+[:table.table.subscriptions
+ [:thead
+  [:tr
+   [:th "id"]
+   [:th "actor"]
+   [:th "target"]
+   [:th "Created"]
+   [:th "pending"]
+   [:th "local"]
+   [:th "Actions"]]]
+ [:tbody
+  [:tr {:ng-repeat "subscription in subscriptions"}
+   [:td
+    [:link-to {:data-id "{{subscription.id}}" :data-model "Subscription"}]]
+   [:td
+    [:link-to {:data-id "{{subscription.from}}" :data-model "User"}]]
+   [:td
+    [:link-to {:data-id "{{subscription.to}}" :data-model "User"}]]
+   [:td "{{subscription.created}}"]
+   [:td "{{subscription.pending}}"]
+   [:td "{{subscription.local}}"]
+   [:td (actions-section subscription)]]]]

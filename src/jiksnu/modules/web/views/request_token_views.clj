@@ -4,7 +4,6 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.request-token-actions :as actions.request-token]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
             [ring.util.response :as response]))
 

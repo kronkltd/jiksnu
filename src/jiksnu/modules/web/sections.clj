@@ -2,8 +2,7 @@
   (:use [ciste.config :only [config]]
         [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [edit-button index-block
-                                       index-block-type index-line uri]]
-        [jiksnu.ko :only [*dynamic*]])
+                                       index-block-type index-line uri]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
@@ -69,15 +68,8 @@
           :class (string/join " " [(str action "-button")])
           ;; :data-model model
           }
-         (if *dynamic*
-           {:href "#"
-            :data-action action}
-           {:href (str "/main/confirm"
-                       "?action=" action
-                       "&model=" model
-                       "&id=" id
-                       (if target
-                         (str "&target=" target)))})
+         {:href "#"
+          :data-action action}
          (if target
            {:data-target target}))
      [:i {:class (str "icon-" icon)}]
@@ -85,12 +77,7 @@
 
 (defn bind-to
   [property & body]
-  (if *dynamic*
-    (list
-     (format "<!-- ko with: %s -->" (name property))
-     body
-     "<!-- /ko -->")
-    body))
+  body)
 
 (defn with-page
   [page-name & body]

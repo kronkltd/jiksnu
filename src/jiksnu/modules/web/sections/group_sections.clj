@@ -28,23 +28,6 @@
       #'delete-button
       #'update-button])))
 
-(defn groups-widget
-  [user]
-  (when user
-    [:div.groups
-     [:h3
-      [:a {:href "/users/{{user.id}}/groups"} "Groups"]
-      " "
-      (with-sub-page "groups"
-        [:span "{{page.totalRecords}}"])]
-     (let [items [(Group.)]]
-       (with-sub-page "groups"
-         [:ul
-          (let [item (first items)]
-            [:li {:data-model "group"
-                  :ng-repeat "group in groups"}
-             (link-to item)])]))]))
-
 (defn join-button
   [item]
   (action-link "group" "join" (:_id item) {:title "Join"}))
@@ -65,8 +48,6 @@
   [item & _]
   (action-link "group" "delete" (:_id item)))
 
-;; index-block
-
 (defsection link-to [Group :html]
   [item & options]
   [:a
@@ -75,38 +56,7 @@
            :property "dc:title"}
     "{{group.nickname}}"]])
 
-(defsection show-section [Group :html]
-  [group & _]
-  [:div
-   [:div {:data-model "group"}
-    [:p (bind-property "fullname")]
-    [:p (bind-property "homepage")]
-    [:p (bind-property "location")]
-    [:p (bind-property "aliases")]
-    [:p (bind-property "created")]
-    [:p (bind-property "updated")]
-    [:div
-     [:h3 "Admins " (count (:admins group))]
-     [:ul
-      (let [items [(User.)]
-            admin (first items)]
-        [:li {:data-model "user"
-              :ng-repeat "admin in admins"}
-         (link-to admin)])]]
-    [:div
-     [:h3 "Members " (count (:members group))]
-     [:ul
-      (let [items [(User.)]
-            admin (first items)]
-        [:li {:data-model "user"
-              :ng-repeat "user in members"}
-         (link-to admin)])]]]])
-
 (defsection update-button [Group :html]
   [item & _]
   (action-link "group" "update" (:_id item)))
 
-(defn user-groups
-  [user]
-
-  )

@@ -5,7 +5,6 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.sections :refer [bind-to format-page-info pagination-links redirect with-page
@@ -18,10 +17,9 @@
   [request {:keys [items] :as page}]
   {:title "Feed Sources"
    :body
-   (let [items (if *dynamic* [(FeedSource.)] items)]
-     (with-page "feedSources"
-       (pagination-links page)
-       (doall (index-section items page))))})
+   (with-page "feedSources"
+     (pagination-links page)
+     (doall (index-section items page)))})
 
 (defview #'actions.feed-source/process-updates :html
   [request params]
@@ -35,13 +33,13 @@
 (defview #'actions.feed-source/show :html
   [request item]
   (let [page (actions.activity/fetch-by-feed-source item)
-        items (if *dynamic* [(Activity.)] (:items page))]
+        items (:items page)]
     {:body
      (bind-to "targetFeedSource"
        (show-section item)
        [:div {:data-model "feed-source"}
         (with-sub-page "activities"
-          (pagination-links (if *dynamic* {} page))
+          (pagination-links page)
           (index-section items))])}))
 
 (defview #'actions.feed-source/update :html

@@ -1,0 +1,10 @@
+[:div.subscriptions
+ [:h3
+  [:a {:href "/users/{{user.id}}/subscriptions"} "Following"]
+  " {{page.items.length}}"]
+   [:ul
+    [:li {:ng-repeat "subscription in subscriptions"}
+     [:display-avatar {:data-id "{{subscription.to}}"
+                       :data-size "24"}]]]
+   [:p
+    [:a {:href "/main/ostatussub"} "Add Remote"]]]

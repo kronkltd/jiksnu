@@ -97,7 +97,7 @@
 (defn serve-template
   [request]
   (let [template-name (:* (:params request))
-        path (str "templates/" template-name ".edn")
+        path (str "templates/" (log/spy :info template-name) ".edn")
         url (io/resource path)
         reader (PushbackReader. (io/reader url))
         data (edn/read reader)]
@@ -151,7 +151,6 @@
           ;; (file/wrap-file "resources/public/")
           ;; file-info/wrap-file-info
           jm/wrap-user-binding
-          jm/wrap-dynamic-mode
           jm/wrap-oauth-user-binding
           jm/wrap-authorization-header
           (handler/site {:session {:store (ms/session-store)}})

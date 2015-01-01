@@ -34,9 +34,6 @@
   [item]
   (action-link "user" "unsubscribe" (:_id item)))
 
-
-
-
 (defn display-avatar-img
   [user size]
   [:img.avatar.photo
@@ -52,54 +49,6 @@
               :title "acct:{{user.username}}@{{user.domain}}"}
       (display-avatar-img user size)]))
 
-(defn edit-form
-  [user]
-  [:form.well.form-horizontal {:method "post" :action "/main/profile"}
-   [:fieldset
-    [:legend "Edit User"]
-    (control-line "Username"
-                  "username" "text"
-                  :value (:username user))
-
-    (control-line "Domain"
-                  "domain" "text"
-                  :value (:domain user))
-
-    (control-line "Display Name"
-                  "display-name" "text"
-                  :value (:name user))
-
-    (control-line "First Name:"
-                  "first-name" "text"
-                  :value (:first-name user) )
-
-    (control-line "Last Name"
-                  "last-name" "text"
-                  :vaue (:last-name user))
-
-    (control-line "Email"
-                  "email" "email"
-                  :value (:email user))
-
-    [:div.control-group
-     [:label.control-label {:for "bio"} "Bio"]
-     [:div.controls
-      [:textarea {:name "bio"}
-       (:bio user)]]]
-
-    [:div.control-group
-     [:label.control-label {:for "location"} "Location"]
-     [:div.controls
-      [:input {:type "text" :name "location" :value (:location user)}]]]
-
-    [:div.control-group
-     [:label.control-label {:for "url"} "Url"]
-     [:div.controls
-      [:input {:type "text" :name "url" :value (:url user)}]]]
-
-    [:div.controls
-     [:input.btn.btn-primary {:type "submit" :value "submit"}]]]])
-
 (defn following-section
   [user]
   (let [authenticated (session/current-user)]
@@ -113,26 +62,6 @@
   [user]
   (when-not (:local user)
     [:p "This is a cached copy of information for a user on a different system"]))
-
-(defn links-table
-  [links]
-  [:div {:ng-if "user.links"}
-   [:h3 "Links"]
-   [:table.table
-    [:thead
-     [:tr
-      [:th "title"]
-      [:th "rel"]
-      [:th "href"]
-      [:th "Actions"]]]
-    [:tbody
-     [:tr {:ng-repeat "link in links"}
-      [:td "{{link.title}}"]
-      [:td "{{link.rel}}"]
-      [:td "{{link.href}}"]
-      [:td
-       [:ul.buttons
-        [:li "delete"]]]]]]])
 
 (defn model-button
   [user]
@@ -171,13 +100,7 @@
 
 (defsection add-form [User :html]
   [user & _]
-  [:form {:method "post" :action "/admin/users"}
-   [:fieldset
-    [:legend "Add User"]
-    (control-line "Username" "username" "text")
-    (control-line "Domain" "domain" "text")
-    [:div.actions
-     [:input.btn.primary {:type "submit" :value "Add User"}]]]])
+)
 
 (defsection delete-button [User :html]
   [user & _]
@@ -194,14 +117,6 @@
    [:span {:property "dc:title"
            :about "{{user.url}}"}
     "{{user.displayName}}"]])
-
-(defsection show-section-minimal [User :html]
-  [user & _]
-  (list
-   [:div.vcard {:data-model "user"}
-    ;; TODO: merge into the same link
-    (display-avatar user)
-    [:span.fn.n (link-to user)]]))
 
 (defsection update-button [User :html]
   [item & _]

@@ -1,0 +1,4 @@
+[:ul.subscriptions
+ [:li.subscription {:data-model "subscription"
+                    :ng-repeat "subscriber in subscribers"}
+  [:show-user {:data-id "{{subscriber.from}}"}]]]

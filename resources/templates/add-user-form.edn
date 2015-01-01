@@ -1,0 +1,7 @@
+[:form {:method "post" :action "/admin/users"}
+ [:fieldset
+  [:legend "Add User"]
+  (control-line "Username" "username" "text")
+  (control-line "Domain" "domain" "text")
+  [:div.actions
+   [:input.btn.primary {:type "submit" :value "Add User"}]]]]
