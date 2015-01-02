@@ -17,10 +17,10 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [midje.sweet :refer [=> =not=> anything throws contains]])
+            [midje.sweet :refer [=> =not=> anything fact future-fact throws contains]])
   (:import jiksnu.model.Domain
            jiksnu.model.User
            ))
@@ -45,7 +45,7 @@
 
 (test-environment-fixture
 
- (context #'actions.user/discover-user-jrd
+ (fact #'actions.user/discover-user-jrd
    (let [username (fseq :username)
          domain-name (fseq :domain)
          uri (format "acct:%s@%s" username domain-name)
@@ -63,15 +63,15 @@
      (provided
        (ops/update-resource jrd-uri anything) => (l/success-result {:body mock-jrd}))))
 
- (future-context #'actions.user/get-username-from-http-uri
-   (context "when the uri does not have user info"
+ (future-fact #'actions.user/get-username-from-http-uri
+   (fact "when the uri does not have user info"
      (let [username (fseq :username)
            domain-name (fseq :domain)
            uri (factory/make-uri domain-name "/users/1")
            params {:_id uri}]
        (actions.user/get-username-from-http-uri params) => (contains {:username username}))))
 
- (context #'actions.user/get-username
+ (fact #'actions.user/get-username
    (let [username (fseq :username)
          domain-name (fseq :domain)
          template (str "http://" domain-name "/xrd?uri={uri}")
@@ -80,12 +80,12 @@
                     actions.domain/find-or-create
                     (actions.domain/add-link {:rel "lrdd" :template template}))]
 
-     (context "when given a http uri"
-       (future-context "and it has user info")
+     (fact "when given a http uri"
+       (future-fact "and it has user info")
 
-       (context "and it does not have user info"
+       (fact "and it does not have user info"
 
-         (context "and the jrd request returns info"
+         (fact "and the jrd request returns info"
            (let [uri (factory/make-uri domain-name "/users/1")
                  params {:_id uri}]
              (actions.user/get-username params) => (contains {:username username})
@@ -93,7 +93,7 @@
                (actions.user/discover-user-jrd anything anything) => {:username username}
                (actions.user/discover-user-xrd anything anything) => nil :times 0)))
 
-         (context "and the xrd request returns info"
+         (fact "and the xrd request returns info"
            (let [uri (factory/make-uri domain-name "/users/1")
                  params {:_id uri}]
              (actions.user/get-username params) => (contains {:username username})
@@ -103,33 +103,33 @@
          )
        )
 
-     (context "when given an acct uri"
+     (fact "when given an acct uri"
        (let [uri (str "acct:" username "@" domain-name)
              params {:_id uri}]
          (actions.user/get-username params) => (contains {:username username})))
      ))
 
- (context #'actions.user/get-domain
-   (context "when the domain already exists"
+ (fact #'actions.user/get-domain
+   (fact "when the domain already exists"
      (let [domain (mock/a-domain-exists {:discovered true})
            domain-name (:_id domain)]
 
-       (context "when the domain is specified"
+       (fact "when the domain is specified"
          (let [response (actions.user/get-domain {:domain (:_id domain)})]
            response => (partial instance? Domain)
            (:_id response) => (:_id domain)))
 
-       (context "when the domain is not specified"
-         (context "when there is an id"
+       (fact "when the domain is not specified"
+         (fact "when there is an id"
 
-           (context "when it is a http url"
+           (fact "when it is a http url"
              (let [uri (format "http://%s/users/1" domain-name)
                    params {:_id uri}
                    response (actions.user/get-domain params)]
                response => (partial instance? Domain)
                (:_id response) => (:_id domain)))
 
-           (context "when it is an acct uri"
+           (fact "when it is an acct uri"
              (let [username (fseq :username)
                    uri (format "acct:%s@%s" username domain-name)
                    params {:_id uri}
@@ -141,34 +141,34 @@
        ))
    )
 
- (context #'actions.user/create
-   (context "when the params are nil"
+ (fact #'actions.user/create
+   (fact "when the params are nil"
      (let [params nil]
        (actions.user/create params) => (throws RuntimeException)))
-   (context "empty map"
+   (fact "empty map"
      (let [params {}]
        (actions.user/create params) => (throws RuntimeException)))
-   (context "local user"
+   (fact "local user"
      (let [params {:username (fseq :username)
                    :domain (config :domain)}]
        (actions.user/create params) => model/user?))
-   (context "when the params contain links"
+   (fact "when the params contain links"
      (let [params {:username (fseq :username)
                    :domain (config :domain)
                    :links [{:href (fseq :uri) :rel "alternate"}]}]
        (actions.user/create params) => model/user?)))
 
- (context #'actions.user/index
+ (fact #'actions.user/index
    (actions.user/index) => map?)
 
- (context #'actions.user/find-or-create
+ (fact #'actions.user/find-or-create
    (let [username (fseq :username)
          domain-name (fseq :domain)
          source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)
          xrd-template (format "http://%s/xrd?uri={uri}" domain-name)
          jrd-template (format "http://%s/lrdd?uri={uri}" domain-name)]
 
-     (context "when given a http uri"
+     (fact "when given a http uri"
        (let [uri (str "http://" domain-name "/user/1")
              params {:_id uri}
              profile-url (format "https://%s/api/user/%s/profile" domain-name username)
@@ -179,7 +179,7 @@
              xrd-url (util/replace-template xrd-template uri)
              jrd-url (util/replace-template jrd-template uri)]
 
-         (context "when the domain has a jrd endpoint"
+         (fact "when the domain has a jrd endpoint"
            (db/drop-all!)
            (let [domain-params (factory :domain
                                         {:_id domain-name
@@ -189,7 +189,7 @@
 
              (actions.domain/add-link domain {:rel "jrd" :template jrd-template})
 
-             (context "when the username can be determined"
+             (fact "when the username can be determined"
                (actions.user/find-or-create params) => (partial instance? User)
                (provided
                  (ops/update-resource jrd-url anything) => (l/success-result
@@ -197,7 +197,7 @@
                  (ops/update-resource profile-url anything) => (l/success-result
                                                                 {:body mock-profile})))))
 
-         (context "when the domain has an xrd endpoint"
+         (fact "when the domain has an xrd endpoint"
            (db/drop-all!)
            (let [domain (actions.domain/find-or-create
                          (factory :domain
@@ -208,14 +208,14 @@
              (model.domain/set-field! domain :xrdTemplate xrd-template)
              (actions.domain/add-link domain {:rel "xrd" :template xrd-template})
 
-             (context "when the username can be determined"
+             (fact "when the username can be determined"
                (actions.user/find-or-create params) => (partial instance? User)
                (provided
                  (ops/update-resource xrd-url anything) => (l/success-result
                                                             {:body mock-xrd})))))
          ))
 
-     (context "when given an acct uri uri"
+     (fact "when given an acct uri uri"
        (db/drop-all!)
        (let [domain (actions.domain/find-or-create (factory :domain))
              uri (str "acct:" username "@" (:_id domain))]
@@ -229,10 +229,10 @@
              (actions.user/create anything) => .user.))))
      ))
 
- (context #'actions.user/register-page
+ (fact #'actions.user/register-page
    (actions.user/register-page) => (partial instance? User))
 
- (context #'actions.user/register
+ (fact #'actions.user/register
    (let [params {:username (fseq :username)
                  :email (fseq :email)
                  :name (fseq :name)

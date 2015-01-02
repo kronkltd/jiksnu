@@ -1,8 +1,8 @@
 (ns jiksnu.mock-test
   (:require [clj-factory.core :refer [fseq]]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :refer [context test-environment-fixture]]
-            [midje.sweet :refer [=>]])
+            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [midje.sweet :refer [=> fact]])
   (:import jiksnu.model.Activity
            jiksnu.model.Client
            jiksnu.model.Conversation
@@ -18,42 +18,42 @@
 
 (test-environment-fixture
 
- (context #'mock/activity-gets-posted
+ (fact #'mock/activity-gets-posted
    (mock/activity-gets-posted) => (partial instance? Activity))
 
- (context #'mock/a-domain-exists
+ (fact #'mock/a-domain-exists
    (mock/a-domain-exists) => (partial instance? Domain))
 
- (context #'mock/a-resource-exists
+ (fact #'mock/a-resource-exists
    (mock/a-resource-exists) => (partial instance? Resource))
 
- (context #'mock/a-client-exists
+ (fact #'mock/a-client-exists
    (mock/a-client-exists) => (partial instance? Client))
 
- (context #'mock/a-user-exists
-   (context "without any params"
+ (fact #'mock/a-user-exists
+   (fact "without any params"
      (mock/a-user-exists) => (partial instance? User)))
 
- (context #'mock/a-stream-exists
-   (context "without any params"
+ (fact #'mock/a-stream-exists
+   (fact "without any params"
      (mock/a-stream-exists) => (partial instance? Stream)))
 
- (context #'mock/a-feed-source-exists
+ (fact #'mock/a-feed-source-exists
    (mock/a-feed-source-exists) => (partial instance? FeedSource))
 
- (context #'mock/a-conversation-exists
+ (fact #'mock/a-conversation-exists
    (mock/a-conversation-exists) => (partial instance? Conversation))
 
- (context #'mock/a-feed-subscription-exists
+ (fact #'mock/a-feed-subscription-exists
    (mock/a-feed-subscription-exists) => (partial instance? FeedSubscription))
 
- (context #'mock/a-subscription-exists
+ (fact #'mock/a-subscription-exists
    (mock/a-subscription-exists) => (partial instance? Subscription))
 
- (context #'mock/a-group-exists
+ (fact #'mock/a-group-exists
    (mock/a-group-exists) => (partial instance? Group))
 
- (context #'mock/a-request-token-exists
+ (fact #'mock/a-request-token-exists
    (mock/a-request-token-exists) => (partial instance? RequestToken))
 
  )

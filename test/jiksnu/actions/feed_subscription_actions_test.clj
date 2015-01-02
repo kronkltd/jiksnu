@@ -9,27 +9,27 @@
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
-            [midje.sweet :refer [=> falsey]])
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [=> fact falsey]])
   (:import jiksnu.model.FeedSubscription))
 
 (test-environment-fixture
 
- (context #'delete
+ (fact #'delete
    (let [item (mock/a-feed-subscription-exists)]
      (delete item)
 
      (exists? item) => falsey))
 
- (context #'create
+ (fact #'create
    (let [params (prepare-create (factory :feed-subscription))]
      (create params) => (partial instance? FeedSubscription)))
 
- (context #'index
+ (fact #'index
    (model.feed-subscription/drop!)
    (:items (index)) => [])
 
- (context #'subscription-request
+ (fact #'subscription-request
    (let [topic (fseq :uri)
          source (mock/a-feed-source-exists {:local true})
          params {:callback (fseq :uri)

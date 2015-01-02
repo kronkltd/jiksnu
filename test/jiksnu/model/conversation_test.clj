@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.model.conversation :only [count-records create delete drop! fetch-all fetch-by-id]]
-        [midje.sweet :only [=> throws]]
+        [midje.sweet :only [=> fact throws]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
@@ -14,39 +14,39 @@
 
 (test-environment-fixture
 
- (context #'count-records
-   (context "when there aren't any items"
+ (fact #'count-records
+   (fact "when there aren't any items"
      (drop!)
      (count-records) => 0)
-   (context "when there are items"
+   (fact "when there are items"
      (drop!)
      (let [n 15]
        (dotimes [i n]
          (mock/a-conversation-exists))
        (count-records) => n)))
 
- (context #'delete
+ (fact #'delete
    (let [item (mock/a-conversation-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
- (context #'drop!
+ (fact #'drop!
    (dotimes [i 1]
      (mock/a-conversation-exists))
    (drop!)
    (count-records) => 0)
 
- (context #'fetch-by-id
-   (context "when the item doesn't exist"
+ (fact #'fetch-by-id
+   (fact "when the item doesn't exist"
      (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
-   (context "when the item exists"
+   (fact "when the item exists"
      (let [item (mock/a-conversation-exists)]
        (fetch-by-id (:_id item)) => item)))
 
- (context #'create
-   (context "when given valid params"
+ (fact #'create
+   (fact "when given valid params"
      (let [domain (mock/a-domain-exists)
            source (mock/a-feed-source-exists)
            params (actions.conversation/prepare-create
@@ -55,18 +55,18 @@
                                            :domain (:_id domain)}))]
        (create params) => (partial instance? Conversation)))
 
-   (context "when given invalid params"
+   (fact "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (context #'fetch-all
-   (context "when there are no items"
+ (fact #'fetch-all
+   (fact "when there are no items"
      (drop!)
      (fetch-all) =>
      (check [response]
        response => seq?
        response => empty?))
 
-   (context "when there is more than a page of items"
+   (fact "when there is more than a page of items"
      (drop!)
 
      (let [n 25]

@@ -6,16 +6,15 @@
             [jiksnu.model :as model]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :refer [check context future-context
-                                        test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [lamina.core :as l]
-            [midje.sweet :refer [=> anything]])
+            [midje.sweet :refer [=> anything fact]])
   (:import jiksnu.model.Domain))
 
 (test-environment-fixture
 
- (context #'transforms.user/set-domain
+ (fact #'transforms.user/set-domain
    (let [username (fseq :username)
          domain-name (fseq :domain)
          uri (format "acct:%s@%s" username domain-name)

@@ -12,20 +12,20 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
-            [midje.sweet :refer [=> truthy]])
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [=> fact truthy]])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 
 (test-environment-fixture
 
- (context #'actions.stream/public-timeline
-   (context "when there are no activities"
-     (context "should be empty"
+ (fact #'actions.stream/public-timeline
+   (fact "when there are no activities"
+     (fact "should be empty"
        (model.activity/drop!)
        (actions.stream/public-timeline) => (comp empty? :items)))
-   (context "when there are activities"
-     (context "should return a seq of activities"
+   (fact "when there are activities"
+     (fact "should return a seq of activities"
        (let [activity (mock/there-is-an-activity)]
          (actions.stream/public-timeline) =>
          (check [response]
@@ -36,8 +36,8 @@
                   (doseq [item items]
                     (class item) => Conversation)))))))
 
- (context #'actions.stream/user-timeline
-   (context "when the user has activities"
+ (fact #'actions.stream/user-timeline
+   (fact "when the user has activities"
      (db/drop-all!)
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity)]

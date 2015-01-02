@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.model.resource :only [count-records create delete drop! fetch-all fetch-by-id]]
-        [midje.sweet :only [=> throws]]
+        [midje.sweet :only [=> fact throws]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
@@ -14,46 +14,46 @@
 
 (test-environment-fixture
 
- (context #'count-records
-   (context "when there aren't any items"
+ (fact #'count-records
+   (fact "when there aren't any items"
      (drop!)
      (count-records) => 0)
-   (context "when there are conversations"
+   (fact "when there are conversations"
      (drop!)
      (let [n 15]
        (dotimes [i n]
          (mock/a-resource-exists))
        (count-records) => n)))
 
- (context #'delete
+ (fact #'delete
    (let [item (mock/a-resource-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
- (context #'fetch-by-id
-   (context "when the item doesn't exist"
+ (fact #'fetch-by-id
+   (fact "when the item doesn't exist"
      (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
-   (context "when the item exists"
+   (fact "when the item exists"
      (let [item (mock/a-resource-exists)]
        (fetch-by-id (:_id item)) => item)))
 
- (context #'create
-   (context "when given valid params"
+ (fact #'create
+   (fact "when given valid params"
      (let [params (actions.resource/prepare-create
                    (factory :resource))]
        (create params) => (partial instance? Resource)))
 
-   (context "when given invalid params"
+   (fact "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (context #'fetch-all
-   (context "when there are no records"
+ (fact #'fetch-all
+   (fact "when there are no records"
      (drop!)
      (fetch-all) => empty?)
 
-   (context "when there is more than a page"
+   (fact "when there is more than a page"
      (drop!)
 
      (dotimes [n 25]

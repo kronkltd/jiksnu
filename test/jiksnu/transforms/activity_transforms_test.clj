@@ -1,24 +1,24 @@
 (ns jiksnu.transforms.activity-transforms-test
-  (:use [ciste.core :only [with-context]]
-        [clj-factory.core :only [factory fseq]]
-        [jiksnu.transforms.activity-transforms :only [set-recipients]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=>]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.core :refer [with-context]]
+            [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]))
+            [jiksnu.model :as model]
+            [jiksnu.transforms.activity-transforms :refer [set-recipients]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [=> fact future-fact]]))
 
 (test-environment-fixture
 
- (context #'set-recipients
+ (fact #'set-recipients
 
-   (context "when there are no recipient uris"
-     (context "should return that activity"
+   (fact "when there are no recipient uris"
+     (fact "should return that activity"
        (let [activity (factory :activity)]
          (set-recipients activity) => activity)))
 
-   (future-context "When the activity contains a recipient uri"
+   (future-fact "When the activity contains a recipient uri"
      (let [recipient (mock/a-user-exists)
            activity (factory :activity {:recipient-uris [(:_id recipient)]})]
        (set-recipients activity) =>

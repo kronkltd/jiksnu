@@ -9,13 +9,13 @@
             [jiksnu.test-helper :refer [check context future-context
                                         test-environment-fixture]]
             [jiksnu.transforms.user-transforms :as transforms.user]
-            [midje.sweet :refer [=>]])
+            [midje.sweet :refer [=> fact]])
   (:import jiksnu.model.Domain))
 
 
 (test-environment-fixture
 
- ;; (context #'ops/get-discovered
+ ;; (fact #'ops/get-discovered
  ;;   (let [domain (mock/a-domain-exists)]
  ;;     (ops/get-discovered domain) =>
  ;;     (check [response]

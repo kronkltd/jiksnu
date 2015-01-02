@@ -10,22 +10,22 @@
             [jiksnu.session :as session]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [lamina.core :as l]
-            [midje.sweet :refer [=> anything]])
+            [midje.sweet :refer [=> anything fact]])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
 
 (test-environment-fixture
 
- (context #'actions.subscription/subscribe
-   (context "when the user is not already subscribed"
+ (fact #'actions.subscription/subscribe
+   (fact "when the user is not already subscribed"
      (let [user (mock/a-user-exists)
            subscribee (mock/a-user-exists)]
        (model.subscription/drop!)
        (session/with-user user
          (actions.subscription/subscribe user subscribee) => (partial instance? Subscription)))))
 
- (context #'actions.subscription/ostatussub-submit
+ (fact #'actions.subscription/ostatussub-submit
    (let [actor (mock/a-user-exists)
          username (fseq :username)
          domain-name (fseq :domain)
@@ -39,13 +39,13 @@
                                          (model/map->Domain
                                           {:_id domain-name})))))
 
- (context #'actions.subscription/subscribed
+ (fact #'actions.subscription/subscribed
    (let [user (mock/a-user-exists)
          subscribee (mock/a-user-exists)]
      (actions.subscription/subscribed user subscribee) => (partial instance? Subscription)))
 
- (context #'actions.subscription/get-subscribers
-   (context "when there are subscribers"
+ (fact #'actions.subscription/get-subscribers
+   (fact "when there are subscribers"
      (let [subscription (mock/a-subscription-exists)
            target (model.subscription/get-target subscription)]
        (actions.subscription/get-subscribers target) =>
@@ -55,8 +55,8 @@
          (doseq [subscription items]
            subscription => (partial instance? Subscription))))))
 
- (context #'actions.subscription/get-subscriptions
-   (context "when there are subscriptions"
+ (fact #'actions.subscription/get-subscriptions
+   (fact "when there are subscriptions"
      (let [subscription (mock/a-subscription-exists)
            actor (model.subscription/get-actor subscription)]
        (actions.subscription/get-subscriptions actor) =>

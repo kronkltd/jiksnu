@@ -1,27 +1,27 @@
 (ns jiksnu.transforms.conversation-transforms-test
-  (:use [clj-factory.core :only [factory]]
-        [jiksnu.transforms.conversation-transforms :only [set-update-source]]
-        [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=> contains anything]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.util :as util]))
+            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [jiksnu.transforms.conversation-transforms :refer [set-update-source]]
+            [jiksnu.util :as util]
+            [midje.sweet :refer [=> anything contains fact]]))
 
 (test-environment-fixture
 
- (context #'set-update-source
+ (fact #'set-update-source
    (let [source (mock/a-feed-source-exists)]
 
-     (context "when the update source is set"
+     (fact "when the update source is set"
        (let [conversation (factory :conversation {:update-source (:_id source)})]
          (set-update-source conversation) => conversation))
 
-     (context "when the update source is not set"
-       (context "and the source can be discovered"
+     (fact "when the update source is not set"
+       (fact "and the source can be discovered"
          (let [params {:url (:topic source)
                        ;; This is set by the other transform
                        :_id (util/make-id)}

@@ -10,20 +10,20 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [jiksnu.util :as util]
-            [midje.sweet :refer [=> contains throws truthy falsey]])
+            [midje.sweet :refer [=> contains fact throws truthy falsey]])
   (:import jiksnu.model.Activity))
 
 (test-environment-fixture
 
- (context #'actions.activity/oembed->activity
+ (fact #'actions.activity/oembed->activity
    (let [oembed-str (slurp "test-resources/oembed.json")]
      ;; TODO: complete
      oembed-str => string?))
 
- (context #'actions.activity/find-by-user
-   (context "when the user has activities"
+ (fact #'actions.activity/find-by-user
+   (fact "when the user has activities"
      (db/drop-all!)
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity {:user user})]
@@ -35,10 +35,10 @@
          (doseq [item (:items response)]
            item => (partial instance? Activity))))))
 
- (context #'actions.activity/create
-   (context "when the user is logged in"
-     (context "and it is a valid activity"
-       (context "should return that activity"
+ (fact #'actions.activity/create
+   (fact "when the user is logged in"
+     (fact "and it is a valid activity"
+       (fact "should return that activity"
          (let [domain (mock/a-domain-exists)
                feed-source (mock/a-feed-source-exists)
                conversation (mock/a-conversation-exists)
@@ -49,22 +49,22 @@
                                             :local         true})]
            (actions.activity/create activity) => (partial instance? Activity))))))
 
- (context #'actions.activity/post
-   (context "when the user is not logged in"
+ (fact #'actions.activity/post
+   (fact "when the user is not logged in"
      (let [activity (dissoc (factory :activity) :author)]
        (actions.activity/post activity) => (throws RuntimeException))))
 
- (context #'actions.activity/delete
-   (context "when the activity exists"
-     (context "and the user owns the activity"
-       (context "should delete that activity"
+ (fact #'actions.activity/delete
+   (fact "when the activity exists"
+     (fact "and the user owns the activity"
+       (fact "should delete that activity"
          (let [user (mock/a-user-exists)]
            (session/with-user user
              (let [activity (mock/there-is-an-activity {:user user})]
                (actions.activity/delete activity) => activity
                (model.activity/fetch-by-id (:_id activity)) => nil)))))
-     (context "and the user does not own the activity"
-       (context "should not delete that activity"
+     (fact "and the user does not own the activity"
+       (fact "should not delete that activity"
          (let [user (mock/a-user-exists)
                author (mock/a-remote-user-exists)
                activity (mock/there-is-an-activity {:user author})]
@@ -72,67 +72,67 @@
              (actions.activity/delete activity) => (throws RuntimeException)
              (model.activity/fetch-by-id (:_id activity)) => activity))))))
 
- (context #'actions.activity/viewable?
-   (context "When it is public"
+ (fact #'actions.activity/viewable?
+   (fact "When it is public"
      (let [activity (mock/there-is-an-activity)]
        (actions.activity/viewable? activity .user.)) => truthy)
-   (context "when it is not public"
-     (context "when the user is the author"
+   (fact "when it is not public"
+     (fact "when the user is the author"
        (let [user (mock/a-user-exists)
              activity (mock/there-is-an-activity {:user user})]
          (actions.activity/viewable? activity user)) => truthy)
-     (context "when the user is not the author"
-       (context "when the user is an admin"
+     (fact "when the user is not the author"
+       (fact "when the user is an admin"
          (let [user (mock/a-user-exists {:admin true})
                activity (mock/there-is-an-activity {:modifier "private"})]
            (actions.activity/viewable? activity user)) => truthy)
-       (context "when the user is not an admin"
+       (fact "when the user is not an admin"
          (let [user (mock/a-user-exists)
                author (mock/a-user-exists)
                activity (mock/there-is-an-activity {:modifier "private"
                                                     :user author})]
            (actions.activity/viewable? activity user)) => falsey))))
 
- (context #'actions.activity/show
-   (context "when the record exists"
-     (context "and the record is viewable"
+ (fact #'actions.activity/show
+   (fact "when the record exists"
+     (fact "and the record is viewable"
        (let [activity (mock/there-is-an-activity)]
          (actions.activity/show activity) => activity
          (provided
            (actions.activity/viewable? activity) => true)))
-     (context "and the record is not viewable"
+     (fact "and the record is not viewable"
        (let [activity (mock/there-is-an-activity)]
          (actions.activity/show activity) => (throws RuntimeException)
          (provided
            (actions.activity/viewable? activity) => false)))))
 
- (context #'actions.activity/edit
+ (fact #'actions.activity/edit
 
-   (context "when the params are nil"
+   (fact "when the params are nil"
      (let [params nil]
        (actions.activity/edit params) => (throws)))
 
-   (context "when there is not an id"
+   (fact "when there is not an id"
      (let [params {}]
        (actions.activity/edit params) => (throws)))
 
-   (context "when the target is not found"
+   (fact "when the target is not found"
      (let [params {:_id (util/make-id)}]
        (actions.activity/edit params) => (throws)))
 
-   (context "when there is no actor"
+   (fact "when there is no actor"
      (let [activity (mock/there-is-an-activity)
            params {:_id (:_id activity)}]
        (actions.activity/edit params) => (throws)))
 
-   (context "when the activity is not editable"
+   (fact "when the activity is not editable"
      (let [activity (mock/there-is-an-activity)
            actor (mock/a-user-exists)
            params {:_id activity}]
        (session/with-user actor
          (actions.activity/edit params) => (throws))))
 
-   (context "when the provided params contain invalid keys"
+   (fact "when the provided params contain invalid keys"
      (let [actor (mock/a-user-exists)
            activity (mock/there-is-an-activity {:user actor})
            params {:_id (:_id activity)
@@ -140,7 +140,7 @@
        (session/with-user actor
          (actions.activity/edit params) => (throws))))
 
-   (context "when the params are valid"
+   (fact "when the params are valid"
      (let [actor (mock/a-user-exists)
            activity (mock/there-is-an-activity {:user actor})
            params {:_id (:_id activity)
@@ -153,7 +153,7 @@
            (:nsfw edited-item) => true))))
    )
 
- (context #'actions.activity/oembed
+ (fact #'actions.activity/oembed
    (with-context [:http :html]
      (let [activity (mock/there-is-an-activity)]
        (actions.activity/oembed activity) =>
@@ -161,16 +161,16 @@
          response => map?
          (:html response) => string?))))
 
- (context #'actions.activity/fetch-by-conversation
-   (context "when there are matching activities"
+ (fact #'actions.activity/fetch-by-conversation
+   (fact "when there are matching activities"
      (let [conversation (mock/a-conversation-exists)
            activity (mock/there-is-an-activity {:conversation conversation})]
        (actions.activity/fetch-by-conversation conversation) =>
        (check [response]
          (count (:items response)) => 1))))
 
- (context #'actions.activity/fetch-by-conversations
-   (context "when there are matching activities"
+ (fact #'actions.activity/fetch-by-conversations
+   (fact "when there are matching activities"
      (let [conversation1 (mock/a-conversation-exists)
            conversation2 (mock/a-conversation-exists)
            activity1 (mock/there-is-an-activity {:conversation conversation1})

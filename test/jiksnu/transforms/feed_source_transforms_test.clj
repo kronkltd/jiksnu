@@ -1,24 +1,24 @@
 (ns jiksnu.transforms.feed-source-transforms-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.transforms.feed-source-transforms :only [set-domain]]
-        [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=> contains anything]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]))
+            [jiksnu.model :as model]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [jiksnu.transforms.feed-source-transforms :refer [set-domain]]
+            [midje.sweet :refer [=> anything contains fact]]))
 
 (test-environment-fixture
 
- (context #'set-domain
-   (context "when the source has a domain"
+ (fact #'set-domain
+   (fact "when the source has a domain"
      (let [domain (mock/a-record-exists :domain)
            source (factory :feed-source {:domain (:_id domain)})]
        (set-domain source) => source))
-   (context "when the source does not have a domain"
+   (fact "when the source does not have a domain"
      (let [domain (mock/a-record-exists :domain)
            url (make-uri (:_id domain))
            source (dissoc (factory :feed-source {:topic url}) :domain)]

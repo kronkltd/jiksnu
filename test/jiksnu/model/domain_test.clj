@@ -6,17 +6,17 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :refer [create drop! get-xrd-url]]
             [jiksnu.test-helper :refer [context test-environment-fixture]]
-            [midje.sweet :refer [=> contains]])
+            [midje.sweet :refer [=> contains fact]])
   (:import jiksnu.model.Domain))
 
 (test-environment-fixture
 
- (context #'create
+ (fact #'create
    (let [params (actions.domain/prepare-create (factory :domain))]
      (create params) => (partial instance? Domain)))
 
- (context #'get-xrd-url
-   (context "when the domain doesn't exist"
+ (fact #'get-xrd-url
+   (fact "when the domain doesn't exist"
      (get-xrd-url nil "acct:foo@example.com") => nil?))
 
  )

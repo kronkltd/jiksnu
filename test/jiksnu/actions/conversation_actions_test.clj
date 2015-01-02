@@ -6,12 +6,12 @@
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
             [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.test-helper :refer [context test-environment-fixture]]
-            [midje.sweet :refer [=>]]))
+            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [midje.sweet :refer [=> fact]]))
 
 (test-environment-fixture
 
- (context #'create
+ (fact #'create
    (let [domain (mock/a-domain-exists)
          domain-name (:_id domain)
          url (make-uri domain-name)
@@ -23,16 +23,16 @@
                                         :update-source (:_id source)})]
      (create params)) => map?)
 
- (context #'delete
+ (fact #'delete
    (let [conversation (mock/a-conversation-exists)]
      (delete conversation) => map?
      (model.conversation/fetch-by-id (:_id conversation)) => nil))
 
- (context #'index
-   (context "should return a page structure"
+ (fact #'index
+   (fact "should return a page structure"
      (index) => map?))
 
- (context #'show
+ (fact #'show
    (show .conversation.) => .conversation.)
 
  )

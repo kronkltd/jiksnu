@@ -11,15 +11,15 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [jiksnu.util :as util]
-            [midje.sweet :refer [=> contains throws truthy falsey]])
+            [midje.sweet :refer [=> contains fact throws truthy falsey]])
   (:import jiksnu.model.AccessToken
            jiksnu.model.Activity))
 
 (test-environment-fixture
 
- (context #'actions.access-token/get-access-token
+ (fact #'actions.access-token/get-access-token
    (let [client (mock/a-client-exists)
          token (mock/a-request-token-exists {:client client})]
      (let [params {"oauth_version" "1.0"

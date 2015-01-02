@@ -5,16 +5,16 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
-            [midje.sweet :refer [falsey =>]]))
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [falsey => fact future-fact]]))
 
 (test-environment-fixture
 
- (future-context #'show
+ (future-fact #'show
    (let [tag-name (fseq :word)]
      (show tag-name) => seq?))
 
- (future-context #'delete
+ (future-fact #'delete
    (let [user (mock/a-user-exists)
          activity (mock/there-is-an-activity)
          like (model.like/create (factory :like

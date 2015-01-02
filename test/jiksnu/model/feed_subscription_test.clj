@@ -3,7 +3,7 @@
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.model.feed-subscription :only [create count-records delete drop!
                                                fetch-all fetch-by-id]]
-        [midje.sweet :only [throws =>]])
+        [midje.sweet :only [throws => fact]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.mock :as mock]
@@ -11,44 +11,43 @@
             [jiksnu.util :as util])
   (:import jiksnu.model.FeedSubscription
            org.bson.types.ObjectId
-           org.joda.time.DateTime
-           slingshot.ExceptionInfo))
+           org.joda.time.DateTime))
 
 (test-environment-fixture
 
- (context #'count-records
-   (context "when there aren't any items"
+ (fact #'count-records
+   (fact "when there aren't any items"
      (drop!)
      (count-records) => 0)
-   (context "when there are items"
+   (fact "when there are items"
      (drop!)
      (let [n 15]
        (dotimes [i n]
          (mock/a-feed-subscription-exists))
        (count-records) => n)))
 
- (context #'delete
+ (fact #'delete
    (let [item (mock/a-feed-subscription-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
- (context #'drop!
+ (fact #'drop!
    (dotimes [i 1]
      (mock/a-feed-subscription-exists))
    (drop!)
    (count-records) => 0)
 
- (context #'fetch-by-id
-   (context "when the item doesn't exist"
+ (fact #'fetch-by-id
+   (fact "when the item doesn't exist"
      (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
-   (context "when the item exists"
+   (fact "when the item exists"
      (let [item (mock/a-feed-subscription-exists)]
        (fetch-by-id (:_id item)) => item)))
 
- (context #'create
-   (context "when given valid params"
+ (fact #'create
+   (fact "when given valid params"
      (let [params (actions.feed-subscription/prepare-create
                    (factory :feed-subscription {:local false}))]
        (create params)) =>
@@ -60,15 +59,15 @@
          (:updated response) => (partial instance? DateTime)
          (:url response) => string?))
 
-   (context "when given invalid params"
+   (fact "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (context #'fetch-all
-   (context "when there are no items"
+ (fact #'fetch-all
+   (fact "when there are no items"
      (drop!)
      (fetch-all) => empty?)
 
-   (context "when there is more than a page of items"
+   (fact "when there is more than a page of items"
      (drop!)
 
      (let [n 25]

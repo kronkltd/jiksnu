@@ -1,7 +1,7 @@
 (ns jiksnu.model.stream-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=>]]
+        [midje.sweet :only [=> fact]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -19,13 +19,13 @@
 
 (test-environment-fixture
 
- (context #'model.stream/count-records
+ (fact #'model.stream/count-records
 
-   (context "when there aren't any items"
+   (fact "when there aren't any items"
      (model.stream/drop!)
      (model.stream/count-records) => 0)
 
-   (context "when there are items"
+   (fact "when there are items"
      (model.stream/drop!)
      (let [n 15]
        (dotimes [i n]
@@ -33,7 +33,7 @@
        (model.stream/count-records) => n))
    )
 
- ;; (context #'create
+ ;; (fact #'create
  ;;   (let [domain (mock/a-domain-exists)
  ;;         feed-source (mock/a-feed-source-exists {:domain domain})
  ;;         conversation (mock/a-conversation-exists {:feed-source feed-source})

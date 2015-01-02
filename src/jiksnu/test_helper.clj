@@ -34,15 +34,8 @@
      (print (apply str (repeat *depth* "  ")))
      (println var-name#)
      (fact ~description
-
-       ;; (trace/time*
-
        (binding [*depth* (inc *depth*)]
-         ~@body)
-
-       ;; )
-
-       )
+         ~@body))
      (when (zero? *depth*)
        (println " "))))
 
@@ -60,11 +53,6 @@
 (defmacro test-environment-fixture
   [& body]
   `(try+
-    (println " ")
-    (println "****************************************************************************")
-    (println (str "Testing " *ns*))
-    (println "****************************************************************************")
-    (println " ")
     (load-site-config)
     (start-application! :test)
 

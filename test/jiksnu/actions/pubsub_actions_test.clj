@@ -8,20 +8,20 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.test-helper :refer [context hiccup->doc test-environment-fixture]]
-            [midje.sweet :refer [=>]]
+            [jiksnu.test-helper :refer [hiccup->doc test-environment-fixture]]
+            [midje.sweet :refer [=> fact]]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (context #'actions.pubsub/subscribe
+ (fact #'actions.pubsub/subscribe
    (let [params {:verify "async"}]
      (actions.pubsub/subscribe params) => .response.
      (provided
        (actions.feed-subscription/subscription-request params) => .subscription.
        (actions.pubsub/verify-subscription-async .subscription. params) => .response.)))
 
- (context #'actions.pubsub/hub-dispatch
+ (fact #'actions.pubsub/hub-dispatch
    (let [params {:mode "subscribe"}]
      (actions.pubsub/hub-dispatch params) => .response.
      (provided

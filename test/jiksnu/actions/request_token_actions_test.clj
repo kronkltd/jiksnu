@@ -4,15 +4,15 @@
             [jiksnu.factory :as factory]
             [jiksnu.mock :as mock]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
-            [midje.sweet :refer [=>]])
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [=> fact]])
   (:import jiksnu.model.RequestToken
            org.bson.types.ObjectId
            ))
 
 (test-environment-fixture
 
- (context #'actions.request-token/create
+ (fact #'actions.request-token/create
    (let [client (mock/a-client-exists)
          params {:client (:_id client)
                  :callback (fseq :uri)}]
@@ -21,7 +21,7 @@
        token => (partial instance? RequestToken)
        (:_id token) => (partial instance? String))))
 
- ;; (context #'actions.request-token/get-request-token
+ ;; (fact #'actions.request-token/get-request-token
  ;;   (let [params {}]
  ;;     (actions.request-token/get-request-token params) =>
  ;;     (check [token]
