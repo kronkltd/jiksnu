@@ -2,7 +2,6 @@
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
-            [ciste.model :as cm]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [lamina.core :as l]

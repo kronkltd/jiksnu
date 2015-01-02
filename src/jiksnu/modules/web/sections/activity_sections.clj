@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.sections.activity-sections
   (:require [ciste.core :refer [with-format]]
-            [ciste.model :as cm]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section add-form
                                             delete-button edit-button

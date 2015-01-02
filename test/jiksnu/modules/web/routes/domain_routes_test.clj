@@ -25,32 +25,6 @@
 
 (test-environment-fixture
 
- ;; (fact "show"
- ;;   (with-context [:http :html]
- ;;     (let [domain (mock/a-domain-exists)
- ;;           user (mock/a-user-exists {:domain domain})]
-
- ;;       (fact "when requesting the default page"
- ;;         (-> (req/request :get (uri domain))
- ;;             response-for) =>
- ;;             (check [response]
- ;;               response => map?
- ;;               (:status response) => status/success?
- ;;               (let [body (h/html (:body response))]
- ;;                 body => (re-pattern (str (:_id domain))))))
-
- ;;       (fact "when requesting the second page of users"
- ;;         (let [path (str (uri domain)
- ;;                         "?page=2")]
- ;;           (-> (req/request :get path)
- ;;               response-for)) =>
- ;;               (check [response]
- ;;                 response => map?
- ;;                 (:status response) => status/success?
- ;;                 (let [body (h/html (:body response))]
- ;;                   body => (re-pattern (str (:_id domain))))))
- ;;       )))
-
  (fact "Requesting the host meta"
    (let [domain (actions.domain/current-domain)]
 

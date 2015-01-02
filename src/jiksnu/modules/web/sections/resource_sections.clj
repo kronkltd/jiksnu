@@ -7,8 +7,7 @@
           [jiksnu.modules.web.sections :only [action-link bind-to
                                               dropdown-menu
                                               pagination-links]])
-    (:require [ciste.model :as cm]
-              [clojure.tools.logging :as log]
+    (:require [clojure.tools.logging :as log]
               [jiksnu.modules.web.sections.link-sections :as sections.link]
               [jiksnu.session :as session])
     (:import jiksnu.model.Domain

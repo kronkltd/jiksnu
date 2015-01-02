@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.sections.activity-sections
   (:require [ciste.core :refer [with-format]]
-            [ciste.model :as cm]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [edit-button
                                             show-section-minimal

@@ -1,13 +1,10 @@
 (ns jiksnu.modules.web.views.activity-views
-  (:require [ciste.config :refer [config]]
-            [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [show-section uri]]
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [uri]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.modules.web.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
-            [jiksnu.modules.web.sections :refer [bind-to redirect]])
-  (:import jiksnu.model.Activity))
+            [jiksnu.modules.web.sections :refer [redirect]]))
 
 (defview #'actions.activity/delete :html
   [request activity]
@@ -25,11 +22,3 @@
                 "/"
                 (uri actor))]
     (redirect url)))
-
-(defview #'actions.activity/show :html
-  [request activity]
-  {:body
-   (let [activity (Activity.)]
-     [:div
-      (bind-to "targetActivity"
-               (show-section activity))])})

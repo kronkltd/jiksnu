@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.views.domain-views-test
-  (:require [ciste.core :refer [with-serialization with-format]]
+  (:require [ciste.core :refer [with-context]]
             [ciste.filters :refer [filter-action]]
             [ciste.views :refer [apply-view]]
             [clj-factory.core :refer [factory]]
@@ -7,32 +7,27 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact]])
+            [midje.sweet :refer [=> facts fact]])
   (:import jiksnu.model.Domain))
 
 
 (test-environment-fixture
 
  ;; TODO: going away
- (fact "apply-view #'show"
-   (let [action #'jiksnu.actions.domain-actions/show]
+ (facts "apply-view #'actions.domain/show [:http :html]"
+   (let [action #'actions.domain/show]
+     (with-context [:http :html]
 
-     (fact "when the serialization is :http"
-       (with-serialization :http
+      (let [domain (Domain.)
+            request {:action action
+                     :params {:id (:_id domain)}}
+            response (filter-action action request)
+            rendered (apply-view request response)]
 
-         (fact "when the format is :html"
-           (with-format :html
+        (fact "returns a map"
+          (log/spy :info rendered) => map?)
+        )
 
-             (let [domain (Domain.)
-                   request {:action action
-                            :params {:id (:_id domain)}}
-                   response (filter-action action request)
-                   rendered (apply-view request response)]
-
-               (fact "returns a map"
-                 rendered => map?)
-               )
-             ))
-         ))
+      )
      ))
  )

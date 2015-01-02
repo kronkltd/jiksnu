@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.sections.subscription-sections
-  (:require [ciste.model :as cm]
-            [ciste.sections :refer [declare-section defsection]]
+  (:require [ciste.sections :refer [declare-section defsection]]
             [ciste.sections.default :refer [actions-section delete-button edit-button full-uri
                                             index-block index-line index-section link-to
                                             show-section title uri]]

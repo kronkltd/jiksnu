@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.user-transforms
   (:require [ciste.config :refer [config]]
-            [ciste.model :as cm]
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.tools.logging :as log]
             [clojurewerkz.route-one.core :refer [named-url]]

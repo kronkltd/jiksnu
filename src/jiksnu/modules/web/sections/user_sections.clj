@@ -98,10 +98,6 @@
   [items & [page & _]]
   (admin-index-block items page))
 
-(defsection add-form [User :html]
-  [user & _]
-)
-
 (defsection delete-button [User :html]
   [user & _]
   (action-link "user" "delete" (:_id user)))

@@ -29,35 +29,6 @@
                  {:content content})]
        data => string?)))
 
- (fact "show-http-route"
-   (fact "when the user is not authenticated"
-     (fact "and the activity does not exist"
-       (let [author (mock/a-user-exists)
-             activity (factory :activity)]
-         (->> (str "/notice/" (:_id activity))
-              (req/request :get)
-              response-for) =>
-              (contains {:status 404})))
-
-     (fact "and there are activities"
-       (let [activity (mock/there-is-an-activity)]
-         (->> (str "/notice/" (:_id activity))
-              (req/request :get)
-              response-for) =>
-             (check [response]
-               response => map?
-               (:status response) => status/success?
-               (:body response) => string?))))
-
-   (fact "when the user is authenticated"
-     (fact "when a private activity exists"
-       (let [activity (mock/there-is-an-activity {:modifier "private"})]
-         (-> (req/request :get (str "/notice/" (:_id activity)))
-             as-user response-for) =>
-             (check [response]
-               response => map?
-               (:status response) => status/redirect?)))))
-
  (future-fact "oembed"
    (fact "when the format is json"
      (let [user (mock/a-user-exists)

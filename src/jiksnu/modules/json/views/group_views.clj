@@ -1,6 +1,5 @@
 (ns jiksnu.modules.json.views.group-views
-  (:require [ciste.model :as cm]
-            [ciste.views :refer [defview]]
+  (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [index-section add-form
                                             show-section]]
             [clojure.tools.logging :as log]

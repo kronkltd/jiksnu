@@ -3,7 +3,6 @@
             [aleph.http :as http]
             [ciste.config :as c]
             [ciste.core :as core]
-            [ciste.model :as cm]
             [ciste.runner :as runner]
             [ciste.sections.default :as sections]
             [ciste.service.aleph :as aleph]

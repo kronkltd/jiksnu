@@ -16,7 +16,6 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.web.views.activity-views
-            jiksnu.modules.web.views.conversation-views
             jiksnu.modules.web.views.stream-views
             [jiksnu.test-helper :refer [check hiccup->doc
                                         select-by-model test-environment-fixture]]

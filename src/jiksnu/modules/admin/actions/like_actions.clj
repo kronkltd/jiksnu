@@ -1,6 +1,5 @@
 (ns jiksnu.modules.admin.actions.like-actions
   (:require [ciste.core :refer [defaction]]
-            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.like-actions :as actions.like]))
 

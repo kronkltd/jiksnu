@@ -1,7 +1,6 @@
 (ns jiksnu.modules.admin.actions.group-membership-actions
   (:use [ciste.core :only [defaction]])
-  (:require [ciste.model :as cm]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]))
 
 (defaction index

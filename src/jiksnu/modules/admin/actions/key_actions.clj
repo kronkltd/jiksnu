@@ -1,6 +1,5 @@
 (ns jiksnu.modules.admin.actions.key-actions
   (:require [ciste.core :refer [defaction]]
-            [ciste.model :as cm]
             [jiksnu.actions.key-actions :as actions.key]))
 
 (defaction create
