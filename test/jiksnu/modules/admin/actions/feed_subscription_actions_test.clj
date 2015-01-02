@@ -13,7 +13,7 @@
    (context "when there are no sources"
      (db/drop-all!)
 
-     (index) =>
+     (actions.feed-subscription/index) =>
      (check [response]
        response => map?
        (:items response) => empty?
@@ -25,7 +25,7 @@
      (dotimes [n 25]
        (mock/a-feed-subscription-exists))
 
-     (index) =>
+     (actions.feed-subscription/index) =>
      (check [response]
        (count (:items response)) => 20)))
 

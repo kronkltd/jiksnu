@@ -76,7 +76,7 @@
                  ;; I know you really want to upgrade this one, but
                  ;; you can't. :(
                  [xml-apis "1.4.01"]]
-  :plugins [[lein-cljsbuild "1.0.3"]
+  :plugins [[lein-cljsbuild "1.0.4"]
             [codox          "0.8.10"]
             [lein-cucumber  "1.0.2"]
             [lein-lesscss   "1.2"]
@@ -106,7 +106,8 @@
                              :port 7888}
               :plugins [[com.cemerick/austin "0.1.4"]]
               :dependencies
-              [[midje         "1.7.0-SNAPSHOT"]
+              [[midje         "1.7.0-SNAPSHOT"
+                :exclusions [org.clojure/clojure]]
                [ring-mock     "0.1.5"]]}}
   :lesscss-output-path "resources/public/css"
 
