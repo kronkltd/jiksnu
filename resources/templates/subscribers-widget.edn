@@ -1,8 +1,8 @@
 [:div.subscribers
  [:h3
-  [:a {:href "/users/{{user.id}}/subscribers"} "Followers"]
+  [:a {:href "/users/{{user._id}}/subscribers"} "Followers"]
   " {{page.items.length}}"]
  [:ul.unstyled
-  [:li {:ng-repeat "subscription in subscriptions"}
+  [:li {:ng-repeat "subscription in page.items"}
    [:display-avatar {:data-id "{{subscription.from}}"
                      :data-size "24"}]]]]

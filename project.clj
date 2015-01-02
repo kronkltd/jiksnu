@@ -89,13 +89,10 @@
               :builds
               [{:source-paths ["src-cljs"]
                 :compiler
-                {
-                 :output-to "resources/public/cljs/jiksnu.js"
+                {:output-to "resources/public/cljs/jiksnu.js"
                  ;; :output-dir "resources/public/cljs/"
-                 :optimizations :none
-                 :pretty-print true
-                 }}
-               ]}
+                 :optimizations :whitespace
+                 :pretty-print true}}]}
   ;; :hooks [leiningen.cljsbuild]
   :main ciste.runner
   :jvm-opts ["-server"
@@ -114,8 +111,4 @@
   :lesscss-output-path "resources/public/css"
 
   :source-paths ["src" "src-cljs"]
-  :lis-opts {
-             :name "jiksnu"
-             }
-
-  )
+  :lis-opts {:name "jiksnu"})

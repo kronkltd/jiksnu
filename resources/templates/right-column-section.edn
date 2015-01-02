@@ -1,8 +1,9 @@
 [:div
  [:h2 "Right Column"]
- [:show-user-section]
- [:subscriptions-widget]
- [:subscribers-widget]
- [:groups-widget]
- [:streams-widget]
+ [:div  {:ng-if "app.user"}
+  [:show-user-section]
+  [:subscriptions-widget]
+  [:subscribers-widget]
+  [:groups-widget]
+  [:streams-widget]]
  ]

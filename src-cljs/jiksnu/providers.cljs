@@ -24,14 +24,14 @@
            )))))
 
 
-(def.n app-service
+(defn app-service
   [$http ws]
-  (let [app {}
+  (let [app (obj)
         di (obj :$http $http
                 :ws ws)]
     (aset js/window "app" app)
     (doto app
-      (aset "data"        {})
+      (aset "data"        (obj))
       (aset "ping"        (ping app di))
       (aset "fetchStatus" (fetch-status app di)))))
 

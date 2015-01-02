@@ -36,13 +36,13 @@
 (def.controller jiksnu.LoginPageController [])
 
 (def.controller jiksnu.LogoutController
-  [$scope $http]
+  [$scope $http app]
 
   (-> $http
       (.post "/main/logout")
       (.success (fn [data]
                   (.log js/console "data:" data)
-
+                  (.fetchStatus app)
                   ;; TODO: refresh status
 
                   ))
@@ -102,7 +102,7 @@
   (.init $scope))
 
 (def.controller jiksnu.NavBarController
-  [$scope ws app]
+  [$scope app]
   (.log js/console "app:" app)
   (! $scope.app app.data)
   (.fetchStatus app))
@@ -138,7 +138,10 @@
 
 (def.controller jiksnu.RegisterPageController [])
 
-(def.controller jiksnu.RightColumnController [])
+(def.controller jiksnu.RightColumnController
+  [$scope app]
+  (! $scope.app app.data)
+  )
 
 (def.controller jiksnu.ShowActivityController
   [$scope $http $stateParams]

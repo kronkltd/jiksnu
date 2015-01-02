@@ -1,7 +1,7 @@
 (ns jiksnu.directives
   (:require jiksnu.app)
   (:use-macros [gyr.core :only [def.directive]]
-               [purnam.core :only [! arr obj]]))
+               [purnam.core :only [! ? arr obj]]))
 
 (def.directive jiksnu.addPostForm
   []
@@ -87,9 +87,16 @@
   (obj))
 
 (def.directive jiksnu.subscribersWidget
-  []
+  [app]
   (obj
    :templateUrl "/templates/subscribers-widget"
+   :controller (arr "$scope" "userService"
+                    (fn [$scope userService]
+                      (-> userService
+                          (.get (? app.data.user))
+                          (.then (fn [user]
+                                   (! $scope.user user))))))
+
    )
   )
 
