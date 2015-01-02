@@ -10,14 +10,13 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [check context future-context
-                                        hiccup->doc test-environment-fixture]]
-            [midje.sweet :refer [=> anything]]
+            [jiksnu.test-helper :refer [check hiccup->doc test-environment-fixture]]
+            [midje.sweet :refer [=> anything fact]]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (context "subscription request"
+ (fact "subscription request"
    (let [domain (mock/a-domain-exists)
          source (mock/a-feed-source-exists
                  {:domain (actions.domain/current-domain)})

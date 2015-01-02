@@ -13,17 +13,16 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.test-helper :refer [check context future-context
-                                        test-environment-fixture]]
-            [midje.sweet :refer [=> =not=> contains]]))
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [=> =not=> contains fact]]))
 
 (test-environment-fixture
 
- (context "apply-view #'actions.activity/oembed"
+ (fact "apply-view #'actions.activity/oembed"
    (let [action #'actions.activity/oembed]
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
-         (context "when the format is :json"
+         (fact "when the format is :json"
            (with-format :json
              (let [activity (mock/there-is-an-activity)
                    request {:params {:url (:id activity)}
@@ -35,7 +34,7 @@
                    result => map?
                    (:status result) => status/success?
                    body => (contains {:title (:title activity)}))))))
-         (context "when the format is :xml"
+         (fact "when the format is :xml"
            (with-format :xml
              (let [activity (mock/there-is-an-activity)
                    request {:params {:url (:id activity)}

@@ -4,13 +4,13 @@
             [jiksnu.mock :as mock]
             [jiksnu.modules.admin.actions.feed-subscription-actions
              :as actions.feed-subscription]
-            [jiksnu.test-helper :refer [check context test-environment-fixture]]
-            [midje.sweet :refer [=>]]))
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [=> fact]]))
 
 (test-environment-fixture
 
- (context #'actions.feed-subscription/index
-   (context "when there are no sources"
+ (fact #'actions.feed-subscription/index
+   (fact "when there are no sources"
      (db/drop-all!)
 
      (actions.feed-subscription/index) =>
@@ -19,7 +19,7 @@
        (:items response) => empty?
        (:totalRecords response) => zero?))
 
-   (context "when there are more than the page size sources"
+   (fact "when there are more than the page size sources"
      (db/drop-all!)
 
      (dotimes [n 25]

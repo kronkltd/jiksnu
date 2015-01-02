@@ -4,8 +4,8 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=>]])
+        [jiksnu.test-helper :only [check test-environment-fixture]]
+        [midje.sweet :only [=> fact]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
@@ -17,14 +17,14 @@
 
 (test-environment-fixture
 
- (context "apply-view #'index"
+ (fact "apply-view #'index"
    (let [action #'actions.admin.subscription/index]
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
              (binding [*dynamic* false]
-               (context "when there are subscriptions"
+               (fact "when there are subscriptions"
                  (db/drop-all!)
                  (let [user (mock/a-user-exists)
                        subscriptions
@@ -40,13 +40,13 @@
                      (let [body (h/html (:body response))]
                        body => #"subscriptions")))))))))))
 
- (context "apply-view #'actions.admin.subscription/delete"
+ (fact "apply-view #'actions.admin.subscription/delete"
    (let [action #'actions.admin.subscription/delete]
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
-             (context "when there is a subscription"
+             (fact "when there is a subscription"
                (let [subscription (mock/a-subscription-exists)
                      request {:action action
                               :params {:id (str (:_id subscription))}}

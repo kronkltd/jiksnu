@@ -12,14 +12,14 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.routes :refer [app]]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
-            [midje.sweet :refer [=>]]))
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [=> fact]]))
 
 (test-environment-fixture
 
- (context "filter-action #'actions.activity/oembed"
+ (fact "filter-action #'actions.activity/oembed"
    (let [action #'actions.activity/oembed]
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
          (let [request {:params {:url .url. :format .format.}}]
            (filter-action action request) => .oembed-map.

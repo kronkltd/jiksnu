@@ -5,16 +5,15 @@
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             jiksnu.modules.web.views.stream-views
-            [jiksnu.test-helper :refer [check context future-context
-                                        test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [midje.sweet :refer [=>]]
+            [midje.sweet :refer [=> fact]]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (context "public-timeline-http-route"
-   (context "when there are no activities"
+ (fact "public-timeline-http-route"
+   (fact "when there are no activities"
      (db/drop-all!)
 
      (-> (req/request :get "/")
@@ -23,12 +22,12 @@
                 response => map?
                 (:status response) => status/success?))
 
-   (context "when there are activities"
+   (fact "when there are activities"
      (let [user (mock/a-user-exists)]
        (dotimes [n 10]
          (mock/there-is-an-activity {:user user}))
 
-       (context "when the user is not authenticated"
+       (fact "when the user is not authenticated"
          (-> (req/request :get "/")
              response-for) =>
              (check [response]
@@ -36,7 +35,7 @@
                     (:status response) => status/success?
                     (:body response) => string?))
 
-       (context "when the user is authenticated"
+       (fact "when the user is authenticated"
          (-> (req/request :get "/")
              as-user
              response-for) =>
@@ -47,9 +46,9 @@
        ))
    )
 
- (context "user timeline"
+ (fact "user timeline"
 
-   (context "html"
+   (fact "html"
      (let [user (mock/a-user-exists)]
        (dotimes [n 10]
          (mock/there-is-an-activity {:user user}))

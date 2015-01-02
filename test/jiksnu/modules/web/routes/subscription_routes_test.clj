@@ -10,23 +10,22 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [jiksnu.test-helper :refer [check context future-context
-                                        hiccup->doc test-environment-fixture]]
+            [jiksnu.test-helper :refer [check hiccup->doc test-environment-fixture]]
             [lamina.core :as l]
-            [midje.sweet :refer [=> anything truthy]]
+            [midje.sweet :refer [=> anything fact future-fact truthy]]
             [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (context "ostatus submit"
+ (fact "ostatus submit"
    (let [username (fseq :username)
          domain-name (fseq :domain)
          uri (format "acct:%s@%s" username domain-name)
          params {:profile uri}]
 
-     (context "when not authenticated"
-       (context "when it is a remote user"
+     (fact "when not authenticated"
+       (fact "when it is a remote user"
          (-> (req/request :post "/main/ostatussub")
              (assoc :params params)
              response-for) =>
@@ -34,9 +33,9 @@
                response => map?
                (:status response) => status/redirect?)))
 
-     (context "when authenticated"
+     (fact "when authenticated"
        (let [actor (mock/a-user-exists)]
-         (context "when it is a remote user"
+         (fact "when it is a remote user"
            (-> (req/request :post "/main/ostatussub")
                (assoc :params params)
                (as-user actor)
@@ -49,7 +48,7 @@
                                                    (model/map->Domain {:_id domain-name}))))))
      ))
 
- (future-context "get-subscriptions"
+ (future-fact "get-subscriptions"
    (let [user (mock/a-user-exists)
          subscription (mock/a-subscription-exists {:from user})
          path (str "/users/" (:_id user) "/subscriptions")]

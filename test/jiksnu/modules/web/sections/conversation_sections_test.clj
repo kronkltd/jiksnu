@@ -5,7 +5,7 @@
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context future-context hiccup->doc
                                    test-environment-fixture select-by-model]]
-        [midje.sweet :only [=>]])
+        [midje.sweet :only [=> fact]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.ko :as ko]
@@ -21,15 +21,15 @@
 
 (test-environment-fixture
 
- (context #'show-section
-   (context "Conversation"
-     (context "when the serialization is :http"
+ (fact #'show-section
+   (fact "Conversation"
+     (fact "when the serialization is :http"
        (with-serialization :http
 
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
 
-             (context "when the conversation is empty"
+             (fact "when the conversation is empty"
                (let [item (Conversation.)]
 
                  (show-section item) =>
@@ -41,7 +41,7 @@
                           (count doc) => 1
                           doc => (partial every? map?)))))
 
-             (context "when given a real conversation"
+             (fact "when given a real conversation"
                (let [item (mock/a-conversation-exists)
                      activity (mock/there-is-an-activity {:conversation item})]
 

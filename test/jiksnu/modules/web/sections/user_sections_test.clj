@@ -3,9 +3,9 @@
         [ciste.sections.default :only [uri show-section title]]
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [jiksnu.test-helper :only [check test-environment-fixture]]
         jiksnu.session
-        [midje.sweet :only [=>]])
+        [midje.sweet :only [=> fact]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
@@ -16,27 +16,27 @@
 
 (test-environment-fixture
 
- (context "uri User :html :http"
-   (context "when the serialization is :http"
+ (fact "uri User :html :http"
+   (fact "when the serialization is :http"
      (with-serialization :http
-       (context "when the format is :html"
+       (fact "when the format is :html"
          (with-format :html
-           (context "when it is html-only"
+           (fact "when it is html-only"
              (binding [*dynamic* false]
                (let [user (mock/a-user-exists)]
                  (uri user) => string?))))))))
 
- (context "title User"
-   (context "should return the title of that user"
+ (fact "title User"
+   (fact "should return the title of that user"
      (with-context [:http :html]
        (let [user (mock/a-user-exists)
              response (title user)]
          response => string?))))
 
- (context "show-section User"
-   (context "when the serialization is :http"
+ (fact "show-section User"
+   (fact "when the serialization is :http"
      (with-serialization :http
-       (context "when the format is :html"
+       (fact "when the format is :html"
          (with-format :html
            (binding [*dynamic* false]
              (let [user (mock/a-user-exists)]

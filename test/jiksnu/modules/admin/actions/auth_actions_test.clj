@@ -1,11 +1,11 @@
 (ns jiksnu.modules.admin.actions.auth-actions-test
-  (:use [jiksnu.test-helper :only [context test-environment-fixture]]
+  (:use [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.modules.admin.actions.auth-actions
-        midje.sweet))
+        [midje.sweet :only [=> fact]]))
 
 (test-environment-fixture
 
- (context #'index
+ (fact #'index
    (index) => map?)
 
  )

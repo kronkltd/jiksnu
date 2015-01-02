@@ -13,7 +13,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [jiksnu.util :as util]
             [midje.sweet :refer [=> fact]]
             [ring.mock.request :as req]))
@@ -25,12 +25,12 @@
 
 (test-environment-fixture
 
- ;; (context "show"
+ ;; (fact "show"
  ;;   (with-context [:http :html]
  ;;     (let [domain (mock/a-domain-exists)
  ;;           user (mock/a-user-exists {:domain domain})]
 
- ;;       (context "when requesting the default page"
+ ;;       (fact "when requesting the default page"
  ;;         (-> (req/request :get (uri domain))
  ;;             response-for) =>
  ;;             (check [response]
@@ -39,7 +39,7 @@
  ;;               (let [body (h/html (:body response))]
  ;;                 body => (re-pattern (str (:_id domain))))))
 
- ;;       (context "when requesting the second page of users"
+ ;;       (fact "when requesting the second page of users"
  ;;         (let [path (str (uri domain)
  ;;                         "?page=2")]
  ;;           (-> (req/request :get path)
@@ -51,7 +51,7 @@
  ;;                   body => (re-pattern (str (:_id domain))))))
  ;;       )))
 
- (context "Requesting the host meta"
+ (fact "Requesting the host meta"
    (let [domain (actions.domain/current-domain)]
 
      (fact "returns the host meta as xml"

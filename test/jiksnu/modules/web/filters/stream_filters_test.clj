@@ -5,22 +5,22 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [lamina.core :refer [channel]]
-            [midje.sweet :refer [=>]]))
+            [midje.sweet :refer [=> fact]]))
 
 (test-environment-fixture
 
- (context "filter-action #'actions.stream/public-timeline"
+ (fact "filter-action #'actions.stream/public-timeline"
    (let [action #'actions.stream/public-timeline]
 
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
 
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
 
-             (context "when there are no activities"
+             (fact "when there are no activities"
                (db/drop-all!)
                (let [request {:action action}]
                  (filter-action action request) =>
@@ -30,11 +30,11 @@
          ))
      ))
 
- (context "filter-action #'actions.stream/user-timeline"
+ (fact "filter-action #'actions.stream/user-timeline"
    (let [action #'actions.stream/user-timeline]
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
-         (context "when the user exists"
+         (fact "when the user exists"
            (let [user (mock/a-user-exists)
                  request {:params {:id (str (:_id user))}}]
              (filter-action action request) => .response.

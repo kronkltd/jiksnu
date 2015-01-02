@@ -4,8 +4,8 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=>]])
+        [jiksnu.test-helper :only [check test-environment-fixture]]
+        [midje.sweet :only [=> fact future-fact]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.group-actions :as actions.group]
@@ -14,18 +14,18 @@
 
 (test-environment-fixture
 
- (context "apply-view #'actions.admin.group/index"
+ (fact "apply-view #'actions.admin.group/index"
    (let [action #'actions.admin.group/index]
 
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
 
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
 
-             (future-context "In static mode"
+             (future-fact "In static mode"
                (binding [*dynamic* false]
-                 (context "when there are groups"
+                 (fact "when there are groups"
                    (db/drop-all!)
                    (let [groups (doall
                                  (map (fn [n]

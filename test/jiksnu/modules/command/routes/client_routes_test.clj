@@ -5,20 +5,20 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [lamina.core :as l]
-            [midje.sweet :refer [contains =>]]))
+            [midje.sweet :refer [contains => fact]]))
 
 (test-environment-fixture
 
- (context #'parse-command
+ (fact #'parse-command
 
-   (context "get-page"
+   (fact "get-page"
      (let [name "get-page"]
 
-       (context "clients"
+       (fact "clients"
 
-         (context "when there are clients"
+         (fact "when there are clients"
            (let [client (mock/a-client-exists)]
              (let [ch (l/channel)
                    request {:channel ch

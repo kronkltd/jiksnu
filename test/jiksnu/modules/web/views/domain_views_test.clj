@@ -6,7 +6,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.test-helper :refer [context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [midje.sweet :refer [=> fact]])
   (:import jiksnu.model.Domain))
 
@@ -14,13 +14,13 @@
 (test-environment-fixture
 
  ;; TODO: going away
- (context "apply-view #'show"
+ (fact "apply-view #'show"
    (let [action #'jiksnu.actions.domain-actions/show]
 
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
 
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
 
              (let [domain (Domain.)

@@ -4,13 +4,13 @@
             [clojurewerkz.support.http.statuses :as status]
             jiksnu.modules.web.views.conversation-views
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [check context test-environment-fixture]]
-            [midje.sweet :refer [=>]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [=> fact]]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (context "index page"
+ (fact "index page"
    (->> "/main/conversations"
         (req/request :get)
         response-for) =>
@@ -20,7 +20,7 @@
           (:body response) => string?
           ))
 
- (context "index page (:viewmodel)"
+ (fact "index page (:viewmodel)"
    (->> "/main/conversations.viewmodel"
         (req/request :get)
         response-for) =>

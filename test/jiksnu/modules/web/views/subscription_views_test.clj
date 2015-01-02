@@ -12,18 +12,18 @@
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
-            [midje.sweet :refer [=>]]))
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [midje.sweet :refer [=> fact]]))
 
 (test-environment-fixture
 
- (context "apply-view #'actions.subscription/get-subscriptions"
+ (fact "apply-view #'actions.subscription/get-subscriptions"
    (let [action #'actions.subscription/get-subscriptions]
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
-             (context "when the user has subscriptions"
+             (fact "when the user has subscriptions"
                (db/drop-all!)
                (let [subscription (mock/a-subscription-exists)
                      actor (model.subscription/get-actor subscription)

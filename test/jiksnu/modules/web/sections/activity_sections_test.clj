@@ -4,8 +4,8 @@
         [ciste.sections.default :only [show-section uri]]
         [clj-factory.core :only [factory]]
         jiksnu.modules.web.sections.activity-sections
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=>]])
+        [jiksnu.test-helper :only [check test-environment-fixture]]
+        [midje.sweet :only [=> fact future-fact]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -24,7 +24,7 @@
 
 (test-environment-fixture
 
- (future-context #'like-button
+ (future-fact #'like-button
    (like-button (factory :activity)) =>
    (check [response]
      response => vector?
@@ -33,24 +33,24 @@
      ;; longer a good test.
      (first response) => :form))
 
- (context #'posted-link-section
-   (context "when the serialization is :http"
+ (fact #'posted-link-section
+   (fact "when the serialization is :http"
      (with-serialization :http
 
-       (context "when the format is :html"
+       (fact "when the format is :html"
          (with-format :html
 
-           (context "when dynamic is false"
+           (fact "when dynamic is false"
              (binding [ko/*dynamic* false]
 
-               (context "when given an empty activity"
+               (fact "when given an empty activity"
                  (let [item (Activity.)]
                    (posted-link-section item) =>
                    (check [response]
                      (let [resp-str (h/html response)]
                        resp-str => string?))))
 
-               (context "when given a real activity"
+               (fact "when given a real activity"
                  (let [activity (mock/there-is-an-activity)]
                    (posted-link-section activity) =>
                    (check [response]
@@ -61,31 +61,31 @@
        ))
    )
 
- (context #'uri
-   (context Activity
+ (fact #'uri
+   (fact Activity
      ;; TODO: not a good test
      (with-context [:http :html]
        (uri .activity.)) => string?))
 
- (context #'show-section
-   (context Activity
-     (context "when the serialization is :http"
+ (fact #'show-section
+   (fact Activity
+     (fact "when the serialization is :http"
        (with-serialization :http
 
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
 
-             (context "when dynamic is false"
+             (fact "when dynamic is false"
                (binding [ko/*dynamic* false]
 
-                 (context "when given an empty activity"
+                 (fact "when given an empty activity"
                    (let [item (Activity.)]
                      (show-section item) =>
                      (check [response]
                        (let [resp-str (h/html response)]
                          resp-str => string?))))
 
-                 (context "when given a real activity"
+                 (fact "when given a real activity"
                    (let [activity (mock/there-is-an-activity)]
                      (show-section activity) =>
                      (check [response]

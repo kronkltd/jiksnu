@@ -10,16 +10,16 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [jiksnu.util :as util]
-            [midje.sweet :refer [=>]]
+            [midje.sweet :refer [=> fact]]
             [ring.mock.request :as req]
             [ring.util.codec :as codec])
   (:import java.io.ByteArrayInputStream))
 
 (test-environment-fixture
 
- (context "register client"
+ (fact "register client"
    (let [body-m {:type "client_associate"
                  :application_type "native"
                  :application_name (fseq :word)

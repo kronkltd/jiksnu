@@ -18,25 +18,25 @@
             jiksnu.modules.web.views.activity-views
             jiksnu.modules.web.views.conversation-views
             jiksnu.modules.web.views.stream-views
-            [jiksnu.test-helper :refer [check context future-context hiccup->doc
+            [jiksnu.test-helper :refer [check hiccup->doc
                                         select-by-model test-environment-fixture]]
-            [midje.sweet :refer [=> contains fact truthy]]
+            [midje.sweet :refer [=> contains fact future-fact truthy]]
             [net.cgrand.enlive-html :as enlive]))
 
 (test-environment-fixture
 
- (context "apply-view #'public-timeline"
+ (fact "apply-view #'public-timeline"
    (let [action #'public-timeline]
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
 
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
 
-             (future-context "when dynamic is false"
+             (future-fact "when dynamic is false"
                (binding [*dynamic* false]
 
-                 (context "when there are conversations"
+                 (fact "when there are conversations"
                    (db/drop-all!)
                    (let [n 20
                          items (doall (for [i (range n)] (mock/a-conversation-exists)))
@@ -71,17 +71,17 @@
              ))
          ))))
 
- (context "apply-view #'user-timeline"
+ (fact "apply-view #'user-timeline"
    (let [action #'user-timeline]
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
 
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
 
-             (future-context "when in static mode"
+             (future-fact "when in static mode"
                (binding [*dynamic* false]
-                 (context "when that user has activities"
+                 (fact "when that user has activities"
                    (db/drop-all!)
                    (let [user (mock/a-user-exists)
                          activity (mock/there-is-an-activity {:user user})

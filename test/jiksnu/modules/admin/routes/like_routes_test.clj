@@ -2,8 +2,8 @@
   (:use [clj-factory.core :only [factory fseq]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.routes-helper :only [as-admin response-for]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=>]]
+        [jiksnu.test-helper :only [check test-environment-fixture]]
+        [midje.sweet :only [=> fact future-fact]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
@@ -16,7 +16,7 @@
 
 (test-environment-fixture
 
- (future-context "delete"
+ (future-fact "delete"
    (let [like (model.like/create (factory :like))]
      (-> (req/request :post (str "/admin/likes/" (:_id like) "/delete"))
          as-admin response-for) =>

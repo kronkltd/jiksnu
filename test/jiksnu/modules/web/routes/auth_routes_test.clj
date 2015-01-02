@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.routes.auth-routes-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=> truthy]])
+        [jiksnu.test-helper :only [check test-environment-fixture]]
+        [midje.sweet :only [=> fact truthy]])
   (:require [aleph.formats :as formats]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
@@ -13,8 +13,8 @@
 
 (test-environment-fixture
 
- (context "login"
-   (context "when given correct parameters"
+ (fact "login"
+   (fact "when given correct parameters"
      (db/drop-all!)
      (let [username (fseq :username)
            password (fseq :password)

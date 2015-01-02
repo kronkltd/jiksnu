@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.routes.like-routes-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [as-admin response-for]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=>]])
+        [jiksnu.test-helper :only [check test-environment-fixture]]
+        [midje.sweet :only [=> fact future-fact]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.model :as model]
@@ -12,7 +12,7 @@
 
 (test-environment-fixture
 
- (future-context "delete html"
+ (future-fact "delete html"
    (let [like (model.like/create (factory :like))]
      (-> (req/request :post (format "/likes/%s/delete" (:_id like)))
          as-admin response-for) =>

@@ -10,22 +10,21 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.web.views.user-views
-            [jiksnu.test-helper :refer [check context future-context
-                                        test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
 
-            [midje.sweet :refer [contains =>]]))
+            [midje.sweet :refer [contains => fact]]))
 
 (test-environment-fixture
 
- (context "apply-view #'actions.user/index"
+ (fact "apply-view #'actions.user/index"
    (let [action #'actions.user/index]
-     (context "when the serialization is :http"
+     (fact "when the serialization is :http"
        (with-serialization :http
-         (context "when the format is :html"
+         (fact "when the format is :html"
            (with-format :html
-             (context "when the request is not dynamic"
+             (fact "when the request is not dynamic"
                (binding [*dynamic* false]
-                 (context "when there are no activities"
+                 (fact "when there are no activities"
                    (let [request {:action action}
                          response (filter-action action request)]
                      (apply-view request response) => map?))))))))))

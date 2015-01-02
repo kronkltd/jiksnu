@@ -1,9 +1,9 @@
 (ns jiksnu.modules.web.routes.site-routes-test
   (:use [ciste.formats :only [format-as]]
         [clj-factory.core :only [factory fseq]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [jiksnu.test-helper :only [check test-environment-fixture]]
         [jiksnu.routes-helper :only [as-user response-for]]
-        [midje.sweet :only [=>]])
+        [midje.sweet :only [=> fact]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
@@ -18,14 +18,14 @@
             [ring.mock.request :as req]))
 
 (test-environment-fixture
- (context "rsd document"
+ (fact "rsd document"
    (-> (req/request :get "/rsd.xml") response-for) =>
    (check [response]
      response => map?
      (:status response) => status/success?
      (let [body (cm/string->document (:body response))
            root (.getRootElement body)
-           context {"rsd" "http://archipelago.phrasewise.com/rsd"}
-           nodes (cm/query root "//rsd:rsd" context)]
+           attr {"rsd" "http://archipelago.phrasewise.com/rsd"}
+           nodes (cm/query root "//rsd:rsd" attr)]
        (count nodes) => 1)))
  )

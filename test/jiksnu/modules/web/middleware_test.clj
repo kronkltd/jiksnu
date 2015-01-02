@@ -2,17 +2,17 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.modules.web.middleware :as m]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [midje.sweet :refer [=> contains fact]]))
 
 (test-environment-fixture
 
- (context #'m/authorization-header
-   (context "with a valid client"
+ (fact #'m/authorization-header
+   (fact "with a valid client"
      (let [client (mock/a-client-exists)]
 
 
-       (context "access token"
+       (fact "access token"
          (let [request-token (mock/a-request-token-exists {:client client})
                auth-map {"oauth_signature_method" "HMAC-SHA1"
                          "oauth_consumer_key" (:_id client)
@@ -32,12 +32,12 @@
        ))
    )
 
- (context #'m/parse-authorization-header
+ (fact #'m/parse-authorization-header
 
-   (context "with a valid client"
+   (fact "with a valid client"
      (let [client (mock/a-client-exists)]
 
-       (context "oob map"
+       (fact "oob map"
          (let [auth-map {"oauth_callback"         "oob"
                          "oauth_signature_method" "HMAC-SHA1"
                          "oauth_consumer_key"     (:_id client)

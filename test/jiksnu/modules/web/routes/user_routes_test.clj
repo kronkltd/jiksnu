@@ -9,15 +9,15 @@
             jiksnu.modules.web.views.user-views
             [jiksnu.util :as util]
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [lamina.core :as l]
-            [midje.sweet :refer [=>]]
+            [midje.sweet :refer [=> fact]]
             [ring.mock.request :as req]
             [slingshot.slingshot :refer [try+]]))
 
 (test-environment-fixture
 
- (context "index page"
+ (fact "index page"
    (->> "/users"
         (req/request :get)
         response-for) =>
@@ -26,16 +26,16 @@
           (:status response) => status/success?
           (:body response) => string?))
 
- (context "commands"
+ (fact "commands"
 
-   (context "get-model"
+   (fact "get-model"
      (let [command "get-model"
            ch (l/channel)]
 
-       (context "user"
+       (fact "user"
          (let [type "user"]
 
-           (context "when the record is not found"
+           (fact "when the record is not found"
              (let [request {:format :json
                             :channel ch
                             :name command
@@ -45,7 +45,7 @@
                  (let [m (json/read-str response)]
                    (get m "action") => "error"))))
 
-           (context "when the record is found"
+           (fact "when the record is found"
              (let [user (mock/a-user-exists)
                    request {:channel ch
                             :name command

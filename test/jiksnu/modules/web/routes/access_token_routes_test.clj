@@ -4,15 +4,15 @@
             [jiksnu.modules.web.middleware :as m]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.test-helper :refer [check test-environment-fixture]]
             [midje.sweet :refer [=> fact]]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (context "get access token"
+ (fact "get access token"
 
-   (context "when given valid params"
+   (fact "when given valid params"
      (let [client (mock/a-client-exists)
            request-token (mock/a-request-token-exists {:client client})
            url "/oauth/access_token"
