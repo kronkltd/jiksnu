@@ -27,7 +27,6 @@
                    "oauth_token" (:_id token)
                    "oauth_signature_method" "HMAC-SHA1"}]
        (actions.access-token/get-access-token params) =>
-       (check [response]
-         response => (partial instance? AccessToken)))))
+       (partial instance? AccessToken))))
 
  )

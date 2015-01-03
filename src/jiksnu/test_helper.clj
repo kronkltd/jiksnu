@@ -50,23 +50,30 @@
      (fact "checks"
        ~@body)))
 
+(defn setup-testing
+  []
+  (try+
+   (load-site-config)
+   (start-application! :test)
+   (db/drop-all!)
+   (dosync
+    (ref-set r/this {})
+    (ref-set r/that {}))
+   (actions.domain/current-domain)
+   (catch Object ex
+     (trace/trace :errors:handled ex))))
+
+(defn stop-testing
+  []
+  (stop-application!))
+
 (defmacro test-environment-fixture
   [& body]
   `(try+
-    (load-site-config)
-    (start-application! :test)
-
-    (db/drop-all!)
-
-    (dosync
-     (ref-set r/this {})
-     (ref-set r/that {}))
-
-    (actions.domain/current-domain)
-
+    (setup-testing)
     ;; (fact (do ~@body) =not=> (throws))
     ~@body
     (catch Object ex#
-      (trace/trace :errors:handled ex#))
+      (throw ex#))
     (finally
       (stop-application!))))
