@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.filters.pubsub-filters
+(ns jiksnu.modules.web.filters.pubsub-filters
   (:require [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]))

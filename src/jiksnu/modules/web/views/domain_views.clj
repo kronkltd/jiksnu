@@ -6,18 +6,15 @@
 
 (defview #'actions.domain/create :html
   [request domain]
-  (redirect "/main/domains"
-            "Domain has been created"))
+  (redirect "/main/domains" "Domain has been created"))
 
 (defview #'actions.domain/delete :html
   [request domain]
-  (redirect "/main/domains"
-            "Domain has been deleted"))
+  (redirect "/main/domains" "Domain has been deleted"))
 
 (defview #'actions.domain/discover :html
   [request domain]
-  (redirect "/main/domains"
-            "Discovering domain"))
+  (redirect "/main/domains" "Discovering domain"))
 
 ;; TODO: is this actually ever called as a route?
 (defview #'actions.domain/find-or-create :html
