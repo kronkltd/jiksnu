@@ -10,7 +10,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.modules.web.sections :refer [action-link bind-property
-                                                 control-line dropdown-menu with-sub-page]])
+                                                 control-line dropdown-menu]])
   (:import jiksnu.model.Group
            jiksnu.model.User))
 

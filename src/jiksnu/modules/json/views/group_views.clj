@@ -5,8 +5,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.modules.web.sections :refer [format-page-info
-                                                 pagination-links
-                                                 with-sub-page]]
+                                                 pagination-links]]
             [jiksnu.modules.web.sections.group-sections :as sections.group])
   (:import jiksnu.model.Group))
 

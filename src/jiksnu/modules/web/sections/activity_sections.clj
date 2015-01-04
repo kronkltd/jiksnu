@@ -25,8 +25,7 @@
             [jiksnu.modules.web.sections :refer [action-link bind-to
                                                  control-line
                                                  dropdown-menu
-                                                 format-links pagination-links
-                                                 with-sub-page]]
+                                                 format-links pagination-links]]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.session :as session]

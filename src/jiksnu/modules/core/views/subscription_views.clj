@@ -5,8 +5,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.modules.core.sections.subscription-sections :as sections.subscription]
-            [jiksnu.modules.web.sections :refer [format-page-info with-sub-page
-                                                pagination-links]])
+            [jiksnu.modules.web.sections :refer [format-page-info pagination-links]])
   (:import jiksnu.model.Subscription))
 
 (defn subscription-formats

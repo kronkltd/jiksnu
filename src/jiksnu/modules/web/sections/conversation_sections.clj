@@ -5,8 +5,7 @@
                                        show-section update-button]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
         [jiksnu.modules.web.sections :only [action-link bind-to
-                                            dropdown-menu pagination-links
-                                            with-sub-page]])
+                                            dropdown-menu pagination-links]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]

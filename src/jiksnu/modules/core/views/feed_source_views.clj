@@ -7,7 +7,7 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.sections :refer [format-page-info pagination-links
-                                                 redirect with-sub-page]]
+                                                 redirect]]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSource))
