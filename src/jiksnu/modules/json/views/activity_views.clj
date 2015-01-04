@@ -6,7 +6,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
-            [jiksnu.modules.web.sections :refer [bind-to redirect]])
+            [jiksnu.modules.web.sections :refer [redirect]])
   (:import jiksnu.model.Activity))
 
 (defview #'actions.activity/oembed :json

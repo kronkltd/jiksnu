@@ -4,7 +4,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.request-token-actions :as actions.request-token]
-            [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
+            [jiksnu.modules.web.sections :refer [pagination-links with-page]]
             [ring.util.response :as response]))
 
 (defview #'actions.request-token/authorize :html

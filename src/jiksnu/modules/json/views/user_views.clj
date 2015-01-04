@@ -6,7 +6,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
-            [jiksnu.modules.web.sections :refer [bind-to pagination-links
+            [jiksnu.modules.web.sections :refer [pagination-links
                                                  redirect with-page]]))
 
 (defview #'actions.user/index :json

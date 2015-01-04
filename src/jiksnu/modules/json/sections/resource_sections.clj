@@ -4,8 +4,7 @@
                                          index-block index-line link-to
                                          show-section update-button]]
           [jiksnu.modules.core.sections :only [admin-index-line]]
-          [jiksnu.modules.web.sections :only [action-link bind-to
-                                              dropdown-menu
+          [jiksnu.modules.web.sections :only [action-link dropdown-menu
                                               pagination-links]])
     (:require [clojure.tools.logging :as log]
               [jiksnu.modules.web.sections.link-sections :as sections.link]

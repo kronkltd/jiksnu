@@ -1,20 +1,23 @@
 (ns jiksnu.modules.web.sections.user-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section title show-section
-                                            edit-button delete-button link-to index-line
-                                            show-section-minimal update-button index-block]]
+                                            edit-button delete-button link-to
+                                            index-line show-section-minimal
+                                            update-button index-block]]
             [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.modules.core.sections :refer [admin-actions-section admin-index-block
-                                                 admin-index-line admin-index-section
-                                                 admin-show-section]]
-            [jiksnu.modules.web.sections :refer [action-link bind-property bind-to control-line
-                                                dropdown-menu
-                                                pagination-links]]
+            [jiksnu.modules.core.sections :refer [admin-actions-section
+                                                  admin-index-block
+                                                  admin-index-line
+                                                  admin-index-section
+                                                  admin-show-section]]
+            [jiksnu.modules.web.sections :refer [action-link bind-property
+                                                 control-line dropdown-menu
+                                                 pagination-links]]
             [jiksnu.session :as session]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.Domain

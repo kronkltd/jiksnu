@@ -11,7 +11,7 @@
             [jiksnu.modules.core.sections :refer [admin-index-section
                                                   admin-index-block
                                                   admin-show-section]]
-            [jiksnu.modules.web.sections :refer [bind-to with-page
+            [jiksnu.modules.web.sections :refer [with-page
                                                  with-sub-page]]
             [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Activity

@@ -1,11 +1,13 @@
 (ns jiksnu.modules.core.sections.domain-sections
   (:require [ciste.core :refer [with-format]]
             [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section add-form delete-button index-block
-                                            index-line link-to show-section uri]]
+            [ciste.sections.default :refer [actions-section add-form
+                                            delete-button index-block
+                                            index-line link-to show-section
+                                            uri]]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [jiksnu.modules.web.sections :refer [action-link bind-to control-line
+            [jiksnu.modules.web.sections :refer [action-link control-line
                                                  dropdown-menu]]
             [jiksnu.modules.web.sections.link-sections :as sections.link]
             [jiksnu.session :as session])
