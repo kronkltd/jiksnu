@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.activity-transforms-test
-  (:require [ciste.core :refer [with-context]]
-            [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory fseq]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.mock :as mock]

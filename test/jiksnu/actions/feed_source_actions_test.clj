@@ -1,6 +1,5 @@
 (ns jiksnu.actions.feed-source-actions-test
-  (:require [ciste.core :refer [with-context]]
-            [ciste.model :as cm]
+  (:require [ciste.model :as cm]
             [ciste.sections.default :refer [show-section]]
             [clj-factory.core :refer [factory fseq]]
             [clojure.tools.logging :as log]

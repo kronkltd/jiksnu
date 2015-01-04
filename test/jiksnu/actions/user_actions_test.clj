@@ -1,6 +1,5 @@
 (ns jiksnu.actions.user-actions-test
   (:require [ciste.config :refer [config]]
-            [ciste.core :refer [with-context]]
             [ciste.model :as cm]
             [ciste.sections.default :refer [show-section]]
             [clj-factory.core :refer [factory fseq]]
