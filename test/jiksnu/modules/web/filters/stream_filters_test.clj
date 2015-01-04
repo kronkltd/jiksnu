@@ -5,7 +5,7 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [lamina.core :refer [channel]]
             [midje.sweet :refer [=> fact]]))
 
@@ -23,8 +23,7 @@
              (fact "when there are no activities"
                (db/drop-all!)
                (let [request {:action action}]
-                 (filter-action action request) =>
-                 (check [response]
+                 (let [response (filter-action action request)]
                    response => map?)))
              ))
          ))

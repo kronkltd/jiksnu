@@ -6,7 +6,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             jiksnu.modules.web.sections.activity-sections
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [midje.sweet :refer [=> fact future-fact]])
   (:import jiksnu.model.Activity
            jiksnu.model.User
@@ -16,15 +16,6 @@
            org.joda.time.DateTime))
 
 (test-environment-fixture
-
- (future-fact #'like-button
-   (like-button (factory :activity)) =>
-   (check [response]
-     response => vector?
-
-     ;; TODO: This checks that the first element is a form. This is no
-     ;; longer a good test.
-     (first response) => :form))
 
  (fact #'uri
    (fact Activity

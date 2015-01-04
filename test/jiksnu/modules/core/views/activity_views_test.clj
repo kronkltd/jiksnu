@@ -10,7 +10,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [midje.sweet :refer [=> =not=> contains fact facts]]))
 
 (test-environment-fixture
@@ -23,12 +23,11 @@
                request {:params {:url (:id activity)}
                         :action action}
                response (filter-action action request)]
-           (apply-view request response) =>
-           (check [result]
-                  (let [body (:body result)]
-                    result => map?
-                    (:status result) => status/success?
-                    body => (contains {:title (:title activity)}))))))))
+           (let [response (apply-view request response)]
+             (let [body (:body result)]
+               result => map?
+               (:status result) => status/success?
+               body => (contains {:title (:title activity)}))))))))
 
  (fact "apply-view #'actions.activity/oembed [:http :xml]"
    (let [action #'actions.activity/oembed]
@@ -37,12 +36,11 @@
              request {:params {:url (:id activity)}
                       :action action}
              response (filter-action action request)]
-         (apply-view request response) =>
-         (check [result]
-                (let [body (:body result)]
-                  result => map?
-                  (:status result) => status/success?
-                  body =not=> string?))))))
+         (let [response (apply-view request response)]
+           (let [body (:body result)]
+             result => map?
+             (:status result) => status/success?
+             body =not=> string?))))))
 
  )
 

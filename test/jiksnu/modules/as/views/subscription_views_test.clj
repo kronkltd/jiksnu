@@ -1,18 +1,18 @@
 (ns jiksnu.modules.as.views.subscription-views-test
-  (:use [ciste.core :only [with-serialization with-format]]
-        [ciste.filters :only [filter-action]]
-        [ciste.views :only [apply-view]]
-        [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [check test-environment-fixture]]
-        [midje.sweet :only [=> fact]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.core :refer [with-serialization with-format]]
+            [ciste.filters :refer [filter-action]]
+            [ciste.views :refer [apply-view]]
+            [clj-factory.core :refer [factory]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [midje.sweet :refer [=> fact]]))
 
 (test-environment-fixture
 
@@ -28,13 +28,10 @@
                      actor (model.subscription/get-actor subscription)
                      request {:action action}
                      response (filter-action action request)]
-                 (apply-view request response) =>
-                 (check [response]
+                 (let [response (apply-view request response)]
                    response => map?
                    (let [body (:body response)]
                      (:totalItems body) => (:totalRecords response)))))))
-
-
          ))))
 
  )

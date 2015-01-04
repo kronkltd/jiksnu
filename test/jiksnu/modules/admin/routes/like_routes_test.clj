@@ -1,26 +1,25 @@
 (ns jiksnu.modules.admin.routes.like-routes-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [clojure.core.incubator :only [-?> -?>>]]
-        [jiksnu.routes-helper :only [as-admin response-for]]
-        [jiksnu.test-helper :only [check test-environment-fixture]]
-        [midje.sweet :only [=> fact future-fact]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
-            [ring.mock.request :as req]))
+            [jiksnu.routes-helper :refer [as-admin response-for]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [midje.sweet :refer [=> fact future-fact]]
+            [ring.mock.request :as req]
+            [slingshot.slingshot :refer [throw+]]))
 
 (test-environment-fixture
 
  (future-fact "delete"
-   (let [like (model.like/create (factory :like))]
-     (-> (req/request :post (str "/admin/likes/" (:_id like) "/delete"))
-         as-admin response-for) =>
-         (check [response]
-           response => map?
-           (:status response) => status/redirect?)))
+   (let [like (model.like/create (factory :like))
+         url (str "/admin/likes/" (:_id like) "/delete")]
+     (let [response (-> (req/request :post url)
+                        as-admin response-for)]
+       response => map?
+       (:status response) => status/redirect?)))
  )

@@ -4,7 +4,7 @@
             [jiksnu.modules.web.middleware :as m]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [midje.sweet :refer [=> fact]]
             [ring.mock.request :as req]))
 

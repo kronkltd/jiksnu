@@ -2,7 +2,7 @@
   (:use [ciste.core :only [with-serialization *serialization*]]
         [ciste.filters :only [filter-action]]
         [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [check test-environment-fixture]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> fact]])
   (:require [jiksnu.modules.admin.actions.key-actions :as actions.key]))
 
@@ -13,8 +13,7 @@
      (fact "when the serialization is :http"
        (with-serialization :http
          (let [request {:action action}]
-           (filter-action action request) =>
-           (check [response]
+           (let [response (filter-action action request)]
              response => map?))))))
 
  )

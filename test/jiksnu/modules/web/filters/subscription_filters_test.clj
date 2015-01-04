@@ -20,7 +20,7 @@
 
  (fact #'filter-action
 
-   (fact #'actions.subscription/delete
+   (fact "#'actions.subscription/delete"
      (let [action #'actions.subscription/delete]
        (fact "when the serialization is :http"
          (with-serialization :http
@@ -37,7 +37,7 @@
                  (model.subscription/fetch-by-id .id.) => nil
                  (actions.subscription/delete .subscription.) => true :times 0))))))
 
-   (fact #'actions.subscription/ostatussub-submit
+   (fact "#'actions.subscription/ostatussub-submit"
      (with-serialization :http
        (let [action #'actions.subscription/ostatussub-submit]
         (fact "when given a url in the form of 'acct:user@domain'"
@@ -55,7 +55,7 @@
                                                 (model/map->Domain
                                                  {:_id domain-name}))))))))
 
-   (fact #'actions.subscription/subscribe
+   (fact "#'actions.subscription/subscribe"
      (let [action #'actions.subscription/subscribe]
        (fact "when the serialization is :http"
          (with-serialization :http

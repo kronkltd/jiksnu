@@ -3,7 +3,7 @@
         [ciste.core :only [with-serialization with-format
                            *serialization* *format*]]
         [ciste.filters :only [filter-action]]
-        [jiksnu.test-helper :only [check test-environment-fixture]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> fact]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.like-actions :as actions.like]

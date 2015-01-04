@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory fseq]]
         [ciste.core :only [with-serialization]]
         [ciste.filters :only [filter-action]]
-        [jiksnu.test-helper :only [check test-environment-fixture]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> fact]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
@@ -36,8 +36,7 @@
      (fact "when the serialization is :http"
        (with-serialization :http
          (let [request {}]
-           (filter-action action request) =>
-           (check [response]
+           (let [response (filter-action action request)]
              response => map?
              (:items response) => empty?
              (:totalRecords response) => zero?))))))

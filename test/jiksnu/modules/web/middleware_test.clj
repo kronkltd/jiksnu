@@ -2,7 +2,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.modules.web.middleware :as m]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [midje.sweet :refer [=> contains fact]]))
 
 (test-environment-fixture

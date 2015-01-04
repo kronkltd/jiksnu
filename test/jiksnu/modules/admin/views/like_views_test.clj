@@ -1,11 +1,9 @@
 (ns jiksnu.modules.admin.views.like-views-test
-  (:use [ciste.core :only [with-serialization with-format]]
-        [ciste.filters :only [filter-action]]
-        [ciste.views :only [apply-view]]
-        [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [check test-environment-fixture]]
-        [midje.sweet :only [=> fact]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.core :refer [with-context with-serialization with-format]]
+            [ciste.filters :refer [filter-action]]
+            [ciste.views :refer [apply-view]]
+            [clj-factory.core :refer [factory]]
+            [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.modules.admin.actions.like-actions :as actions.admin.like]
             [jiksnu.actions.like-actions :as actions.like]
@@ -13,24 +11,22 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.model.like :as model.like]))
+            [jiksnu.model.like :as model.like]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [midje.sweet :refer [=> fact]]))
 
 (test-environment-fixture
 
- (fact "apply-view #'actions.admin.like/delete"
+ (fact "apply-view #'actions.admin.like/delete [:http :html]"
    (let [action #'actions.admin.like/delete]
-     (fact "when the serialization is :http"
-       (with-serialization :http
-         (fact "when the format is :html"
-           (with-format :html
-             (let [user (mock/a-user-exists)
-                   activity (mock/there-is-an-activity)
-                   like (actions.like/like-activity activity user)
-                   request {:action action
-                            :params {:id (str (:_id like))}}
-                   response (filter-action action request)]
-               (apply-view request response) =>
-               (check [response]
-                response => map?
-                (:status response) => status/redirect?
-                (get-in response [:headers "Location"]) => "/admin/likes")))))))))
+     (with-context [:http :html]
+       (let [user (mock/a-user-exists)
+             activity (mock/there-is-an-activity)
+             like (actions.like/like-activity activity user)
+             request {:action action
+                      :params {:id (str (:_id like))}}
+             response (filter-action action request)]
+         (let [response (apply-view request response)]
+           response => map?
+           (:status response) => status/redirect?
+           (get-in response [:headers "Location"]) => "/admin/likes"))))))

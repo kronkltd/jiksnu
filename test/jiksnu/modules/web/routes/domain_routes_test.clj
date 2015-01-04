@@ -13,7 +13,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [check setup-testing stop-testing
+            [jiksnu.test-helper :refer [setup-testing stop-testing
                                         test-environment-fixture]]
             [jiksnu.util :as util]
             [midje.sweet :refer [=> after before fact facts future-fact

@@ -26,12 +26,11 @@
 
      (fact "when not authenticated"
        (fact "when it is a remote user"
-         (-> (req/request :post "/main/ostatussub")
-             (assoc :params params)
-             response-for) =>
-             (check [response]
-               response => map?
-               (:status response) => status/redirect?)))
+         (let [response (-> (req/request :post "/main/ostatussub")
+                             (assoc :params params)
+                             response-for)]
+           response => map?
+           (:status response) => status/redirect?)))
 
      (fact "when authenticated"
        (let [actor (mock/a-user-exists)]
@@ -52,12 +51,11 @@
    (let [user (mock/a-user-exists)
          subscription (mock/a-subscription-exists {:from user})
          path (str "/users/" (:_id user) "/subscriptions")]
-     (-> (req/request :get path)
-         response-for)) =>
-         (check [response]
-           response => map?
-           (:status response) => status/success?
-           (:body response) => string?
-           (let [doc (hiccup->doc (:body response))]
-             (enlive/select doc [:.subscriptions]) => truthy)))
+     (let [response (-> (req/request :get path)
+                        response-for)]
+       response => map?
+       (:status response) => status/success?
+       (:body response) => string?
+       (let [doc (hiccup->doc (:body response))]
+         (enlive/select doc [:.subscriptions]) => truthy))))
  )

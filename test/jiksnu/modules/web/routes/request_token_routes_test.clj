@@ -3,7 +3,7 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [midje.sweet :refer [=> fact]]
             [ring.mock.request :as req]))
 
@@ -16,15 +16,10 @@
        (fact "when given a valid request token"
          (let [request-token (mock/a-request-token-exists)
                url (format "/oauth/authorize?oauth_token=%s" (:_id request-token))]
-           (-> (req/request :get url)
-               (as-user actor)
-               response-for) =>
-               (check [response]
-                 (:status response) => status/success?
-                 )
-               )
-         )
-
+           (let [response (-> (req/request :get url)
+                              (as-user actor)
+                              response-for)]
+             (:status response) => status/success?)))
        ))
    )
  )

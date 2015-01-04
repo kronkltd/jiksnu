@@ -5,31 +5,25 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [lamina.core :as l]
             [midje.sweet :refer [contains => fact]]))
 
 (test-environment-fixture
- (fact #'parse-command
-   (fact "get-page"
-     (let [name "get-page"]
+ (fact "command 'get-page streams'"
+   (let [name "get-page"
+         args '("streams")
+         ch (l/channel)
+         request {:name name
+                  :channel ch
+                  :format :json
+                  :args args}]
 
-       (fact "streams"
-         (let [ch (l/channel)
-               request {:name name
-                              :channel ch
-                              :format :json
-                              :args (list "streams")}]
-                 (parse-command request) =>
-                 (check [response]
-                   response => map?
-                   (let [body (:body response)]
-                     body => string?
-                     (let [response-obj (json/read-str body)]
-                       response-obj => map?
-                       )
-                     )
-                   )
-                 ))))
-   )
+     (let [response (parse-command request)]
+       response => map?
+       (let [body (:body response)]
+         body => string?
+         (let [response-obj (json/read-str body)]
+           response-obj => map?)))))
+
  )

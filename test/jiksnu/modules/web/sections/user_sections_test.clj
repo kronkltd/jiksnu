@@ -8,7 +8,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             jiksnu.session
             [midje.sweet :refer [=> fact future-fact]])
   (:import jiksnu.model.User))

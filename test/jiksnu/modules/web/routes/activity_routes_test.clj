@@ -14,7 +14,7 @@
             jiksnu.modules.web.routes.activity-routes
             jiksnu.modules.web.views.activity-views
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [midje.sweet :refer [=> contains fact future-fact]]
             [ring.mock.request :as req])
   (:import jiksnu.model.User))
@@ -33,23 +33,21 @@
  (future-fact "oembed"
    (fact "when the format is json"
      (let [user (mock/a-user-exists)
-           activity (mock/there-is-an-activity)]
-       (-> (req/request :get (with-context [:http :html]
-                               (str "/main/oembed?format=json&url=" (full-uri activity))))
-           response-for) =>
-           (check [response]
-                  response => map?
-                  (:status response) => status/redirect?
-                  (:body response) => string?)))
+           activity (mock/there-is-an-activity)
+           url (with-context [:http :html]
+                 (str "/main/oembed?format=json&url=" (full-uri activity)))]
+       (let [response (response-for (req/request :get url))]
+         response => map?
+         (:status response) => status/redirect?
+         (:body response) => string?)))
 
    (fact "when the format is xml"
-     (let [activity (mock/there-is-an-activity)]
-       (-> (req/request :get (with-context [:http :html]
-                               (str "/main/oembed?format=xml&url=" (full-uri activity))))
-           response-for) =>
-           (check [response]
-                  response => map?
-                  (:status response) => status/success?
-                  (:body response) => string?)))
+     (let [activity (mock/there-is-an-activity)
+           url (with-context [:http :html]
+                 (str "/main/oembed?format=xml&url=" (full-uri activity)))]
+       (let [response (response-for (req/request :get url))]
+         response => map?
+         (:status response) => status/success?
+         (:body response) => string?)))
    )
  )
