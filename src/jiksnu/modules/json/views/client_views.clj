@@ -1,4 +1,4 @@
-(ns jiksnu.module.json.views.client-views
+(ns jiksnu.modules.json.views.client-views
   (:require [ciste.config :refer [config]]
             [ciste.views :refer [defview]]
             [clj-time.coerce :as coerce]

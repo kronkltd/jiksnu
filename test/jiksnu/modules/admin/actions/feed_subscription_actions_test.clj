@@ -4,7 +4,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.modules.admin.actions.feed-subscription-actions
              :as actions.feed-subscription]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :refer [test-environment-fixture]]
             [midje.sweet :refer [=> fact]]))
 
 (test-environment-fixture
@@ -13,8 +13,7 @@
    (fact "when there are no sources"
      (db/drop-all!)
 
-     (actions.feed-subscription/index) =>
-     (check [response]
+     (let [response (actions.feed-subscription/index)]
        response => map?
        (:items response) => empty?
        (:totalRecords response) => zero?))
@@ -25,8 +24,7 @@
      (dotimes [n 25]
        (mock/a-feed-subscription-exists))
 
-     (actions.feed-subscription/index) =>
-     (check [response]
+     (let [response (actions.feed-subscription/index)]
        (count (:items response)) => 20)))
 
  )
