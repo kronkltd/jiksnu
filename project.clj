@@ -5,7 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
                  [aleph "0.3.3"]
-                 [ciste "0.5.0-SNAPSHOT"]
+                 [ciste "0.6.0-SNAPSHOT"]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"
                   :exclusions [ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
