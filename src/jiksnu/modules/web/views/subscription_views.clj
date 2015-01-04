@@ -2,7 +2,7 @@
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section uri]]
         jiksnu.actions.subscription-actions
-        [jiksnu.modules.web.sections :only [bind-to format-page-info with-page with-sub-page
+        [jiksnu.modules.web.sections :only [bind-to format-page-info with-sub-page
                                             redirect pagination-links]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]

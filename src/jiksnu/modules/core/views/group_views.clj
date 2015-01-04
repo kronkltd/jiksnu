@@ -5,7 +5,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.modules.web.sections :refer [format-page-info
-                                                 pagination-links with-page]])
+                                                 pagination-links]])
   (:import jiksnu.model.Group))
 
 (defview #'actions.group/fetch-admins :page

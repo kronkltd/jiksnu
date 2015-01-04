@@ -15,7 +15,7 @@
                                                                         subscriptions-line
                                                                         subscriptions-section]]
             [jiksnu.modules.web.sections :refer [action-link control-line
-                                                 with-page with-sub-page]]
+                                                 with-sub-page]]
             [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))

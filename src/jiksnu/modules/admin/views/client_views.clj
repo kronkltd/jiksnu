@@ -3,7 +3,7 @@
             [jiksnu.modules.admin.actions.client-actions
              :as actions.admin.client]
             [jiksnu.modules.core.sections :refer [admin-index-section]]
-            [jiksnu.modules.web.sections :refer [format-page-info with-page]])
+            [jiksnu.modules.web.sections :refer [format-page-info]])
   (:import jiksnu.model.Client))
 
 (defview #'actions.admin.client/index :html

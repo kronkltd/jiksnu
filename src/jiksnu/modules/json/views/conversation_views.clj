@@ -5,7 +5,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :refer [index show]]
             [jiksnu.modules.web.sections :refer [pagination-links
-                                                 with-page with-sub-page]]
+                                                 with-sub-page]]
             [ring.util.response :as response]))
 
 (defview #'index :json
