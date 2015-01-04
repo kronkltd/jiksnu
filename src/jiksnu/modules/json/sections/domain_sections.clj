@@ -4,7 +4,6 @@
             [ciste.sections.default :refer [actions-section add-form delete-button index-block
                                             index-line show-section uri]]
             [clojure.tools.logging :as log]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.session :refer [current-user is-admin?]]
             [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]]
             [jiksnu.modules.web.sections :refer [action-link bind-to dropdown-menu]]

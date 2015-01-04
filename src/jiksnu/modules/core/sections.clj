@@ -1,11 +1,11 @@
 (ns jiksnu.modules.core.sections
-  (:use [ciste.config :only [config]]
-        [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [delete-button edit-button full-uri index-block
-                                       index-line index-section
-                                       link-to show-section title uri]]
-        [jiksnu.ko :only [*dynamic*]])
-  (:require [clojure.string :as string]
+  (:require [ciste.config :refer [config]]
+            [ciste.sections :refer [declare-section defsection]]
+            [ciste.sections.default :refer [delete-button edit-button
+                                            full-uri index-block
+                                            index-line index-section
+                                            link-to show-section title uri]]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]))
 

@@ -9,7 +9,6 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block

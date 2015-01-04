@@ -1,6 +1,5 @@
 (ns jiksnu.modules.admin.views.stream-views
   (:require [ciste.views :refer [defview]]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.modules.admin.actions.stream-actions :as actions.admin.stream]
             [jiksnu.modules.core.sections :refer [admin-index-section]])
   (:import jiksnu.model.Stream))

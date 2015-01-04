@@ -2,7 +2,6 @@
   (:use [ciste.sections.default :only [show-section]]
         [ciste.views :only [defview]]
         [jiksnu.modules.admin.actions.subscription-actions :only [index delete show]]
-        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-section admin-show-section]]
         [jiksnu.modules.web.sections :only [bind-to format-page-info
                                             pagination-links with-page]])
@@ -26,13 +25,12 @@
 
 (defview #'index :html
   [request {:keys [items] :as page}]
-  (let [subscriptions (if *dynamic* [(Subscription.)] items)]
-    {:title "Subscriptions"
-     :status 200
-     :single true
-     :body (with-page "subscriptions"
-             (pagination-links page)
-             (admin-index-section subscriptions page))}))
+  {:title "Subscriptions"
+   :status 200
+   :single true
+   :body (with-page "subscriptions"
+           (pagination-links page)
+           (admin-index-section items page))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

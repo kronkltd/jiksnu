@@ -8,7 +8,6 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model :as model]
             [jiksnu.modules.core.sections.activity-sections :as sections.activity]
             [jiksnu.modules.web.sections :refer [format-page-info]]

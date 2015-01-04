@@ -5,7 +5,6 @@
                                             update-button]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-show-section
                                                   admin-index-block admin-index-line

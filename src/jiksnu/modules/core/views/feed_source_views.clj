@@ -4,7 +4,6 @@
             [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.sections :refer [bind-to format-page-info pagination-links redirect with-page

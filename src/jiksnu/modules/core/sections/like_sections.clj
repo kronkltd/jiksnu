@@ -1,13 +1,13 @@
 (ns jiksnu.modules.core.sections.like-sections
-  (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section index-line
-                                       index-block index-section
-                                       delete-button link-to]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-index-line admin-index-block]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [actions-section index-line
+                                            index-block index-section
+                                            delete-button link-to]]
+            [clojure.tools.logging :as log]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.sections :refer [admin-index-line
+                                                  admin-index-block]])
   (:import jiksnu.model.Like))
 
 (defsection actions-section [Like :html]
@@ -63,8 +63,7 @@
      [:th "Activity"]
      [:th "Updated"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic*
-             {:data-bind "foreach: items"})
+   [:tbody {:data-bind "foreach: items"}
     (map index-line likes)]])
 
 

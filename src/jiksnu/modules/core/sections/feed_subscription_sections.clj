@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.sections.feed-subscription-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [show-section]]
-        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]])
   (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.FeedSubscription))

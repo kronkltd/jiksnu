@@ -1,14 +1,17 @@
 (ns jiksnu.modules.core.sections.group-sections
-  (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section add-form delete-button edit-button
-                                       index-block index-line index-section show-section
-                                       update-button]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-show-section admin-index-block admin-index-line
-                                             admin-index-section]]
-        [jiksnu.modules.web.sections :only [action-link bind-property dropdown-menu]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [actions-section add-form
+                                            delete-button edit-button
+                                            index-block index-line index-section
+                                            show-section update-button]]
+            [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.sections :refer [admin-show-section
+                                                  admin-index-block
+                                                  admin-index-line
+                                                 admin-index-section]]
+            [jiksnu.modules.web.sections :refer [action-link bind-property
+                                                 dropdown-menu]]
             [jiksnu.session :as session])
   (:import jiksnu.model.Group))
 

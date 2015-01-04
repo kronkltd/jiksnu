@@ -1,13 +1,12 @@
 (ns jiksnu.modules.core.views.subscription-views
-  (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section show-section uri]]
-        jiksnu.actions.subscription-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to format-page-info with-page with-sub-page
-                                            pagination-links]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-section show-section uri]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.modules.core.sections.subscription-sections :as sections.subscription])
+            [jiksnu.modules.core.sections.subscription-sections :as sections.subscription]
+            [jiksnu.modules.web.sections :refer [bind-to format-page-info with-page with-sub-page
+                                                pagination-links]])
   (:import jiksnu.model.Subscription))
 
 (defn subscription-formats
@@ -22,7 +21,7 @@
     :label "JSON"
     :type "application/json"}])
 
-(defview #'get-subscribers :page
+(defview #'actions.subscription/get-subscribers :page
   [request [user page]]
   (let [items (:items page)
         response (merge page
@@ -33,15 +32,13 @@
             :id (:_id (:item request))
             :body response}}))
 
-(defview #'get-subscribers :viewmodel
+(defview #'actions.subscription/get-subscribers :viewmodel
   [request [user {:keys [items] :as page}]]
   {:body {:title (str "Subscribers of " (:name user))
           :user (show-section user)
           :pages {:subscribers (format-page-info page)}}})
 
-;; get-subscriptions
-
-(defview #'get-subscriptions :page
+(defview #'actions.subscription/get-subscriptions :page
   [request [user page]]
   (let [items (:items page)
         response (merge page
@@ -52,16 +49,14 @@
             :id (:_id (:item request))
             :body response}}))
 
-(defview #'get-subscriptions :viewmodel
+(defview #'actions.subscription/get-subscriptions :viewmodel
   [request [user {:keys [items] :as page}]]
   {:body
    {:title (str "Subscriptions of " (:name user))
     :targetUser (:_id user)
     :pages {:subscriptions (format-page-info page)}}})
 
-;; index
-
-(defview #'index :page
+(defview #'actions.subscription/index :page
   [request response]
   (let [items (:items response)
         response (merge response
@@ -70,13 +65,11 @@
     {:body {:action "page-updated"
             :body response}}))
 
-(defview #'ostatussub :viewmodel
+(defview #'actions.subscription/ostatussub :viewmodel
   [request _]
   {:body
    {:title "Subscribe"}})
 
-;; show
-
-(defview #'show :model
+(defview #'actions.subscription/show :model
   [request item]
   {:body (show-section item)})

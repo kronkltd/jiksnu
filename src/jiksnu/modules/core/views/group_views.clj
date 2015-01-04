@@ -5,7 +5,6 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.group-actions :as actions.group :refer [add create edit-page index
                                                   new-page show user-list]]
-            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.modules.web.sections :refer [format-page-info pagination-links with-page]])
   (:import jiksnu.model.Group))
 
