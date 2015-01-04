@@ -4,8 +4,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.group-actions :as actions.group]
-            [jiksnu.modules.web.sections :refer [format-page-info
-                                                 pagination-links]]
+            [jiksnu.modules.web.sections :refer [format-page-info]]
             [jiksnu.modules.web.sections.group-sections :as sections.group])
   (:import jiksnu.model.Group))
 

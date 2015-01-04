@@ -3,8 +3,7 @@
         [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section show-section]]
         jiksnu.actions.resource-actions
-        [jiksnu.modules.web.sections :only [format-page-info pagination-links
-                                            redirect]])
+        [jiksnu.modules.web.sections :only [format-page-info redirect]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns])
   (:import jiksnu.model.Resource))

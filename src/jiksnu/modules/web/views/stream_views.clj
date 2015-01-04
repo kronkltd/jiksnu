@@ -8,8 +8,7 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
             [jiksnu.modules.core.sections.activity-sections :as sections.activity]
-            [jiksnu.modules.web.sections :refer [bind-to pagination-links
-                                                 redirect with-sub-page]])
+            [jiksnu.modules.web.sections :refer [bind-to redirect with-sub-page]])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 

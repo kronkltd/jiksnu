@@ -1,32 +1,27 @@
 (ns jiksnu.modules.web.views.resource-views
-  (:use [ciste.core :only [with-format]]
-        [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section show-section]]
-        jiksnu.actions.resource-actions
-        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links redirect]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.namespace :as ns])
-  (:import jiksnu.model.Resource))
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-section show-section]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.modules.web.sections :refer [redirect]]))
 
-(defview #'create :html
+(defview #'actions.resource/create :html
   [request item]
   (redirect (:url item) "resource has been created"))
 
-(defview #'delete :html
+(defview #'actions.resource/delete :html
   [request _]
   (redirect "/" "resource has been deleted"))
 
-(defview #'index :html
+(defview #'actions.resource/index :html
   [request {:keys [items] :as page}]
   {:title "Resources"
    :single true
    :body (index-section items page)})
 
-(defview #'show :html
+(defview #'actions.resource/show :html
   [request item]
   {:body
-   (let [item (Resource.)]
-     (bind-to "targetResource"
-       [:div {:data-model "resource"}
-        (show-section item)]))})
+   [:div {:data-model "resource"}
+    (show-section item)]})
 

@@ -7,7 +7,7 @@
             [jiksnu.modules.core.sections :refer [admin-index-section
                                                   admin-show-section]]
             [jiksnu.modules.web.sections :refer [bind-to format-page-info
-                                                 pagination-links redirect]]
+                                                 redirect]]
             [jiksnu.modules.web.sections.feed-source-sections
              :refer [index-watchers]])
   (:import jiksnu.model.FeedSource))

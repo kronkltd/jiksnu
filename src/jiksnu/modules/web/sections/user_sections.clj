@@ -16,8 +16,7 @@
                                                   admin-index-section
                                                   admin-show-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-property
-                                                 control-line dropdown-menu
-                                                 pagination-links]]
+                                                 control-line dropdown-menu]]
             [jiksnu.session :as session]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.Domain

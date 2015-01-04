@@ -23,9 +23,8 @@
                                                   admin-index-block
                                                   admin-index-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-to
-                                                 control-line
-                                                 dropdown-menu
-                                                 format-links pagination-links]]
+                                                 control-line dropdown-menu
+                                                 format-links]]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.session :as session]

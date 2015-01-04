@@ -4,7 +4,6 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :refer [index show]]
-            [jiksnu.modules.web.sections :refer [pagination-links]]
             [ring.util.response :as response]))
 
 (defview #'index :json

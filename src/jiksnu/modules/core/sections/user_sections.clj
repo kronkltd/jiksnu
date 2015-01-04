@@ -18,7 +18,7 @@
                                                   admin-index-line
                                                   admin-index-section
                                                   admin-show-section]]
-            [jiksnu.modules.web.sections :refer [dropdown-menu pagination-links]]
+            [jiksnu.modules.web.sections :refer [dropdown-menu]]
             [jiksnu.session :refer [current-user is-admin?]]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+]])

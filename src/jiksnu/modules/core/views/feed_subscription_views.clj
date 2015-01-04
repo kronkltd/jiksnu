@@ -5,8 +5,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.modules.web.sections :refer [pagination-links]])
+            [jiksnu.model.feed-subscription :as model.feed-subscription])
   (:import jiksnu.model.FeedSubscription))
 
 (defview #'actions.feed-subscription/index :page
