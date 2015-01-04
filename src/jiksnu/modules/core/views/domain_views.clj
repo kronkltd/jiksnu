@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.views.domain-views
   (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [index-section
-                                           show-section]]
+            [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]

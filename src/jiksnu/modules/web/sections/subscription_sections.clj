@@ -1,19 +1,18 @@
 (ns jiksnu.modules.web.sections.subscription-sections
   (:require [ciste.sections :refer [declare-section defsection]]
-            [ciste.sections.default :refer [actions-section delete-button edit-button full-uri
-                                            index-block index-line index-section link-to
-                                            show-section title uri]]
+            [ciste.sections.default
+             :refer [actions-section delete-button edit-button full-uri
+                     index-block index-line link-to show-section title uri]]
             [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
-            [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]]
-            [jiksnu.modules.core.sections.subscription-sections :refer [subscribers-block
-                                                                        subscribers-line
-                                                                        subscribers-section
-                                                                        subscriptions-block
-                                                                        subscriptions-line
-                                                                        subscriptions-section]]
+            [jiksnu.modules.core.sections
+             :refer [admin-index-block admin-index-line]]
+            [jiksnu.modules.core.sections.subscription-sections
+             :refer [subscribers-block subscribers-line subscribers-section
+                     subscriptions-block subscriptions-line
+                     subscriptions-section]]
             [jiksnu.modules.web.sections :refer [action-link control-line]]
             [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Subscription

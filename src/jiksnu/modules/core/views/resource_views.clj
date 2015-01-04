@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.views.resource-views
   (:use [ciste.core :only [with-format]]
         [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section show-section]]
+        [ciste.sections.default :only [show-section]]
         jiksnu.actions.resource-actions
         [jiksnu.modules.web.sections :only [format-page-info redirect]])
   (:require [clojure.tools.logging :as log]

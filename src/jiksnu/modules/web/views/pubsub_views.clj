@@ -10,10 +10,6 @@
 ;;   {:body params
 ;;    :template false})
 
-;; (defview #'admin-index :html
-;;   [request subscriptions]
-;;   {:body (index-section subscriptions)})
-
 (defview #'hub-dispatch :html
   [request response]
   {:template false

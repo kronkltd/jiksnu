@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.views.subscription-views
   (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section uri]]
+        [ciste.sections.default :only [uri]]
         jiksnu.actions.subscription-actions
         [jiksnu.modules.web.sections :only [bind-to with-sub-page
                                             redirect pagination-links]])
