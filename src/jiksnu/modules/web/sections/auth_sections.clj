@@ -31,8 +31,6 @@
   [mechanism & _]
   [:ul])
 
-;; add-form
-
 (defsection add-form [AuthenticationMechanism :html]
   [mechanism & _]
   [:form.well {:method "post" :action "/admin/auth"}

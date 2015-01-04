@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.sections.group-sections
   (:require [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section add-form
-                                            delete-button edit-button link-to
-                                            index-block index-line index-section
+            [ciste.sections.default :refer [actions-section delete-button
+                                            edit-button link-to index-block
+                                            index-line index-section
                                             show-section update-button]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as actions.group]

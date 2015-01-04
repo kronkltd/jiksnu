@@ -2,7 +2,7 @@
   (:require [cemerick.austin.repls]
             [ciste.core :refer [apply-template]]
             [ciste.config :refer [config environment]]
-            [ciste.sections.default :refer [add-form show-section]]
+            [ciste.sections.default :refer [show-section]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]

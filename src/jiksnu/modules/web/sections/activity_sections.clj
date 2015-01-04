@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.sections.activity-sections
   (:require [ciste.core :refer [with-format]]
             [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section add-form
+            [ciste.sections.default :refer [actions-section
                                             delete-button edit-button
                                             show-section-minimal
                                             show-section link-to uri title

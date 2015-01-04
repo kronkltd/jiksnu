@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.sections.user-sections
   (:require [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section title show-section add-form
+            [ciste.sections.default :refer [actions-section title show-section
                                             edit-button delete-button link-to index-line
                                             show-section-minimal update-button index-block]]
             [clojure.core.incubator :refer [-?>]]

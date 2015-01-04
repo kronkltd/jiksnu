@@ -1,11 +1,11 @@
 (ns jiksnu.modules.core.views.group-views
   (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [index-section add-form show-section]]
+            [ciste.sections.default :refer [index-section show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.group-actions :as actions.group :refer [add create edit-page index
-                                                  new-page show user-list]]
-            [jiksnu.modules.web.sections :refer [format-page-info pagination-links with-page]])
+            [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.modules.web.sections :refer [format-page-info
+                                                 pagination-links with-page]])
   (:import jiksnu.model.Group))
 
 (defview #'actions.group/fetch-admins :page
