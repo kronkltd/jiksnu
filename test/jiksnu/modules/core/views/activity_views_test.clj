@@ -18,16 +18,15 @@
  (fact "apply-view #'actions.activity/oembed [:http :json]"
    (let [action #'actions.activity/oembed]
      (with-context [:http :json]
-       (fact "when the serialization is :http"
-         (let [activity (mock/there-is-an-activity)
-               request {:params {:url (:id activity)}
-                        :action action}
-               response (filter-action action request)]
-           (let [response (apply-view request response)]
-             (let [body (:body result)]
-               result => map?
-               (:status result) => status/success?
-               body => (contains {:title (:title activity)}))))))))
+       (let [activity (mock/there-is-an-activity)
+             request {:params {:url (:id activity)}
+                      :action action}
+             response (filter-action action request)]
+         (let [response (apply-view request response)]
+           (let [body (:body response)]
+             response => map?
+             (:status response) => status/success?
+             body => (contains {:title (:title activity)})))))))
 
  (fact "apply-view #'actions.activity/oembed [:http :xml]"
    (let [action #'actions.activity/oembed]
@@ -37,9 +36,9 @@
                       :action action}
              response (filter-action action request)]
          (let [response (apply-view request response)]
-           (let [body (:body result)]
-             result => map?
-             (:status result) => status/success?
+           (let [body (:body response)]
+             response => map?
+             (:status response) => status/success?
              body =not=> string?))))))
 
  )
