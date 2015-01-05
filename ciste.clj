@@ -1,5 +1,4 @@
 {
  :environment :development
- :modules []
- :modules-available []
+ :modules ["jiksnu.modules.command"]
  }
