@@ -6,12 +6,4 @@
   "jiksnu.factory"
   "jiksnu.workers"
   ]
-
- :services-available
- [
-  "ciste.service.aleph"
-  "ciste.services.nrepl"
-  "ciste.service.swank"
-  "jiksnu.plugins.google-analytics"
-  ]
  }

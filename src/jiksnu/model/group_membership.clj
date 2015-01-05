@@ -7,7 +7,6 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
-            [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
             [monger.result :as result])

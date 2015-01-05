@@ -1,6 +1,5 @@
 (ns jiksnu.actions.feed-source-actions
-  (:require [aleph.http :as http]
-            [ciste.config :refer [config]]
+  (:require [ciste.config :refer [config]]
             [ciste.initializer :refer [definitializer]]
             [ciste.core :refer [defaction]]
             [clj-http.client :as client]

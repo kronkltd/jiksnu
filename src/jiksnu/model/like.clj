@@ -8,7 +8,6 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.templates.model :as templates.model]
-            [monger.collection :as mc]
             [monger.result :as result])
   (:import jiksnu.model.Like))
 

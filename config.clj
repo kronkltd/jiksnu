@@ -20,13 +20,7 @@
    :limit {:text 140, :dupe 60},
    :invite-only false},
   :swank {:port "4005"},
-  :services
-  [
-   ;; "ciste.service.aleph"
-   ;; "ciste.services.nrepl"
-   ;; "jiksnu.plugins.google-analytics"
-
-   ],
+  :services [],
   :xmpp
   {:c2s [5222],
    :s2s [5269],

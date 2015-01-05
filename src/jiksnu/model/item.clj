@@ -1,11 +1,10 @@
 (ns jiksnu.model.item
-  (:use [jiksnu.validators :only [type-of]]
-        [validateur.validation :only [acceptance-of presence-of
-                                      validation-set]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.templates.model :as templates.model]
-            [monger.collection :as mc])
+            [jiksnu.validators :refer [type-of]]
+            [monger.collection :as mc]
+            [validateur.validation :refer [validation-set]])
   (:import jiksnu.model.Item
            org.bson.types.ObjectId))
 

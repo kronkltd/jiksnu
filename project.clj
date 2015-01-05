@@ -1,6 +1,6 @@
 (defproject net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Core Library for Jiksnu"
+  :url "https://github.com/duck1123/jiksnu-core"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
@@ -31,7 +31,6 @@
                  [org.slf4j/slf4j-api "1.7.9"]
                  [org.slf4j/slf4j-log4j12 "1.7.9"]
                  [slingshot "0.12.1"]
-                 [clj-webdriver "0.6.1"]
                  [xerces/xercesImpl "2.11.0"]
                  ;; I know you really want to upgrade this one, but
                  ;; you can't. :(
