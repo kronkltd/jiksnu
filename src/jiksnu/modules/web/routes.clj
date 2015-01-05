@@ -168,8 +168,4 @@
           file-info/wrap-file-info
           ))))
 
-  (doseq [model-name registry/action-group-names]
-    (doseq [module-name registry/module-names]
-      (util/require-module "jiksnu.modules" module-name model-name)))
-
   )
