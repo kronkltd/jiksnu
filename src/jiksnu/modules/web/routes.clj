@@ -35,6 +35,34 @@
   []
   "Not Found")
 
+(defn load-pages!
+  [route-sym]
+  (when-let [page-fn (try
+                       (ns-resolve route-sym 'pages)
+                       (catch Exception ex
+                         (log/error ex)))]
+    (when-let [matchers (page-fn)]
+      (dosync
+       (alter predicates/*page-matchers* concat matchers)))))
+
+(defn load-sub-pages!
+  [route-sym]
+  (when-let [page-fn (try
+                       (ns-resolve route-sym 'sub-pages)
+                       (catch Exception ex
+                         (log/error ex))) ]
+    (when-let [matchers (page-fn)]
+      (dosync
+       (alter predicates/*sub-page-matchers* concat matchers)))))
+
+(defn load-routes!
+  [route-sym]
+  (when-let [route-fn (try
+                        (ns-resolve route-sym 'routes)
+                        (catch Exception ex
+                          (log/error ex)))]
+    (route-fn)))
+
 (defn load-module
   [module-name]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" module-name))]
@@ -42,28 +70,9 @@
 
     (try
       (require route-sym)
-
-      (when-let [page-fn (try
-                           (ns-resolve route-sym 'pages)
-                           (catch Exception ex
-                             (log/error ex)))]
-        (when-let [matchers (page-fn)]
-          (dosync
-           (alter predicates/*page-matchers* concat matchers))))
-
-      (when-let [page-fn (try
-                           (ns-resolve route-sym 'sub-pages)
-                           (catch Exception ex
-                             (log/error ex))) ]
-        (when-let [matchers (page-fn)]
-          (dosync
-           (alter predicates/*sub-page-matchers* concat matchers))))
-
-      (when-let [route-fn (try
-                            (ns-resolve route-sym 'routes)
-                            (catch Exception ex
-                              (log/error ex)))]
-        (route-fn))
+      (load-pages! route-sym)
+      (load-sub-pages! route-sym)
+      (load-routes! route-sym)
 
       (catch Exception ex
         (log/error ex)))
