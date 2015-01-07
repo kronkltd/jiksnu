@@ -9,7 +9,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [inflections.core :refer [camelize]]
+            [inflections.core :as inf]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
@@ -68,16 +68,10 @@
   [user & _]
   user)
 
-;; (defsection show-section [User :model]
-;;   [item & [page]]
-;;   (->> item
-;;        (map (fn [[k v]] [(camelize (name k) :lower) v]))
-;;        (into {})))
-
 (defsection show-section [User :viewmodel]
   [item & [page]]
   (->> item
-       (map (fn [[k v]] [(camelize (name k) :lower)
+       (map (fn [[k v]] [(inf/camel-case (name k) :lower)
                          v]))
        (into {})))
 
