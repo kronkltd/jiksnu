@@ -28,7 +28,7 @@
           (fn [k]
             (let [namespace-sym (symbol (str "jiksnu.model." (inf/singular (name k))))
                   sym (intern (the-ns namespace-sym) (symbol "count-records"))]
-              [(inf/camelize (name k) :lower) (sym)])))
+              [(inf/camel-case (name k) :lower) (sym)])))
        (into {})))
 
 (defn ping
