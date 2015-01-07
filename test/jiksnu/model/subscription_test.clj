@@ -1,110 +1,109 @@
 (ns jiksnu.model.subscription-test
-  (:use [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [check context test-environment-fixture]]
-        [jiksnu.model.subscription :only [delete drop! create count-records fetch-all
-                                          fetch-by-id subscribing?
-                                          subscribed?]]
-        [midje.sweet :only [=> fact throws]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util])
+            [jiksnu.test-helper :as th]
+            [jiksnu.util :as util]
+            [midje.sweet :refer [=> after before fact facts
+                                 namespace-state-changes throws]])
   (:import jiksnu.model.User
            jiksnu.model.Subscription))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'count-records
-   (fact "when there aren't any items"
-     (drop!)
-     (count-records) => 0)
-   (fact "when there are items"
-     (drop!)
-     (let [n 15]
-       (dotimes [i n]
-         (mock/a-subscription-exists))
-       (count-records) => n)))
 
- (fact #'delete
-   (let [item (mock/a-subscription-exists)]
-     (delete item) => item
-     (fetch-by-id (:_id item)) => nil))
+(facts "#'model.subscription/count-records"
+  (fact "when there aren't any items"
+    (model.subscription/drop!)
+    (model.subscription/count-records) => 0)
+  (fact "when there are items"
+    (model.subscription/drop!)
+    (let [n 15]
+      (dotimes [i n]
+        (mock/a-subscription-exists))
+      (model.subscription/count-records) => n)))
 
- (fact #'drop!
-   (dotimes [i 1]
-     (mock/a-subscription-exists))
-   (drop!)
-   (count-records) => 0)
+(facts "#'model.subscription/delete"
+  (let [item (mock/a-subscription-exists)]
+    (model.subscription/delete item) => item
+    (model.subscription/fetch-by-id (:_id item)) => nil))
 
- (fact #'fetch-by-id
-   (fact "when the item doesn't exist"
-     (let [id (util/make-id)]
-       (fetch-by-id id) => nil?))
+(facts "#'model.subscription/drop!"
+  (dotimes [i 1]
+    (mock/a-subscription-exists))
+  (model.subscription/drop!)
+  (model.subscription/count-records) => 0)
 
-   (fact "when the item exists"
-     (let [item (mock/a-subscription-exists)]
-       (fetch-by-id (:_id item)) => item)))
+(facts "#'model.subscription/fetch-by-id"
+  (fact "when the item doesn't exist"
+    (let [id (util/make-id)]
+      (model.subscription/fetch-by-id id) => nil?))
 
- (fact #'create
-   (fact "when given valid params"
-     (let [params (actions.subscription/prepare-create
-                   (factory :subscription))]
-       (create params) => (partial instance? Subscription)))
+  (fact "when the item exists"
+    (let [item (mock/a-subscription-exists)]
+      (model.subscription/fetch-by-id (:_id item)) => item)))
 
-   (fact "when given invalid params"
-     (create {}) => (throws RuntimeException)))
+(facts "#'model.subscription/create"
+  (fact "when given valid params"
+    (let [params (actions.subscription/prepare-create
+                  (factory :subscription))]
+      (model.subscription/create params) => (partial instance? Subscription)))
 
- (fact #'fetch-all
-   (fact "when there are no items"
-     (drop!)
-     (fetch-all) => empty?)
+  (fact "when given invalid params"
+    (model.subscription/create {}) => (throws RuntimeException)))
 
-   (fact "when there is more than a page of items"
-     (drop!)
+(facts "#'model.subscription/fetch-all"
+  (fact "when there are no items"
+    (model.subscription/drop!)
+    (model.subscription/fetch-all) => empty?)
 
-     (let [n 25]
-       (dotimes [i n]
-         (mock/a-subscription-exists))
+  (fact "when there is more than a page of items"
+    (model.subscription/drop!)
 
-       (fetch-all) =>
-       (check [response]
-         response => seq?
+    (let [n 25]
+      (dotimes [i n]
+        (mock/a-subscription-exists))
+
+      (let [response (model.subscription/fetch-all)]
+        response => seq?
         (count response) => 20)
 
-       (fetch-all {} {:page 2}) =>
-       (check [response]
-         response => seq?
+      (let [response (model.subscription/fetch-all {} {:page 2})]
+        response => seq?
         (count response) => (- n 20)))))
 
- (fact #'subscribing?
+(facts "#'model.subscription/subscribing?"
 
-   (fact "when the user is subscribing"
-     (let [subscription (mock/a-subscription-exists)
-           actor (model.subscription/get-actor subscription)
-           target (model.subscription/get-target subscription)]
-       (subscribing? actor target) => true))
+  (fact "when the user is subscribing"
+    (let [subscription (mock/a-subscription-exists)
+          actor (model.subscription/get-actor subscription)
+          target (model.subscription/get-target subscription)]
+      (model.subscription/subscribing? actor target) => true))
 
-   (fact "when the user is not subscribed"
-     (let [actor (mock/a-user-exists)
-           target (mock/a-user-exists)]
+  (fact "when the user is not subscribed"
+    (let [actor (mock/a-user-exists)
+          target (mock/a-user-exists)]
 
-       (subscribing? actor target) => false)))
+      (model.subscription/subscribing? actor target) => false)))
 
- (fact #'subscribed?
+(facts "#'model.subscription/subscribed?"
 
-   (fact "when the user is subscribed"
-     (let [subscription (mock/a-subscription-exists)
-           ;; NB: We're reversing these because we want to check the reverse
-           target (model.subscription/get-actor subscription)
-           actor (model.subscription/get-target subscription)]
-       (subscribed? actor target) => true))
+  (fact "when the user is subscribed"
+    (let [subscription (mock/a-subscription-exists)
+          ;; NB: We're reversing these because we want to check the reverse
+          target (model.subscription/get-actor subscription)
+          actor (model.subscription/get-target subscription)]
+      (model.subscription/subscribed? actor target) => true))
 
-   (fact "when the user is not subscribed"
-     (let [actor (mock/a-user-exists)
-           target (mock/a-user-exists)]
-       (subscribed? actor target) => false)))
- )
+  (fact "when the user is not subscribed"
+    (let [actor (mock/a-user-exists)
+          target (mock/a-user-exists)]
+      (model.subscription/subscribed? actor target) => false)))
+
