@@ -82,6 +82,6 @@
   (->> (:items page)
        (map :_id )
        (assoc page :items )
-       (map (fn [[k v]] [(inf/came-case (name k) :lower) v]))
+       (map (fn [[k v]] [(inf/camel-case (name k) :lower) v]))
        (into {})))
 
