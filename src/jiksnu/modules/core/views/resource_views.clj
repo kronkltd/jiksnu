@@ -1,14 +1,14 @@
 (ns jiksnu.modules.core.views.resource-views
-  (:use [ciste.core :only [with-format]]
-        [ciste.views :only [defview]]
-        [ciste.sections.default :only [show-section]]
-        jiksnu.actions.resource-actions
-        [jiksnu.modules.web.sections :only [format-page-info redirect]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.core :refer [with-format]]
+            [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [show-section]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.modules.core.sections :refer [format-page-info]]
             [jiksnu.namespace :as ns])
   (:import jiksnu.model.Resource))
 
-(defview #'index :page
+(defview #'actions.resource/index :page
   [request response]
   (let [items (:items response)
         response (merge response
@@ -17,16 +17,16 @@
     {:body {:action "page-updated"
             :body response}}))
 
-(defview #'index :viewmodel
+(defview #'actions.resource/index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Resources"
           :pages {:resources (format-page-info page)}}})
 
-(defview #'show :model
+(defview #'actions.resource/show :model
   [request item]
   {:body item})
 
-(defview #'show :viewmodel
+(defview #'actions.resource/show :viewmodel
   [request item]
   {:body {:targetResource (:_id item)
           :title (or (:title item) "Resource")}})

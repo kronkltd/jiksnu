@@ -4,8 +4,8 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.modules.core.sections.subscription-sections :as sections.subscription]
-            [jiksnu.modules.web.sections :refer [format-page-info]])
+            [jiksnu.modules.core.sections :refer [format-page-info]]
+            [jiksnu.modules.core.sections.subscription-sections :as sections.subscription])
   (:import jiksnu.model.Subscription))
 
 (defn subscription-formats

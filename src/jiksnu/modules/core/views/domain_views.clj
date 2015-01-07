@@ -4,7 +4,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.modules.web.sections :refer [format-page-info]]))
+            [jiksnu.modules.core.sections :refer [format-page-info]]))
 
 (defview #'actions.domain/index :page
   [request response]

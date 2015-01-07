@@ -40,7 +40,10 @@
              {:resource-paths ["test-resources"]
               :dependencies
               [[midje         "1.6.3"]
-               [ring-mock     "0.1.5"]]}}
+               [ring-mock     "0.1.5"]
+               [midje-notifier "0.1.0"]
+               [midje-junit-formatter "0.1.0-SNAPSHOT"]
+              ]}}
   :plugins [[codox          "0.8.10"]
             [lein-midje     "3.1.3"]]
 

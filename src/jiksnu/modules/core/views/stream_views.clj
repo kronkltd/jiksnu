@@ -9,8 +9,8 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
+            [jiksnu.modules.core.sections :refer [format-page-info]]
             [jiksnu.modules.core.sections.activity-sections :as sections.activity]
-            [jiksnu.modules.web.sections :refer [format-page-info]]
             [jiksnu.namespace :as ns]))
 
 ;; direct-message-timeline

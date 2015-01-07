@@ -76,3 +76,12 @@
 (defsection title :default
   [record & _]
   (str (:_id record)))
+
+(defn format-page-info
+  [page]
+  (->> (:items page)
+       (map :_id )
+       (assoc page :items )
+       (map (fn [[k v]] [(inf/came-case (name k) :lower) v]))
+       (into {})))
+

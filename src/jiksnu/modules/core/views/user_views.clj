@@ -3,7 +3,7 @@
             [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.modules.web.sections :refer [format-page-info]]))
+            [jiksnu.modules.core.sections :refer [format-page-info]]))
 
 (defview #'actions.user/index :page
   [request response]
