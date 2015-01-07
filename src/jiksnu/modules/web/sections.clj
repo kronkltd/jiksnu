@@ -50,14 +50,6 @@
                :icon ""
                :type  "application/json"}})
 
-(defn format-page-info
-  [page]
-  (into {}
-        (map
-         (fn [[k v]]
-           [(inf/camelize (name k) :lower) v])
-         (assoc page :items (map :_id (:items page))))))
-
 (defn action-link
   [model action id & [options]]
   (let [title (or (:title options) (action-titles action))

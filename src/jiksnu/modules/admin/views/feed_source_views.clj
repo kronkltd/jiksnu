@@ -5,9 +5,9 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.modules.admin.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.modules.core.sections :refer [admin-index-section
-                                                  admin-show-section]]
-            [jiksnu.modules.web.sections :refer [bind-to format-page-info
-                                                 redirect]]
+                                                  admin-show-section
+                                                  format-page-info]]
+            [jiksnu.modules.web.sections :refer [bind-to redirect]]
             [jiksnu.modules.web.sections.feed-source-sections
              :refer [index-watchers]])
   (:import jiksnu.model.FeedSource))

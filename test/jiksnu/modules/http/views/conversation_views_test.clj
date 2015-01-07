@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.conversation-views-test
+(ns jiksnu.modules.http.views.conversation-views-test
   (:require [ciste.core :refer [with-context]]
             [ciste.filters :refer [filter-action]]
             [ciste.views :refer [apply-view]]

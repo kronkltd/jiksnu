@@ -5,9 +5,9 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.group-actions :as actions.group]
-            [jiksnu.modules.web.sections :refer [bind-to format-page-info
-                                                 pagination-links with-page
-                                                 with-sub-page]]
+            [jiksnu.modules.core.sections :refer [format-page-info]]
+            [jiksnu.modules.web.sections :refer [bind-to pagination-links
+                                                 with-page with-sub-page]]
             [jiksnu.modules.web.sections.group-sections :as sections.group])
   (:import jiksnu.model.Group))
 

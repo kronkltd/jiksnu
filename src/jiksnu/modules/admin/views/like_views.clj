@@ -1,9 +1,9 @@
 (ns jiksnu.modules.admin.views.like-views
-  (:use [ciste.views :only [defview]]
-        [jiksnu.modules.admin.actions.like-actions :only [delete index]]
-        [jiksnu.modules.core.sections :only [admin-index-section]]
-        [jiksnu.modules.web.sections :only [format-page-info redirect]])
-  (:require [clojure.tools.logging :as log])
+  (:require [ciste.views :refer [defview]]
+            [clojure.tools.logging :as log]
+            [jiksnu.modules.admin.actions.like-actions :refer [delete index]]
+            [jiksnu.modules.core.sections :refer [admin-index-section
+                                                  format-page-info]])
   (:import jiksnu.model.Like))
 
 (defview #'index :html

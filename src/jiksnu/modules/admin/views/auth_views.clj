@@ -4,8 +4,8 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.modules.admin.actions.auth-actions :refer [index]]
-            [jiksnu.modules.core.sections :refer [admin-index-section]]
-            [jiksnu.modules.web.sections :refer [format-page-info]])
+            [jiksnu.modules.core.sections :refer [admin-index-section
+                                                  format-page-info]])
   (:import jiksnu.model.AuthenticationMechanism))
 
 ;; TODO: This page should use a single column

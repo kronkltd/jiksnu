@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.activity-views-test
+(ns jiksnu.modules.http.views.activity-views-test
   (:require [ciste.core :refer [with-context]]
             [ciste.filters :refer [filter-action]]
             [ciste.views :refer [apply-view]]
@@ -34,8 +34,8 @@
        (let [activity (mock/there-is-an-activity)
              request {:params {:url (:id activity)}
                       :action action}
-             response (filter-action action request)]
-         (let [response (apply-view request response)]
+             item {} #_(filter-action action request)]
+         (let [response (apply-view request item)]
            (let [body (:body response)]
              response => map?
              (:status response) => status/success?

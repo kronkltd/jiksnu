@@ -63,9 +63,9 @@
                           (log/error ex)))]
     (route-fn)))
 
-(defn load-module
-  [module-name]
-  (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" module-name))]
+(defn load-group
+  [group]
+  (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
     (log/debug (str "Loading routes for: " route-sym))
 
     (try
@@ -75,9 +75,7 @@
       (load-routes! route-sym)
 
       (catch Exception ex
-        (log/error ex)))
-
-    ))
+        (log/error ex)))))
 
 (defn make-matchers
   [handlers]
@@ -99,7 +97,7 @@
 
 (def http-routes
   (->> registry/action-group-names
-       (map load-module)
+       (map load-group)
        (reduce concat)
        make-matchers))
 

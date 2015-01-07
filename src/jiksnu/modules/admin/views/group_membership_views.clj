@@ -2,8 +2,8 @@
   (:require [ciste.views :refer [defview]]
             [clojure.tools.logging :as log]
             [jiksnu.modules.admin.actions.group-membership-actions :refer [index]]
-            [jiksnu.modules.core.sections :refer [admin-index-section]]
-            [jiksnu.modules.web.sections :refer [format-page-info]])
+            [jiksnu.modules.core.sections :refer [admin-index-section
+                                                  format-page-info]])
   (:import jiksnu.model.GroupMembership))
 
 (defview #'index :html

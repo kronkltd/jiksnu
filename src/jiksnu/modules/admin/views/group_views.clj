@@ -3,8 +3,8 @@
             [clojure.tools.logging :as log]
             [jiksnu.modules.admin.actions.group-actions
              :as actions.admin.groups]
-            [jiksnu.modules.core.sections :refer [admin-index-section]]
-            [jiksnu.modules.web.sections :refer [format-page-info]]))
+            [jiksnu.modules.core.sections :refer [admin-index-section
+                                                  format-page-info]]))
 
 (defview #'actions.admin.groups/index :viewmodel
   [request {:keys [items] :as page}]
