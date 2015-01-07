@@ -7,24 +7,26 @@
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [jiksnu.test-helper :as th]
             [jiksnu.transforms.feed-source-transforms :refer [set-domain]]
-            [midje.sweet :refer [=> anything contains fact]]))
+            [midje.sweet :refer :all]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'set-domain
-   (fact "when the source has a domain"
-     (let [domain (mock/a-record-exists :domain)
-           source (factory :feed-source {:domain (:_id domain)})]
-       (set-domain source) => source))
-   (fact "when the source does not have a domain"
-     (let [domain (mock/a-record-exists :domain)
-           url (make-uri (:_id domain))
-           source (dissoc (factory :feed-source {:topic url}) :domain)]
-       (set-domain source) => (contains {:domain (:_id domain)})
+(fact #'set-domain
+  (fact "when the source has a domain"
+    (let [domain (mock/a-record-exists :domain)
+          source (factory :feed-source {:domain (:_id domain)})]
+      (set-domain source) => source))
+  (fact "when the source does not have a domain"
+    (let [domain (mock/a-record-exists :domain)
+          url (make-uri (:_id domain))
+          source (dissoc (factory :feed-source {:topic url}) :domain)]
+      (set-domain source) => (contains {:domain (:_id domain)})
 
-       (provided
-         (actions.domain/get-discovered anything nil nil) => {:_id (:_id domain)}))))
+      (provided
+        (actions.domain/get-discovered anything nil nil) => {:_id (:_id domain)}))))
 
- )
+

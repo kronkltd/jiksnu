@@ -5,18 +5,20 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.domain :refer [create drop! get-xrd-url]]
-            [jiksnu.test-helper :refer [context test-environment-fixture]]
-            [midje.sweet :refer [=> contains fact]])
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all])
   (:import jiksnu.model.Domain))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'create
-   (let [params (actions.domain/prepare-create (factory :domain))]
-     (create params) => (partial instance? Domain)))
+(fact #'create
+  (let [params (actions.domain/prepare-create (factory :domain))]
+    (create params) => (partial instance? Domain)))
 
- (fact #'get-xrd-url
-   (fact "when the domain doesn't exist"
-     (get-xrd-url nil "acct:foo@example.com") => nil?))
+(fact #'get-xrd-url
+  (fact "when the domain doesn't exist"
+    (get-xrd-url nil "acct:foo@example.com") => nil?))
 
- )
+

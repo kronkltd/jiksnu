@@ -1,20 +1,20 @@
 (ns jiksnu.actions.comment-actions-test
-  (:use [clj-factory.core :only [factory]]
-        [midje.sweet :only [=> fact]]
-        [jiksnu.test-helper :only [check test-environment-fixture]]
-        jiksnu.actions.comment-actions)
-  (:require [jiksnu.actions.activity-actions :as actions.activity]
+  (:require [clj-factory.core :refer [factory]]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.comment-actions :refer :all]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.mock :as mock]))
+            [jiksnu.mock :as mock]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]))
 
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
-(test-environment-fixture
-
- (fact #'fetch-comments
-   (fact "when the activity exists"
-     (fact "and there are no comments"
-       (let [actor (mock/a-user-exists)
-             activity (mock/there-is-an-activity)
-             [_ comments] (fetch-comments activity)]
-         comments => empty?))))
- )
+(fact #'fetch-comments
+  (fact "when the activity exists"
+    (fact "and there are no comments"
+      (let [actor (mock/a-user-exists)
+            activity (mock/there-is-an-activity)
+            [_ comments] (fetch-comments activity)]
+        comments => empty?))))

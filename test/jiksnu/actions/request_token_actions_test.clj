@@ -4,30 +4,32 @@
             [jiksnu.factory :as factory]
             [jiksnu.mock :as mock]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
-            [midje.sweet :refer [=> fact]])
+            [jiksnu.test-helper :th]
+            [midje.sweet :refer :all])
   (:import jiksnu.model.RequestToken
            org.bson.types.ObjectId
            ))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'actions.request-token/create
-   (let [client (mock/a-client-exists)
-         params {:client (:_id client)
-                 :callback (fseq :uri)}]
-     (actions.request-token/create params) =>
-     (check [token]
-       token => (partial instance? RequestToken)
-       (:_id token) => (partial instance? String))))
+(fact #'actions.request-token/create
+  (let [client (mock/a-client-exists)
+        params {:client (:_id client)
+                :callback (fseq :uri)}]
+    (actions.request-token/create params) =>
+    (check [token]
+           token => (partial instance? RequestToken)
+           (:_id token) => (partial instance? String))))
 
- ;; (fact #'actions.request-token/get-request-token
- ;;   (let [params {}]
- ;;     (actions.request-token/get-request-token params) =>
- ;;     (check [token]
- ;;       token => (partial instance? RequestToken)
- ;;       )
- ;;     )
- ;;   )
+;; (fact #'actions.request-token/get-request-token
+;;   (let [params {}]
+;;     (actions.request-token/get-request-token params) =>
+;;     (check [token]
+;;       token => (partial instance? RequestToken)
+;;       )
+;;     )
+;;   )
 
- )
+

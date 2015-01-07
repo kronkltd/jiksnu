@@ -8,23 +8,25 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.test-helper :refer [hiccup->doc test-environment-fixture]]
-            [midje.sweet :refer [=> fact]]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'actions.pubsub/subscribe
-   (let [params {:verify "async"}]
-     (actions.pubsub/subscribe params) => .response.
-     (provided
-       (actions.feed-subscription/subscription-request params) => .subscription.
-       (actions.pubsub/verify-subscription-async .subscription. params) => .response.)))
+(fact #'actions.pubsub/subscribe
+  (let [params {:verify "async"}]
+    (actions.pubsub/subscribe params) => .response.
+    (provided
+      (actions.feed-subscription/subscription-request params) => .subscription.
+      (actions.pubsub/verify-subscription-async .subscription. params) => .response.)))
 
- (fact #'actions.pubsub/hub-dispatch
-   (let [params {:mode "subscribe"}]
-     (actions.pubsub/hub-dispatch params) => .response.
-     (provided
-       (actions.pubsub/subscribe params) => .response.)))
+(fact #'actions.pubsub/hub-dispatch
+  (let [params {:mode "subscribe"}]
+    (actions.pubsub/hub-dispatch params) => .response.
+    (provided
+      (actions.pubsub/subscribe params) => .response.)))
 
- )
+

@@ -3,16 +3,18 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact]])
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all])
   (:import jiksnu.model.Client))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'actions.client/create
-   (let [params (factory :client)
-         response (actions.client/create params)]
-     (fact "should return a client"
-       response => (partial instance? Client))))
+(fact #'actions.client/create
+  (let [params (factory :client)
+        response (actions.client/create params)]
+    (fact "should return a client"
+      response => (partial instance? Client))))
 
- )
+

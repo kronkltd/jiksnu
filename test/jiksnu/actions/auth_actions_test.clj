@@ -3,14 +3,16 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :refer [login]]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
-            [midje.sweet :refer [=> fact truthy]]))
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'login
-   (let [password (fseq :password)
-         user (mock/a-user-exists {:password password})]
-     (login user password) => truthy))
+(fact #'login
+  (let [password (fseq :password)
+        user (mock/a-user-exists {:password password})]
+    (login user password) => truthy))
 
- )
+

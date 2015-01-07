@@ -1,15 +1,17 @@
 (ns jiksnu.model.authentication-mechanism-test
   (:use [jiksnu.model.like :only [fetch-all]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=> fact]]))
+        [jiksnu.test-helper :as th]
+        [midje.sweet :only :all]))
 
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'fetch-all
-   (fact "when not given any parameters"
-     (fetch-all) => seq?)
+(fact #'fetch-all
+  (fact "when not given any parameters"
+    (fetch-all) => seq?)
 
-   (fact "when passed an empty map"
-     (fetch-all {}) => seq?))
- )
+  (fact "when passed an empty map"
+    (fetch-all {}) => seq?))
+

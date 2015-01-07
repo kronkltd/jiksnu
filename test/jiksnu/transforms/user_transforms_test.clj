@@ -6,28 +6,30 @@
             [jiksnu.model :as model]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :as th]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [lamina.core :as l]
-            [midje.sweet :refer [=> anything fact]])
+            [midje.sweet :refer :all])
   (:import jiksnu.model.Domain))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'transforms.user/set-domain
-   (let [username (fseq :username)
-         domain-name (fseq :domain)
-         uri (format "acct:%s@%s" username domain-name)
-         params {:_id uri}]
-     (transforms.user/set-domain params) =>
-     (check [response]
-       response => map?
-       )
-     (provided
-       (ops/get-discovered anything) => (l/success-result (model/map->Domain {:_id domain-name})
-                                              )
-       )
-     )
-   )
+(fact #'transforms.user/set-domain
+  (let [username (fseq :username)
+        domain-name (fseq :domain)
+        uri (format "acct:%s@%s" username domain-name)
+        params {:_id uri}]
+    (transforms.user/set-domain params) =>
+    (check [response]
+           response => map?
+           )
+    (provided
+      (ops/get-discovered anything) => (l/success-result (model/map->Domain {:_id domain-name})
+                                                         )
+      )
+    )
+  )
 
- )
+

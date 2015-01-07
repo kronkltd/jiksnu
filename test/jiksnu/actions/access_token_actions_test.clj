@@ -9,11 +9,9 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :refer [check setup-testing stop-testing
-                                        test-environment-fixture]]
+            [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
-            [midje.sweet :refer [=> after before contains fact
-                                 namespace-state-changes throws truthy falsey]])
+            [midje.sweet :refer :all])
   (:import jiksnu.model.AccessToken
            jiksnu.model.Activity))
 

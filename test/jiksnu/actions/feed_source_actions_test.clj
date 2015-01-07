@@ -12,47 +12,49 @@
             [jiksnu.model :as model]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.ops :as ops]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
+            [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [midje.sweet :refer [=> fact future-fact truthy anything]])
+            [midje.sweet :refer :all])
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSource))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'actions.feed-source/add-watcher
-   (let [domain (actions.domain/current-domain)
-         user (mock/a-user-exists)
-         source (mock/a-feed-source-exists {:domain domain})]
-     (actions.feed-source/add-watcher source user) => truthy))
+(fact #'actions.feed-source/add-watcher
+  (let [domain (actions.domain/current-domain)
+        user (mock/a-user-exists)
+        source (mock/a-feed-source-exists {:domain domain})]
+    (actions.feed-source/add-watcher source user) => truthy))
 
- (fact #'actions.feed-source/create
-   (let [domain (mock/a-remote-domain-exists)
-         params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
-     (actions.feed-source/create params) => (partial instance? FeedSource)
-     (provided
-       (actions.domain/get-discovered domain nil nil) => domain)))
+(fact #'actions.feed-source/create
+  (let [domain (mock/a-remote-domain-exists)
+        params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
+    (actions.feed-source/create params) => (partial instance? FeedSource)
+    (provided
+      (actions.domain/get-discovered domain nil nil) => domain)))
 
- (future-fact #'actions.feed-source/update
-   (let [domain (mock/a-domain-exists)
-         source (mock/a-feed-source-exists)]
-     (actions.feed-source/update source) => (partial instance? FeedSource))
-   (provided
-     (actions.domain/get-discovered anything) => .domain.))
+(future-fact #'actions.feed-source/update
+  (let [domain (mock/a-domain-exists)
+        source (mock/a-feed-source-exists)]
+    (actions.feed-source/update source) => (partial instance? FeedSource))
+  (provided
+    (actions.domain/get-discovered anything) => .domain.))
 
- (fact #'actions.feed-source/discover-source
-   (let [url (factory/make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
-         resource (mock/a-resource-exists {:url url})
-         topic (str url ".atom")
-         response ""
-         result (l/result-channel)]
-     (l/enqueue result response)
-     (actions.feed-source/discover-source url) => (partial instance? FeedSource)
-     (provided
+(fact #'actions.feed-source/discover-source
+  (let [url (factory/make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
+        resource (mock/a-resource-exists {:url url})
+        topic (str url ".atom")
+        response ""
+        result (l/result-channel)]
+    (l/enqueue result response)
+    (actions.feed-source/discover-source url) => (partial instance? FeedSource)
+    (provided
       (ops/update-resource url) => result
       (model.resource/response->tree response) => .tree.
       (model.resource/get-links .tree.) => .links.
       (util/find-atom-link .links.) => topic)))
 
- )
+

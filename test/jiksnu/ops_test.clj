@@ -6,22 +6,25 @@
             [jiksnu.model :as model]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :refer [check context future-context
-                                        test-environment-fixture]]
+            [jiksnu.test-helper :as th]
             [jiksnu.transforms.user-transforms :as transforms.user]
-            [midje.sweet :refer [=> fact]])
+            [midje.sweet :refer :all])
   (:import jiksnu.model.Domain))
 
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- ;; (fact #'ops/get-discovered
- ;;   (let [domain (mock/a-domain-exists)]
- ;;     (ops/get-discovered domain) =>
- ;;     (check [response]
- ;;       @response => (partial instance? Domain)
- ;;       )
- ;;     )
- ;;   )
 
- )
+
+;; (fact #'ops/get-discovered
+;;   (let [domain (mock/a-domain-exists)]
+;;     (ops/get-discovered domain) =>
+;;     (check [response]
+;;       @response => (partial instance? Domain)
+;;       )
+;;     )
+;;   )
+
+

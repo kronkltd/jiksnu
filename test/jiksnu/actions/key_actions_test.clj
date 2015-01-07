@@ -6,13 +6,15 @@
             [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.test-helper :refer [check test-environment-fixture]]
-            [midje.sweet :refer [=> fact]]))
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'actions.key/index
-   (actions.key/index) => map?
-   )
+(fact #'actions.key/index
+  (actions.key/index) => map?
+  )
 
- )
+
