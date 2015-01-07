@@ -98,7 +98,7 @@
 ;;   (fact "when the domain exists"
 ;;     (let [domain (mock/a-domain-exists)]
 ;;       (actions.domain/delete domain) =>
-;;       (check [response]
+;;       (th/check [response]
 ;;         response => domain
 ;;         (model.domain/fetch-by-id (:_id domain)) => nil?))))
 
@@ -145,7 +145,7 @@
 ;;   (fact "when given an invalid domain"
 ;;     (let [domain (mock/a-domain-exists)]
 ;;       (actions.domain/discover-capabilities domain) =>
-;;       (check [response]
+;;       (th/check [response]
 ;;         response => (partial instance? Domain)))))
 
 ;; TODO: If https is enabled, the bare path is checked at the https
@@ -161,7 +161,7 @@
 
       (let [url (factory/make-uri domain-name "/1")]
         (actions.domain/discover-webfinger domain url) =>
-        (check [response]
+        (th/check [response]
 
                response => nil
 

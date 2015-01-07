@@ -21,7 +21,7 @@
 ;; (fact #'ops/get-discovered
 ;;   (let [domain (mock/a-domain-exists)]
 ;;     (ops/get-discovered domain) =>
-;;     (check [response]
+;;     (th/check [response]
 ;;       @response => (partial instance? Domain)
 ;;       )
 ;;     )

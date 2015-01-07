@@ -16,8 +16,8 @@
            jiksnu.model.Activity))
 
 (namespace-state-changes
- [(before :contents (setup-testing))
-  (after :contents (stop-testing))])
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
 (fact "#'actions.access-token/get-access-token"
   (let [client (mock/a-client-exists)

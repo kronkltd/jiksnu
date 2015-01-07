@@ -63,12 +63,12 @@
       (mock/a-resource-exists))
 
     (fetch-all) =>
-    (check [response]
+    (th/check [response]
            response => seq?
            (count response) => 20)
 
     (fetch-all {} {:page 2}) =>
-    (check [response]
+    (th/check [response]
            response => seq?
            (count response) => 5)))
 

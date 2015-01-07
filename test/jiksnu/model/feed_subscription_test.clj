@@ -53,7 +53,7 @@
     (let [params (actions.feed-subscription/prepare-create
                   (factory :feed-subscription {:local false}))]
       (create params)) =>
-      (check [response]
+      (th/check [response]
              response => map?
              response => (partial instance? FeedSubscription)
              (:_id response) =>  (partial instance? ObjectId)
@@ -77,12 +77,12 @@
         (mock/a-feed-subscription-exists))
 
       (fetch-all) =>
-      (check [response]
+      (th/check [response]
              response => seq?
              (count response) => 20)
 
       (fetch-all {} {:page 2}) =>
-      (check [response]
+      (th/check [response]
              response => seq?
              (count response) => (- n 20)))))
 

@@ -30,7 +30,7 @@
     (let [user (mock/a-user-exists)
           activity (mock/there-is-an-activity {:user user})]
       (actions.activity/find-by-user user) =>
-      (check [response]
+      (th/check [response]
              response => map?
              (:totalRecords response) => 1
              (count (:items response)) => 1

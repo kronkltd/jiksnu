@@ -1,7 +1,7 @@
 (ns jiksnu.model.authentication-mechanism-test
-  (:use [jiksnu.model.like :only [fetch-all]]
+  (:use [jiksnu.model.like :refer [fetch-all]]
         [jiksnu.test-helper :as th]
-        [midje.sweet :only :all]))
+        [midje.sweet :refer :all]))
 
 
 (namespace-state-changes

@@ -1,5 +1,4 @@
 (ns jiksnu.model.webfinger-test
-  (:use )
   (:require [clj-factory.core :refer [factory fseq]]
             [ciste.model :as cm]
             [clojure.tools.logging :as log]

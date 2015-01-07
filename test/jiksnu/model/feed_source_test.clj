@@ -40,7 +40,7 @@
 ;; (fact #'create
 ;;   (future-fact "when given valid parameters"
 ;;     (create {:_id (util/make-id)}) =>
-;;     (check [response]
+;;     (th/check [response]
 ;;       response => (partial instance? FeedSource)
 ;;       (:_id response) => (partial instance? ObjectId)
 ;;       (:created response) => (partial instance? DateTime)

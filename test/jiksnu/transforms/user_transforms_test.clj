@@ -22,7 +22,7 @@
         uri (format "acct:%s@%s" username domain-name)
         params {:_id uri}]
     (transforms.user/set-domain params) =>
-    (check [response]
+    (th/check [response]
            response => map?
            )
     (provided

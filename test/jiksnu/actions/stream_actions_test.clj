@@ -29,7 +29,7 @@
     (fact "should return a seq of activities"
       (let [activity (mock/there-is-an-activity)]
         (actions.stream/public-timeline) =>
-        (check [response]
+        (th/check [response]
                response => map?
                (:totalRecords response) => 1
                (let [items (:items response)]
@@ -43,7 +43,7 @@
     (let [user (mock/a-user-exists)
           activity (mock/there-is-an-activity)]
       (actions.stream/user-timeline user) =>
-      (check [response]
+      (th/check [response]
              response => vector?
              (first response) => user
              (second response) => map?

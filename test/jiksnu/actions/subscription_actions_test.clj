@@ -34,7 +34,7 @@
         uri (model.user/get-uri {:username username :domain domain-name})]
     (session/with-user actor
       (actions.subscription/ostatussub-submit uri)) =>
-      (check [response]
+      (th/check [response]
              response => map?)
       (provided
         (ops/get-discovered anything) => (l/success-result
@@ -51,7 +51,7 @@
     (let [subscription (mock/a-subscription-exists)
           target (model.subscription/get-target subscription)]
       (actions.subscription/get-subscribers target) =>
-      (check [[_ {:keys [items]} :as response]]
+      (th/check [[_ {:keys [items]} :as response]]
              response => vector?
              (first response) => (partial instance? User)
              (doseq [subscription items]
@@ -62,7 +62,7 @@
     (let [subscription (mock/a-subscription-exists)
           actor (model.subscription/get-actor subscription)]
       (actions.subscription/get-subscriptions actor) =>
-      (check [response]
+      (th/check [response]
              response => vector?
              (first response) => actor
              (let [subscriptions (second response)]

@@ -23,7 +23,7 @@
     (let [recipient (mock/a-user-exists)
           activity (factory :activity {:recipient-uris [(:_id recipient)]})]
       (set-recipients activity) =>
-      (check [response]
+      (th/check [response]
              (first (:recipients response)) => (:_id recipient))))
   )
 
