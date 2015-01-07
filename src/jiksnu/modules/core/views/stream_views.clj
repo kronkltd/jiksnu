@@ -10,7 +10,6 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
             [jiksnu.modules.core.sections :refer [format-page-info]]
-            [jiksnu.modules.core.sections.activity-sections :as sections.activity]
             [jiksnu.namespace :as ns]))
 
 ;; direct-message-timeline
@@ -76,7 +75,6 @@
   {:body
    {:single false
     :title "Public Timeline"
-    :formats (sections.activity/index-formats items)
     :postForm {:visible true}}})
 
 (defview #'actions.stream/public-timeline :xml

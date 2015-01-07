@@ -10,8 +10,6 @@
                                                   admin-index-block
                                                   admin-index-line
                                                  admin-index-section]]
-            [jiksnu.modules.web.sections :refer [action-link bind-property
-                                                 dropdown-menu]]
             [jiksnu.session :as session])
   (:import jiksnu.model.Group))
 

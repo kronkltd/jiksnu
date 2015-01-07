@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.sections.activity-sections
-  (:require [ciste.core :refer [with-format]]
-            [ciste.sections :refer [defsection]]
+  (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [edit-button
                                             show-section-minimal
                                             show-section uri title index-block
@@ -14,40 +13,10 @@
             [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block
                                                   admin-index-section ]]
             [jiksnu.modules.core.sections.user-sections :as sections.user]
-            [jiksnu.modules.web.sections :refer [dropdown-menu format-links]]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Activity))
-
-(defn index-formats
-  [activities]
-  (map
-   (fn [[f h]]
-     (let [def (format-links f)]
-       (merge def
-              {:href h})))
-   [[:as        "/api/statuses/public_timeline.as"]
-    [:atom      "/api/statuses/public_timeline.atom"]
-    [:json      "/api/statuses/public_timeline.json"]
-    [:n3        "/api/statuses/public_timeline.n3"]
-    [:rdf       "/api/statuses/public_timeline.rdf"]
-    [:viewmodel "/api/statuses/public_timeline.viewmodel"]
-    [:xml       "/api/statuses/public_timeline.xml"]]))
-
-(defn timeline-formats
-  [user]
-  (map
-   (fn [[f h]]
-     (let [def (format-links f)]
-       (merge def
-              {:href h})))
-   [[:json (sections.user/user-timeline-link user "json")]
-    [:atom (sections.user/user-timeline-link user "atom")]
-    [:as   (sections.user/user-timeline-link user "as")]
-    [:n3   (sections.user/user-timeline-link user "n3")]
-    [:rdf  (sections.user/user-timeline-link user "rdf")]
-    [:xml  (sections.user/user-timeline-link user "xml")]]))
 
 (defsection admin-index-block [Activity]
   [items & [page]]

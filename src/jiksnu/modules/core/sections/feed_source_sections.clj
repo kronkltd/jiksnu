@@ -10,7 +10,6 @@
             [jiksnu.modules.core.sections :refer [admin-show-section
                                                   admin-index-block admin-index-line
                                                   admin-index-section]]
-            [jiksnu.modules.web.sections :refer [action-link dropdown-menu]]
             [jiksnu.session :as session])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))

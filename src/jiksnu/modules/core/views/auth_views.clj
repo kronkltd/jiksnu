@@ -2,8 +2,7 @@
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.modules.web.sections.auth-sections :as sections.auth]))
+            [jiksnu.actions.auth-actions :as actions.auth]))
 
 (defview #'actions.auth/login :text
   [request user]
