@@ -21,7 +21,6 @@
             [ring.util.codec :as codec]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import com.mongodb.WriteConcern
-           com.ocpsoft.pretty.time.PrettyTime
            java.io.FileNotFoundException
            java.io.PrintWriter
            java.io.StringReader
@@ -145,10 +144,6 @@
   (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
     (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
     (.format formatter date)))
-
-(defn prettyify-time
-  [^Date date]
-  (-?>> date (.format (PrettyTime.))))
 
 (defn date->rfc1123
   [date]
