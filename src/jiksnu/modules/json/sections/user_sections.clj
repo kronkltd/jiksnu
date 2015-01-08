@@ -10,7 +10,7 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.form :as f]
-            [inflections.core :refer [camelize]]
+            [inflections.core :as inf]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]

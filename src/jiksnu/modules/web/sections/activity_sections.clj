@@ -35,6 +35,35 @@
            jiksnu.model.Resource
            jiksnu.model.User))
 
+(defn index-formats
+  [activities]
+  (map
+   (fn [[f h]]
+     (let [def (format-links f)]
+       (merge def
+              {:href h})))
+   [[:as        "/api/statuses/public_timeline.as"]
+    [:atom      "/api/statuses/public_timeline.atom"]
+    [:json      "/api/statuses/public_timeline.json"]
+    [:n3        "/api/statuses/public_timeline.n3"]
+    [:rdf       "/api/statuses/public_timeline.rdf"]
+    [:viewmodel "/api/statuses/public_timeline.viewmodel"]
+    [:xml       "/api/statuses/public_timeline.xml"]]))
+
+(defn timeline-formats
+  [user]
+  (map
+   (fn [[f h]]
+     (let [def (format-links f)]
+       (merge def
+              {:href h})))
+   [[:json (sections.user/user-timeline-link user "json")]
+    [:atom (sections.user/user-timeline-link user "atom")]
+    [:as   (sections.user/user-timeline-link user "as")]
+    [:n3   (sections.user/user-timeline-link user "n3")]
+    [:rdf  (sections.user/user-timeline-link user "rdf")]
+    [:xml  (sections.user/user-timeline-link user "xml")]]))
+
 (defn like-button
   [activity]
   (action-link "activity" "like" (:_id activity)
