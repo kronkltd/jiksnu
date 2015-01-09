@@ -6,11 +6,11 @@
   :dependencies [[aleph "0.3.3"]
                  ;; [ciste "0.5.0-SNAPSHOT"]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"
-                  :exclusions [ciste]]
+                  :exclusions [ciste ciste/ciste-core]]
                  [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"
                   :exclusions [ciste ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
-                 [clj-time "0.8.0"]
+                 [clj-time "0.9.0"]
                  [clj-http "1.0.1"]
                  [clj-webdriver "0.6.1"
                   :exclusions [xalan]]
@@ -25,7 +25,7 @@
                  ;; [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
                  ;; [hipo "0.2.0"]
-                 [im.chit/gyr "0.3.1"]
+                 [im.chit/gyr "0.4.0"]
                  [im.chit/purnam "0.5.1"]
                  ;; [lamina "0.5.5"]
                  ;; [lolg "0.1.0-SNAPSHOT"
@@ -43,8 +43,8 @@
                  [org.clojure/data.json "0.2.5"]
                  ;; [org.jsoup/jsoup "1.8.1"]
                  ;; [org.mindrot/jbcrypt "0.3m"]
-                 [org.slf4j/slf4j-api "1.7.9"]
-                 [org.slf4j/slf4j-log4j12 "1.7.9"]
+                 [org.slf4j/slf4j-api "1.7.10"]
+                 [org.slf4j/slf4j-log4j12 "1.7.10"]
                  [org.webjars/angularjs "1.3.8"]
                  [org.webjars/angularjs-geolocation "0.1.1-SNAPSHOT"]
                  [org.webjars/angular-cache "3.0.2"]
