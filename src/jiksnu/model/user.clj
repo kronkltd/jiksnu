@@ -3,7 +3,6 @@
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
-            ;; [clojurewerkz.route-one.core :refer [named-url]]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
