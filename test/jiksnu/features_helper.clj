@@ -9,7 +9,6 @@
             [clj-factory.core :refer [factory fseq]]
             [clj-webdriver.core :as webdriver]
             [clj-webdriver.taxi :as taxi]
-            [clojure.core.incubator :refer [-?>]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]

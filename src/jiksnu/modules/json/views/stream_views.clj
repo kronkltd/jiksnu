@@ -7,8 +7,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
-            [jiksnu.modules.core.sections.activity-sections :as sections.activity]
-            [jiksnu.modules.web.sections :refer [redirect]])
+            [jiksnu.modules.core.sections.activity-sections :as sections.activity])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 

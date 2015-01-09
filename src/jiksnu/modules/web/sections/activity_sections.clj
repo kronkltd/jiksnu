@@ -7,7 +7,6 @@
                                             show-section link-to uri title
                                             index-block
                                             index-line index-section update-button]]
-            [clojure.core.incubator :refer [-?>]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -22,11 +21,12 @@
             [jiksnu.modules.core.sections :refer [admin-index-line
                                                   admin-index-block
                                                   admin-index-section]]
+            [jiksnu.modules.core.sections.user-sections :as sections.core.user]
             [jiksnu.modules.web.sections :refer [action-link bind-to
                                                  control-line dropdown-menu
                                                  format-links]]
+            [jiksnu.modules.web.sections.user-sections :as sections.web.user]
             [jiksnu.namespace :as ns]
-            [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])
@@ -57,12 +57,12 @@
      (let [def (format-links f)]
        (merge def
               {:href h})))
-   [[:json (sections.user/user-timeline-link user "json")]
-    [:atom (sections.user/user-timeline-link user "atom")]
-    [:as   (sections.user/user-timeline-link user "as")]
-    [:n3   (sections.user/user-timeline-link user "n3")]
-    [:rdf  (sections.user/user-timeline-link user "rdf")]
-    [:xml  (sections.user/user-timeline-link user "xml")]]))
+   [[:json (sections.core.user/user-timeline-link user "json")]
+    [:atom (sections.core.user/user-timeline-link user "atom")]
+    [:as   (sections.core.user/user-timeline-link user "as")]
+    [:n3   (sections.core.user/user-timeline-link user "n3")]
+    [:rdf  (sections.core.user/user-timeline-link user "rdf")]
+    [:xml  (sections.core.user/user-timeline-link user "xml")]]))
 
 (defn like-button
   [activity]
@@ -79,7 +79,7 @@
      [:p
       [:span {:data-bind "with: author"}
        [:span {:data-model "user"}
-        (sections.user/display-avatar author)
+        (sections.web.user/display-avatar author)
         (link-to author)]]
       ": "
       [:span "{{activity.title}}"]]

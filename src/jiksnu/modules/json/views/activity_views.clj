@@ -5,8 +5,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
-            [jiksnu.session :as session]
-            [jiksnu.modules.web.sections :refer [redirect]])
+            [jiksnu.session :as session])
   (:import jiksnu.model.Activity))
 
 (defview #'actions.activity/oembed :json

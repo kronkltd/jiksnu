@@ -3,7 +3,8 @@
             [clojure.tools.logging :as log]
             [jiksnu.modules.admin.actions.like-actions :refer [delete index]]
             [jiksnu.modules.core.sections :refer [admin-index-section
-                                                  format-page-info]])
+                                                  format-page-info]]
+            [jiksnu.modules.web.sections :refer [redirect]])
   (:import jiksnu.model.Like))
 
 (defview #'index :html
