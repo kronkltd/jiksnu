@@ -7,7 +7,6 @@
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [clojure.tools.reader.edn :as edn]
-            [clojurewerkz.route-one.core :refer [*base-url*]]
             [compojure.core :as compojure :refer [GET]]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -145,10 +144,6 @@
       (assoc-in response [:headers "Connection"] "close"))))
 
 (definitializer
-  (let [url (format "http://%s" (config :domain))]
-    (alter-var-root #'*base-url*
-                    (constantly url)))
-
   (def app
     (http/wrap-ring-handler
      (compojure/routes

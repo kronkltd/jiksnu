@@ -14,7 +14,6 @@
                  [clj-http "1.0.1"]
                  [clj-webdriver "0.6.1"
                   :exclusions [xalan]]
-                 [clojurewerkz/route-one "1.1.0"]
                  [clojurewerkz/mailer "1.2.0"]
                  [clojure-complete "0.2.4"
                   :exclusions [org.clojure/clojure]]

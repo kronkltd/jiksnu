@@ -2,7 +2,6 @@
   (:require [ciste.config :refer [config]]
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.tools.logging :as log]
-            [clojurewerkz.route-one.core :refer [named-url]]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -22,5 +21,5 @@
   [user]
   (if (:url user)
     user
-    (assoc user :url "" #_(named-url "local user timeline" user))))
+    (assoc user :url "")))
 

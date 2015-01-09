@@ -3,7 +3,6 @@
             [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [clojure.string :as string]
-            [clojurewerkz.route-one.core :as r]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
@@ -20,7 +19,7 @@
   (if (seq (:url activity))
     activity
     (if (:local activity)
-      (assoc activity :url "" #_(r/named-url "show activity" {:id (:_id activity)}))
+      (assoc activity :url "")
       (if (:id activity)
         (assoc activity :url (:id activity))
         (throw+ "Could not determine activity url")))))
