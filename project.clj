@@ -4,7 +4,6 @@
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
   :dependencies [[aleph "0.3.3"]
-                 ;; [ciste "0.5.0-SNAPSHOT"]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"
                   :exclusions [ciste ciste/ciste-core]]
                  [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"
@@ -20,28 +19,17 @@
                  [clojurewerkz/support "1.1.0"]
                  [com.novemberain/monger "1.8.0"]
                  [com.novemberain/validateur "1.7.0"]
-                 ;; [com.ocpsoft/ocpsoft-pretty-time "1.0.7"]
-                 ;; [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
-                 ;; [hipo "0.2.0"]
                  [im.chit/gyr "0.4.0"]
                  [im.chit/purnam "0.5.1"]
-                 ;; [lamina "0.5.5"]
-                 ;; [lolg "0.1.0-SNAPSHOT"
-                 ;;  :exclusions [org.clojure/google-closure-library]]
-                 [net.kronkltd/clj-airbrake "2.0.1-SNAPSHOT"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
                   :exclusions [xalan]]
-                 ;; [org.bovinegenius/exploding-fish "0.3.4"]
                  [org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2371"]
-                 ;; [org.clojure/core.cache "0.6.4"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/tools.reader "0.8.11"]
                  [org.clojure/data.json "0.2.5"]
-                 ;; [org.jsoup/jsoup "1.8.1"]
-                 ;; [org.mindrot/jbcrypt "0.3m"]
                  [org.slf4j/slf4j-api "1.7.10"]
                  [org.slf4j/slf4j-log4j12 "1.7.10"]
                  [org.webjars/angularjs "1.3.8"]
@@ -62,17 +50,9 @@
                  [org.webjars/jquery "2.1.3"]
                  [org.webjars/momentjs "2.8.3"]
                  [org.webjars/underscorejs "1.7.0-1"]
-                 ;; [prismatic/dommy "1.0.0"]
-                 [ring "1.2.2"]
-                 [ring/ring-core "1.1.8"]
                  [ring-basic-authentication "1.0.5"]
-                 ;; [rmarianski/tidy-up "0.0.2"]
                  [slingshot "0.12.1"]
-                 [xerces/xercesImpl "2.11.0"]
-                 ;; I know you really want to upgrade this one, but
-                 ;; you can't. :(
-                 ;; [xml-apis "1.4.01"]
-                 ]
+                 [xerces/xercesImpl "2.11.0"]]
   :plugins [[lein-cljsbuild "1.0.4"]
             [codox          "0.8.10"]
             ;; [lein-cucumber  "1.0.2"]
