@@ -16,9 +16,9 @@
 
 (defn init-handlers
   []
-
+  (log/info "initializing handlers")
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handler/event)
-  ;; (l/receive-all (trace/select-probes "*:created")   #'handler/created)
+  (l/receive-all (trace/select-probes "*:created")   #'handler/created)
   ;; (l/receive-all (trace/select-probes "*:field:set")  #'handler/field-set)
   ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handler/linkAdded)
 
@@ -30,7 +30,7 @@
            ;; [:ciste:predicate:tested        #'handler/event]
            ;; [:ciste:matcher:tested          #'handler/matcher-test]
            ;; [:ciste:matcher:matched         #'handler/event]
-           ;; [:ciste:route:matched           #'handler/event]
+           [:ciste:route:matched           #'handler/event]
            ;; [:ciste:sections:run            #'handler/event]
            ;; [:ciste:views:run               #'handler/event]
            ;; [:conversations:pushed          #'handler/conversations-pushed]

@@ -151,7 +151,7 @@
     (http/wrap-ring-handler
      ;; (wrap-webjars
      (compojure/routes
-       ;; (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
+       (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
        (-> all-routes
            jm/wrap-authentication-handler
            ;; (file/wrap-file "resources/public/")
@@ -163,7 +163,7 @@
            jm/wrap-stacktrace
            (wrap-resource "public")
            file-info/wrap-file-info
-           (wrap-resource "META-INF/resources/webjars/")
+           ;; (wrap-resource "META-INF/resources/webjars/")
            ;; wrap-content-type
            ;; wrap-not-modified
            ))
