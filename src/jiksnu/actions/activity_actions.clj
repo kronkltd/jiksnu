@@ -3,7 +3,6 @@
             [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
             [ciste.model :as cm]
-            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.set :as set]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
