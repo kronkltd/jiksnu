@@ -21,8 +21,10 @@
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [ring.middleware.file :as file]
+            [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.file-info :as file-info]
             [ring.middleware.flash :refer [wrap-flash]]
+            ;; [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.stacktrace :as stacktrace]
             ;; [ring.middleware.webjars :refer [wrap-webjars]]
@@ -161,6 +163,9 @@
            jm/wrap-stacktrace
            (wrap-resource "public")
            file-info/wrap-file-info
+           (wrap-resource "META-INF/resources/webjars/")
+           ;; wrap-content-type
+           ;; wrap-not-modified
            ))
       ;; )
      ))
