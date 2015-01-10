@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.sections.layout-sections
-  (:require [cemerick.austin.repls]
-            [ciste.core :refer [apply-template]]
+  (:require [ciste.core :refer [apply-template]]
             [ciste.config :refer [config environment]]
             [ciste.sections.default :refer [show-section]]
             [clojure.string :as string]

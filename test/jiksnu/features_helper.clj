@@ -19,12 +19,10 @@
             jiksnu.factory
             [jiksnu.mock :refer [my-password]]
             [jiksnu.model :as model]
-            [jiksnu.referrant :refer [this that get-this get-that set-this set-that]]
+            [jiksnu.referrant :refer [this that set-this set-that]]
             jiksnu.modules.web.routes
             [jiksnu.session :as session]
             [lamina.core :refer [permanent-channel read-channel* siphon]]
-            [midje.sweet :refer [=>]]
-            [ring.mock.request :as req]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Domain
            jiksnu.model.User))

@@ -25,6 +25,7 @@
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.stacktrace :as stacktrace]
+            ;; [ring.middleware.webjars :refer [wrap-webjars]]
             [monger.ring.session-store :as ms]
             [slingshot.slingshot :refer [throw+]])
   (:import java.io.PushbackReader
@@ -146,19 +147,22 @@
 (definitializer
   (def app
     (http/wrap-ring-handler
+     ;; (wrap-webjars
      (compojure/routes
-      (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
-      (-> all-routes
-          jm/wrap-authentication-handler
-          ;; (file/wrap-file "resources/public/")
-          ;; file-info/wrap-file-info
-          jm/wrap-user-binding
-          jm/wrap-oauth-user-binding
-          jm/wrap-authorization-header
-          (handler/site {:session {:store (ms/session-store)}})
-          jm/wrap-stacktrace
-          (wrap-resource "public")
-          file-info/wrap-file-info
-          ))))
+       ;; (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
+       (-> all-routes
+           jm/wrap-authentication-handler
+           ;; (file/wrap-file "resources/public/")
+           ;; file-info/wrap-file-info
+           jm/wrap-user-binding
+           jm/wrap-oauth-user-binding
+           jm/wrap-authorization-header
+           (handler/site {:session {:store (ms/session-store)}})
+           jm/wrap-stacktrace
+           (wrap-resource "public")
+           file-info/wrap-file-info
+           ))
+      ;; )
+     ))
 
   )
