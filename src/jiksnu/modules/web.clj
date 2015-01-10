@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.loader :as loader]
+            [clojure.tools.logging :as log]
             [jiksnu.handlers :as handler]
             jiksnu.modules.web.formats
             jiksnu.modules.web.routes
@@ -9,10 +10,48 @@
 
 (log/info "loading web")
 
+(defn register-module
+  [name options]
+  (dosync
+   (alter loader/modules assoc name options)))
+
+(defn defmodule
+  [name & {:as options}]
+  (modules.register
+    name options))
+
+(defn defhandler
+  [name doc channel handler]
+  (dosync
+   (alter loader/handlers assoc name {:channel channel
+                               :handler handler})
+   )
+  )
+
 (defn start
   []
-  (log/info "startin web")
+  (log/info "starting web"))
+
+(defhandler :print-actions
+  "Print every action invoked"
+  :actions:invoked #'handler/actions-invoked
   )
+
+(defhandler :print-creates
+  "Print all record creates"
+  "*:create:in" #'handler/event
+  )
+
+
+(defmodule "web"
+  :start start
+  :deps [
+         "jiksnu.modules.core"
+         ]
+
+
+  )
+
 
 (defn init-handlers
   []
@@ -30,18 +69,18 @@
            ;; [:ciste:predicate:tested        #'handler/event]
            ;; [:ciste:matcher:tested          #'handler/matcher-test]
            ;; [:ciste:matcher:matched         #'handler/event]
-           [:ciste:route:matched           #'handler/event]
+           ;; [:ciste:route:matched           #'handler/event]
            ;; [:ciste:sections:run            #'handler/event]
            ;; [:ciste:views:run               #'handler/event]
            ;; [:conversations:pushed          #'handler/conversations-pushed]
            ;; [:entry:parsed                  #'handler/entry-parsed]
-           [:http-client:error             #'handler/http-client-error]
-           [:errors:handled                #'handler/errors]
+           ;; [:http-client:error             #'handler/http-client-error]
+           ;; [:errors:handled                #'handler/errors]
            ;; [:feed:parsed                   #'handler/feed-parsed]
            ;; [:lamina-default-executor:stats #'handler/event]
            ;; [:person:parsed                 #'handler/person-parsed]
-           [:resource:realized             #'handler/resource-realized]
-           [:resource:failed               #'handler/resource-failed]
+           ;; [:resource:realized             #'handler/resource-realized]
+           ;; [:resource:failed               #'handler/resource-failed]
            ]]
     (l/receive-all (trace/probe-channel kw) v))
 
