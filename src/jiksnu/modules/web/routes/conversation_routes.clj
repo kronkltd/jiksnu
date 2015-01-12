@@ -1,9 +1,7 @@
 (ns jiksnu.modules.web.routes.conversation-routes
-  (:require [ciste.initializer :refer [definitializer]]
-            [jiksnu.actions.activity-actions :as activity]
+  (:require [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation])
-  (:import jiksnu.model.Conversation
-           jiksnu.model.Group))
+  (:import jiksnu.model.Conversation))
 
 (defn routes
   []

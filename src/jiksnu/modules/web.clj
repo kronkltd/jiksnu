@@ -2,6 +2,9 @@
   (:require [ciste.loader :as loader]
             [clojure.tools.logging :as log]
             [jiksnu.handlers :as handler]
+            ;; jiksnu.handlers.atom
+            jiksnu.handlers.html
+            jiksnu.handlers.xrd
             jiksnu.modules.web.formats
             jiksnu.modules.web.routes
             [lamina.core :as l]
@@ -17,7 +20,7 @@
 
 (defn defmodule
   [name & {:as options}]
-  (modules.register
+  (register-module
     name options))
 
 (defn defhandler

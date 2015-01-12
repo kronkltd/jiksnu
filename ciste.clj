@@ -1,6 +1,8 @@
 {:environment :development
 
- :modules ["jiksnu.core"
+ :modules [
+           "jiksnu.core"
            "jiksnu.modules.core"
-           "jiksnu.modules.web"]
+           "jiksnu.modules.web"
+           ]
  }

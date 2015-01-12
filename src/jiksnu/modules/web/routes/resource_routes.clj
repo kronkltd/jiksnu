@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.resource-routes
-  (:require [ciste.initializer :refer [definitializer]]
-            [ciste.loader :refer [require-namespaces]]
+  (:require [ciste.loader :refer [require-namespaces]]
             [jiksnu.actions.resource-actions :refer [delete discover index show update]]))
 
 (defn routes
@@ -24,11 +23,3 @@
   [
    [{:name "resources"}    {:action #'index}]
    ])
-
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.handlers.atom"
-    "jiksnu.handlers.html"
-    "jiksnu.handlers.xrd"
-    ]))
