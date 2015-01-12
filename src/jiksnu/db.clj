@@ -1,6 +1,5 @@
 (ns jiksnu.db
   (:require [ciste.config :refer [config describe-config environment]]
-            [ciste.initializer :refer [definitializer]]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [monger.collection :as mc]
@@ -28,14 +27,9 @@
   "Set the connection for mongo"
   []
   (log/info (str "setting database for " (environment)))
+  (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
   ;; TODO: pass connection options
   (mg/connect!)
   (let [db (mg/get-db (config :database :name))]
     (mg/set-db! db)))
 
-;; initializer
-
-(definitializer
-  (set-database!)
-
-  (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE))
