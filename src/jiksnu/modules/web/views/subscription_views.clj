@@ -26,7 +26,6 @@
 (defview #'get-subscriptions :html
   [request [user {:keys [items] :as page}]]
   {:title "Subscriptions"
-   :formats (subscription-formats user)
    :body
    (bind-to "targetUser"
             [:div {:data-model "user"}

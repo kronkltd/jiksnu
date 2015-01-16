@@ -33,7 +33,8 @@
   "returns a user matching the uri"
   [user]
   (if (model.user/local? user)
-    (let [full-uri (model.user/full-uri user)]
+    (let [full-uri (model.user/full-uri user)
+          salmon-link ""]
       {:subject (model.user/get-uri user)
        :alias full-uri
        :links
@@ -63,9 +64,9 @@
          :type "application/rdf+xml"
          :href (str full-uri ".rdf")}
 
-        {:rel "salmon"          :href (model.user/salmon-link user)}
-        {:rel ns/salmon-replies :href (model.user/salmon-link user)}
-        {:rel ns/salmon-mention :href (model.user/salmon-link user)}
+        {:rel "salmon"          :href salmon-link}
+        {:rel ns/salmon-replies :href salmon-link}
+        {:rel ns/salmon-mention :href salmon-link}
         {:rel ns/oid-provider   :href full-uri}
         {:rel ns/osw-service    :href (str "xmpp:" (:username user) "@" (:domain user))}
 
