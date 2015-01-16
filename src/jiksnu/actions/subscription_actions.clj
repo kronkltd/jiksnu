@@ -168,5 +168,5 @@
    (alter actions.user/delete-hooks
           conj setup-delete-hooks*)))
 
-(definitializer
-  (setup-delete-hooks))
+;; (definitializer
+;;   (setup-delete-hooks))

@@ -234,10 +234,10 @@
     (delete activity))
   user)
 
-(definitializer
-  (model.activity/ensure-indexes)
+;; (definitializer
+;;   (model.activity/ensure-indexes)
 
-  ;; cascade delete on domain deletion
-  (dosync
-   (alter actions.user/delete-hooks
-          conj #'handle-delete-hook)))
+;;   ;; cascade delete on domain deletion
+;;   (dosync
+;;    (alter actions.user/delete-hooks
+;;           conj #'handle-delete-hook)))

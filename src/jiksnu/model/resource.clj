@@ -75,5 +75,5 @@
        (map meta->property)
        (reduce merge)))
 
-(definitializer
-  (ensure-indexes))
+;; (definitializer
+;;   (ensure-indexes))

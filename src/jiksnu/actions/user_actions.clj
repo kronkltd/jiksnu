@@ -403,5 +403,5 @@
     [user @(ops/create-new-stream params)])
   )
 
-(definitializer
-  (model.user/ensure-indexes))
+;; (definitializer
+;;   (model.user/ensure-indexes))

@@ -245,5 +245,5 @@
       (or (deref p (lt/seconds 300) nil)
           (throw+ "Could not discover domain")))))
 
-(definitializer
-  (current-domain))
+;; (definitializer
+;;   (current-domain))

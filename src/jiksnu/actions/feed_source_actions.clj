@@ -220,5 +220,5 @@
         (or (deref p discovery-timeout nil)
             (throw+ "Could not discover feed source"))))))
 
-(definitializer
-  (model.feed-source/ensure-indexes))
+;; (definitializer
+;;   (model.feed-source/ensure-indexes))

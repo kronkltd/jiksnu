@@ -71,6 +71,6 @@
         (create params))
       (throw+ "Hub not authoritative for source"))))
 
-(definitializer
-  (model.feed-subscription/ensure-indexes))
+;; (definitializer
+;;   (model.feed-subscription/ensure-indexes))
 
