@@ -1,4 +1,4 @@
-(ns jiksnu.transforms.conversation-transforms
+(ns jiksnu.modules.web.transforms.conversation-transforms
   (:require [ciste.config :only [config]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]

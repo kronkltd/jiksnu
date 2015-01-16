@@ -62,4 +62,3 @@
    :template false
    :flash "Worker stopped"
    :headers {"Location" "/admin/workers"}})
-

@@ -1,4 +1,4 @@
-(ns jiksnu.transforms.user-transforms
+(ns jiksnu.modules.web.transforms.user-transforms
   (:require [ciste.config :refer [config]]
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.tools.logging :as log]

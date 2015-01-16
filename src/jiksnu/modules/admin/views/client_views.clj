@@ -14,4 +14,3 @@
   [request _]
   {:body
    {:title "Clients"}})
-

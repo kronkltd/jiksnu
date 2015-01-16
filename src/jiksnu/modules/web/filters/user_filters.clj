@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.filters.user-filters
+(ns jiksnu.modules.web.filters.user-filters
   (:require [ciste.config :refer [config]]
             [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]

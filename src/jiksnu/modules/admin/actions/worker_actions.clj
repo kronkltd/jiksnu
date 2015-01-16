@@ -25,4 +25,3 @@
   []
   (workers/stop-all-workers!)
   true)
-

@@ -12,4 +12,3 @@
 (defaction index
   [& options]
   (apply index* options))
-

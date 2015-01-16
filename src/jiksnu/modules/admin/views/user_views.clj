@@ -68,4 +68,3 @@
   {:body
    {:title (title user)
     :targetUser (:_id user)}})
-

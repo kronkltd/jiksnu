@@ -1,4 +1,4 @@
-(ns jiksnu.transforms.activity-transforms
+(ns jiksnu.modules.web.transforms.activity-transforms
   (:require [ciste.config :refer [config]]
             [clj-time.core :as time]
             [clojure.tools.logging :as log]

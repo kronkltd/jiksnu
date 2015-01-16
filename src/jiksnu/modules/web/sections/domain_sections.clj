@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.sections.domain-sections
+(ns jiksnu.modules.web.sections.domain-sections
   (:require [ciste.core :refer [with-format]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section add-form

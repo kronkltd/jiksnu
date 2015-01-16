@@ -5,4 +5,3 @@
 (defaction index
   []
   (actions.client/index))
-

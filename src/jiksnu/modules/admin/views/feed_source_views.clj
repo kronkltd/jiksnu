@@ -63,4 +63,3 @@
   [request source]
   {:body {:title (title source)
           :targetFeedSource (:_id source)}})
-

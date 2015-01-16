@@ -1,4 +1,4 @@
-(ns jiksnu.transforms.feed-source-transforms
+(ns jiksnu.modules.web.transforms.feed-source-transforms
   (:require [clojure.tools.logging :as log]))
 
 (defn set-hub

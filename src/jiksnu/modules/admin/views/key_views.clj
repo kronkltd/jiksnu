@@ -19,4 +19,3 @@
   {:body {:title "Keys"
           :pages {:keys (format-page-info page)}
           :keys (doall (admin-index-section items page))}})
-

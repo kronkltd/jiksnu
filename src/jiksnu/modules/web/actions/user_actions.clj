@@ -1,4 +1,4 @@
-(ns jiksnu.actions.user-actions
+(ns jiksnu.modules.web.actions.user-actions
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
