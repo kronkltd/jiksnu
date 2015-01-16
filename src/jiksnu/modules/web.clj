@@ -8,27 +8,11 @@
             jiksnu.handlers.xrd
             jiksnu.modules.web.formats
             jiksnu.modules.web.routes
+            [jiksnu.registry :as registry]
+            [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace]))
-
-(defn start
-  []
-  (log/info "starting web"))
-
-(defhandler :print-actions
-  "Print every action invoked"
-  :actions:invoked #'handler/actions-invoked)
-
-(defhandler :print-creates
-  "Print all record creates"
-  "*:create:in" #'handler/event)
-
-(defmodule "web"
-  :start start
-  :deps [
-         "jiksnu.modules.core"
-         ])
 
 (defn init-handlers
   []
@@ -69,4 +53,29 @@
 
   )
 
-(defonce receivers (init-handlers))
+(defn require-components
+  []
+  (doseq [group-name registry/action-group-names]
+    (util/require-module "jiksnu.modules" "web" group-name)))
+
+(defn start
+  []
+  (log/info "starting web")
+  (init-handlers)
+  (require-components))
+
+(defhandler :print-actions
+  "Print every action invoked"
+  :actions:invoked #'handler/actions-invoked)
+
+(defhandler :print-creates
+  "Print all record creates"
+  "*:create:in" #'handler/event)
+
+(defmodule "web"
+  :start start
+  :deps [
+         "jiksnu.modules.core"
+         "jiksnu.modules.json"
+         ])
+

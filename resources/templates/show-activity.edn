@@ -1,43 +1,47 @@
-[:article.hentry.media {:ng-if "loaded"}
- ;; [:pre "{{activity | json}}"]
- #_(actions-section activity)
- [:div.media-left
-  [:p
-   [:display-avatar {:data-id "{{activity.actor._id}}"}]]
-  [:p
-   [:link-to {:data-id "{{activity.actor._id}}" :data-model "User"}]
-   "{{activity.actor.username}}"]]
- [:div.media-body
-  [:h3.media-heading "{{activity.title}}"]
-  [:ul.unstyled {:ng-if "activity.mentioned"}
-   [:li {:ng-repeat "user in activity.mentioned"}
-    [:i.icon-chevron-right]
-    [:link-to {:data-id "{{user.id}}"}]]]
-  [:div.entry-content {:btf-markdown "activity.content"}]
-  [:footer
-   [:span.posted
-    "{{activity.verb}}ed a {{activity.object.objectType}} "
-    [:span {:ng-if "!activity.public"}
-     "privately "]
-    [:time {:datetime "{{activity.published}}"
-            :title "{{activity.published}}"
-            :property "dc:published"}
-     [:a {:href "{{activity.uri}}"}
-      [:span {:am-time-ago "activity.published"
-              :am-preprocess "utc"}]]]
-    " "
-    [:span {:ng-if "activity.source"}
-     "using {{activity.source}}"
-     " "]
-    [:span {:ng-if "activity.geo.latitude && activity.geo.longitude"}
-     "near "
-     [:a.geo-link {:href "#"}
-      "{{activity.geo.latitude}}, {{activity.geo.longitude}}"]
-     " "]
-    [:span {:ng-if "!activity.localId"}
-     "via a "
-     [:a {:href "{{activity.service}}"}
-      "foreign service"]
-     " "]
-    [:a {:href "/main/conversations/{{activity.conversation}}"}
-     "in context"]]]]]
+[:div
+ [:div {:ng-hide "loaded"}
+  [:p "Loading"]
+  ]
+ [:article.hentry.media {:ng-show "loaded"}
+  ;; [:pre "{{activity | json}}"]
+  #_(actions-section activity)
+  [:div.media-left
+   [:p
+    [:display-avatar {:data-id "{{activity.actor._id}}"}]]
+   [:p
+    [:link-to {:data-id "{{activity.actor._id}}" :data-model "User"}]
+    "{{activity.actor.username}}"]]
+  [:div.media-body
+   [:h3.media-heading "{{activity.title}}"]
+   [:ul.unstyled {:ng-if "activity.mentioned"}
+    [:li {:ng-repeat "user in activity.mentioned"}
+     [:i.icon-chevron-right]
+     [:link-to {:data-id "{{user.id}}"}]]]
+   [:div.entry-content {:btf-markdown "activity.content"}]
+   [:footer
+    [:span.posted
+     "{{activity.verb}}ed a {{activity.object.type}} "
+     [:span {:ng-if "!activity.public"}
+      "privately "]
+     [:time {:datetime "{{activity.published}}"
+             :title "{{activity.published}}"
+             :property "dc:published"}
+      [:a {:href "{{activity.uri}}"}
+       [:span {:am-time-ago "activity.published"
+               :am-preprocess "utc"}]]]
+     " "
+     [:span {:ng-if "activity.source"}
+      "using {{activity.source}}"
+      " "]
+     [:span {:ng-if "activity.geo.latitude && activity.geo.longitude"}
+      "near "
+      [:a.geo-link {:href "#"}
+       "{{activity.geo.latitude}}, {{activity.geo.longitude}}"]
+      " "]
+     [:span {:ng-if "!activity.localId"}
+      "via a "
+      [:a {:href "{{activity.service}}"}
+       "foreign service"]
+      " "]
+     [:a {:href "/main/conversations/{{activity.conversation}}"}
+      "in context"]]]]]]

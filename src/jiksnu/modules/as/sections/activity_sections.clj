@@ -13,7 +13,7 @@
 
 ;; show-section
 
-(defsection show-section [Activity :json]
+(defsection show-section [Activity :as]
   [activity & _]
   (merge {:actor (show-section (model.activity/get-author activity))
           :text (:content activity)

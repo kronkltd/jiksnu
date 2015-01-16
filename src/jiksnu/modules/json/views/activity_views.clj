@@ -4,7 +4,7 @@
             [ciste.sections.default :refer [show-section uri]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.modules.web.sections.activity-sections :as sections.activity]
+            [jiksnu.modules.json.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session])
   (:import jiksnu.model.Activity))
 
