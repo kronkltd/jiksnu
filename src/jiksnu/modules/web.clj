@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web
-  (:require [ciste.loader :as loader]
+  (:require [ciste.loader :as loader
+             :refer [defhandler defmodule]]
             [clojure.tools.logging :as log]
             [jiksnu.handlers :as handler]
             ;; jiksnu.handlers.atom
@@ -11,50 +12,23 @@
             [lamina.time :as lt]
             [lamina.trace :as trace]))
 
-(log/info "loading web")
-
-(defn register-module
-  [name options]
-  (dosync
-   (alter loader/modules assoc name options)))
-
-(defn defmodule
-  [name & {:as options}]
-  (register-module
-    name options))
-
-(defn defhandler
-  [name doc channel handler]
-  (dosync
-   (alter loader/handlers assoc name {:channel channel
-                               :handler handler})
-   )
-  )
-
 (defn start
   []
   (log/info "starting web"))
 
 (defhandler :print-actions
   "Print every action invoked"
-  :actions:invoked #'handler/actions-invoked
-  )
+  :actions:invoked #'handler/actions-invoked)
 
 (defhandler :print-creates
   "Print all record creates"
-  "*:create:in" #'handler/event
-  )
-
+  "*:create:in" #'handler/event)
 
 (defmodule "web"
   :start start
   :deps [
          "jiksnu.modules.core"
-         ]
-
-
-  )
-
+         ])
 
 (defn init-handlers
   []
