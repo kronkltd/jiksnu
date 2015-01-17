@@ -50,16 +50,15 @@
             "xmlns:hm" ns/host-meta}
      ["hm:Host" id]
      ["Subject" id]
-     (->> (:links item)
-          (map
-           ;; TODO: show-section [Link :xrd]
-           (fn [{:keys [title rel href template] :as link}]
-             [:Link (merge {}
-                           (if rel {:rel rel})
-                           (if href {:href href})
-                           (if template {:template template}))
-              (if title
-                [:Title title])])))]))
+     (map
+      ;; TODO: show-section [Link :xrd]
+      (fn [{:keys [title rel href template] :as link}]
+        [:Link (merge {}
+                      (when rel {:rel rel})
+                      (when href {:href href})
+                      (when template {:template template}))
+         (when title [:Title title])])
+      (:links item))]))
 
 ;; uri
 

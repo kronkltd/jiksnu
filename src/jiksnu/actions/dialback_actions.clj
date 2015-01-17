@@ -26,10 +26,7 @@
 
 (trace/defn-instrumented prepare-create
   [activity]
-  (-> activity
-      transforms/set-_id
-
-      ))
+  (transforms/set-_id activity))
 
 (defaction create
   [params]

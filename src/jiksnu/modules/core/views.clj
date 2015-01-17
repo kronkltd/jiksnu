@@ -20,8 +20,10 @@
   [serialization response-map]
   (let [content-type (or (-> response-map :headers (get "Content-Type"))
                          "text/html; charset=utf-8")]
-    (-> (merge {:status 200} response-map)
-        (assoc-in  [:headers "Content-Type"] content-type))))
+    (assoc-in
+     (assoc response-map :status 200)
+     [:headers "Content-Type"]
+     content-type)))
 
 (defmethod serialize-as :command
   [serialization response]

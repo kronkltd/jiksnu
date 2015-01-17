@@ -194,8 +194,8 @@
      :last-name last-name}))
 
 (defrecordfactory :local-user model/map->User
-  (-> (factory :user {:domain (config :domain)})
-      (assoc :local true)))
+  (assoc (factory :user {:domain (config :domain)})
+    :local true))
 
 (defrecordfactory :conversation model/map->Conversation
   {:url (fseq :uri)})

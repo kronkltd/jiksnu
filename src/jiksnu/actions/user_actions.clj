@@ -239,19 +239,18 @@
                  params
                  {:url id
                   :_id acct-id}))
-              (do
-                (when-let [profile-link (:href (model.user/get-link params "self"))]
-                  (let [response @(ops/update-resource profile-link {})
-                        body (:body response)
-                        profile (json/read-str body :key-fn keyword)]
-                    (let [username (:preferredUsername profile)
-                          params (merge params
-                                        (when profile
-                                          {:username username})
-                                        profile)]
-                      (if (:username params)
-                        params
-                        (throw+ "Could not determine username")))))))))))))
+              (when-let [profile-link (:href (model.user/get-link params "self"))]
+                (let [response @(ops/update-resource profile-link {})
+                      body (:body response)
+                      profile (json/read-str body :key-fn keyword)
+                      username (:preferredUsername profile)
+                      params (merge params
+                                    (when profile
+                                      {:username username})
+                                    profile)]
+                  (if (:username params)
+                    params
+                    (throw+ "Could not determine username")))))))))))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
@@ -315,18 +314,7 @@
   [^User user & [options]]
   (if (:local user)
     (log/info "Local users do not need to be discovered")
-    (do
-      ;; (let [domain (actions.domain/get-discovered (get-domain user))]
-      ;;   (when (:xmpp domain)
-      ;;     (request-vcard! user)))
-
-      (discover-user-meta user options)
-
-      ;; TODO: there sould be a different discovered flag for
-      ;; each aspect of a domain, and this flag shouldn't be set
-      ;; till they've all responded
-      ;; (model.user/set-field! user :discovered true)
-      ))
+    (discover-user-meta user options))
   (model.user/fetch-by-id (:_id user)))
 
 (defaction discover

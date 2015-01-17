@@ -23,8 +23,7 @@
 
 (defn select-by-model
   [doc model-name]
-  (->> [(enlive/attr= :data-model model-name)]
-       (enlive/select doc)))
+  (enlive/select doc [(enlive/attr= :data-model model-name)]))
 
 (def ^:dynamic *depth* 0)
 

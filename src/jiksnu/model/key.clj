@@ -184,7 +184,8 @@
    ^String n
    ^String e]
   (if-let [key-pair (get-key-for-user-id user-id)]
-    (mc/save (merge key-pair
+    (mc/save collection-name
+             (merge key-pair
                     {:n n
                      :e e}))
     (mc/insert collection-name

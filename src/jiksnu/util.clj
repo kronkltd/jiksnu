@@ -40,7 +40,7 @@
 
 (defn new-id
   []
-  (let [id (.toString (UUID/randomUUID))]
+  (let [id (str (UUID/randomUUID))]
     (trace/trace :id:generated id)
     id))
 

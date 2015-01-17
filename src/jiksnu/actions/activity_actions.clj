@@ -150,8 +150,7 @@
   "Show an activity"
   [activity]
   (if (viewable? activity)
-    (do
-      activity)
+    activity
     (throw+ {:type :permission
              :message "You are not authorized to view this activity"})))
 

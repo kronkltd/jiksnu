@@ -188,33 +188,31 @@ The channel will receive the body of fetching this resource."
         date (time/now)]
     (if (or true (needs-update? item options))
       (if (:requiresAuth item)
-        (do
-          ;; auth required
-          (throw+ "Resource requires authorization"))
-        (do
-          ;; no auth required
-          (let [res (l/expiring-result (lt/seconds 30))
-               auth-string (->> ["Dialback"
-                                 (format "host=\"%s\"" (config :domain))
-                                 (format "token=\"%s\"" "4430086d")]
-                                (string/join " "))
-               request {:url url
-                        :method :get
-                        :headers {"User-Agent" user-agent
-                                  "date" (util/date->rfc1123 (.toDate date))
-                                  "authorization" auth-string}}]
-           (trace/trace :resource:updated item)
-           (log/infof "updating resource: %s" url)
-           (l/run-pipeline
-            (http/http-request request)
-            {:error-handler (fn [ex]
-                              ;; (log/error ex)
-                              ;; (.printStackTrace ex)
-                              (trace/trace :resource:failed [item ex]))
-             :result res}
-            (partial handle-update-realized item))
-           res))
-        )
+        ;; auth required
+        (throw+ "Resource requires authorization")
+        ;; no auth required
+        (let [res (l/expiring-result (lt/seconds 30))
+              auth-string (string/join
+                           " "
+                           ["Dialback"
+                            (format "host=\"%s\"" (config :domain))
+                            (format "token=\"%s\"" "4430086d")])
+              request {:url url
+                       :method :get
+                       :headers {"User-Agent" user-agent
+                                 "date" (util/date->rfc1123 (.toDate date))
+                                 "authorization" auth-string}}]
+          (trace/trace :resource:updated item)
+          (log/infof "updating resource: %s" url)
+          (l/run-pipeline
+           (http/http-request request)
+           {:error-handler (fn [ex]
+                             ;; (log/error ex)
+                             ;; (.printStackTrace ex)
+                             (trace/trace :resource:failed [item ex]))
+            :result res}
+           (partial handle-update-realized item))
+          res))
       (log/warn "Resource does not need to be updated at this time."))))
 
 (defaction update

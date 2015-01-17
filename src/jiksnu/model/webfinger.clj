@@ -97,10 +97,10 @@
   [^Document xrd]
   {:pre [(instance? Document xrd)]
    :post [(coll? %)]}
-  (let [root (.getRootElement xrd)]
-    (->> (concat (util/force-coll (cm/query root "//xrd:Subject" mappings))
-                 (util/force-coll (cm/query root "//xrd:Alias" mappings)))
-               (map #(.getValue %)))))
+  (let [root (.getRootElement xrd)
+        elts (concat (util/force-coll (cm/query root "//xrd:Subject" mappings))
+                     (util/force-coll (cm/query root "//xrd:Alias" mappings)))]
+    (map #(.getValue %) elts)))
 
 (defn get-username-from-identifiers
   [xrd]
