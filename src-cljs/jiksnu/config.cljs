@@ -13,7 +13,7 @@
   (.setUrl wsProvider "wss://renfer.name/")
   (.log js/console "Foo?: " (.-foo appProvider))
 
-  (.otherwise $urlRouterProvider "/not-found")
+  (.otherwise $urlRouterProvider "/")
   (-> $locationProvider
       (.hashPrefix "!")
       (.html5Mode true))

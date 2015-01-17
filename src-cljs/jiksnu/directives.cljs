@@ -24,6 +24,7 @@
            (let [id (.-id attrs)]
              ;; (.log js/console "linking avatar: " id)
              (.init $scope id)))
+   :scope true
    :controller
    (arr "$scope"
         (fn [$scope]
@@ -41,6 +42,7 @@
   []
   (obj
    :templateUrl "/templates/groups-widget"
+   :scope true
    )
   )
 
@@ -90,6 +92,7 @@
   [app]
   (obj
    :templateUrl "/templates/subscribers-widget"
+   :scope true
    :controller (arr "$scope" "userService"
                     (fn [$scope userService]
                       (-> userService
@@ -104,5 +107,6 @@
   []
   (obj
    :templateUrl "/templates/subscriptions-widget"
+   :scope true
    )
   )

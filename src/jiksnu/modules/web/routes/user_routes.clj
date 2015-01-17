@@ -1,10 +1,29 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [ciste.initializer :only [definitializer]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as sub]
-            [jiksnu.actions.user-actions :as user])
+            [jiksnu.actions.user-actions :as user]
+            [jiksnu.modules.web.routes :as r]
+            [octohipster.core :refer [defresource defgroup]]
+            [octohipster.mixins :as mixin])
   (:import jiksnu.model.User))
+
+(defresource user-collection
+  {:desc "Collection route for users"
+   :mixins [mixin/collection-resource]
+   :exists? #'user/index})
+
+(defgroup user-group
+  :url "/users"
+  :resources [user-collection])
+
+(defn on-loaded
+  []
+  (log/info "adding user group")
+  (dosync
+   (alter r/groups conj user-group)))
 
 (defn routes
   []

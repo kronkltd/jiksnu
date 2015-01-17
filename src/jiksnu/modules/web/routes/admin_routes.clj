@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.admin-routes
   (:require [ciste.commands :refer [add-command!]]
-            [ciste.routes :refer [make-matchers]]
+            ;; [ciste.routes :refer [make-matchers]]
             [jiksnu.modules.admin.actions.activity-actions :as admin.activity]
             [jiksnu.modules.admin.actions.auth-actions :as admin.auth]
             [jiksnu.modules.admin.actions.client-actions :as admin.client]
@@ -18,8 +18,8 @@
             [jiksnu.modules.admin.actions.user-actions :as admin.user]
             [jiksnu.modules.admin.actions.worker-actions :as admin.worker]))
 
-(def admin-routes
-  (make-matchers
+(def admin-routes nil
+  #_(make-matchers
    [
     [[:get    "/admin/activities.:format"]                 #'admin.activity/index]
     [[:get    "/admin/activities"]                         #'admin.activity/index]

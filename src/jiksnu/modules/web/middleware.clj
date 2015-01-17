@@ -6,7 +6,6 @@
             [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
-            [jiksnu.ko :as ko]
             [jiksnu.session :refer [with-user-id]]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+ throw+]])

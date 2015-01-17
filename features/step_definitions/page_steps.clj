@@ -79,7 +79,7 @@
 
 (Given #"^I am authorized to view that activity$" []
        (comment  Express the Regexp above with the code you wish you had  )
-       (throw (cucumber.runtime.PendingException.)))
+       #_(throw (cucumber.runtime.PendingException.)))
 
 (Given #"^someone has subscribed to my feed" []
        (a-feed-subscription-exists))
@@ -152,7 +152,7 @@
 
 (When #"^I go to the page for that activity$" []
       (comment  Express the Regexp above with the code you wish you had  )
-      (throw (cucumber.runtime.PendingException.)))
+      #_(throw (cucumber.runtime.PendingException.)))
 
 (When #"^I submit that form$" []
       (submit "form input"))

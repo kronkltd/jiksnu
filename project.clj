@@ -21,11 +21,13 @@
                  [com.novemberain/monger "1.8.0"]
                  [com.novemberain/validateur "1.7.0"]
                  [hiccup "1.0.5"]
-                 [im.chit/gyr "0.4.0"]
+                 [im.chit/gyr "0.3.1"]
                  [im.chit/purnam "0.5.1"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
                   :exclusions [xalan com.cemerick/austin]]
+                 [octohipster "0.2.1-SNAPSHOT"
+                  :exclusions [inflections]]
                  [org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2665"]
                  [org.clojure/tools.logging "0.3.1"]

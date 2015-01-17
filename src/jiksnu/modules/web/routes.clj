@@ -1,12 +1,9 @@
 (ns jiksnu.modules.web.routes
   (:require [aleph.http :as http]
-            [ciste.config :refer [config]]
             [ciste.initializer :refer [definitializer]]
             [ciste.middleware :as middleware]
             [ciste.routes :refer [resolve-routes]]
-            [clojure.java.io :as io]
             [clojure.tools.logging :as log]
-            [clojure.tools.reader.edn :as edn]
             [compojure.core :as compojure :refer [GET]]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -16,10 +13,16 @@
             [jiksnu.modules.web.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
+            [jiksnu.modules.web.helpers :as helpers]
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
-            [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
+            ;; [octohipster.core :refer []]
+            [octohipster.documenters.schema
+             :refer [schema-doc schema-root-doc]]
+            [octohipster.documenters.swagger
+             :refer [swagger-doc swagger-root-doc]]
+            [octohipster.routes :refer [defroutes]]
             [ring.middleware.file :as file]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.file-info :as file-info]
@@ -29,96 +32,28 @@
             [ring.middleware.stacktrace :as stacktrace]
             ;; [ring.middleware.webjars :refer [wrap-webjars]]
             [monger.ring.session-store :as ms]
-            [slingshot.slingshot :refer [throw+]])
-  (:import java.io.PushbackReader
-           javax.security.auth.login.LoginException))
+            [slingshot.slingshot :refer [throw+]]))
 
-(defn not-found-msg
+(declare app)
+(declare site)
+
+(def groups
+  "Ref holding each api group"
+  (ref []))
+
+(defn load-routes
   []
-  "Not Found")
-
-(defn load-pages!
-  [route-sym]
-  (when-let [page-fn (try
-                       (ns-resolve route-sym 'pages)
-                       (catch Exception ex
-                         (log/error ex)))]
-    (when-let [matchers (page-fn)]
-      (dosync
-       (alter predicates/*page-matchers* concat matchers)))))
-
-(defn load-sub-pages!
-  [route-sym]
-  (when-let [page-fn (try
-                       (ns-resolve route-sym 'sub-pages)
-                       (catch Exception ex
-                         (log/error ex))) ]
-    (when-let [matchers (page-fn)]
-      (dosync
-       (alter predicates/*sub-page-matchers* concat matchers)))))
-
-(defn load-routes!
-  [route-sym]
-  (when-let [route-fn (try
-                        (ns-resolve route-sym 'routes)
-                        (catch Exception ex
-                          (log/error ex)))]
-    (route-fn)))
-
-(defn load-group
-  [group]
-  (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
-    (log/debug (str "Loading routes for: " route-sym))
-
-    (try
-      (require route-sym)
-      (load-pages! route-sym)
-      (load-sub-pages! route-sym)
-      (load-routes! route-sym)
-
-      (catch Exception ex
-        (log/error ex)))))
-
-(defn make-matchers
-  [handlers]
-  (log/debug "making matchers")
-  (map
-   (fn [[matcher action]]
-     (let [o (merge
-              {:serialization :http
-               :format :html}
-              (if (var? action)
-                {:action action}
-                action))]
-       (let [[method route] matcher]
-         [{:method method
-           ;; :format :html
-           :serialization :http
-           :path route} o])))
-   handlers))
+  (doseq [group registry/action-group-names]
+    (helpers/load-group group)))
 
 (def http-routes
   (->> registry/action-group-names
-       (map load-group)
+       (map helpers/load-group)
        (reduce concat)
-       make-matchers))
-
-(defn serve-template
-  [request]
-  (let [template-name (:* (:params request))
-        path (str "templates/" template-name ".edn")
-        url (io/resource path)
-        reader (PushbackReader. (io/reader url))
-        data (edn/read reader)]
-    {:headers {"Content-Type" "text/html"}
-     :body (h/html data) }))
-
-(defn index
-  [_]
-  (sections.layout/page-template-content {} {}))
+       helpers/make-matchers))
 
 (compojure/defroutes all-routes
-  (GET "/templates/*" [] #'serve-template)
+  (GET "/templates/*" [] #'helpers/serve-template)
   (compojure/GET "/websocket" _
                  (http/wrap-aleph-handler stream/websocket-handler))
   (compojure/GET "/" request
@@ -128,32 +63,31 @@
   (compojure/ANY "/admin*" request
                  (if (session/is-admin?)
                    ((middleware/wrap-log-request
-                     (resolve-routes [predicates/http] routes.admin/admin-routes))
+                     (resolve-routes [predicates/http]
+                                     routes.admin/admin-routes))
                     request)
                    ;; TODO: move this somewhere else
                    (throw+ {:type :authentication :message "Must be admin"})))
   (middleware/wrap-log-request
-   (resolve-routes [predicates/http] http-routes))
-  (GET "/*" [] #'index)
-  (route/not-found (not-found-msg)))
+   (resolve-routes [predicates/http] http-routes)))
 
-(declare app)
-
-
-(defn close-connection
-  [handler]
-  (fn [request]
-    (if-let [response (handler request)]
-      (assoc-in response [:headers "Connection"] "close"))))
+(defn set-site
+  []
+  (defroutes site
+    :groups (log/spy :info @groups)
+    :documenters [swagger-doc swagger-root-doc
+                  schema-doc schema-root-doc]))
 
 (definitializer
+  (load-routes)
+  (set-site)
   (def app
     (http/wrap-ring-handler
      ;; (wrap-webjars
      (compojure/routes
-       (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
-       (-> all-routes
-           jm/wrap-authentication-handler
+      (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
+      (-> all-routes
+          jm/wrap-authentication-handler
            ;; (file/wrap-file "resources/public/")
            ;; file-info/wrap-file-info
            jm/wrap-user-binding
@@ -166,8 +100,11 @@
            ;; (wrap-resource "META-INF/resources/webjars/")
            ;; wrap-content-type
            ;; wrap-not-modified
-           ))
-      ;; )
+           )
+      site
+      (GET "/*" [] #'helpers/index)
+      (route/not-found (helpers/not-found-msg)))
+     ;; )
      ))
 
   )

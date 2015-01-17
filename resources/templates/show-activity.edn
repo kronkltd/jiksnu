@@ -7,7 +7,7 @@
   #_(actions-section activity)
   [:div.media-left
    [:p
-    [:display-avatar {:data-id "{{activity.actor._id}}"}]]
+    [:display-avatar {:data-id "{{activity.author}}"}]]
    [:p
     [:link-to {:data-id "{{activity.actor._id}}" :data-model "User"}]
     "{{activity.actor.username}}"]]
