@@ -3,7 +3,6 @@
             [jiksnu.model.user :as model.user]))
 
 (def ^:dynamic *current-user-id* (ref nil))
-(def ^:dynamic *admin-mode* false)
 
 (defn current-user-id
   []
@@ -20,7 +19,7 @@
        (is-admin? user)
        false))
   ([user]
-     (or *admin-mode* (:admin user))))
+     (:admin user)))
 
 (defmacro with-user-id
   [id & body]
@@ -30,11 +29,6 @@
 (defmacro with-user
   [user & body]
   `(with-user-id (:_id ~user) ~@body))
-
-(defmacro with-admin
-  [& body]
-  `(binding [*admin-mode* true]
-     ~@body))
 
 (defn set-authenticated-user!
   [user]
