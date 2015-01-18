@@ -6,11 +6,16 @@
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :as helpers]
             [jiksnu.modules.web.routes :as r]
-            [octohipster.core :refer [defresource defgroup]]
             [octohipster.mixins :as mixin]))
+
+(defgroup root
+  :url ""
+  :summary "Root"
+  )
 
 (defresource root home
   :url "/"
+  :summary "home page"
   :available-media-types ["text/html"]
   :handle-ok helpers/index
   :doc {:get {:nickname "home-page"
@@ -23,6 +28,3 @@
                (log/spy :info (json/json-str (site/status))))
   )
 
-(defgroup root
-  :url ""
-  )

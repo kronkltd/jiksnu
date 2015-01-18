@@ -1,32 +1,28 @@
 (ns jiksnu.modules.http.resources
-  (:require [octohipster.core :as octo]
+  (:require [clojure.tools.logging :as log]
+            [octohipster.core :as octo]
             [jiksnu.modules.http.routes :as r]
             )
   )
 
 (defmacro defresource
-  [group name & {:as opts}]
+  [group name & opts]
   `(do
+     (declare ~name)
+     (log/infof "defining resource: %s" (var ~name))
      (octo/defresource ~name
-       ~@opts
-       )
+       ~@opts)
 
      (dosync
-      (alter r/resources assoc-in [group name] ~name)
-      )
-     )
-  )
+      (alter r/resources assoc-in [(var ~group) (var ~name)] ~name))))
 
 
 (defmacro defgroup
-  [name & {:as opts}]
+  [name & opts]
   `(do
+     (declare ~name)
      (octo/defgroup ~name
-       ~@opts
-       )
+       ~@opts)
 
      (dosync
-      (alter r/groups assoc ~'name ~name)
-      )
-     )
-  )
+      (alter r/groups assoc (var ~name) ~name))))

@@ -10,15 +10,15 @@
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.User))
 
-(defresource users collection
-  :desc "Collection route for users"
-  :mixins [mixin/collection-resource]
-  :exists? #'user/index)
-
 (defgroup users
   :url "/users"
   ;; :resources [user-collection]
   )
+
+(defresource users collection
+  :desc "Collection route for users"
+  :mixins [mixin/collection-resource]
+  :exists? #'user/index)
 
 (defn routes
   []

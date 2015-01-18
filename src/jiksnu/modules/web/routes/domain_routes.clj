@@ -6,6 +6,16 @@
             ))
 
 
+(defgroup domains
+  :url "/main/domains"
+  ;; :resources [
+  ;;             domain-collection
+  ;;             domain-discover
+  ;;             domain-resource
+  ;;             domain-edit
+  ;;             ]
+  )
+
 (defresource domains collection
   :desc "collection of domains"
   :handle-ok domain/index
@@ -25,25 +35,15 @@
   :mixins [mixin/item-resource]
   :delete! domain/delete)
 
-(defgroup domains
-  :url "/main/domains"
-  ;; :resources [
-  ;;             domain-collection
-  ;;             domain-discover
-  ;;             domain-resource
-  ;;             domain-edit
-  ;;             ]
+(defgroup well-known
+  :url "/.well-known"
+  ;; :resources [host-meta]
   )
 
 (defresource well-known host-meta
   :url "/host-meta"
   :summary "Webfinger Host Meta Document"
   :handle-ok domain/host-meta
-  )
-
-(defgroup well-known
-  :url "/.well-known"
-  ;; :resources [host-meta]
   )
 
 (defn routes

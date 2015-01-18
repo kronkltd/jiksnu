@@ -13,6 +13,7 @@
             [jiksnu.modules.web.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
+            [jiksnu.modules.http.routes :as r]
             [jiksnu.modules.web.helpers :as helpers]
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
@@ -69,10 +70,24 @@
 
 (defn set-site
   []
+  (log/spy :info @r/groups)
   (defroutes site
-    :groups @groups
+    :groups
+    (log/spy (map
+      (fn [[gvar group]]
+        (assoc group :resources
+               (map
+                (fn [[rvar resource]]
+                  resource)
+                (get @r/resources gvar))))
+      @r/groups))
     :documenters [swagger-doc swagger-root-doc
                   schema-doc schema-root-doc]))
+
+(add-watch r/resources :site (fn [k r os ns]
+                               (log/info "refreshing site")
+                               (set-site)
+                                ))
 
 (definitializer
   (load-routes)

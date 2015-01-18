@@ -4,6 +4,11 @@
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [octohipster.mixins :as mixin]))
 
+(defgroup activities
+  :url "/activities"
+  ;; :resources [activity-collection activity-resource]
+  )
+
 (defresource activities collection
   :desc "Collection route for activities"
   :mixins [mixin/collection-resource]
@@ -11,11 +16,7 @@
   :data-key :activities
   :exists? (fn [ctx]
              (log/spy :info ctx)
-             {:activities (:items (activity/index))}
-             )
-  ;; :exists? #'activity/index
-
-  )
+             {:activities (:items (activity/index))}))
 
 (defresource activities item
   :desc "Resource routes for single Activity"
@@ -29,11 +30,6 @@
 ;; (defresource activity-post-page
 ;;   :desc ""
 ;;   )
-
-(defgroup activities
-  :url "/activities"
-  ;; :resources [activity-collection activity-resource]
-  )
 
 (defn routes
   []
