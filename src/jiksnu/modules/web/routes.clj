@@ -70,24 +70,18 @@
 
 (defn set-site
   []
-  (log/spy :info @r/groups)
   (defroutes site
     :groups
-    (log/spy (map
-      (fn [[gvar group]]
-        (assoc group :resources
-               (map
-                (fn [[rvar resource]]
-                  resource)
-                (get @r/resources gvar))))
-      @r/groups))
+    (map (fn [[gvar group]]
+           (assoc group :resources
+                  (map val (get @r/resources gvar))))
+         @r/groups)
     :documenters [swagger-doc swagger-root-doc
                   schema-doc schema-root-doc]))
 
 (add-watch r/resources :site (fn [k r os ns]
                                (log/info "refreshing site")
-                               (set-site)
-                                ))
+                               (set-site)))
 
 (definitializer
   (load-routes)
@@ -112,7 +106,7 @@
            ;; wrap-content-type
            ;; wrap-not-modified
            )
-      site
+      #'site
       ;; (GET "/*" [] #'helpers/index)
       (route/not-found (helpers/not-found-msg)))
      ;; )

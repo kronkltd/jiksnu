@@ -60,7 +60,7 @@
   [$scope $http notify]
   (.log js/console "Indexing conversations")
   (notify "update conversations")
-  (! $scope.init (helpers/fetch-page $scope $http "/conversations"))
+  (! $scope.init (helpers/fetch-page $scope $http "/main/conversations"))
   (.$on $scope
        "updateConversations"
        (fn [e]
@@ -149,7 +149,7 @@
   (! $scope.init
      (fn [id]
        (.info js/console "Showing Activity")
-       (let [url (str "/notice/" id ".json")]
+       (let [url (str "/activities/" id)]
          (-> $http
              (.get url)
              (.success

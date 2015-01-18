@@ -1,22 +1,30 @@
 (ns jiksnu.modules.web.routes.activity-routes
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [octohipster.mixins :as mixin]))
 
 (defgroup activities
-  :url "/activities"
-  ;; :resources [activity-collection activity-resource]
-  )
+  :url "/activities")
 
 (defresource activities collection
   :desc "Collection route for activities"
   :mixins [mixin/collection-resource]
-  :count #'activity/count
+  :available-media-types ["application/json"]
+  :count (fn [ctx]
+           (log/info "counting activities")
+           2
+           )
   :data-key :activities
   :exists? (fn [ctx]
-             (log/spy :info ctx)
-             {:activities (:items (activity/index))}))
+             {:page (log/spy :info (activity/index))})
+  :handle-ok (fn [ctx]
+               (log/spy :info ctx)
+               (json/json-str (:page ctx))
+               )
+
+  )
 
 (defresource activities item
   :desc "Resource routes for single Activity"

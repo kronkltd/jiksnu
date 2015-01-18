@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.conversation-routes
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
@@ -16,12 +17,13 @@
   :summary "Index Conversations"
   :desc "collection of conversations"
   :mixins [mixin/collection-resource]
-  :data-key :conversations
+  :available-media-types ["application/json"]
+  :data-key :page
   :exists? (fn [ctx]
-             {:conversations (:items (conversation/index))}
+             {:page (conversation/index)}
              )
-  ;; :handle-ok conversation/index
-  )
+  :handle-ok (fn [ctx]
+               (json/json-str (:page ctx))))
 
 (defn routes
   []
