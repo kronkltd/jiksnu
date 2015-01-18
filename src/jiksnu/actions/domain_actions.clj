@@ -114,6 +114,11 @@
   [domain]
   domain)
 
+(defn host-meta
+  [ctx]
+  nil
+  )
+
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.domain
                                   :sort-clause {:username 1}))
@@ -170,6 +175,11 @@
                     (model.domain/set-field! domain :statusnet-config sconfig)))))
          (filter identity)
          first)))
+
+(defn count
+  [ctx]
+  1
+  )
 
 (defn discover-capabilities
   [domain & [url]]

@@ -40,6 +40,7 @@
    "feed-subscription"
    "group"
    "group-membership"
+   "home"
    "like"
    "key"
    "message"
@@ -53,7 +54,7 @@
    "stream"
    "subscription"
    "tag"
-   "template"
+   ;; "template"
    "user"
    "user-list"
    ])
