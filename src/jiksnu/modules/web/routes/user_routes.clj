@@ -11,9 +11,9 @@
   (:import jiksnu.model.User))
 
 (defresource user-collection
-  {:desc "Collection route for users"
-   :mixins [mixin/collection-resource]
-   :exists? #'user/index})
+  :desc "Collection route for users"
+  :mixins [mixin/collection-resource]
+  :exists? #'user/index)
 
 (defgroup user-group
   :url "/users"

@@ -46,7 +46,7 @@
   (doseq [group registry/action-group-names]
     (helpers/load-group group)))
 
-(def http-routes
+#_(def http-routes
   (->> registry/action-group-names
        (map helpers/load-group)
        (reduce concat)
@@ -68,13 +68,13 @@
                     request)
                    ;; TODO: move this somewhere else
                    (throw+ {:type :authentication :message "Must be admin"})))
-  (middleware/wrap-log-request
+  #_(middleware/wrap-log-request
    (resolve-routes [predicates/http] http-routes)))
 
 (defn set-site
   []
   (defroutes site
-    :groups (log/spy :info @groups)
+    :groups @groups
     :documenters [swagger-doc swagger-root-doc
                   schema-doc schema-root-doc]))
 
@@ -102,7 +102,7 @@
            ;; wrap-not-modified
            )
       site
-      (GET "/*" [] #'helpers/index)
+      ;; (GET "/*" [] #'helpers/index)
       (route/not-found (helpers/not-found-msg)))
      ;; )
      ))

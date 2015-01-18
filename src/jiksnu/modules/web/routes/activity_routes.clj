@@ -8,8 +8,14 @@
 (defresource activity-collection
   :desc "Collection route for activities"
   :mixins [mixin/collection-resource]
-  ;; :count #'activity/count
-  :exists? #'activity/index
+  :count #'activity/count
+  :data-key :activities
+  :exists? (fn [ctx]
+             (log/spy :info ctx)
+             {:activities (:items (activity/index))}
+             )
+  ;; :exists? #'activity/index
+
   )
 
 (defresource activity-resource

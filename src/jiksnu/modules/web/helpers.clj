@@ -85,7 +85,7 @@
 
 (defn serve-template
   [request]
-  (let [template-name (:* (:params (log/spy :info request)))
+  (let [template-name (:* (:params request))
         path (str "templates/" template-name ".edn")
         url (io/resource path)
         reader (PushbackReader. (io/reader url))
