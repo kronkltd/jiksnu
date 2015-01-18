@@ -26,7 +26,7 @@
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
                   :exclusions [xalan com.cemerick/austin]]
-                 [octohipster "0.2.1-SNAPSHOT"
+                 [net.kronkltd/octohipster "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
                  [org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2665"]

@@ -2,6 +2,7 @@
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as activity]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [octohipster.mixins :as mixin]))
 
@@ -30,8 +31,13 @@
   :desc "Resource routes for single Activity"
   :url "/{_id}"
   :mixins [mixin/item-resource]
-  :exists? #'activity/show
+  :available-media-types ["application/json"]
+  :exists? (fn [ctx]
+             (let [id (-> ctx :request :route-params :_id)
+                   activity (model.activity/fetch-by-id id)]
+               {:item activity}))
   :delete! #'activity/delete
+  :handle-ok (fn [ctx] (json/json-str (:item ctx)))
   ;; :put!    #'activity/update
   )
 
