@@ -58,11 +58,11 @@
 (def page-mappings
   {
    "conversations" "/main/conversations"
-
-
-   }
-
-  )
+   "domains"       "/main/domains"
+   "feed-sources"  "/main/feed-sources"
+   "groups"        "/main/groups"
+   "resources" "/main/resources"
+   })
 
 (def.service jiksnu.pageService
   [$q $http]

@@ -8,6 +8,17 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
+(defn init-page
+  [$scope pageService page-type]
+  (! $scope.loades false)
+  (! $scope.init
+     (fn []
+       (-> pageService
+           (.fetch page-type)
+           (.then (fn [page]
+                    (! $scope.page page)
+                    (! $scope.loaded true)))))))
+
 (def.controller jiksnu.AdminConversationsController
   [$scope $http]
   (! $scope.init (helpers/fetch-page $scope $http "/admin/conversations.json"))
@@ -33,18 +44,11 @@
 
 (def.controller jiksnu.LogoutController
   [$scope $http app]
-
   (-> $http
       (.post "/main/logout")
       (.success (fn [data]
                   (.log js/console "data:" data)
-                  (.fetchStatus app)
-                  ;; TODO: refresh status
-
-                  ))
-      )
-
-  )
+                  (.fetchStatus app)))))
 
 (def.controller jiksnu.IndexClientsController
   [$scope $http]
@@ -54,48 +58,33 @@
 
 (def.controller jiksnu.IndexConversationsController
   [$scope $http notify pageService]
-  (.log js/console "Indexing conversations")
-  (notify "update conversations")
-  (! $scope.loaded false)
-  (! $scope.init
-     (fn []
-       (-> pageService
-           (.fetch "conversations")
-           (.then (fn [page]
-                    (! $scope.loaded true)
-                    (! $scope.page page))))))
+  (init-page $scope pageService "conversations")
   (.$on $scope
        "updateConversations"
        (fn [e]
          (.log js/console "updateConversations")
          (notify "update conversations")
-         (.init $scope)
-         )
-       )
+         (.init $scope)))
   (.init $scope))
 
 (def.controller jiksnu.IndexDomainsController
-  [$scope $http]
-  (.info js/console "Indexing domains")
-  (! $scope.init (helpers/fetch-page $scope $http "/main/domains.json"))
+  [$scope pageService]
+  (init-page $scope pageService "domains")
   (.init $scope))
 
 (def.controller jiksnu.IndexFeedSourcesController
   [$scope $http]
-  (.info js/console "Indexing feed sources")
-  (! $scope.init (helpers/fetch-page $scope $http "/main/feed-sources.json"))
+  (init-page $scope pageService "feed-sources")
   (.init $scope))
 
 (def.controller jiksnu.IndexGroupsController
   [$scope $http]
-  (.info js/console "Indexing groups")
-  (! $scope.init (helpers/fetch-page $scope $http "/main/groups.json"))
+  (init-page $scope pageService "groups")
   (.init $scope))
 
 (def.controller jiksnu.IndexResourcesController
   [$scope $http]
-  (.info js/console "Indexing resources")
-  (! $scope.init (helpers/fetch-page $scope $http "/resources.json"))
+  (init-page $scope pageService "resources")
   (.init $scope))
 
 (def.controller jiksnu.IndexUsersController

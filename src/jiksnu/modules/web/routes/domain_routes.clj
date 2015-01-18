@@ -2,11 +2,13 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as domain]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.helpers :as helpers]
             [octohipster.mixins :as mixin]
             ))
 
 
 (defgroup domains
+  :name "Domains"
   :url "/main/domains"
   ;; :resources [
   ;;             domain-collection
@@ -18,9 +20,21 @@
 
 (defresource domains collection
   :desc "collection of domains"
-  :handle-ok domain/index
+  :mixins [mixin/collection-resource]
+  :available-media-types [
+                          "application/json"
+                          "text/html"
+                          ]
   :count domain/count
-  :mixins [mixin/collection-resource])
+  :handle-ok (fn [ctx]
+               (log/spy :info ctx)
+               (condp = (get-in ctx [:representation :media-type])
+                 "text/html"        (helpers/index (:request ctx))
+                 "application/json" "{foo: 'bar'}"
+                 )
+               )
+
+  )
 
 (defresource domains discover
   :url "/{_id}/discover"
@@ -33,10 +47,14 @@
 (defresource domains resource
   :url "/{_id}"
   :mixins [mixin/item-resource]
-  :delete! domain/delete)
+  :delete! domain/delete
+  :delete-summary "Delete a domain"
+  )
 
 (defgroup well-known
   :url "/.well-known"
+  :name "Well Known"
+  :summary "Well Known"
   ;; :resources [host-meta]
   )
 
