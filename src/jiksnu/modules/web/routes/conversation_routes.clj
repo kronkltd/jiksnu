@@ -1,7 +1,27 @@
 (ns jiksnu.modules.web.routes.conversation-routes
-  (:require [jiksnu.actions.activity-actions :as activity]
-            [jiksnu.actions.conversation-actions :as conversation])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as activity]
+            [jiksnu.actions.conversation-actions :as conversation]
+            [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [octohipster.mixins :as mixin])
   (:import jiksnu.model.Conversation))
+
+(defgroup conversations
+  :url "/main/conversations"
+  ;; :resources [conversation-collection]
+
+  )
+
+(defresource conversations collection
+  :summary "Index Conversations"
+  :desc "collection of conversations"
+  :mixins [mixin/collection-resource]
+  :data-key :conversations
+  :exists? (fn [ctx]
+             {:conversations (:items (conversation/index))}
+             )
+  ;; :handle-ok conversation/index
+  )
 
 (defn routes
   []

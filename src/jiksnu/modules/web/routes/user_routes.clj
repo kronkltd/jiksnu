@@ -5,25 +5,20 @@
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as sub]
             [jiksnu.actions.user-actions :as user]
+            [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.routes :as r]
-            [octohipster.core :refer [defresource defgroup]]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.User))
 
-(defresource user-collection
+(defresource users collection
   :desc "Collection route for users"
   :mixins [mixin/collection-resource]
   :exists? #'user/index)
 
-(defgroup user-group
+(defgroup users
   :url "/users"
-  :resources [user-collection])
-
-(defn on-loaded
-  []
-  (log/info "adding user group")
-  (dosync
-   (alter r/groups conj user-group)))
+  ;; :resources [user-collection]
+  )
 
 (defn routes
   []

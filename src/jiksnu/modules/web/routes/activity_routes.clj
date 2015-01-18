@@ -1,11 +1,10 @@
 (ns jiksnu.modules.web.routes.activity-routes
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as activity]
-            [jiksnu.modules.web.routes :as r]
-            [octohipster.core :refer [defresource defgroup]]
+            [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [octohipster.mixins :as mixin]))
 
-(defresource activity-collection
+(defresource activities collection
   :desc "Collection route for activities"
   :mixins [mixin/collection-resource]
   :count #'activity/count
@@ -18,7 +17,7 @@
 
   )
 
-(defresource activity-resource
+(defresource activities item
   :desc "Resource routes for single Activity"
   :url "/{_id}"
   :mixins [mixin/item-resource]
@@ -31,16 +30,10 @@
 ;;   :desc ""
 ;;   )
 
-(defgroup activity-group
+(defgroup activities
   :url "/activities"
-  :resources [activity-collection activity-resource]
+  ;; :resources [activity-collection activity-resource]
   )
-
-(defn on-loaded
-  []
-  (log/info "adding activity group")
-  (dosync
-   (alter r/groups conj activity-group)))
 
 (defn routes
   []

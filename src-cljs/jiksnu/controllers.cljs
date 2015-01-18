@@ -60,7 +60,7 @@
   [$scope $http notify]
   (.log js/console "Indexing conversations")
   (notify "update conversations")
-  (! $scope.init (helpers/fetch-page $scope $http "/main/conversations.json"))
+  (! $scope.init (helpers/fetch-page $scope $http "/conversations"))
   (.$on $scope
        "updateConversations"
        (fn [e]

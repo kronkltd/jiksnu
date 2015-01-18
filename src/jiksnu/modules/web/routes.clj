@@ -37,10 +37,6 @@
 (declare app)
 (declare site)
 
-(def groups
-  "Ref holding each api group"
-  (ref []))
-
 (defn load-routes
   []
   (doseq [group registry/action-group-names]

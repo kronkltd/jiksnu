@@ -1,61 +1,49 @@
 (ns jiksnu.modules.web.routes.domain-routes
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as domain]
-            [jiksnu.modules.web.routes :as r]
-            [octohipster.core :refer [defresource defgroup]]
+            [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [octohipster.mixins :as mixin]
             ))
 
 
-(defresource domain-collection
+(defresource domains collection
   :desc "collection of domains"
   :handle-ok domain/index
   :count domain/count
   :mixins [mixin/collection-resource])
 
-(defresource domain-discover
+(defresource domains discover
   :url "/{_id}/discover"
   :post domain/discover)
 
-(defresource domain-edit
-  :url "/{_id}/discover"
-  :handle-ok domain/edit)
+(defresource domains edit
+  :url "/{_id}/edit"
+  :handle-ok domain/edit-page)
 
-(defresource domain-resource
+(defresource domains resource
   :url "/{_id}"
   :mixins [mixin/item-resource]
   :delete! domain/delete)
 
 (defgroup domains
   :url "/main/domains"
-  :resources [
-              domain-collection
-              domain-discover
-              domain-resource
-              domain-edit
-              ]
+  ;; :resources [
+  ;;             domain-collection
+  ;;             domain-discover
+  ;;             domain-resource
+  ;;             domain-edit
+  ;;             ]
   )
 
-(defresource host-meta
+(defresource well-known host-meta
   :url "/host-meta"
+  :summary "Webfinger Host Meta Document"
   :handle-ok domain/host-meta
   )
 
 (defgroup well-known
   :url "/.well-known"
-  :resources [host-meta]
-  )
-
-(defn on-loaded
-  []
-  (log/info "adding domain groups")
-
-  (dosync
-   (alter r/groups conj domains))
-
-  (dosync
-   (alter r/groups conj well-known))
-
+  ;; :resources [host-meta]
   )
 
 (defn routes
