@@ -4,11 +4,7 @@
             jiksnu.services
             [jiksnu.templates :as templates]
             [purnam.native.functions :refer [js-map]])
-  (:use-macros [gyr.core :only [def.module def.controller
-                                def.value def.constant
-                                def.filter def.factory
-                                def.provider def.service
-                                def.directive def.config]]
+  (:use-macros [gyr.core :only [def.controller]]
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
@@ -57,10 +53,17 @@
   (.init $scope))
 
 (def.controller jiksnu.IndexConversationsController
-  [$scope $http notify]
+  [$scope $http notify pageService]
   (.log js/console "Indexing conversations")
   (notify "update conversations")
-  (! $scope.init (helpers/fetch-page $scope $http "/main/conversations"))
+  (! $scope.loaded false)
+  (! $scope.init
+     (fn []
+       (-> pageService
+           (.fetch "conversations")
+           (.then (fn [page]
+                    (! $scope.loaded true)
+                    (! $scope.page page))))))
   (.$on $scope
        "updateConversations"
        (fn [e]
@@ -144,19 +147,16 @@
   )
 
 (def.controller jiksnu.ShowActivityController
-  [$scope $http $stateParams]
+  [$scope $http $stateParams activityService]
   (! $scope.loaded false)
   (! $scope.init
      (fn [id]
-       (.info js/console "Showing Activity")
-       (let [url (str "/activities/" id)]
-         (-> $http
-             (.get url)
-             (.success
-              (fn [data]
-                (.info js/console "Data" data)
-                (! $scope.activity data)
-                (! $scope.loaded true)))))))
+       (when (and id (not= id ""))
+         (-> activityService
+             (.get id)
+             (.then (fn [activity]
+                      (! $scope.loaded true)
+                      (! $scope.activity activity)))))))
   (.init $scope (.-id $stateParams)))
 
 (def.controller jiksnu.ShowDomainController

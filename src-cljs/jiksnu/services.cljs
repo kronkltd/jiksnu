@@ -36,7 +36,7 @@
 (def.service jiksnu.activityService
   [DSCacheFactory $q $http]
   (let [cache-name "activities"
-        get-url #(str "/notice/" % ".json")]
+        get-url #(str "/activities/" %)]
     (DSCacheFactory cache-name (obj :capacity 1000))
     (let [cache (.get DSCacheFactory cache-name)
           service (obj)]
@@ -54,3 +54,31 @@
       (! service.fetch (cache-fetch cache $q $http get-url))
       (! service.get (cache-get service cache $q))
       service)))
+
+(def page-mappings
+  {
+   "conversations" "/main/conversations"
+
+
+   }
+
+  )
+
+(def.service jiksnu.pageService
+  [$q $http]
+
+  (let [service (obj)]
+    (! service.fetch
+       (fn [page-name]
+         (let [d (.defer $q)
+               url (get page-mappings page-name)]
+           (-> $http
+               (.get url)
+               (.success
+                (fn [data]
+                  (.resolve d data)))
+               (.error
+                (fn []
+                  (.reject d))))
+           (.-promise d))))
+    service))

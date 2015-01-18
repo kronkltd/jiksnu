@@ -1,5 +1,6 @@
 (ns jiksnu.directives
-  (:require jiksnu.app)
+  (:require jiksnu.app
+            [jiksnu.controllers :as controller])
   (:use-macros [gyr.core :only [def.directive]]
                [purnam.core :only [! ? arr obj]]))
 
@@ -69,21 +70,11 @@
   (obj
    :templateUrl "/templates/show-activity"
    :scope (obj)
-   :controller
-   (arr "$scope"
-        (fn [$scope]
-          (! $scope.loaded false)
-          (! $scope.init
-             (fn [id]
-               (when (and id (not= id ""))
-                 (-> activityService
-                     (.get id)
-                     (.then (fn [activity]
-                              (! $scope.loaded true)
-                              (! $scope.activity activity)))))))))
+   :controller controller/jiksnu_ShowActivityController
    :link (fn [$scope element attrs]
            (let [id (.-id attrs)]
              (.init $scope id)))))
+
 
 (def.directive jiksnu.streamsWidget []
   (obj))
