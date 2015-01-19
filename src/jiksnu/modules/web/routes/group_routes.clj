@@ -1,7 +1,39 @@
 (ns jiksnu.modules.web.routes.group-routes
-  (:require [jiksnu.actions.conversation-actions :as conversation]
-            [jiksnu.actions.group-actions :as group])
+  (:require [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.conversation-actions :as conversation]
+            [jiksnu.actions.group-actions :as group]
+            [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.helpers :as helpers]
+            [jiksnu.modules.web.routes :as r]
+            [octohipster.mixins :as mixin])
   (:import jiksnu.model.Group))
+
+(defgroup groups
+  :url "/main/groups"
+  :name "groups"
+
+  )
+
+(defresource groups collection
+  :mixins [mixin/collection-resource]
+  :available-media-types ["application/json"
+                          "text/html"
+                          ]
+  ;; :count (fn [ctx]
+  ;;          (log/info "counting activities")
+  ;;          2)
+  ;; :data-key :page
+  :exists? (fn [ctx]
+             {:page (log/spy :info (group/index))})
+  :handle-ok (fn [ctx]
+               (condp = (get-in ctx [:representation :media-type])
+                 "text/html"        (helpers/index (:request ctx))
+                 "application/json" (json/json-str (:page ctx)))))
+
+;; (defresource groups resource
+
+;;   )
 
 (defn routes
   []

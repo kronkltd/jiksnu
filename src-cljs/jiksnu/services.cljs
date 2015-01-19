@@ -62,6 +62,7 @@
    "feed-sources"  "/main/feed-sources"
    "groups"        "/main/groups"
    "resources" "/main/resources"
+   "users" "/main/users"
    })
 
 (def.service jiksnu.pageService

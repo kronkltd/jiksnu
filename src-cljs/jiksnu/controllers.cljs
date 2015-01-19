@@ -10,7 +10,7 @@
 
 (defn init-page
   [$scope pageService page-type]
-  (! $scope.loades false)
+  (! $scope.loaded false)
   (! $scope.init
      (fn []
        (-> pageService
@@ -57,7 +57,7 @@
   (.init $scope))
 
 (def.controller jiksnu.IndexConversationsController
-  [$scope $http notify pageService]
+  [$scope notify pageService]
   (init-page $scope pageService "conversations")
   (.$on $scope
        "updateConversations"
@@ -73,24 +73,23 @@
   (.init $scope))
 
 (def.controller jiksnu.IndexFeedSourcesController
-  [$scope $http]
+  [$scope pageService]
   (init-page $scope pageService "feed-sources")
   (.init $scope))
 
 (def.controller jiksnu.IndexGroupsController
-  [$scope $http]
+  [$scope pageService]
   (init-page $scope pageService "groups")
   (.init $scope))
 
 (def.controller jiksnu.IndexResourcesController
-  [$scope $http]
+  [$scope pageService]
   (init-page $scope pageService "resources")
   (.init $scope))
 
 (def.controller jiksnu.IndexUsersController
-  [$scope $http]
-  (.info js/console "Indexing users")
-  (! $scope.init (helpers/fetch-page $scope $http "/users.json"))
+  [$scope pageService]
+  (init-page $scope pageService "users")
   (.init $scope))
 
 (def.controller jiksnu.NavBarController

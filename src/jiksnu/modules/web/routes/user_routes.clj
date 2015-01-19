@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [ciste.initializer :only [definitializer]]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.actions.stream-actions :as stream]
@@ -11,14 +12,23 @@
   (:import jiksnu.model.User))
 
 (defgroup users
-  :url "/users"
+  :url "/main/users"
   ;; :resources [user-collection]
   )
 
 (defresource users collection
   :desc "Collection route for users"
   :mixins [mixin/collection-resource]
-  :exists? #'user/index)
+  :available-media-types [
+                          "application/json"
+                          ]
+  :exists? (fn [ctx]
+             {:page (user/index)}
+             )
+  :handle-ok (fn [ctx]
+               (json/json-str (:page ctx))
+               )
+  )
 
 (defn routes
   []

@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.domain-routes
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as domain]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :as helpers]
@@ -26,11 +27,14 @@
                           "text/html"
                           ]
   :count domain/count
+  :exists? (fn [ctx]
+             {:page (domain/index)})
+
   :handle-ok (fn [ctx]
                (log/spy :info ctx)
                (condp = (get-in ctx [:representation :media-type])
                  "text/html"        (helpers/index (:request ctx))
-                 "application/json" "{foo: 'bar'}"
+                 "application/json" (json/json-str (:page ctx))
                  )
                )
 
