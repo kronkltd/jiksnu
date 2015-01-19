@@ -32,7 +32,7 @@
       (actions.activity/find-by-user user) =>
       (th/check [response]
              response => map?
-             (:totalRecords response) => 1
+             (:totalItems response) => 1
              (count (:items response)) => 1
              (doseq [item (:items response)]
                item => (partial instance? Activity))))))

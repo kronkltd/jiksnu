@@ -34,7 +34,7 @@
        {:items records
         :page page
         :page-size page-size
-        :totalRecords record-count
+        :totalItems record-count
         :args options}))
    {:name :indexer}))
 

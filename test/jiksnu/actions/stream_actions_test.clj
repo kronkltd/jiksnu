@@ -31,7 +31,7 @@
         (actions.stream/public-timeline) =>
         (th/check [response]
                response => map?
-               (:totalRecords response) => 1
+               (:totalItems response) => 1
                (let [items (:items response)]
                  items => seq?
                  (doseq [item items]
@@ -47,7 +47,7 @@
              response => vector?
              (first response) => user
              (second response) => map?
-             (:totalRecords (second response)) => 1))))
+             (:totalItems (second response)) => 1))))
 
 
 
