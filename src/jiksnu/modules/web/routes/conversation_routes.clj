@@ -4,26 +4,34 @@
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.helpers :as helpers
+             :refer [angular-resource page-resource]]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.Conversation))
 
 (defgroup conversations
-  :url "/main/conversations"
-  ;; :resources [conversation-collection]
+  :url "/main/conversations")
 
-  )
+(defresource conversations resource
+  :mixins [angular-resource]
+  :url "/{_id}")
 
 (defresource conversations collection
   :summary "Index Conversations"
   :desc "collection of conversations"
-  :mixins [mixin/collection-resource]
-  :available-media-types ["application/json"]
-  :data-key :page
-  :exists? (fn [ctx]
-             {:page (conversation/index)}
-             )
-  :handle-ok (fn [ctx]
-               (json/json-str (:page ctx))))
+  :mixins [angular-resource]
+  :ns 'jiksnu.actions.conversation-actions)
+
+
+
+(defgroup conversations-api
+  :url "/api/conversations")
+
+(defresource conversations-api collection
+  :mixins [page-resource]
+  :ns 'jiksnu.actions.conversation-actions)
+
+
 
 (defn routes
   []

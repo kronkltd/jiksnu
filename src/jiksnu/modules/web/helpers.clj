@@ -64,8 +64,7 @@
       (load-routes! route-sym)
       (catch Exception ex
         (log/error ex)
-        (throw+ ex)
-        ))))
+        (throw+ ex)))))
 
 (defn make-matchers
   [handlers]
@@ -107,21 +106,18 @@
 
 (def types
   {:json "application/json"
-   :html "text/html"
-   }
-
-  )
+   :html "text/html"})
 
 (defn exists?
   [action ctx]
   (if (= (get-in ctx [:representation :media-type])
          (types :html))
     true
-    {:data (log/spy :info ((log/spy :info (var-get (log/spy :info action)))))}))
+    {:data ((var-get action))}))
 
 (defn handle-ok
   [ctx]
-  (condp = (get-in (log/spy :info ctx) [:representation :media-type])
+  (condp = (get-in ctx [:representation :media-type])
     (types :html)
     (index (:request ctx))
 
@@ -130,14 +126,23 @@
 
 (defn page-resource
   [r]
-  (let [action (:index r)]
-    (log/spy :info (merge
-                    (mixin/collection-resource
-                     {:available-media-types (mapv types [:json :html])
-                      :exists? (partial exists? action)
-                      :handle-ok handle-ok
-                      :count (fn [_] 4)})
-      r))))
+  (let [action-ns (log/spy :info (:ns r))
+        action (:index r)]
+    (merge
+     (mixin/item-resource
+      {:available-media-types (mapv types [:json :html])
+       :exists? (partial exists? (ns-resolve action-ns 'index))
+       :handle-ok handle-ok
+       :count (fn [_] 4)})
+     r)))
+
+(defn angular-resource
+  [r]
+  (merge
+   {:exists? true
+    :available-media-types (mapv types [:html])
+    :handle-ok index}
+   r))
 
 (defn make-page-handler
   [& {:as opts}]
@@ -146,10 +151,3 @@
          page-resource
          (mapcat (fn [[k v]] [k v]))
          (log/spy :info))))
-
-;; (defmacro defpage
-;;   [group name & body]
-;;   `(let [b (make-page-handler ~@body)]
-;;      (defresource ~group ~name
-;;        ~@b)))
-

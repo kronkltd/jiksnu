@@ -57,12 +57,12 @@
 
 (def page-mappings
   {
-   "conversations" "/main/conversations"
-   "domains"       "/main/domains"
-   "feed-sources"  "/main/feed-sources"
-   "groups"        "/main/groups"
-   "resources" "/main/resources"
-   "users" "/main/users"
+   "conversations" "/api/conversations"
+   "domains"       "/api/domains"
+   "feed-sources"  "/api/feed-sources"
+   "groups"        "/api/groups"
+   "resources" "/api/resources"
+   "users" "/api/users"
    })
 
 (def.service jiksnu.pageService
