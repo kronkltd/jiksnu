@@ -8,11 +8,11 @@
 (test-environment-fixture
 
  (fact #'actions.like/index
-   (actions.like/index) => (contains {:page 1 :totalRecords 0})
+   (actions.like/index) => (contains {:page 1 :totalItems 0})
 
    (let [response (actions.like/index {} {:page 2})]
      (:page response) => 2
-     (:totalRecords response) => 0))
+     (:totalItems response) => 0))
 
  (future-fact #'actions.like/delete
    (let [like (model.like/create (factory :like))]

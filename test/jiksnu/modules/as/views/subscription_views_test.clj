@@ -31,7 +31,7 @@
                  (let [response (apply-view request response)]
                    response => map?
                    (let [body (:body response)]
-                     (:totalItems body) => (:totalRecords response)))))))
+                     (:totalItems body) => (:totalItems response)))))))
          ))))
 
  )

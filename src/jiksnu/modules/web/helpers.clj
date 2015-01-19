@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.helpers
-  (:require [clojure.java.io :as io]
+  (:require [clojure.data.json :as json]
+            [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [clojure.tools.reader.edn :as edn]
             [compojure.handler :as handler]
@@ -7,10 +8,11 @@
             [hiccup.core :as h]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
-            [jiksnu.modules.web.helpers :as helpers]
+            [jiksnu.modules.http.resources :refer [defresource]]
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
+            [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]])
   (:import java.io.PushbackReader))
 
@@ -102,4 +104,52 @@
   (fn [request]
     (if-let [response (handler request)]
       (assoc-in response [:headers "Connection"] "close"))))
+
+(def types
+  {:json "application/json"
+   :html "text/html"
+   }
+
+  )
+
+(defn exists?
+  [action ctx]
+  (if (= (get-in ctx [:representation :media-type])
+         (types :html))
+    true
+    {:data (log/spy :info ((log/spy :info (var-get (log/spy :info action)))))}))
+
+(defn handle-ok
+  [ctx]
+  (condp = (get-in (log/spy :info ctx) [:representation :media-type])
+    (types :html)
+    (index (:request ctx))
+
+    (types :json)
+    (json/json-str (:page ctx))))
+
+(defn page-resource
+  [r]
+  (let [action (:index r)]
+    (log/spy :info (merge
+                    (mixin/collection-resource
+                     {:available-media-types (mapv types [:json :html])
+                      :exists? (partial exists? action)
+                      :handle-ok handle-ok
+                      :count (fn [_] 4)})
+      r))))
+
+(defn make-page-handler
+  [& {:as opts}]
+  (let []
+    (->> opts
+         page-resource
+         (mapcat (fn [[k v]] [k v]))
+         (log/spy :info))))
+
+;; (defmacro defpage
+;;   [group name & body]
+;;   `(let [b (make-page-handler ~@body)]
+;;      (defresource ~group ~name
+;;        ~@b)))
 

@@ -39,5 +39,5 @@
            (let [response (filter-action action request)]
              response => map?
              (:items response) => empty?
-             (:totalRecords response) => zero?))))))
+             (:totalItems response) => zero?))))))
  )

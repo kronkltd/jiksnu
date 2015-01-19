@@ -16,7 +16,7 @@
      (let [response (actions.feed-subscription/index)]
        response => map?
        (:items response) => empty?
-       (:totalRecords response) => zero?))
+       (:totalItems response) => zero?))
 
    (fact "when there are more than the page size sources"
      (db/drop-all!)

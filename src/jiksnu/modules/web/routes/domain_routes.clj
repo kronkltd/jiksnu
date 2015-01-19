@@ -3,7 +3,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as domain]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :as helpers]
+            [jiksnu.modules.web.helpers :as helpers :refer [page-resource]]
             [octohipster.mixins :as mixin]
             ))
 
@@ -21,24 +21,11 @@
 
 (defresource domains collection
   :desc "collection of domains"
-  :mixins [mixin/collection-resource]
-  :available-media-types [
-                          "application/json"
-                          "text/html"
-                          ]
-  :count domain/count
-  :exists? (fn [ctx]
-             {:page (domain/index)})
-
-  :handle-ok (fn [ctx]
-               (log/spy :info ctx)
-               (condp = (get-in ctx [:representation :media-type])
-                 "text/html"        (helpers/index (:request ctx))
-                 "application/json" (json/json-str (:page ctx))
-                 )
-               )
-
-  )
+  :mixins [page-resource]
+  :index #'domain/index
+  :counter (fn [ctx]
+             (log/info "counting activities")
+             2))
 
 (defresource domains discover
   :url "/{_id}/discover"

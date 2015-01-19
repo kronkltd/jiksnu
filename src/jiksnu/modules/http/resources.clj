@@ -1,7 +1,7 @@
 (ns jiksnu.modules.http.resources
   (:require [clojure.tools.logging :as log]
-            [octohipster.core :as octo]
             [jiksnu.modules.http.routes :as r]
+            [octohipster.core :as octo]
             )
   )
 
@@ -26,3 +26,4 @@
 
      (dosync
       (alter r/groups assoc (var ~name) ~name))))
+

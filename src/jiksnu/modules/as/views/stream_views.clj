@@ -23,7 +23,7 @@
 ;;                            }
 ;;                     }
 ;;             :items (doall (index-section (:items page) page))
-;;             :totalItems (:totalRecords page)
+;;             :totalItems (:totalItems page)
 ;;             }}))
 
 (defview #'actions.stream/inbox-major :as
@@ -44,7 +44,7 @@
                            }
                     }
             :items (doall (index-section (:items page) page))
-            :totalItems (:totalRecords page)
+            :totalItems (:totalItems page)
             }}))
 
 (defview #'actions.stream/inbox-minor :as
@@ -70,7 +70,7 @@
    ;; TODO: assign the generator in the formatter
    {:generator "Jiksnu ${VERSION}"
     :title "Public Timeline"
-    :totalItems (:totalRecords page)
+    :totalItems (:totalItems page)
     :items
     (let [activity-page (actions.activity/fetch-by-conversations
                          (map :_id items))]

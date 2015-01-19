@@ -12,7 +12,7 @@
 (defsection index-section [Conversation :json]
   [items & [page]]
   {"@type" "http://activitystrea.ms/2.0/Collection"
-   :totalItems (:totalRecords page)
+   :totalItems (:totalItems page)
    :itemsPerPage (:page-size page)
    :items (index-block items page)
    :page (:page page)})

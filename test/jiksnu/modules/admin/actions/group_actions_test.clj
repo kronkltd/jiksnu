@@ -10,6 +10,6 @@
    (let [response (index)]
      response => map?
      (:items response) => seq?
-     (:totalRecords response) => zero?))
+     (:totalItems response) => zero?))
 
  )

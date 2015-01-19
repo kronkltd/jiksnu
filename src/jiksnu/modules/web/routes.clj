@@ -3,6 +3,7 @@
             [ciste.initializer :refer [definitializer]]
             [ciste.middleware :as middleware]
             [ciste.routes :refer [resolve-routes]]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [compojure.core :as compojure :refer [GET]]
             [compojure.handler :as handler]
@@ -24,13 +25,12 @@
             [octohipster.documenters.swagger
              :refer [swagger-doc swagger-root-doc]]
             [octohipster.routes :refer [defroutes]]
-            [ring.middleware.file :as file]
+            [ring.middleware.file :refer [wrap-file]]
             [ring.middleware.content-type :refer [wrap-content-type]]
-            [ring.middleware.file-info :as file-info]
+            [ring.middleware.file-info :refer [wrap-file-info]]
             [ring.middleware.flash :refer [wrap-flash]]
             ;; [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.resource :refer [wrap-resource]]
-            [ring.middleware.stacktrace :as stacktrace]
             ;; [ring.middleware.webjars :refer [wrap-webjars]]
             [monger.ring.session-store :as ms]
             [slingshot.slingshot :refer [throw+]]))
@@ -79,13 +79,13 @@
     :documenters [swagger-doc swagger-root-doc
                   schema-doc schema-root-doc]))
 
-(add-watch r/resources :site (fn [k r os ns]
-                               (log/info "refreshing site")
-                               (set-site)))
-
 (definitializer
   (load-routes)
   (set-site)
+  (add-watch r/resources :site (fn [k r os ns]
+                                 (log/info "refreshing site")
+                                 (set-site)))
+
   (def app
     (http/wrap-ring-handler
      ;; (wrap-webjars
@@ -94,14 +94,14 @@
       (-> all-routes
           jm/wrap-authentication-handler
            ;; (file/wrap-file "resources/public/")
-           ;; file-info/wrap-file-info
+           ;; wrap-file-info
            jm/wrap-user-binding
            jm/wrap-oauth-user-binding
            jm/wrap-authorization-header
            (handler/site {:session {:store (ms/session-store)}})
            jm/wrap-stacktrace
            (wrap-resource "public")
-           file-info/wrap-file-info
+           wrap-file-info
            ;; (wrap-resource "META-INF/resources/webjars/")
            ;; wrap-content-type
            ;; wrap-not-modified
@@ -113,3 +113,5 @@
      ))
 
   )
+
+
