@@ -1,34 +1,38 @@
 (ns jiksnu.modules.web.routes.user-routes
-  (:require [ciste.initializer :only [definitializer]]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as sub]
             [jiksnu.actions.user-actions :as user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.routes :as r]
+            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.User))
 
+;; =============================================================================
+
 (defgroup users
-  :url "/main/users"
-  ;; :resources [user-collection]
-  )
+  :url "/main/users")
 
 (defresource users collection
   :desc "Collection route for users"
-  :mixins [mixin/collection-resource]
-  :available-media-types [
-                          "application/json"
-                          ]
-  :exists? (fn [ctx]
-             {:page (user/index)}
-             )
-  :handle-ok (fn [ctx]
-               (json/json-str (:page ctx))
-               )
-  )
+  :mixins [angular-resource])
+
+(defresource users resource
+  :url "/{_id}"
+  :mixins [angular-resource])
+
+;; =============================================================================
+
+(defgroup users-api
+  :url "/api/users")
+
+(defresource users-api collection
+  :mixins [page-resource]
+  :ns 'jiksnu.actions.user-actions)
+
+;; =============================================================================
 
 (defn routes
   []

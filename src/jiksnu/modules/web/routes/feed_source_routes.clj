@@ -1,6 +1,32 @@
 (ns jiksnu.modules.web.routes.feed-source-routes
-  (:require [ciste.initializer :refer [definitializer]]
-            [jiksnu.actions.feed-source-actions :as feed-source]))
+  (:require [jiksnu.actions.feed-source-actions :as feed-source]
+            [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [octohipster.mixins :as mixin]))
+
+;; =============================================================================
+
+(defgroup feed-sources
+  :url "/main/feed-sources")
+
+(defresource feed-sources collection
+  :desc "Collection route for feed-sources"
+  :mixins [angular-resource])
+
+(defresource feed-sources resource
+  :url "/{_id}"
+  :mixins [angular-resource])
+
+;; =============================================================================
+
+(defgroup feed-sources-api
+  :url "/api/feed-sources")
+
+(defresource feed-sources-api collection
+  :mixins [page-resource]
+  :ns 'jiksnu.actions.feed-source-actions)
+
+;; =============================================================================
 
 (defn routes
   []

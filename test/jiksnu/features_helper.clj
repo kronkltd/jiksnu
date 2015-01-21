@@ -1,11 +1,9 @@
 (ns jiksnu.features-helper
-  (:require [aleph.formats :as formats]
-            [aleph.http :as http]
+  (:require [aleph.http :as http]
             [ciste.config :as c]
             [ciste.core :as core]
             [ciste.runner :as runner]
             [ciste.sections.default :as sections]
-            [ciste.service.aleph :as aleph]
             [clj-factory.core :refer [factory fseq]]
             [clj-webdriver.core :as webdriver]
             [clj-webdriver.taxi :as taxi]

@@ -9,6 +9,8 @@
             [octohipster.mixins :as mixin]))
 
 
+;; =============================================================================
+
 (defgroup domains
   :name "Domains"
   :url "/main/domains")
@@ -31,16 +33,16 @@
   :delete! domain/delete
   :delete-summary "Delete a domain")
 
-
+;; =============================================================================
 
 (defgroup domains-api
-  :url "/api/domain")
+  :url "/api/domains")
 
-(defresource domains-api collection
-  :mixin [page-resource]
-  :ns 'jiksnu.actions.domain)
+(defresource domains-api collection-api
+  :mixins [page-resource]
+  :ns 'jiksnu.actions.domain-actions)
 
-
+;; =============================================================================
 
 (defgroup well-known
   :url "/.well-known"

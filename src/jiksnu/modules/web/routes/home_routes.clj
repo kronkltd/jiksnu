@@ -4,6 +4,7 @@
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.site-actions :as site]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.http.routes :as r]
             [jiksnu.modules.web.helpers :as helpers
              :refer [angular-resource]]
             [octohipster.mixins :as mixin
@@ -26,3 +27,15 @@
   :description "Contains base data used to initialize the front-end application"
   :mixins [item-resource]
   :exists? (fn [ctx] {:data (site/status)}))
+
+(defresource root resources
+  :url "/resources"
+  :mixins [item-resource]
+  :available-media-types ["text/html"]
+  :exists? (fn [ctx] {:data
+                     (str "<pre>"
+                          (with-out-str (clojure.pprint/pprint @r/resources))
+                          "</pre>"
+                          )})
+  :handle-out (fn [ctx] (:data (log/spy :info ctx)))
+  )

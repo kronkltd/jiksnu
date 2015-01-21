@@ -36,7 +36,7 @@
 (def.service jiksnu.activityService
   [DSCacheFactory $q $http]
   (let [cache-name "activities"
-        get-url #(str "/activities/" %)]
+        get-url #(str "/api/activities/" %)]
     (DSCacheFactory cache-name (obj :capacity 1000))
     (let [cache (.get DSCacheFactory cache-name)
           service (obj)]
@@ -47,7 +47,7 @@
 (def.service jiksnu.userService
   [DSCacheFactory $q $http]
   (let [cache-name "users"
-        get-url #(str "/users/" % ".json")]
+        get-url #(str "/api/users/" %)]
     (DSCacheFactory cache-name (obj :capacity 1000))
     (let [cache (.get DSCacheFactory cache-name)
           service (obj)]
@@ -61,8 +61,8 @@
    "domains"       "/api/domains"
    "feed-sources"  "/api/feed-sources"
    "groups"        "/api/groups"
-   "resources" "/api/resources"
-   "users" "/api/users"
+   "resources"     "/api/resources"
+   "users"         "/api/users"
    })
 
 (def.service jiksnu.pageService

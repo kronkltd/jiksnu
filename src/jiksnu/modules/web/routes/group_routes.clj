@@ -4,36 +4,38 @@
             [jiksnu.actions.conversation-actions :as conversation]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :as helpers]
+            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [jiksnu.modules.web.routes :as r]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.Group))
 
+;; =============================================================================
+
 (defgroup groups
   :url "/main/groups"
-  :name "groups"
-
-  )
+  :name "groups")
 
 (defresource groups collection
-  :mixins [mixin/collection-resource]
-  :available-media-types ["application/json"
-                          "text/html"
-                          ]
-  ;; :count (fn [ctx]
-  ;;          (log/info "counting activities")
-  ;;          2)
-  ;; :data-key :page
-  :exists? (fn [ctx]
-             {:page (log/spy :info (group/index))})
-  :handle-ok (fn [ctx]
-               (condp = (get-in ctx [:representation :media-type])
-                 "text/html"        (helpers/index (:request ctx))
-                 "application/json" (json/json-str (:page ctx)))))
+  :mixins [angular-resource])
+
+(defresource groups resource
+  :url "/{_id}"
+  :mixins [angular-resource])
 
 ;; (defresource groups resource
 
 ;;   )
+
+;; =============================================================================
+
+(defgroup groups-api
+  :url "/api/groups")
+
+(defresource groups-api collection
+  :mixins [page-resource]
+  :ns 'jiksnu.actions.group-actions)
+
+;; =============================================================================
 
 (defn routes
   []

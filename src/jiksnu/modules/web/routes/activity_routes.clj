@@ -4,30 +4,36 @@
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [octohipster.mixins :as mixin]))
+
+;; =============================================================================
 
 (defgroup activities
   :url "/activities")
 
 (defresource activities collection
+  :mixins [angular-resource])
+
+(defresource activities resource
+  :url "/{_id}"
+  :mixins [angular-resource])
+
+;; (defresource activity-post-page
+;;   :desc ""
+;;   )
+
+;; =============================================================================
+
+(defgroup activities-api
+  :url "/api/activities")
+
+(defresource activities-api collection
   :desc "Collection route for activities"
-  :mixins [mixin/collection-resource]
-  :available-media-types ["application/json"]
-  :count (fn [ctx]
-           (log/info "counting activities")
-           2
-           )
-  :data-key :activities
-  :exists? (fn [ctx]
-             {:page (log/spy :info (activity/index))})
-  :handle-ok (fn [ctx]
-               (log/spy :info ctx)
-               (json/json-str (:page ctx))
-               )
+  :mixins [page-resource]
+  :ns 'jiksnu.actions.activity-actions)
 
-  )
-
-(defresource activities item
+(defresource activities-api item
   :desc "Resource routes for single Activity"
   :url "/{_id}"
   :mixins [mixin/item-resource]
@@ -35,15 +41,12 @@
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)
                    activity (model.activity/fetch-by-id id)]
-               {:item activity}))
+               {:data activity}))
   :delete! #'activity/delete
-  :handle-ok (fn [ctx] (json/json-str (:item ctx)))
   ;; :put!    #'activity/update
   )
 
-;; (defresource activity-post-page
-;;   :desc ""
-;;   )
+;; =============================================================================
 
 (defn routes
   []

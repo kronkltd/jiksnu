@@ -20,6 +20,7 @@
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             ;; [octohipster.core :refer []]
+            [liberator.dev :refer [wrap-trace]]
             [octohipster.documenters.schema
              :refer [schema-doc schema-root-doc]]
             [octohipster.documenters.swagger
@@ -50,9 +51,6 @@
        helpers/make-matchers))
 
 (compojure/defroutes all-routes
-  (GET "/templates/*" [] #'helpers/serve-template)
-  (compojure/GET "/websocket" _
-                 (http/wrap-aleph-handler stream/websocket-handler))
   (compojure/GET "/" request
                  (when (:websocket? request)
                    ((http/wrap-aleph-handler stream/websocket-handler) request)))
@@ -77,7 +75,9 @@
                   (map val (get @r/resources gvar))))
          @r/groups)
     :documenters [swagger-doc swagger-root-doc
-                  schema-doc schema-root-doc]))
+                  schema-doc schema-root-doc])
+  (log/spy :info site)
+  )
 
 (definitializer
   (load-routes)
@@ -87,31 +87,25 @@
                                  (set-site)))
 
   (def app
-    (http/wrap-ring-handler
-     ;; (wrap-webjars
-     (compojure/routes
-      (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
-      (-> all-routes
-          jm/wrap-authentication-handler
-           ;; (file/wrap-file "resources/public/")
-           ;; wrap-file-info
-           jm/wrap-user-binding
-           jm/wrap-oauth-user-binding
-           jm/wrap-authorization-header
-           (handler/site {:session {:store (ms/session-store)}})
-           jm/wrap-stacktrace
-           (wrap-resource "public")
-           wrap-file-info
-           ;; (wrap-resource "META-INF/resources/webjars/")
-           ;; wrap-content-type
-           ;; wrap-not-modified
-           )
-      #'site
-      ;; (GET "/*" [] #'helpers/index)
-      (route/not-found (helpers/not-found-msg)))
-     ;; )
-     ))
-
-  )
+    (compojure/routes
+     (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
+     (GET "/templates/*" [] #'helpers/serve-template)
+     (-> all-routes
+         jm/wrap-authentication-handler
+         ;; (file/wrap-file "resources/public/")
+         ;; wrap-file-info
+         jm/wrap-user-binding
+         jm/wrap-oauth-user-binding
+         jm/wrap-authorization-header
+         (handler/site {:session {:store (ms/session-store)}})
+         jm/wrap-stacktrace
+         (wrap-resource "public")
+         wrap-file-info
+         ;; (wrap-resource "META-INF/resources/webjars/")
+         ;; wrap-content-type
+         ;; wrap-not-modified
+         )
+     (wrap-trace #'site :header :ui)
+     (route/not-found (helpers/not-found-msg)))))
 
 

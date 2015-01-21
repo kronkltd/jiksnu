@@ -113,28 +113,34 @@
   (if (= (get-in ctx [:representation :media-type])
          (types :html))
     true
-    {:data ((var-get action))}))
+    ))
 
 (defn handle-ok
   [ctx]
+  (log/info "Handling ok")
   (condp = (get-in ctx [:representation :media-type])
     (types :html)
     (index (:request ctx))
 
     (types :json)
-    (json/json-str (:page ctx))))
+    (json/json-str (:page (log/spy :info ctx)))))
 
 (defn page-resource
   [r]
-  (let [action-ns (log/spy :info (:ns r))
-        action (:index r)]
-    (merge
-     (mixin/item-resource
-      {:available-media-types (mapv types [:json :html])
-       :exists? (partial exists? (ns-resolve action-ns 'index))
-       :handle-ok handle-ok
-       :count (fn [_] 4)})
-     r)))
+  (let [action-ns (log/spy :info (:ns r))]
+    (if-let [action (ns-resolve action-ns 'index)]
+      (merge
+       (log/spy :info
+(mixin/item-resource
+         {:available-media-types (mapv types [:json])
+          :exists? (fn exists? [ctx]
+                     (log/info "Checking if page exists")
+                     (if-let [f (var-get action)]
+                       {:data (f)}))
+          :handle-ok handle-ok
+          :count (fn [_] 4)}))
+       r)
+      (throw+ "Could not resolve index action"))))
 
 (defn angular-resource
   [r]

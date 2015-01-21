@@ -1,6 +1,33 @@
 (ns jiksnu.modules.web.routes.resource-routes
   (:require [ciste.loader :refer [require-namespaces]]
-            [jiksnu.actions.resource-actions :refer [delete discover index show update]]))
+            [jiksnu.actions.resource-actions :refer [delete discover index show update]]
+            [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [octohipster.mixins :as mixin]))
+
+;; =============================================================================
+
+(defgroup resources
+  :url "/main/resources")
+
+(defresource resources collection
+  :desc "Collection route for resources"
+  :mixins [angular-resource])
+
+(defresource resources resource
+  :url "/{_id}"
+  :mixins [angular-resource])
+
+;; =============================================================================
+
+(defgroup resources-api
+  :url "/api/resources")
+
+(defresource resources-api collection
+  :mixins [page-resource]
+  :ns 'jiksnu.actions.resource-actions)
+
+;; =============================================================================
 
 (defn routes
   []
