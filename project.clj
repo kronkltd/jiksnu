@@ -16,7 +16,7 @@
                  [clojurewerkz/mailer "1.2.0"]
                  ;; [clojure-complete "0.2.4"
                  ;;  :exclusions [org.clojure/clojure]]
-                 [compojure "1.1.6"]
+                 [compojure "1.3.1"]
                  [clojurewerkz/support "1.1.0"]
                  [com.novemberain/monger "1.8.0"]
                  [com.novemberain/validateur "1.7.0"]
@@ -54,7 +54,7 @@
                  [org.webjars/momentjs "2.8.3"]
                  [org.webjars/underscorejs "1.7.0-1"]
                  ;; [ring "1.2.2"]
-                 [ring/ring-core "1.1.8"]
+                 [ring/ring-core "1.3.2"]
                  [ring-basic-authentication "1.0.5"]
                  ;; [ring-webjars "0.1.0"
                  ;;  :exclusions [org.slf4j/slf4j-nop]]

@@ -12,7 +12,6 @@
             [jiksnu.modules.web.sections :refer [bind-to]]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
             [jiksnu.modules.web.sections.auth-sections :as sections.auth]
-            [jiksnu.modules.web.sections.group-sections :as sections.group]
             [jiksnu.modules.web.sections.subscription-sections :as sections.subscription]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.namespace :as ns]

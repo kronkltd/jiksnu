@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.sections.subscription-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default
-             :refer [actions-section delete-button]]
+             :refer [actions-section delete-button link-to]]
             [clojure.tools.logging :as log])
   (:import jiksnu.model.Subscription))
 

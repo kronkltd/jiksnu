@@ -85,8 +85,8 @@
      [:div {:data-model "group"}
       [:div
        [:h3 "actions"]
-       (sections.group/join-button group)
-       (sections.group/leave-button group)]
+       #_(sections.group/join-button group)
+       #_(sections.group/leave-button group)]
       (conversation-sub-page group)])})
 
 ;; show
