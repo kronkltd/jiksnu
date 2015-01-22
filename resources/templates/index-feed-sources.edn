@@ -1,3 +1,10 @@
-  [:div
-   [:h1 "Index Feed Sources"]
+[:div
+ [:h1 "Index Feed Sources"]
+ [:table.table
+  [:thead
+
    ]
+  [:tbody
+   [:tr {:ng-repeat "item in page.items"}
+    [:td
+     "{{item | json}}"]]]]]
