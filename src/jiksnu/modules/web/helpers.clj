@@ -123,22 +123,21 @@
     (index (:request ctx))
 
     (types :json)
-    (json/json-str (:page (log/spy :info ctx)))))
+    (json/json-str (:page ctx))))
 
 (defn page-resource
   [r]
-  (let [action-ns (log/spy :info (:ns r))]
+  (let [action-ns (:ns r)]
     (if-let [action (ns-resolve action-ns 'index)]
       (merge
-       (log/spy :info
-(mixin/item-resource
-         {:available-media-types (mapv types [:json])
-          :exists? (fn exists? [ctx]
-                     (log/info "Checking if page exists")
-                     (if-let [f (var-get action)]
-                       {:data (f)}))
-          :handle-ok handle-ok
-          :count (fn [_] 4)}))
+       (mixin/item-resource
+        {:available-media-types (mapv types [:json])
+         :exists? (fn exists? [ctx]
+                    (log/info "Checking if page exists")
+                    (if-let [f (var-get action)]
+                      [true {:data (f)}]))
+         :handle-ok handle-ok
+         :count (fn [_] 4)})
        r)
       (throw+ "Could not resolve index action"))))
 
@@ -155,5 +154,4 @@
   (let []
     (->> opts
          page-resource
-         (mapcat (fn [[k v]] [k v]))
-         (log/spy :info))))
+         (mapcat (fn [[k v]] [k v])))))

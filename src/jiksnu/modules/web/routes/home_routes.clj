@@ -32,10 +32,4 @@
   :url "/resources"
   :mixins [item-resource]
   :available-media-types ["text/html"]
-  :exists? (fn [ctx] {:data
-                     (str "<pre>"
-                          (with-out-str (clojure.pprint/pprint @r/resources))
-                          "</pre>"
-                          )})
-  :handle-out (fn [ctx] (:data (log/spy :info ctx)))
-  )
+  :exists? (fn [ctx] {:data (str @r/resources )}))

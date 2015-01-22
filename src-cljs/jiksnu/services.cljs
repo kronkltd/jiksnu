@@ -23,13 +23,13 @@
   [cache $q $http get-url]
   (fn [id]
     (let [d (.defer $q)]
-      ;; (.log js/console "cache miss" id)
+      (.log js/console "cache miss" cache id)
       (.put cache id d)
       (-> $http
           (.get (get-url id))
           (.success
            (fn [data]
-             ;; (.log js/console "setting id: " id)
+             (.log js/console "setting id: " cache id)
              (.resolve d data))))
       (.-promise d))))
 

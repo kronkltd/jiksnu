@@ -37,7 +37,7 @@
 (deffilter #'actions.activity/post :http
   [action request]
   (let [body-params (when-let [body (:body request)]
-                      (when-let [body-str (log/spy :info (slurp body))]
+                      (when-let [body-str (slurp body)]
                         (when-not (= body-str "")
                           (json/read-str body-str))))
         params (->> (-> request :params
@@ -46,9 +46,8 @@
                     (map (fn [[k v]]
                            [(keyword k) v]
                            ))
-                    (into {})
-                    )]
-    (action (log/spy :info params))))
+                    (into {}))]
+    (action params)))
 
 ;; show
 

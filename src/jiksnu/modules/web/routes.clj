@@ -58,12 +58,12 @@
 
   (def app
     (routes
-     (GET "/" request
-                    (when (:websocket? request)
-                      ((http/wrap-aleph-handler stream/websocket-handler)
-                       request)))
+     ;; (GET "/" request
+     ;;                (when (:websocket? request)
+     ;;                  ((http/wrap-aleph-handler stream/websocket-handler)
+     ;;                   request)))
      (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
      (route/resources "/")
-     (GET "/main/events" [] stream/stream-handler)
+     ;; (GET "/main/events" [] stream/stream-handler)
      (GET "/templates/*" [] #'helpers/serve-template)
-     (wrap-trace #'site :header :ui))))
+     (wrap-trace #'site :ui))))

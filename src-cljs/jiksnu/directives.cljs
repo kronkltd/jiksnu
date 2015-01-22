@@ -22,17 +22,21 @@
   (obj
    :templateUrl "/templates/display-avatar"
    :link (fn [$scope element attrs]
-           (let [id (.-id attrs)]
-             ;; (.log js/console "linking avatar: " id)
-             (.init $scope id)))
+           (.log js/console attrs)
+           (.init $scope (.-id attrs))
+           (.$watch $scope (fn [] (.-id attrs))
+                    (fn [newVal oldVal]
+                      (.log js/console "Watching attrs" newVal)
+                      (.init $scope newVal))))
    :scope true
    :controller
    (arr "$scope"
         (fn [$scope]
           (! $scope.init
              (fn [id]
-               (! $scope.size 32)
+               (.log js/console "id: " id)
                (when (and id (not= id ""))
+                 (! $scope.size 32)
                  (-> userService
                      (.get id)
                      (.then (fn [user]
