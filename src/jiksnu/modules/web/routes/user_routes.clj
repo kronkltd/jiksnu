@@ -5,6 +5,7 @@
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as sub]
             [jiksnu.actions.user-actions :as user]
+            [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [octohipster.mixins :as mixin])
@@ -31,6 +32,17 @@
 (defresource users-api collection
   :mixins [page-resource]
   :ns 'jiksnu.actions.user-actions)
+
+(defresource users-api item
+  :desc "Resource routes for single User"
+  :url "/{_id}"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :presenter (fn [o]
+               (log/spy :info (into {} o)))
+  :exists? (fn [ctx]
+             (let [id (-> ctx :request :route-params :_id)]
+               {:data (model.user/fetch-by-id id)})))
 
 ;; =============================================================================
 
