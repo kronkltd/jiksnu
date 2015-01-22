@@ -8,8 +8,7 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
             [jiksnu.modules.core.sections.activity-sections :as sections.activity])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Conversation))
+  (:import jiksnu.model.Activity))
 
 (defview #'actions.stream/direct-message-timeline :json
   [request data]

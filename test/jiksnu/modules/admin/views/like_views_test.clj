@@ -11,7 +11,6 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.model.like :as model.like]
             [jiksnu.test-helper :refer [test-environment-fixture]]
             [midje.sweet :refer [=> fact]]))
 

@@ -16,7 +16,6 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.like :as model.like]
-            [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-index-line
                                                   admin-index-block
@@ -31,8 +30,6 @@
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Activity
-           jiksnu.model.Conversation
-           jiksnu.model.Resource
            jiksnu.model.User))
 
 (defn index-formats
@@ -84,25 +81,6 @@
       ": "
       [:span "{{activity.title}}"]]
      #_[:p (posted-link-section activity)]]))
-
-;; specific sections
-
-(defn pictures-section
-  [activity]
-  )
-
-(defn tag-section
-  [activity]
-)
-
-(defn location-section
-  [activity]
-)
-
-
-(defn privacy-select
-  [activity]
-  )
 
 ;; move to model
 
@@ -211,62 +189,9 @@
    #'posted-link-section
    ])
 
-(defsection actions-section [Activity :html]
-  [item]
-  (dropdown-menu item (get-buttons)))
-
-(defsection admin-index-block [Activity :html]
-  [activities & [options & _]]
-  [:table.table
-   [:thead
-    [:tr
-     [:th "User"]
-     [:th "Content"]
-     [:th "Actions"]]]
-   [:tbody
-    {:data-bind "foreach: items"}
-    (map admin-index-line activities)]])
-
-;; admin-index-line
-
-(defsection admin-index-line [Activity :html]
-  [activity & [options & _]]
-  [:tr {:data-model "activity"
-        :data-id "{{activity.id}}"}
-   [:td
-    (let [user (User.)]
-      [:span {:data-model "user"}
-       (link-to user)])]
-   [:td "{{activity.content}}"]
-   [:td (actions-section activity)]])
-
-;; edit-button
-
-(defsection edit-button [Activity :html]
-  [activity & _]
-  (action-link "activity" "edit" (:_id activity)))
-
-;; delete-button
-
-(defsection delete-button [Activity :html]
-  [activity & _]
-  (action-link "activity" "delete" (:_id activity)))
-
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
    {:data-bind "foreach: items"}
    (map #(index-line % options) records)])
-
-(defsection index-line [Activity :html]
-  [activity & [page]]
-  (show-section activity page))
-
-(defsection index-section [Activity :html]
-  [items & [page]]
-  (index-block items page))
-
-(defsection update-button [Activity :html]
-  [activity & _]
-  (action-link "activity" "update" (:_id activity)))
 

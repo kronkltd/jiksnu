@@ -21,44 +21,6 @@
            jiksnu.model.FeedSource
            jiksnu.model.User))
 
-(defn discover-button
-  [item]
-  (action-link "conversation" "discover" (:_id item)))
-
-(defn model-button
-  [item]
-  [:a {:href "/model/conversations/{{conversation.id}}.model"}
-   "Model"])
-
-(defn subscribe-button
-  [item]
-  (action-link "conversation" "subscribe" (:_id item)))
-
-(defn unsubscribe-button
-  [item]
-  (action-link "conversation" "unsubscribe" (:_id item)))
-
-(defn get-buttons
-  []
-  (concat
-   (when (session/current-user)
-     [#'subscribe-button
-      #'discover-button
-      #'model-button
-      #'update-button])
-   (when (session/is-admin?)
-     [#'delete-button])))
-
-;; actions-section
-
-(defsection actions-section [Conversation :html]
-  [item]
-  (dropdown-menu item (get-buttons)))
-
-(defsection delete-button [Conversation :html]
-  [user & _]
-  (action-link "conversation" "delete" (:_id user)))
-
 (defsection link-to [Conversation :html]
   [item & options]
   (let [options-map (apply hash-map options)]
@@ -104,7 +66,3 @@
          (bind-to "$data['update-source']"
                   [:div {:data-model "feed-source"}
                    (link-to source)]))]]]]))
-
-(defsection update-button [Conversation :html]
-  [item & _]
-  (action-link "conversation" "update" (:_id item)))

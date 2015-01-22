@@ -4,8 +4,7 @@
             [jiksnu.modules.admin.actions.like-actions :refer [delete index]]
             [jiksnu.modules.core.sections :refer [admin-index-section
                                                   format-page-info]]
-            [jiksnu.modules.web.sections :refer [redirect]])
-  (:import jiksnu.model.Like))
+            [jiksnu.modules.web.sections :refer [redirect]]))
 
 (defview #'index :html
   [request {:keys [items] :as page}]

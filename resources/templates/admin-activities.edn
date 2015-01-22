@@ -1,0 +1,10 @@
+[:table.table
+ [:thead
+  [:tr
+   [:th "User"]
+   [:th "Content"]]]
+ [:tbody
+  [:tr {:ng-repeat "activity in page.items"}
+   [:td
+    [:link-to {:data-model "user" :data-id "{{activity.author}}"}]]
+   [:td "{{activity.content}}"]]]]

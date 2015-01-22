@@ -2,8 +2,7 @@
   (:use [ciste.sections.default :only [show-section]]
         [ciste.views :only [defview]]
         [jiksnu.modules.admin.actions.conversation-actions :only [index show]]
-        [jiksnu.modules.core.sections :only [admin-index-section]])
-  (:import jiksnu.model.Conversation))
+        [jiksnu.modules.core.sections :only [admin-index-section]]))
 
 (defview #'index :html
   [request {:keys [items] :as response}]
