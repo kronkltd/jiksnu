@@ -19,7 +19,6 @@
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            ;; [octohipster.core :refer []]
             [liberator.dev :refer [wrap-trace]]
             [octohipster.documenters.schema
              :refer [schema-doc schema-root-doc]]
@@ -30,9 +29,7 @@
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.file-info :refer [wrap-file-info]]
             [ring.middleware.flash :refer [wrap-flash]]
-            ;; [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.resource :refer [wrap-resource]]
-            ;; [ring.middleware.webjars :refer [wrap-webjars]]
             [monger.ring.session-store :as ms]
             [slingshot.slingshot :refer [throw+]]))
 
@@ -44,28 +41,6 @@
   (doseq [group registry/action-group-names]
     (helpers/load-group group)))
 
-#_(def http-routes
-  (->> registry/action-group-names
-       (map helpers/load-group)
-       (reduce concat)
-       helpers/make-matchers))
-
-(compojure/defroutes all-routes
-  (compojure/GET "/" request
-                 (when (:websocket? request)
-                   ((http/wrap-aleph-handler stream/websocket-handler) request)))
-  (compojure/GET "/main/events" [] stream/stream-handler)
-  (compojure/ANY "/admin*" request
-                 (if (session/is-admin?)
-                   ((middleware/wrap-log-request
-                     (resolve-routes [predicates/http]
-                                     routes.admin/admin-routes))
-                    request)
-                   ;; TODO: move this somewhere else
-                   (throw+ {:type :authentication :message "Must be admin"})))
-  #_(middleware/wrap-log-request
-   (resolve-routes [predicates/http] http-routes)))
-
 (defn set-site
   []
   (defroutes site
@@ -76,8 +51,7 @@
          @r/groups)
     :documenters [swagger-doc swagger-root-doc
                   schema-doc schema-root-doc])
-  (log/spy :info site)
-  )
+  site)
 
 (definitializer
   (load-routes)
@@ -88,24 +62,12 @@
 
   (def app
     (compojure/routes
+     (compojure/GET "/" request
+                    (when (:websocket? request)
+                      ((http/wrap-aleph-handler stream/websocket-handler)
+                       request)))
      (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
+     (route/resources "/")
+     (compojure/GET "/main/events" [] stream/stream-handler)
      (GET "/templates/*" [] #'helpers/serve-template)
-     (-> all-routes
-         jm/wrap-authentication-handler
-         ;; (file/wrap-file "resources/public/")
-         ;; wrap-file-info
-         jm/wrap-user-binding
-         jm/wrap-oauth-user-binding
-         jm/wrap-authorization-header
-         (handler/site {:session {:store (ms/session-store)}})
-         jm/wrap-stacktrace
-         (wrap-resource "public")
-         wrap-file-info
-         ;; (wrap-resource "META-INF/resources/webjars/")
-         ;; wrap-content-type
-         ;; wrap-not-modified
-         )
-     (wrap-trace #'site :header :ui)
-     (route/not-found (helpers/not-found-msg)))))
-
-
+     (wrap-trace #'site :header :ui))))
