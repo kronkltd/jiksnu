@@ -1,25 +1,21 @@
-  [:div
-   [:div
-    [:form {:method "post" :action "/main/login"}
-     [:fieldset
-      [:legend "Login"]
-      [:div.clearfix
-       [:label {:for "username"} "Username"]
-       [:div.input
-        [:input {:type "text" :name "username"}]]]
-      [:div.clearfix
-       [:label {:for "password"} "Password"]
-       [:div.input
-        [:input {:type "password" :name "password"}]]]
-      [:div.actions
-       [:input.btn.primary {:type "submit" :value "Login"}]]]]]
-   [:div
-    [:form {:method "post" :action "/main/guest-login"}
-     [:fieldset
-      [:legend "Guest Login"]
-      [:div.clearfix
-       [:label {:for "webid"} "Web Id"]
-       [:div.input
-        [:input {:type "text" :name "webid"}]]]
-      [:div.actions
-       [:input.btn.primary {:type "submit" :value "Login"}]]]]]]
+[:div.col-xs-8.col-xs-offset-2
+ [:form {:ng-submit "login()"}
+  [:h2.text-center "Please Sign In"]
+  [:div.form-group
+   [:label.sr-only {:for "username"} "Username"]
+   [:input.form-control
+    {:type "text"
+     :name "username"
+     :ng-model "usernme"
+     :placeholder "username"}]]
+  [:div.form-group
+   [:label.sr-only {:for "password"} "Password"]
+   [:input.form-control
+    {:type "password"
+     :name "password"
+     :ng-model "password"
+     :placeholder "password"
+     }]]
+  [:input.btn.btn-custom.btn-lg.btn-block
+   {:type "submit"}]]
+ ]
