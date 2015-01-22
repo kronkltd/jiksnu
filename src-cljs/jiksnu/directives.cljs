@@ -22,7 +22,6 @@
   (obj
    :templateUrl "/templates/display-avatar"
    :link (fn [$scope element attrs]
-           (.log js/console attrs)
            (.init $scope (.-id attrs))
            (.$watch $scope (fn [] (.-id attrs))
                     (fn [newVal oldVal]
@@ -34,7 +33,6 @@
         (fn [$scope]
           (! $scope.init
              (fn [id]
-               (.log js/console "id: " id)
                (when (and id (not= id ""))
                  (! $scope.size 32)
                  (-> userService

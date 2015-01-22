@@ -51,49 +51,14 @@
                   (.log js/console "data:" data)
                   (.fetchStatus app)))))
 
-(def.controller jiksnu.IndexClientsController
-  [$scope $http]
-  (.info js/console "Indexing clients")
-  (! $scope.init (helpers/fetch-page $scope $http "/main/clients.json"))
-  (.init $scope))
-
-(def.controller jiksnu.IndexConversationsController
-  [$scope notify pageService]
-  (init-page $scope pageService "conversations")
-  (.$on $scope
-       "updateConversations"
-       (fn [e]
-         (.log js/console "updateConversations")
-         (notify "update conversations")
-         (.init $scope)))
-  (.init $scope))
-
-(page-controller Domains "domains")
-
-;; (def.controller jiksnu.IndexDomainsController
-;;   [$scope pageService]
-;;   (init-page $scope pageService "domains")
-;;   (.init $scope))
-
-(def.controller jiksnu.IndexFeedSourcesController
-  [$scope pageService]
-  (init-page $scope pageService "feed-sources")
-  (.init $scope))
-
-(def.controller jiksnu.IndexGroupsController
-  [$scope pageService]
-  (init-page $scope pageService "groups")
-  (.init $scope))
-
-(def.controller jiksnu.IndexResourcesController
-  [$scope pageService]
-  (init-page $scope pageService "resources")
-  (.init $scope))
-
-(def.controller jiksnu.IndexUsersController
-  [$scope pageService]
-  (init-page $scope pageService "users")
-  (.init $scope))
+(page-controller Activities    "activities")
+(page-controller Clients       "clients")
+(page-controller Conversations "conversations")
+(page-controller Domains       "domains")
+(page-controller FeedSources   "feed-sources")
+(page-controller Groups        "groups")
+(page-controller Resources     "resources")
+(page-controller Users         "users")
 
 (def.controller jiksnu.NavBarController
   [$scope app]

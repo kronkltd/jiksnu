@@ -23,13 +23,11 @@
   [cache $q $http get-url]
   (fn [id]
     (let [d (.defer $q)]
-      (.log js/console "cache miss" cache id)
       (.put cache id d)
       (-> $http
           (.get (get-url id))
           (.success
            (fn [data]
-             (.log js/console "setting id: " cache id)
              (.resolve d data))))
       (.-promise d))))
 
@@ -75,11 +73,7 @@
                url (get page-mappings page-name)]
            (-> $http
                (.get url)
-               (.success
-                (fn [data]
-                  (.resolve d data)))
-               (.error
-                (fn []
-                  (.reject d))))
+               (.success #(.resolve d %))
+               (.error #(.reject d)))
            (.-promise d))))
     service))
