@@ -1,5 +1,6 @@
-[:div.col-xs-8.col-xs-offset-2
- [:form {:ng-submit "login()"}
+[:div.col-xs-6.col-xs-offset-3
+ [:form {:ng-submit "login()"
+         :ng-controller "LoginController"}
   [:h2.text-center "Please Sign In"]
   [:div.form-group
    [:label.sr-only {:for "username"} "Username"]

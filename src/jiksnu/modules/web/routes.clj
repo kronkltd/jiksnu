@@ -26,6 +26,7 @@
             [ring.middleware.file-info :refer [wrap-file-info]]
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.resource :refer [wrap-resource]]
+            [ring.middleware.webjars :refer [wrap-webjars]]
             [monger.ring.session-store :as ms]
             [slingshot.slingshot :refer [throw+]]))
 
@@ -57,13 +58,15 @@
                                  (set-site)))
 
   (def app
-    (routes
-     ;; (GET "/" request
-     ;;                (when (:websocket? request)
-     ;;                  ((http/wrap-aleph-handler stream/websocket-handler)
-     ;;                   request)))
-     (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
-     (route/resources "/")
-     ;; (GET "/main/events" [] stream/stream-handler)
-     (GET "/templates/*" [] #'helpers/serve-template)
-     (wrap-trace #'site :ui))))
+    (-> (routes
+         ;; (GET "/" request
+         ;;                (when (:websocket? request)
+         ;;                  ((http/wrap-aleph-handler stream/websocket-handler)
+         ;;                   request)))
+         ;; (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
+         (route/resources "/")
+         ;; (GET "/main/events" [] stream/stream-handler)
+         (GET "/templates/*" [] #'helpers/serve-template)
+         (wrap-trace #'site :ui))
+        (wrap-webjars "/webjars")
+)))

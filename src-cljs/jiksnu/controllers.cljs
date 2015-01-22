@@ -5,6 +5,7 @@
             [jiksnu.templates :as templates]
             [purnam.native.functions :refer [js-map]])
   (:use-macros [gyr.core :only [def.controller]]
+               [jiksnu.macros :only [page-controller]]
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
@@ -67,10 +68,12 @@
          (.init $scope)))
   (.init $scope))
 
-(def.controller jiksnu.IndexDomainsController
-  [$scope pageService]
-  (init-page $scope pageService "domains")
-  (.init $scope))
+(page-controller Domains "domains")
+
+;; (def.controller jiksnu.IndexDomainsController
+;;   [$scope pageService]
+;;   (init-page $scope pageService "domains")
+;;   (.init $scope))
 
 (def.controller jiksnu.IndexFeedSourcesController
   [$scope pageService]

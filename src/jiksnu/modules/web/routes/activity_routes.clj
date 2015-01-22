@@ -38,8 +38,7 @@
   :url "/{_id}"
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
-  :presenter (fn [o]
-               (log/spy :info (into {} o)))
+  :presenter (partial into {})
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)
                    activity (model.activity/fetch-by-id id)]

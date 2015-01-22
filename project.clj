@@ -56,8 +56,8 @@
                  ;; [ring "1.2.2"]
                  [ring/ring-core "1.3.2"]
                  [ring-basic-authentication "1.0.5"]
-                 ;; [ring-webjars "0.1.0"
-                 ;;  :exclusions [org.slf4j/slf4j-nop]]
+                 [ring-webjars "0.1.0"
+                  :exclusions [org.slf4j/slf4j-nop]]
                  [slingshot "0.12.1"]
                  [xerces/xercesImpl "2.11.0"]]
   :plugins [[lein-cljsbuild "1.0.4"]
