@@ -101,6 +101,4 @@
 
 (def states
   (let [as (admin-states admin-data)]
-    (let [s (concat as route-data)]
-      (.log js/console "States: " (clj->js s))
-      s)))
+    (concat as route-data)))

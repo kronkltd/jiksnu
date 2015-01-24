@@ -1,8 +1,5 @@
 (ns jiksnu.templates)
 
-(defn config [& _]
-  (.warn js/console "config called"))
-
 (defn control-line
   [label name type & {:as options}]
   (let [{:keys [value checked]} options]

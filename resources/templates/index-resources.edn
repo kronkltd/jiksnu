@@ -1,4 +1,4 @@
-  [:table.table
+  [:table.row-border.hover {:datatable ""}
    [:thead
     [:tr
      [:th "Id"]

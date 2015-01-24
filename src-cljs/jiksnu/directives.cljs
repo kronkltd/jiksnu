@@ -25,7 +25,6 @@
            (.init $scope (.-id attrs))
            (.$watch $scope (fn [] (.-id attrs))
                     (fn [newVal oldVal]
-                      (.log js/console "Watching attrs" newVal)
                       (.init $scope newVal))))
    :scope true
    :controller

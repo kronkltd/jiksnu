@@ -9,9 +9,7 @@
     (let [d (.defer $q)]
       (if (and id (not= id ""))
         (let [p (if-let [d-prime (.get cache id)]
-                  (do
-                    ;; (.log js/console "cache hit" id)
-                    (.-promise d-prime))
+                  (.-promise d-prime)
                   (.fetch service id))]
           (.then p
                  #(.resolve d %)

@@ -11,8 +11,11 @@
    angularMoment
    btford.markdown
    cgNotify
+   cgBusy
    geolocation
+   datatables
    ngSanitize
+   cfp.hotkeys
    ui.bootstrap
    ;; ui.bootstrap.tabs
    ui.router

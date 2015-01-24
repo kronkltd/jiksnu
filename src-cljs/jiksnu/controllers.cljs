@@ -20,10 +20,15 @@
                     (! $scope.page page)
                     (! $scope.loaded true)))))))
 
+(def.controller jiksnu.AdminActivitiesController [])
+
 (def.controller jiksnu.AdminConversationsController
   [$scope $http]
   (! $scope.init (helpers/fetch-page $scope $http "/admin/conversations.json"))
   (.init $scope))
+
+(def.controller jiksnu.AdminGroupsController [])
+
 
 (def.controller jiksnu.AdminUsersController
   [$scope $http]
@@ -37,7 +42,6 @@
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
-  (.info js/console "fetching nav")
   (! $scope.groups (clj->js helpers/nav-info)))
 
 
@@ -48,7 +52,6 @@
   (-> $http
       (.post "/main/logout")
       (.success (fn [data]
-                  (.log js/console "data:" data)
                   (.fetchStatus app)))))
 
 (page-controller Activities    "activities")
@@ -62,7 +65,6 @@
 
 (def.controller jiksnu.NavBarController
   [$scope app]
-  (.log js/console "app:" app)
   (! $scope.app app.data)
   (.fetchStatus app))
 
@@ -85,12 +87,10 @@
 
   (! $scope.submit
      (fn []
-       (.log js/console "submitting")
        (-> $http
            (.post "/notice/new" $scope.activity)
            (.success
             (fn [data]
-              (.log js/console "Response " data)
               (.$broadcast $rootScope "updateConversations"))))))
 
   (.reset $scope))
@@ -101,6 +101,8 @@
   [$scope app]
   (! $scope.app app.data)
   )
+
+(def.controller jiksnu.SettingsPageController [])
 
 (def.controller jiksnu.ShowActivityController
   [$scope $http $stateParams activityService]
@@ -120,13 +122,11 @@
   (! $scope.loaded false)
   (! $scope.init
      (fn [id]
-       (.info js/console "Showing Domain")
        (let [url (str "/main/domains/" id ".json")]
          (-> $http
              (.get url)
              (.success
               (fn [data]
-                (.info js/console "Data" data)
                 (! $scope.domain data)
                 (! $scope.loaded true)))))))
   (.init $scope (.-id $stateParams)))

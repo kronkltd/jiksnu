@@ -11,7 +11,6 @@
                     ]
 
   (.setUrl wsProvider "wss://renfer.name/")
-  (.log js/console "Foo?: " (.-foo appProvider))
 
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider

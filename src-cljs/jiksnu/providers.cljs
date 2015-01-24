@@ -13,12 +13,10 @@
 (defn fetch-status
   [app di]
   (fn []
-    (.log js/console "fetching status")
     (-> (? di.$http)
         (.get "/status")
         (.success
          (fn [data]
-           (.log js/console "Setting status" data)
            (! app.data.name data.name)
            (! app.data.user data.user)
            )))))

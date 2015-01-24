@@ -25,6 +25,7 @@
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.file-info :refer [wrap-file-info]]
             [ring.middleware.flash :refer [wrap-flash]]
+            [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.webjars :refer [wrap-webjars]]
             [monger.ring.session-store :as ms]
@@ -69,4 +70,7 @@
          (GET "/templates/*" [] #'helpers/serve-template)
          (wrap-trace #'site :ui))
         (wrap-webjars "/webjars")
+        wrap-file-info
+        wrap-content-type
+        wrap-not-modified
 )))
