@@ -27,26 +27,13 @@
                     (fn [newVal oldVal]
                       (.init $scope newVal))))
    :scope true
-   :controller
-   (arr "$scope"
-        (fn [$scope]
-          (! $scope.init
-             (fn [id]
-               (when (and id (not= id ""))
-                 (! $scope.size 32)
-                 (-> userService
-                     (.get id)
-                     (.then (fn [user]
-                              (! $scope.user user)))))
-               ))))))
+   :controller "DisplayAvatarController"))
 
 (def.directive jiksnu.groupsWidget
   []
   (obj
    :templateUrl "/templates/groups-widget"
-   :scope true
-   )
-  )
+   :scope true))
 
 (def.directive jiksnu.leftColumn []
   (obj
@@ -80,20 +67,11 @@
 (def.directive jiksnu.streamsWidget []
   (obj))
 
-(def.directive jiksnu.subscribersWidget
-  [app]
+(def.directive jiksnu.subscribersWidget []
   (obj
    :templateUrl "/templates/subscribers-widget"
    :scope true
-   :controller (arr "$scope" "userService"
-                    (fn [$scope userService]
-                      (-> userService
-                          (.get (? app.data.user))
-                          (.then (fn [user]
-                                   (! $scope.user user))))))
-
-   )
-  )
+   :controller "SubscribersWidgetController"))
 
 (def.directive jiksnu.subscriptionsWidget
   []

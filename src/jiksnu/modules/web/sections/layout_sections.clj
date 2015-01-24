@@ -132,6 +132,7 @@
       "/webjars/angularjs-geolocation/angularjs-geolocation.min.js"
       "/webjars/angular-busy/angular-busy.min.js"
       "/webjars/angular-cache/angular-cache.min.js"
+      "/webjars/angular-data/angular-data.js"
       "/webjars/angular-datatables/angular-datatables.min.js"
       "/webjars/angular-file-upload/angular-file-upload.min.js"
       "/webjars/angular-google-maps/angular-google-maps.min.js"

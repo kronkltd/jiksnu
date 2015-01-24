@@ -6,6 +6,7 @@
 
 (def.module jiksnu
   [
+   angular-data.DS
    angular-data.DSCacheFactory
    angularFileUpload
    angularMoment

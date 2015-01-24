@@ -4,7 +4,6 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
-
 (defn ping
   [app di]
   (fn []
@@ -21,6 +20,15 @@
            (! app.data.user data.user)
            )))))
 
+(defn login
+  [app di]
+  (fn [username password]
+    (-> (? di.$http)
+        (.post "/main/login")
+        (.success
+         (fn [data]
+           (.log js/console data)
+           (! app.data.user data))))))
 
 (defn app-service
   [$http ws]
@@ -31,7 +39,9 @@
     (doto app
       (aset "data"        (obj))
       (aset "ping"        (ping app di))
-      (aset "fetchStatus" (fetch-status app di)))))
+      (aset "fetchStatus" (fetch-status app di))
+      (aset "login"       (login app di))
+      )))
 
 (def.provider jiksnu.app
   []

@@ -39,6 +39,7 @@
                  [org.webjars/angularjs-geolocation "0.1.1-SNAPSHOT"]
                  [org.webjars/angular-busy "4.1.1"]
                  [org.webjars/angular-cache "3.0.2"]
+                 [org.webjars/angular-data "1.5.3-SNAPSHOT"]
                  [org.webjars/angular-datatables "0.3.0"]
                  [org.webjars/angular-file-upload "2.0.5"]
                  [org.webjars/angular-google-maps "2.0.11"]

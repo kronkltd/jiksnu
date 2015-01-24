@@ -94,8 +94,8 @@
    ["registerPage"     "/main/register"     "RegisterPage"       :register-page]
    ["settingsPage"     "/main/settings"     "SettingsPage"       :settings-page]
    ["showActivity"     "/notice/:id"        "ShowActivity"       :show-activity]
-   ["showDomains"      "/main/domains/:id"  "ShowDomain"         :show-domain]
-   ["showUser"         "/main/users/:id"    "ShowUser"           :show-user]
+   ["showDomain"      "/main/domains/:id"  "ShowDomain"         :show-domain]
+   ["showUser"         "/main/users/:username@:domain"    "ShowUser"           :show-user]
    ]
   )
 

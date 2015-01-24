@@ -1,5 +1,6 @@
 (ns jiksnu.controllers
   (:require jiksnu.app
+            jiksnu.factories
             [jiksnu.helpers :as helpers]
             jiksnu.services
             [jiksnu.templates :as templates]
@@ -35,10 +36,20 @@
   (! $scope.init (helpers/fetch-page $scope $http "/admin/users.json"))
   (.init $scope))
 
-
-
 (def.controller jiksnu.AppController [])
 (def.controller jiksnu.AvatarPageController [])
+
+(def.controller jiksnu.DisplayAvatarController
+  [$scope userService]
+  (! $scope.init
+     (fn [id]
+       (when (and id (not= id ""))
+         (! $scope.size 32)
+
+         (-> userService
+             (.get id)
+             (.then (fn [user]
+                      (! $scope.user user))))))))
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
@@ -104,6 +115,13 @@
 
 (def.controller jiksnu.SettingsPageController [])
 
+(def.controller jiksnu.SubscribersWidgetController
+  [$scope app userService]
+  (-> userService
+      (.get (? app.data.user))
+      (.then (fn [user]
+               (! $scope.user user)))))
+
 (def.controller jiksnu.ShowActivityController
   [$scope $http $stateParams activityService]
   (! $scope.loaded false)
@@ -132,11 +150,18 @@
   (.init $scope (.-id $stateParams)))
 
 (def.controller jiksnu.ShowUserController
-  [$scope $http $stateParams userService]
-  (! $scope.loaded false)
-  (! $scope.init
-     (fn [id]
-       (-> userService
-           (.get id)
-           (.then (fn [user] (! $scope.user user))))))
-  (.init $scope (.-id $stateParams)))
+  [$scope $http $stateParams userService User]
+  (let [username (.-username $stateParams)
+        domain (.-domain $stateParams)
+        id (str "acct:" username "@" domain)]
+    (.log js/console "Showing user" User)
+    (.log js/console "$stateParams" $stateParams)
+    (! js/window.User User)
+    (! $scope.loaded false)
+    (! $scope.init
+       (fn [id]
+         (when (and id (not= id ""))
+           (.log js/console "init user with id: " id)
+           (.bindOne User $scope "user" id)
+           (.find User id))))
+    (.init $scope id)))
