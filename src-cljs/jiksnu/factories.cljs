@@ -3,7 +3,7 @@
   (:use-macros [gyr.core :only [def.factory]]
                [purnam.core :only [? ?> ! !> obj arr]]))
 
-(def.factory jiksnu.User
+(def.factory jiksnu.Users
   [DS]
   (.defineResource DS
       (obj

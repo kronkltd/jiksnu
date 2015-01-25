@@ -40,17 +40,6 @@
       (! service.get (cache-get service cache $q))
       service)))
 
-(def.service jiksnu.userService
-  [DSCacheFactory $q $http]
-  (let [cache-name "users"
-        get-url #(str "/api/users/" %)]
-    (DSCacheFactory cache-name (obj :capacity 1000))
-    (let [cache (.get DSCacheFactory cache-name)
-          service (obj)]
-      (! service.fetch (cache-fetch cache $q $http get-url))
-      (! service.get (cache-get service cache $q))
-      service)))
-
 (def page-mappings
   {
    "conversations" "/api/conversations"

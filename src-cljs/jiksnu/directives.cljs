@@ -34,10 +34,14 @@
   (obj
    :templateUrl "/templates/followers-list"
    :scope true
-   :controller "FollowersListController"
+   :controller "FollowersListController"))
 
-)
-)
+(def.directive jiksnu.followingList
+  []
+  (obj
+   :templateUrl "/templates/following-list"
+   :scope true
+   :controller "FollowingListController"))
 
 (def.directive jiksnu.groupsWidget
   []

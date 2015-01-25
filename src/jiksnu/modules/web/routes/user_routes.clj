@@ -4,7 +4,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.actions.stream-actions :as stream]
-            [jiksnu.actions.subscription-actions :as sub]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as user]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
@@ -43,6 +43,16 @@
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)]
                {:data (model.user/fetch-by-id id)})))
+
+(defresource users-api followers-collection
+  :url "/{_id}/followers"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :exists? (fn [ctx]
+             (let [id (-> ctx :request :route-params :_id)]
+               (let [user (model.user/fetch-by-id id)]
+                 (let [[_ page] (actions.subscription/get-subscribers user)]
+                   {:data (log/spy :info page)})))))
 
 ;; =============================================================================
 
@@ -93,8 +103,8 @@
   []
   [
    [{:type User :name "activities"}       {:action #'stream/user-timeline}]
-   [{:type User :name "subscriptions"}    {:action #'sub/get-subscriptions}]
-   [{:type User :name "subscribers"}      {:action #'sub/get-subscribers}]
+   [{:type User :name "subscriptions"}    {:action #'actions.subscription/get-subscriptions}]
+   [{:type User :name "subscribers"}      {:action #'actions.subscription/get-subscribers}]
    [{:type User :name "streams"}          {:action #'stream/fetch-by-user}]
    [{:type User :name "groups"}           {:action #'group/fetch-by-user}]
 

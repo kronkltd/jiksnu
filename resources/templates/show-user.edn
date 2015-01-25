@@ -17,4 +17,5 @@
 
         ]
  [:followers-list]
+ [:following-list]
 ]

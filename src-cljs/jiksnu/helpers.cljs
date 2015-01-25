@@ -51,10 +51,10 @@
      {:title "Domains"              :state "indexDomains"}
      {:title "Groups"               :state "indexGroups"}
      {:title "Resources"            :state "indexResources"}]}
-   {:label "Settings"
+   #_{:label "Settings"
     :items
     [{:title "Settings"           :state "settingsPage"}]}
-   {:label "Admin"
+   #_{:label "Admin"
     :items
     [{:title "Activities"         :state "adminActivities"}
      ;; {:title "Auth"               :state "adminAuthentication"}

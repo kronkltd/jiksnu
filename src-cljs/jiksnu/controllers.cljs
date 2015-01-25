@@ -40,20 +40,25 @@
 (def.controller jiksnu.AvatarPageController [])
 
 (def.controller jiksnu.DisplayAvatarController
-  [$scope userService User]
+  [$scope Users]
   (! $scope.init
      (fn [id]
        (when (and id (not= id ""))
          (! $scope.size 32)
-         (.bindOne User $scope "user" id)
-           (.find User id)
-         #_(-> userService
-             (.get id)
-             (.then (fn [user]
-                      (! $scope.user user))))))))
+         (.bindOne Users $scope "user" id)
+         (.find Users id)
+         (.log js/console (?> Users.get id))
+))))
 
 (def.controller jiksnu.FollowersListController
   [$scope])
+
+(def.controller jiksnu.FollowingListController
+  [$scope $http]
+
+
+
+)
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
@@ -131,11 +136,9 @@
 (def.controller jiksnu.SettingsPageController [])
 
 (def.controller jiksnu.SubscribersWidgetController
-  [$scope app userService]
-  (-> userService
-      (.get (? app.data.user))
-      (.then (fn [user]
-               (! $scope.user user)))))
+  [$scope app]
+
+)
 
 (def.controller jiksnu.ShowActivityController
   [$scope $http $stateParams activityService]
@@ -165,18 +168,14 @@
   (.init $scope (.-id $stateParams)))
 
 (def.controller jiksnu.ShowUserController
-  [$scope $http $stateParams userService User]
+  [$scope $http $stateParams Users]
   (let [username (.-username $stateParams)
         domain (.-domain $stateParams)
         id (str "acct:" username "@" domain)]
-    (.log js/console "Showing user" User)
-    (.log js/console "$stateParams" $stateParams)
-    (! js/window.User User)
     (! $scope.loaded false)
     (! $scope.init
        (fn [id]
          (when (and id (not= id ""))
-           (.log js/console "init user with id: " id)
-           (.bindOne User $scope "user" id)
-           (.find User id))))
+           (.bindOne Users $scope "user" id)
+           (.find Users id))))
     (.init $scope id)))
