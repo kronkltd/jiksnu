@@ -1,5 +1,6 @@
 (ns jiksnu.actions.site-actions
-  (:require [ciste.core :refer [defaction]]
+  (:require [cemerick.friend :as friend]
+            [ciste.core :refer [defaction]]
             [clojure.string :as string]
             [inflections.core :as inf]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -45,8 +46,8 @@
   true)
 
 (defaction status
-  []
+  [request]
   {:name "Jiksnu"
-   :user (session/current-user-id)
+   :user (:current (friend/identity request))
    }
   )

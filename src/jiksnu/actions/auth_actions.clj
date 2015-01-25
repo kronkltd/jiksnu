@@ -78,7 +78,7 @@
   "Create a new auth mechanism with the type password that has the crypted password"
   [user password]
   (let [params {:type "password"
-                :value (crypt/encrypt password)
+                :value (creds/hash-bcrypt password)
                 :user (:_id user)}]
     (create params)))
 
@@ -89,10 +89,9 @@
       (when-let [mechanisms (seq (model.authentication-mechanism/fetch-all
                                   {:user (:_id user)}))]
         (->> mechanisms
-             (log/spy :info)
              (map :value)
              (some (fn [password]
                      (creds/bcrypt-credential-fn
-                      {:username username
-                       :password password}
+                      {username {:username username
+                                 :password password}}
                       auth-map))))))))
