@@ -1,7 +1,6 @@
 (ns jiksnu.actions.conversation-actions
   (:require [ciste.core :refer [defaction]]
             [clj-time.core :as time]
-            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
@@ -20,23 +19,23 @@
 
 (defn prepare-create
   [conversation]
-  (-?> conversation
-       transforms/set-_id
-       transforms/set-updated-time
-       transforms/set-created-time
-       ;; transforms.conversation/set-url
-       transforms.conversation/set-domain
-       transforms/set-local
-       ;; transforms.conversation/set-update-source
-       ))
+  (some-> conversation
+          transforms/set-_id
+          transforms/set-updated-time
+          transforms/set-created-time
+          ;; transforms.conversation/set-url
+          transforms.conversation/set-domain
+          transforms/set-local
+          ;; transforms.conversation/set-update-source
+          ))
 
 (defn prepare-delete
   ([item]
-     (prepare-delete item @delete-hooks))
+   (prepare-delete item @delete-hooks))
   ([item hooks]
-     (if (seq hooks)
-       (recur ((first hooks) item) (rest hooks))
-       item)))
+   (if (seq hooks)
+     (recur ((first hooks) item) (rest hooks))
+     item)))
 
 (defaction create
   [params]

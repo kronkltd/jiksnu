@@ -1,13 +1,12 @@
 (ns jiksnu.modules.core.filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
             [slingshot.slingshot :refer [throw+]]))
 
 (defn parse-page
   [request]
-  {:page (or (-?> request :params :page Integer/parseInt) 1)})
+  {:page (or (some-> request :params :page Integer/parseInt) 1)})
 
 (defn parse-sorting
   [request]

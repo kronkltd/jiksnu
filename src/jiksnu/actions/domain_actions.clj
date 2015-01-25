@@ -4,7 +4,6 @@
             [ciste.initializer :refer [definitializer]]
             [ciste.model :as cm]
             [clj-time.core :as time]
-            [clojure.core.incubator :refer [-?>>]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -36,11 +35,11 @@
 
 (defn prepare-delete
   ([domain]
-     (prepare-delete domain @delete-hooks))
+   (prepare-delete domain @delete-hooks))
   ([domain hooks]
-     (if (seq hooks)
-       (recur ((first hooks) domain) (rest hooks))
-       domain)))
+   (if (seq hooks)
+     (recur ((first hooks) domain) (rest hooks))
+     domain)))
 
 (def add-link* (templates.actions/make-add-link* model.domain/collection-name))
 
@@ -85,12 +84,12 @@
          (or (nil? url)
              (string? url))]}
   (if (or (:http domain) (:https domain))
-    (-?>> (or (seq (util/path-segments url)) ["/"])
-          (map #(str "https://" (:_id domain) % ".well-known/host-meta"))
-          (concat (:hostMetaUri domain))
-          (map fetch-xrd*)
-          (filter identity)
-          first)
+    (some->> (or (seq (util/path-segments url)) ["/"])
+             (map #(str "https://" (:_id domain) % ".well-known/host-meta"))
+             (concat (:hostMetaUri domain))
+             (map fetch-xrd*)
+             (filter identity)
+             first)
     (log/warn "Domain does not have http(s) interface")))
 
 (defaction set-discovered!

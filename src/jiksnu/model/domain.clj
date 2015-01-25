@@ -1,6 +1,5 @@
 (ns jiksnu.model.domain
   (:require [ciste.config :refer [config]]
-            [clojure.core.incubator :refer [-?>>]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -57,23 +56,23 @@
   [domain user-uri]
   (when user-uri
     (when-let [template (or (:xrdTemplate domain)
-                            (-?>> domain
-                                  :links
-                                  (filter #(= (:rel %) "lrdd"))
-                                  (filter #(or (nil? (:type %))
-                                               (= (:type %) "application/xrd+xml")))
-                                  first
-                                  :template))]
+                            (some->> domain
+                                     :links
+                                     (filter #(= (:rel %) "lrdd"))
+                                     (filter #(or (nil? (:type %))
+                                                  (= (:type %) "application/xrd+xml")))
+                                     first
+                                     :template))]
       (util/replace-template template user-uri))))
 
 (defn get-jrd-url
   [domain user-uri]
   (when user-uri
     (when-let [template (or (:jrdTemplate domain)
-                            (-?>> domain
-                                  :links
-                                  (filter #(= (:rel %) "lrdd"))
-                                  (filter #(= (:type %) "application/json"))
-                                  first
-                                  :template))]
+                            (some->> domain
+                                     :links
+                                     (filter #(= (:rel %) "lrdd"))
+                                     (filter #(= (:type %) "application/json"))
+                                     first
+                                     :template))]
       (util/replace-template template user-uri))))

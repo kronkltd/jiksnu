@@ -1,6 +1,5 @@
 (ns jiksnu.model.activity
   (:require [ciste.config :refer [config]]
-            [clojure.core.incubator :refer [-?>]]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -75,9 +74,9 @@
 (defn get-author
   "Returns the user that is the author of this activity"
   [activity]
-  (-?> activity
-       :author
-       model.user/fetch-by-id))
+  (some-> activity
+          :author
+          model.user/fetch-by-id))
 
 (defn fetch-comments
   [activity]

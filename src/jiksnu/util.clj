@@ -3,7 +3,6 @@
             [ciste.loader :refer [require-namespaces]]
             [ciste.model :as cm]
             [clj-factory.core :refer [factory]]
-            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -59,9 +58,9 @@
 
 (defn strip-namespaces
   [val]
-  (-?> val
-       (string/replace #"http://activitystrea.ms/schema/1.0/" "")
-       (string/replace #"http://ostatus.org/schema/1.0/" "")))
+  (some-> val
+          (string/replace #"http://activitystrea.ms/schema/1.0/" "")
+          (string/replace #"http://ostatus.org/schema/1.0/" "")))
 
 (defn path-segments
   [url]
@@ -76,13 +75,13 @@
 
 (defn rel-filter
   "returns all the links in the collection where the rel value matches the
-   supplied value"
+  supplied value"
   ([rel links] (rel-filter rel links nil))
   ([rel links content-type]
-     (filter (fn [link]
-               (and (= (:rel link) rel)
-                    (or (not content-type) (= (:type link) content-type))))
-             links)))
+   (filter (fn [link]
+             (and (= (:rel link) rel)
+                  (or (not content-type) (= (:type link) content-type))))
+           links)))
 
 ;; TODO: I'm sure this exists somewhere else
 ;; all this is really doing is assembling a uri
@@ -153,16 +152,16 @@
 
 (defn write-json-date
   ([^Date date ^PrintWriter out]
-     (write-json-date date out false))
+   (write-json-date date out false))
   ([^Date date ^PrintWriter out escape-unicode?]
-     (let [formatted-date (.format (SimpleDateFormat. "yyyy-MM-dd'T'hh:mm:ss'Z'") date)]
-       (.print out (str "\"" formatted-date "\"")))))
+   (let [formatted-date (.format (SimpleDateFormat. "yyyy-MM-dd'T'hh:mm:ss'Z'") date)]
+     (.print out (str "\"" formatted-date "\"")))))
 
 (defn write-json-object-id
   ([id ^PrintWriter out]
-     (write-json-object-id id out false))
+   (write-json-object-id id out false))
   ([id ^PrintWriter out escape-unicode]
-     (.print out (str "\"" id "\""))))
+   (.print out (str "\"" id "\""))))
 
 (extend Date json/JSONWriter {:-write write-json-date})
 (extend ObjectId json/JSONWriter {:-write write-json-object-id})
@@ -222,19 +221,19 @@
   [prefix module-name model-name part-name]
   [
    #_(format "%s.%s.%s"
-           prefix module-name part-name)
+             prefix module-name part-name)
    (format "%s.%s.%s.%s-%s"
            prefix module-name part-name model-name part-name)])
 
 (defn require-module
   ([prefix module-name]
-     (doseq [model-name registry/model-names]
-       (require-module prefix module-name model-name)))
+   (doseq [model-name registry/model-names]
+     (require-module prefix module-name model-name)))
   ([prefix module-name model-name]
-     (doseq [part-name registry/part-names]
-       #_(log/infof "Loading vector: [%s %s %s]" module-name model-name part-name)
-       (let [namespaces (vector-namespaces prefix module-name model-name part-name)]
-         (require-namespaces namespaces)))))
+   (doseq [part-name registry/part-names]
+     #_(log/infof "Loading vector: [%s %s %s]" module-name model-name part-name)
+     (let [namespaces (vector-namespaces prefix module-name model-name part-name)]
+       (require-namespaces namespaces)))))
 
 (defn replace-template
   [template url]
@@ -255,12 +254,12 @@
 (defn generate-token
   ([] (generate-token 16))
   ([length]
-     (-> (random/base32 length)
-         (string/replace #"\+" "-")
-         (string/replace #"/" "_")
-         (string/replace #"=" "")
-         )
+   (-> (random/base32 length)
+       (string/replace #"\+" "-")
+       (string/replace #"/" "_")
+       (string/replace #"=" "")
+       )
 
-     ))
+   ))
 
 

@@ -3,7 +3,6 @@
             [ciste.core :refer [defaction with-context]]
             [ciste.model :as cm]
             [ciste.sections.default :refer [show-section]]
-            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -37,7 +36,7 @@
 
 (defn process-args
   [args]
-  (-?>> args
+  (some->> args
         (filter identity)
         seq
         (map #(json/read-str % :key-fn keyword))))

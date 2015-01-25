@@ -4,7 +4,6 @@
                                             show-section-minimal
                                             show-section uri title index-block
                                             index-line index-section update-button]]
-            [clojure.core.incubator :refer [-?>]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -99,7 +98,7 @@
    [:text (h/h (or (:title activity)
                    (:content activity)))]
    [:truncated "false"]
-   [:created_at (-?> activity :published .toDate util/date->twitter)]
+   [:created_at (some-> activity :published .toDate util/date->twitter)]
    [:source (:source activity)]
    [:id (:_id activity)]
    [:in_reply_to_status_id]
