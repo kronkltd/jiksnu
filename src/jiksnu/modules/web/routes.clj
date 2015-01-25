@@ -62,7 +62,7 @@
    :login-uri "/main/login"
    :workflows [(workflows/http-basic :realm "/")
 
-               ;; (workflows/interactive-form)
+               (workflows/interactive-form)
                ]})
 
 (definitializer

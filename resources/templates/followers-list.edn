@@ -1,0 +1,10 @@
+[:div
+ [:h3 "Followers"]
+ [:ul
+  [:li {:ng-repeat "follower in page.items"}
+   [:div
+    "{{follower | json}}"
+    ]
+   ]
+  ]
+]

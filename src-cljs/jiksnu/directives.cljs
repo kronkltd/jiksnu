@@ -29,6 +29,16 @@
    :scope true
    :controller "DisplayAvatarController"))
 
+(def.directive jiksnu.followersList
+  []
+  (obj
+   :templateUrl "/templates/followers-list"
+   :scope true
+   :controller "FollowersListController"
+
+)
+)
+
 (def.directive jiksnu.groupsWidget
   []
   (obj

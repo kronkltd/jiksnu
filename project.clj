@@ -80,7 +80,7 @@
                 {:output-to "resources/public/cljs/jiksnu.js"
                  ;; :output-dir "resources/public/cljs/"
                  :optimizations :whitespace
-                 :pretty-print true}}]}
+                 :pretty-print false}}]}
   ;; :hooks [leiningen.cljsbuild]
   :main ciste.runner
   :jvm-opts ["-server"

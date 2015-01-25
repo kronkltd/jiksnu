@@ -40,16 +40,20 @@
 (def.controller jiksnu.AvatarPageController [])
 
 (def.controller jiksnu.DisplayAvatarController
-  [$scope userService]
+  [$scope userService User]
   (! $scope.init
      (fn [id]
        (when (and id (not= id ""))
          (! $scope.size 32)
-
-         (-> userService
+         (.bindOne User $scope "user" id)
+           (.find User id)
+         #_(-> userService
              (.get id)
              (.then (fn [user]
                       (! $scope.user user))))))))
+
+(def.controller jiksnu.FollowersListController
+  [$scope])
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
@@ -63,16 +67,10 @@
                           password (.-password $scope)]
                       (.log js/console "login"
                             username
-                            password
-                            )
-                      (.login app username password))
-))
+                            password)
+                      (.login app username password)))))
 
-)
-
-(def.controller jiksnu.LogoutController
-  [$scope $http app]
-)
+(def.controller jiksnu.LogoutController [])
 
 (page-controller Activities    "activities")
 (page-controller Clients       "clients")
@@ -85,7 +83,8 @@
 
 (def.controller jiksnu.NavBarController
   [$scope app]
-  (! $scope.app app.data)
+  (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
+  (! $scope.app2 app)
   (! $scope.logout
      (fn []
        (.log js/console "logging out")
@@ -93,7 +92,9 @@
   (.fetchStatus app))
 
 (def.controller jiksnu.NewPostController
-  [$scope $http $rootScope geolocation]
+  [$scope $http $rootScope geolocation app]
+
+  (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
 
   (! $scope.reset
      (fn []
@@ -123,7 +124,8 @@
 
 (def.controller jiksnu.RightColumnController
   [$scope app]
-  (! $scope.app app.data)
+  (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
+  (! $scope.foo "bar")
   )
 
 (def.controller jiksnu.SettingsPageController [])

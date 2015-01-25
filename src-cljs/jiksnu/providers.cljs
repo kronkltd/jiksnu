@@ -16,8 +16,9 @@
         (.get "/status")
         (.success
          (fn [data]
-           (! app.data.name data.name)
-           (! app.data.user data.user)
+           (! app.data data)
+           ;; (! app.data.name data.name)
+           ;; (! app.data.user data.user)
            )))))
 
 (defn login

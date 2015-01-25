@@ -18,7 +18,7 @@
      [:a.dropdown-toggle
       {:dropdown-toggle ""}
       [:span {:data-model "user"}
-       [:display-avatar {:data-id "{{app.user}}"}]
+       [:display-avatar {:data-id "acct:{{app.user}}@{{app.domain}}"}]
        "{{app.user}}"
        [:link-to {:data-id "{{app.user}}" :data-model "user"}]]
       [:b.caret]]
