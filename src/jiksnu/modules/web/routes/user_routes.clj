@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.user-routes
-  (:require [clojure.data.json :as json]
+  (:require [cemerick.friend :as friend]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.actions.stream-actions :as stream]
@@ -40,8 +41,11 @@
   :available-media-types ["application/json"]
   :presenter (partial into {})
   :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)]
-               {:data (model.user/fetch-by-id id)})))
+             (log/spy :info ctx)
+             (friend/authenticated
+
+              (let [id (-> ctx :request :route-params :_id)]
+                {:data (model.user/fetch-by-id id)}))))
 
 ;; =============================================================================
 

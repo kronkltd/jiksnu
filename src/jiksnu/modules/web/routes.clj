@@ -1,5 +1,8 @@
 (ns jiksnu.modules.web.routes
   (:require [aleph.http :as http]
+            [cemerick.friend :as friend]
+            [cemerick.friend.credentials :as creds]
+            [cemerick.friend.workflows :as workflows]
             [ciste.initializer :refer [definitializer]]
             [ciste.middleware :as middleware]
             [ciste.routes :refer [resolve-routes]]
@@ -7,6 +10,7 @@
             [compojure.core :refer [GET routes]]
             [compojure.handler :as handler]
             [compojure.route :as route]
+            [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.model :as model]
             [jiksnu.modules.web.middleware :as jm]
@@ -52,6 +56,23 @@
                   schema-doc schema-root-doc])
   site)
 
+
+(def users
+  "dummy in-memory user database."
+  {"root" {:username "root"
+           :password (creds/hash-bcrypt "admin_password")
+           :roles #{:admin}}
+   "jane" {:username "jane"
+           :password (creds/hash-bcrypt "user_password")
+           :roles #{:user}}})
+
+(def auth-config
+  {:credential-fn actions.auth/check-credentials
+   #_(partial creds/bcrypt-credential-fn users)
+   :login-uri "/main/login"
+   :workflows [(workflows/http-basic :realm "/")
+               (workflows/interactive-form)]})
+
 (definitializer
   (load-routes)
   (set-site)
@@ -61,18 +82,13 @@
 
   (def app
     (-> (routes
-         ;; (GET "/" request
-         ;;                (when (:websocket? request)
-         ;;                  ((http/wrap-aleph-handler stream/websocket-handler)
-         ;;                   request)))
-         ;; (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
          (route/resources "/")
-         ;; (GET "/main/events" [] stream/stream-handler)
          (GET "/templates/*" [] #'helpers/serve-template)
-         (wrap-trace #'site :ui))
-        (wrap-webjars "/webjars")
+         (-> #'site
+             (wrap-trace :ui)
+             (friend/authenticate auth-config)
+             (wrap-webjars "/webjars")
+             (handler/site {:session {:store (ms/session-store)}})))
         wrap-file-info
         wrap-content-type
-        wrap-not-modified
-        (handler/site {:session {:store (ms/session-store)}})
-)))
+        wrap-not-modified)))
