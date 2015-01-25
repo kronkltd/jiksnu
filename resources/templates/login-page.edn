@@ -1,13 +1,12 @@
 [:div.col-xs-6.col-xs-offset-3
- [:form {:ng-submit "login()"
-         :ng-controller "LoginController"}
+ [:form {:ng-submit "login()"}
   [:h2.text-center "Please Sign In"]
   [:div.form-group
    [:label.sr-only {:for "username"} "Username"]
    [:input.form-control
     {:type "text"
      :name "username"
-     :ng-model "usernme"
+     :ng-model "username"
      :placeholder "username"}]]
   [:div.form-group
    [:label.sr-only {:for "password"} "Password"]

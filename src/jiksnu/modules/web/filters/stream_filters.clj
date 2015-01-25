@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.filters.stream-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.group :as model.group]
@@ -63,7 +62,7 @@
 
 (deffilter #'actions.stream/public-timeline :http
   [action request]
-  (let [page (or (-?> request :params :page Integer/parseInt) 1)]
+  (let [page (or (some-> request :params :page Integer/parseInt) 1)]
     (action {} {:page page})))
 
 (deffilter #'actions.stream/mentions-timeline :http

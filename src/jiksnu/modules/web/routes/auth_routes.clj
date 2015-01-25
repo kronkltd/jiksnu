@@ -1,9 +1,11 @@
 (ns jiksnu.modules.web.routes.auth-routes
-  (:require [jiksnu.actions.auth-actions :as auth]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.auth-actions :as auth]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers
              :refer [angular-resource page-resource]]
+            [liberator.representation :refer [ring-response]]
             [octohipster.mixins :as mixin]))
 
 (defgroup auth
@@ -14,13 +16,23 @@
   :url "/main/login"
   :mixins [angular-resource]
   :allowed-methods [:get :post]
-  :post! (fn [ctx]
-           (auth/login)))
+  :post! (fn [{:as ctx
+              {{:keys [username password]} :params} :request}]
+           (auth/login username password)))
 
 (defresource auth logout
   :url "/main/logout"
-  :post! (fn [ctx]
-           (auth/logout)))
+  :allowed-methods [:post]
+  :available-media-types ["application/json"]
+  :post! (fn [{:as ctx
+              request :request}]
+           (log/spy :info request)
+           (auth/logout)
+           (ring-response {:session {:id nil}
+                           :body "OK"
+                           :status 200
+})
+))
 
 (defresource auth verify-credentials
   :url "/api/account/verify_credentials.json"

@@ -5,6 +5,7 @@
             [ciste.routes :refer [resolve-routes]]
             [clojure.tools.logging :as log]
             [compojure.core :refer [GET routes]]
+            [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.model :as model]
@@ -73,4 +74,5 @@
         wrap-file-info
         wrap-content-type
         wrap-not-modified
+        (handler/site {:session {:store (ms/session-store)}})
 )))

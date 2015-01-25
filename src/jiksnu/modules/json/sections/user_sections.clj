@@ -5,7 +5,6 @@
                                             index-line show-section-minimal
                                             update-button index-block
                                             index-section]]
-            [clojure.core.incubator :refer [-?>]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]

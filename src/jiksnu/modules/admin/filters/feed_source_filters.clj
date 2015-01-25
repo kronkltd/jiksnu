@@ -1,6 +1,5 @@
 (ns jiksnu.modules.admin.filters.feed-source-filters
   (:use [ciste.filters :only [deffilter]]
-        [clojure.core.incubator :only [-?>]]
         jiksnu.modules.admin.actions.feed-source-actions
         [jiksnu.modules.core.filters :only [parse-page parse-sorting]])
   (:require [clojure.tools.logging :as log]
@@ -13,8 +12,8 @@
 
 (deffilter #'add-watcher :http
   [action request]
-  (if-let [source (-?> request :params :id model.feed-source/fetch-by-id)]
-    (if-let [watcher (-?> request :params :user_id model.user/get-user)]
+  (if-let [source (some-> request :params :id model.feed-source/fetch-by-id)]
+    (if-let [watcher (some-> request :params :user_id model.user/get-user)]
       (action source watcher))))
 
 ;; delete
@@ -26,14 +25,14 @@
 
 (deffilter #'delete :http
   [action request]
-  (if-let [source (-?> request :params :id model.feed-source/fetch-by-id)]
+  (if-let [source (some-> request :params :id model.feed-source/fetch-by-id)]
     (action source)))
 
 ;; fetch-updates
 
 (deffilter #'fetch-updates :http
   [action request]
-  (if-let [source (-?> request :params :id model.feed-source/fetch-by-id)]
+  (if-let [source (some-> request :params :id model.feed-source/fetch-by-id)]
     (action source)))
 
 ;; index
@@ -51,13 +50,13 @@
 (deffilter #'remove-watcher :http
   [action request]
   (let [params (:params request)]
-    (if-let [source (-?> params :id model.feed-source/fetch-by-id)]
-      (if-let [watcher (-?> params :user_id model.user/fetch-by-id)]
+    (if-let [source (some-> params :id model.feed-source/fetch-by-id)]
+      (if-let [watcher (some-> params :user_id model.user/fetch-by-id)]
         (action source watcher)))))
 
 ;; show
 
 (deffilter #'show :http
   [action request]
-  (if-let [source (-?> request :params :id model.feed-source/fetch-by-id)]
+  (if-let [source (some-> request :params :id model.feed-source/fetch-by-id)]
     (action source)))

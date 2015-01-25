@@ -56,7 +56,19 @@
   (! $scope.groups (clj->js helpers/nav-info)))
 
 
-(def.controller jiksnu.LoginPageController [])
+(def.controller jiksnu.LoginPageController
+  [$scope app]
+  (! $scope.login (fn []
+                    (let [username (.-username $scope)
+                          password (.-password $scope)]
+                      (.log js/console "login"
+                            username
+                            password
+                            )
+                      (.login app username password))
+))
+
+)
 
 (def.controller jiksnu.LogoutController
   [$scope $http app]

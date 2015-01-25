@@ -23,12 +23,22 @@
 (defn login
   [app di]
   (fn [username password]
-    (-> (? di.$http)
-        (.post "/main/login")
-        (.success
-         (fn [data]
-           (.log js/console data)
-           (! app.data.user data))))))
+    (let [data (.param js/$ (obj :username username
+                                 :password password))]
+      (-> (? di.$http)
+          (.post "/main/login"
+                 data
+                 (obj
+                  :headers {"Content-Type" "application/x-www-form-urlencoded"}
+)
+
+
+
+       )
+                (.success
+                 (fn [data]
+                   (.log js/console data)
+                   (! app.data.user data)))))))
 
 (defn app-service
   [$http ws]

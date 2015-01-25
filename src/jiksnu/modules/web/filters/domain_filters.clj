@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.filters.domain-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
@@ -43,7 +42,7 @@
 
 (deffilter #'actions.domain/show :http
   [action request]
-  (when-let [item (if-let [id (-?> request :params :id)]
+  (when-let [item (if-let [id (some-> request :params :id)]
                   (model.domain/fetch-by-id id)
                   (actions.domain/current-domain))]
     (action item)))

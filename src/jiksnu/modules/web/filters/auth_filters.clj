@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.filters.auth-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
@@ -28,7 +27,7 @@
 
 (deffilter #'actions.auth/password-page :http
   [action request]
-  (when-let [id (-?> request :session :pending-id)]
+  (when-let [id (some-> request :session :pending-id)]
     (when-let [user (model.user/fetch-by-id id)]
       (action user))))
 

@@ -26,7 +26,9 @@
   :summary "Site Status"
   :description "Contains base data used to initialize the front-end application"
   :mixins [item-resource]
-  :exists? (fn [ctx] {:data (site/status)}))
+  :exists? (fn [ctx]
+             (log/spy :info ctx)
+             {:data (site/status)}))
 
 (defresource root resources
   :url "/resources"

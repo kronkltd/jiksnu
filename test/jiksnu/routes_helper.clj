@@ -1,7 +1,6 @@
 (ns jiksnu.routes-helper
   (:require [clj-factory.core :refer [factory fseq]]
             [clj-http.cookies :as cookies]
-            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
@@ -27,7 +26,7 @@
 
 (defn get-auth-cookie
   [username password]
-  (-?> (req/request :post "/main/login")
+  (some-> (req/request :post "/main/login")
       (assoc :params {:username username
                       :password password})
        response-for

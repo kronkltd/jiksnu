@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.filters.subscription-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
@@ -82,7 +81,7 @@
   [action request]
   (if-let [actor (session/current-user)]
     (let [params (:params request)]
-      (if-let [target (-?> (or (:id params) (:unsubscribeto params))
+      (if-let [target (some-> (or (:id params) (:unsubscribeto params))
                            model.user/fetch-by-id)]
         (action actor target)
         (throw+ {:type :authentication

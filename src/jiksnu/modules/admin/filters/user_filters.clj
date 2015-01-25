@@ -1,6 +1,5 @@
 (ns jiksnu.modules.admin.filters.user-filters
   (:use [ciste.filters :only [deffilter]]
-        [clojure.core.incubator :only [-?>]]
         jiksnu.modules.admin.actions.user-actions
         [jiksnu.modules.core.filters :only [parse-page parse-sorting]]
         [slingshot.slingshot :only [try+]])
@@ -23,6 +22,6 @@
 
 (deffilter #'show :http
   [action request]
-  (when-let [id (-?> request :params :id)]
+  (when-let [id (some-> request :params :id)]
     (when-let [record (model.user/fetch-by-id id)]
       (action record))))

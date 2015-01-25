@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.filters.like-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.core.incubator :refer [-?>]]
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]
@@ -17,6 +16,6 @@
 (deffilter #'actions.like/like-activity :http
   [action request]
   (let [actor (session/current-user)
-        activity (-?> request :params :id model.activity/fetch-by-id)]
+        activity (some-> request :params :id model.activity/fetch-by-id)]
     (action activity actor)))
 
