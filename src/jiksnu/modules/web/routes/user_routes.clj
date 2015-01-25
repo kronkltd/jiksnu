@@ -41,9 +41,7 @@
   :available-media-types ["application/json"]
   :presenter (partial into {})
   :exists? (fn [ctx]
-             (log/spy :info ctx)
              (friend/authenticated
-
               (let [id (-> ctx :request :route-params :_id)]
                 {:data (model.user/fetch-by-id id)}))))
 

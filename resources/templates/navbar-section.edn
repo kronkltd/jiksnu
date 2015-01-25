@@ -25,7 +25,7 @@
      [:ul.dropdown-menu {:role "menu"}
       [:li [:a {:ui-sref "settings"} "Settings"]]
       [:li [:a {:ui-sref "profile"}  "Profile"]]
-      [:li [:a {:ui-sref "logout"}   "Log out"]]]]]
+      [:li [:a {:ng-click "logout()"}   "Log out"]]]]]
    [:ul.nav.navbar-nav.navbar-right {:ng-if "!app.user"}
     [:li [:a {:ui-sref "loginPage"} "Login"]]
     [:li.divider-vertical]

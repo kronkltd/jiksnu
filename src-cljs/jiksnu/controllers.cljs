@@ -72,10 +72,7 @@
 
 (def.controller jiksnu.LogoutController
   [$scope $http app]
-  (-> $http
-      (.post "/main/logout")
-      (.success (fn [data]
-                  (.fetchStatus app)))))
+)
 
 (page-controller Activities    "activities")
 (page-controller Clients       "clients")
@@ -89,6 +86,10 @@
 (def.controller jiksnu.NavBarController
   [$scope app]
   (! $scope.app app.data)
+  (! $scope.logout
+     (fn []
+       (.log js/console "logging out")
+       (.logout app)))
   (.fetchStatus app))
 
 (def.controller jiksnu.NewPostController

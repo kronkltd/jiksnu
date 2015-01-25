@@ -29,35 +29,39 @@
           (.post "/main/login"
                  data
                  (obj
-                  :headers {"Content-Type" "application/x-www-form-urlencoded"}
-)
-
-
-
-       )
+                  :headers {"Content-Type" "application/x-www-form-urlencoded"}))
                 (.success
                  (fn [data]
-                   (.log js/console data)
-                   (! app.data.user data)))))))
+                   (.fetchStatus app)
+                   (.go (? di.$state) "home")))))))
+
+(defn logout
+  [app di]
+  (fn []
+    (-> (? di.$http)
+        (.post "/main/logout")
+        (.success (fn [data]
+                    (.fetchStatus app))))))
 
 (defn app-service
-  [$http ws]
+  [$http ws $state]
   (let [app (obj)
         di (obj :$http $http
-                :ws ws)]
+                :ws ws
+                :$state $state)]
     (aset js/window "app" app)
     (doto app
       (aset "data"        (obj))
       (aset "ping"        (ping app di))
       (aset "fetchStatus" (fetch-status app di))
       (aset "login"       (login app di))
-      )))
+      (aset "logout"      (logout app di)))))
 
 (def.provider jiksnu.app
   []
   (let [foo "bar"]
     (obj
      :foo foo
-     :$get (arr "$http" "ws" app-service))))
+     :$get (arr "$http" "ws" "$state" app-service))))
 
 

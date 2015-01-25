@@ -57,21 +57,13 @@
   site)
 
 
-(def users
-  "dummy in-memory user database."
-  {"root" {:username "root"
-           :password (creds/hash-bcrypt "admin_password")
-           :roles #{:admin}}
-   "jane" {:username "jane"
-           :password (creds/hash-bcrypt "user_password")
-           :roles #{:user}}})
-
 (def auth-config
   {:credential-fn actions.auth/check-credentials
-   #_(partial creds/bcrypt-credential-fn users)
    :login-uri "/main/login"
    :workflows [(workflows/http-basic :realm "/")
-               (workflows/interactive-form)]})
+
+               ;; (workflows/interactive-form)
+               ]})
 
 (definitializer
   (load-routes)
@@ -85,7 +77,7 @@
          (route/resources "/")
          (GET "/templates/*" [] #'helpers/serve-template)
          (-> #'site
-             (wrap-trace :ui)
+             (wrap-trace :ui :headers)
              (friend/authenticate auth-config)
              (wrap-webjars "/webjars")
              (handler/site {:session {:store (ms/session-store)}})))

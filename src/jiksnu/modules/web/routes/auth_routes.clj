@@ -1,55 +1,49 @@
 (ns jiksnu.modules.web.routes.auth-routes
-  (:require [clojure.tools.logging :as log]
+  (:require [cemerick.friend :as friend]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as auth]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers
              :refer [angular-resource page-resource]]
-            [liberator.representation :refer [ring-response]]
+            [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]))
 
-(defgroup auth
-
-  )
+(defgroup auth)
 
 (defresource auth login
   :url "/main/login"
-  :mixins [angular-resource]
-  :allowed-methods [:get :post]
+  ;; :mixins [angular-resource]
+  :allowed-methods [:post]
+  :available-media-types ["application/json"]
   :post! (fn [{:as ctx
               {{:keys [username password]} :params} :request}]
-           (auth/login username password)))
+           ;; (auth/login username password)
+           (log/info "login post")
+           true)
+  :post-redirect? false
+  :handle-created (fn [ctx]
+                    (log/info "login created")
+                    (log/spy :info
+                             (ring-response
+                              (log/spy :info
+                                       (friend/authenticate-response
+                                        (:request ctx)
+                                        {:body "ok"}))))))
 
 (defresource auth logout
   :url "/main/logout"
   :allowed-methods [:post]
   :available-media-types ["application/json"]
-  :post! (fn [{:as ctx
-              request :request}]
-           (log/spy :info request)
-           (auth/logout)
-           (ring-response {:session {:id nil}
-                           :body "OK"
-                           :status 200
-})
-))
+  :post! (fn [ctx]
+           (log/info "logout handler")
+           true)
+  :handle-created (fn [ctx]
+                    (ring-response
+                     (friend/logout* (as-response {:data "ok"} ctx)))))
 
 (defresource auth verify-credentials
   :url "/api/account/verify_credentials.json"
   :exists? (fn [ctx]
-             {:data (auth/verify-credentials)}
-             )
-  )
-
-(defn routes
-  []
-  [[[:get  "/api/account/verify_credentials.:format"]          #'auth/verify-credentials]
-   [[:post "/main/guest-login"]                    #'auth/guest-login]
-   [[:post "/main/login"]                          #'auth/login]
-   ;; [[:get  "/main/logout"]                         #'auth/logout]
-   [[:post "/main/logout"]                         #'auth/logout]
-   ;; [[:get  "/main/password"]                       #'auth/password-page]
-   ;; [[:get  "/model/authenticationMechanisms/:id"]  #'auth/show]
-   ])
-
+             {:data (auth/verify-credentials)}))
 

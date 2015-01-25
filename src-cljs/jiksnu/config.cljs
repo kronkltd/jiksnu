@@ -7,8 +7,7 @@
                                    obj arr def* do*n def*n f*n]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
-                    appProvider wsProvider
-                    ]
+                    appProvider wsProvider]
 
   (.setUrl wsProvider "wss://renfer.name/")
 
@@ -16,10 +15,4 @@
   (-> $locationProvider
       (.hashPrefix "!")
       (.html5Mode true))
-  (helpers/add-states $stateProvider helpers/states)
-
-  (doto $stateProvider
-    (.state "logout"
-            (obj
-             :controller "LogoutController"
-             :url "/main/logout"))))
+  (helpers/add-states $stateProvider helpers/states))
