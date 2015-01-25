@@ -18,7 +18,7 @@
   (obj))
 
 (def.directive jiksnu.displayAvatar
-  [userService]
+  []
   (obj
    :templateUrl "/templates/display-avatar"
    :link (fn [$scope element attrs]
@@ -68,7 +68,7 @@
    :controller "RightColumnController"))
 
 (def.directive jiksnu.showActivity
-  [$http activityService]
+  []
   (obj
    :templateUrl "/templates/show-activity"
    :scope (obj)

@@ -1,8 +1,7 @@
 [:div
- [:div {:ng-hide "loaded"}
-  [:p "Loading"]
-  ]
- [:article.hentry.media {:ng-show "loaded"}
+ ;; [:div {:ng-hide "loaded"}
+ ;;  [:p "Loading"]]
+ [:article.hentry.media #_{:ng-show "loaded"}
   ;; [:pre "{{activity | json}}"]
   #_(actions-section activity)
   [:div.media-left

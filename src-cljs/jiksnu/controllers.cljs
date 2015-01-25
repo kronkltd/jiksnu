@@ -46,9 +46,7 @@
        (when (and id (not= id ""))
          (! $scope.size 32)
          (.bindOne Users $scope "user" id)
-         (.find Users id)
-         (.log js/console (?> Users.get id))
-))))
+         (.find Users id)))))
 
 (def.controller jiksnu.FollowersListController
   [$scope])
@@ -141,16 +139,13 @@
 )
 
 (def.controller jiksnu.ShowActivityController
-  [$scope $http $stateParams activityService]
+  [$scope $http $stateParams Activities]
   (! $scope.loaded false)
   (! $scope.init
      (fn [id]
        (when (and id (not= id ""))
-         (-> activityService
-             (.get id)
-             (.then (fn [activity]
-                      (! $scope.loaded true)
-                      (! $scope.activity activity)))))))
+         (.bindOne Activities $scope "activity" id)
+         (.find Activities id))))
   (.init $scope (.-id $stateParams)))
 
 (def.controller jiksnu.ShowDomainController
