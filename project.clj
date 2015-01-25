@@ -13,6 +13,7 @@
                  [clj-time "0.9.0"]
                  [clj-http "1.0.1"]
                  [clojurewerkz/support "1.0.0"]
+                 [com.cemerick/friend "0.2.1"]
                  [com.novemberain/monger "1.7.0"]
                  [com.novemberain/validateur "1.7.0"]
                  [crypto-random "1.2.0"]

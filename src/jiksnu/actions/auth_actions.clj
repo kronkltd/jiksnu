@@ -1,12 +1,15 @@
 (ns jiksnu.actions.auth-actions
-  (:use [ciste.core :only [defaction]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [cemerick.friend.credentials :as creds]
+            [ciste.config :refer [config]]
+            [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
+            [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
-            [noir.util.crypt :as crypt]))
+            [noir.util.crypt :as crypt]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn prepare-create
   [activity]
@@ -21,18 +24,21 @@
   user)
 
 (defaction login
-  [user password]
+  [username password]
   ;; TODO: Is this an acceptable use of fetch-all?
-  (if-let [mechanisms (seq (model.authentication-mechanism/fetch-all
-                            {:user (:_id user)}))]
-    (if (->> mechanisms
-             (map :value)
-             (some (partial crypt/compare password)))
-      (do
-        (log/debug "logging in")
-        (session/set-authenticated-user! user))
-      (throw+ {:type :authentication :message "passwords do not match"}))
-    (throw+ {:type :authentication :message "No authentication mechanisms found"})))
+  (let [user (model.user/get-user username)]
+    (if-let [mechanisms (seq (model.authentication-mechanism/fetch-all
+                              {:user (:_id user)}))]
+      (if (->> mechanisms
+               (log/spy :info)
+               (map :value)
+               (some (partial crypt/compare password)))
+        (do
+          (log/debug "logging in")
+          (session/set-authenticated-user! user)
+          user)
+        (throw+ {:type :authentication :message "passwords do not match"}))
+      (throw+ {:type :authentication :message "No authentication mechanisms found"}))))
 
 (defaction login-page
   [request]
@@ -76,3 +82,17 @@
                 :user (:_id user)}]
     (create params)))
 
+(defn check-credentials
+  [auth-map]
+  (let [username (:username auth-map)]
+    (when-let [user (model.user/get-user username)]
+      (when-let [mechanisms (seq (model.authentication-mechanism/fetch-all
+                                  {:user (:_id user)}))]
+        (->> mechanisms
+             (log/spy :info)
+             (map :value)
+             (some (fn [password]
+                     (creds/bcrypt-credential-fn
+                      {:username username
+                       :password password}
+                      auth-map))))))))
