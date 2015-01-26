@@ -7,9 +7,12 @@
                                    obj arr def* do*n def*n f*n]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
-                    appProvider wsProvider]
+                    appProvider wsProvider DSProvider]
 
   (.setUrl wsProvider "wss://renfer.name/")
+
+  (! DSProvider.defaults.idAttribute "_id")
+  (! DSProvider.defaults.baseUrl "/api")
 
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider

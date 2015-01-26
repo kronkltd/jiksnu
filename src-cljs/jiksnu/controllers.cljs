@@ -49,14 +49,35 @@
          (.find Users id)))))
 
 (def.controller jiksnu.FollowersListController
-  [$scope])
+  [$scope subpageService Users]
+
+  (! $scope.init
+     (fn [id]
+       (if (and id (not= id ""))
+         (-> Users
+             (.find id)
+             (.then (fn [user]
+                      (.getFollowers user)
+                      (if user
+                        (let [page (.fetch subpageService user "followers")]
+                          (.then page (fn [page]
+                                        (! $scope.page page))))
+                        (.log js/console "No user")))))))))
 
 (def.controller jiksnu.FollowingListController
-  [$scope $http]
+  [$scope $http subpageService Users]
 
-
-
-)
+  (! $scope.init
+     (fn [id]
+       (if (and id (not= id ""))
+         (-> Users
+            (.find  id)
+            (.then (fn [user]
+                     (if user
+                       (let [page (.fetch subpageService user "following")]
+                         (.then page (fn [page]
+                                       (! $scope.page page))))
+                       (.log js/console "No user")))))))))
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]

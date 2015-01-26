@@ -7,15 +7,24 @@
   [DS]
   (.defineResource DS
       (obj
-       :name "activities"
-       :idAttribute "_id"
-       :baseUrl "/api")))
+       :name "activities")))
 
 (def.factory jiksnu.Users
   [DS]
+  (! js/window.DS DS)
   (.defineResource DS
       (obj
-       :name "users"
-       :idAttribute "_id"
-       :baseUrl "/api")))
+       :name "user"
+       :endpoint "users"
+      :deserialize (fn [resource-name data]
+                      (.log js/console "data" data)
+                      (if-let [items (.-items (.-data data))]
+                        items
+                        (.-data data)))
+       :methods
+       (obj
+        :getFollowers (fn getFollowers []
+                        (.log js/console "this" (js* "this"))
+                        (this-as user
+                                 (.log js/console "user" user)))))))
 

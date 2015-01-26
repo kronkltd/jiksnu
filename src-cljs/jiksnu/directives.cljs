@@ -23,9 +23,9 @@
    :templateUrl "/templates/display-avatar"
    :link (fn [$scope element attrs]
            (.init $scope (.-id attrs))
-           (.$watch $scope (fn [] (.-id attrs))
-                    (fn [newVal oldVal]
-                      (.init $scope newVal))))
+           (.$watch $scope
+                    #(.-id attrs)
+                    #(.init $scope)))
    :scope true
    :controller "DisplayAvatarController"))
 
@@ -34,6 +34,11 @@
   (obj
    :templateUrl "/templates/followers-list"
    :scope true
+   :link (fn [$scope element attrs]
+           (.init $scope (.-id attrs))
+           (.$watch $scope
+                    (fn [] (.-id attrs))
+                    (fn [nv] (.init $scope nv))))
    :controller "FollowersListController"))
 
 (def.directive jiksnu.followingList
@@ -41,6 +46,11 @@
   (obj
    :templateUrl "/templates/following-list"
    :scope true
+   :link (fn [$scope element attrs]
+           (.init $scope (.-id attrs))
+           (.$watch $scope
+                    #(.-id attrs)
+                    #(.init $scope %)))
    :controller "FollowingListController"))
 
 (def.directive jiksnu.groupsWidget
