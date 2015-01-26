@@ -15,14 +15,9 @@
 
 (def subpage-mappings
   {"following" (fn [parent]
-                 (.log js/console "parent" parent)
-                 (let [id (.-_id parent)
-                       url (str "/api/users/" id "/following")]
-                   url))
+                 (str "/api/users/" (.-_id parent) "/following"))
    "followers" (fn [parent]
-                 (.log js/console "parent" parent)
-                 (let [url (str "/api/users/" (.-_id parent) "/followers")]
-                   url))})
+                 (str "/api/users/" (.-_id parent) "/followers"))})
 
 (def.service jiksnu.pageService
   [$q $http]

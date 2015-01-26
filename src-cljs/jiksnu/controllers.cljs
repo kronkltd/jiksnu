@@ -56,13 +56,12 @@
        (if (and id (not= id ""))
          (-> Users
              (.find id)
-             (.then (fn [user]
-                      (.getFollowers user)
-                      (if user
-                        (let [page (.fetch subpageService user "followers")]
-                          (.then page (fn [page]
-                                        (! $scope.page page))))
-                        (.log js/console "No user")))))))))
+             (.then
+              (fn [user]
+                (-> user
+                    (.getFollowers)
+                    (.then (fn [page]
+                             (! $scope.page page)))))))))))
 
 (def.controller jiksnu.FollowingListController
   [$scope $http subpageService Users]
@@ -71,13 +70,14 @@
      (fn [id]
        (if (and id (not= id ""))
          (-> Users
-            (.find  id)
-            (.then (fn [user]
-                     (if user
-                       (let [page (.fetch subpageService user "following")]
-                         (.then page (fn [page]
-                                       (! $scope.page page))))
-                       (.log js/console "No user")))))))))
+             (.find id)
+             (.then
+              (fn [user]
+                (-> user
+                    (.getFollowing)
+                    (.then (fn [page]
+                             (.log js/console "following resolved" page)
+                             (! $scope.page page)))))))))))
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]

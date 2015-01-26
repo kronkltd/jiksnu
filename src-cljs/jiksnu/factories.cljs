@@ -6,25 +6,31 @@
 (def.factory jiksnu.Activities
   [DS]
   (.defineResource DS
-      (obj
-       :name "activities")))
+                   (obj
+                    :name "activities")))
 
 (def.factory jiksnu.Users
-  [DS]
+  [DS $q subpageService]
   (! js/window.DS DS)
   (.defineResource DS
-      (obj
-       :name "user"
-       :endpoint "users"
-      :deserialize (fn [resource-name data]
-                      (.log js/console "data" data)
-                      (if-let [items (.-items (.-data data))]
-                        items
-                        (.-data data)))
-       :methods
-       (obj
-        :getFollowers (fn getFollowers []
-                        (.log js/console "this" (js* "this"))
-                        (this-as user
-                                 (.log js/console "user" user)))))))
+                   (obj
+                    :name "user"
+                    :endpoint "users"
+                    :deserialize (fn [resource-name data]
+                                   (if-let [items (.-items (.-data data))]
+                                     items
+                                     (.-data data)))
+                    :methods
+                    (obj
+                     :getFollowers
+                     (fn getFollowers []
+                       (this-as
+                        user
+                        (.fetch subpageService user "followers")))
+
+                     :getFollowing
+                     (fn getFollowing []
+                       (this-as
+                        user
+                        (.fetch subpageService user "following")))))))
 
