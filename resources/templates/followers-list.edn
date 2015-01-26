@@ -1,10 +1,6 @@
 [:div
  [:h3 "Followers"]
  [:ul
-  [:li {:ng-repeat "follower in page.items"}
-   [:div
-    "{{follower | json}}"
-    ]
-   ]
-  ]
-]
+  [:li {:ng-repeat "follow in page.items"}
+   [:display-avatar {:data-id "{{follow.from}}"}]
+   "{{follow.from}}"]]]

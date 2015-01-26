@@ -25,7 +25,7 @@
            (.init $scope (.-id attrs))
            (.$watch $scope
                     #(.-id attrs)
-                    #(.init $scope)))
+                    #(.init $scope %)))
    :scope true
    :controller "DisplayAvatarController"))
 

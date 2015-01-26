@@ -7,9 +7,9 @@
   [:div.media-left
    [:p
     [:display-avatar {:data-id "{{activity.author}}"}]]
-   [:p
-    [:link-to {:data-id "{{activity.actor._id}}" :data-model "User"}]
-    "{{activity.actor.username}}"]]
+   #_[:p
+    [:link-to {:data-id "{{activity.author}}" :data-model "User"}]
+    "{{activity.author}}"]]
   [:div.media-body
    [:h3.media-heading "{{activity.title}}"]
    [:ul.unstyled {:ng-if "activity.mentioned"}
