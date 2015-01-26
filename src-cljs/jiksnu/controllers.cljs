@@ -106,7 +106,14 @@
 (page-controller Users         "users")
 
 (def.controller jiksnu.NavBarController
-  [$scope app]
+  [$scope app hotkeys $state]
+
+  (.add hotkeys (obj
+                 :combo "g h"
+                 :description "go home"
+                 :callback (fn []
+                             (.go $state "home"))))
+
   (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
   (! $scope.app2 app)
   (! $scope.logout
