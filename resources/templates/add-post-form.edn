@@ -3,9 +3,9 @@
   [:input {:type "hidden" :ng-model "source"}]
   [:div {:collapse "form.shown"}
    [:input {:type "text" :placeholder "What are you doing?"
-            :ng-click "form.shown = true"}]]
+            :ng-click "toggle()"}]]
   [:div.post-form {:collapse "!form.shown"}
-   [:div.close.pull-right {:ng-click "form.shown = false"} "X"]
+   [:div.close.pull-right {:ng-click "toggle()"} "X"]
    [:fieldset
     [:legend "Post an activity"]
     [:div.control-group

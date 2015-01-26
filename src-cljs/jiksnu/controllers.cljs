@@ -127,6 +127,22 @@
 
   (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
 
+  (.$watch $scope
+          #(? $scope.form.shown)
+          (fn [b]
+            (.log js/console "b" b)
+            (when b
+
+              (-> (.getLocation geolocation)
+                  (.then (fn [data]
+                           (! $scope.activity.geo.latitude
+                              data.coords.latitude)
+                           (! $scope.activity.geo.longitude
+                              data.coords.longitude)))))))
+
+  (! $scope.toggle (fn []
+                     (! $scope.form.shown (not $scope.form.shown))))
+
   (! $scope.reset
      (fn []
        (! $scope.activity
@@ -134,12 +150,7 @@
            :source "web"
            :privacy "public"
            :title ""
-           :content ""))
-
-       (-> (.getLocation geolocation)
-           (.then (fn [data]
-                    (! $scope.activity.geo.latitude data.coords.latitude)
-                    (! $scope.activity.geo.longitude data.coords.longitude))))))
+           :content ""))))
 
   (! $scope.submit
      (fn []
