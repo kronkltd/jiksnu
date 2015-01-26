@@ -1,5 +1,6 @@
 (ns jiksnu.actions.site-actions
   (:require [cemerick.friend :as friend]
+            [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [clojure.string :as string]
             [inflections.core :as inf]
@@ -49,5 +50,6 @@
   [request]
   {:name "Jiksnu"
    :user (:current (friend/identity request))
+   :domain (config :domain)
    }
   )
