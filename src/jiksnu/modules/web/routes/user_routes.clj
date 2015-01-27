@@ -52,7 +52,7 @@
              (let [id (-> ctx :request :route-params :_id)]
                (let [user (model.user/fetch-by-id id)]
                  (let [[_ page] (actions.subscription/get-subscribers user)]
-                   {:data (log/spy :info page)})))))
+                   {:data page})))))
 
 (defresource users-api following-collection
   :url "/{_id}/following"
@@ -62,7 +62,7 @@
              (let [id (-> ctx :request :route-params :_id)]
                (let [user (model.user/fetch-by-id id)]
                  (let [[_ page] (actions.subscription/get-subscriptions user)]
-                   {:data (log/spy :info page)})))))
+                   {:data page})))))
 
 ;; =============================================================================
 

@@ -1,11 +1,18 @@
 (ns jiksnu.modules.web.routes.activity-routes
-  (:require [clojure.data.json :as json]
+  (:require [cemerick.friend :as friend]
+            [ciste.config :refer [config]]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as activity]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [octohipster.mixins :as mixin]))
+
+(def activity-schema
+  {:id "Activity"
+   :type "object"
+   :properties {:content {:type "string"}}})
 
 ;; =============================================================================
 
@@ -19,21 +26,26 @@
   :url "/{_id}"
   :mixins [angular-resource])
 
-;; (defresource activity-post-page
-;;   :desc ""
-;;   )
-
 ;; =============================================================================
 
 (defgroup activities-api
   :url "/api/activities")
 
-(defresource activities-api collection
+(defresource activities-api api-collection
   :desc "Collection route for activities"
   :mixins [page-resource]
+  :allowed-methods [:get :post]
+  :post! (fn [ctx]
+           (let [{{params :params
+                   :as request} :request} ctx
+                   username (:current (friend/identity request))
+                   id (str "acct:" username "@" (config :domain))
+                   params (assoc params :author id)]
+             (actions.activity/post params)))
+  :schema activity-schema
   :ns 'jiksnu.actions.activity-actions)
 
-(defresource activities-api item
+(defresource activities-api api-item
   :desc "Resource routes for single Activity"
   :url "/{_id}"
   :mixins [mixin/item-resource]
@@ -43,8 +55,8 @@
              (let [id (-> ctx :request :route-params :_id)
                    activity (model.activity/fetch-by-id id)]
                {:data activity}))
-  :delete! #'activity/delete
-  ;; :put!    #'activity/update
+  :delete! #'actions.activity/delete
+  ;; :put!    #'actions.activity/update
   )
 
 ;; =============================================================================
@@ -52,23 +64,23 @@
 (defn routes
   []
   [
-   [[:post   "/api/statuses/update.:format"]   #'activity/post]
-   [[:get    "/api/statuses/show/:id.:format"] #'activity/show]
-   ;; [[:get    "/main/oembed"]                   #'activity/oembed]
-   [[:get    "/notice/:id.:format"]            #'activity/show]
-   [[:get    "/notice/:id"]                    #'activity/show]
-   [[:post   "/notice/new"]                    #'activity/post]
-   [[:post   "/notice/:id"]                    #'activity/edit]
-   [[:delete "/notice/:id.:format"]            #'activity/delete]
-   [[:delete "/notice/:id"]                    #'activity/delete]
-   ;; [[:get    "/notice/:id/edit"]               #'activity/edit-page]
-   ;; [[:get    "/model/activities/:id"]          #'activity/show]
-   ;; [[:get "/main/events"]                      #'activity/stream]
+   [[:post   "/api/statuses/update.:format"]   #'actions.activity/post]
+   [[:get    "/api/statuses/show/:id.:format"] #'actions.activity/show]
+   ;; [[:get    "/main/oembed"]                   #'actions.activity/oembed]
+   [[:get    "/notice/:id.:format"]            #'actions.activity/show]
+   [[:get    "/notice/:id"]                    #'actions.activity/show]
+   [[:post   "/notice/new"]                    #'actions.activity/post]
+   [[:post   "/notice/:id"]                    #'actions.activity/edit]
+   [[:delete "/notice/:id.:format"]            #'actions.activity/delete]
+   [[:delete "/notice/:id"]                    #'actions.activity/delete]
+   ;; [[:get    "/notice/:id/edit"]               #'actions.activity/edit-page]
+   ;; [[:get    "/model/activities/:id"]          #'actions.activity/show]
+   ;; [[:get "/main/events"]                      #'actions.activity/stream]
    ])
 
 (defn pages
   []
   [
-   [{:name "activities"}    {:action #'activity/index}]
+   [{:name "activities"}    {:action #'actions.activity/index}]
    ])
 

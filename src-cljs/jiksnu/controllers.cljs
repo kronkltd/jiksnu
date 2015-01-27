@@ -155,7 +155,7 @@
   (! $scope.submit
      (fn []
        (-> $http
-           (.post "/notice/new" $scope.activity)
+           (.post "/api/activities" $scope.activity)
            (.success
             (fn [data]
               (.$broadcast $rootScope "updateConversations"))))))

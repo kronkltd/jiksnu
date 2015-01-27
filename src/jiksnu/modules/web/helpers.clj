@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.helpers
-  (:require [clojure.data.json :as json]
+  (:require [cemerick.friend :as friend]
+            [clojure.data.json :as json]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [clojure.tools.reader.edn :as edn]
@@ -12,6 +13,7 @@
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
+            [liberator.core :as lib]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]])
   (:import java.io.PushbackReader))
@@ -129,16 +131,17 @@
   [r]
   (let [action-ns (:ns r)]
     (if-let [action (ns-resolve action-ns 'index)]
-      (merge
-       (mixin/item-resource
-        {:available-media-types (mapv types [:json])
-         :exists? (fn exists? [ctx]
-                    (log/info "Checking if page exists")
-                    (if-let [f (var-get action)]
-                      [true {:data (f)}]))
-         :handle-ok handle-ok
-         :count (fn [_] 4)})
-       r)
+      (let [r (merge {:available-media-types (mapv types [:json])
+                      :method-allowed? (lib/request-method-in :get :post :delete)
+
+                      :exists? (fn exists? [ctx]
+                                 (log/info "Checking if page exists")
+                                 (if-let [f (var-get action)]
+                                   [true {:data (f)}]))
+                      ;; :handle-ok handle-ok
+                      :count (fn [_] 4)}
+                     r)]
+        (log/spy :info (mixin/item-resource r)))
       (throw+ "Could not resolve index action"))))
 
 (defn angular-resource

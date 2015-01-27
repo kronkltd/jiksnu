@@ -18,18 +18,13 @@
   :available-media-types ["application/json"]
   :post! (fn [{:as ctx
               {{:keys [username password]} :params} :request}]
-           ;; (auth/login username password)
-           (log/info "login post")
            true)
   :post-redirect? false
   :handle-created (fn [ctx]
-                    (log/info "login created")
-                    (log/spy :info
-                             (ring-response
-                              (log/spy :info
-                                       (friend/authenticate-response
-                                        (:request ctx)
-                                        {:body "ok"}))))))
+                    (ring-response
+                     (friend/authenticate-response
+                      (:request ctx)
+                      {:body "ok"}))))
 
 (defresource auth logout
   :url "/main/logout"
