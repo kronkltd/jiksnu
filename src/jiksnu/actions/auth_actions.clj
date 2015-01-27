@@ -30,7 +30,6 @@
     (if-let [mechanisms (seq (model.authentication-mechanism/fetch-all
                               {:user (:_id user)}))]
       (if (->> mechanisms
-               (log/spy :info)
                (map :value)
                (some (partial crypt/compare password)))
         (do
