@@ -7,7 +7,7 @@
      :ui-sref "{{item.state}}"}
     "{{item.title}}"]]]
  [:hr]
- [:div
+ #_[:div
   [:h3 "Formats"]
   [:ul.unstyled
    [:li.format-line
