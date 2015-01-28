@@ -135,13 +135,12 @@
                       :method-allowed? (lib/request-method-in :get :post :delete)
 
                       :exists? (fn exists? [ctx]
-                                 (log/info "Checking if page exists")
                                  (if-let [f (var-get action)]
                                    [true {:data (f)}]))
                       ;; :handle-ok handle-ok
                       :count (fn [_] 4)}
                      r)]
-        (log/spy :info (mixin/item-resource r)))
+        (mixin/item-resource r))
       (throw+ "Could not resolve index action"))))
 
 (defn angular-resource
