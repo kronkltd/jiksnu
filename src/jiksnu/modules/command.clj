@@ -1,4 +1,7 @@
-(ns jiksnu.modules.command)
+(ns jiksnu.modules.command
+  (:require [ciste.commands :refer [add-command! command-names]]
+            [jiksnu.actions :as actions]
+            jiksnu.modules.command.filters))
 
 ;; This is where the module definition will be
 
@@ -9,4 +12,12 @@
           ]
    }
   )
+
+(add-command! "invoke-action" #'actions/invoke-action)
+(add-command! "connect"       #'actions/connect)
+(add-command! "get-model"     #'actions/get-model)
+(add-command! "get-page"      #'actions/get-page)
+(add-command! "get-sub-page"  #'actions/get-sub-page)
+
+(add-command! "help" #'command-names)
 

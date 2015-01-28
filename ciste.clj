@@ -1,4 +1,7 @@
 {
  :environment :development
- :modules ["jiksnu.modules.command"]
+ :modules [
+           "jiksnu.modules.core"
+           "jiksnu.modules.command"
+           ]
  }
