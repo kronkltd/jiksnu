@@ -11,7 +11,7 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.actions.stream-actions :as stream]
+            [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
             [jiksnu.modules.web.middleware :as jm]
             [jiksnu.registry :as registry]
@@ -26,6 +26,7 @@
             [octohipster.documenters.swagger
              :refer [swagger-doc swagger-root-doc]]
             [octohipster.routes :refer [defroutes]]
+            [org.httpkit.server :as server]
             [ring.middleware.file :refer [wrap-file]]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.file-info :refer [wrap-file-info]]
@@ -65,6 +66,19 @@
                (workflows/interactive-form)
                ]})
 
+(defn async-handler
+  [request]
+  (when (:websocket? request)
+    (server/with-channel request channel
+      (server/on-receive channel
+                         (fn [body]
+                           (when-let [resp (actions.stream/handle-command
+                                            request channel body)]
+                             (server/send! channel resp))))
+      (server/on-close channel
+                       (fn [status]
+                         (actions.stream/handle-closed request channel status))))))
+
 (definitializer
   (load-routes)
   (set-site)
@@ -74,6 +88,7 @@
 
   (def app
     (-> (routes
+         async-handler
          (route/resources "/")
          (GET "/templates/*" [] #'helpers/serve-template)
          (-> #'site
