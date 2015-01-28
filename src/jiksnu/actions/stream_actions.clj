@@ -183,32 +183,25 @@
          :stream "public"})
        "\r\n"))
 
-(defn handle-message
-  [request]
-  (try+
-   (or (:body (parse-command request))
-       (throw+ "no command found"))
-   (catch Object ex
-     (trace/trace :client-errors:handled ex)
-     (json/json-str
-      {:action "error"
-       :name (:name request)
-       :args (:args request)
-       :message (str ex)}))))
+(defn handle-command
+  [request channel body]
+  (let [[name & args] (string/split body #" ")
+        request {:format :json
+                 :channel channel
+                 :name name
+                 :args (process-args args)}]
+    (try+
+     (or (:body (parse-command request))
+         (throw+ "no command found"))
+     (catch Object ex
+       (trace/trace :client-errors:handled ex)
+       (json/json-str
+        {:action "error"
+         :name (:name request)
+         :args (:args request)
+         :message (str ex)})))))
 
-(defn websocket-handler*
-  [ch id m]
-  (util/safe-task
-   (session/with-user-id id
-     (let [[name & args] (string/split m #" ")
-           request {:format :json
-                    :channel ch
-                    :name name
-                    :args (process-args args)}
-           response (handle-message request)]
-       (l/enqueue ch response)))))
-
-(defn websocket-handler
-  [ch request]
-  (let [id (session/current-user-id)]
-    (l/receive-all ch (partial websocket-handler* ch id))))
+(defn handle-closed
+  [request channel status]
+  (log/info "connection closed")
+)
