@@ -180,6 +180,7 @@
 (def.controller jiksnu.ShowActivityController
   [$scope $http $stateParams Activities]
   (! $scope.loaded false)
+
   (! $scope.init
      (fn [id]
        (when (and id (not= id ""))

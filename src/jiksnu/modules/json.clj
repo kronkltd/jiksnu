@@ -2,8 +2,10 @@
   (:require [ciste.loader :refer [defhandler defmodule]]
             [clojure.tools.logging :as log]
             [jiksnu.handlers :as handler]
+            jiksnu.modules.json.views
             [jiksnu.registry :as registry]
             [jiksnu.util :as util]
+
             [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace])

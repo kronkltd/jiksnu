@@ -1,4 +1,6 @@
 [:div
+ [:p "{{activity.content.length}}"]
+ [:p "{{elided}}"]
  ;; [:div {:ng-hide "loaded"}
  ;;  [:p "Loading"]]
  [:article.hentry.media #_{:ng-show "loaded"}

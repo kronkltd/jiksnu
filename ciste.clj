@@ -6,5 +6,6 @@
            "jiksnu.modules.http"
            "jiksnu.modules.json"
            "jiksnu.modules.web"
+           "jiksnu.modules.command"
            ]
  }

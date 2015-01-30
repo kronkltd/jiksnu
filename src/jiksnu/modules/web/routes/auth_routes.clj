@@ -11,6 +11,10 @@
 
 (defgroup auth)
 
+(defresource auth register-page
+  :url "/main/register"
+  :mixins [angular-resource])
+
 (defresource auth login
   :url "/main/login"
   ;; :mixins [angular-resource]

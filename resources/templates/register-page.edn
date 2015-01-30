@@ -13,22 +13,31 @@
    [:input.form-control
     {:ng-model "reg.password"
      :type "password"
-     :name "password"}]]
+     :name "password"
+     :placeholder "Password"
+}]]
   [:div.form-group
    [:label.sr-only "Confirm Password"]
    [:input.form-control
     {:ng-model "reg.confirmPassword"
      :type "password"
-     :name "confirmPassword"}]]
+     :name "confirmPassword"
+     :placeholder "Confirm Password"
+}]]
   [:div.form-group
    [:label.sr-only "Email"]
    [:input.form-control
     {:ng-model "reg.email"
      :type "email"
-     :name "email"}]]
+     :name "email"
+     :placeholder "Email"
+}]]
   [:div.form-group
    [:label.sr-only "Display Name"]
-   [:input.form-control {:ng-model "reg.displayName" :type "text"}]]
+   [:input.form-control
+    {:ng-model "reg.displayName"
+     :type "text"
+     :placeholder "Display Name"}]]
   [:div.form-group
    [:label "I have checked the box"]
    [:input.form-control {:ng-model "reg.accepted" :type "checkbox"}]]

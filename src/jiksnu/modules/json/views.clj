@@ -10,9 +10,10 @@
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
+            [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.model :as model]))
 
-(defview #'actions/connect :json
+(defview #'http.actions/connect :json
   [request response]
   {:body {:action "connect"
           :connection-id response}})
