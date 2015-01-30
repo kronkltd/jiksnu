@@ -204,4 +204,6 @@
 (defn handle-closed
   [request channel status]
   (log/info "connection closed")
+  #_(connection-closed user-id connection-id)
+
 )
