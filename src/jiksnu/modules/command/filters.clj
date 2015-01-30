@@ -2,9 +2,10 @@
   (:require [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
-            [slingshot.slingshot :refer [throw+]]))
+            [jiksnu.modules.http.actions :as http.actions]
+       [slingshot.slingshot :refer [throw+]]))
 
-(deffilter #'actions/connect :command
+(deffilter #'http.actions/connect :command
   [action request]
   (action (:channel request)))
 
