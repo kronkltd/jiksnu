@@ -29,11 +29,12 @@
 ;; =============================================================================
 
 (defgroup activities-api
-  :url "/api/activities")
+  :url "/model/activities")
 
 (defresource activities-api api-collection
   :desc "Collection route for activities"
   :mixins [page-resource]
+  :available-formats [:json]
   :allowed-methods [:get :post]
   :post! (fn [ctx]
            (let [{{params :params

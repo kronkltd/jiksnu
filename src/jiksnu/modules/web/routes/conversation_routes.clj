@@ -35,6 +35,7 @@
 
 (defresource conversations-api collection
   :mixins [page-resource]
+  :available-formats [:json]
   :ns 'jiksnu.actions.conversation-actions)
 
 ;; =============================================================================

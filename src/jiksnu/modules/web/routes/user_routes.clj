@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [cemerick.friend :as friend]
+            [ciste.config :refer [config]]
             [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section]]
             [clojure.data.json :as json]
@@ -75,13 +76,13 @@
                {:data page}))
   :presenter (fn [rsp]
                (let [page (:body rsp)
-                     user (:user rsp)
-]
+                     user (:user page)]
                  (with-context [:http :as]
                    (log/spy :info
                     (let [username (:username user)
+                          domain (:domain user)
                           display-name (str "Activities for " username)
-                          outbox (str "/api/user/" username "/outbox")
+                          outbox (format "https://%s/api/user/%s/outbox" domain username)
                           links {
                                  :first {:href outbox}
                                  :self {:href outbox}
@@ -104,6 +105,7 @@
 
 (defresource users-api collection
   :mixins [page-resource]
+  :available-formats [:json]
   :ns 'jiksnu.actions.user-actions)
 
 (defresource users-api item

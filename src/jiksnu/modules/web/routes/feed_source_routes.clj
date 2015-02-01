@@ -20,10 +20,11 @@
 ;; =============================================================================
 
 (defgroup feed-sources-api
-  :url "/api/feed-sources")
+  :url "/model/feed-sources")
 
 (defresource feed-sources-api collection
   :mixins [page-resource]
+  :available-formats [:json]
   :ns 'jiksnu.actions.feed-source-actions)
 
 ;; =============================================================================

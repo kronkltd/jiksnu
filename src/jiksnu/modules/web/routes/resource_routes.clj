@@ -21,10 +21,11 @@
 ;; =============================================================================
 
 (defgroup resources-api
-  :url "/api/resources")
+  :url "/model/resources")
 
 (defresource resources-api collection
   :mixins [page-resource]
+  :available-formats [:json]
   :ns 'jiksnu.actions.resource-actions)
 
 ;; =============================================================================

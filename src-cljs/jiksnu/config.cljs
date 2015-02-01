@@ -12,7 +12,7 @@
   (.setUrl wsProvider "wss://renfer.name/")
 
   (! DSProvider.defaults.idAttribute "_id")
-  (! DSProvider.defaults.baseUrl "/api")
+  (! DSProvider.defaults.baseUrl "/model")
 
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider

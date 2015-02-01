@@ -5,19 +5,19 @@
 
 (def page-mappings
   {
-   "conversations" "/api/conversations"
-   "domains"       "/api/domains"
-   "feed-sources"  "/api/feed-sources"
-   "groups"        "/api/groups"
-   "resources"     "/api/resources"
-   "users"         "/api/users"
+   "conversations" "/model/conversations"
+   "domains"       "/model/domains"
+   "feed-sources"  "/model/feed-sources"
+   "groups"        "/model/groups"
+   "resources"     "/model/resources"
+   "users"         "/model/users"
    })
 
 (def subpage-mappings
   {"following" (fn [parent]
-                 (str "/api/users/" (.-_id parent) "/following"))
+                 (str "/model/users/" (.-_id parent) "/following"))
    "followers" (fn [parent]
-                 (str "/api/users/" (.-_id parent) "/followers"))})
+                 (str "/model/users/" (.-_id parent) "/followers"))})
 
 (def.service jiksnu.pageService
   [$q $http]

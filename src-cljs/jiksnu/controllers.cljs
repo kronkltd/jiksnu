@@ -155,7 +155,7 @@
   (! $scope.submit
      (fn []
        (-> $http
-           (.post "/api/activities" $scope.activity)
+           (.post "/model/activities" $scope.activity)
            (.success
             (fn [data]
               (.$broadcast $rootScope "updateConversations"))))))
@@ -167,8 +167,7 @@
 (def.controller jiksnu.RightColumnController
   [$scope app]
   (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
-  (! $scope.foo "bar")
-  )
+  (! $scope.foo "bar"))
 
 (def.controller jiksnu.SettingsPageController [])
 

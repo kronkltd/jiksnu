@@ -29,10 +29,11 @@
 ;; =============================================================================
 
 (defgroup groups-api
-  :url "/api/groups")
+  :url "/model/groups")
 
 (defresource groups-api collection
   :mixins [page-resource]
+  :available-formats [:json]
   :ns 'jiksnu.actions.group-actions)
 
 ;; =============================================================================

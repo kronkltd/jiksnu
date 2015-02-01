@@ -36,10 +36,11 @@
 ;; =============================================================================
 
 (defgroup domains-api
-  :url "/api/domains")
+  :url "/model/domains")
 
 (defresource domains-api collection-api
   :mixins [page-resource]
+  :available-formats [:json]
   :ns 'jiksnu.actions.domain-actions)
 
 ;; =============================================================================
