@@ -16,8 +16,7 @@
 
 (defmethod format-as :page
   [format request response]
-  (with-format :json
-    (doall (format-as :json request response))))
+  response)
 
 (defmethod format-as :model
   [format request response]

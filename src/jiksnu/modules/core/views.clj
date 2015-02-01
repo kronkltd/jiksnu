@@ -31,7 +31,8 @@
 
 (defmethod serialize-as :page
   [serialization response]
-  (json/read-str (:body response) :key-fn keyword))
+  (:body response)
+  #_(json/read-str (:body response) :key-fn keyword))
 
 ;; confirm
 

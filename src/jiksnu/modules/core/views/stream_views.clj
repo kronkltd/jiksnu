@@ -96,6 +96,21 @@
             :id (:_id (:item request))
             :body response}}))
 
+(defview #'actions.stream/outbox :page
+  [request [user page]]
+  (log/info "outbox page view")
+  (log/info (first (:items page)))
+
+  (let [items (:items page)
+        response (merge page
+                        {:id (:name request)
+                         :items items})]
+    (log/info (first (:items response)))
+    {:body {:action "sub-page-updated"
+            :model "user"
+            :id (:_id (:item request))
+            :body response}}))
+
 (defview #'actions.stream/user-timeline :viewmodel
   [request [user page]]
   {:body

@@ -8,6 +8,11 @@
   (let [item (:item request)]
     (action item)))
 
+(deffilter #'actions.stream/outbox :page
+  [action request]
+  (let [item (:item request)]
+    (action item)))
+
 (deffilter #'actions.stream/index :page
   [action request]
   ;; TODO: fetch user

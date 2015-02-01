@@ -19,7 +19,8 @@
             [lamina.core :as l]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]])
-  (:import jiksnu.model.User))
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 ;; hooks
 
@@ -61,7 +62,6 @@
 (defaction fetch-by-user
   [user & [options]]
   (index {:user (:_id user)}))
-
 
 
 
@@ -129,6 +129,11 @@
 (defaction user-timeline
   [user]
   [user (actions.activity/find-by-user user)])
+
+(defn outbox
+  [user]
+  (log/spy :info (user-timeline (log/spy :info user))))
+
 
 (defaction group-timeline
   [group]
