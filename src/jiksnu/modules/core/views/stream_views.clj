@@ -108,6 +108,7 @@
     (log/info (first (:items response)))
     {:body {:action "sub-page-updated"
             :model "user"
+            :user user
             :id (:_id (:item request))
             :body response}}))
 
