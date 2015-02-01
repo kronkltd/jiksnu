@@ -31,7 +31,7 @@
            ;; [:ciste:matcher:tested          #'handler/matcher-test]
            ;; [:ciste:matcher:matched         #'handler/event]
            ;; [:ciste:route:matched           #'handler/event]
-           ;; [:ciste:sections:run            #'handler/event]
+           [:ciste:sections:run            #'handler/event]
            ;; [:ciste:views:run               #'handler/event]
            ;; [:conversations:pushed          #'handler/conversations-pushed]
            ;; [:entry:parsed                  #'handler/entry-parsed]

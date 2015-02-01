@@ -1,5 +1,7 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [cemerick.friend :as friend]
+            [ciste.core :refer [with-context]]
+            [ciste.sections.default :refer [show-section]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as group]
@@ -24,6 +26,29 @@
 (defresource users resource
   :url "/{_id}"
   :mixins [angular-resource])
+
+
+
+(defgroup user-pump-api
+  :url "/api/user"
+  :description "User api matching pump.io spec")
+
+(defresource user-pump-api user-profile
+  :url "/{username}/profile"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :exists? (fn [ctx]
+             (log/spy :info (:request ctx))
+             (let [username (-> ctx :request :route-params :username)]
+               {:data (model.user/get-user (log/spy :info username))}))
+  :presenter (fn [user]
+               (with-context [:http :as]
+                 (log/spy :info (show-section user))))
+)
+
+
+
+
 
 ;; =============================================================================
 

@@ -1,87 +1,88 @@
 (ns jiksnu.modules.as.sections.user-sections
-  (:use  [ciste.sections :only [defsection]]
-         [ciste.sections.default :only [full-uri show-section]]
-         [slingshot.slingshot :only [try+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [full-uri show-section]]
+            [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.User))
+
+(log/info "loading AS user sections")
 
 ;; show-section
 
-(defsection show-section [User :json]
+(def url-pattern       "https://%s/%s")
+(def profile-pattern   "https://%s/api/user/%s/profile")
+(def inbox-pattern     "https://%s/api/user/%s/inbox")
+(def outbox-pattern    "https://%s/api/user/%s/outbox")
+(def followers-pattern "https://%s/api/user/%s/followers")
+(def following-pattern "https://%s/api/user/%s/following")
+(def favorites-pattern "https://%s/api/user/%s/favorites")
+(def lists-pattern     "https://%s/api/user/%s/lists/person")
+
+(defsection show-section [User :as]
   [user & options]
-  (let [{:keys [display-name id avatar-url]} user
+  (let [{:keys [display-name id avatar-url
+                domain username]} user
         avatar-url (or avatar-url (model.user/image-link user))
-        url (or (:url user)
-                     #_(full-uri user)
-                     (format "https://%s/api/user/%s/profile" (:domain user) (:username user))
-                     )
-        inbox-url (format "https://%s/api/user/%s/inbox" (:domain user) (:username user))
-        outbox-url (format "https://%s/api/user/%s/outbox" (:domain user) (:username user))
-        followers-url (format "https://%s/api/user/%s/followers" (:domain user) (:username user))
-        following-url (format "https://%s/api/user/%s/following" (:domain user) (:username user))
-        favorites-url (format "https://%s/api/user/%s/favorites" (:domain user) (:username user))
-        list-url (format "https://%s/api/user/%s/lists/person" (:domain user) (:username user))
+        url           (format url-pattern domain username)
+        profile-url   (format profile-pattern   domain username)
+        inbox-url     (format inbox-pattern     domain username)
+        outbox-url    (format outbox-pattern    domain username)
+        followers-url (format followers-pattern domain username)
+        following-url (format following-pattern domain username)
+        favorites-url (format favorites-pattern domain username)
+        list-url      (format lists-pattern     domain username)
         ]
-    (merge {:preferredUsername (:username user)
-            :url url
-            :displayName (:name user)
-            :links {
-                    :self {:href url}
-                    :activity-inbox {:href inbox-url}
-                    :activity-outbox {:href outbox-url}
-                    }
-            :objectType "person"
-            :followers {
-                        :url followers-url
-                        :totalItems 0
-                        }
-            :following {
-                        :url following-url
-                        :totalItems 0
-                        }
-            :favorites {
-                        :url favorites-url
-                        :totalItems 0
-                        }
-            :lists {
-                    :url list-url
-                    :totalItems 0
-                    }
-            :image [{:url avatar-url
-                     :rel "avatar"
-                     :type "image/jpeg"
-                     :width 96
-                     :height 96
-                     ;; :pump_io {
-                     ;;           :proxyURL (proxy-url avatar-url)
-                     ;;           }
-                     }]
-
-            :pump_io {
-                      :fullImage {
-                                  :url avatar-url
-                                  :width 96
-                                  :height 96
-                                  }
-                      :shared false
-                      :followed false
-                      }
-            :summary ""
-            :updated (:updated user)
-            ;; :id (or id (model.user/get-uri user))
+    (array-map
+     :preferredUsername username
+     :url url
+     :displayName (:name user)
+     :links {
+             :self            {:href profile-url}
+             :activity-inbox  {:href inbox-url}
+             :activity-outbox {:href outbox-url}
+             }
+     :objectType "person"
+     :followers {
+                 :url followers-url
+                 :totalItems 0
+                 }
+     :following {
+                 :url following-url
+                 :totalItems 0
+                 }
+     :favorites {
+                 :url favorites-url
+                 :totalItems 0
+                 }
+     :lists {
+             :url list-url
+             :totalItems 0
+             }
+     ;; :image [{:url avatar-url
+     ;;          :rel "avatar"
+     ;;          :type "image/jpeg"
+     ;;          :width 96
+     ;;          :height 96
+     ;;          ;; :pump_io {
+     ;;          ;;           :proxyURL (proxy-url avatar-url)
+     ;;          ;;           }
+     ;;          }]
+     :updated (:updated user)
+     :id (:_id user)
 
 
-            :type "person"
-            :id (:_id user)
-            :username (:username user)
-            :domain (:domain user)
-            :published (:updated user)
-            ;; :name {:formatted (:name user)
-            ;;        :familyName (:last-name user)
-            ;;        :givenName (:first-name user)}
-            }
-           (when display-name
-             {:displayName display-name}))))
+     ;; TODO: How are these determined?
+     :liked false
+     :pump_io {
+               :shared false
+               :followed false
+               }
+
+
+     :type "person"
+
+     )
+    ))
 
