@@ -1,7 +1,7 @@
 (ns jiksnu.modules.as.sections.activity-sections
   (:require [ciste.config :refer [config]]
             [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [full-uri show-section]]
+            [ciste.sections.default :refer [full-uri index-section show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.model.activity :as model.activity])
   (:import jiksnu.model.Activity))
@@ -10,6 +10,17 @@
   [url]
   "https://%s/api/proxy/PROXYID"
   )
+
+(defsection index-section [Activity :as]
+  [activities page]
+  (let [items (:items page)]
+    {
+     :objectTypes ["activity"]
+     :items (map
+             (fn [item]
+               (show-section item page))
+             items)
+     :totalItems (:totalItems page)}))
 
 ;; show-section
 

@@ -7,6 +7,7 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [hiccup.core :as h]
+            [jiksnu.actions :as actions]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
             [jiksnu.modules.http.resources :refer [defresource]]
@@ -127,12 +128,20 @@
     (types :json)
     (json/json-str (:page ctx))))
 
+(defn ciste-resource
+  "route mixin for paths that use ciste"
+  [{:keys [available-formats]
+    :as resource}]
+  (-> resource
+      mixin/item-resource
+      (assoc :available-media-types (mapv types available-formats))))
+
 (defn page-resource
+  "route mixin for paths that operate on a page"
   [r]
   (let [action-ns (:ns r)]
     (if-let [action (ns-resolve action-ns 'index)]
-      (let [r (merge {:available-media-types (mapv types [:json])
-                      :method-allowed? (lib/request-method-in :get :post :delete)
+      (let [r (merge {:method-allowed? (lib/request-method-in :get :post :delete)
 
                       :exists? (fn exists? [ctx]
                                  (if-let [f (var-get action)]
@@ -140,8 +149,22 @@
                       ;; :handle-ok handle-ok
                       :count (fn [_] 4)}
                      r)]
-        (mixin/item-resource r))
+        (-> r
+            ciste-resource))
       (throw+ "Could not resolve index action"))))
+
+(defn subpage-resource
+  "route mixin for paths that operate on a subpage"
+  [{:keys [available-formats
+           subpage
+           target]
+    :as resource}]
+  (log/spy :info (-> resource
+       ciste-resource
+       (assoc :exists?
+              (fn [ctx]
+                (when-let [item (log/spy :info (target ctx))]
+                  {:data (actions/get-sub-page item subpage)}))))))
 
 (defn angular-resource
   [r]

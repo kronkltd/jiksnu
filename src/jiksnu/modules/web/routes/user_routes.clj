@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [cemerick.friend :as friend]
             [ciste.core :refer [with-context]]
-            [ciste.sections.default :refer [show-section]]
+            [ciste.sections.default :refer [index-section show-section]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as group]
@@ -10,9 +10,22 @@
             [jiksnu.actions.user-actions :as user]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource page-resource
+                                                subpage-resource]]
             [octohipster.mixins :as mixin])
-  (:import jiksnu.model.User))
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
+
+(defn get-user
+  "Gets the user from the context"
+  [ctx]
+  (let [username (-> ctx :request :route-params :username)]
+    (model.user/get-user (log/spy :info username)))
+
+)
+
+
+
 
 ;; =============================================================================
 
@@ -29,23 +42,57 @@
 
 
 
+;; =============================================================================
+
 (defgroup user-pump-api
   :url "/api/user"
   :description "User api matching pump.io spec")
+
 
 (defresource user-pump-api user-profile
   :url "/{username}/profile"
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :exists? (fn [ctx]
-             (log/spy :info (:request ctx))
-             (let [username (-> ctx :request :route-params :username)]
-               {:data (model.user/get-user (log/spy :info username))}))
+             (let [user (get-user ctx)]
+               {:data user}))
   :presenter (fn [user]
                (with-context [:http :as]
-                 (log/spy :info (show-section user))))
+                 (show-section user)))
 )
 
+(defresource user-pump-api user-outbox
+  :url "/{username}/outbox"
+  :mixins [subpage-resource]
+  :subpage "outbox"
+  :target-model "User"
+  :target get-user
+  :description "Activities by {{username}}"
+  :available-formats [:json]
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []}]
+               {:data page}))
+  :presenter (fn [rsp]
+               (let [page (:body rsp)
+                     user (:user rsp)
+]
+                 (with-context [:http :as]
+                   (log/spy :info
+                    (let [username (:username user)
+                          display-name (str "Activities for " username)
+                          outbox (str "/api/user/" username "/outbox")
+                          links {
+                                 :first {:href outbox}
+                                 :self {:href outbox}
+                                 :prev {
+                                        ;; TODO: add a since link
+                                        :href outbox
+                                        }}]
+                      (-> (index-section (:items page) page)
+                          (assoc :displayName display-name)
+                          (assoc :links links)
+                          (assoc :url outbox))))))))
 
 
 
@@ -53,7 +100,7 @@
 ;; =============================================================================
 
 (defgroup users-api
-  :url "/api/users")
+  :url "/model/users")
 
 (defresource users-api collection
   :mixins [page-resource]
@@ -145,5 +192,6 @@
    [{:type User :name "subscribers"}      {:action #'actions.subscription/get-subscribers}]
    [{:type User :name "streams"}          {:action #'stream/fetch-by-user}]
    [{:type User :name "groups"}           {:action #'group/fetch-by-user}]
+   [{:type User :name "outbox"}           {:action #'stream/outbox}]
 
    ])

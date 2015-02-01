@@ -24,8 +24,14 @@
 
 ;; =============================================================================
 
+(defgroup conversations-pump-api
+  :url "/api/conversations"
+)
+
+;; =============================================================================
+
 (defgroup conversations-api
-  :url "/api/conversations")
+  :url "/model/conversations")
 
 (defresource conversations-api collection
   :mixins [page-resource]
