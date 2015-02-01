@@ -59,8 +59,29 @@
                {:data user}))
   :presenter (fn [user]
                (with-context [:http :as]
-                 (show-section user)))
-)
+                 (show-section user))))
+
+(def outbox-pattern "https://%s/api/user/%s/outbox")
+
+(defn present-outbox
+  [rsp]
+  (let [page (:body rsp)
+        user (:user rsp)
+        username (:username user)
+        domain (:domain user)
+        display-name (str "Activities for " username)
+        outbox-url (format outbox-pattern domain username)
+        links {
+               :first {:href outbox-url}
+               :self {:href outbox-url}
+               :prev {
+                      ;; TODO: add a since link
+                      :href outbox-url
+                      }}]
+    (-> (index-section (:items page) page)
+        (assoc :displayName display-name)
+        (assoc :links links)
+        (assoc :url outbox-url))))
 
 (defresource user-pump-api user-outbox
   :url "/{username}/outbox"
@@ -74,26 +95,11 @@
              (let [user (get-user ctx)
                    page {:items []}]
                {:data page}))
-  :presenter (fn [rsp]
-               (let [page (:body rsp)
-                     user (:user page)]
-                 (with-context [:http :as]
-                   (log/spy :info
-                    (let [username (:username user)
-                          domain (:domain user)
-                          display-name (str "Activities for " username)
-                          outbox (format "https://%s/api/user/%s/outbox" domain username)
-                          links {
-                                 :first {:href outbox}
-                                 :self {:href outbox}
-                                 :prev {
-                                        ;; TODO: add a since link
-                                        :href outbox
-                                        }}]
-                      (-> (index-section (:items page) page)
-                          (assoc :displayName display-name)
-                          (assoc :links links)
-                          (assoc :url outbox))))))))
+  :presenter
+  (fn [rsp]
+    (with-context [:http :as]
+      (present-outbox rsp)
+      )))
 
 
 

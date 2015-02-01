@@ -159,12 +159,12 @@
            subpage
            target]
     :as resource}]
-  (log/spy :info (-> resource
-       ciste-resource
-       (assoc :exists?
-              (fn [ctx]
-                (when-let [item (log/spy :info (target ctx))]
-                  {:data (actions/get-sub-page item subpage)}))))))
+  (-> resource
+      ciste-resource
+      (assoc :exists?
+             (fn [ctx]
+               (when-let [item (target ctx)]
+                 {:data (actions/get-sub-page item subpage)})))))
 
 (defn angular-resource
   [r]
