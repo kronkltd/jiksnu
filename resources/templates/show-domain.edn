@@ -1,12 +1,12 @@
 [:div
- #_(actions-section domain)
+ [:p "{{domain | json}}"]
  [:table.table
   [:thead]
   [:tbody
    [:tr
     [:th "Id"]
     [:td
-     #_(favicon-link domain)
+
      [:span.domain-id "{{domain._id}}"]]]
    [:tr
     [:th "XMPP"]
@@ -22,24 +22,22 @@
     [:td "{{domain.updated}}"]]
    [:tr
     [:th "Closed"]
-    [:td #_(-> sc :site :closed)]]
+    [:td ]]
    [:tr
     [:th "Private"]
-    [:td #_(-> sc :site :private)]]
+    [:td]]
    [:tr
     [:th "Invite Only"]
-    [:td #_(-> sc :site :inviteonly)]]
+    [:td ]]
    [:tr
     [:th "Admin"]
-    [:td #_(-> sc :site :email)]]
+    [:td ]]
    [:tr
     [:th "License"]
     [:td
      ;; RDFa
      [:a {:href "{{domain.license.url}}"
           :title "{{domain.license.title}}"}
-      [:img {:src "" #_(:image license)
-             :alt "" #_(:title license)}]]]]]]
- #_(when-let [links [{}]]
-     (bind-to "links"
-              (sections.link/index-section links)))]
+      [:img {:src ""
+    :alt ""}]]]]]]
+]

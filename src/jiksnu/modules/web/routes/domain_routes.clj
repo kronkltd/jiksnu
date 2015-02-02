@@ -1,7 +1,8 @@
 (ns jiksnu.modules.web.routes.domain-routes
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.domain-actions :as domain]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers
@@ -21,16 +22,16 @@
 
 (defresource domains discover
   :url "/{_id}/discover"
-  :post domain/discover)
+  :post actions.domain/discover)
 
 (defresource domains edit
   :url "/{_id}/edit"
-  :handle-ok domain/edit-page)
+  :handle-ok actions.domain/edit-page)
 
 (defresource domains resource
   :url "/{_id}"
   :mixins [angular-resource]
-  :delete! domain/delete
+  :delete! actions.domain/delete
   :delete-summary "Delete a domain")
 
 ;; =============================================================================
@@ -42,6 +43,20 @@
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.domain-actions)
+
+(defresource domains-api api-item
+  :desc "Resource routes for single Domain"
+  :url "/{_id}"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :presenter (partial into {})
+  :exists? (fn [ctx]
+             (let [id (-> ctx :request :route-params :_id)
+                   activity (model.domain/fetch-by-id id)]
+               {:data activity}))
+  :delete! #'actions.domain/delete
+  ;; :put!    #'actions.domain/update
+  )
 
 ;; =============================================================================
 
@@ -62,22 +77,22 @@
 (defn routes
   []
   [
-   ;; [[:get    "/.well-known/host-meta.:format"]   #'domain/show]
-   ;; [[:get    "/.well-known/host-meta"]           {:action #'domain/show
+   ;; [[:get    "/.well-known/host-meta.:format"]   #'actions.domain/show]
+   ;; [[:get    "/.well-known/host-meta"]           {:action #'actions.domain/show
    ;;                                                :format :xrd}]
-   ;; [[:get    "/main/domains.:format"]            #'domain/index]
-   ;; [[:get    "/main/domains"]                    #'domain/index]
-   ;; [[:get    "/main/domains/:id.:format"]        #'domain/show]
-   ;; [[:get    "/main/domains/:id"]                #'domain/show]
-   ;; [[:delete "/main/domains/*"]                  #'domain/delete]
-   ;; [[:post   "/main/domains/:id/discover"]       #'domain/discover]
-   ;; [[:post   "/main/domains/:id/edit"]           #'domain/edit-page]
-   ;; [[:post   "/main/domains"]                    #'domain/find-or-create]
-   ;; [[:get    "/api/dialback"]                    #'domain/dialback]
+   ;; [[:get    "/main/domains.:format"]            #'actions.domain/index]
+   ;; [[:get    "/main/domains"]                    #'actions.domain/index]
+   ;; [[:get    "/main/domains/:id.:format"]        #'actions.domain/show]
+   ;; [[:get    "/main/domains/:id"]                #'actions.domain/show]
+   ;; [[:delete "/main/domains/*"]                  #'actions.domain/delete]
+   ;; [[:post   "/main/domains/:id/discover"]       #'actions.domain/discover]
+   ;; [[:post   "/main/domains/:id/edit"]           #'actions.domain/edit-page]
+   ;; [[:post   "/main/domains"]                    #'actions.domain/find-or-create]
+   ;; [[:get    "/api/dialback"]                    #'actions.domain/dialback]
    ])
 
 (defn pages
   []
   [
-   [{:name "domains"}    {:action #'domain/index}]
+   [{:name "domains"}    {:action #'actions.domain/index}]
    ])

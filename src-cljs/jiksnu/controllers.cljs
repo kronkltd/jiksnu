@@ -192,14 +192,14 @@
   (! $scope.loaded false)
   (! $scope.init
      (fn [id]
-       (let [url (str "/main/domains/" id ".json")]
+       (let [url (str "/model/domains/" id)]
          (-> $http
              (.get url)
              (.success
               (fn [data]
                 (! $scope.domain data)
                 (! $scope.loaded true)))))))
-  (.init $scope (.-id $stateParams)))
+  (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowUserController
   [$scope $http $stateParams Users]

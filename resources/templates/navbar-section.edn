@@ -23,8 +23,8 @@
        [:link-to {:data-id "{{app.user}}" :data-model "user"}]]
       [:b.caret]]
      [:ul.dropdown-menu {:role "menu"}
-      [:li [:a {:ui-sref "settings"} "Settings"]]
-      [:li [:a {:ui-sref "profile"}  "Profile"]]
+      ;; [:li [:a {:ui-sref "settings"} "Settings"]]
+      ;; [:li [:a {:ui-sref "profile"}  "Profile"]]
       [:li [:a {:ng-click "logout()"}   "Log out"]]]]]
    [:ul.nav.navbar-nav.navbar-right {:ng-if "!app.user"}
     [:li [:a {:ui-sref "loginPage"} "Login"]]

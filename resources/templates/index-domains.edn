@@ -14,7 +14,8 @@
      [:td
       #_(favicon-link domain)
       #_(link-to domain)
-      "{{domain._id}}"
+      [:a {:ui-sref "showDomain(domain)"}
+       "{{domain._id}}"]
       ]
      [:td "{{domain.http}}"]
      [:td "{{domain.https}}"]

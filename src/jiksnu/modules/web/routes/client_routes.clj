@@ -1,5 +1,24 @@
 (ns jiksnu.modules.web.routes.client-routes
-  (:require [jiksnu.actions.client-actions :as actions.client]))
+  (:require [jiksnu.actions.client-actions :as actions.client]
+            [jiksnu.modules.http.resources
+             :refer [defresource defgroup]]
+            [jiksnu.modules.web.helpers
+             :refer [angular-resource page-resource]]
+            [octohipster.mixins :as mixin]))
+
+
+(defgroup client-api
+  :url "/api/client"
+)
+
+(defresource client-api register
+  :url "/register"
+  :id "registerClient"
+  :mixins [mixin/item-resource]
+  :post! (fn [ctx]
+           (actions.client/register (:request ctx))
+)
+)
 
 (defn routes
   []

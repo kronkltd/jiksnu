@@ -47,7 +47,7 @@
     :items
     [{:title "Public"               :state "home"}
      {:title "Users"                :state "indexUsers"}
-     {:title "Feeds"                :state "indexFeedSources"}
+     #_{:title "Feeds"                :state "indexFeedSources"}
      {:title "Domains"              :state "indexDomains"}
      {:title "Groups"               :state "indexGroups"}
      {:title "Resources"            :state "indexResources"}]}
@@ -94,8 +94,8 @@
    ["registerPage"     "/main/register"     "RegisterPage"       :register-page]
    ["settingsPage"     "/main/settings"     "SettingsPage"       :settings-page]
    ["showActivity"     "/notice/:id"        "ShowActivity"       :show-activity]
-   ["showDomain"      "/main/domains/:id"  "ShowDomain"         :show-domain]
-   ["showUser"         "/main/users/:username@:domain"    "ShowUser"           :show-user]
+   ["showDomain"       "/main/domains/:_id"  "ShowDomain"         :show-domain]
+   ["showUser"         "/main/users/:username@:domain"    "ShowUser" :show-user]
    ]
   )
 
