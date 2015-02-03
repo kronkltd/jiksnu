@@ -79,6 +79,20 @@
                              (.log js/console "following resolved" page)
                              (! $scope.page page)))))))))))
 
+(def.controller jiksnu.GroupsListController
+  [$scope subpageService Users]
+
+  (! $scope.init
+     (fn [id]
+       (if (and id (not= id ""))
+         (-> Users
+             (.find id)
+             (.then (fn [user]
+                      (-> user
+                          (.getGroups)
+                          (.then (fn [page]
+                                   (! $scope.page page)))))))))))
+
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
   (! $scope.groups (clj->js helpers/nav-info)))

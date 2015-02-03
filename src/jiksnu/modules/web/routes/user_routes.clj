@@ -13,8 +13,10 @@
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource
                                                 subpage-resource]]
+            [liberator.core :as lib]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.Activity
+           jiksnu.model.Group
            jiksnu.model.User))
 
 (defn get-user
@@ -87,14 +89,10 @@
   :url "/{username}/outbox"
   :mixins [subpage-resource]
   :subpage "outbox"
-  :target-model "User"
+  ;; :target-model "User"
   :target get-user
   :description "Activities by {{username}}"
   :available-formats [:json]
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page {:items []}]
-               {:data page}))
   :presenter
   (fn [rsp]
     (with-context [:http :as]
@@ -123,6 +121,20 @@
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)]
                {:data (model.user/fetch-by-id id)})))
+
+(defresource users-api groups-collection
+  :url "/{_id}/groups"
+  :mixins [subpage-resource]
+  :subpage "groups"
+  :target-model "user"
+  :description "Groups of {{username}}"
+  :available-formats [:json]
+  :presenter (fn [rsp]
+               (with-context [:http :json]
+                 (let [page (:body rsp)
+                       items (:items page)]
+                   (-> (index-section items page)
+                       (assoc :displayName "Groups"))))))
 
 (defresource users-api followers-collection
   :url "/{_id}/followers"

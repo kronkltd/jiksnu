@@ -157,13 +157,18 @@
   "route mixin for paths that operate on a subpage"
   [{:keys [available-formats
            subpage
-           target]
+           target target-model]
     :as resource}]
   (-> resource
       ciste-resource
+      (assoc :method-allowed? (lib/request-method-in :get :post :delete))
       (assoc :exists?
              (fn [ctx]
-               (when-let [item (target ctx)]
+               (when-let [item (if target
+                                 (target ctx)
+                                 (actions/get-model
+                                  target-model
+                                  (:_id (:route-params (:request ctx)))))]
                  {:data (actions/get-sub-page item subpage)})))))
 
 (defn angular-resource

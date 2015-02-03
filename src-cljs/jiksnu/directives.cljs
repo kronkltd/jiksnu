@@ -53,6 +53,18 @@
                     #(.init $scope %)))
    :controller "FollowingListController"))
 
+(def.directive jiksnu.groupsList
+  []
+  (obj
+   :templateUrl "/templates/groups-list"
+   :scope true
+   :link (fn [$scope element attrs]
+           (.init $scope (.-id attrs))
+           (.$watch $scope
+                    #(.-id attrs)
+                    #(.init $scope %)))
+   :controller "GroupsListController"))
+
 (def.directive jiksnu.groupsWidget
   []
   (obj

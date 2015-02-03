@@ -15,4 +15,6 @@
   [:p [:a.url {:rel "me" :href "{{user.url}}"}
        "{{user.url}}"]]]
  [:followers-list {:data-id "{{user._id}}"}]
- [:following-list {:data-id "{{user._id}}"}]]
+ [:following-list {:data-id "{{user._id}}"}]
+ [:groups-list {:data-id "{{user._id}}"}]
+]

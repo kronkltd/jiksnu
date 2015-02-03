@@ -68,7 +68,7 @@
 (defresource well-known host-meta
   :url "/host-meta"
   :summary "Webfinger Host Meta Document"
-  :handle-ok domain/host-meta)
+  :handle-ok actions.domain/host-meta)
 
 
 

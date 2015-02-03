@@ -17,7 +17,9 @@
   {"following" (fn [parent]
                  (str "/model/users/" (.-_id parent) "/following"))
    "followers" (fn [parent]
-                 (str "/model/users/" (.-_id parent) "/followers"))})
+                 (str "/model/users/" (.-_id parent) "/followers"))
+   "groups" (fn [parent]
+              (str "/model/users/" (.-_id parent) "/groups"))})
 
 (def.service jiksnu.pageService
   [$q $http]
