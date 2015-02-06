@@ -1,43 +1,27 @@
-[:div
- [:p "{{domain | json}}"]
- [:table.table
-  [:thead]
-  [:tbody
-   [:tr
-    [:th "Id"]
-    [:td
+[:table.table
+ [:thead]
+ [:tbody
+  [:tr
+   [:th "Id"]
+   [:td "{{domain._id}}"]]
+  [:tr
+   [:th "XMPP"]
+   [:td "{{domain.xmpp}}"]]
+  [:tr
+   [:th "Discovered"]
+   [:td "{{domain.discovered}}"]]
+  [:tr
+   [:th "Created"]
+   [:td "{{domain.created}}"]]
+  [:tr
+   [:th "Updated"]
+   [:td "{{domain.updated}}"]]
+  [:tr
+   [:th "License"]
+   [:td
+    ;; RDFa
+    [:a {:href "{{domain.license.url}}"
+         :title "{{domain.license.title}}"}
+     [:img {:src ""
+            :alt ""}]]]]]]
 
-     [:span.domain-id "{{domain._id}}"]]]
-   [:tr
-    [:th "XMPP"]
-    [:td "{{domain.xmpp}}"]]
-   [:tr
-    [:th "Discovered"]
-    [:td "{{domain.discovered}}"]]
-   [:tr
-    [:th "Created"]
-    [:td "{{domain.created}}"]]
-   [:tr
-    [:th "Updated"]
-    [:td "{{domain.updated}}"]]
-   [:tr
-    [:th "Closed"]
-    [:td ]]
-   [:tr
-    [:th "Private"]
-    [:td]]
-   [:tr
-    [:th "Invite Only"]
-    [:td ]]
-   [:tr
-    [:th "Admin"]
-    [:td ]]
-   [:tr
-    [:th "License"]
-    [:td
-     ;; RDFa
-     [:a {:href "{{domain.license.url}}"
-          :title "{{domain.license.title}}"}
-      [:img {:src ""
-    :alt ""}]]]]]]
-]

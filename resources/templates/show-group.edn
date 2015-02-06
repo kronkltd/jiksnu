@@ -9,9 +9,11 @@
   [:h3 "Admins {{group.admins.length}}"]
   [:ul
    [:li {:ng-repeat "user in group.admins"}
-    (link-to admin)]]]
+    [:a {:ui-sref "showUser({_id: user})"}
+     "{{user}}"]]]]
  [:div
   [:h3 "Members {{group.members.length}}"]
   [:ul
    [:li {:ng-repeat "user in group.members"}
-    (link-to admin)]]]]
+    [:a {:ui-sref "showUser({_id: user})"}
+     "{{user}}"]]]]]

@@ -215,11 +215,26 @@
                 (! $scope.loaded true)))))))
   (.init $scope (.-_id $stateParams)))
 
+(def.controller jiksnu.ShowGroupController
+  [$scope $http $stateParams]
+  (! $scope.loaded false)
+  (! $scope.init
+     (fn [id]
+       (let [url (str "/model/groups/" id)]
+         (-> $http
+             (.get url)
+             (.success
+              (fn [data]
+                (! $scope.group data)
+                (! $scope.loaded true)))))))
+  (.init $scope (.-_id $stateParams)))
+
 (def.controller jiksnu.ShowUserController
   [$scope $http $stateParams Users]
   (let [username (.-username $stateParams)
         domain (.-domain $stateParams)
-        id (str "acct:" username "@" domain)]
+        id (or (.-_id $stateParams)
+               (str "acct:" username "@" domain))]
     (! $scope.loaded false)
     (! $scope.init
        (fn [id]

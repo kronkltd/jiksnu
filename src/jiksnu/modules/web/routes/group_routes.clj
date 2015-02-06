@@ -3,6 +3,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as conversation]
             [jiksnu.actions.group-actions :as group]
+            [jiksnu.model.group :as model.group]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [jiksnu.modules.web.routes :as r]
@@ -35,6 +36,16 @@
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.group-actions)
+
+(defresource groups-api item
+  :desc "Resource routes for single Group"
+  :url "/{_id}"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :presenter (partial into {})
+  :exists? (fn [ctx]
+             (let [id (-> ctx :request :route-params :_id)]
+               {:data (model.group/fetch-by-id id)})))
 
 ;; =============================================================================
 

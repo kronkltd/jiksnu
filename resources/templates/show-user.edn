@@ -2,7 +2,7 @@
  [:div.vcard.user-full
   #_(actions-section user)
   [:div
-   [:display-avatar {:data-id "{{user.id}}"  :data-size "96"}]]
+   [:display-avatar {:data-id "{{user._id}}"  :data-size "96"}]]
   [:p
    [:span.nickname.fn.n "{{user.displayName}}"]
    " ({{user.username}}@{{user.domain}})"]

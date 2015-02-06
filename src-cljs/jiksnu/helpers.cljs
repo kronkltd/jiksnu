@@ -83,19 +83,20 @@
 
 (def route-data
   [
-   ["avatarPage"       "/main/avatar"       "AvatarPage"         :avatar-page]
-   ["home"             "/"                  "IndexConversations" :public-timeline]
-   ["indexDomains"     "/main/domains"      "IndexDomains"       :index-domains]
-   ["indexFeedSources" "/main/feed-sources" "IndexFeedSources"   :index-feed-sources]
-   ["indexGroups"      "/main/groups"       "IndexGroups"        :index-groups]
-   ["indexResources"   "/main/resources"    "IndexResources"     :index-resources]
-   ["indexUsers"       "/main/users"        "IndexUsers"         :index-users]
-   ["loginPage"        "/main/login"        "LoginPage"          :login-page]
-   ["registerPage"     "/main/register"     "RegisterPage"       :register-page]
-   ["settingsPage"     "/main/settings"     "SettingsPage"       :settings-page]
-   ["showActivity"     "/notice/:id"        "ShowActivity"       :show-activity]
-   ["showDomain"       "/main/domains/:_id"  "ShowDomain"         :show-domain]
-   ["showUser"         "/main/users/:username@:domain"    "ShowUser" :show-user]
+   ["avatarPage"       "/main/avatar"       "AvatarPage"          :avatar-page]
+   ["home"             "/"                  "IndexConversations"  :public-timeline]
+   ["indexDomains"     "/main/domains"      "IndexDomains"        :index-domains]
+   ["indexFeedSources" "/main/feed-sources" "IndexFeedSources"    :index-feed-sources]
+   ["indexGroups"      "/main/groups"       "IndexGroups"         :index-groups]
+   ["indexResources"   "/main/resources"    "IndexResources"      :index-resources]
+   ["indexUsers"       "/main/users"        "IndexUsers"          :index-users]
+   ["loginPage"        "/main/login"        "LoginPage"           :login-page]
+   ["registerPage"     "/main/register"     "RegisterPage"        :register-page]
+   ["settingsPage"     "/main/settings"     "SettingsPage"        :settings-page]
+   ["showActivity"     "/notice/:id"        "ShowActivity"        :show-activity]
+   ["showDomain"       "/main/domains/:_id" "ShowDomain"          :show-domain]
+   ["showGroup"        "/main/groups/:_id"  "ShowGroup"           :show-group]
+   ["showUser"         "/main/users/:_id"   "ShowUser"            :show-user]
    ]
   )
 

@@ -3,4 +3,5 @@
  [:ul
   [:li {:ng-repeat "follow in page.items"}
    [:display-avatar {:data-id "{{follow.from}}"}]
-   "{{follow.from}}"]]]
+   [:a {:ui-sref "showUser({_id: follow.from})"}
+    "{{follow.from}}"]]]]

@@ -2,8 +2,7 @@
  [:li {:ng-repeat "group in page.items"}
   [:section.profile.hentry.vcard
    [:p
-    [:a.url.entry-title
-     {:href "/main/groups/{{group.nickname}}"}
+    [:a.url.entry-title {:ui-sref "showGroup(group)"}
      [:img {:ng-src "{{group.avatarUrl}}"}]
      [:span.nickname
       "{{group.fullname}} ({{group.nickname}})"]]]
