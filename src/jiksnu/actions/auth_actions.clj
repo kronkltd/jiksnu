@@ -44,22 +44,22 @@
   ;; TODO: Should this display the login page if already logged in?
   true)
 
-(defaction logout
+(defn logout
   [request]
   ;; TODO: close any open session resources, send away presence?
   true)
 
-(defaction password-page
+(defn password-page
   "Page for when the identifier has come from elsewhere"
   [user]
   user)
 
-(defaction verify-credentials
+(defn verify-credentials
   []
   ;; TODO: actually check
   true)
 
-(defaction show
+(defn show
   [mech]
   mech)
 
