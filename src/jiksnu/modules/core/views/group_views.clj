@@ -10,8 +10,7 @@
 (defview #'actions.group/fetch-admins :page
   [request {:keys [items] :as page}]
   (let [response (merge page
-                        {:id (:name request)
-                         :items (map :_id items)})]
+                        {:id (:name request)})]
     {:body {:action "sub-page-updated"
             :model "group"
             :id (:_id (:item request))
@@ -21,8 +20,7 @@
   [request page]
   (let [items (:items page)
         response (merge page
-                        {:id (:name request)
-                         :items (map :_id items)})]
+                        {:id (:name request)})]
     {:body {:action "sub-page-updated"
             :model "user"
             :id (:_id (:item request))
@@ -39,8 +37,7 @@
   [request response]
   (let [items (:items response)
         response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
+                        {:id (:name request)})]
     {:body {:action "page-updated"
             :body response}}))
 
