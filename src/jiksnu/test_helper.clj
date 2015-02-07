@@ -1,5 +1,5 @@
 (ns jiksnu.test-helper
-  (:require [ciste.config :refer [load-site-config]]
+  (:require [ciste.config :refer [load-site-config set-environment!]]
             [ciste.loader :refer [process-requires]]
             [ciste.runner :refer [start-application! stop-application!]]
             [clojure.tools.logging :as log]
@@ -53,6 +53,7 @@
   []
   (try+
    (load-site-config)
+   (set-environment! :test)
    (start-application! :test)
    (db/drop-all!)
    (dosync

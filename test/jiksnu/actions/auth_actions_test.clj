@@ -2,7 +2,7 @@
   (:require [clj-factory.core :refer [factory fseq]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :refer [login]]
-            [jiksnu.mock :as mock]
+            #_[jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 
@@ -10,9 +10,15 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'login
-  (let [password (fseq :password)
-        user (mock/a-user-exists {:password password})]
-    (login user password) => truthy))
+(fact "#'actions.auth/login" :focus
+  (fact "when the user doesn't exist"
+    (login .username. .password.) =not=> (throws)
+)
+  (future-fact "when given a valid password"
+    (let [password (fseq :password)
+          ;; user (mock/a-user-exists {:password password})
+          ;; username (:username user)
+          ]
+      (login .username. password) => truthy)))
 
 

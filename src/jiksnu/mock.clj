@@ -57,7 +57,7 @@
                      (fseq :password))
         user (actions.user/register
               {:username (fseq :username)
-               :password password
+               :password (log/spy :info password)
                :name (fseq :name)
                :accepted true})
         user (if (:admin opts)

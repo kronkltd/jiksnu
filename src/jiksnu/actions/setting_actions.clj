@@ -18,7 +18,8 @@
 
 (describe-config [:site :closed]
   Boolean
-  "Can new users register?")
+  "Can new users register?"
+  :default true)
 
 (describe-config [:site :default :language]
   String

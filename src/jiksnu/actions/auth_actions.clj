@@ -73,7 +73,7 @@
   "create an activity"
   [params]
   (let [item (prepare-create params)]
-    (model.authentication-mechanism/create item)))
+    (model.authentication-mechanism/create (log/spy :info item))))
 
 (defn add-password
   "Create a new auth mechanism with the type password that has the crypted password"

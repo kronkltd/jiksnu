@@ -130,9 +130,9 @@
   true)
 
 
-(defn count
-  [request]
-  (model.activity/count-records))
+;; (defn count
+;;   [request]
+;;   (model.activity/count-records))
 
 (defn editable?
   [activity user]

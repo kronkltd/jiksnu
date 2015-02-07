@@ -175,10 +175,10 @@
          (filter identity)
          first)))
 
-(defn count
-  [ctx]
-  1
-  )
+;; (defn count
+;;   [ctx]
+;;   1
+;;   )
 
 (defn discover-capabilities
   [domain & [url]]
