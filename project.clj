@@ -19,7 +19,6 @@
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
                  [lamina "0.5.5"]
-                 [lib-noir "0.9.5"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
                  [org.clojure/clojure "1.6.0"]

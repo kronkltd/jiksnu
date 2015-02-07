@@ -8,7 +8,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
-            [noir.util.crypt :as crypt]
             [slingshot.slingshot :refer [throw+]]))
 
 (defn prepare-create
