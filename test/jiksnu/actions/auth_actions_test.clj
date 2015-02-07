@@ -17,7 +17,7 @@
 (def user (mock/a-user-exists {:password password}))
 
 (fact "#'actions.auth/add-password"
-  (let [mech (log/spy :info (add-password user password))]
+  (let [mech (add-password user password)]
     mech => truthy
 
     (creds/bcrypt-verify password (:value mech))))
