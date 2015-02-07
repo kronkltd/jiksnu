@@ -132,7 +132,7 @@
 
 (defn outbox
   [user]
-  (log/spy :info (user-timeline (log/spy :info user))))
+  (user-timeline user))
 
 
 (defaction group-timeline

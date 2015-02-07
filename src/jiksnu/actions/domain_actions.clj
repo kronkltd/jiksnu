@@ -233,7 +233,7 @@
 
 (defn get-discovered
   [domain & [url options]]
-  (log/debugf "Getting discovered domain for: %s" (:_id domain))
+  ;; (log/debugf "Getting discovered domain for: %s" (:_id domain))
   (if (:discovered domain)
     domain
     (let [id (:_id domain)

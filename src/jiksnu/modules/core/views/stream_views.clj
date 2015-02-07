@@ -98,14 +98,10 @@
 
 (defview #'actions.stream/outbox :page
   [request [user page]]
-  (log/info "outbox page view")
-  (log/info (first (:items page)))
-
   (let [items (:items page)
         response (merge page
                         {:id (:name request)
                          :items items})]
-    (log/info (first (:items response)))
     {:body {:action "sub-page-updated"
             :model "user"
             :user user
