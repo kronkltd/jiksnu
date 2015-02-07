@@ -24,9 +24,10 @@
   user)
 
 (defaction login
+  "Update the current session with this user, if authenticated"
   [username password]
   ;; TODO: Is this an acceptable use of fetch-all?
-  (let [user (model.user/get-user username)]
+  (if-let [user (model.user/get-user username)]
     (if-let [mechanisms (seq (model.authentication-mechanism/fetch-all
                               {:user (:_id user)}))]
       (if (->> mechanisms
@@ -37,7 +38,8 @@
           (session/set-authenticated-user! user)
           user)
         (throw+ {:type :authentication :message "passwords do not match"}))
-      (throw+ {:type :authentication :message "No authentication mechanisms found"}))))
+      (throw+ {:type :authentication :message "No authentication mechanisms found"}))
+    (throw+ {:type :authentication :message "User not found"})))
 
 (defaction login-page
   [request]
