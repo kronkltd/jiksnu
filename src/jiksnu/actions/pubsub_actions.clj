@@ -1,7 +1,6 @@
 (ns jiksnu.actions.pubsub-actions
-  (:use [ciste.core :only [defaction]]
-        [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
+            [ciste.core :refer [defaction]]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [lamina.executor :as e]
@@ -10,7 +9,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.templates.actions :as templates.actions]
-            [jiksnu.util :as util]))
+            [jiksnu.util :as util]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn verify-subscribe-sync
   "Verify subscription request in this thread"
