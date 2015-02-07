@@ -3,6 +3,7 @@
             [aleph.http :as http]
             [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
+            [ciste.event :refer [defkey notify]]
             [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-time.coerce :as coerce]
@@ -22,6 +23,11 @@
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Resource))
+
+(defkey ::resource-realized
+  "Whenever a resource is realized, this event is fired"
+  :schema {:item "Resource"
+           :response "Map"})
 
 (def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
 
@@ -168,7 +174,10 @@
 
 (defn handle-update-realized
   [item response]
-  (trace/trace :resource:realized [item response])
+  (notify ::resource-realized
+          {:item item
+           :response response})
+  ;; (trace/trace :resource:realized [item response])
   (model.resource/set-field! item :lastUpdated (time/now))
   (model.resource/set-field! item :status (:status response))
   (condp = (:status response)
