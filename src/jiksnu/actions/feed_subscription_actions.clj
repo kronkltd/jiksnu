@@ -1,16 +1,15 @@
 (ns jiksnu.actions.feed-subscription-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.initializer :refer [definitializer]]
+            [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.ops :as ops]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
-            [lamina.core :as l]))
+            [lamina.core :as l]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn prepare-create
   [item]

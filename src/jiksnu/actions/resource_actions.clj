@@ -1,10 +1,8 @@
 (ns jiksnu.actions.resource-actions
-  (:use [ciste.core :only [defaction]]
-        [jiksnu.actions :only [invoke-action]]
-        [slingshot.slingshot :only [throw+ try+]])
   (:require [aleph.formats :refer [channel-buffer->string]]
             [aleph.http :as http]
             [ciste.config :refer [config]]
+            [ciste.core :refer [defaction]]
             [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-time.coerce :as coerce]
@@ -14,14 +12,15 @@
             [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace]
+            [jiksnu.actions :refer [invoke-action]]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
-            [jiksnu.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
-            [jiksnu.util :as util])
+            [jiksnu.util :as util]
+            [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Resource))
 
 (def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")

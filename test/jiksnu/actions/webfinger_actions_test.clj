@@ -7,6 +7,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer [=> after before fact future-fact
                                  namespace-state-changes truthy throws]]))
