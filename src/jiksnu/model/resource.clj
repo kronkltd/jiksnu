@@ -6,7 +6,6 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
-            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.query :as mq]
             [net.cgrand.enlive-html :as enlive]

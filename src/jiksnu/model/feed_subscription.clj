@@ -4,7 +4,6 @@
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
-            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]

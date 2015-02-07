@@ -19,7 +19,6 @@
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+]])
   )
 
@@ -50,7 +49,7 @@
   [user]
   (index {:author (:_id user)}))
 
-(trace/defn-instrumented prepare-create
+(defn prepare-create
   [activity]
   (-> activity
       transforms/set-_id

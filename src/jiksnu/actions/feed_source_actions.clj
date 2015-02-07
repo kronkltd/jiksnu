@@ -22,7 +22,6 @@
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as lt]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))

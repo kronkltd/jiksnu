@@ -28,12 +28,8 @@
   [ex]
   (let [data (if (instance? ExceptionInfo ex)
                (.getData ex) {})]
-    (log/error ex "Unhandled Error")
-    (when (instance? Throwable ex )
-      ;; (.printStackTrace ex)
-      ;; TODO: allow error handlers to hook in here via modules
-      )))
-
+    ;; TODO: allow error handlers to hook in here via modules
+    (log/error ex "Unhandled Error")))
 
 (defn field-set
   [[item field value]]

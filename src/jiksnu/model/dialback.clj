@@ -1,10 +1,9 @@
 (ns jiksnu.model.dialback
-  (:use [jiksnu.validators :only [type-of]]
-        [validateur.validation :only [validation-set presence-of]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
-            [lamina.trace :as trace])
+            [jiksnu.validators :refer [type-of]]
+            [validateur.validation :refer [validation-set presence-of]])
   (:import org.bson.types.ObjectId
            org.joda.time.DateTime))
 

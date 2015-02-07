@@ -19,24 +19,23 @@
 
 (defn make-indexer*
   [{:keys [page-size sort-clause count-fn fetch-fn]}]
-  (trace/instrument
-   (fn [& [{:as params} & [{:as options} & _]]]
-     (let [options (or options {})
-           page (get options :page 1)
-           criteria {:sort-clause (or (:sort-clause options)
-                                      sort-clause)
-                     :page page
-                     :page-size page-size
-                     :skip (* (dec page) page-size)
-                     :limit page-size}
-           record-count (count-fn params)
-           records (fetch-fn params criteria)]
-       {:items records
-        :page page
-        :page-size page-size
-        :totalItems record-count
-        :args options}))
-   {:name :indexer}))
+  (fn [& [{:as params} & [{:as options} & _]]]
+    (let [options (or options {})
+          page (get options :page 1)
+          criteria {:sort-clause (or (:sort-clause options)
+                                     sort-clause)
+                    :page page
+                    :page-size page-size
+                    :skip (* (dec page) page-size)
+                    :limit page-size}
+          record-count (count-fn params)
+          records (fetch-fn params criteria)]
+      {:items records
+       :page page
+       :page-size page-size
+       :totalItems record-count
+       :args options}))
+  {:name :indexer})
 
 (defmacro make-indexer
   [namespace-sym & options]

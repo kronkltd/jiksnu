@@ -36,7 +36,7 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
-(trace/defn-instrumented prepare-create
+(defn prepare-create
   [params]
   (-> params
       transforms/set-_id

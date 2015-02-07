@@ -5,8 +5,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as ns]
-            [lamina.trace :as trace]))
+            [jiksnu.namespace :as ns]))
 
 ;; TODO: What id should be used here?
 (defn comment-node-uri

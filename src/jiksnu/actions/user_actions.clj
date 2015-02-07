@@ -6,7 +6,6 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
-            [lamina.trace :as trace]
             [jiksnu.actions :refer [invoke-action]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
