@@ -32,7 +32,7 @@
                               {:user (:_id user)}))]
       (if (->> mechanisms
                (map :value)
-               (some (partial crypt/compare password)))
+               (some (partial creds/bcrypt-verify password)))
         (do
           (log/debug "logging in")
           (session/set-authenticated-user! user)
