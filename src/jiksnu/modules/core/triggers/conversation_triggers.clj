@@ -33,8 +33,8 @@
 
   ;; Create events for each created conversation
   ;; TODO: listen to trace probe
-  (l/siphon
-   (l/filter* filter-conversation-create (l/fork ciste.core/*actions*))
-   ch/posted-conversations))
+  #_(l/siphon
+     (l/filter* filter-conversation-create (l/fork ciste.core/*actions*))
+     ch/posted-conversations))
 
 (defonce receivers (init-receivers))

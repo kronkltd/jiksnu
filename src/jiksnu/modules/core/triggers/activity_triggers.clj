@@ -41,7 +41,7 @@
   (l/receive-all ch/posted-activities create-trigger)
 
   ;; Create events for each created activity
-  (l/siphon
+  #_(l/siphon
    (l/filter* filter-activity-create (l/fork ciste.core/*actions*))
    ch/posted-activities)
 
