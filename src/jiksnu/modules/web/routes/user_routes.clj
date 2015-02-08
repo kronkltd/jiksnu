@@ -120,7 +120,8 @@
   :presenter (partial into {})
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)]
-               {:data (model.user/fetch-by-id id)})))
+               (when-let [user (model.user/fetch-by-id id)]
+                 {:data user}))))
 
 (defresource users-api groups-collection
   :url "/{_id}/groups"
