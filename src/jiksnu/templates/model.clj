@@ -8,7 +8,6 @@
             [jiksnu.namespace :as ns]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
@@ -20,14 +19,26 @@
            lamina.core.channel.Channel
            org.bson.types.ObjectId))
 
+(defkey ::collection-counted
+  "when a collection is counted")
+
 (defkey ::collection-dropped
   "Collections that were dropped")
+
+(defkey ::item-created
+  "items created")
 
 (defkey ::item-deleted
   "Every item that is deleted")
 
+(defkey ::item-fetched
+  "items fetched")
+
 (defkey ::item-set
   "when a field is set on an item")
+
+(defkey ::item-unset
+  "when fields are removed from an item")
 
 ;; index helpers
 
@@ -41,9 +52,6 @@
                     (mq/paginate :page (get options :page 1)
                                  :per-page (get options :page-size 20)))]
       (map make-fn records))))
-
-(defkey ::collection-counted
-  "when a collection is counted")
 
 (defn make-counter
   [collection-name]
@@ -87,7 +95,9 @@
 (defn make-remove-field!
   [collection-name]
   (fn [item field]
-    (trace/trace* (str collection-name ":field:remove") [item field])
+    (notify ::item-unset
+            {:item item
+             :field field})
     (mc/update collection-name
                {:_id (:_id item)}
                {:$unset {field 1}})))
@@ -98,11 +108,11 @@
     (let [errors (validator params)]
       (if (empty? errors)
         (do
-          (let [name (str collection-name ":create:in")]
-            (trace/trace* name {:name name :params params}))
           (mc/insert collection-name params)
           (let [item (fetcher (:_id params))]
-            (trace/trace* (str collection-name ":created") item)
+            (notify ::item-created
+                    {:collection-name collection-name
+                     :item item})
             item))
         (throw+ {:type :validation :errors errors})))))
 
@@ -113,9 +123,11 @@
      (fn [id]
        (let [id (if (and convert-id (string? id))
                   (util/make-id id) id)]
-         (trace/trace* (str collection-name ":fetched") id)
          (when-let [item (mc/find-map-by-id collection-name id)]
-           (maker item))))))
+           (let [item (maker item)]
+             (notify ::item-fetched {:collection-name collection-name
+                                     :item item})
+             item))))))
 
 (defn make-push-value!
   [collection-name]
