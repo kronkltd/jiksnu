@@ -4,8 +4,7 @@
             [ciste.core :refer [defaction]]
             [clojure.string :as string]
             [inflections.core :as inf]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.session :as session]))
+            [jiksnu.actions.domain-actions :as actions.domain]))
 
 (defn get-config
   [path]

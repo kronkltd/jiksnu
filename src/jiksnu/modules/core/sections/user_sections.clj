@@ -17,7 +17,6 @@
                                                   admin-index-line
                                                   admin-index-section
                                                   admin-show-section]]
-            [jiksnu.session :refer [current-user is-admin?]]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.Domain

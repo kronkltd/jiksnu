@@ -12,7 +12,6 @@
             [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block
                                                   admin-index-section ]]
             [jiksnu.modules.core.sections.user-sections :as sections.user]
-            [jiksnu.session :as session]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Activity))

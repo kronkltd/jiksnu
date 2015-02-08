@@ -10,7 +10,6 @@
             [jiksnu.model :as model]
             [jiksnu.model.stream :as model.stream]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [validateur.validation :refer [valid?]])

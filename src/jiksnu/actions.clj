@@ -9,7 +9,6 @@
             [jiksnu.channels :as ch]
             [jiksnu.handlers :as handler]
             [jiksnu.predicates :as pred]
-            [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]
             [lamina.core :as l]

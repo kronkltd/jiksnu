@@ -4,7 +4,6 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
-            [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :refer [set-_id set-created-time
                                       set-updated-time]]

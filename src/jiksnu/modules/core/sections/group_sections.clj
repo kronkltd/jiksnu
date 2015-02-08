@@ -9,8 +9,7 @@
             [jiksnu.modules.core.sections :refer [admin-show-section
                                                   admin-index-block
                                                   admin-index-line
-                                                 admin-index-section]]
-            [jiksnu.session :as session])
+                                                 admin-index-section]])
   (:import jiksnu.model.Group))
 
 (defsection admin-index-block [Group]

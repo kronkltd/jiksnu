@@ -5,7 +5,6 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.ops :as ops]
-            [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [midje.sweet :refer :all])

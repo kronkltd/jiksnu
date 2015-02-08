@@ -4,7 +4,6 @@
             [jiksnu.model.client :as model.client]
             [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
-            [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.access-token-transforms :as transforms.access-token]

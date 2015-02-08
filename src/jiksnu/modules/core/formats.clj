@@ -3,8 +3,7 @@
             [ciste.formats :refer [format-as]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
-            [jiksnu.session :as session]))
+            [hiccup.core :as h]))
 
 (defmethod format-as :as
   [format request response]

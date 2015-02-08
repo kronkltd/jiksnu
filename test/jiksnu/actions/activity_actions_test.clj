@@ -59,20 +59,18 @@
 (fact "#'actions.activity/delete"
   (fact "when the activity exists"
     (fact "and the user owns the activity"
-      (fact "should delete that activity"
-        (let [user (mock/a-user-exists)]
-          (session/with-user user
-            (let [activity (mock/there-is-an-activity {:user user})]
-              (actions.activity/delete activity) => activity
-              (model.activity/fetch-by-id (:_id activity)) => nil)))))
+      (let [user (mock/a-user-exists)]
+        (session/with-user user
+          (let [activity (mock/there-is-an-activity {:user user})]
+            (actions.activity/delete activity) => activity
+            (model.activity/fetch-by-id (:_id activity)) => nil))))
     (fact "and the user does not own the activity"
-      (fact "should not delete that activity"
-        (let [user (mock/a-user-exists)
-              author (mock/a-remote-user-exists)
-              activity (mock/there-is-an-activity {:user author})]
-          (session/with-user user
-            (actions.activity/delete activity) => (throws RuntimeException)
-            (model.activity/fetch-by-id (:_id activity)) => activity))))))
+      (let [user (mock/a-user-exists)
+            author (mock/a-remote-user-exists)
+            activity (mock/there-is-an-activity {:user author})]
+        (session/with-user user
+          (actions.activity/delete activity) => (throws RuntimeException)
+          (model.activity/fetch-by-id (:_id activity)) => activity)))))
 
 (fact "#'actions.activity/viewable?"
   (fact "When it is public"
@@ -176,4 +174,3 @@
           ids [(:_id conversation1) (:_id conversation2)]]
       (let [response (actions.activity/fetch-by-conversations ids)]
         (count (:items response)) => 2))))
-

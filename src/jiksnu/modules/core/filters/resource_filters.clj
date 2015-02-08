@@ -6,7 +6,6 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.resource :as model.resource]
-            [jiksnu.session :as session]
             [jiksnu.util :as util]))
 
 (deffilter #'index :page

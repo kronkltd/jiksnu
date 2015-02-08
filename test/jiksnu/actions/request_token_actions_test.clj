@@ -3,7 +3,6 @@
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.factory :as factory]
             [jiksnu.mock :as mock]
-            [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
   (:import jiksnu.model.RequestToken

@@ -9,8 +9,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.test-helper :as th]
-            [midje.sweet :refer [=> after before fact falsey
-                                 namespace-state-changes]])
+            [midje.sweet :refer :all])
   (:import jiksnu.model.FeedSubscription))
 
 (namespace-state-changes

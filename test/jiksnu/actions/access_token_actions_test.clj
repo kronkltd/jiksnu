@@ -1,19 +1,10 @@
 (ns jiksnu.actions.access-token-actions-test
-  (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.actions.access-token-actions :as actions.access-token]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.AccessToken
-           jiksnu.model.Activity))
+  (:import jiksnu.model.AccessToken))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))
