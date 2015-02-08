@@ -34,8 +34,7 @@
        :page page
        :page-size page-size
        :totalItems record-count
-       :args options}))
-  {:name :indexer})
+       :args options})))
 
 (defmacro make-indexer
   [namespace-sym & options]

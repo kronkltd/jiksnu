@@ -25,13 +25,13 @@
                  [org.clojure/data.json "0.2.5"]
                  [org.jsoup/jsoup "1.8.1"]
                  ;; [org.slf4j/slf4j-api "1.7.10"]
-                 ;; [org.slf4j/slf4j-log4j12 "1.7.10"]
                  [slingshot "0.12.1"]]
   :profiles {:dev
              {:resource-paths ["test-resources"]
               :dependencies
               [[midje         "1.6.3"]
-               [ring-mock     "0.1.5"]]}}
+               [ring-mock     "0.1.5"]
+               [org.slf4j/slf4j-log4j12 "1.7.10"]]}}
   :plugins [[codox          "0.8.10"]
             [lein-midje     "3.1.3"]]
 

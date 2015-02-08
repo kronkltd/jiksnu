@@ -11,31 +11,12 @@
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th :refer [check]]
             [jiksnu.util :as util]
-            [midje.sweet :refer [=> after before contains fact falsey
-                                 namespace-state-changes throws truthy]])
+            [midje.sweet :refer :all])
   (:import jiksnu.model.Activity))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
-
-(fact "#'actions.activity/oembed->activity"
-  (let [oembed-str (slurp "test-resources/oembed.json")]
-    ;; TODO: complete
-    oembed-str => string?))
-
-(fact "#'actions.activity/find-by-user"
-  (fact "when the user has activities"
-    (db/drop-all!)
-    (let [user (mock/a-user-exists)
-          activity (mock/there-is-an-activity {:user user})]
-      (actions.activity/find-by-user user) =>
-      (th/check [response]
-             response => map?
-             (:totalItems response) => 1
-             (count (:items response)) => 1
-             (doseq [item (:items response)]
-               item => (partial instance? Activity))))))
 
 (fact "#'actions.activity/create"
   (fact "when the user is logged in"
@@ -50,11 +31,6 @@
                                            :update-source (:_id feed-source)
                                            :local         true})]
           (actions.activity/create activity) => (partial instance? Activity))))))
-
-(fact "#'actions.activity/post"
-  (fact "when the user is not logged in"
-    (let [activity (dissoc (factory :activity) :author)]
-      (actions.activity/post activity) => (throws RuntimeException))))
 
 (fact "#'actions.activity/delete"
   (fact "when the activity exists"
@@ -71,6 +47,43 @@
         (session/with-user user
           (actions.activity/delete activity) => (throws RuntimeException)
           (model.activity/fetch-by-id (:_id activity)) => activity)))))
+
+(fact "#'actions.activity/find-by-user"
+  (fact "when the user has activities"
+    (db/drop-all!)
+    (let [user (mock/a-user-exists)
+          activity (mock/there-is-an-activity {:user user})]
+      (actions.activity/find-by-user user) =>
+      (contains {:totalItems 1
+                 :items (has every? #(instance? Activity %))}))))
+
+(facts "#'actions.activity/index"
+  (fact "when there are no activities"
+    (db/drop-all!)
+    (actions.activity/index {}) => (contains {:totalItems 0})))
+
+(fact "#'actions.activity/oembed->activity"
+  (let [oembed-str (slurp "test-resources/oembed.json")]
+    ;; TODO: complete
+    oembed-str => string?))
+
+(fact "#'actions.activity/post"
+  (fact "when the user is not logged in"
+    (let [activity (dissoc (factory :activity) :author)]
+      (actions.activity/post activity) => (throws RuntimeException))))
+
+(fact "#'actions.activity/show"
+  (fact "when the record exists"
+    (fact "and the record is viewable"
+      (let [activity (mock/there-is-an-activity)]
+        (actions.activity/show activity) => activity
+        (provided
+          (actions.activity/viewable? activity) => true)))
+    (fact "and the record is not viewable"
+      (let [activity (mock/there-is-an-activity)]
+        (actions.activity/show activity) => (throws RuntimeException)
+        (provided
+          (actions.activity/viewable? activity) => false)))))
 
 (fact "#'actions.activity/viewable?"
   (fact "When it is public"
@@ -92,19 +105,6 @@
               activity (mock/there-is-an-activity {:modifier "private"
                                                    :user author})]
           (actions.activity/viewable? activity user)) => falsey))))
-
-(fact "#'actions.activity/show"
-  (fact "when the record exists"
-    (fact "and the record is viewable"
-      (let [activity (mock/there-is-an-activity)]
-        (actions.activity/show activity) => activity
-        (provided
-          (actions.activity/viewable? activity) => true)))
-    (fact "and the record is not viewable"
-      (let [activity (mock/there-is-an-activity)]
-        (actions.activity/show activity) => (throws RuntimeException)
-        (provided
-          (actions.activity/viewable? activity) => false)))))
 
 (fact "#'actions.activity/edit"
 

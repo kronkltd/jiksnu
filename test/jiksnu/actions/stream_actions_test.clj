@@ -20,34 +20,29 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'actions.stream/public-timeline
+(facts "#'actions.stream/public-timeline"
   (fact "when there are no activities"
-    (fact "should be empty"
-      (model.activity/drop!)
-      (actions.stream/public-timeline) => (comp empty? :items)))
-  (fact "when there are activities"
-    (fact "should return a seq of activities"
-      (let [activity (mock/there-is-an-activity)]
-        (actions.stream/public-timeline) =>
-        (th/check [response]
-               response => map?
-               (:totalItems response) => 1
-               (let [items (:items response)]
-                 items => seq?
-                 (doseq [item items]
-                   (class item) => Conversation)))))))
+    (model.activity/drop!)
+    (actions.stream/public-timeline) =>
+    (contains
+     {:totalItems 0
+      :items empty?})
 
-(fact #'actions.stream/user-timeline
+(comp empty? :items))
+  (fact "when there are activities"
+    (let [activity (mock/there-is-an-activity)]
+      (actions.stream/public-timeline) =>
+      (contains
+       {:totalItems 1
+        :items (has every? #(instance? Conversation %))}))))
+
+(fact "#'actions.stream/user-timeline"
   (fact "when the user has activities"
-    (db/drop-all!)
     (let [user (mock/a-user-exists)
           activity (mock/there-is-an-activity)]
       (actions.stream/user-timeline user) =>
-      (th/check [response]
-             response => vector?
-             (first response) => user
-             (second response) => map?
-             (:totalItems (second response)) => 1))))
-
-
-
+      (just
+       user
+       (contains
+        {:totalItems 1
+         :items (has every? #(instance? Activity %))})))))
