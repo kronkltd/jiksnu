@@ -177,7 +177,6 @@
   (notify ::resource-realized
           {:item item
            :response response})
-  ;; (trace/trace :resource:realized [item response])
   (model.resource/set-field! item :lastUpdated (time/now))
   (model.resource/set-field! item :status (:status response))
   (condp = (:status response)
@@ -210,6 +209,8 @@ The channel will receive the body of fetching this resource."
                        :headers {"User-Agent" user-agent
                                  "date" (util/date->rfc1123 (.toDate date))
                                  "authorization" auth-string}}]
+          (notify ::resource-updated
+                  {:item item})
           (trace/trace :resource:updated item)
           (log/infof "updating resource: %s" url)
           (l/run-pipeline

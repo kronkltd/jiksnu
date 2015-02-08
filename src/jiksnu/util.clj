@@ -40,7 +40,6 @@
 (defn new-id
   []
   (let [id (str (UUID/randomUUID))]
-    (trace/trace :id:generated id)
     id))
 
 (defn format-date
@@ -207,11 +206,7 @@
 
 (defmacro safe-task
   [& body]
-  `(let [res#
-         ;; (trace/time*
-         (task ~@body)
-         ;; )
-         ]
+  `(let [res# (task ~@body)]
      (l/on-realized res#
                     identity
                     #(trace/trace :errors:handled %))

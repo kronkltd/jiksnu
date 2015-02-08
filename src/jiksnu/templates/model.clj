@@ -1,6 +1,7 @@
 (ns jiksnu.templates.model
   (:use [slingshot.slingshot :only [throw+]])
-  (:require [clojure.data.json :as json]
+  (:require [ciste.event :refer [defkey notify]]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             jiksnu.db
@@ -19,6 +20,15 @@
            lamina.core.channel.Channel
            org.bson.types.ObjectId))
 
+(defkey ::collection-dropped
+  "Collections that were dropped")
+
+(defkey ::item-deleted
+  "Every item that is deleted")
+
+(defkey ::item-set
+  "when a field is set on an item")
+
 ;; index helpers
 
 (defn make-fetch-fn
@@ -30,41 +40,49 @@
                     (merge sort-clause)
                     (mq/paginate :page (get options :page 1)
                                  :per-page (get options :page-size 20)))]
-      (map make-fn records)))
-  {:name (keyword (str collection-name ":searcher"))})
+      (map make-fn records))))
+
+(defkey ::collection-counted
+  "when a collection is counted")
 
 (defn make-counter
   [collection-name]
   (fn [& [params]]
     (let [params (or params {})]
-      (trace/trace* (str collection-name ":counted") 1)
-      (mc/count collection-name params)))
-  {:name (keyword (str collection-name ":counter"))})
+      (let [n (mc/count collection-name params)]
+        (notify ::collection-counted {:collection-name collection-name
+                                      :count n
+                                      :params params})
+        n))))
 
 (defn make-deleter
   [collection-name]
   (fn [item]
-    (trace/trace* (str collection-name ":deleted") item)
     (mc/remove-by-id collection-name (:_id item))
+    (notify ::item-deleted {:item item
+                            :collection collection-name})
     item))
 
 (defn make-dropper
   [collection-name]
   (fn []
-    (trace/trace* (str collection-name ":dropped") collection-name)
-    (mc/remove collection-name)))
+    (mc/remove collection-name)
+    (notify ::collection-dropped {:collection collection-name})
+    nil))
 
 (defn make-set-field!
   [collection-name]
   (fn [item field value]
     (if (not= field :links)
       (when-not (= (get item field) value)
-        (trace/trace* (str collection-name ":field:set") [item field value])
+        (notify ::item-set
+                {:item item
+                 :field field
+                 :value value})
         (mc/update collection-name
                    {:_id (:_id item)}
                    {:$set {field value}}))
-      (throw+ "can not set links values")))
-  {:name (keyword (str collection-name ":setter"))})
+      (throw+ "can not set links values"))))
 
 (defn make-remove-field!
   [collection-name]
@@ -72,8 +90,7 @@
     (trace/trace* (str collection-name ":field:remove") [item field])
     (mc/update collection-name
                {:_id (:_id item)}
-               {:$unset {field 1}}))
-  {:name (keyword (str collection-name ":unsetter"))})
+               {:$unset {field 1}})))
 
 (defn make-create
   [collection-name fetcher validator]
@@ -87,8 +104,7 @@
           (let [item (fetcher (:_id params))]
             (trace/trace* (str collection-name ":created") item)
             item))
-        (throw+ {:type :validation :errors errors}))))
-  {:name (keyword (str collection-name ":creator"))})
+        (throw+ {:type :validation :errors errors})))))
 
 (defn make-fetch-by-id
   ([collection-name maker]
@@ -99,21 +115,18 @@
                   (util/make-id id) id)]
          (trace/trace* (str collection-name ":fetched") id)
          (when-let [item (mc/find-map-by-id collection-name id)]
-           (maker item))))
-     {:name (keyword (str collection-name ":fetcher"))}))
+           (maker item))))))
 
 (defn make-push-value!
   [collection-name]
   (fn [item key value]
     (mc/update collection-name
                (select-keys item #{:_id})
-               {:$push {key value}}))
-  {:name (keyword (str collection-name ":pusher"))})
+               {:$push {key value}})))
 
 (defn make-pop-value!
   [collection-name]
   (fn [item key value]
     (mc/update collection-name
                (select-keys item #{:_id})
-               {:$pop {key value}}))
-  {:name (keyword (str collection-name ":popper"))})
+               {:$pop {key value}})))

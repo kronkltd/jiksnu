@@ -168,7 +168,8 @@
 
 (defn stream-handler
   [request]
-  (let [stream (l/channel)]
+  (cm/implement)
+  #_(let [stream (l/channel)]
     (l/siphon
      (->> ciste.core/*actions*
           (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))

@@ -192,7 +192,6 @@
   {:pre [(instance? Domain domain)
          (or (nil? url)
              (string? url))]}
-  (log/debug "running discover tasks")
   (l/run-pipeline
    (util/safe-task (discover-capabilities domain url))
    (fn [_]
