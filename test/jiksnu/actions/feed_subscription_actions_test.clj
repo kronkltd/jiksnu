@@ -26,13 +26,14 @@
 (fact "#'actions.feed-subscription/create"
   (let [params (factory :feed-subscription)
         params (actions.feed-subscription/prepare-create params)]
-    (let [response (actions.feed-subscription/create params)]
-      response => (partial instance? FeedSubscription))))
+
+    (actions.feed-subscription/create params)
+    => (partial instance? FeedSubscription)))
 
 (fact "#'actions.feed-subscription/index"
   (model.feed-subscription/drop!)
-  (let [response (actions.feed-subscription/index)]
-    (:items response) => []))
+
+  (actions.feed-subscription/index) => (contains {:items []}))
 
 (fact "#'actions.feed-subscription/subscription-request"
   (let [topic (fseq :uri)
@@ -42,7 +43,6 @@
                 :lease-seconds (fseq :lease-seconds)
                 :secret (fseq :secret-key)
                 :topic (:topic source)}]
-    (let [response (actions.feed-subscription/subscription-request params)]
-      response => (partial instance? FeedSubscription))))
 
-
+    (actions.feed-subscription/subscription-request params)
+    => (partial instance? FeedSubscription)))
