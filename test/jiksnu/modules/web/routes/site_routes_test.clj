@@ -14,11 +14,11 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.test-helper :refer [test-environment-fixture]]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [midje.sweet :refer [=> fact]]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
- (fact "rsd document"
+ (future-fact "rsd document"
    (let [response (-> (req/request :get "/rsd.xml") response-for)]
      response => map?
      (:status response) => status/success?

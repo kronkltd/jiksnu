@@ -16,16 +16,17 @@
 
 (test-environment-fixture
 
- (fact "apply-view #'actions.admin.like/delete [:http :html]"
-   (let [action #'actions.admin.like/delete]
-     (with-context [:http :html]
-       (let [user (mock/a-user-exists)
-             activity (mock/there-is-an-activity)
-             like (actions.like/like-activity activity user)
-             request {:action action
-                      :params {:id (str (:_id like))}}
-             response (filter-action action request)]
-         (let [response (apply-view request response)]
-           response => map?
-           (:status response) => status/redirect?
-           (get-in response [:headers "Location"]) => "/admin/likes"))))))
+ ;; (fact "apply-view #'actions.admin.like/delete [:http :html]"
+ ;;   (let [action #'actions.admin.like/delete]
+ ;;     (with-context [:http :html]
+ ;;       (let [user (mock/a-user-exists)
+ ;;             activity (mock/there-is-an-activity)
+ ;;             like (actions.like/like-activity activity user)
+ ;;             request {:action action
+ ;;                      :params {:id (str (:_id like))}}
+ ;;             response (filter-action action request)]
+ ;;         (let [response (apply-view request response)]
+ ;;           response => map?
+ ;;           (:status response) => status/redirect?
+ ;;           (get-in response [:headers "Location"]) => "/admin/likes")))))
+)

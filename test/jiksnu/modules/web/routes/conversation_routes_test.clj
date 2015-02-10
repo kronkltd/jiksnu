@@ -4,12 +4,12 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact]]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (fact "index page (:viewmodel)"
+ (future-fact "index page (:viewmodel)"
    (let [response (->> "/main/conversations.viewmodel"
                        (req/request :get)
                        response-for)]

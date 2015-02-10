@@ -13,7 +13,7 @@
 
 (test-environment-fixture
 
- (fact "auth admin index"
+ (future-fact "auth admin index"
 
    (fact "When not authenticated"
      (let [response (-> (req/request :get "/admin/auth")

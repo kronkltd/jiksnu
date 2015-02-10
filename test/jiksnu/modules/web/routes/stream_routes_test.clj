@@ -7,12 +7,12 @@
             jiksnu.modules.web.views.stream-views
             [jiksnu.test-helper :refer [test-environment-fixture]]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [midje.sweet :refer [=> fact]]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (fact "public-timeline-http-route"
+ (future-fact "public-timeline-http-route"
    (fact "when there are no activities"
      (db/drop-all!)
 
@@ -43,7 +43,7 @@
        ))
    )
 
- (fact "user timeline"
+ (future-fact "user timeline"
 
    (fact "html"
      (let [user (mock/a-user-exists)]

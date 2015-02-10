@@ -1,4 +1,4 @@
-(ns jiksnu.modules.as
+(ns jiksnu.modules.admin
   (:require [ciste.loader :as loader
              :refer [defhandler defmodule]]
             [clojure.tools.logging :as log]
@@ -8,7 +8,7 @@
 (defn require-components
   []
   (doseq [group-name registry/action-group-names]
-    (util/require-module "jiksnu.modules" "as" group-name)))
+    (util/require-module "jiksnu.modules" "admin" group-name)))
 
 (defn start
   []

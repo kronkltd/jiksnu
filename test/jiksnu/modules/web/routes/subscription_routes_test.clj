@@ -18,7 +18,7 @@
 
 (test-environment-fixture
 
- (fact "ostatus submit"
+ (future-fact "ostatus submit"
    (let [username (fseq :username)
          domain-name (fseq :domain)
          uri (format "acct:%s@%s" username domain-name)

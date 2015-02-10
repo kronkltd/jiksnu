@@ -5,12 +5,12 @@
             jiksnu.modules.web.views.user-views
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact]]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (fact "index page"
+ (future-fact "index page"
    (let [url "/users"
          response (response-for (req/request :get url))]
      response => map?

@@ -5,9 +5,8 @@
         [ciste.routes :only [resolve-routes]]
         [ciste.views :only [defview]]
         [jiksnu.predicates :as predicates]
-        [jiksnu.modules.web.routes :only [http-routes]]
-        [jiksnu.modules.web.routes.admin-routes :only [admin-routes]]
-        )
+        ;; [jiksnu.modules.web.routes :only [http-routes]]
+        [jiksnu.modules.web.routes.admin-routes :only [admin-routes]])
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]))
 
@@ -20,7 +19,7 @@
                  :format         :viewmodel}
         response ((resolve-routes [predicates/http]
                                   (concat admin-routes
-                                          http-routes))
+                                          #_http-routes))
                   request)]
     (if-let [body (:body response)]
       (let [vm (json/read-str body :key-fn keyword)]

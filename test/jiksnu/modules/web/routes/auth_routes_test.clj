@@ -8,12 +8,12 @@
             [jiksnu.model :as model]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact truthy]]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (fact "login"
+ (future-fact "login"
    (fact "when given correct parameters"
      (db/drop-all!)
      (let [username (fseq :username)

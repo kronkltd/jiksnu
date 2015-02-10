@@ -5,12 +5,12 @@
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact]]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (fact "get access token"
+ (future-fact "get access token"
 
    (fact "when given valid params"
      (let [client (mock/a-client-exists)

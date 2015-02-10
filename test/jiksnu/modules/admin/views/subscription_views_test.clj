@@ -16,17 +16,17 @@
 
 (test-environment-fixture
 
- (fact "apply-view #'actions.admin.subscription/delete [:http :html]"
-   (let [action #'actions.admin.subscription/delete]
-     (with-context [:http :html]
+ ;; (fact "apply-view #'actions.admin.subscription/delete [:http :html]"
+ ;;   (let [action #'actions.admin.subscription/delete]
+ ;;     (with-context [:http :html]
 
-       (fact "when there is a subscription"
-         (let [subscription (mock/a-subscription-exists)
-               request {:action action
-                        :params {:id (str (:_id subscription))}}
-               response (filter-action action request)]
-           (let [response (apply-view request response)]
-             response => map?
-             (:status response) => status/redirect?))))))
+ ;;       (fact "when there is a subscription"
+ ;;         (let [subscription (mock/a-subscription-exists)
+ ;;               request {:action action
+ ;;                        :params {:id (str (:_id subscription))}}
+ ;;               response (filter-action action request)]
+ ;;           (let [response (apply-view request response)]
+ ;;             response => map?
+ ;;             (:status response) => status/redirect?))))))
 
  )

@@ -7,13 +7,13 @@
             [jiksnu.routes-helper :refer [as-admin response-for]]
             [jiksnu.test-helper :refer [test-environment-fixture]]
             [hiccup.core :as h]
-            [midje.sweet :refer [=> fact]]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  ;; TODO: This is a better test for the view
- (fact "delete"
+ (future-fact "delete"
    (let [subscription (mock/a-subscription-exists)]
      (let [url (str "/admin/subscriptions/" (:_id subscription) "/delete")
            response (-> (req/request :post url)

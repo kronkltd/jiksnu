@@ -13,7 +13,6 @@
      (fact "when the serialization is :http"
        (with-serialization :http
          (let [request {:action action}]
-           (let [response (filter-action action request)]
-             response => map?))))))
+           (filter-action action request) => map?)))))
 
  )

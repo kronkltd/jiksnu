@@ -12,14 +12,14 @@
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :refer [test-environment-fixture]]
             [jiksnu.util :as util]
-            [midje.sweet :refer [=> fact]]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]
             [ring.util.codec :as codec])
   (:import java.io.ByteArrayInputStream))
 
 (test-environment-fixture
 
- (fact "register client"
+ (future-fact "register client"
    (let [body-m {:type "client_associate"
                  :application_type "native"
                  :application_name (fseq :word)

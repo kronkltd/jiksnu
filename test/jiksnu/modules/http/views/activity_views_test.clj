@@ -10,36 +10,36 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> =not=> contains fact facts]]))
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact "apply-view #'actions.activity/oembed [:http :json]"
-   (let [action #'actions.activity/oembed]
-     (with-context [:http :json]
-       (let [activity (mock/there-is-an-activity)
-             request {:params {:url (:id activity)}
-                      :action action}
-             response (filter-action action request)]
-         (let [response (apply-view request response)]
-           (let [body (:body response)]
-             response => map?
-             (:status response) => status/success?
-             body => (contains {:title (:title activity)})))))))
+(fact "apply-view #'actions.activity/oembed [:http :json]"
+  (let [action #'actions.activity/oembed]
+    (with-context [:http :json]
+      (let [activity (mock/there-is-an-activity)
+            request {:params {:url (:id activity)}
+                     :action action}
+            response (filter-action action request)]
+        (apply-view request response) =>
+        (contains {:status status/success?
+                   :body (contains {:title (:title activity)})})))))
 
- (fact "apply-view #'actions.activity/oembed [:http :xml]"
-   (let [action #'actions.activity/oembed]
-     (with-context [:http :xml]
-       (let [activity (mock/there-is-an-activity)
-             request {:params {:url (:id activity)}
-                      :action action}
-             item {} #_(filter-action action request)]
-         (let [response (apply-view request item)]
-           (let [body (:body response)]
-             response => map?
-             (:status response) => status/success?
-             body =not=> string?))))))
+(fact "apply-view #'actions.activity/oembed [:http :xml]"
+  (let [action #'actions.activity/oembed]
+    (with-context [:http :xml]
+      (let [activity (mock/there-is-an-activity)
+            request {:params {:url (:id activity)}
+                     :action action}
+            item {} #_(filter-action action request)]
+        (let [response (apply-view request item)]
+          (let [body (:body response)]
+            response => map?
+            (:status response) => status/success?
+            body =not=> string?))))))
 
- )
+
 
