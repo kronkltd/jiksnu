@@ -16,7 +16,7 @@
 
 (defn init-handlers
   []
-  (log/info "initializing handlers")
+  ;; (log/info "initializing handlers")
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handler/event)
   (l/receive-all (trace/select-probes "*:created")   #'handler/created)
   ;; (l/receive-all (trace/select-probes "*:field:set")  #'handler/field-set)
@@ -60,7 +60,7 @@
 
 (defn start
   []
-  (log/info "starting web")
+  ;; (log/info "starting web")
   (init-handlers)
   (require-components))
 
@@ -74,8 +74,6 @@
 
 (defmodule "web"
   :start start
-  :deps [
-         "jiksnu.modules.core"
-         "jiksnu.modules.json"
-         ])
+  :deps ["jiksnu.modules.core"
+         "jiksnu.modules.json"])
 

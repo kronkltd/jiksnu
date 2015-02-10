@@ -14,40 +14,36 @@
             jiksnu.modules.web.routes.activity-routes
             jiksnu.modules.web.views.activity-views
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> contains fact future-fact]]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req])
   (:import jiksnu.model.User))
 
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
-(test-environment-fixture
+(fact "update"
+  (fact "when the user is authenticated"
+    (let [author (mock/a-user-exists)
+          content (fseq :content)
+          data (json/json-str
+                {:content content})]
+      data => string?)))
 
- (fact "update"
-   (fact "when the user is authenticated"
-     (let [author (mock/a-user-exists)
-           content (fseq :content)
-           data (json/json-str
-                 {:content content})]
-       data => string?)))
+(fact "oembed"
+  (fact "when the format is json"
+    (let [activity (mock/there-is-an-activity)
+          url (str "/main/oembed?format=json&url=" (:url activity))]
+      (response-for (req/request :get url)) =>
+      (contains {:status status/redirect?
+                 :body string?})))
 
- (future-fact "oembed"
-   (fact "when the format is json"
-     (let [user (mock/a-user-exists)
-           activity (mock/there-is-an-activity)
-           url (with-context [:http :html]
-                 (str "/main/oembed?format=json&url=" (full-uri activity)))]
-       (let [response (response-for (req/request :get url))]
-         response => map?
-         (:status response) => status/redirect?
-         (:body response) => string?)))
+  (fact "when the format is xml"
+    (let [activity (mock/there-is-an-activity)
+          url (str "/main/oembed?format=xml&url=" (:url activity))]
+      (response-for (req/request :get url)) =>
+      (contains {:status status/success?
+                 :body string?})))
+  )
 
-   (fact "when the format is xml"
-     (let [activity (mock/there-is-an-activity)
-           url (with-context [:http :html]
-                 (str "/main/oembed?format=xml&url=" (full-uri activity)))]
-       (let [response (response-for (req/request :get url))]
-         response => map?
-         (:status response) => status/success?
-         (:body response) => string?)))
-   )
- )

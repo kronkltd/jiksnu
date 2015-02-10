@@ -5,14 +5,10 @@
 
 (defn start
   []
-  (log/info "starting http"))
+  ;; (log/info "starting http")
+  )
 
 (defmodule "http"
   :start start
-  :deps [
-         "jiksnu.modules.core"
-         ]
-
-
-  )
+  :deps ["jiksnu.modules.core"])
 

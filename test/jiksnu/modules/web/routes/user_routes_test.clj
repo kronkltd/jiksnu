@@ -4,16 +4,17 @@
             [clojurewerkz.support.http.statuses :as status]
             jiksnu.modules.web.views.user-views
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (future-fact "index page"
-   (let [url "/users"
-         response (response-for (req/request :get url))]
-     response => map?
-     (:status response) => status/success?
-     (:body response) => string?))
- )
+(fact "index page"
+  (let [url "/main/users"]
+    (response-for (req/request :get url)) =>
+    (contains {:status status/success?
+               :body string?})))
+

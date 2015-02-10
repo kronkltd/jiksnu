@@ -17,12 +17,10 @@
   "Run a request against the main handler and wait for the response"
   ([request] (response-for request (time/seconds 5)))
   ([request timeout]
-     (let [ch (channel)]
-       (try+
-        (r/app ch request)
-        (catch Object ex
-          (log/error "error in response-for" ex)))
-       (wait-for-message ch timeout))))
+   (try+
+    (log/spy :info (r/app request))
+    (catch Object ex
+      (log/error "error in response-for" ex)))))
 
 (defn get-auth-cookie
   [username password]

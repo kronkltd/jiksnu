@@ -1,20 +1,18 @@
 (ns jiksnu.modules.web.routes.conversation-routes-test
-  (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (future-fact "index page (:viewmodel)"
-   (let [response (->> "/main/conversations.viewmodel"
-                       (req/request :get)
-                       response-for)]
-     response => map?
-     (:status response) => status/success?
-     (:body response) => string?))
-
- )
+(future-fact "index page (:viewmodel)"
+  (->> "/main/conversations.viewmodel"
+       (req/request :get)
+       response-for) =>
+       (contains {:status status/success?
+                  :body string?}))
