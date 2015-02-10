@@ -23,7 +23,6 @@
                  [hiccup "1.0.5"]
                  [im.chit/gyr "0.3.1"]
                  [im.chit/purnam "0.5.2"]
-                 [manifold "0.1.0-beta9"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
                   :exclusions [xalan com.cemerick/austin]]
