@@ -17,7 +17,6 @@
                  [hiccup "1.0.5"]
                  [http-kit "2.1.16"]
                  [lamina "0.5.6"]
-                 [manifold "0.1.0-beta10"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
                  [org.clojure/clojure "1.6.0"]

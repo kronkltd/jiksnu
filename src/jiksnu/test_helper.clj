@@ -74,6 +74,6 @@
     ;; (fact (do ~@body) =not=> (throws))
     ~@body
     (catch Object ex#
-      (throw ex#))
+      (throw+ ex#))
     (finally
       (stop-application!))))

@@ -5,7 +5,6 @@
             [ciste.core :refer [defaction]]
             [ciste.event :refer [defkey notify]]
             [ciste.model :as cm]
-            [clj-http.client :as client]
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
@@ -21,6 +20,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [jiksnu.util :as util]
+            [org.httpkit.client :as client]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Resource))
 
@@ -172,18 +172,6 @@
   (model.resource/set-field! item :requiresAuth true)
   nil)
 
-(defn handle-update-realized
-  [item response]
-  (notify ::resource-realized
-          {:item item
-           :response response})
-  (model.resource/set-field! item :lastUpdated (time/now))
-  (model.resource/set-field! item :status (:status response))
-  (condp = (:status response)
-    200 (transform-response response)
-    401 (handle-unauthorized item response)
-    (log/warn "Unknown status type")))
-
 (defn update*
   "Fetches the resource and returns a result channel or nil.
 
@@ -204,23 +192,21 @@ The channel will receive the body of fetching this resource."
                            ["Dialback"
                             (format "host=\"%s\"" (config :domain))
                             (format "token=\"%s\"" "4430086d")])
-              request {:url url
-                       :method :get
-                       :headers {"User-Agent" user-agent
+              options {:headers {"User-Agent" user-agent
                                  "date" (util/date->rfc1123 (.toDate date))
                                  "authorization" auth-string}}]
-          (notify ::resource-updated
-                  {:item item})
-          (trace/trace :resource:updated item)
-          (log/infof "updating resource: %s" url)
-          (l/run-pipeline
-           (http/http-request request)
-           {:error-handler (fn [ex]
-                             ;; (log/error ex)
-                             ;; (.printStackTrace ex)
-                             (trace/trace :resource:failed [item ex]))
-            :result res}
-           (partial handle-update-realized item))
+          (notify ::resource-updated {:item item})
+          (client/get url options
+                      (fn [response]
+                        (notify ::resource-realized
+                                {:item item
+                                 :response response})
+                        (model.resource/set-field! item :lastUpdated (time/now))
+                        (model.resource/set-field! item :status (:status response))
+                        (condp = (:status response)
+                          200 (transform-response response)
+                          401 (handle-unauthorized item response)
+                          (log/warn "Unknown status type"))))
           res))
       (log/warn "Resource does not need to be updated at this time."))))
 
