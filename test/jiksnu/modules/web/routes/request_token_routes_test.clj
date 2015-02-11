@@ -3,23 +3,25 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
+            [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (future-fact "authorize"
-   (fact "when authenticated"
-     (let [actor (mock/a-user-exists)]
+(future-fact "authorize"
+  (fact "when authenticated"
+    (let [actor (mock/a-user-exists)]
 
-       (fact "when given a valid request token"
-         (let [request-token (mock/a-request-token-exists)
-               url (format "/oauth/authorize?oauth_token=%s" (:_id request-token))]
-           (let [response (-> (req/request :get url)
-                              (as-user actor)
-                              response-for)]
-             (:status response) => status/success?)))
-       ))
-   )
- )
+      (fact "when given a valid request token"
+        (let [request-token (mock/a-request-token-exists)
+              url (format "/oauth/authorize?oauth_token=%s" (:_id request-token))]
+          (let [response (-> (req/request :get url)
+                             (as-user actor)
+                             response-for)]
+            (:status response) => status/success?)))
+      ))
+  )
+

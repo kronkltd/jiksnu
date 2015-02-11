@@ -4,9 +4,9 @@
             [clj-webdriver.taxi :refer [to]]
             [clojure.tools.logging :as log]
             jiksnu.modules.web.routes
-            [lamina.core :refer [permanent-channel]]
+            [lamina.core :as l]
             [lamina.time :as time]
-            [midje.sweet :refer [fact]]
+            [midje.sweet :refer :all]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (def default-sleep-time (time/seconds 5))

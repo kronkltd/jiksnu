@@ -10,32 +10,32 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [check hiccup->doc test-environment-fixture]]
-            [midje.sweet :refer [=> anything fact]]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact "subscription request"
-   (let [domain (mock/a-domain-exists)
-         source (mock/a-feed-source-exists
-                 {:domain (actions.domain/current-domain)})
-         topic-url (:topic source)
-         callback-url (factory/make-uri (:_id domain))
-         params {"hub.topic"        topic-url
-                 "hub.secret"       (fseq :secret-key)
-                 "hub.verify_token" (fseq :verify-token)
-                 "hub.verify"       "sync"
-                 "hub.callback"     callback-url
-                 "hub.mode"         "subscribe"}]
+(fact "subscription request"
+  (let [domain (mock/a-domain-exists)
+        source (mock/a-feed-source-exists
+                {:domain (actions.domain/current-domain)})
+        topic-url (:topic source)
+        callback-url (factory/make-uri (:_id domain))
+        params {"hub.topic"        topic-url
+                "hub.secret"       (fseq :secret-key)
+                "hub.verify_token" (fseq :verify-token)
+                "hub.verify"       "sync"
+                "hub.callback"     callback-url
+                "hub.mode"         "subscribe"}]
 
-     (-> (req/request :post "/main/push/hub")
-         (assoc :params params)
-         response-for) =>
-         (check [response]
-           response => map?
-           (:status response) => 204)
-         (provided
-           (actions.pubsub/verify-subscribe-sync anything anything) => true)))
+    (-> (req/request :post "/main/push/hub")
+        (assoc :params params)
+        response-for) =>
+        (contains {:status 204})
+        (provided
+          (actions.pubsub/verify-subscribe-sync anything anything) => true)))
 
- )
+

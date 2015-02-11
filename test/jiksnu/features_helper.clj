@@ -4,7 +4,6 @@
             [ciste.core :as core]
             [ciste.runner :as runner]
             [ciste.sections.default :as sections]
-            [clj-factory.core :refer [factory fseq]]
             [clj-webdriver.core :as webdriver]
             [clj-webdriver.taxi :as taxi]
             [clojure.data.json :as json]
@@ -20,7 +19,7 @@
             [jiksnu.referrant :refer [this that set-this set-that]]
             jiksnu.modules.web.routes
             [jiksnu.session :as session]
-            [lamina.core :refer [permanent-channel read-channel* siphon]]
+            [lamina.core :as l]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Domain
            jiksnu.model.User))

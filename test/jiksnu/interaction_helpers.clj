@@ -9,7 +9,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that set-this]]
             [jiksnu.session :as session]
-            [midje.sweet :refer [fact =not=> throws]]
+            [midje.sweet :refer :all]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import org.openqa.selenium.ElementNotVisibleException))
 

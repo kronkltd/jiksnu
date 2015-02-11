@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.activity-routes-test
   (:require [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [full-uri]]
-            [clj-factory.core :refer [factory fseq]]
+            [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]

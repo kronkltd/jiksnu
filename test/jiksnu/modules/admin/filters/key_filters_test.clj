@@ -1,18 +1,19 @@
 (ns jiksnu.modules.admin.filters.key-filters-test
-  (:use [ciste.core :only [with-serialization *serialization*]]
-        [ciste.filters :only [filter-action]]
-        [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [=> fact]])
-  (:require [jiksnu.modules.admin.actions.key-actions :as actions.key]))
+  (:require [ciste.core :refer [with-serialization *serialization*]]
+            [ciste.filters :refer [filter-action]]
+            [jiksnu.modules.admin.actions.key-actions :as actions.key]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact "filter-action #'actions.key/index"
-   (let [action #'actions.key/index]
-     (fact "when the serialization is :http"
-       (with-serialization :http
-         (let [request {:action action}]
-           (filter-action action request) => map?)))))
+(fact "filter-action #'actions.key/index"
+  (let [action #'actions.key/index]
+    (fact "when the serialization is :http"
+      (with-serialization :http
+        (let [request {:action action}]
+          (filter-action action request) => map?)))))
 
- )
+

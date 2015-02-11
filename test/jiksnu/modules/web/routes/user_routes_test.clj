@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.user-routes-test
-  (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             jiksnu.modules.web.views.user-views
             [jiksnu.routes-helper :refer [response-for]]

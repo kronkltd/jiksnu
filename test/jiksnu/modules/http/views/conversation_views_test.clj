@@ -2,26 +2,27 @@
   (:require [ciste.core :refer [with-context]]
             [ciste.filters :refer [filter-action]]
             [ciste.views :refer [apply-view]]
-            [clj-factory.core :refer [factory]]
             [jiksnu.actions.conversation-actions :as actions.conversation]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact]]))
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact "apply-view #'actions.conversation/index [:http :viewmodel]"
-   (let [action #'actions.conversation/index]
-     (with-context [:http :viewmodel]
-       (fact "when there are no conversations"
-         (let [request {:action action
-                        :format :viewmodel
-                        :params {:format :viewmodel}}
-               response (filter-action action request)
-               rendered (apply-view request response)]
+(fact "apply-view #'actions.conversation/index [:http :viewmodel]"
+  (let [action #'actions.conversation/index]
+    (with-context [:http :viewmodel]
+      (fact "when there are no conversations"
+        (let [request {:action action
+                       :format :viewmodel
+                       :params {:format :viewmodel}}
+              response (filter-action action request)
+              rendered (apply-view request response)]
 
-           (fact "returns a map"
-             rendered => map?)))
-       )
-     ))
+          (fact "returns a map"
+            rendered => map?)))
+      )
+    ))
 
- )
+

@@ -1,21 +1,22 @@
 (ns jiksnu.modules.web.filters.user-filters-test
-  (:use [clj-factory.core :only [factory]]
-        [ciste.core :only [with-serialization with-format
-                           *serialization* *format*]]
-        [ciste.filters :only [filter-action]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [=> fact]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.core :refer [with-serialization with-format
+                                *serialization* *format*]]
+            [ciste.filters :refer [filter-action]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact "filter-action #'index :http"
-   (let [action #'actions.user/index]
-     (with-serialization :http
-       (let [request {}]
-         (filter-action action request) => map?))))
+(fact "filter-action #'index :http"
+  (let [action #'actions.user/index]
+    (with-serialization :http
+      (let [request {}]
+        (filter-action action request) => map?))))
 
- )
+

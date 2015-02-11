@@ -2,7 +2,6 @@
   (:require [ciste.core :refer [with-context with-serialization with-format]]
             [ciste.filters :refer [filter-action]]
             [ciste.views :refer [apply-view]]
-            [clj-factory.core :refer [factory]]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
@@ -11,22 +10,26 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact]]))
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- ;; (fact "apply-view #'actions.admin.subscription/delete [:http :html]"
- ;;   (let [action #'actions.admin.subscription/delete]
- ;;     (with-context [:http :html]
 
- ;;       (fact "when there is a subscription"
- ;;         (let [subscription (mock/a-subscription-exists)
- ;;               request {:action action
- ;;                        :params {:id (str (:_id subscription))}}
- ;;               response (filter-action action request)]
- ;;           (let [response (apply-view request response)]
- ;;             response => map?
- ;;             (:status response) => status/redirect?))))))
 
- )
+(fact "apply-view #'actions.admin.subscription/delete [:http :html]"
+  (let [action #'actions.admin.subscription/delete]
+    (with-context [:http :html]
+
+      (fact "when there is a subscription"
+        (let [subscription (mock/a-subscription-exists)
+              request {:action action
+                       :params {:id (str (:_id subscription))}}
+              response (filter-action action request)]
+          (let [response (apply-view request response)]
+            response => map?
+            (:status response) => status/redirect?))))))
+
+

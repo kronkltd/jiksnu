@@ -1,25 +1,23 @@
 (ns jiksnu.modules.web.filters.domain-filters-test
-    (:use [clj-factory.core :only [factory]]
-        [ciste.core :only [with-serialization with-format
-                           *serialization* *format*]]
-        [ciste.filters :only [filter-action]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [=> fact]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.core :refer [with-serialization with-format]]
+            [ciste.filters :refer [filter-action]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact "filter-action #'actions.domain/show"
-   (let [action #'actions.domain/show]
-     (fact "when the serialization is :http"
-       (with-serialization :http
-         (let [request {:params {:id .id.}}]
-           (filter-action action request) => .response.
-           (provided
-             (actions.domain/show .domain.) => .response.
-             (model.domain/fetch-by-id .id.) => .domain.))))))
-
- )
+(fact "filter-action #'actions.domain/show"
+  (let [action #'actions.domain/show]
+    (fact "when the serialization is :http"
+      (with-serialization :http
+        (let [request {:params {:id .id.}}]
+          (filter-action action request) => .response.
+          (provided
+            (actions.domain/show .domain.) => .response.
+            (model.domain/fetch-by-id .id.) => .domain.))))))

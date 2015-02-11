@@ -13,11 +13,9 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.routes-helper :refer [response-for]]
-            [jiksnu.test-helper :refer [setup-testing stop-testing
-                                        test-environment-fixture]]
+            [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
-            [midje.sweet :refer [=> after before fact facts future-fact
-                                 namespace-state-changes]]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
 (defn get-link
@@ -29,38 +27,30 @@
  [(before :contents (setup-testing))
   (after :contents (stop-testing))])
 
-(facts "Requesting the host meta"
+(future-facts "Requesting the host meta"
   (against-background
     [(actions.domain/current-domain) => .domain.
      (actions.domain/show .domain.) => .domain.]
 
-    (fact
-      (+ 2 2) => 4
-      )
+    (fact "returns the host meta as xml"
+      (let [url "/.well-known/host-meta"]
+        (response-for (req/request :get url)) =>
+        (contains {:status status/success?
+                   :headers (contains {"Content-Type" "application/xrds+xml"})
+                   :body #(seq (get-link (cm/string->document %) "lrdd"))})))
 
-    ;; (fact "returns the host meta as xml"
-    ;;   (let [url "/.well-known/host-meta"
-    ;;         response (response-for (req/request :get url))]
-    ;;     response => map?
-    ;;     (:status response) => status/success?
-    ;;     (:body response) => string?
-    ;;     (get-in response [:headers "Content-Type"]) => "application/xrds+xml"
-    ;;     (let [body (cm/string->document (:body response))]
-    ;;       ;; has at least 1 lrdd link
-    ;;       (get-link body "lrdd") =not=> empty?)))
-
-    ;; (fact "host meta json"
-    ;;   (let [url "/.well-known/host-meta.json"
-    ;;         response (response-for (req/request :get url))]
-    ;;     response => map?
-    ;;     (:status response) => status/success?
-    ;;     (:body response) => string?
-    ;;     (get-in response [:headers "Content-Type"]) => "application/json"
-    ;;     (let [body (json/read-str (:body response) :key-fn keyword)]
-    ;;       (count (:links body)) => (partial >= 1)
-    ;;       (:host body) => (:_id .domain.)
-    ;;       (get-link body "lrdd") =not=> empty?
-    ;;       (util/rel-filter "lrdd" (:links body)) =not=> empty?)))
+    (fact "host meta json"
+      (let [url "/.well-known/host-meta.json"
+            response (response-for (req/request :get url))]
+        response => map?
+        (:status response) => status/success?
+        (:body response) => string?
+        (get-in response [:headers "Content-Type"]) => "application/json"
+        (let [body (json/read-str (:body response) :key-fn keyword)]
+          (count (:links body)) => (partial >= 1)
+          (:host body) => (:_id .domain.)
+          (get-link body "lrdd") =not=> empty?
+          (util/rel-filter "lrdd" (:links body)) =not=> empty?)))
     ))
 
 

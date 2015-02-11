@@ -1,11 +1,13 @@
 (ns jiksnu.modules.admin.actions.auth-actions-test
-  (:use [jiksnu.test-helper :only [test-environment-fixture]]
-        jiksnu.modules.admin.actions.auth-actions
-        [midje.sweet :only [=> fact]]))
+  (:require [jiksnu.test-helper :as th]
+            [jiksnu.modules.admin.actions.auth-actions :as admin.actions.auth]
+            [midje.sweet :refer :all]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (fact #'index
-   (index) => map?)
+(fact "#'admin.actions.auth/index"
+  (admin.actions.auth/index) => map?)
 
- )
+

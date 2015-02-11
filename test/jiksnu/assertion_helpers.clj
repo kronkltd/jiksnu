@@ -13,8 +13,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-that get-this]]
             [jiksnu.session :as session]
-            [lamina.core :refer [read-channel*]]
-            [midje.sweet :refer [=> =not=> checker contains defchecker truthy]]
+            [lamina.core :as l]
+            [midje.sweet :refer :all]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import org.openqa.selenium.NoSuchElementException))
 

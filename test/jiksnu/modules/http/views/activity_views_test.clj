@@ -2,7 +2,6 @@
   (:require [ciste.core :refer [with-context]]
             [ciste.filters :refer [filter-action]]
             [ciste.views :refer [apply-view]]
-            [clj-factory.core :refer [factory]]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.activity-actions :as actions.activity]

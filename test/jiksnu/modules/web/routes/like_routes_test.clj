@@ -4,25 +4,21 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.model.like :as model.like]
             [jiksnu.routes-helper :refer [as-admin response-for]]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact future-fact]]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (future-fact "delete html"
-   (let [like (model.like/create (factory :like))
-         url (format "/likes/%s/delete" (:_id like))]
-     (let [response (-> (req/request :post url)
-                        as-admin response-for)]
-       response => map?
-       (:status response) => status/redirect?
-       (:body response) => string?
-       (get-in response [:headers "Content-Type"]) => "text/html"
+(future-fact "delete html"
+  (let [like (model.like/create (factory :like))
+        url (format "/likes/%s/delete" (:_id like))]
+    (-> (req/request :post url)
+        as-admin response-for) =>
+        (contains {:status status/redirect?
+                   :headers (contains {"Content-Type" "text/html"})
+                   :body string?})
 
-       ;; TODO: use an exist test
-       (model.like/fetch-by-id (:_id like)) => nil
-
-       )))
-
- )
+        (model.like/fetch-by-id (:_id like)) => nil))

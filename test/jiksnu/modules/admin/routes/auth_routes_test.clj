@@ -7,28 +7,30 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :refer [test-environment-fixture]]
-            [midje.sweet :refer [=> fact future-fact]]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(test-environment-fixture
+(namespace-state-changes
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
- (future-fact "auth admin index"
+(future-fact "auth admin index"
 
-   (fact "When not authenticated"
-     (let [response (-> (req/request :get "/admin/auth")
-                        response-for)]
-       response => map?
-       (:status response) => status/redirect?))
+  (fact "When not authenticated"
+    (let [response (-> (req/request :get "/admin/auth")
+                       response-for)]
+      response => map?
+      (:status response) => status/redirect?))
 
-   (future-fact "When authenticated as an admin"
-     (let [user (actions.user/create (factory :user {:admin true}))]
-       (session/with-user user
-         (let [response (-> (req/request :get "/admin/auth")
-                            response-for)]
-           response => map?
-           (:status response) => status/success?))))
+  (future-fact "When authenticated as an admin"
+    (let [user (actions.user/create (factory :user {:admin true}))]
+      (session/with-user user
+        (let [response (-> (req/request :get "/admin/auth")
+                           response-for)]
+          response => map?
+          (:status response) => status/success?))))
 
-   )
- )
+  )
+
 
