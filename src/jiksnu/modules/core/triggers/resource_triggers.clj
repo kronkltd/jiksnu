@@ -24,11 +24,11 @@
 
 (defn handle-pending-get-resource*
   [url]
-  (actions.resource/find-or-create {:url url}))
+  (actions.resource/find-or-create {:_id url}))
 
 (defn handle-pending-update-resources*
   [url & [options]]
-  (when-let [resource (actions.resource/find-or-create {:url url})]
+  (when-let [resource (actions.resource/find-or-create {:_id url})]
     (try @(actions.resource/update* resource options)
          (catch Exception ex
            (log/error "update resource error")))))

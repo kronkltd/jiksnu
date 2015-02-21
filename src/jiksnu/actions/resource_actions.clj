@@ -1,6 +1,5 @@
 (ns jiksnu.actions.resource-actions
-  (:require [aleph.formats :refer [channel-buffer->string]]
-            [aleph.http :as http]
+  (:require #_[aleph.formats :refer [channel-buffer->string]]
             [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [ciste.event :refer [defkey notify]]
@@ -29,6 +28,10 @@
   :schema {:item "Resource"
            :response "Map"})
 
+(defkey ::resource-updated
+  "Whenever a resource is updated"
+)
+
 (def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
 
 (defonce delete-hooks (ref []))
@@ -44,8 +47,8 @@
 (defn prepare-create
   [params]
   (-> params
-      transforms/set-_id
-      transforms/set-local
+      ;; transforms/set-_id
+      (transforms/set-local :_id)
       transforms.resource/set-domain
       transforms.resource/set-location
       transforms/set-updated-time
@@ -57,13 +60,13 @@
 (defaction create
   [params]
   (let [params (prepare-create params)]
-    (if-let [item (model.resource/create params)]
+    (if-let [item (model.resource/create (log/spy :info params))]
       item
       (throw+ "Could not create record"))))
 
 (defaction find-or-create
   [params & [{tries :tries :or {tries 1} :as options}]]
-  (if-let [item (or (model.resource/fetch-by-url (:url params))
+  (if-let [item (or (model.resource/fetch-by-url (:_id params))
                     (try
                       (create params)
                       (catch Exception ex)))]
@@ -112,7 +115,7 @@
         status (:status response)]
     (model.resource/set-field! item :status status)
     (when-let [location (get-in response [:headers "location"])]
-      (let [resource (find-or-create {:url location})]
+      (let [resource (find-or-create {:_id location})]
         (update resource)
         (model.resource/set-field! item :location location)))
     (let [[content-type rest] (string/split content-str #"; ?")]
@@ -132,41 +135,6 @@
              (time/after? (-> 5 time/minutes time/ago)
                           (coerce/to-date-time last-updated))))))
 
-(defn get-body-buffer
-  "Given an http response, returns a channel buffer"
-  [response]
-  (log/info "Getting body buffer")
-  (when-let [body (:body response)]
-    (let [res (l/expiring-result (lt/seconds 15))]
-      (if (l/channel? body)
-        (l/on-closed body
-                     (fn []
-                       (log/info "closed")
-                       ;; (l/receive-all body println)
-                       (let [buffers (l/channel->seq body #_(lt/seconds 30))]
-                         (let [cb (aleph.formats/channel-buffers->channel-buffer buffers)]
-                           (l/enqueue res cb)))))
-        (l/enqueue res body))
-      res)))
-
-(defn decode-buffer
-  [response buffer]
-  (log/info "Buffer channel realized")
-  (let [body-str (aleph.formats/channel-buffer->string buffer)
-        response (assoc response :body body-str)]
-    response))
-
-(defn transform-response
-  [response]
-  ;; TODO: make this configurable
-  (let [res (l/expiring-result (lt/seconds 15))]
-    (l/run-pipeline
-     (get-body-buffer response)
-     {:error-handler (fn [ex] ex)
-      :result res}
-     (partial decode-buffer response))
-    res))
-
 (defn handle-unauthorized
   [item response]
   (model.resource/set-field! item :requiresAuth true)
@@ -178,7 +146,7 @@
 The channel will receive the body of fetching this resource."
   [item & [options]]
   {:pre [(instance? Resource item)]}
-  (let [url (:url item)
+  (let [url (:_id item)
         actor (session/current-user)
         date (time/now)]
     (if (or true (needs-update? item options))
@@ -200,11 +168,11 @@ The channel will receive the body of fetching this resource."
                       (fn [response]
                         (notify ::resource-realized
                                 {:item item
-                                 :response response})
+                                 :response (log/spy :info response)})
                         (model.resource/set-field! item :lastUpdated (time/now))
                         (model.resource/set-field! item :status (:status response))
                         (condp = (:status response)
-                          200 (transform-response response)
+                          200 response
                           401 (handle-unauthorized item response)
                           (log/warn "Unknown status type"))))
           res))

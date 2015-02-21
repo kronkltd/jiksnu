@@ -201,7 +201,7 @@
   {:url (fseq :uri)})
 
 (defrecordfactory :resource model/map->Resource
-  {:url (fseq :uri)})
+  {:_id (fseq :uri)})
 
 (defrecordfactory :activity model/map->Activity
   {:title (fseq :title)

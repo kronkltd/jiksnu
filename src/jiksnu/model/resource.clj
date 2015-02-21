@@ -21,8 +21,7 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id     ObjectId)
-   (type-of :url     String)
+   (type-of :_id     String)
    (type-of :domain  String)
    (type-of :local   Boolean)
    (type-of :created DateTime)
@@ -33,7 +32,7 @@
 (def drop!         (templates.model/make-dropper       collection-name))
 (def remove-field! (templates.model/make-remove-field! collection-name))
 (def set-field!    (templates.model/make-set-field!    collection-name))
-(def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker))
+(def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker false))
 (def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
 

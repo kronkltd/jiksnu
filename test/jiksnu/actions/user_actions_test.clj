@@ -46,7 +46,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'actions.user/discover-user-jrd
+(fact "#'actions.user/discover-user-jrd"
   (let [username (fseq :username)
         domain-name (fseq :domain)
         uri (format "acct:%s@%s" username domain-name)
@@ -64,7 +64,7 @@
     (provided
       (ops/update-resource jrd-uri anything) => (l/success-result {:body mock-jrd}))))
 
-(future-fact #'actions.user/get-username-from-http-uri
+(future-fact "#'actions.user/get-username-from-http-uri"
   (fact "when the uri does not have user info"
     (let [username (fseq :username)
           domain-name (fseq :domain)
@@ -72,7 +72,7 @@
           params {:_id uri}]
       (actions.user/get-username-from-http-uri params) => (contains {:username username}))))
 
-(fact #'actions.user/get-username
+(fact "#'actions.user/get-username"
   (let [username (fseq :username)
         domain-name (fseq :domain)
         template (str "http://" domain-name "/xrd?uri={uri}")
@@ -110,7 +110,7 @@
         (actions.user/get-username params) => (contains {:username username})))
     ))
 
-(fact #'actions.user/get-domain
+(fact "#'actions.user/get-domain"
   (fact "when the domain already exists"
     (let [domain (mock/a-domain-exists {:discovered true})
           domain-name (:_id domain)]
@@ -142,7 +142,7 @@
       ))
   )
 
-(fact #'actions.user/create
+(fact "#'actions.user/create"
   (fact "when the params are nil"
     (let [params nil]
       (actions.user/create params) => (throws RuntimeException)))
@@ -159,10 +159,10 @@
                   :links [{:href (fseq :uri) :rel "alternate"}]}]
       (actions.user/create params) => model/user?)))
 
-(fact #'actions.user/index
+(fact "#'actions.user/index"
   (actions.user/index) => map?)
 
-(fact #'actions.user/find-or-create
+(fact "#'actions.user/find-or-create"
   (let [username (fseq :username)
         domain-name (fseq :domain)
         source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)
@@ -230,10 +230,10 @@
             (actions.user/create anything) => .user.))))
     ))
 
-(fact #'actions.user/register-page
+(fact "#'actions.user/register-page"
   (actions.user/register-page) => (partial instance? User))
 
-(fact #'actions.user/register
+(fact "#'actions.user/register"
   (let [params {:username (fseq :username)
                 :email (fseq :email)
                 :name (fseq :name)

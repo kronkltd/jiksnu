@@ -17,7 +17,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'count-records
+(fact "#'count-records"
   (fact "when there aren't any items"
     (drop!)
     (count-records) => 0)
@@ -28,12 +28,12 @@
         (mock/a-resource-exists))
       (count-records) => n)))
 
-(fact #'delete
+(fact "#'delete"
   (let [item (mock/a-resource-exists)]
     (delete item) => item
     (fetch-by-id (:_id item)) => nil))
 
-(fact #'fetch-by-id
+(fact "#'fetch-by-id"
   (fact "when the item doesn't exist"
     (let [id (util/make-id)]
       (fetch-by-id id) => nil?))
@@ -42,7 +42,7 @@
     (let [item (mock/a-resource-exists)]
       (fetch-by-id (:_id item)) => item)))
 
-(fact #'create
+(fact "#'create"
   (fact "when given valid params"
     (let [params (actions.resource/prepare-create
                   (factory :resource))]
@@ -51,7 +51,7 @@
   (fact "when given invalid params"
     (create {}) => (throws RuntimeException)))
 
-(fact #'fetch-all
+(fact "#'fetch-all"
   (fact "when there are no records"
     (drop!)
     (fetch-all) => empty?)

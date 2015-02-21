@@ -45,7 +45,7 @@
   [& [options]]
   (let [domain (or (:domain options)
                    (a-domain-exists))
-        params (factory :resource {:url (or (:url options)
+        params (factory :resource {:_id (or (:url options)
                                             (make-uri (:_id domain)))})
         resource (actions.resource/create params)]
     (set-this :resource resource)

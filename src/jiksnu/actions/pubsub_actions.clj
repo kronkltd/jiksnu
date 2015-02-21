@@ -1,6 +1,5 @@
 (ns jiksnu.actions.pubsub-actions
-  (:require [aleph.http :as http]
-            [ciste.core :refer [defaction]]
+  (:require [ciste.core :refer [defaction]]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [lamina.executor :as e]
@@ -10,6 +9,7 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]
+            [org.httpkit.client :as client]
             [slingshot.slingshot :refer [throw+]]))
 
 (defn verify-subscribe-sync
@@ -25,10 +25,9 @@
                     :hub.verify_token  (:verify-token feed-subscription)}
             url (util/make-subscribe-uri (:callback feed-subscription) params)
             ;; TODO: handle this in resources?
-            response-channel (http/http-request {:method :get
-                                                 :url url
-                                                 :auto-transform true})]
-        (let [response @response-channel]
+            response-p (client/get url)]
+        ;; NB: This blocks
+        (let [response @response-p]
           (if (= 200 (:status response))
             {:status 204}
             {:status 404})))

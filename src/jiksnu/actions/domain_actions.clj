@@ -16,7 +16,6 @@
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as lt]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import java.net.URL
            jiksnu.model.Domain))
@@ -72,8 +71,7 @@
            (if-let [body (:body response)]
              (cm/string->document body))
            (catch RuntimeException ex
-             (log/error "Fetching host meta failed")
-             (trace/trace "errors:handled" ex))))))
+             (log/error "Fetching host meta failed" ex))))))
    (catch Object ex
      (log/error ex))))
 
@@ -166,7 +164,7 @@
 
 (defn discover-statusnet-config
   [domain url]
-  (let [urls (model.domain/statusnet-url domain)]
+  (let [urls (log/spy :info (model.domain/statusnet-url domain))]
     (->> [urls]
          (map (fn [url]
                 (when-let [response (ops/update-resource url)]

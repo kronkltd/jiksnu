@@ -1,10 +1,10 @@
 (ns jiksnu.transforms
-  (:use [ciste.config :only [config]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [clj-time.core :as time]
+  (:require [ciste.config :refer [config]]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util]))
+            [jiksnu.util :as util]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn set-_id
   [item]
@@ -25,15 +25,16 @@
     (assoc item :updated (time/now))))
 
 (defn set-local
-  [item]
-  (if (contains? item :local)
-    item
-    (if-let [url (:url item)]
-      (if-let [domain-name (util/get-domain-name url)]
-        (assoc item :local
-               (= (config :domain) domain-name))
-        (throw+ "Could not determine domain name from url"))
-      (throw+ "Could not determine url"))))
+  ([item] (set-local item :url))
+  ([item key]
+   (if (contains? item :local)
+     item
+     (if-let [url (get item key)]
+       (if-let [domain-name (util/get-domain-name url)]
+         (assoc item :local
+                (= (config :domain) domain-name))
+         (throw+ "Could not determine domain name from url"))
+       (throw+ "Could not determine url")))))
 
 (defn set-domain
   [item]

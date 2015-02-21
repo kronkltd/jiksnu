@@ -1,15 +1,15 @@
 (ns jiksnu.transforms.resource-transforms
-  (:use [ciste.config :only [config]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.config :refer [config]]
+            [clojure.tools.logging :as log]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util]))
+            [jiksnu.util :as util]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn set-local
   [item]
   (if (contains? item :local)
     item
-    (if-let [url (:url item)]
+    (if-let [url (:_id item)]
       (if-let [domain-name (util/get-domain-name url)]
         (assoc item :local
                (= (config :domain) domain-name))
@@ -22,7 +22,7 @@
     item
     (if-let [domain-name (if (:local item)
                            (config :domain)
-                           (util/get-domain-name (:url item)))]
+                           (util/get-domain-name (:_id item)))]
       (assoc item :domain domain-name)
       (throw+ "Could not determine domain"))))
 
