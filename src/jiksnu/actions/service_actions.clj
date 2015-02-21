@@ -21,6 +21,8 @@
   (:import java.net.URL
            jiksnu.model.Domain))
 
+(defonce pending-discovers (ref {}))
+
 (defn fetch-xrd*
   [url]
   {:pre [(string? url)]}

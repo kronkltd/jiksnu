@@ -20,7 +20,6 @@
            jiksnu.model.Domain))
 
 (defonce delete-hooks (ref []))
-(defonce pending-discovers (ref {}))
 
 (defn prepare-create
   [domain]
