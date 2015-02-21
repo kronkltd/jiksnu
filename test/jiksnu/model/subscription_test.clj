@@ -2,7 +2,6 @@
   (:require [clj-factory.core :refer [factory]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]

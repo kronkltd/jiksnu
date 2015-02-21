@@ -3,7 +3,6 @@
             [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as hiccup]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.webfinger :refer :all]

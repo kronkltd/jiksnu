@@ -3,7 +3,6 @@
             [clj-factory.core :refer [factory fseq]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]

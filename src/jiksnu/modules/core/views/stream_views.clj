@@ -6,7 +6,6 @@
                                             index-section show-section
                                            title]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
             [jiksnu.modules.core.sections :refer [format-page-info]]

@@ -1,7 +1,6 @@
 (ns jiksnu.transforms.conversation-transforms-test
   (:require [clj-factory.core :refer [factory]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]

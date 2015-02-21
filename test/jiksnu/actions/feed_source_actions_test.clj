@@ -24,27 +24,27 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'actions.feed-source/add-watcher
+(fact "#'actions.feed-source/add-watcher"
   (let [domain (actions.domain/current-domain)
         user (mock/a-user-exists)
         source (mock/a-feed-source-exists {:domain domain})]
     (actions.feed-source/add-watcher source user) => truthy))
 
-(fact #'actions.feed-source/create
+(fact "#'actions.feed-source/create"
   (let [domain (mock/a-remote-domain-exists)
         params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
     (actions.feed-source/create params) => (partial instance? FeedSource)
     (provided
       (actions.service/get-discovered domain nil nil) => domain)))
 
-(future-fact #'actions.feed-source/update
+(future-fact "#'actions.feed-source/update"
   (let [domain (mock/a-domain-exists)
         source (mock/a-feed-source-exists)]
     (actions.feed-source/update source) => (partial instance? FeedSource))
   (provided
     (actions.service/get-discovered anything) => .domain.))
 
-(fact #'actions.feed-source/discover-source
+(fact "#'actions.feed-source/discover-source"
   (let [url (factory/make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
         resource (mock/a-resource-exists {:url url})
         topic (str url ".atom")

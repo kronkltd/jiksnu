@@ -3,7 +3,6 @@
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.model.feed-subscription :as model.feed-subscription])
   (:import jiksnu.model.FeedSubscription))

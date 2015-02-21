@@ -240,7 +240,9 @@
       (get-username-from-http-uri params options))))
 
 (defaction find-or-create
-  [params & [options]]
+  [{id :_id
+    :keys [username domain]
+    :as params} & [options]]
   (let [id (:_id params)]
     (or (when id
           (if-let [user (model.user/fetch-by-id id)]
@@ -258,9 +260,8 @@
           (let [params (if id
                          (get-username params)
                          params)]
-            (or (when-let [username (:username params)]
-                  (when-let [domain (:domain params)]
-                    (model.user/get-user username domain)))
+            (or (when (and username domain)
+                  (model.user/get-user username domain))
                 (create params)))))))
 
 (defaction update

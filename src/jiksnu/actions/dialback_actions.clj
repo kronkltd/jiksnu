@@ -3,7 +3,6 @@
             [ciste.core :refer [defaction]]
             [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.dialback :as model.dialback]

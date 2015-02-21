@@ -10,7 +10,6 @@
             [hiccup.core :as h]
             [inflections.core :as inf]
             [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.core.sections :refer [admin-index-block

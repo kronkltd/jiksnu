@@ -4,7 +4,6 @@
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]

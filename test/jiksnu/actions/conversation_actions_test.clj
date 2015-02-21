@@ -2,7 +2,6 @@
   (:require [clj-factory.core :refer [factory]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :refer [create delete index show]]
-            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
             [jiksnu.model.conversation :as model.conversation]

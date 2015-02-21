@@ -2,7 +2,6 @@
   (:require [clj-factory.core :refer [factory]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.resource :refer [count-records create delete drop!

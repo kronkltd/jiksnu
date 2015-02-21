@@ -1,10 +1,8 @@
 (ns jiksnu.actions.feed-subscription-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
