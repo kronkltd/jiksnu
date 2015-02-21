@@ -19,54 +19,56 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'actions.subscription/subscribe
+(fact "#'actions.subscription/subscribe"
   (fact "when the user is not already subscribed"
     (let [user (mock/a-user-exists)
           subscribee (mock/a-user-exists)]
       (model.subscription/drop!)
       (session/with-user user
-        (actions.subscription/subscribe user subscribee) => (partial instance? Subscription)))))
+        (actions.subscription/subscribe user subscribee) =>
+        (partial instance? Subscription)))))
 
-(fact #'actions.subscription/ostatussub-submit
+(fact "#'actions.subscription/ostatussub-submit"
   (let [actor (mock/a-user-exists)
         username (fseq :username)
         domain-name (fseq :domain)
         uri (model.user/get-uri {:username username :domain domain-name})]
     (session/with-user actor
-      (actions.subscription/ostatussub-submit uri)) =>
-      (th/check [response]
-             response => map?)
-      (provided
-        (ops/get-discovered anything) => (l/success-result
-                                          (model/map->Domain
-                                           {:_id domain-name})))))
+      (actions.subscription/ostatussub-submit uri) =>
+      (every-checker
+       (partial instance? Subscription)
+       (contains {:from (:_id actor)
+                  :to uri})))))
 
-(fact #'actions.subscription/subscribed
+(fact "#'actions.subscription/subscribed"
   (let [user (mock/a-user-exists)
         subscribee (mock/a-user-exists)]
-    (actions.subscription/subscribed user subscribee) => (partial instance? Subscription)))
+    (actions.subscription/subscribed user subscribee) =>
+    (partial instance? Subscription)))
 
-(fact #'actions.subscription/get-subscribers
+(fact "#'actions.subscription/get-subscribers"
   (fact "when there are subscribers"
     (let [subscription (mock/a-subscription-exists)
           target (model.subscription/get-target subscription)]
       (actions.subscription/get-subscribers target) =>
-      (th/check [[_ {:keys [items]} :as response]]
-             response => vector?
-             (first response) => (partial instance? User)
-             (doseq [subscription items]
-               subscription => (partial instance? Subscription))))))
+      (just
+       (partial instance? User)
+       (contains
+        {:totalItems pos?
+         :items (every-checker
+                 (has every? (partial instance? Subscription))
+                 (has some (partial = subscription)))})))))
 
-(fact #'actions.subscription/get-subscriptions
+(fact "#'actions.subscription/get-subscriptions"
   (fact "when there are subscriptions"
     (let [subscription (mock/a-subscription-exists)
           actor (model.subscription/get-actor subscription)]
       (actions.subscription/get-subscriptions actor) =>
-      (th/check [response]
-             response => vector?
-             (first response) => actor
-             (let [subscriptions (second response)]
-               subscriptions =>  map?
-               (:items subscriptions) =>
-               (partial every? (partial instance? Subscription)))))))
-
+      (just
+       (partial = actor)
+       (contains
+        {:totalItems pos?
+         :items
+         (every-checker
+          (has every? (partial instance? Subscription))
+          (has some (partial = subscription)))})))))
