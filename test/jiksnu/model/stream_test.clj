@@ -31,15 +31,3 @@
         (mock/a-stream-exists))
       (model.stream/count-records) => n))
   )
-
-(fact "#'model.stream/create"
-  (let [domain (mock/a-domain-exists)
-        feed-source (mock/a-feed-source-exists {:domain domain})
-        conversation (mock/a-conversation-exists {:feed-source feed-source})
-        id (factory/make-uri (:_id domain) (fseq :path))
-        activity (actions.activity/prepare-create
-                  (factory :activity {:conversation (:_id conversation)
-                                      :id id
-                                      :local false
-                                      :update-source (:_id feed-source)}))]
-    (model.stream/create activity) => (partial instance? Activity)))
