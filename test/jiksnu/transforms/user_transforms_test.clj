@@ -14,20 +14,9 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'transforms.user/set-domain
+(fact "#'transforms.user/set-domain"
   (let [username (fseq :username)
         domain-name (fseq :domain)
         uri (format "acct:%s@%s" username domain-name)
         params {:_id uri}]
-    (transforms.user/set-domain params) =>
-    (th/check [response]
-           response => map?
-           )
-    (provided
-      (ops/get-discovered anything) => (l/success-result (model/map->Domain {:_id domain-name})
-                                                         )
-      )
-    )
-  )
-
-
+    (transforms.user/set-domain params) => map?))

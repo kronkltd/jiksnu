@@ -20,5 +20,5 @@
   (let [domain (mock/a-domain-exists)]
     @(ops/get-discovered domain) => #(instance? Domain %)))
 
-(fact "#'ops/update-resource"
+(future-fact "#'ops/update-resource"
   @(ops/update-resource test-url) => #(instance? Resource %))

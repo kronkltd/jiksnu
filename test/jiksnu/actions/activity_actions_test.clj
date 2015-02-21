@@ -170,4 +170,5 @@
           activity2 (mock/there-is-an-activity {:conversation conversation2})
           ids [(:_id conversation1) (:_id conversation2)]]
       (actions.activity/fetch-by-conversations ids) =>
-      (contains {:items #(= (count %) 1)}))))
+      (contains {:totalItems 2
+                 :items (contains activity1 activity2)}))))
