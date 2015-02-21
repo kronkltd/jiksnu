@@ -43,7 +43,8 @@
 ;; TODO: use set-field
 (defn confirm
   [subscription]
-  (mc/update collection-name {:$set {:pending false}}))
+  (mc/update collection-name {:_id (:_id subscription)}
+             {:$set {:pending false}}))
 
 (defn find-by-users
   [actor target]

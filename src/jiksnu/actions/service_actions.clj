@@ -80,7 +80,7 @@
       (actions.domain/add-link domain link))
     (throw+ "Host meta does not have any links")))
 
-(defaction set-discovered!
+(defn set-discovered!
   "marks the domain as having been discovered"
   [domain]
   {:pre [(instance? Domain domain)]}
@@ -143,7 +143,7 @@
           p (if p
               (do
                 (log/debug "discovering")
-                @(second (discover domain url options))
+                @(second (discover domain url))
                 p)
               (do
                 (log/debug "using queued promise")

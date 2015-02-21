@@ -77,8 +77,8 @@
        (map
         (fn [property]
           [:Property
-           (merge
-            (when (:type property) {:type (:type property)}))
+           (when-let [type (:type property)]
+             {:type type})
            (:value property)])
         (:properties link))])
     (:links lrdd))])

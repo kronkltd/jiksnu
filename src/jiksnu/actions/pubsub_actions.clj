@@ -37,7 +37,7 @@
 (defaction verify-subscription-async
   "asynchronous verification of hub subscription"
   [subscription params]
-  (verify-subscribe-sync subscription))
+  (verify-subscribe-sync subscription params))
 
 (defaction subscribe
   "Set up a remote subscription to a local source"

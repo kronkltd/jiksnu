@@ -1,11 +1,11 @@
 (ns jiksnu.modules.core.views.site-views
-  (:use [ciste.config :only [config]]
-        [ciste.views :only [defview]]
-        jiksnu.actions.site-actions)
-  (:require [hiccup.core :as h]
+  (:require [ciste.config :refer [config]]
+            [ciste.views :refer [defview]]
+            [hiccup.core :as h]
+            [jiksnu.actions.site-actions :as actions.site]
             [jiksnu.namespace :as ns]))
 
-(defview #'rsd :xml
+(defview #'actions.site/rsd :xml
   [request domain]
   {:template false
    :headers {"Content-Type" "application/xml"}
@@ -30,7 +30,7 @@
                      :apiLink (str "http://" (:_id domain) "/api/statusnet/app/service.xml")
                      :blogId ""}]]]])})
 
-(defview #'service :xml
+(defview #'actions.site/service :xml
   [request user]
   {:template false
    :body
@@ -72,20 +72,18 @@
        [:accept "application/atom+xml;type=entry"]
        [:activity:verb "http://activitystrea.ms/schema/1.0/join"]]]])})
 
-(defview #'get-environment :text
+(defview #'actions.site/get-environment :text
   [request data]
   {:body data})
 
-(defview #'get-config :text
+(defview #'actions.site/get-config :text
   [request data]
   {:body data})
 
-(defview #'ping :text
+(defview #'actions.site/ping :text
   [request data]
   {:body data})
 
-;; (defview #'get-load :text
+;; (defview #'actions.site/get-load :text
 ;;   [request data]
 ;;   data)
-
-

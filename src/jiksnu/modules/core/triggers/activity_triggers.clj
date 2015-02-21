@@ -6,7 +6,6 @@
             [jiksnu.channels :as ch]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]

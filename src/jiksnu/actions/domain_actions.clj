@@ -89,7 +89,7 @@
   [domain value]
   (model.domain/set-field! domain :xmpp false))
 
-(defaction ping-response
+(defn ping-response
   [domain]
   {:pre [(instance? Domain domain)]}
   (set-xmpp domain true))

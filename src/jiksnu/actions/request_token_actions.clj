@@ -2,7 +2,6 @@
   (:require [ciste.core :refer [defaction]]
             [clojure.tools.logging :as log]
             [jiksnu.model.request-token :as model.request-token]
-            [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]

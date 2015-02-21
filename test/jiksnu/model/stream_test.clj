@@ -18,7 +18,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'model.stream/count-records
+(fact "#'model.stream/count-records"
 
   (fact "when there aren't any items"
     (model.stream/drop!)
@@ -32,16 +32,14 @@
       (model.stream/count-records) => n))
   )
 
-;; (fact #'create
-;;   (let [domain (mock/a-domain-exists)
-;;         feed-source (mock/a-feed-source-exists {:domain domain})
-;;         conversation (mock/a-conversation-exists {:feed-source feed-source})
-;;         id (factory/make-uri (:_id domain) (fseq :path))
-;;         activity (actions.activity/prepare-create
-;;                   (factory :activity {:conversation (:_id conversation)
-;;                                       :id id
-;;                                       :local false
-;;                                       :update-source (:_id feed-source)}))]
-;;     (create activity) => (partial instance? Activity)))
-
-
+(fact "#'model.stream/create"
+  (let [domain (mock/a-domain-exists)
+        feed-source (mock/a-feed-source-exists {:domain domain})
+        conversation (mock/a-conversation-exists {:feed-source feed-source})
+        id (factory/make-uri (:_id domain) (fseq :path))
+        activity (actions.activity/prepare-create
+                  (factory :activity {:conversation (:_id conversation)
+                                      :id id
+                                      :local false
+                                      :update-source (:_id feed-source)}))]
+    (model.stream/create activity) => (partial instance? Activity)))

@@ -9,8 +9,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
@@ -178,8 +176,8 @@
                   (model.activity/set-field! original k (get params k)))
 
                 ;; TODO: I'm not sure these should be removed
-                (doseq [k removed-keys]
-                  #_(model.activity/remove-key original k))
+                #_(doseq [k removed-keys]
+                    (model.activity/remove-key original k))
 
                 (doseq [k changed-keys]
                   (model.activity/set-field! original k (get params k)))

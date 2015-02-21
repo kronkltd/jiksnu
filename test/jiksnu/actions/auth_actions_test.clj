@@ -5,7 +5,6 @@
             [jiksnu.actions.auth-actions :refer [add-password login]]
             [jiksnu.mock :as mock]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
-            [jiksnu.model.user :as model.user]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 

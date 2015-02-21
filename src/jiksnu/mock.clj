@@ -98,7 +98,7 @@
   (let [user (a-user-exists options)
         params {:user (:_id user)
                 :name (fseq :word)}
-        stream (actions.stream/create params)]
+        stream (actions.stream/create params {})]
     (set-that :stream stream)
     stream))
 
@@ -117,7 +117,8 @@
                 (factory :feed-source
                          {:domain (:_id domain)
                           :topic url
-                          :hub (make-uri (:_id domain) "/push/hub")}))]
+                          :hub (make-uri (:_id domain) "/push/hub")})
+                {})]
     (set-this :feed-source source)
     source))
 
@@ -204,7 +205,8 @@
         feed-subscription (actions.feed-subscription/create
                            (factory :feed-subscription
                                     {:domain (:_id domain)
-                                     :local (:local domain)}))]
+                                     :local (:local domain)})
+                           {})]
     (set-this :feed-subscription feed-subscription)
     feed-subscription))
 

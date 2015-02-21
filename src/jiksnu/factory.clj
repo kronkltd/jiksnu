@@ -1,7 +1,8 @@
 (ns jiksnu.factory
-  (:use [ciste.config :only [config]]
-        [clj-factory.core :only [defseq deffactory defrecordfactory fseq factory]])
-  (:require [clj-time.core :as time]
+  (:require [ciste.config :refer [config]]
+            [clj-factory.core :refer [defseq deffactory defrecordfactory
+                                      fseq factory]]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -12,11 +13,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
-
-            ))
+            [jiksnu.model.user :as model.user]))
 
 (defn domain-id
   []
@@ -29,7 +27,7 @@
   [] (:_id (actions.conversation/create (factory :conversation))))
 
 (defn source-id
-  [] (:_id (actions.feed-source/create (factory :feed-source))))
+  [] (:_id (actions.feed-source/create (factory :feed-source) {})))
 
 (defn user-id
   []

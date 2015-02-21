@@ -5,7 +5,6 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.dialback :as model.dialback]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.session :as session]

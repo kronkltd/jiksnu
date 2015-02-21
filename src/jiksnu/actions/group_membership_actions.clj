@@ -29,10 +29,6 @@
   ;; TODO: actual test here
   true)
 
-(defaction delete
-  [item]
-  (model.group-membership/delete item))
-
 (def index* (templates.actions/make-indexer model-ns))
 (def delete (templates.actions/make-delete model.group-membership/delete can-delete?))
 

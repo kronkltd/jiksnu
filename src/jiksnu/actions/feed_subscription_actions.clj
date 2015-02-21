@@ -67,9 +67,5 @@
                             {:lease-seconds lease})
                           (when-let [secret (:secret params)]
                             {:secret secret}))]
-        (create params))
+        (create params {}))
       (throw+ "Hub not authoritative for source"))))
-
-;; (definitializer
-;;   (model.feed-subscription/ensure-indexes))
-

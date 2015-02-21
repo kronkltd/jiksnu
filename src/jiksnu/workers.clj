@@ -1,8 +1,7 @@
 (ns jiksnu.workers
-  (:use #_[ciste.core :only [*actions*]]
-        [ciste.workers :only [defworker stopping?]]
-        lamina.core)
-  (:require [clojure.tools.logging :as log]))
+  (:require [ciste.workers :refer [defworker stopping?]]
+            [clojure.tools.logging :as log]
+            [lamina.core :as l]))
 
 (defworker :gndn
   []
@@ -17,7 +16,7 @@
 (defworker :action-listener
   []
   (loop []
-    #_(when-let [message (wait-for-message *actions*)]
-      (log/info (:action message)))
+    #_(when-let [message (l/wait-for-message *actions*)]
+        (log/info (:action message)))
     (if (not (stopping?))
       (recur))))

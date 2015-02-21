@@ -10,7 +10,6 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Activity
