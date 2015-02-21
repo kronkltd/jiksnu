@@ -21,16 +21,15 @@
 (fact "#'actions.activity/create"
   (fact "when the user is logged in"
     (fact "and it is a valid activity"
-      (fact "should return that activity"
-        (let [domain (mock/a-domain-exists)
-              feed-source (mock/a-feed-source-exists)
-              conversation (mock/a-conversation-exists)
-              user (mock/a-user-exists)
-              activity (factory :activity {:author        (:_id user)
-                                           :conversation  (:_id conversation)
-                                           :update-source (:_id feed-source)
-                                           :local         true})]
-          (actions.activity/create activity) => (partial instance? Activity))))))
+      (let [domain (mock/a-domain-exists)
+            feed-source (mock/a-feed-source-exists)
+            conversation (mock/a-conversation-exists)
+            user (mock/a-user-exists)
+            activity (factory :activity {:author        (:_id user)
+                                         :conversation  (:_id conversation)
+                                         :update-source (:_id feed-source)
+                                         :local         true})]
+        (actions.activity/create activity) => (partial instance? Activity)))))
 
 (fact "#'actions.activity/delete"
   (fact "when the activity exists"
@@ -148,22 +147,21 @@
                   :nsfw true}]
       (session/with-user actor
         (actions.activity/edit params) => (partial instance? Activity)
-        (let [edited-item (model.activity/fetch-by-id (:_id activity))]
-          (:title edited-item) => (:title params)
-          (:nsfw edited-item) => true)))))
+        (model.activity/fetch-by-id (:_id activity)) =>
+        (contains {:title (:title params)
+                   :nsfw true})))))
 
 (fact "#'actions.activity/oembed"
   (let [activity (mock/there-is-an-activity)]
-    (let [response (actions.activity/oembed activity)]
-      response => map?
-      (:html response) => string?)))
+    (actions.activity/oembed activity) =>
+    (contains {:html string?})))
 
 (fact "#'actions.activity/fetch-by-conversation"
   (fact "when there are matching activities"
     (let [conversation (mock/a-conversation-exists)
           activity (mock/there-is-an-activity {:conversation conversation})]
-      (let [response (actions.activity/fetch-by-conversation conversation)]
-        (count (:items response)) => 1))))
+      (actions.activity/fetch-by-conversation conversation) =>
+      (contains {:items #(= (count %) 1)}))))
 
 (fact "#'actions.activity/fetch-by-conversations"
   (fact "when there are matching activities"
@@ -172,5 +170,5 @@
           activity1 (mock/there-is-an-activity {:conversation conversation1})
           activity2 (mock/there-is-an-activity {:conversation conversation2})
           ids [(:_id conversation1) (:_id conversation2)]]
-      (let [response (actions.activity/fetch-by-conversations ids)]
-        (count (:items response)) => 2))))
+      (actions.activity/fetch-by-conversations ids) =>
+      (contains {:items #(= (count %) 1)}))))
