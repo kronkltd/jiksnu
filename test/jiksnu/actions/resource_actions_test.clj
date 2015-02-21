@@ -7,7 +7,8 @@
             [jiksnu.model :as model]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
-            [midje.sweet :refer :all])
+            [midje.sweet :refer :all]
+            [org.httpkit.client :as client])
   (:import jiksnu.model.Resource
            org.joda.time.DateTime))
 
@@ -31,4 +32,6 @@
   (fact "when the resource exists"
     (db/drop-all!)
     (let [resource (actions.resource/create {:_id test-url})]
-      (log/spy :info (actions.resource/update resource))) => truthy))
+      (actions.resource/update resource) => resource
+      (provided
+        (client/get test-url anything anything) => true))))

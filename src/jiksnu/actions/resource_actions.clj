@@ -19,6 +19,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [jiksnu.util :as util]
+            [manifold.deferred :as d]
             [org.httpkit.client :as client]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Resource))
@@ -146,10 +147,11 @@
 The channel will receive the body of fetching this resource."
   [item & [options]]
   {:pre [(instance? Resource item)]}
-  (let [url (:_id item)
+  (let [d (d/deferred)
+        url (:_id item)
         actor (session/current-user)
         date (time/now)]
-    (if (or true (needs-update? item options))
+    (if (needs-update? item options)
       (if (:requiresAuth item)
         ;; auth required
         (throw+ "Resource requires authorization")

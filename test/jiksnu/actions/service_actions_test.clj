@@ -43,12 +43,12 @@
         (fact "when there is a url context"
           ;; TODO: Secure urls should always be checked first, and if the
           ;; provided url is secure, the non-secure urls should not be checkedxs
-          (let [url       (format "http://%s/status/users/1"                      domain-name)
-                url-s     (format "https://%s/status/users/1"                     domain-name)
-                hm1       (format "http://%s/status/.well-known/host-meta"        domain-name)
-                hm1-s     (format "https://%s/status/.well-known/host-meta"       domain-name)
-                hm2       (format "http://%s/status/users/.well-known/host-meta"  domain-name)
-                hm2-s     (format "https://%s/status/users/.well-known/host-meta" domain-name)]
+          (let [url (format "http://%s/status/users/1" domain-name)
+                url-s (format "https://%s/status/users/1" domain-name)
+                hm1 (format "http://%s/status/.well-known/host-meta" domain-name)
+                hm1-s (format "https://%s/status/.well-known/host-meta" domain-name)
+                hm2 (format "http://%s/status/users/.well-known/host-meta" domain-name)
+                hm2-s (format "https://%s/status/users/.well-known/host-meta" domain-name)]
 
             (fact "and the bare domain has a host-meta"
               (actions.service/fetch-xrd domain url-s) => (partial instance? Document)
@@ -113,7 +113,9 @@
       (model.domain/set-field! domain :https false)
 
       (let [url (factory/make-uri domain-name "/1")]
-        (actions.service/discover-webfinger domain url) => nil))
+        (actions.service/discover-webfinger domain url) => nil
+        (provided
+          (actions.service/fetch-xrd domain url) => nil)))
 
     (fact "when there is no url context"
       (let [url (factory/make-uri domain-name "/1")
@@ -138,10 +140,12 @@
             hm2-s     (format "https://%s/status/users/.well-known/host-meta" domain-name)]
 
         (fact "and the bare domain has a host-meta"
-          (actions.service/discover-webfinger domain url) => (contains {:_id domain-name})
+          (actions.service/discover-webfinger domain url) =>
+          (contains {:_id domain-name})
           (provided
             ;; (actions.service/fetch-xrd* hm-bare-s) => nil
-            (actions.service/fetch-xrd* hm-bare-s) => (cm/string->document "<XRD/>")))
+            (actions.service/fetch-xrd* hm-bare-s) =>
+            (cm/string->document "<XRD/>")))
 
         (fact "and the bare domain does not have a host meta"
 
