@@ -1,6 +1,4 @@
 (ns jiksnu.model.webfinger
-  (:use [ciste.config :only [config]]
-        [slingshot.slingshot :only [throw+ try+]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -10,7 +8,8 @@
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+ try+]])
   (:import java.net.URI
            jiksnu.model.FeedSource
            jiksnu.model.User

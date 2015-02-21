@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.views.feed-subscription-views
-  (:require [ciste.config :refer [config]]
-            [ciste.views :refer [defview]]
+  (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]

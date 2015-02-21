@@ -24,12 +24,6 @@
     item
     (assoc item :published (time/now))))
 
-(defn set-title
-  [item]
-  (if (:title item)
-    item
-    (assoc item :title "")))
-
 (defn set-object-updated
   [activity]
   (if (:updated (:object activity))
@@ -118,11 +112,10 @@
     (assoc-in activity [:object :id] (util/new-id))))
 
 (defn set-title
-  [activity]
-  (if (empty? (:title activity))
-    ;; TODO: strip down to plain text and limit to 140 characters
-    (assoc activity :title (:content activity))
-    activity))
+  [item]
+  (if (:title item)
+    item
+    (assoc item :title "")))
 
 (defn set-actor
   [activity]

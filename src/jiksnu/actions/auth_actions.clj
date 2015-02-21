@@ -1,6 +1,5 @@
 (ns jiksnu.actions.auth-actions
   (:require [cemerick.friend.credentials :as creds]
-            [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [ciste.model :as cm]
             [clojure.tools.logging :as log]

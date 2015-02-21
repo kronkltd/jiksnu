@@ -1,6 +1,5 @@
 (ns jiksnu.handlers
-  (:require [ciste.config :refer [*environment* config]]
-            [clojure.pprint :refer [pprint]]
+  (:require [clojure.pprint :refer [pprint]]
             [clojure.tools.logging :as log])
   (:import clojure.lang.ExceptionInfo))
 

@@ -1,7 +1,6 @@
 (ns jiksnu.actions.key-actions
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [defaction]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.core :refer [defaction]]
+            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.key :as model.key]
             [jiksnu.templates.actions :as templates.actions]

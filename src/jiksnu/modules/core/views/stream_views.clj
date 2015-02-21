@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.views.stream-views
-  (:require [ciste.config :refer [config]]
-            [ciste.core :refer [with-format]]
+  (:require [ciste.core :refer [with-format]]
             [ciste.views :refer [apply-view defview]]
             [ciste.sections.default :refer [index-block index-line
                                             index-section show-section

@@ -1,6 +1,5 @@
 (ns jiksnu.util
-  (:require [ciste.config :refer [config environment]]
-            [ciste.loader :refer [require-namespaces]]
+  (:require [ciste.loader :refer [require-namespaces]]
             [ciste.model :as cm]
             [clj-factory.core :refer [factory]]
             [clojure.string :as string]

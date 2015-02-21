@@ -1,6 +1,5 @@
 (ns jiksnu.actions.client-actions
-  (:require [ciste.config :refer [config]]
-            [ciste.core :refer [defaction]]
+  (:require [ciste.core :refer [defaction]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.request-token-actions :as actions.request-token]

@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.views
   (:require [ciste.core :refer [serialize-as with-format]]
-            [ciste.config :refer [config]]
             [ciste.formats :refer [format-as]]
             [ciste.views :refer [defview]]
             [ciste.sections :refer [defsection]]
@@ -39,10 +38,7 @@
   {:body
    [:div
     [:p "Confirm"]
-    (link-to (:item response))
-    ]
-
-   })
+    (link-to (:item response))]})
 
 (defview #'actions/get-model :clj
   [request response]

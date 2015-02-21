@@ -1,7 +1,6 @@
 (ns jiksnu.actions.search-actions
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [defaction]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
             [jiksnu.model :as model]))
 
 (defaction perform-search

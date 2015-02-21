@@ -1,6 +1,5 @@
 (ns jiksnu.model.activity
-  (:require [ciste.config :refer [config]]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]

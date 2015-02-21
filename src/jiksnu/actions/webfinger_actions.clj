@@ -1,8 +1,6 @@
 (ns jiksnu.actions.webfinger-actions
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [defaction]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
@@ -10,7 +8,8 @@
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain

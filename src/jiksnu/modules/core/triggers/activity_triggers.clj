@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.triggers.activity-triggers
-  (:require [ciste.config :refer [config]]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
