@@ -61,7 +61,7 @@
 (defaction create
   [params]
   (let [params (prepare-create params)]
-    (if-let [item (model.resource/create (log/spy :info params))]
+    (if-let [item (model.resource/create params)]
       item
       (throw+ "Could not create record"))))
 
@@ -171,7 +171,7 @@ The channel will receive the body of fetching this resource."
                       (fn [response]
                         (notify ::resource-realized
                                 {:item item
-                                 :response (log/spy :info response)})
+                                 :response response})
                         (model.resource/set-field! item :lastUpdated (time/now))
                         (model.resource/set-field! item :status (:status response))
                         (condp = (:status response)

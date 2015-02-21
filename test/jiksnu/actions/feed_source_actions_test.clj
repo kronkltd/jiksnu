@@ -57,5 +57,3 @@
       (model.resource/response->tree response) => .tree.
       (model.resource/get-links .tree.) => .links.
       (util/find-atom-link .links.) => topic)))
-
-
