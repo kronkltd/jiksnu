@@ -164,6 +164,7 @@ The channel will receive the body of fetching this resource."
                                  "date" (util/date->rfc1123 (.toDate date))
                                  "authorization" auth-string}}]
           (notify ::resource-updated {:item item})
+          (log/infof "Fetching %s" url)
           (client/get url options
                       (fn [response]
                         (notify ::resource-realized
@@ -192,3 +193,9 @@ The channel will receive the body of fetching this resource."
 (defaction show
   [item]
   item)
+
+(defn fetch
+  "Gets a possibly cached version of the resource"
+  [url]
+  (let [resource (find-or-create {:_id url})]
+    (update* resource)))

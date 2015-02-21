@@ -1,6 +1,7 @@
 (ns jiksnu.actions.service-actions-test
   (:require [ciste.model :as cm]
             [clj-factory.core :refer [factory fseq]]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.resource-actions :as actions.resource]
@@ -79,26 +80,20 @@
 (fact "#'actions.service/discover-statusnet-config"
   (let [domain (mock/a-domain-exists)
         url (fseq :uri)
+        statusnet-url (fseq :uri)
         res (l/result-channel)
-        ch (l/channel)
-        response  {:body "{\"foo\": \"bar\"}"}
-        field-set (atom false)]
-
-
-    ;; (l/siphon (trace/probe-channel :domains:field:set) ch)
-    ;; (l/receive ch (fn [& args]
-    ;;                 (dosync
-    ;;                  (reset! field-set true))))
+        config {:foo "bar"}
+        response {:body (json/json-str config)}]
 
     (l/enqueue res response)
     (actions.service/discover-statusnet-config domain url) => truthy
 
     (provided
-      (model.domain/statusnet-url domain) => .url.
-      (ops/update-resource .url.) => res)
+      (model.domain/statusnet-url domain) => statusnet-url
+      (actions.resource/fetch statusnet-url) => res)
 
-    (l/close ch)
-    @field-set => true))
+    (model.domain/fetch-by-id (:_id domain)) =>
+    (contains {:statusnet-config config})))
 
 (fact "#'actions.service/discover-capabilities"
   (fact "when given an invalid domain"

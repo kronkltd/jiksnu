@@ -7,6 +7,7 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
@@ -58,15 +59,12 @@
     (log/warn "Domain does not have http(s) interface")))
 
 (defn discover-statusnet-config
+  "Fetch service's statusnet config. blocks"
   [domain url]
-  (let [urls (log/spy :info (model.domain/statusnet-url domain))]
-    (->> [urls]
-         (map (fn [url]
-                (when-let [response (ops/update-resource url)]
-                  (when-let [sconfig (json/read-str (:body @response))]
-                    (model.domain/set-field! domain :statusnet-config sconfig)))))
-         (filter identity)
-         first)))
+  (let [url (model.domain/statusnet-url domain)]
+   (when-let [response (actions.resource/fetch url)]
+     (when-let [sconfig (json/read-str (:body @response))]
+       (model.domain/set-field! domain :statusnet-config sconfig)))))
 
 (defn discover-capabilities
   [domain & [url]]
