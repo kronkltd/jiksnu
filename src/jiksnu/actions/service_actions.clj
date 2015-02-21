@@ -117,3 +117,16 @@
                 (get @pending-discovers id)))]
       (or (deref p (lt/seconds 300) nil)
           (throw+ "Could not discover domain")))))
+
+(defn discover-webfinger
+  [^Domain domain url]
+  {:pre [(instance? Domain domain)
+         (or (nil? url)
+             (string? url))]}
+  (log/info "discover webfinger")
+  (if-let [xrd (fetch-xrd domain url)]
+    (do (set-links-from-xrd domain xrd)
+        (set-discovered! domain)
+        domain)
+    (log/warnf "Could not get webfinger for domain: %s" (:_id domain))))
+

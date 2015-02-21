@@ -46,24 +46,6 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact "#'actions.user/discover-user-jrd"
-  (let [username (fseq :username)
-        domain-name (fseq :domain)
-        uri (format "acct:%s@%s" username domain-name)
-        jrd-template (str "http://" domain-name "/api/lrdd?resource={uri}")
-        jrd-uri (util/replace-template jrd-template uri)
-        profile-url (format "https://%s/api/user/%s/profile" domain-name username)
-        links [{:href profile-url :rel "self"}]
-        mock-jrd (json/json-str {:links links})
-        mock-profile {:preferredUsername username}
-        domain (actions.domain/create {:_id domain-name
-                                       :jrdTemplate jrd-template})
-        http-uri (format "http://%s/%s" domain-name username)
-        params {:_id uri}]
-    (:links (actions.user/discover-user-jrd params)) => (contains {:href profile-url :rel "self"})
-    (provided
-      (ops/update-resource jrd-uri anything) => (l/success-result {:body mock-jrd}))))
-
 (future-fact "#'actions.user/get-username-from-http-uri"
   (fact "when the uri does not have user info"
     (let [username (fseq :username)
@@ -86,21 +68,13 @@
 
       (fact "and it does not have user info"
 
-        (fact "and the jrd request returns info"
-          (let [uri (factory/make-uri domain-name "/users/1")
-                params {:_id uri}]
-            (actions.user/get-username params) => (contains {:username username})
-            (provided
-              (actions.user/discover-user-jrd anything anything) => {:username username}
-              (actions.user/discover-user-xrd anything anything) => nil :times 0)))
-
         (fact "and the xrd request returns info"
           (let [uri (factory/make-uri domain-name "/users/1")
                 params {:_id uri}]
             (actions.user/get-username params) => (contains {:username username})
             (provided
-              (actions.user/discover-user-xrd anything anything) => {:username username}
-              (actions.user/discover-user-jrd anything anything) => nil)))
+              (actions.user/discover-user-xrd anything anything) =>
+              {:username username})))
         )
       )
 

@@ -201,8 +201,7 @@
       (let [params (or (and (:domain params) params)
                        (when-let [domain-name (util/get-domain-name (:_id params))]
                          (assoc params :domain domain-name))
-                       (throw+ "Could not determine domain name"))
-            params (discover-user-jrd params options)]
+                       (throw+ "Could not determine domain name"))]
         (if (:username params)
           params
           (let [params (discover-user-xrd params options)]
@@ -275,8 +274,6 @@
 (defn discover-user-meta
   [user & [options]]
   (doseq [params @(l/merge-results
-                   (util/safe-task
-                    (discover-user-jrd user options))
                    (util/safe-task
                     (discover-user-xrd user options)))]
     (let [links (:links params)]
