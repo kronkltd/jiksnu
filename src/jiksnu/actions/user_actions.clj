@@ -157,29 +157,11 @@
   (let [doc body #_(cm/string->document body)]
     {:links (model.webfinger/get-links doc)}))
 
-(defn process-jrd
-  [user jrd & [options]]
-  (log/info "processing jrd")
-  (let [links (concat (:links user) (:links jrd))]
-    (assoc user :links links)))
-
 (defn process-xrd
   [user xrd & [options]]
   (log/info "processing xrd")
   (let [links (concat (:links user) (:links xrd))]
     (assoc user :links links)))
-
-(defn fetch-jrd
-  [params & [options]]
-  (log/info "fetching jrd")
-  (if-let [domain (get-domain params)]
-    (if-let [url (model.domain/get-jrd-url domain (:_id params))]
-      (if-let [response @(ops/update-resource url options)]
-        (when-let [body (:body response)]
-          (json/read-str body :key-fn keyword))
-        (log/warn "Could not get response"))
-      (log/warn "could not determine jrd url"))
-    (throw+ "Could not determine domain name")))
 
 (defn fetch-xrd
   [params & [options]]
@@ -194,14 +176,6 @@
                  {:username username})))
       (log/warn "could not determine xrd url"))
     (throw+ "could not determine domain name")))
-
-(defn discover-user-jrd
-  [params & [options]]
-  (log/info "Discovering user via jrd")
-  (if-let [jrd (fetch-jrd params options)]
-    (process-jrd params jrd options)
-    (do (log/warn "Could not fetch jrd")
-        params)))
 
 ;; TODO: Collect all changes and update the user once.
 (defn discover-user-xrd
@@ -357,23 +331,13 @@
 
 (defaction show-basic
   [user]
-  (show user)
-  )
+  (show user))
 
 (defaction update-profile
   [options]
   (let [user (session/current-user)]
     ;; TODO: mass assign vulnerability here
     (update user options)))
-
-(defaction xmpp-service-unavailable
-  "Error callback when user doesn't support xmpp"
-  [user]
-  (let [domain-name (:domain user)
-        domain (model.domain/fetch-by-id domain-name)]
-    @(ops/get-discovered domain)
-    (actions.domain/set-xmpp domain false)
-    user))
 
 (defn subscribe
   [user]

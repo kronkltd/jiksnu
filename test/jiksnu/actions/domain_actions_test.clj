@@ -35,8 +35,8 @@
 
   (let [domain (-> (mock/a-domain-exists))
         domain-name (:_id domain)
-        hm-bare   (format "http://%s/.well-known/host-meta"               domain-name)
-        hm-bare-s (format "https://%s/.well-known/host-meta"              domain-name)]
+        hm-bare   (format "http://%s/.well-known/host-meta" domain-name)
+        hm-bare-s (format "https://%s/.well-known/host-meta" domain-name)]
 
     (doto domain
       (model.domain/set-field! :http true)
@@ -97,10 +97,8 @@
 
   (fact "when the domain exists"
     (let [domain (mock/a-domain-exists)]
-      (actions.domain/delete domain) =>
-      (th/check [response]
-        response => domain
-        (model.domain/fetch-by-id (:_id domain)) => nil?))))
+      (actions.domain/delete domain) => domain
+      (model.domain/fetch-by-id (:_id domain)) => nil?)))
 
 (fact "#'actions.domain/discover-statusnet-config"
   (let [domain (mock/a-domain-exists)
@@ -111,16 +109,16 @@
         field-set (atom false)]
 
 
-    (l/siphon (trace/probe-channel :domains:field:set) ch)
-    (l/receive ch (fn [& args]
-                    (dosync
-                     (reset! field-set true))))
+    ;; (l/siphon (trace/probe-channel :domains:field:set) ch)
+    ;; (l/receive ch (fn [& args]
+    ;;                 (dosync
+    ;;                  (reset! field-set true))))
 
     (l/enqueue res response)
     (actions.domain/discover-statusnet-config domain url) => truthy
 
     (provided
-      #_(model.domain/statusnet-url domain) => .url.
+      (model.domain/statusnet-url domain) => .url.
       (ops/update-resource .url.) => res)
 
     (l/close ch)
@@ -130,8 +128,7 @@
   (fact "when given an invalid domain"
     (let [domain (mock/a-domain-exists)]
       (actions.domain/discover-capabilities domain) =>
-      (th/check [response]
-        response => (partial instance? Domain)))))
+      (partial instance? Domain))))
 
 ;; TODO: If https is enabled, the bare path is checked at the https
 ;; path first
@@ -145,12 +142,7 @@
       (model.domain/set-field! domain :https false)
 
       (let [url (factory/make-uri domain-name "/1")]
-        (actions.domain/discover-webfinger domain url) =>
-        (th/check [response]
-
-               response => nil
-
-               )))
+        (actions.domain/discover-webfinger domain url) => nil))
 
     (fact "when there is no url context"
       (let [url (factory/make-uri domain-name "/1")
