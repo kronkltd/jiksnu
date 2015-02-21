@@ -55,19 +55,6 @@
   (let [domain (prepare-delete domain)]
     (model.domain/delete domain)))
 
-(defaction set-discovered!
-  "marks the domain as having been discovered"
-  [domain]
-  {:pre [(instance? Domain domain)]}
-  (model.domain/set-field! domain :discovered true)
-  (model.domain/set-field! domain :discoveredAt (time/now))
-  (let [id (:_id domain)
-        domain (model.domain/fetch-by-id id)]
-    (when-let [p (get @pending-discovers id)]
-      (let [domain (model.domain/fetch-by-id (:_id domain))]
-        (deliver p domain)))
-    domain))
-
 (defaction edit-page
   [domain]
   domain)
@@ -107,13 +94,6 @@
   [domain]
   {:pre [(instance? Domain domain)]}
   (set-xmpp domain true))
-
-(defn set-links-from-xrd
-  [domain xrd]
-  (if-let [links (model.webfinger/get-links xrd)]
-    (doseq [link links]
-      (add-link domain link))
-    (throw+ "Host meta does not have any links")))
 
 ;; (defn count
 ;;   [ctx]

@@ -6,6 +6,7 @@
             [clj-time.core :as time]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
@@ -72,6 +73,38 @@
     (model.domain/set-field! domain :https (util/socket-conectable? id 443))
     (model.domain/fetch-by-id (:_id domain))))
 
+(defn set-links-from-xrd
+  [domain xrd]
+  (if-let [links (model.webfinger/get-links xrd)]
+    (doseq [link links]
+      (actions.domain/add-link domain link))
+    (throw+ "Host meta does not have any links")))
+
+(defaction set-discovered!
+  "marks the domain as having been discovered"
+  [domain]
+  {:pre [(instance? Domain domain)]}
+  (model.domain/set-field! domain :discovered true)
+  (model.domain/set-field! domain :discoveredAt (time/now))
+  (let [id (:_id domain)
+        domain (model.domain/fetch-by-id id)]
+    (when-let [p (get @pending-discovers id)]
+      (let [domain (model.domain/fetch-by-id (:_id domain))]
+        (deliver p domain)))
+    domain))
+
+(defn discover-webfinger
+  [^Domain domain url]
+  {:pre [(instance? Domain domain)
+         (or (nil? url)
+             (string? url))]}
+  (log/info "discover webfinger")
+  (if-let [xrd (fetch-xrd domain url)]
+    (do (set-links-from-xrd domain xrd)
+        (set-discovered! domain)
+        domain)
+    (log/warnf "Could not get webfinger for domain: %s" (:_id domain))))
+
 (defn discover*
   [domain url]
   {:pre [(instance? Domain domain)
@@ -117,16 +150,4 @@
                 (get @pending-discovers id)))]
       (or (deref p (lt/seconds 300) nil)
           (throw+ "Could not discover domain")))))
-
-(defn discover-webfinger
-  [^Domain domain url]
-  {:pre [(instance? Domain domain)
-         (or (nil? url)
-             (string? url))]}
-  (log/info "discover webfinger")
-  (if-let [xrd (fetch-xrd domain url)]
-    (do (set-links-from-xrd domain xrd)
-        (set-discovered! domain)
-        domain)
-    (log/warnf "Could not get webfinger for domain: %s" (:_id domain))))
 
