@@ -1,6 +1,7 @@
 (ns jiksnu.modules.core.triggers.domain-triggers
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.channels :as ch]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.ops :as ops]
@@ -14,7 +15,7 @@
 (defn- handle-pending-get-discovered*
   [domain & [id options]]
   (try
-    (actions.domain/get-discovered domain id options)
+    (actions.service/get-discovered domain id options)
     (catch Exception ex
       (println "can't discover")
       )

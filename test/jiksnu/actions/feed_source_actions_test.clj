@@ -6,6 +6,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
@@ -34,14 +35,14 @@
         params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
     (actions.feed-source/create params) => (partial instance? FeedSource)
     (provided
-      (actions.domain/get-discovered domain nil nil) => domain)))
+      (actions.service/get-discovered domain nil nil) => domain)))
 
 (future-fact #'actions.feed-source/update
   (let [domain (mock/a-domain-exists)
         source (mock/a-feed-source-exists)]
     (actions.feed-source/update source) => (partial instance? FeedSource))
   (provided
-    (actions.domain/get-discovered anything) => .domain.))
+    (actions.service/get-discovered anything) => .domain.))
 
 (fact #'actions.feed-source/discover-source
   (let [url (factory/make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))

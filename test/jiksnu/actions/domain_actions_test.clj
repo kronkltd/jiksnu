@@ -46,5 +46,3 @@
 
 (fact "#'actions.domain/show"
   (actions.domain/show .domain.) => .domain.)
-
-

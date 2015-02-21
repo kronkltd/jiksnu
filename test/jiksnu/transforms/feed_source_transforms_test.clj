@@ -3,6 +3,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
@@ -27,6 +28,6 @@
       (set-domain source) => (contains {:domain (:_id domain)})
 
       (provided
-        (actions.domain/get-discovered anything nil nil) => {:_id (:_id domain)}))))
+        (actions.service/get-discovered anything nil nil) => {:_id (:_id domain)}))))
 
 
