@@ -140,14 +140,14 @@
 (fact "#'actions.user/index"
   (actions.user/index {}) => map?)
 
-(fact "#'actions.user/find-or-create" :focus
+(fact "#'actions.user/find-or-create"
   (let [username (fseq :username)
         domain-name (fseq :domain)
         source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)
         xrd-template (format "http://%s/xrd?uri={uri}" domain-name)
         jrd-template (format "http://%s/lrdd?uri={uri}" domain-name)]
 
-    (fact "when given a http uri" :focus
+    (fact "when given a http uri"
       (let [uri (str "http://" domain-name "/user/1")
             params {:_id uri}
             profile-url (format "https://%s/api/user/%s/profile" domain-name username)
@@ -158,7 +158,7 @@
             xrd-url (util/replace-template xrd-template uri)
             jrd-url (util/replace-template jrd-template uri)]
 
-        (fact "when the domain has a jrd endpoint" :focus
+        (fact "when the domain has a jrd endpoint"
           (db/drop-all!)
           (let [domain-params (factory :domain
                                        {:_id domain-name
@@ -169,17 +169,14 @@
             (actions.domain/add-link domain {:rel "jrd" :template jrd-template})
 
 
-            (fact "when the username can be determined" :focus
+            (fact "when the username can be determined"
 
-              (actions.user/find-or-create (log/spy :info params)) => (partial instance? User)
+              (actions.user/find-or-create params) => (partial instance? User)
 
               (provided
-                ;; (ops/update-resource jrd-url anything) => (l/success-result
-                ;;                                            {:body mock-jrd})
-                ;; (ops/update-resource profile-url anything) => (l/success-result
-                ;;                                                {:body mock-profile})
-
-))))
+                (actions.user/get-username params) => {:domain domain-name
+                                                       :_id uri
+                                                       :username username}))))
 
         (fact "when the domain has an xrd endpoint"
           (db/drop-all!)
@@ -213,7 +210,7 @@
             (actions.user/create anything) => .user.))))
     ))
 
-(fact "#'actions.user/register-page" :focus
+(fact "#'actions.user/register-page"
   (actions.user/register-page) => (partial instance? User))
 
 (fact "#'actions.user/register"

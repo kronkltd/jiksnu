@@ -245,16 +245,14 @@
     :as params} & [options]]
   (let [id (:_id params)]
     (or (when id
-          (if-let [user (model.user/fetch-by-id id)]
-            user
-            (do
-              (log/debug "user not found by id")
-              (if-let [user (let [[uid did] (util/split-uri id)]
-                              (model.user/get-user uid did))]
-                user
-                (do
-                  (log/debug "user not found by acct id")
-                  (first (model.user/fetch-all {:url id})))))))
+          (or (model.user/fetch-by-id id)
+              (do
+                (log/debug "user not found by id")
+                (or (let [[uid did] (util/split-uri id)]
+                      (model.user/get-user uid did))
+                    (do
+                      (log/debug "user not found by acct id")
+                      (first (model.user/fetch-all {:url id})))))))
         (do
           (log/debug "user not found by url")
           (let [params (if id
