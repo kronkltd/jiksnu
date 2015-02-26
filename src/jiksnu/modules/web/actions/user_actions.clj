@@ -54,11 +54,11 @@
         {:rel ns/updates-from
          :type "application/atom+xml"
          ;; TODO: use formatted-uri
-         :href (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")}
+         :href (str "https://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")}
 
         {:rel ns/updates-from
          :type "application/json"
-         :href (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".json")}
+         :href (str "https://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".json")}
 
         {:rel "describedby"
          :type "application/rdf+xml"
@@ -77,11 +77,11 @@
                    model.key/magic-key-string)}
 
         {:rel ns/ostatus-subscribe
-         :template (str "http://" (config :domain) "/main/ostatussub?profile={uri}")}
+         :template (str "https://" (config :domain) "/main/ostatussub?profile={uri}")}
 
 
         {:rel ns/twitter-username
-         :href (str "http://" (config :domain) "/api/")
+         :href (str "https://" (config :domain) "/api/")
          :property [{:type "http://apinamespace.org/twitter/username"
                      :value (:username user)}]}]})
     (throw+ "Not authorative for this resource")))

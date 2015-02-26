@@ -24,8 +24,8 @@
     (cm/query body pattern)))
 
 (namespace-state-changes
- [(before :contents (setup-testing))
-  (after :contents (stop-testing))])
+ [(before :contents (th/setup-testing))
+  (after :contents (th/stop-testing))])
 
 (future-facts "Requesting the host meta"
   (against-background

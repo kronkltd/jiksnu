@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.auth-routes-test
   (:require [aleph.formats :as formats]
+            [clj-factory.core :refer [fseq]]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.user-actions :as actions.user]

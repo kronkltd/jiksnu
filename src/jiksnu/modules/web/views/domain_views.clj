@@ -12,10 +12,6 @@
   [request domain]
   (redirect "/main/domains" "Domain has been deleted"))
 
-(defview #'actions.domain/discover :html
-  [request domain]
-  (redirect "/main/domains" "Discovering domain"))
-
 ;; TODO: is this actually ever called as a route?
 (defview #'actions.domain/find-or-create :html
   [request domain]

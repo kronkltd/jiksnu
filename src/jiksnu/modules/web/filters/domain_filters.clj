@@ -18,12 +18,6 @@
     (when-let [item (model.domain/fetch-by-id id)]
       (action item))))
 
-(deffilter #'actions.domain/discover :http
-  [action request]
-  (when-let [id (get-in request [:params :id])]
-    (when-let [item (model.domain/fetch-by-id id)]
-      (first (action item)))))
-
 ;; find-or-create
 
 (deffilter #'actions.domain/find-or-create :http

@@ -24,6 +24,7 @@
                  [im.chit/gyr "0.3.1"]
                  [im.chit/purnam "0.5.2"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
+                 [net.kronkltd/jiksnu-command "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
                   :exclusions [xalan com.cemerick/austin]]
                  [net.kronkltd/octohipster "0.3.0-SNAPSHOT"

@@ -82,7 +82,7 @@
     (:object
      (json/read-str
       (channel-buffer->string
-       @(read-channel* that-stream
+       @(l/read-channel* that-stream
                        :timeout 60000))
       :key-fn keyword))) => (:title (get-this :activity))))
 

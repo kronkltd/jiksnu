@@ -53,4 +53,4 @@
     (-> (req/request :get path)
         response-for) =>
         (contains {:status status/success?
-                   :body #(enlive/select (hiccup->doc %) [:.subscriptions])})))
+                   :body #(enlive/select (th/hiccup->doc %) [:.subscriptions])})))

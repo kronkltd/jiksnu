@@ -1,11 +1,13 @@
 (ns jiksnu.modules.admin.views.like-views-test
-  (:require [ciste.core :refer [with-context with-serialization with-format]]
+  (:require [ciste.core :refer [with-context]]
             [ciste.filters :refer [filter-action]]
             [ciste.views :refer [apply-view]]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.modules.admin.actions.like-actions :as actions.admin.like]
             [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.modules.admin.actions.like-actions :as actions.admin.like]
+            jiksnu.modules.admin.filters.like-filters
+            jiksnu.modules.admin.views.like-views
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -27,8 +29,8 @@
             request {:action action
                      :params {:id (str (:_id like))}}
             response (filter-action action request)]
-        (let [response (apply-view request response)]
-          response => map?
-          (:status response) => status/redirect?
-          (get-in response [:headers "Location"]) => "/admin/likes")))))
+
+         (apply-view request response) =>
+         (contains {:status status/redirect?
+                    :headers (contains {"Location" "/admin/likes"})})))))
 

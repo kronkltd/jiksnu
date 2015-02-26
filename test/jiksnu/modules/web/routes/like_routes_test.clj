@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.routes.like-routes-test
-  (:require [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory]]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.model.like :as model.like]

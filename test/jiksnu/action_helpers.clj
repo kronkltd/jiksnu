@@ -31,7 +31,7 @@
 (def current-page (ref nil))
 (def domain "localhost")
 (def port 8175)
-(def that-stream (permanent-channel))
+(def that-stream (l/permanent-channel))
 
 (defn get-domain
   []
@@ -45,7 +45,7 @@
 
 (defn expand-url
   [path]
-  (str "http://" (get-host) path))
+  (str "https://" (get-host) path))
 
 (defn do-wait
   []

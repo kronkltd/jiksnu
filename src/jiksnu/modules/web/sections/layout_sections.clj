@@ -86,7 +86,7 @@
             ;;  :title "People Search"
             ;;  :type "application/opensearchdescription+xml"
             ;;  :rel "search"}
-            {:href (str "http://" (config :domain) "/favicon.ico")
+            {:href (str "https://" (config :domain) "/favicon.ico")
              :rel "shortcut icon"}])))
 
 (defonce scripts-section-hook (ref []))

@@ -2,6 +2,7 @@
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
@@ -22,7 +23,7 @@
 
 (defresource domains discover
   :url "/{_id}/discover"
-  :post actions.domain/discover)
+  :post actions.service/discover)
 
 (defresource domains edit
   :url "/{_id}/edit"
@@ -85,7 +86,6 @@
    ;; [[:get    "/main/domains/:id.:format"]        #'actions.domain/show]
    ;; [[:get    "/main/domains/:id"]                #'actions.domain/show]
    ;; [[:delete "/main/domains/*"]                  #'actions.domain/delete]
-   ;; [[:post   "/main/domains/:id/discover"]       #'actions.domain/discover]
    ;; [[:post   "/main/domains/:id/edit"]           #'actions.domain/edit-page]
    ;; [[:post   "/main/domains"]                    #'actions.domain/find-or-create]
    ;; [[:get    "/api/dialback"]                    #'actions.domain/dialback]

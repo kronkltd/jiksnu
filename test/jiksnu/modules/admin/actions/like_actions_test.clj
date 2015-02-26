@@ -1,5 +1,5 @@
 (ns jiksnu.modules.admin.actions.like-actions-test
-  (:require [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory]]
             [jiksnu.model.like :as model.like]
             [jiksnu.modules.admin.actions.like-actions :as actions.like]
             [jiksnu.test-helper :as th]

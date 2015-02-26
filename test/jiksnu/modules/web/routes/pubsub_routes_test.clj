@@ -18,7 +18,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact "subscription request"
+(future-fact "subscription request"
   (let [domain (mock/a-domain-exists)
         source (mock/a-feed-source-exists
                 {:domain (actions.domain/current-domain)})

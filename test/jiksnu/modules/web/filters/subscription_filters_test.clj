@@ -1,6 +1,7 @@
 (ns jiksnu.modules.web.filters.subscription-filters-test
   (:require [ciste.core :refer [with-serialization]]
             [ciste.filters :refer [filter-action]]
+            [clj-factory.core :refer [fseq]]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.session :as session]
@@ -48,10 +49,8 @@
                 uri (model.user/get-uri {:username username :domain domain-name})
                 request {:params {:profile uri}}]
             (session/with-user actor
-              (filter-action action request)) =>
-              (check [response]
-                     response => map?)
-              (provided
+              (filter-action action request)) => map?
+              #_(provided
                 (ops/get-discovered anything) => (l/success-result
                                                   (model/map->Domain
                                                    {:_id domain-name}))))))))

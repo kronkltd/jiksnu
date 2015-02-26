@@ -79,14 +79,7 @@
                        (fn [status]
                          (actions.stream/handle-closed request channel status))))))
 
-(definitializer
-  (load-routes)
-  (set-site)
-  (add-watch r/resources :site (fn [k r os ns]
-                                 (log/info "refreshing site")
-                                 (set-site)))
-
-  (def app
+(def app
     (-> (routes
          async-handler
          (route/resources "/")
@@ -98,4 +91,12 @@
              (handler/site {:session {:store (ms/session-store)}})))
         wrap-file-info
         wrap-content-type
-        wrap-not-modified)))
+        wrap-not-modified))
+
+(definitializer
+  (load-routes)
+  (set-site)
+  (add-watch r/resources :site (fn [k r os ns]
+                                 (log/info "refreshing site")
+                                 (set-site)))
+  )

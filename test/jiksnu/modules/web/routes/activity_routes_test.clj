@@ -31,7 +31,7 @@
                 {:content content})]
       data => string?)))
 
-(fact "oembed"
+(future-fact "oembed"
   (fact "when the format is json"
     (let [activity (mock/there-is-an-activity)
           url (str "/main/oembed?format=json&url=" (:url activity))]

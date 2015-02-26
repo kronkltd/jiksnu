@@ -1,5 +1,5 @@
 (ns jiksnu.modules.admin.routes.like-routes-test
-  (:require [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory]]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
