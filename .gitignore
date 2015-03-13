@@ -21,11 +21,9 @@ init-script
 lib
 logs
 newrelic
+node_modules
 out
 pom.xml
-resources/public/assets/js/jiksnu*
-resources/public/cljs/
-resources/public/assets/themes/
 target
 repl
 .repl

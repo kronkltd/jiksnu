@@ -78,7 +78,7 @@
                       :foreign-libs [{:file "node_modules/angular/angular.min.js"
                                       :provides ["angular.core"]
                                       }]
-                      :compiler {:output-to "resources/public/cljs/jiksnu.js"
+                      :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
                                  :optimizations :whitespace
                                  :pretty-print true}}
                ;; :advanced {:source-paths ["src-cljs"]
@@ -126,7 +126,7 @@
               [[midje         "1.7.0-SNAPSHOT"
                 :exclusions [org.clojure/clojure]]
                [ring-mock     "0.1.5"]]}}
-  :lesscss-output-path "resources/public/css"
-
+  :lesscss-output-path "target/resources/public/css"
+  :resource-paths ["resources" "target/resources"]
   :source-paths ["src" "src-cljs"]
   :lis-opts {:name "jiksnu"})

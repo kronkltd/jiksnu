@@ -34,6 +34,15 @@ module.exports = function(config) {
         },
 
 
+        preprocessors: {
+            "target/resources/public/cljs/jiksnu.js": ["coverage"]
+        },
+
+        coverageReporter: {
+            type: "html",
+            dir: "target/coverage/"
+        },
+
         // web server port
         port: 9876,
 
