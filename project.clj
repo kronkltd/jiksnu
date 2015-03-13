@@ -76,13 +76,25 @@
                             ;; "-jsconsole" "http://localhost/my-page"
                             ]}
               :builds
-              [{:source-paths ["src-cljs"]
+              [
+               {:source-paths ["src-cljs"]
+                :id "main"
                 :compiler
                 {:output-to "resources/public/cljs/jiksnu.js"
                  ;; :output-dir "resources/public/cljs/"
                  :optimizations :whitespace
-                 :pretty-print true}}]}
+                 :pretty-print true}}
+               {:source-paths ["src-cljs" "test-cljs"]
+                :id "karma-test"
+                :compiler
+                {:output-to "target/karma-test.js"
+                 :optimizations :whitespace
+                 :pretty-print true
+                 }}
+
+]}
   ;; :hooks [leiningen.cljsbuild]
+  :aliases {"karma" ["shell" "./node_modules/karma-cli/bin/karma" "start"]}
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
@@ -94,6 +106,8 @@
               :repl-options {:init-ns ciste.runner
                              :port 7888}
               :plugins [
+                        [lein-midje-doc "0.0.18"]
+                        [lein-shell "0.4.0"]
                         ]
               :dependencies
               [[midje         "1.7.0-SNAPSHOT"
