@@ -2,67 +2,72 @@
 // Generated on Wed Oct 30 2013 09:32:06 GMT+1100 (EST)
 
 module.exports = function(config) {
-  config.set({
+    config.set({
 
-    // base path, that will be used to resolve files and exclude
-    basePath: '',
-
-
-    // frameworks to use
-    frameworks: ['jasmine'],
+        // base path, that will be used to resolve files and exclude
+        basePath: '',
 
 
-    // list of files / patterns to load in the browser
-    files: [
-      'target/karma-test.js'
-    ],
+        // frameworks to use
+        frameworks: ['jasmine'],
 
 
-    // list of files to exclude
-    exclude: [
-      
-    ],
+        // list of files / patterns to load in the browser
+        files: [
+            "node_modules/angular/angular.min.js",
+            "target/karma-test.js"
+        ],
 
 
-    // test results reporter to use
-    // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress', "growl", "coverage", "junit"],
+        // list of files to exclude
+        exclude: [
+            
+        ],
 
 
-    // web server port
-    port: 9876,
+        // test results reporter to use
+        // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
+        reporters: ['progress', "growl", "coverage", "junit"],
+
+        junitReporter: {
+            outputFile: "target/karma-test-results.xml"
+        },
 
 
-    // enable / disable colors in the output (reporters and logs)
-    colors: true,
+        // web server port
+        port: 9876,
 
 
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+        // enable / disable colors in the output (reporters and logs)
+        colors: true,
 
 
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+        // level of logging
+        // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+        logLevel: config.LOG_INFO,
 
 
-    // Start these browsers, currently available:
-    // - Chrome
-    // - ChromeCanary
-    // - Firefox
-    // - Opera (has to be installed with `npm install karma-opera-launcher`)
-    // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
-    // - PhantomJS
-    // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-    browsers: ['Chrome'],
+        // enable / disable watching file and executing tests whenever any file changes
+        autoWatch: true,
 
 
-    // If browser does not capture in given timeout [ms], kill it
-    captureTimeout: 60000,
+        // Start these browsers, currently available:
+        // - Chrome
+        // - ChromeCanary
+        // - Firefox
+        // - Opera (has to be installed with `npm install karma-opera-launcher`)
+        // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
+        // - PhantomJS
+        // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
+        browsers: ['Chrome'],
 
 
-    // Continuous Integration mode
-    // if true, it capture browsers, run tests and exit
-    singleRun: false
-  });
+        // If browser does not capture in given timeout [ms], kill it
+        captureTimeout: 60000,
+
+
+        // Continuous Integration mode
+        // if true, it capture browsers, run tests and exit
+        singleRun: false
+    });
 };

@@ -30,7 +30,7 @@
                  [net.kronkltd/octohipster "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
                  [org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2740"]
+                 [org.clojure/clojurescript "0.0-3058"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/tools.reader "0.8.13"]
                  [org.clojure/data.json "0.2.5"]
@@ -65,35 +65,34 @@
                   :exclusions [org.slf4j/slf4j-nop]]
                  [slingshot "0.12.1"]
                  [xerces/xercesImpl "2.11.0"]]
-  :plugins [[lein-cljsbuild "1.0.4"]
+  :plugins [[lein-cljsbuild "1.0.5"]
             [codox          "0.8.10"]
             ;; [lein-cucumber  "1.0.2"]
             [lein-lesscss   "1.2"]
             [lein-midje     "3.1.3"]]
   :cljsbuild {:repl-listen-port 9001
-              :repl-launch-commands
-              {"my-launch" ["google-chrome"
-                            ;; "-jsconsole" "http://localhost/my-page"
-                            ]}
+              :repl-launch-commands {"my-launch" ["google-chrome"]}
               :builds
-              [
-               {:source-paths ["src-cljs"]
-                :id "main"
-                :compiler
-                {:output-to "resources/public/cljs/jiksnu.js"
-                 ;; :output-dir "resources/public/cljs/"
-                 :optimizations :whitespace
-                 :pretty-print true}}
-               {:source-paths ["src-cljs" "test-cljs"]
-                :id "karma-test"
-                :compiler
-                {:output-to "target/karma-test.js"
-                 :optimizations :whitespace
-                 :pretty-print true
-                 }}
-
-]}
-  ;; :hooks [leiningen.cljsbuild]
+              {
+               :main {:source-paths ["src-cljs"]
+                      :foreign-libs [{:file "node_modules/angular/angular.min.js"
+                                      :provides ["angular.core"]
+                                      }]
+                      :compiler {:output-to "resources/public/cljs/jiksnu.js"
+                                 :optimizations :whitespace
+                                 :pretty-print true}}
+               ;; :advanced {:source-paths ["src-cljs"]
+               ;;            :compiler {:output-to "resources/public/cljs/jiksnu.min.js"
+               ;;                       :optimizations :advanced
+               ;;                       :pretty-print false}}
+               :karma {:source-paths ["src-cljs" "test-cljs"]
+                      :foreign-libs [{:file "node_modules/angular/angular.min.js"
+                                      :provides ["angular.core"]
+                                      }]
+                       :compiler {:output-to "target/karma-test.js"
+                                  :optimizations :whitespace
+                                  :pretty-print true}}}}
+  :hooks [leiningen.cljsbuild]
   :aliases {"karma" ["shell" "./node_modules/karma-cli/bin/karma" "start"]}
   :main ciste.runner
   :jvm-opts ["-server"
@@ -101,12 +100,26 @@
              "-Dfile.encoding=UTF-8"]
   :warn-on-reflection false
 
+  :node-dependencies [
+                      [angular "1.3.14"]
+                      [karma "0.12.31"]
+                      [karma-cli "0.0.4"]
+                      [karma-chrome-launcher "0.1.7"]
+                      [karma-coverage "0.2.7"]
+                      [karma-growl "0.1.0"]
+                      [karma-jasmine "0.1.4"]
+                      [karma-junit-reporter "0.2.2"]
+                      ]
+
   :profiles {:dev
              {:resource-paths ["test-resources"]
               :repl-options {:init-ns ciste.runner
                              :port 7888}
               :plugins [
+                        [lein-cloverage "1.0.2"]
+
                         [lein-midje-doc "0.0.18"]
+                        [lein-npm "0.5.0"]
                         [lein-shell "0.4.0"]
                         ]
               :dependencies
