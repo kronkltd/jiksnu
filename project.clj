@@ -73,27 +73,35 @@
   :cljsbuild {:repl-listen-port 9001
               :repl-launch-commands {"my-launch" ["google-chrome"]}
               :builds
-              {
-               :main {:source-paths ["src-cljs"]
-                      :foreign-libs [{:file "node_modules/angular/angular.min.js"
-                                      :provides ["angular.core"]
-                                      }]
-                      :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
-                                 :optimizations :whitespace
-                                 :pretty-print true}}
-               ;; :advanced {:source-paths ["src-cljs"]
-               ;;            :compiler {:output-to "resources/public/cljs/jiksnu.min.js"
-               ;;                       :optimizations :advanced
-               ;;                       :pretty-print false}}
-               :karma {:source-paths ["src-cljs" "test-cljs"]
-                      :foreign-libs [{:file "node_modules/angular/angular.min.js"
-                                      :provides ["angular.core"]
-                                      }]
-                       :compiler {:output-to "target/karma-test.js"
-                                  :optimizations :whitespace
-                                  :pretty-print true}}}}
+              {:main      {:source-paths ["src-cljs"]
+                           :foreign-libs [{:file "node_modules/angular/angular.min.js"
+                                           :provides ["angular.core"]}]
+                           :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
+                                      :optimizations :whitespace
+                                      :pretty-print true}}
+               :advanced   {:source-paths ["src-cljs"]
+                            :compiler {:output-to "resources/public/cljs/jiksnu.min.js"
+                                       :optimizations :advanced
+                                       :pretty-print false}}
+               :karma      {:source-paths ["src-cljs" "test-cljs"]
+                            :foreign-libs [{:file "node_modules/angular/angular.min.js"
+                                            :provides ["angular.core"]}]
+                            :compiler {:output-to "target/karma-test.js"
+                                       :optimizations :whitespace
+                                       :pretty-print true}}
+               :protractor {:source-paths ["specs"]
+                            :compiler {:output-to "target/protractor-tests.js"
+                                       :optimizations :simple
+                                       :pretty-print true}}
+
+}}
   :hooks [leiningen.cljsbuild]
-  :aliases {"karma" ["shell" "./node_modules/karma-cli/bin/karma" "start"]}
+  :aliases {"karma" ["shell" "./node_modules/karma-cli/bin/karma" "start"]
+            "protractor" ["shell" "./node_modules/protractor/bin/protractor" "protractor-config.js"]
+            "protractor-start" ["shell" "./node_modules/protractor/bin/webdriver-manager" "start"]
+            "protractor-update" ["shell" "./node_modules/protractor/bin/webdriver-manager" "update"]
+
+}
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
@@ -109,6 +117,7 @@
                       [karma-growl "0.1.0"]
                       [karma-jasmine "0.1.4"]
                       [karma-junit-reporter "0.2.2"]
+                      [protractor "1.8.0"]
                       ]
 
   :profiles {:dev
