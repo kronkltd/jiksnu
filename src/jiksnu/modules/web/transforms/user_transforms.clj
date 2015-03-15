@@ -1,16 +1,5 @@
 (ns jiksnu.modules.web.transforms.user-transforms
-  (:require [ciste.config :refer [config]]
-            [clj-gravatar.core :refer [gravatar-image]]
-            [clojure.tools.logging :as log]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger]
-            [jiksnu.routes.helpers :refer [formatted-url]]
-            [jiksnu.ops :as ops]
-            [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+]])
-  (:import java.net.URI))
+  (:require [clojure.tools.logging :as log]))
 
 (defn salmon-link
   [user]

@@ -1,12 +1,10 @@
 (ns jiksnu.modules.web.filters.user-filters
-  (:require [ciste.config :refer [config]]
-            [ciste.filters :refer [deffilter]]
+  (:require [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]
             [jiksnu.session :as session]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))
 
 (deffilter #'actions.user/add-stream :http

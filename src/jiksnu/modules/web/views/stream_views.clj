@@ -1,15 +1,12 @@
 (ns jiksnu.modules.web.views.stream-views
-  (:require [ciste.config :refer [config]]
-            [ciste.core :refer [with-format]]
-            [ciste.views :refer [apply-view defview]]
+  (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [index-section show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
             [jiksnu.modules.web.sections :refer [bind-to redirect with-sub-page]]
-            [jiksnu.modules.web.sections.activity-sections :as sections.activity]
-)
+            [jiksnu.modules.web.sections.activity-sections :as sections.activity])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 

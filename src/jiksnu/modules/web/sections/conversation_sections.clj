@@ -1,22 +1,20 @@
 (ns jiksnu.modules.web.sections.conversation-sections
-  (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section delete-button title
-                                       index-line index-block index-line link-to
-                                       show-section update-button]]
-        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
-        [jiksnu.modules.web.sections :only [action-link bind-to
-                                            dropdown-menu]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [actions-section delete-button title
+                                           index-line index-block index-line link-to
+                                           show-section update-button]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.namespace :as ns]
+            [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]]
+            [jiksnu.modules.web.sections :refer [action-link bind-to dropdown-menu]]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.session :as session])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Conversation
+  (:import jiksnu.model.Conversation
            jiksnu.model.Domain
            jiksnu.model.FeedSource
            jiksnu.model.User))

@@ -1,5 +1,5 @@
 (ns jiksnu.modules.admin.actions.setting-actions
-  (:require [ciste.config :refer [config set-config! write-config!]]
+  (:require [ciste.config :refer [set-config! write-config!]]
             [ciste.core :refer [defaction]]
             [clojure.tools.logging :as log]
             [jiksnu.session :as session]))

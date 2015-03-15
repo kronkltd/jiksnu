@@ -1,11 +1,11 @@
 (ns jiksnu.modules.admin.filters.feed-source-filters
-  (:use [ciste.filters :only [deffilter]]
-        jiksnu.modules.admin.actions.feed-source-actions
-        [jiksnu.modules.core.filters :only [parse-page parse-sorting]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.filters :refer [deffilter]]
+            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
+            jiksnu.modules.admin.actions.feed-source-actions
+            [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]
             [jiksnu.util :as util]))
 
 ;; add-watcher

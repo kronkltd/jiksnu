@@ -1,9 +1,8 @@
 (ns jiksnu.modules.web.sections
-  (:use [ciste.config :only [config]]
-        [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [edit-button index-block
-                                       index-block-type index-line uri]])
-  (:require [clojure.string :as string]
+  (:require [ciste.sections :refer [declare-section defsection]]
+            [ciste.sections.default :refer [edit-button index-block
+                                            index-block-type index-line uri]]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [ring.util.response :as response]))

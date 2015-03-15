@@ -1,10 +1,8 @@
 (ns jiksnu.modules.admin.filters.activity-filters
-  (:use [ciste.filters :only [deffilter]]
-        [jiksnu.modules.admin.actions.activity-actions :only [index]]
-        [jiksnu.modules.core.filters :only [parse-page parse-sorting]])
-  (:require [clojure.tools.logging :as log]))
-
-;; index
+  (:require [ciste.filters :refer [deffilter]]
+            [clojure.tools.logging :as log]
+            [jiksnu.modules.admin.actions.activity-actions :refer [index]]
+            [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]))
 
 (deffilter #'index :http
   [action request]

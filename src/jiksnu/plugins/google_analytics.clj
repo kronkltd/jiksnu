@@ -1,5 +1,5 @@
 (ns jiksnu.plugins.google-analytics
-  (:use [ciste.config :only [config describe-config]])
+  (:use [ciste.config :only [describe-config]])
   (:require [jiksnu.modules.web.sections.layout-sections :as sections.layout]))
 
 (describe-config [::account-id]

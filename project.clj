@@ -124,14 +124,13 @@
                       [protractor "1.8.0"]
                       ]
 
-  :profiles {:dev
+  :profiles {:dev [:dev-core :user-dev]
+             :dev-core
              {:resource-paths ["test-resources"]
               :repl-options {:init-ns ciste.runner
                              :port 7888}
               :plugins [
                         [lein-cloverage "1.0.2"]
-
-                        [lein-midje-doc "0.0.18"]
                         [lein-npm "0.5.0"]
                         [lein-shell "0.4.0"]
                         ]

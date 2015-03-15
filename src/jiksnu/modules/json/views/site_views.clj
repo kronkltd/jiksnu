@@ -1,9 +1,6 @@
 (ns jiksnu.modules.json.views.site-views
-  (:require [ciste.config :refer [config]]
-            [ciste.views :refer [defview]]
-            [hiccup.core :as h]
-            [jiksnu.actions.site-actions :as actions.site]
-            [jiksnu.namespace :as ns]))
+  (:require [ciste.views :refer [defview]]
+            [jiksnu.actions.site-actions :as actions.site]))
 
 (defview #'actions.site/get-stats :json
   [request stats]

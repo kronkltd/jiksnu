@@ -1,17 +1,7 @@
 (ns jiksnu.modules.json.views
-  (:use [ciste.core :only [serialize-as with-format]]
-        [ciste.config :only [config]]
-        [ciste.formats :only [format-as]]
-        [ciste.views :only [defview]]
-        [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [link-to
-                                       index-line edit-button]]
-        [jiksnu.session :only [current-user]])
-  (:require [clojure.data.json :as json]
+  (:require [ciste.views :refer [defview]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions :as actions]
-            [jiksnu.modules.http.actions :as http.actions]
-            [jiksnu.model :as model]))
+            [jiksnu.actions :as actions]))
 
 (defview #'http.actions/connect :json
   [request response]

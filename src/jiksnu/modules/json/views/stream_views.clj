@@ -1,6 +1,5 @@
 (ns jiksnu.modules.json.views.stream-views
-  (:require [ciste.config :refer [config]]
-            [ciste.core :refer [with-format]]
+  (:require [ciste.core :refer [with-format]]
             [ciste.views :refer [apply-view defview]]
             [ciste.sections.default :refer [index-section show-section]]
             [clojure.tools.logging :as log]

@@ -1,12 +1,8 @@
 (ns jiksnu.modules.json.views.activity-views
-  (:require [ciste.config :refer [config]]
-            [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [show-section uri]]
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.modules.json.sections.activity-sections :as sections.activity]
-            [jiksnu.session :as session])
-  (:import jiksnu.model.Activity))
+            [jiksnu.actions.activity-actions :as actions.activity]))
 
 (defview #'actions.activity/oembed :json
   [request oembed-map]
@@ -16,4 +12,3 @@
 (defview #'actions.activity/show :json
   [request activity]
   {:body (show-section activity)})
-
