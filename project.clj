@@ -80,10 +80,14 @@
                                       :optimizations :whitespace
                                       :pretty-print true}}
                :advanced   {:source-paths ["src-cljs"]
-                            :compiler {:output-to "resources/public/cljs/jiksnu.min.js"
+                            :compiler {:output-to "target/resources/public/cljs/jiksnu.min.js"
                                        :optimizations :advanced
                                        :pretty-print false}}
-               :karma      {:source-paths ["src-cljs" "test-cljs"]
+               :karma      {:source-paths [
+                                           ;; "src-cljs"
+                                           "test-cljs"
+                                           ]
+                            :libs ["target/resources/public/cljs/jiksnu.js"]
                             :foreign-libs [{:file "node_modules/angular/angular.min.js"
                                             :provides ["angular.core"]}]
                             :compiler {:output-to "target/karma-test.js"
