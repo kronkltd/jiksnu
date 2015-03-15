@@ -12,7 +12,6 @@
             [jiksnu.ops :as ops]
             [lamina.core :as l])
   (:import java.net.URI
-           jiksnu.model.Activity
            jiksnu.model.User))
 
 (defn filter-activity-create

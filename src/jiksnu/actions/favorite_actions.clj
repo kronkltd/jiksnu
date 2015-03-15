@@ -1,5 +1,5 @@
 (ns jiksnu.actions.favorite-actions
-  (:use [ciste.core :only [defaction]]))
+  (:require [ciste.core :refer [defaction]]))
 
 (defaction user-list
   [user]

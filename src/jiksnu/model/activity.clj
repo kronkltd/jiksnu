@@ -11,8 +11,7 @@
             [monger.query :as mq]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [validation-set presence-of]])
-  (:import jiksnu.model.Activity
-           org.bson.types.ObjectId
+  (:import org.bson.types.ObjectId
            org.joda.time.DateTime))
 
 (defonce page-size 20)

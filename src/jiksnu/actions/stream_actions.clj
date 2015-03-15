@@ -18,8 +18,7 @@
             [lamina.core :as l]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+  (:import jiksnu.model.User))
 
 ;; hooks
 

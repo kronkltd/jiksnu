@@ -1,5 +1,5 @@
 (ns jiksnu.validators
-  (:use [validateur.validation :only [acceptance-of]]))
+  (:require [validateur.validation :refer [acceptance-of]]))
 
 (defn type-of
   [path type]

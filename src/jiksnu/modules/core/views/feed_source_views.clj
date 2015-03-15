@@ -7,8 +7,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [format-page-info]]
             [ring.util.response :as response])
-  (:import jiksnu.model.Activity
-           jiksnu.model.FeedSource))
+  (:import jiksnu.model.FeedSource))
 
 (defview #'actions.feed-source/index :page
   [request response]

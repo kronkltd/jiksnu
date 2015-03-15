@@ -1,8 +1,7 @@
 (ns jiksnu.model.authentication-mechanism-test
-  (:use [jiksnu.model.like :refer [fetch-all]]
-        [jiksnu.test-helper :as th]
-        [midje.sweet :refer :all]))
-
+  (:require [jiksnu.model.like :refer [fetch-all]]
+            [jiksnu.test-helper :as th]
+            [midje.sweet :refer :all]))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))
@@ -14,4 +13,3 @@
 
   (fact "when passed an empty map"
     (fetch-all {}) => seq?))
-

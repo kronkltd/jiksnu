@@ -17,8 +17,7 @@
             [jiksnu.util :as util]
             [lamina.core :as l]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Activity
-           jiksnu.model.FeedSource))
+  (:import jiksnu.model.FeedSource))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

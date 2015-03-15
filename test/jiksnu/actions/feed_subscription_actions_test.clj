@@ -24,7 +24,7 @@
   (let [params (factory :feed-subscription)
         params (actions.feed-subscription/prepare-create params)]
 
-    (actions.feed-subscription/create params)
+    (actions.feed-subscription/create params {})
     => (partial instance? FeedSubscription)))
 
 (fact "#'actions.feed-subscription/index"

@@ -11,8 +11,7 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [validateur.validation :refer [valid?]])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+  (:import jiksnu.model.User))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))
