@@ -23,12 +23,7 @@
   "Gets the user from the context"
   [ctx]
   (let [username (-> ctx :request :route-params :username)]
-    (model.user/get-user (log/spy :info username)))
-
-)
-
-
-
+    (model.user/get-user username)))
 
 ;; =============================================================================
 

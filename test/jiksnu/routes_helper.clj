@@ -18,7 +18,7 @@
   ([request] (response-for request (time/seconds 5)))
   ([request timeout]
    (try+
-    (log/spy :info (r/app request))
+    (r/app request)
     (catch Object ex
       (log/error "error in response-for" ex)))))
 

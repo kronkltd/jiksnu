@@ -96,11 +96,8 @@
 
 (defn format-links
   [activity]
-  (let [links (log/spy :info (:links activity))]
-    (merge {
-
-            }
-           links)))
+  (let [links (:links activity)]
+    (merge {} links)))
 
 (defsection show-section [Activity :as]
   [activity & _]
