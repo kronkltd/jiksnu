@@ -17,3 +17,7 @@
   []
   (dosync
    (alter sections.layout/scripts-section-hook conj #'scripts-section)))
+
+(defn stop
+  []
+)

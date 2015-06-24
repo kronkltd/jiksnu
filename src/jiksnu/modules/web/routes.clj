@@ -20,7 +20,6 @@
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [liberator.dev :refer [wrap-trace]]
             [octohipster.documenters.schema
              :refer [schema-doc schema-root-doc]]
             [octohipster.documenters.swagger
@@ -85,7 +84,6 @@
          (route/resources "/")
          (GET "/templates/*" [] #'helpers/serve-template)
          (-> #'site
-             (wrap-trace :ui :headers)
              (friend/authenticate auth-config)
              (wrap-webjars "/webjars")
              (handler/site {:session {:store (ms/session-store)}})))

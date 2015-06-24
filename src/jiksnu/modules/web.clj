@@ -8,6 +8,7 @@
             jiksnu.handlers.xrd
             jiksnu.modules.web.formats
             jiksnu.modules.web.routes
+            jiksnu.plugins.google-analytics
             [jiksnu.registry :as registry]
             [jiksnu.util :as util]
             [lamina.core :as l]

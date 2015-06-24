@@ -3,6 +3,7 @@
             [ciste.filters :refer [filter-action]]
             [ciste.views :refer [apply-view]]
             [jiksnu.actions.conversation-actions :as actions.conversation]
+            jiksnu.modules.http.views.conversation-views
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 
