@@ -6,7 +6,10 @@
              :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers
              :refer [angular-resource page-resource]]
-            [liberator.representation :refer [as-response ring-response]]
+            [liberator.representation :refer [
+                                              as-response 
+                                              #_ring-response
+                                              ]]
             [octohipster.mixins :as mixin]))
 
 (defgroup auth)
@@ -25,7 +28,7 @@
            true)
   :post-redirect? false
   :handle-created (fn [ctx]
-                    (ring-response
+                    #_(ring-response
                      (friend/authenticate-response
                       (:request ctx)
                       {:body "ok"}))))
@@ -38,7 +41,7 @@
            (log/info "logout handler")
            true)
   :handle-created (fn [ctx]
-                    (ring-response
+                    #_(ring-response
                      (friend/logout* (as-response {:data "ok"} ctx)))))
 
 (defresource auth verify-credentials

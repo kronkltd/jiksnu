@@ -6,6 +6,8 @@
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.modules.admin.actions.subscription-actions :as actions.admin.subscription]
+            [jiksnu.modules.admin.filters.subscription-filters :as filters.admin.subscription]
+            [jiksnu.modules.admin.views.subscription-views :as views.admin.subscription]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]

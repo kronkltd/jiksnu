@@ -1,10 +1,11 @@
 (ns jiksnu.modules.admin.filters.feed-source-filters
   (:require [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source] 
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
-            jiksnu.modules.admin.actions.feed-source-actions
+            [jiksnu.modules.admin.actions.feed-source-actions :refer :all]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]
             [jiksnu.util :as util]))
 

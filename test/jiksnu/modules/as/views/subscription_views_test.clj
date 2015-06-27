@@ -10,6 +10,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.as.views.subscription-views :as views.subsrciption]
+            [jiksnu.modules.web.filters.subscription-filters :as filters.subsrciption]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 
