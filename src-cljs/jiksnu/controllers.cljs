@@ -3,8 +3,7 @@
             jiksnu.factories
             [jiksnu.helpers :as helpers]
             jiksnu.services
-            [jiksnu.templates :as templates]
-            [purnam.native.functions :refer [js-map]])
+            [jiksnu.templates :as templates])
   (:use-macros [gyr.core :only [def.controller]]
                [jiksnu.macros :only [page-controller]]
                [purnam.core :only [? ?> ! !> f.n def.n do.n
