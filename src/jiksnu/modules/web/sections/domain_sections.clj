@@ -15,7 +15,7 @@
 
 (defn favicon-link
   [domain]
-  [:img {:ng-src "https://{{domain._id}}/favicon.ico"}])
+  [:img {:ng-src "//{{domain._id}}/favicon.ico"}])
 
 (defn discover-button
   [item]

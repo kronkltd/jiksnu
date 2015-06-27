@@ -86,7 +86,7 @@
             ;;  :title "People Search"
             ;;  :type "application/opensearchdescription+xml"
             ;;  :rel "search"}
-            {:href (str "https://" (config :domain) "/favicon.ico")
+            {:href (str "//" (config :domain) "/favicon.ico")
              :rel "shortcut icon"}])))
 
 (defonce scripts-section-hook (ref []))
@@ -100,6 +100,7 @@
    "/vendor/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css"
    "/vendor/angular-notify/dist/angular-notify.min.css"
    "/vendor/angular-ui/build/angular-ui.min.css"
+   "/vendor/angular-cfp-hotkeys/build/hotkeys.min.css"
    "/css/standard.css"))
 
 (defn scripts-section
@@ -120,10 +121,11 @@
       "/vendor/datatables/media/js/jquery.dataTables.min.js"
       "/vendor/angularjs-geolocation/dist/angularjs-geolocation.min.js"
       "/vendor/angular-busy/dist/angular-busy.min.js"
+      "/vendor/js-data/dist/js-data.min.js"
       "/vendor/js-data-angular/dist/js-data-angular.min.js"
       "/vendor/angular-file-upload/angular-file-upload.min.js"
       "/vendor/angular-google-maps/dist/angular-google-maps.min.js"
-      "/vendor/angular-hotkeys/angular-hotkeys.min.js"
+      "/vendor/angular-cfp-hotkeys/build/hotkeys.min.js"
       "/vendor/angular-paginate-anything/src/paginate-anything.js"
       "/vendor/angular-markdown-directive/markdown.js"
       "/vendor/angular-moment/angular-moment.min.js"
