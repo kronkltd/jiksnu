@@ -37,46 +37,6 @@
                  [org.clojure/data.json "0.2.5"]
                  [org.slf4j/slf4j-api "1.7.10"]
                  [org.slf4j/slf4j-log4j12 "1.7.10"]
-                 [org.webjars.bower/angular "1.4.0-rc.2"]
-                 [org.webjars.bower/angularjs-geolocation "0.1.1"
-:exclusions [
-org.webjars.bower/angular
-]
-]
-                 [org.webjars/angular-busy "4.1.1" :exclusions [
-org.webjars.bower/angular
-]
-]
-                 [org.webjars/angular-cache "3.2.4" :exclusions [
-org.webjars.bower/angular
-]
-]
-                 [org.webjars.bower/js-data-angular "2.2.3" :exclusions [
-org.webjars.bower/angular
-org.webjars.bower/js-data
-]
-]
-                 [org.webjars.bower/angular-datatables "0.4.2" :exclusions [
-org.webjars.bower/angular
-org.webjars.bower/jquery
-]
-]
-                 ;; [org.webjars/angular-file-upload "2.2.2"]
-                 ;; [org.webjars/angular-google-maps "2.0.11"]
-                 ;; [org.webjars/angular-hotkeys "1.4.0"]
-                 ;; [org.webjars/angular-paginate-anything "3.1.1"]
-                 ;; [org.webjars/angular-markdown-directive "0.3.0"]
-                 ;; [org.webjars/angular-moment "0.8.2-1"]
-                 ;; [org.webjars/angular-notify "2.0.2"]
-                 ;; [org.webjars/angular-ui "0.4.0-3"]
-                 ;; [org.webjars/angular-ui-bootstrap "0.12.0"]
-                 [org.webjars.bower/angular-ui-router "0.2.13"]
-                 [org.webjars/angular-validator "0.2.5"]
-                 [org.webjars.bower/angular-ws "1.1.0"]
-                 [org.webjars/bootstrap "3.3.2"]
-                 [org.webjars/jquery "2.1.3"]
-                 [org.webjars/momentjs "2.9.0"]
-                 [org.webjars.bower/underscore "1.8.2"]
                  ;; [ring "1.2.2"]
                  [ring/ring-core "1.3.2"]
                  [ring-basic-authentication "1.0.5"]
@@ -86,7 +46,6 @@ org.webjars.bower/jquery
                  [xerces/xercesImpl "2.11.0"]]
   :plugins [[lein-cljsbuild "1.0.5"]
             [codox          "0.8.10"]
-            ;; [lein-cucumber  "1.0.2"]
             [lein-lesscss   "1.2"]
             [lein-midje     "3.1.3"]]
   :cljsbuild {:repl-listen-port 9001

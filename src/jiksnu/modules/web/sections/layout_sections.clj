@@ -94,23 +94,12 @@
 (defn style-section
   []
   (p/include-css
-   "/webjars/bootstrap/css/bootstrap.min.css"
-   "/webjars/datatables/css/jquery.dataTables.min.css"
-   "/webjars/angular-busy/angular-busy.min.css"
-   ;; angular-cache
-   "/webjars/angular-datatables/datatables.bootstrap.min.css"
-   ;; angular-file-upload
-   ;; angular-goolge-maps
-   "/webjars/angular-hotkeys/hotkeys.min.css"
-   ;; angular-paginate-anything
-   ;; angular-markdown-directive
-   ;; angular-moment
-   "/webjars/angular-notify/angular-notify.min.css"
-   "/webjars/angular-ui/angular-ui.min.css"
-   ;; angular-ui-bootstrap
-   ;; angular-ui-router
-   ;; angular-validator
-   ;; angular-ws
+   "/vendor/bootstrap/dist/css/bootstrap.min.css"
+   "/vendor/datatables/media/css/jquery.dataTables.min.css"
+   "/vendor/angular-busy/dist/angular-busy.min.css"
+   "/vendor/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css"
+   "/vendor/angular-notify/dist/angular-notify.min.css"
+   "/vendor/angular-ui/build/angular-ui.min.css"
    "/css/standard.css"))
 
 (defn scripts-section
@@ -122,30 +111,28 @@
       (format "WEBSOCKET_PATH = '%s';" websocket-path)
       "var CLOSURE_NO_DEPS = true;"]
      (p/include-js
-      ;; "/webjars/underscorejs/1.7.0/underscore-min.js"
-      "/webjars/momentjs/min/moment.min.js"
-      "/webjars/jquery/jquery.min.js"
-      "/webjars/underscorejs/underscore-min.js"
-      "/webjars/showdown/src/showdown.js"
-      "/webjars/datatables/js/jquery.dataTables.min.js"
-      "/webjars/angularjs/angular.min.js"
-      "/webjars/angularjs-geolocation/angularjs-geolocation.min.js"
-      "/webjars/angular-busy/angular-busy.min.js"
-      "/webjars/angular-cache/angular-cache.min.js"
-      "/webjars/angular-data/angular-data.js"
-      "/webjars/angular-datatables/angular-datatables.min.js"
-      "/webjars/angular-file-upload/angular-file-upload.min.js"
-      "/webjars/angular-google-maps/angular-google-maps.min.js"
-      "/webjars/angular-hotkeys/hotkeys.min.js"
-      "/webjars/angular-paginate-anything/paginate-anything.js"
-      "/webjars/angular-markdown-directive/markdown.js"
-      "/webjars/angular-moment/angular-moment.min.js"
-      "/webjars/angular-notify/angular-notify.min.js"
-      "/webjars/angular-sanitize/angular-sanitize.min.js"
-      "/webjars/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"
-      "/webjars/angular-ui-router/angular-ui-router.min.js"
-      "/webjars/angular-validator/angular-validator.min.js"
-      "/webjars/angular-ws/angular-ws.min.js"
+      "/vendor/jquery/dist/jquery.min.js"
+      "/vendor/angular/angular.min.js"
+      "/vendor/angular-datatables/dist/angular-datatables.min.js"
+      "/vendor/momentjs/min/moment.min.js"
+      "/vendor/underscore/underscore-min.js"
+      "/vendor/showdown/src/showdown.js"
+      "/vendor/datatables/media/js/jquery.dataTables.min.js"
+      "/vendor/angularjs-geolocation/dist/angularjs-geolocation.min.js"
+      "/vendor/angular-busy/dist/angular-busy.min.js"
+      "/vendor/js-data-angular/dist/js-data-angular.min.js"
+      "/vendor/angular-file-upload/angular-file-upload.min.js"
+      "/vendor/angular-google-maps/dist/angular-google-maps.min.js"
+      "/vendor/angular-hotkeys/angular-hotkeys.min.js"
+      "/vendor/angular-paginate-anything/src/paginate-anything.js"
+      "/vendor/angular-markdown-directive/markdown.js"
+      "/vendor/angular-moment/angular-moment.min.js"
+      "/vendor/angular-notify/dist/angular-notify.min.js"
+      "/vendor/angular-sanitize/angular-sanitize.min.js"
+      "/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"
+      "/vendor/angular-ui-router/release/angular-ui-router.min.js"
+      "/vendor/angular-validator/dist/angular-validator.min.js"
+      "/vendor/angular-ws/angular-ws.min.js"
       "/cljs/jiksnu.js")
      (doall (map (fn [hook]
                    (hook request response))

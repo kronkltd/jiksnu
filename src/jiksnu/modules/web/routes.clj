@@ -85,7 +85,6 @@
          (GET "/templates/*" [] #'helpers/serve-template)
          (-> #'site
              (friend/authenticate auth-config)
-             (wrap-webjars "/webjars")
              (handler/site {:session {:store (ms/session-store)}})))
         wrap-file-info
         wrap-content-type

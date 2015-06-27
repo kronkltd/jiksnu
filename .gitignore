@@ -28,4 +28,4 @@ target
 repl
 .repl
 reset.sh
-
+resources/public/vendor
