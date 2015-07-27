@@ -91,11 +91,10 @@
 
 (defn set-geo
   [activity]
-  (let [latitude (get activity "geo.latitude")
-        longitude (get activity "geo.longitude")]
+  (let [latitude (get-in (log/spy :info activity) [:geo :latitude])
+        longitude (get-in activity [:geo :longitude])]
     (-> activity
-        (dissoc "geo.latitude")
-        (dissoc "geo.longitude")
+        (dissoc :geo)
         (assoc :geo {:latitude latitude
                      :longitude longitude}))))
 

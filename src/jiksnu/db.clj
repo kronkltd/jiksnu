@@ -7,6 +7,8 @@
             [monger.db :as db])
   (:import com.mongodb.WriteConcern))
 
+(def _db (ref nil))
+
 ;; Database functions
 
 (defn drop-collection
@@ -31,5 +33,7 @@
   ;; TODO: pass connection options
   (mg/connect!)
   (let [db (mg/get-db (config :database :name))]
+    (dosync 
+     (ref-set _db db))
     (mg/set-db! db)))
 

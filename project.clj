@@ -4,7 +4,6 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
-                 ;; [aleph "0.3.3"]
                  [ciste "0.6.0-SNAPSHOT"]
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [clj-time "0.9.0"]
@@ -17,7 +16,7 @@
                  [hiccup "1.0.5"]
                  [http-kit "2.1.19"]
                  [lamina "0.5.6"]
-                 [manifold "0.1.0-beta10"]
+                 ;; [manifold "0.1.0-beta11"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
                  [org.clojure/clojure "1.6.0"]

@@ -70,5 +70,3 @@
     (th/check [response]
            response => seq?
            (count response) => 5)))
-
-

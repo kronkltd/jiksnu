@@ -1,6 +1,5 @@
 (ns jiksnu.actions.resource-actions
-  (:require #_[aleph.formats :refer [channel-buffer->string]]
-            [ciste.config :refer [config]]
+  (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [ciste.event :refer [defkey notify]]
             [ciste.model :as cm]

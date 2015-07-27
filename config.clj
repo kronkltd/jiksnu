@@ -9,7 +9,8 @@
    :routes false,
    :triggers false},
   :use-pipeline true,
-  :database {:host "localhost"},
+  :database {:host "localhost"
+             :name "jiksnu_core"},
   :site
   {:default {:timezone "+0:00", :language "en-us"},
    :name "Jiksnu",

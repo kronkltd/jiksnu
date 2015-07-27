@@ -73,7 +73,7 @@
       transforms.activity/set-title
       transforms.activity/set-local
       transforms.activity/set-source
-      transforms.activity/set-geo
+      ;; transforms.activity/set-geo
       transforms.activity/set-object-updated
       transforms.activity/set-object-created
       transforms.activity/set-published-time
@@ -113,8 +113,9 @@
   (if-let [prepared-post (-> activity
                              prepare-post
                              (dissoc :pictures))]
+
     (do (-> activity :pictures model.activity/parse-pictures)
-        (create prepared-post))
+        (create (log/spy :info prepared-post)))
     (throw+ "error preparing")))
 
 ;; TODO: use stream update
