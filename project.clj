@@ -9,6 +9,8 @@
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"]
                  [org.clojure/clojure "1.6.0"]
                  ]
-  :profiles {:dev {:dependencies [[midje "1.6.3"]]}}
+  :profiles {:dev {:dependencies [[midje "1.6.3"]
+                                  [org.slf4j/slf4j-api "1.7.10"]
+                                  [org.slf4j/slf4j-log4j12 "1.7.10"]]}}
 
   )
