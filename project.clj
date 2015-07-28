@@ -3,6 +3,8 @@
   :url "https://github.com/duck1123/jiksnu-command"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :plugins [[codox          "0.8.10"]
+            [lein-midje     "3.1.3"]]
   :dependencies [
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"]
                  [org.clojure/clojure "1.6.0"]
