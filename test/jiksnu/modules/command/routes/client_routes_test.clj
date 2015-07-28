@@ -7,11 +7,11 @@
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :refer [test-environment-fixture]]
             [lamina.core :as l]
-            [midje.sweet :refer [contains => fact]]))
+            [midje.sweet :refer :all]))
 
 (test-environment-fixture
 
- (fact "parse command 'get-page clients'"
+ (future-fact "parse command 'get-page clients'"
    (let [name "get-page"
          args '("clients")]
 

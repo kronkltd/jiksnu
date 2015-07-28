@@ -4,14 +4,13 @@
             [clojure.tools.logging :as log]
             [jiksnu.test-helper :as th]
             [lamina.core :as l]
-            [midje.sweet :refer [=> after before contains fact
-                                 namespace-state-changes]]))
+            [midje.sweet :refer :all]))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact "command 'get-page streams'"
+(future-fact "command 'get-page streams'"
   (let [name "get-page"
         args '("streams")
         ch (l/channel)
