@@ -5,6 +5,7 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
+            jiksnu.modules.web.filters.stream-filters
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 

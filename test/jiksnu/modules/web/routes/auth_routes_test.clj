@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.auth-routes-test
-  (:require [aleph.formats :as formats]
-            [clj-factory.core :refer [fseq]]
+  (:require [clj-factory.core :refer [fseq]]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.user-actions :as actions.user]
@@ -26,11 +25,10 @@
       (let [response (-> (req/request :post "/main/login")
                          (assoc :content-type "application/x-www-form-urlencoded")
                          (assoc :body
-                                (formats/bytes->input-stream
-                                 (.getBytes
-                                  (str "username=" username
-                                       "&password=" password)
-                                  "UTF-8")))
+                                (.getBytes
+                                 (str "username=" username
+                                      "&password=" password)
+                                 "UTF-8"))
                          response-for)]
         response => map?
         (get-in response [:headers "Set-Cookie"]) => truthy

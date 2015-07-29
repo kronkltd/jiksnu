@@ -4,6 +4,8 @@
             [jiksnu.actions.conversation-actions :as conversation]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.model.group :as model.group]
+            jiksnu.modules.core.filters.group-filters
+            jiksnu.modules.core.views.group-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [jiksnu.modules.web.routes :as r]

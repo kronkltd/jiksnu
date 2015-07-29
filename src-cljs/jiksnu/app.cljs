@@ -1,15 +1,8 @@
 (ns jiksnu.app
-  (:require
-   ;; [angular.core :as angular]
-            [jiksnu.helpers :as helpers])
-  (:use-macros [gyr.core :only [def.module def.config]]
-               [purnam.core :only [? ?> ! !> f.n def.n do.n
-                                   obj arr def* do*n def*n f*n]]))
+  (:use-macros [gyr.core :only [def.module]]))
 
 (def.module jiksnu
   [
-   ;; angular-data.DS
-   ;; angular-data.DSCacheFactory
    angularFileUpload
    angularMoment
    btford.markdown
@@ -17,10 +10,10 @@
    cgBusy
    geolocation
    datatables
+   js-data
    ngSanitize
    cfp.hotkeys
    ui.bootstrap
-   ;; ui.bootstrap.tabs
    ui.router
    uiGmapgoogle-maps
    ws

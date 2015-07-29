@@ -1,6 +1,5 @@
 (ns jiksnu.action-helpers
-  (:require [aleph.formats :refer [channel-buffer->string]]
-            [aleph.http :refer [sync-http-request]]
+  (:require [clj-http.client :as client]
             [clj-webdriver.taxi :refer [to]]
             [clojure.tools.logging :as log]
             jiksnu.modules.web.routes
@@ -57,9 +56,8 @@
 
 (defn fetch-page
   [method path]
-  (let [request {:method method
-                 :url (expand-url path)}
-        response (sync-http-request request)]
+  ;; TODO: Handle non-GET case
+  (let [response (client/get (expand-url path)) ]
     (dosync
      (ref-set current-page response))))
 
@@ -69,7 +67,7 @@
 
 (defn get-body
   []
-  (-> @current-page :body channel-buffer->string))
+  (-> @current-page :body))
 
 (defmacro check-response
   [& body]

@@ -8,14 +8,14 @@
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
                     appProvider wsProvider
-                    ;; DSProvider
+                    DSProvider
 
 ]
 
-  (.setUrl wsProvider "wss://renfer.name/")
+  (.setUrl wsProvider "ws://jiksnu.com/")
 
-  ;; (! DSProvider.defaults.idAttribute "_id")
-  ;; (! DSProvider.defaults.baseUrl "/model")
+  (! DSProvider.defaults.idAttribute "_id")
+  (! DSProvider.defaults.basePath "/model")
 
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider

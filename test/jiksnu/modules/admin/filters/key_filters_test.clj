@@ -2,6 +2,7 @@
   (:require [ciste.core :refer [with-serialization *serialization*]]
             [ciste.filters :refer [filter-action]]
             [jiksnu.modules.admin.actions.key-actions :as actions.key]
+            jiksnu.modules.admin.filters.key-filters
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 

@@ -8,7 +8,7 @@
    [:div.close.pull-right {:ng-click "toggle()"} "X"]
    [:fieldset
     [:legend "Post an activity"]
-    #_[:div.control-group
+    [:div.control-group
      [:label.control-label {:for "title"} "Title"]
      [:div.controls
       [:input {:type "text"
@@ -61,6 +61,6 @@
      ;; TODO: Group dropdown
      [:group-select]]
     [:button.btn.btn-primary.pull-right {:type "submit"} "Post"]
-    #_[:div
+    [:div
      [:pre "{{activity | json}}"]]
     ]]]]

@@ -1,6 +1,5 @@
 (ns jiksnu.assertion-helpers
-  (:require [aleph.formats :refer [channel-buffer->string]]
-            [ciste.config :refer [config]]
+  (:require [ciste.config :refer [config]]
             [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
             [clojure.data.json :as json]
@@ -81,9 +80,8 @@
    (:displayName
     (:object
      (json/read-str
-      (channel-buffer->string
-       @(l/read-channel* that-stream
-                       :timeout 60000))
+      @(l/read-channel* that-stream
+                        :timeout 60000)
       :key-fn keyword))) => (:title (get-this :activity))))
 
 (defn should-receive-oembed

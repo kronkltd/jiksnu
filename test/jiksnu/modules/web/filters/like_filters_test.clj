@@ -6,6 +6,7 @@
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
+            jiksnu.modules.web.filters.like-filters
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]

@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes
-  (:require [aleph.http :as http]
-            [cemerick.friend :as friend]
+  (:require [cemerick.friend :as friend]
             [cemerick.friend.credentials :as creds]
             [cemerick.friend.workflows :as workflows]
             [ciste.initializer :refer [definitializer]]
@@ -15,6 +14,8 @@
             [jiksnu.model :as model]
             [jiksnu.modules.web.middleware :as jm]
             [jiksnu.registry :as registry]
+            jiksnu.modules.core.formats
+            jiksnu.modules.core.views
             [jiksnu.modules.http.routes :as r]
             [jiksnu.modules.web.helpers :as helpers]
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
@@ -32,7 +33,6 @@
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.resource :refer [wrap-resource]]
-            [ring.middleware.webjars :refer [wrap-webjars]]
             [monger.ring.session-store :as ms]
             [slingshot.slingshot :refer [throw+]]))
 

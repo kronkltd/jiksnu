@@ -1,6 +1,5 @@
 (ns jiksnu.features-helper
-  (:require [aleph.http :as http]
-            [ciste.config :as c]
+  (:require [ciste.config :as c]
             [ciste.core :as core]
             [ciste.runner :as runner]
             [ciste.sections.default :as sections]

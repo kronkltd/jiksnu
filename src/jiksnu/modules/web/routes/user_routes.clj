@@ -129,7 +129,10 @@
                (with-context [:http :json]
                  (let [page (:body rsp)
                        items (:items page)]
-                   (-> (index-section items page)
+                   (-> (if (seq items)
+                         (-> (log/spy :info (index-section (log/spy :info items) page))
+                             )
+                         {})
                        (assoc :displayName "Groups"))))))
 
 (defresource users-api followers-collection

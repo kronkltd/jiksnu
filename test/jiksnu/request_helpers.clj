@@ -1,5 +1,5 @@
 (ns jiksnu.request-helpers
-  (:require [aleph.http :as http]
+  (:require [clj-http.client :as client]
             [clojure.string :as string]
             [lamina.core :as l]
             [jiksnu.action-helpers :refer [expand-url fetch-page fetch-page-browser page-names
@@ -14,8 +14,8 @@
 
 (defn request-stream
   [stream-name]
-  (let [ch (:body @(http/http-request
-                    (req/request :get (expand-url (page-names stream-name))) 3000))]
+  ;; TODO: FIXME
+  (let [ch (:body @(client/get (expand-url (page-names stream-name))))]
     (l/siphon ch that-stream)
     (Thread/sleep 3000)))
 

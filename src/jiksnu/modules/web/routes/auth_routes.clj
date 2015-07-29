@@ -8,7 +8,7 @@
              :refer [angular-resource page-resource]]
             [liberator.representation :refer [
                                               as-response 
-                                              #_ring-response
+                                              ring-response
                                               ]]
             [octohipster.mixins :as mixin]))
 
@@ -28,7 +28,7 @@
            true)
   :post-redirect? false
   :handle-created (fn [ctx]
-                    #_(ring-response
+                    (ring-response
                      (friend/authenticate-response
                       (:request ctx)
                       {:body "ok"}))))
@@ -41,7 +41,7 @@
            (log/info "logout handler")
            true)
   :handle-created (fn [ctx]
-                    #_(ring-response
+                    (ring-response
                      (friend/logout* (as-response {:data "ok"} ctx)))))
 
 (defresource auth verify-credentials

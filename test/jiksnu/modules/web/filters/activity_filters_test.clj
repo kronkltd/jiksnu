@@ -11,6 +11,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.routes :refer [app]]
+            jiksnu.modules.web.filters.activity-filters
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 

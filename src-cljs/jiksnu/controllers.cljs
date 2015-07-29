@@ -20,7 +20,12 @@
                     (! $scope.page page)
                     (! $scope.loaded true)))))))
 
-(def.controller jiksnu.AdminActivitiesController [])
+(def.controller jiksnu.AdminActivitiesController
+  [$scope $http]
+  (! $scope.init (helpers/fetch-page $scope $http "/model/activities.json"))
+  (.init $scope)
+
+)
 
 (def.controller jiksnu.AdminConversationsController
   [$scope $http]
@@ -44,7 +49,7 @@
      (fn [id]
        (when (and id (not= id ""))
          (! $scope.size 32)
-         (.bindOne Users $scope "user" id)
+         (.bindOne Users id $scope "user")
          (.find Users id)))))
 
 (def.controller jiksnu.FollowersListController
@@ -175,7 +180,13 @@
 
   (.reset $scope))
 
-(def.controller jiksnu.RegisterPageController [])
+(def.controller jiksnu.RegisterPageController [$scope]
+  (! $scope.register 
+     (fn []
+       (.log js/console "Registering" (? $scope.reg))
+)
+)
+)
 
 (def.controller jiksnu.RightColumnController
   [$scope app]
@@ -196,7 +207,7 @@
   (! $scope.init
      (fn [id]
        (when (and id (not= id ""))
-         (.bindOne Activities $scope "activity" id)
+         (.bindOne Activities id $scope "activity")
          (.find Activities id))))
   (.init $scope (.-id $stateParams)))
 
@@ -238,6 +249,6 @@
     (! $scope.init
        (fn [id]
          (when (and id (not= id ""))
-           (.bindOne Users $scope "user" id)
+           (.bindOne Users id $scope "user")
            (.find Users id))))
     (.init $scope id)))

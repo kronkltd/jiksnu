@@ -3,6 +3,7 @@
             [ciste.filters :refer [filter-action]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.model.user :as model.user]
+            jiksnu.modules.web.filters.auth-filters
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 

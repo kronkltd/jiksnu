@@ -47,14 +47,14 @@
     :items
     [{:title "Public"               :state "home"}
      {:title "Users"                :state "indexUsers"}
-     #_{:title "Feeds"                :state "indexFeedSources"}
+     {:title "Feeds"                :state "indexFeedSources"}
      {:title "Domains"              :state "indexDomains"}
      {:title "Groups"               :state "indexGroups"}
      {:title "Resources"            :state "indexResources"}]}
-   #_{:label "Settings"
+   {:label "Settings"
     :items
     [{:title "Settings"           :state "settingsPage"}]}
-   #_{:label "Admin"
+   {:label "Admin"
     :items
     [{:title "Activities"         :state "adminActivities"}
      ;; {:title "Auth"               :state "adminAuthentication"}

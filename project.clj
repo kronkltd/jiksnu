@@ -3,49 +3,45 @@
   :url "https://github.com/duck1123/jiksnu"
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
-  :dependencies [[aleph "0.3.3"]
-                 [ciste/ciste-incubator "0.1.0-SNAPSHOT"
-                  :exclusions [ciste ciste/ciste-core]]
-                 [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"
+  :dependencies [[ciste/ciste-incubator "0.1.0-SNAPSHOT"
                   :exclusions [ciste ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [clj-time "0.9.0"]
-                 [clj-http "1.0.1"]
+                 [clj-http "1.1.2"]
                  [clj-webdriver "0.6.1"
                   :exclusions [xalan]]
                  [clojurewerkz/mailer "1.2.0"]
                  ;; [clojure-complete "0.2.4"
                  ;;  :exclusions [org.clojure/clojure]]
-                 [compojure "1.3.1"]
+                 [compojure "1.3.4"]
                  [clojurewerkz/support "1.1.0"]
                  [com.novemberain/monger "1.8.0"]
                  [com.novemberain/validateur "1.7.0"]
                  [hiccup "1.0.5"]
                  [im.chit/gyr "0.3.1"]
                  [im.chit/purnam "0.5.2"]
-                 [manifold "0.1.0-beta1"]
+                 [liberator "0.13"]
+                 [manifold "0.1.0"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-command "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
                   :exclusions [xalan com.cemerick/austin]]
                  [net.kronkltd/octohipster "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
-                 [org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-3058"]
+                 [org.clojure/clojure "1.7.0-beta2"]
+                 [org.clojure/clojurescript "0.0-3308"]
                  [org.clojure/tools.logging "0.3.1"]
-                 [org.clojure/tools.reader "0.8.13"]
-                 [org.clojure/data.json "0.2.5"]
-                 [org.slf4j/slf4j-api "1.7.10"]
-                 [org.slf4j/slf4j-log4j12 "1.7.10"]
+                 [org.clojure/tools.reader "0.9.2"]
+                 [org.clojure/data.json "0.2.6"]
+                 [org.slf4j/slf4j-api "1.7.12"]
+                 [org.slf4j/slf4j-log4j12 "1.7.12"]
                  ;; [ring "1.2.2"]
                  [ring/ring-core "1.3.2"]
                  [ring-basic-authentication "1.0.5"]
-                 [ring-webjars "0.1.0"
-                  :exclusions [org.slf4j/slf4j-nop]]
-                 [slingshot "0.12.1"]
+                 [slingshot "0.12.2"]
                  [xerces/xercesImpl "2.11.0"]]
-  :plugins [[lein-cljsbuild "1.0.5"]
-            [codox          "0.8.10"]
+  :plugins [[lein-cljsbuild "1.0.6"]
+            [codox          "0.8.12"]
             [lein-lesscss   "1.2"]
             [lein-midje     "3.1.3"]]
   :cljsbuild {:repl-listen-port 9001
