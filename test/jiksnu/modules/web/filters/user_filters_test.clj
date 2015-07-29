@@ -4,6 +4,7 @@
             [ciste.filters :refer [filter-action]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
+            jiksnu.modules.web.user-filters
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
