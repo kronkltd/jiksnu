@@ -24,7 +24,7 @@
     (action item)))
 
 
-(deffilter #'actions.resource/update :command
+(deffilter #'actions.resource/update-record :command
   [action id]
   (when-let [item (model.resource/fetch-by-id id)]
     (action item)))

@@ -7,8 +7,8 @@
             [midje.sweet :refer :all]))
 
 (namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+ [(before :facts (th/setup-testing))
+  (after :facts (th/stop-testing))])
 
 (future-fact "command 'get-page streams'"
   (let [name "get-page"

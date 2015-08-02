@@ -14,7 +14,7 @@
   (when-let [item (model.conversation/fetch-by-id id)]
     (action item)))
 
-(deffilter #'actions.conversation/update :command
+(deffilter #'actions.conversation/update-record :command
   [action id]
   (when-let [item (model.conversation/fetch-by-id id)]
     (action item {:force true})))

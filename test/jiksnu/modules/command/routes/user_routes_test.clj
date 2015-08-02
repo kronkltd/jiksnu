@@ -9,10 +9,10 @@
             [midje.sweet :refer :all]))
 
 (namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+ [(before :facts (th/setup-testing))
+  (after :facts (th/stop-testing))])
 
-(fact "command 'get-model user'"
+(facts "command 'get-model user'"
   (let [command "get-model"
         ch (l/channel)
         type "user"]

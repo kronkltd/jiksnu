@@ -19,7 +19,7 @@
   (when-let [item (model.user/fetch-by-id id)]
     (action item)))
 
-(deffilter #'actions.user/update :command
+(deffilter #'actions.user/update-record :command
   [action id]
   (let [item (model.user/fetch-by-id id)]
     (action item {:force true})))

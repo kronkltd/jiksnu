@@ -26,7 +26,7 @@
 
 ;; update
 
-(deffilter #'actions.feed-source/update :command
+(deffilter #'actions.feed-source/update-record :command
   [action id]
   (let [item (model.feed-source/fetch-by-id id)]
     (action item {:force true})))
