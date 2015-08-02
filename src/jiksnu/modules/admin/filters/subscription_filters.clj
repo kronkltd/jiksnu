@@ -23,6 +23,6 @@
   [action request]
   (action (-> request :params :id model.subscription/fetch-by-id)))
 
-(deffilter #'update :http
+(deffilter #'update-record :http
   [action request]
   (action (-> request :params :id model.subscription/fetch-by-id)))

@@ -101,9 +101,9 @@
 
 
 
-;; update
+;; update-record
 
-(deffilter #'actions.user/update :http
+(deffilter #'actions.user/update-record :http
   [action request]
   (let [{{id :id} :params} request]
     (if-let [user (model.user/fetch-by-id id)]

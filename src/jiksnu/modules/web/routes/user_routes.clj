@@ -174,7 +174,7 @@
    ;; [[:get    "/model/users/:id"]                #'user/show]
    ;; [[:get    "/users"]                          #'user/index]
    ;; [[:post   "/users/:id/update-hub"]           #'user/update-hub]
-   ;; [[:post   "/:username"]                      #'user/update]
+   ;; [[:post   "/:username"]                      #'user/update-record]
 
 
    [[:get    "/api/user/:username/"]            {:action #'user/show-basic
@@ -191,8 +191,8 @@
    [[:delete "/users/:id"]                      #'user/delete]
    [[:post   "/users/:id/discover.:format"]     #'user/discover]
    [[:post   "/users/:id/discover"]             #'user/discover]
-   [[:post   "/users/:id/update.:format"]       #'user/update]
-   [[:post   "/users/:id/update"]               #'user/update]
+   [[:post   "/users/:id/update.:format"]       #'user/update-record]
+   [[:post   "/users/:id/update"]               #'user/update-record]
    [[:post   "/users/:id/streams"]              #'user/add-stream]
    [[:post   "/users/:id/delete"]               #'user/delete]
    ])

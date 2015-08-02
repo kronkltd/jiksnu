@@ -40,7 +40,7 @@
    :body (with-format :as
            (show-section user))})
 
-(defview #'actions.user/update :html
+(defview #'actions.user/update-record :html
   [request user]
   (redirect (uri user) "User updated"))
 

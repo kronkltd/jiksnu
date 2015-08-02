@@ -13,6 +13,6 @@
   [request params]
   (redirect "/main/feed-sources"))
 
-(defview #'actions.feed-source/update :html
+(defview #'actions.feed-source/update-record :html
   [request params]
   (redirect "/main/feed-sources"))

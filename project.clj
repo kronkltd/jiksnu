@@ -6,17 +6,18 @@
   :dependencies [[ciste/ciste-incubator "0.1.0-SNAPSHOT"
                   :exclusions [ciste ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
-                 [clj-time "0.9.0"]
-                 [clj-http "1.1.2"]
+                 [clj-time "0.10.0"]
+                 [clj-http "2.0.0"]
                  [clj-webdriver "0.6.1"
                   :exclusions [xalan]]
                  [clojurewerkz/mailer "1.2.0"]
                  ;; [clojure-complete "0.2.4"
                  ;;  :exclusions [org.clojure/clojure]]
-                 [compojure "1.3.4"]
+                 [cheshire               "5.5.0" :exclusions [org.clojure/clojure]]
+                 [compojure "1.4.0"]
                  [clojurewerkz/support "1.1.0"]
-                 [com.novemberain/monger "1.8.0"]
-                 [com.novemberain/validateur "1.7.0"]
+                 [com.novemberain/monger "3.0.0"]
+                 [com.novemberain/validateur "2.4.2"]
                  [hiccup "1.0.5"]
                  [im.chit/gyr "0.3.1"]
                  [im.chit/purnam "0.5.2"]
@@ -28,15 +29,15 @@
                   :exclusions [xalan com.cemerick/austin]]
                  [net.kronkltd/octohipster "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
-                 [org.clojure/clojure "1.7.0-beta2"]
-                 [org.clojure/clojurescript "0.0-3308"]
+                 [org.clojure/clojure "1.7.0"]
+                 [org.clojure/clojurescript "1.7.28"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/tools.reader "0.9.2"]
                  [org.clojure/data.json "0.2.6"]
                  [org.slf4j/slf4j-api "1.7.12"]
                  [org.slf4j/slf4j-log4j12 "1.7.12"]
                  ;; [ring "1.2.2"]
-                 [ring/ring-core "1.3.2"]
+                 [ring/ring-core "1.4.0"]
                  [ring-basic-authentication "1.0.5"]
                  [slingshot "0.12.2"]
                  [xerces/xercesImpl "2.11.0"]]
@@ -109,7 +110,7 @@
                         [lein-shell "0.4.0"]
                         ]
               :dependencies
-              [[midje         "1.7.0-SNAPSHOT"
+              [[midje         "1.7.0"
                 :exclusions [org.clojure/clojure]]
                [ring-mock     "0.1.5"]]}}
   :lesscss-output-path "target/resources/public/css"

@@ -11,6 +11,7 @@
             [compojure.route :as route]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.modules.web.middleware :as jm]
             [jiksnu.registry :as registry]
@@ -85,7 +86,7 @@
          (GET "/templates/*" [] #'helpers/serve-template)
          (-> #'site
              (friend/authenticate auth-config)
-             (handler/site {:session {:store (ms/session-store)}})))
+             (handler/site {:session {:store (ms/session-store @_db "session")}})))
         wrap-file-info
         wrap-content-type
         wrap-not-modified))

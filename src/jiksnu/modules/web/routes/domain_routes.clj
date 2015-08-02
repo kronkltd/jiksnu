@@ -56,7 +56,7 @@
                    activity (model.domain/fetch-by-id id)]
                {:data activity}))
   :delete! #'actions.domain/delete
-  ;; :put!    #'actions.domain/update
+  ;; :put!    #'actions.domain/update-record
   )
 
 ;; =============================================================================

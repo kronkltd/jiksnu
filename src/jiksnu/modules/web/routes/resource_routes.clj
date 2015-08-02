@@ -1,6 +1,7 @@
 (ns jiksnu.modules.web.routes.resource-routes
   (:require [ciste.loader :refer [require-namespaces]]
-            [jiksnu.actions.resource-actions :refer [delete discover index show update]]
+            [jiksnu.actions.resource-actions :refer [delete discover index show
+                                                     update-record]]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [octohipster.mixins :as mixin]))
@@ -39,8 +40,8 @@
    ;; [[:get    "/resources/:id"]     #'show]
    [[:post   "/resources/:id/discover.:format"] #'discover]
    [[:post   "/resources/:id/discover"] #'discover]
-   [[:post   "/resources/:id/update.:format"]   #'update]
-   [[:post   "/resources/:id/update"]   #'update]
+   [[:post   "/resources/:id/update.:format"]   #'update-record]
+   [[:post   "/resources/:id/update"]   #'update-record]
    [[:delete "/resources/:id"]     #'delete]
    [[:post   "/resources/:id/delete"]   #'delete]
    [[:get    "/model/resources/:id"]    #'show]

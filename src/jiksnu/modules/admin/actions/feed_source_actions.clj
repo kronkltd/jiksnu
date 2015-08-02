@@ -23,7 +23,7 @@
 
 (defaction fetch-updates
   [& args]
-  (apply actions.feed-source/update args))
+  (apply actions.feed-source/update-record args))
 
 (defaction add-watcher
   [& options]
