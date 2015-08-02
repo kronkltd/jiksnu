@@ -80,7 +80,7 @@
   [item]
   item)
 
-(defaction update
+(defaction update-record
   [subscription]
   (cm/implement))
 

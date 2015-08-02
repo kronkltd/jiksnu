@@ -44,10 +44,9 @@
 (defn make-fetch-fn
   [collection-name make-fn]
   (fn [& [params & [options]]]
-    (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-          records (mq/with-collection collection-name
+    (let [records (mq/with-collection @_db collection-name
                     (mq/find params)
-                    (merge sort-clause)
+                    (mq/sort (:sort-clause options))
                     (mq/paginate :page (get options :page 1)
                                  :per-page (get options :page-size 20)))]
       (map make-fn records))))

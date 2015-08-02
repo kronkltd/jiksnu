@@ -1,6 +1,7 @@
 (ns jiksnu.model.resource
   (:require [ciste.initializer :refer [definitializer]]
             [clojure.tools.logging :as log]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
@@ -48,7 +49,7 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index {:url 1} {:unique true})))
+    (mc/ensure-index @_db {:url 1} {:unique true})))
 
 (defn response->tree
   [response]

@@ -3,6 +3,7 @@
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
+            [jiksnu.db :refer [_db]]
             [jiksnu.namespace :as ns]
             [lamina.trace :as trace]
             [monger.collection :as mc]

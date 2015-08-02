@@ -60,7 +60,8 @@
     (ref-set r/that {}))
    (actions.domain/current-domain)
    (catch Object ex
-     (trace/trace :errors:handled ex))))
+     (trace/trace :errors:handled ex)
+     (throw+ ex))))
 
 (defn stop-testing
   []
@@ -68,7 +69,7 @@
    (stop-application!)
    (catch Object ex#
      (println "error")
-     #_(throw+ ex#))))
+     (throw+ ex#))))
 
 (defmacro test-environment-fixture
   [& body]

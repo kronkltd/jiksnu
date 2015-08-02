@@ -20,7 +20,7 @@
   "Drop all collections"
   []
   (log/info "dropping all collections")
-  (db/drop-db))
+  (db/drop-db @_db))
 
 (describe-config [:database :name]
                  String

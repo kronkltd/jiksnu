@@ -1,15 +1,17 @@
 (ns jiksnu.model.conversation
-  (:use [ciste.config :only [config]]
-        [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [acceptance-of presence-of
-                                      validation-set]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.config :refer [config]]
+            [clojure.tools.logging :as log]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
+            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [monger.core :as mg]
-            [monger.query :as mq])
+            [monger.query :as mq]
+            [slingshot.slingshot :refer [throw+]]
+            [validateur.validation :refer [acceptance-of
+                                           presence-of
+                                           validation-set]])
   (:import jiksnu.model.Conversation
            org.bson.types.ObjectId
            org.joda.time.DateTime))
@@ -45,4 +47,4 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index {:url 1} {:unique true})))
+    (mc/ensure-index @_db {:url 1} {:unique true})))

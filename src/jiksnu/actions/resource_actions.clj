@@ -180,7 +180,7 @@ The channel will receive the body of fetching this resource."
           res))
       (log/warn "Resource does not need to be updated at this time."))))
 
-(defaction update
+(defaction update-record
   [item]
   (update* item)
   item)

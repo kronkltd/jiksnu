@@ -165,12 +165,12 @@
 (defaction remove-watcher
   [source user]
   ;; TODO: implement in terms of a push field or just make a new collection
-  #_(model.feed-source/update
+  #_(model.feed-source/update-record
    (select-keys source [:_id])
    {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
-(defaction update
+(defaction update-record
   "Fetch updates for the source"
   [source & [options]]
   #_(util/safe-task (update* source options))

@@ -1,5 +1,6 @@
 (ns jiksnu.model.feed-source
   (:require [clojure.tools.logging :as log]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
@@ -35,7 +36,7 @@
 
 (defn find-record
   [options & args]
-  (if-let [item (mc/find-one-as-map collection-name options)]
+  (if-let [item (mc/find-one-as-map @_db collection-name options)]
     (maker item)))
 
 (defn fetch-by-topic
@@ -52,4 +53,4 @@
 (defn ensure-indexes
   []
   (doto collection-name
-   (mc/ensure-index {:topic 1} {:unique true})))
+   (mc/ensure-index @_db {:topic 1} {:unique true})))

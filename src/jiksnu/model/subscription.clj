@@ -40,12 +40,12 @@
 
 (defn find-record
   [args]
-  (model/map->Subscription (mc/find-one-as-map collection-name args)))
+  (model/map->Subscription (mc/find-one-as-map @_db collection-name args)))
 
 ;; TODO: use set-field
 (defn confirm
   [subscription]
-  (mc/update collection-name {:_id (:_id subscription)}
+  (mc/update @_db collection-name {:_id (:_id subscription)}
              {:$set {:pending false}}))
 
 (defn find-by-users
@@ -63,14 +63,14 @@
   [actor target]
   (let [params {:from (:_id actor)
                 :to (:_id target)}]
-    (mc/any? collection-name params)))
+    (mc/any? @_db collection-name params)))
 
 (defn subscribed?
   "Does the user have a subscription to the actor"
   [actor target]
   (let [params {:from (:_id target)
                 :to (:_id actor)}]
-    (mc/any? collection-name params)))
+    (mc/any? @_db collection-name params)))
 
 (defn get-actor
   [subscription]

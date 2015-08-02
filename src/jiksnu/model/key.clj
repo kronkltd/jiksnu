@@ -1,13 +1,14 @@
 (ns jiksnu.model.key
-  (:use [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+ try+]]
-        [validateur.validation :only [acceptance-of presence-of
-                                      validation-set]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.templates.model :as templates.model]
-            [monger.collection :as mc])
+            [jiksnu.validators :refer [type-of]]
+            [monger.collection :as mc]
+            [slingshot.slingshot :refer [throw+ try+]]
+            [validateur.validation :refer [acceptance-of presence-of
+                                           validation-set]])
   (:import java.net.URI
            java.io.ByteArrayInputStream
            java.io.InputStream
@@ -165,7 +166,7 @@
 (defn get-key-for-user-id
   "Fetch keypair by user id"
   [^ObjectId id]
-  (if-let [key (mc/find-one-as-map collection-name {:userid id})]
+  (if-let [key (mc/find-one-as-map @_db collection-name {:userid id})]
     (model/map->Key key)
     (log/warnf "Could not find key with id: %s" id)))
 
@@ -185,11 +186,11 @@
    ^String n
    ^String e]
   (if-let [key-pair (get-key-for-user-id user-id)]
-    (mc/save collection-name
+    (mc/save @_db collection-name
              (merge key-pair
                     {:n n
                      :e e}))
-    (mc/insert collection-name
+    (mc/insert @_db collection-name
                {:n n
                 :e e
                 :userid user-id})))

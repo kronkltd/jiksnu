@@ -262,7 +262,7 @@
                   (model.user/get-user username domain))
                 (create params)))))))
 
-(defaction update
+(defaction update-record
   "Update the user's activities and information."
   [user params]
   (if-let [source-id (:update-source user)]

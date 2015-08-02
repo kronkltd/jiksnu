@@ -118,7 +118,7 @@
      (fetch-all {:domain (:_id domain)}
                 #_{:limit 20})))
 
-(defn update
+(defn update-record
   [^User new-user]
   (log/infof "updating user: %s" new-user)
   (let [old-user (get-user (:username new-user) (:domain new-user))

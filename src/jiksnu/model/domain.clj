@@ -2,6 +2,7 @@
   (:require [ciste.config :refer [config]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-updated-time set-created-time]]
@@ -49,7 +50,7 @@
 (defn add-links
   [domain links]
   ;; TODO: This should push only if the link is not yet there
-  (mc/update collection-name
+  (mc/update @_db collection-name
              (select-keys domain #{:_id})
              {:$pushAll {:links links}}))
 

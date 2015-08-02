@@ -62,7 +62,7 @@
   (when-let [id (:update-source item)]
     (model.feed-source/fetch-by-id id)))
 
-(defaction update
+(defaction update-record
   [conversation & [options]]
   (if-let [source (get-update-source conversation)]
     (do

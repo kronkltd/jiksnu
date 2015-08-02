@@ -1,5 +1,6 @@
 (ns jiksnu.model.group
   (:require [clojure.tools.logging :as log]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
@@ -38,4 +39,4 @@
 
 (defn fetch-by-name
   [name]
-  (maker (mc/find-one-as-map collection-name {:nickname name})))
+  (maker (mc/find-one-as-map @_db collection-name {:nickname name})))

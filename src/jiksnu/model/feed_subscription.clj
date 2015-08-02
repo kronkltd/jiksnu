@@ -1,6 +1,7 @@
 (ns jiksnu.model.feed-subscription
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
@@ -46,4 +47,4 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index {:url 1 :callback 1} {:unique true})))
+    (mc/ensure-index @_db {:url 1 :callback 1} {:unique true})))
