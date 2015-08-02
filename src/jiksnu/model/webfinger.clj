@@ -7,7 +7,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [lamina.core :as l]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import java.net.URI

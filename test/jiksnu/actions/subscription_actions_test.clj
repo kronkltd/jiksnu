@@ -9,7 +9,6 @@
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
-            [lamina.core :as l]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))

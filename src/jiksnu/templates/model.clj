@@ -7,7 +7,6 @@
             jiksnu.db
             [jiksnu.namespace :as ns]
             [jiksnu.util :as util]
-            [lamina.core :as l]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]

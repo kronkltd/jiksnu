@@ -8,6 +8,7 @@
   (:import com.mongodb.WriteConcern))
 
 (def _db (ref nil))
+(def _connection (ref nil))
 
 ;; Database functions
 
@@ -31,9 +32,10 @@
   (log/info (str "setting database for " (environment)))
   (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
   ;; TODO: pass connection options
-  (mg/connect!)
-  (let [db (mg/get-db (config :database :name))]
-    (dosync 
-     (ref-set _db db))
-    (mg/set-db! db)))
+  (let [conn (mg/connect)]
+    (let [db (mg/get-db (config :database :name))]
+      (dosync
+       (ref-set _conn conn)
+       (ref-set _db db))
+      (mg/set-db! db))))
 

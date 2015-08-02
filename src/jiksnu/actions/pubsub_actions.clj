@@ -1,7 +1,6 @@
 (ns jiksnu.actions.pubsub-actions
   (:require [ciste.core :refer [defaction]]
             [clojure.tools.logging :as log]
-            [lamina.core :as l]
             [lamina.executor :as e]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]

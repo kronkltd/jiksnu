@@ -6,7 +6,6 @@
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [jiksnu.transforms.user-transforms :as transforms.user]
-            [lamina.core :as l]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Domain))
 

@@ -11,7 +11,6 @@
             [jiksnu.predicates :as pred]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]
-            [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]]))

@@ -18,7 +18,6 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [jiksnu.util :as util]
-            [lamina.core :as l]
             [lamina.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.FeedSource

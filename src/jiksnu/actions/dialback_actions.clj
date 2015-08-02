@@ -10,7 +10,6 @@
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
-            [lamina.core :as l]
             [slingshot.slingshot :refer [throw+]]))
 
 (def index*    (templates.actions/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))

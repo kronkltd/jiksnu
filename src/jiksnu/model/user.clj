@@ -52,8 +52,8 @@
 (defn image-link
   [user]
   (or (:avatarUrl user)
-      (when (:email user) (gravatar-image (:email user)))
-      (gravatar-image (get-uri user false))))
+      (when (:email user) (gravatar-image (:email user) :secure? true))
+      (gravatar-image (get-uri user false) :secure? true)))
 
 ;; TODO: Move this to actions and make it find-or-create
 (defn get-domain

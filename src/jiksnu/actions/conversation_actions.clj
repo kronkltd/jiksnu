@@ -11,7 +11,6 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
-            [lamina.core :as l]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+]]))
 

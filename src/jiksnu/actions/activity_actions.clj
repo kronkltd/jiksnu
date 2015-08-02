@@ -15,7 +15,6 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
-            [lamina.core :as l]
             [slingshot.slingshot :refer [throw+]])
   )
 
