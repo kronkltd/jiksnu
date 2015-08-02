@@ -12,7 +12,7 @@
   (condp = (:type link)
     "application/atom+xml" (let [source (ops/get-source (:href link))]
                              (model.resource/set-field! item :updateSource (:_id source))
-                             #_(actions.feed-source/update source))
+                             #_(actions.feed-source/update-record source))
     nil))
 
 (defn add-link-trigger

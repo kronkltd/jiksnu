@@ -107,7 +107,7 @@
   [content-type item response]
   (log/infof "unknown content type: %s" content-type))
 
-(declare update)
+(declare update-record)
 
 (defn process-response
   [item response]
@@ -116,7 +116,7 @@
     (model.resource/set-field! item :status status)
     (when-let [location (get-in response [:headers "location"])]
       (let [resource (find-or-create {:_id location})]
-        (update resource)
+        (update-record resource)
         (model.resource/set-field! item :location location)))
     (let [[content-type rest] (string/split content-str #"; ?")]
       (if (seq rest)

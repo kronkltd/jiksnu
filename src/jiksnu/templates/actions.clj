@@ -54,7 +54,7 @@
   [collection-name]
   (fn [item link]
     (trace/trace* (str collection-name ":linkAdded") [item link])
-    (mc/update collection-name
+    (mc/update @_db collection-name
       (select-keys item #{:_id})
       {:$addToSet {:links link}})
     item))

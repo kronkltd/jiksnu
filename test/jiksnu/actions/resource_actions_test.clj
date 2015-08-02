@@ -32,6 +32,6 @@
   (fact "when the resource exists"
     (db/drop-all!)
     (let [resource (actions.resource/create {:_id test-url})]
-      (actions.resource/update resource) => resource
+      (actions.resource/update-record resource) => resource
       (provided
         (client/get test-url anything anything) => true))))

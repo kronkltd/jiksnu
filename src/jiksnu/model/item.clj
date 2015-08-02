@@ -14,7 +14,8 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id           ObjectId)))
+   ;; (type-of :_id           ObjectId)
+))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

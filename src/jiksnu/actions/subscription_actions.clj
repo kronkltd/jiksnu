@@ -92,7 +92,7 @@
 
     (let [user (model.user/fetch-by-id (:_id user))]
 
-      (actions.user/update user {})
+      (actions.user/update-record user {})
 
       (if-let [source-id (:update-source user)]
         (when-let [source (model.feed-source/fetch-by-id source-id)]

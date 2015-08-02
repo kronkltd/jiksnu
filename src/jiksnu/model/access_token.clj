@@ -12,13 +12,13 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id           String)
-   (type-of :client        String)
-   (type-of :request-token String)
-   ;; (type-of :user          String)
-   (type-of :secret        String)
-   (type-of :created       DateTime)
-   (type-of :updated       DateTime)
+   ;; (type-of :_id           String)
+   ;; (type-of :client        String)
+   ;; (type-of :request-token String)
+   ;; ;; (type-of :user          String)
+   ;; (type-of :secret        String)
+   ;; (type-of :created       DateTime)
+   ;; (type-of :updated       DateTime)
    ))
 
 (def count-records (templates.model/make-counter       collection-name))

@@ -14,13 +14,14 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id     ObjectId)
-   (type-of :name    String)
-   (type-of :created DateTime)
-   (type-of :updated DateTime)
+   ;; (type-of :_id     ObjectId)
+   ;; (type-of :name    String)
+   ;; (type-of :created DateTime)
+   ;; (type-of :updated DateTime)
 
-   (presence-of :members)
-   (presence-of :admins)))
+   ;; (presence-of :members)
+   ;; (presence-of :admins)
+))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

@@ -180,7 +180,7 @@
   "Send a subscription request to the feed"
   [source]
   (when-not (:local source)
-    (update source)
+    (update-record source)
     (send-subscribe source))
   source)
 
@@ -196,7 +196,7 @@
 
 (defaction discover
   [item]
-  (update item))
+  (update-record item))
 
 (defn get-discovered
   "Returns a copy of that domain once it's properly discovered"

@@ -15,18 +15,18 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id                   ObjectId)
-   (type-of :name                 String)
+   ;; (type-of :_id                   ObjectId)
+   ;; (type-of :name                 String)
 
-   ;; (type-of :local                 Boolean)
-   ;; (type-of :public                Boolean)
+   ;; ;; (type-of :local                 Boolean)
+   ;; ;; (type-of :public                Boolean)
 
-   (type-of :user                  String)
+   ;; (type-of :user                  String)
 
-   (presence-of :created)
-   ;; (type-of :created               DateTime)
-   (presence-of :updated)
-   ;; (type-of :updated               DateTime)
+   ;; (presence-of :created)
+   ;; ;; (type-of :created               DateTime)
+   ;; (presence-of :updated)
+   ;; ;; (type-of :updated               DateTime)
    ))
 
 (def count-records (templates.model/make-counter       collection-name))

@@ -17,11 +17,12 @@
 
 (def create-validators
   (validation-set
-   (presence-of :_id)
-   (presence-of :created)
-   (presence-of :updated)
-   (type-of :user String)
-   (presence-of :activity)))
+   ;; (presence-of :_id)
+   ;; (presence-of :created)
+   ;; (presence-of :updated)
+   ;; (type-of :user String)
+   ;; (presence-of :activity)
+))
 
 (defn prepare
   [record]

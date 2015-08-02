@@ -16,11 +16,11 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id        ObjectId)
-   ;; (type-of :created    DateTime)
-   ;; (type-of :updated    DateTime)
-   ;; (type-of :local      Boolean)
-   ;; (type-of :discovered Boolean)
+   ;; (type-of :_id        ObjectId)
+   ;; ;; (type-of :created    DateTime)
+   ;; ;; (type-of :updated    DateTime)
+   ;; ;; (type-of :local      Boolean)
+   ;; ;; (type-of :discovered Boolean)
    ))
 
 (defn fetch-by-id

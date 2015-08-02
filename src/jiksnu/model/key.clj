@@ -34,7 +34,8 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id           ObjectId)))
+   ;; (type-of :_id           ObjectId)
+))
 
 
 (def key-factory (KeyFactory/getInstance "RSA"))

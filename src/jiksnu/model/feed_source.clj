@@ -14,13 +14,14 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id     ObjectId)
-   (type-of :topic   String)
-   (type-of :domain  String)
-   (type-of :local   Boolean)
-   (type-of :status  String)
-   (type-of :created DateTime)
-   (type-of :updated DateTime)))
+   ;; (type-of :_id     ObjectId)
+   ;; (type-of :topic   String)
+   ;; (type-of :domain  String)
+   ;; (type-of :local   Boolean)
+   ;; (type-of :status  String)
+   ;; (type-of :created DateTime)
+   ;; (type-of :updated DateTime)
+))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

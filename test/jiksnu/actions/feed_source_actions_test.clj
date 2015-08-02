@@ -36,10 +36,10 @@
     (provided
       (actions.service/get-discovered domain nil nil) => domain)))
 
-(future-fact "#'actions.feed-source/update"
+(future-fact "#'actions.feed-source/update-record"
   (let [domain (mock/a-domain-exists)
         source (mock/a-feed-source-exists)]
-    (actions.feed-source/update source) => (partial instance? FeedSource))
+    (actions.feed-source/update-record source) => (partial instance? FeedSource))
   (provided
     (actions.service/get-discovered anything) => .domain.))
 

@@ -20,13 +20,13 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id           ObjectId)
-   ;; (type-of :url           String)
-   (type-of :created       DateTime)
-   (type-of :updated       DateTime)
-   (type-of :domain        String)
-   (type-of :local         Boolean)
-   ;; (type-of :update-source ObjectId)
+   ;; (type-of :_id           ObjectId)
+   ;; ;; (type-of :url           String)
+   ;; (type-of :created       DateTime)
+   ;; (type-of :updated       DateTime)
+   ;; (type-of :domain        String)
+   ;; (type-of :local         Boolean)
+   ;; ;; (type-of :update-source ObjectId)
    ))
 
 (def count-records (templates.model/make-counter       collection-name))

@@ -3,6 +3,7 @@
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
@@ -24,16 +25,17 @@
 
 (def create-validators
   (validation-set
-   ;; (presence-of   :_id)
-   (type-of :_id       String)
-   (type-of :username  String)
-   (type-of :domain    String)
-   ;; (acceptance-of :url          :accept string?)
-   (presence-of   :created)
-   (presence-of   :updated)
-   ;; (presence-of   :update-source)
-   (presence-of   :avatarUrl)
-   (acceptance-of :local         :accept (partial instance? Boolean))))
+   ;; ;; (presence-of   :_id)
+   ;; (type-of :_id       String)
+   ;; (type-of :username  String)
+   ;; (type-of :domain    String)
+   ;; ;; (acceptance-of :url          :accept string?)
+   ;; (presence-of   :created)
+   ;; (presence-of   :updated)
+   ;; ;; (presence-of   :update-source)
+   ;; (presence-of   :avatarUrl)
+   ;; (acceptance-of :local         :accept (partial instance? Boolean))
+))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
@@ -98,7 +100,7 @@
   "Find a user by username and domain"
   ([username] (get-user username (config :domain)))
   ([username domain]
-     (if-let [user (mc/find-one-as-map collection-name
+     (if-let [user (mc/find-one-as-map @_db collection-name
                                        {:username username
                                         :domain domain})]
        (maker user))))
@@ -123,7 +125,7 @@
         merged-user (merge {:admin false}
                            old-user new-user)
         user (maker merged-user)]
-    (mc/update collection-name {:_id (:_id old-user)} (dissoc user :_id))
+    (mc/update @_db collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))
 
 ;; TODO: move part of this to domains
@@ -146,7 +148,7 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index {:username 1 :domain 1} {:unique true})
-    ;; (mc/ensure-index {:id 1} {:unique true})
+    (mc/ensure-index @_db {:username 1 :domain 1} {:unique true})
+    ;; (mc/ensure-index @_db {:id 1} {:unique true})
 
     ))

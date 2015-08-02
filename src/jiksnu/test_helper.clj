@@ -54,7 +54,7 @@
    (load-site-config)
    (set-environment! :test)
    (start-application! :test)
-   (db/drop-all!)
+   (db/drop-all! )
    (dosync
     (ref-set r/this {})
     (ref-set r/that {}))

@@ -1,6 +1,7 @@
 (ns jiksnu.model.subscription
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
+            [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
@@ -21,11 +22,12 @@
 
 (def create-validators
   (validation-set
-   (type-of :from    String)
-   (type-of :to      String)
-   (type-of :created DateTime)
-   (type-of :updated DateTime)
-   (type-of :_id     ObjectId)))
+   ;; (type-of :from    String)
+   ;; (type-of :to      String)
+   ;; (type-of :created DateTime)
+   ;; (type-of :updated DateTime)
+   ;; (type-of :_id     ObjectId)
+))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
@@ -53,7 +55,7 @@
 (defn unsubscribe
   [actor user]
   (if-let [subscription (find-by-users actor user)]
-    (do (mc/remove collection-name subscription)
+    (do (mc/remove @_db collection-name subscription)
         subscription)))
 
 (defn subscribing?

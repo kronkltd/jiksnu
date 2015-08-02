@@ -67,7 +67,7 @@
   (if-let [source (get-update-source conversation)]
     (do
       (model.conversation/set-field! conversation :lastUpdated (time/now))
-      (actions.feed-source/update source options))
+      (actions.feed-source/update-record source options))
     (log/error "Could not find update source")))
 
 (defaction discover
@@ -106,7 +106,7 @@
           c (:published activity)]
       (when (or (not lu) (time/before? lu c))
         (log/debug "Checking for updated comments")
-        (update conversation))))
+        (update-record conversation))))
 
 (defaction create-new
   []

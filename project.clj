@@ -4,21 +4,28 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
-                 [ciste "0.6.0-SNAPSHOT"]
+                 [ciste "0.6.0-SNAPSHOT"
+                  :exclusions [ring/ring-core
+                               org.clojure/tools.reader
+                               org.clojure/clojurescript
+                               ;; xom
+]]
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [clj-time "0.10.0"]
                  [clj-http "2.0.0"]
                  [clojurewerkz/support "1.1.0"]
+                 [cheshire "5.5.0"]
                  [com.cemerick/friend "0.2.1"]
                  [com.novemberain/monger "3.0.0"]
-                 [com.novemberain/validateur "2.4.2"]
+                 [com.novemberain/validateur "2.4.2"
+                  :exclusions [org.clojure/tools.reader]]
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
                  [http-kit "2.1.19"]
                  [lamina "0.5.6"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
-                 [org.clojure/clojure "1.6.0"]
+                 [org.clojure/clojure "1.7.0"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/data.json "0.2.6"]
                  [org.jsoup/jsoup "1.8.2"]

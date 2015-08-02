@@ -4,7 +4,7 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
-            jiksnu.db
+            [jiksnu.db :refer [_db]]
             [jiksnu.namespace :as ns]
             [jiksnu.util :as util]
             [monger.collection :as mc]
@@ -56,7 +56,7 @@
   [collection-name]
   (fn [& [params]]
     (let [params (or params {})]
-      (let [n (mc/count collection-name params)]
+      (let [n (mc/count @_db collection-name params)]
         (notify ::collection-counted {:collection-name collection-name
                                       :count n
                                       :params params})
@@ -65,7 +65,7 @@
 (defn make-deleter
   [collection-name]
   (fn [item]
-    (mc/remove-by-id collection-name (:_id item))
+    (mc/remove-by-id @_db collection-name (:_id item))
     (notify ::item-deleted {:item item
                             :collection collection-name})
     item))
@@ -73,7 +73,7 @@
 (defn make-dropper
   [collection-name]
   (fn []
-    (mc/remove collection-name)
+    (mc/remove @_db collection-name)
     (notify ::collection-dropped {:collection collection-name})
     nil))
 
@@ -86,7 +86,7 @@
                 {:item item
                  :field field
                  :value value})
-        (mc/update collection-name
+        (mc/update @_db collection-name
                    {:_id (:_id item)}
                    {:$set {field value}}))
       (throw+ "can not set links values"))))
@@ -97,7 +97,7 @@
     (notify ::item-unset
             {:item item
              :field field})
-    (mc/update collection-name
+    (mc/update @_db collection-name
                {:_id (:_id item)}
                {:$unset {field 1}})))
 
@@ -107,7 +107,7 @@
     (let [errors (validator params)]
       (if (empty? errors)
         (do
-          (mc/insert collection-name params)
+          (mc/insert @_db collection-name params)
           (let [item (fetcher (:_id params))]
             (notify ::item-created
                     {:collection-name collection-name
@@ -122,7 +122,7 @@
      (fn [id]
        (let [id (if (and convert-id (string? id))
                   (util/make-id id) id)]
-         (when-let [item (mc/find-map-by-id collection-name id)]
+         (when-let [item (mc/find-map-by-id @_db collection-name id)]
            (let [item (maker item)]
              (notify ::item-fetched {:collection-name collection-name
                                      :item item})
@@ -131,13 +131,13 @@
 (defn make-push-value!
   [collection-name]
   (fn [item key value]
-    (mc/update collection-name
+    (mc/update @_db collection-name
                (select-keys item #{:_id})
                {:$push {key value}})))
 
 (defn make-pop-value!
   [collection-name]
   (fn [item key value]
-    (mc/update collection-name
+    (mc/update @_db collection-name
                (select-keys item #{:_id})
                {:$pop {key value}})))

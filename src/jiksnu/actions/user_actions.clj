@@ -333,7 +333,7 @@
   [options]
   (let [user (session/current-user)]
     ;; TODO: mass assign vulnerability here
-    (update user options)))
+    (update-record user options)))
 
 (defn subscribe
   [user]

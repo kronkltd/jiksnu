@@ -13,10 +13,10 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id                   ObjectId)
-   (type-of :token                 String)
-   (type-of :date               DateTime)
-   (type-of :url                  String)
+   ;; (type-of :_id                   ObjectId)
+   ;; (type-of :token                 String)
+   ;; (type-of :date               DateTime)
+   ;; (type-of :url                  String)
 
    ;; TODO: optional fields
    ;; :host      String
