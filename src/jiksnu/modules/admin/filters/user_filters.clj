@@ -6,8 +6,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]
-            [lamina.trace :as trace]))
+            [jiksnu.util :as util]))
 
 ;; index
 

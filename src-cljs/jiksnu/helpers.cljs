@@ -50,7 +50,9 @@
      {:title "Feeds"                :state "indexFeedSources"}
      {:title "Domains"              :state "indexDomains"}
      {:title "Groups"               :state "indexGroups"}
-     {:title "Resources"            :state "indexResources"}]}
+     {:title "Resources"            :state "indexResources"}
+     {:title "Streams"              :state "indexStreams"}
+]}
    {:label "Settings"
     :items
     [{:title "Settings"           :state "settingsPage"}]}
@@ -89,6 +91,7 @@
    ["indexFeedSources" "/main/feed-sources" "IndexFeedSources"    :index-feed-sources]
    ["indexGroups"      "/main/groups"       "IndexGroups"         :index-groups]
    ["indexResources"   "/main/resources"    "IndexResources"      :index-resources]
+   ["indexStreams"     "/main/streams"      "IndexStreams"        :index-streams]
    ["indexUsers"       "/main/users"        "IndexUsers"          :index-users]
    ["loginPage"        "/main/login"        "LoginPage"           :login-page]
    ["registerPage"     "/main/register"     "RegisterPage"        :register-page]

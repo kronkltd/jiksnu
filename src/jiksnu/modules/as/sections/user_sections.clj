@@ -3,7 +3,6 @@
             [ciste.sections.default :refer [full-uri show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.User))
 

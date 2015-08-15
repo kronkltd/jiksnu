@@ -3,7 +3,6 @@
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [jiksnu.actions.resource-actions :as actions.resource]
-            [lamina.trace :as trace]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
             [net.cgrand.enlive-html :as enlive])

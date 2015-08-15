@@ -1,7 +1,56 @@
 (ns jiksnu.modules.web.routes.stream-routes
   (:require [ciste.commands :refer [add-command!]]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.stream-actions :as actions.stream]))
+            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [octohipster.mixins :as mixin]
+))
+
+(defgroup streams
+  :url "/main/streams")
+
+(defresource streams collection
+  :mixins [angular-resource])
+
+(defresource streams resource
+  :url "/{_id}"
+  :mixins [angular-resource])
+
+;; =============================================================================
+
+(defgroup streams-api
+  :url "/model/streams")
+
+(defresource streams-api api-collection
+  :desc "Collection route for streams"
+  :mixins [page-resource]
+  :available-formats [:json]
+  :allowed-methods [:get :post]
+  :post! (fn [ctx]
+           #_(let [{{params :params
+                   :as request} :request} ctx
+                   username (:current (friend/identity request))
+                   id (str "acct:" username "@" (config :domain))
+                   params (assoc params :author id)]
+             (actions.stream/post params)))
+  ;; :schema stream-schema
+  :ns 'jiksnu.actions.stream-actions)
+
+(defresource streams-api api-item
+  :desc "Resource routes for single Stream"
+  :url "/{_id}"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :presenter (partial into {})
+  :exists? (fn [ctx]
+             #_(let [id (-> ctx :request :route-params :_id)
+                   activity (model.stream/fetch-by-id id)]
+               {:data activity}))
+  ;; :delete! #'actions.stream/delete
+  ;; :put!    #'actions.stream/update-record
+  )
+
 
 (defn routes
   []

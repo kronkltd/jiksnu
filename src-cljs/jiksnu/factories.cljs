@@ -9,9 +9,16 @@
                    (obj
                     :name "activities")))
 
+(def.factory jiksnu.Streams
+  [DS]
+  (.defineResource DS
+                   (obj
+                    :name "streams")))
+
 (def.factory jiksnu.Users
   [DS $q subpageService]
   (! js/window.DS DS)
+  (! js/window.suppageService subpageService)
   (.defineResource
    DS
    (obj
@@ -37,5 +44,11 @@
      (fn getGroups []
        (this-as user
                 (.fetch subpageService user "groups")))
-     ))))
+
+     :getStreams
+     (fn getStreams []
+       (this-as user
+                (.fetch subpageService user "streams")))
+
+))))
 

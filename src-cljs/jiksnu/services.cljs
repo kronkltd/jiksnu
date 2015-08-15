@@ -10,6 +10,7 @@
    "feed-sources"  "/model/feed-sources"
    "groups"        "/model/groups"
    "resources"     "/model/resources"
+   "streams"       "/model/streams"
    "users"         "/model/users"
    })
 
@@ -19,7 +20,9 @@
    "followers" (fn [parent]
                  (str "/model/users/" (.-_id parent) "/followers"))
    "groups" (fn [parent]
-              (str "/model/users/" (.-_id parent) "/groups"))})
+              (str "/model/users/" (.-_id parent) "/groups"))
+   "streams" (fn [parent]
+               (str "/model/users/" (.-_id parent) "/streams"))})
 
 (def.service jiksnu.pageService
   [$q $http]
@@ -27,12 +30,13 @@
   (let [service (obj)]
     (! service.fetch
        (fn [page-name]
-         (let [d (.defer $q)
-               url (get page-mappings page-name)]
-           (-> $http
-               (.get url)
-               (.success #(.resolve d %))
-               (.error #(.reject d)))
+         (let [d (.defer $q)]
+           (if-let [url (get page-mappings page-name)]
+             (-> $http
+                 (.get url)
+                 (.success #(.resolve d %))
+                 (.error #(.reject d)))
+             (throw (str "page mapping not defined: " page-name)))
            (.-promise d))))
     service))
 
@@ -42,12 +46,15 @@
   (let [service (obj)]
     (! service.fetch
        (fn [parent page-name]
-         (let [d (.defer $q)
-               url ((get subpage-mappings page-name) parent)]
-           (.log js/console "url" url)
-           (-> $http
-               (.get url)
-               (.success #(.resolve d %))
-               (.error #(.reject d)))
-           (.-promise d))))
+         (let [d (.defer $q)]
+           (if-let [mapping-fn (get subpage-mappings page-name)]
+             (let [url (mapping-fn parent)]
+               (.log js/console "url" url)
+               (-> $http
+                   (.get url)
+                   (.success #(.resolve d %))
+                   (.error #(.reject d)))
+               (.-promise d))
+             (throw (str "Could not find subpage mapping for model "
+                         (type parent) " with label " page-name))))))
     service))

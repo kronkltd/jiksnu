@@ -25,7 +25,6 @@
             [jiksnu.modules.web.sections :refer [dropdown-menu]]
             [jiksnu.namespace :as ns]
             [jiksnu.session :refer [current-user is-admin?]]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.User))
 

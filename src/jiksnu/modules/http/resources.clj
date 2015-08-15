@@ -9,7 +9,7 @@
   [group name & opts]
   `(do
      (declare ~name)
-     (log/infof "defining resource: %s" (var ~name))
+     (log/debugf "defining resource: %s" (var ~name))
      (octo/defresource ~name
        ~@opts)
 

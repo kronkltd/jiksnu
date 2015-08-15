@@ -3,8 +3,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.webfinger :as model.webfinger]
-            [lamina.core :as l]
-            [lamina.trace :as trace]))
+            [lamina.core :as l]))
 
 (defmethod actions.resource/process-response-content "application/xrd+xml"
   [content-type item response]

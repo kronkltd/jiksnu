@@ -10,6 +10,8 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as user]
             [jiksnu.model.user :as model.user]
+            jiksnu.modules.core.filters.stream-filters
+            jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource
                                                 subpage-resource]]
@@ -130,8 +132,7 @@
                  (let [page (:body rsp)
                        items (:items page)]
                    (-> (if (seq items)
-                         (-> (log/spy :info (index-section (log/spy :info items) page))
-                             )
+                         (-> (index-section items page))
                          {})
                        (assoc :displayName "Groups"))))))
 
@@ -154,6 +155,22 @@
                (let [user (model.user/fetch-by-id id)]
                  (let [[_ page] (actions.subscription/get-subscriptions user)]
                    {:data page})))))
+
+(defresource users-api streams-collection
+  :url "/{_id}/streams"
+  :mixins [subpage-resource]
+  :subpage "streams"
+  :target-model "user"
+  :description "Streams of {{username}}"
+  :available-formats [:json]
+  :presenter (fn [rsp]
+               (with-context [:http :json]
+                 (let [page (:body rsp)
+                       items (:items page)]
+                   (-> (if (seq items)
+                         (-> (index-section items page))
+                         {})
+                       (assoc :displayName "Streams"))))))
 
 ;; =============================================================================
 

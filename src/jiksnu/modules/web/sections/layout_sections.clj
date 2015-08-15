@@ -105,7 +105,7 @@
 
 (defn scripts-section
   [request response]
-  (let [websocket-path (str "ws://" (config :domain) "/")]
+  (let [websocket-path (str "wss://" (config :domain) "/")]
     (list
      [:script {:type "text/javascript"}
       ;; "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"

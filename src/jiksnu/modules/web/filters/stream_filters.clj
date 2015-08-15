@@ -5,7 +5,6 @@
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
             [jiksnu.util :as util]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (deffilter #'actions.stream/direct-message-timeline :http

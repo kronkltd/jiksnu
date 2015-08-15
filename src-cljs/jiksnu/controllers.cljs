@@ -95,7 +95,8 @@
                       (-> user
                           (.getGroups)
                           (.then (fn [page]
-                                   (! $scope.page page)))))))))))
+                                   (! $scope.page page))))))))))
+)
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
@@ -121,6 +122,7 @@
 (page-controller FeedSources   "feed-sources")
 (page-controller Groups        "groups")
 (page-controller Resources     "resources")
+(page-controller Streams       "streams")
 (page-controller Users         "users")
 
 (def.controller jiksnu.NavBarController
@@ -252,3 +254,23 @@
            (.bindOne Users id $scope "user")
            (.find Users id))))
     (.init $scope id)))
+
+(def.controller jiksnu.StreamListController
+  [$scope Users]
+  (! $scope.foo "Bar")
+  (! $scope.items (arr "foo" "bar"))
+
+  (! $scope.init
+     (fn [id]
+       (if (and id (not= id ""))
+         (-> Users
+             (.find id)
+             (.then (fn [user]
+                      (-> user
+                          (.getStreams)
+                          (.then (fn [page]
+                                   (! $scope.page page))))))))))
+
+
+)
+

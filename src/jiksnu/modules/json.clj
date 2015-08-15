@@ -4,12 +4,7 @@
             [jiksnu.handlers :as handler]
             jiksnu.modules.json.views
             [jiksnu.registry :as registry]
-            [jiksnu.util :as util]
-
-            [lamina.core :as l]
-            [lamina.time :as lt]
-            [lamina.trace :as trace])
-  )
+            [jiksnu.util :as util]))
 
 (defn require-components
   []

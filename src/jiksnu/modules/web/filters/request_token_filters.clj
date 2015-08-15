@@ -6,7 +6,6 @@
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (deffilter #'actions.request-token/authorize :http
