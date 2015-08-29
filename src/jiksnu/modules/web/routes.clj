@@ -57,14 +57,11 @@
                   schema-doc schema-root-doc])
   site)
 
-
 (def auth-config
   {:credential-fn actions.auth/check-credentials
    :login-uri "/main/login"
    :workflows [(workflows/http-basic :realm "/")
-
-               (workflows/interactive-form)
-               ]})
+               (workflows/interactive-form)]})
 
 (defn async-handler
   [request]
