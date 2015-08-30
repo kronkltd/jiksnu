@@ -16,7 +16,6 @@
                                                   admin-index-line
                                                   admin-index-section
                                                   admin-show-section]]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource

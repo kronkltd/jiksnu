@@ -10,7 +10,7 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [lamina.core :as l])
+            [manifold.stream :as s])
   (:import java.net.URI
            jiksnu.model.User))
 
@@ -33,14 +33,12 @@
 
 (defn init-receivers
   []
-
-  (l/receive-all ch/posted-activities create-trigger)
+  (s/consume create-trigger ch/posted-activities)
 
   ;; Create events for each created activity
-  #_(l/siphon
-   (l/filter* filter-activity-create (l/fork ciste.core/*actions*))
-   ch/posted-activities)
-
+  #_(s/connect
+     (s/filter filter-activity-create ciste.core/*actions*)
+     ch/posted-activities)
   )
 
 (defonce receivers (init-receivers))

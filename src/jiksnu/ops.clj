@@ -1,9 +1,9 @@
 (ns jiksnu.ops
   (:require [clojure.tools.logging :as log]
             [jiksnu.channels :as ch]
-            [lamina.core :as l]
-            [lamina.time :as time]
-            [lamina.trace :as trace]
+            [manifold.deferred :as d]
+            [manifold.stream :as s]
+            [manifold.time :as time]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Domain))
 
@@ -14,14 +14,16 @@
 
 (defn channel-description
   [ch]
-  (lamina.core.utils/description (lamina.core.channel/receiver-node ch)))
+  (s/description ch)
+  "")
 
 (defn op-error
   [ex]
   (if-not (keyword? ex)
     (do
       (log/errorf "op error: %s" ex)
-      (trace/trace :errors:handled ex))
+      ;; FIXME: Handle error
+      )
     (log/error ex)))
 
 (defn op-success
@@ -30,22 +32,26 @@
 
 (defn op-handler
   [f]
-  (fn [[result args]]
+  (fn [[d args]]
     (try+
       (let [val (apply f args)]
-        (l/enqueue result val))
+        (d/success! d val))
       (catch Throwable ex
         (log/error "op handler error")
         (log/error ex)
-        (l/error result ex)))))
+        (d/error! d ex)))))
 
 (defn async-op
-  [ch args]
-  (let [result (l/expiring-result default-timeout)]
-    (log/debugf "enqueuing #<Channel \"%s\"> << %s" (channel-description ch) (pr-str args))
-    (l/enqueue ch [result args])
-    (l/on-realized result op-success op-error)
-    result))
+  "Takes a stream and a set of arguments, inserts a deferred and the params, returns the deferred"
+  [s args]
+  (let [d (d/deferred)]
+    (d/timeout! d default-timeout)
+    (log/debugf "enqueuing #<Channel \"%s\"> << %s"
+                (channel-description ch)
+                (pr-str args))
+    (s/put! s [d args])
+    (d/on-realized d op-success op-error)
+    d))
 
 (defn get-conversation
   [url]
@@ -83,10 +89,10 @@
 (defn create-new-conversation
   []
   (log/info "creating new conversation")
-  (let [result (l/expiring-result default-timeout)]
-    (l/enqueue ch/pending-create-conversations result)
-    #_(l/wait-for-result result default-timeout)
-    result))
+  (let [d (d/deferred)]
+    (d/timeout! d default-timeout)
+    (s/put! ch/pending-create-conversations d)
+    d))
 
 (defn create-new-stream
   [params]

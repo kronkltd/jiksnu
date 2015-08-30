@@ -18,7 +18,7 @@
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
-            [lamina.core :as l]
+            [manifold.deferred :as d]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Domain
            jiksnu.model.User
@@ -192,8 +192,7 @@
             (fact "when the username can be determined"
               (actions.user/find-or-create params) => (partial instance? User)
               (provided
-                (ops/update-resource xrd-url anything) => (l/success-result
-                                                           {:body mock-xrd})))))
+               (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd})))))
         ))
 
     (fact "when given an acct uri uri"

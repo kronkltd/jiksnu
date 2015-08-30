@@ -11,8 +11,8 @@
             [jiksnu.predicates :as pred]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]
-            [lamina.time :as lt]
-            [lamina.trace :as trace]
+            [manifold.bus :as bus]
+            [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (defn get-model
@@ -35,7 +35,8 @@
        ((resolve-routes [@pred/*page-predicates*]
                         @pred/*page-matchers*) request)
        (catch Throwable ex
-         (trace/trace :errors:handled ex)))
+         ;; FIXME: Handle error
+         ))
      (throw+ "page not found"))))
 
 (defaction get-page
@@ -50,7 +51,8 @@
        ((resolve-routes [@pred/*page-predicates*]
                         @pred/*page-matchers*) request)
        (catch Throwable ex
-         (trace/trace :errors:handled ex)))
+         ;; FIXME: Handle error
+         ))
      (throw+ "page not found"))))
 
 (defaction get-sub-page-ids
@@ -102,7 +104,7 @@
                        :action action-name
                        :id id
                        :body body}]
-         (trace/trace :actions:invoked response)
+         (bus/publish! events ":actions:invoked" response)
          response)
        (do
          (log/warnf "could not find action for: %s(%s) => %s"
@@ -110,7 +112,6 @@
          {:message (format "action not found: %s" action-name)
           :action "error"})))
    (catch RuntimeException ex
-     (trace/trace :actions:invoked:error ex)
      (log/error ex "Actions error")
      {:message (str ex)
       :action "error"})))

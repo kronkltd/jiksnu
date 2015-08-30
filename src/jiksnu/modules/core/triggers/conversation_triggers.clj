@@ -4,7 +4,7 @@
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.channels :as ch]
             [jiksnu.ops :as ops]
-            [lamina.core :as l]))
+            [manifold.stream :as s]))
 
 (defn filter-conversation-create
   [item]
@@ -24,17 +24,13 @@
 
 (defn init-receivers
   []
-
-  (l/receive-all ch/pending-get-conversation
-                 handle-get-conversation)
-
-  (l/receive-all ch/pending-create-conversations
-                 enqueue-create-local)
+  (s/consume handle-get-conversation ch/pending-get-conversation)
+  (s/consume enqueue-create-local ch/pending-create-conversations)
 
   ;; Create events for each created conversation
   ;; TODO: listen to trace probe
-  #_(l/siphon
-     (l/filter* filter-conversation-create (l/fork ciste.core/*actions*))
+  #_(s/connect
+     (s/filter filter-conversation-create ciste.core/*actions*)
      ch/posted-conversations))
 
 (defonce receivers (init-receivers))

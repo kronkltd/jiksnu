@@ -15,7 +15,6 @@
            java.text.SimpleDateFormat
            java.util.Date
            java.net.URL
-           lamina.core.channel.Channel
            org.bson.types.ObjectId))
 
 (defkey ::collection-counted

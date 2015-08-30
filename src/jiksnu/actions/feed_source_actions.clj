@@ -18,7 +18,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [jiksnu.util :as util]
-            [lamina.time :as lt]
+            [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))

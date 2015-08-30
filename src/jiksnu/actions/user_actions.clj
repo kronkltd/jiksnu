@@ -5,7 +5,6 @@
             [ciste.model :as cm]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [lamina.core :as l]
             [jiksnu.actions :refer [invoke-action]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -272,9 +271,8 @@
 
 (defn discover-user-meta
   [user & [options]]
-  (doseq [params @(l/merge-results
-                   (util/safe-task
-                    (discover-user-xrd user options)))]
+  (doseq [params @(util/safe-task
+                   (discover-user-xrd user options))]
     (let [links (:links params)]
       (doseq [link links]
         (add-link user link)))))

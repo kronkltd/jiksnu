@@ -5,7 +5,7 @@
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.ops :as ops]
-            [lamina.core :as l]))
+            [manifold.stream :as s]))
 
 (defn handle-alternate-link
   [item link]
@@ -38,8 +38,8 @@
 
 (defn init-receivers
   []
-  ;; (l/receive-all ch/resource-links-added     add-link-trigger)
-  (l/receive-all ch/pending-get-resource     #'handle-pending-get-resource)
-  (l/receive-all ch/pending-update-resources #'handle-pending-update-resources))
+  ;; (s/consume add-link-trigger ch/resource-links-added)
+  (s/consume #'handle-pending-get-resource ch/pending-get-resource)
+  (s/consume #'handle-pending-update-resources ch/pending-update-resources))
 
 (defonce receivers (init-receivers))

@@ -7,9 +7,6 @@
             [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [lamina.core :as l]
-            [lamina.time :as lt]
-            [lamina.trace :as trace]
             [jiksnu.actions :refer [invoke-action]]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
@@ -19,6 +16,7 @@
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [jiksnu.util :as util]
             [manifold.deferred :as d]
+            [manifold.time :as lt]
             [org.httpkit.client :as client]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Resource))
@@ -30,7 +28,7 @@
 
 (defkey ::resource-updated
   "Whenever a resource is updated"
-)
+  )
 
 (def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
 
@@ -38,11 +36,11 @@
 
 (defn prepare-delete
   ([item]
-     (prepare-delete item @delete-hooks))
+   (prepare-delete item @delete-hooks))
   ([item hooks]
-     (if (seq hooks)
-       (recur ((first hooks) item) (rest hooks))
-       item)))
+   (if (seq hooks)
+     (recur ((first hooks) item) (rest hooks))
+     item)))
 
 (defn prepare-create
   [params]
@@ -87,7 +85,7 @@
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.resource
-                      :sort-clause {:updated -1}))
+                                  :sort-clause {:updated -1}))
 
 (defaction index
   [& args]
@@ -143,7 +141,7 @@
 (defn update*
   "Fetches the resource and returns a result channel or nil.
 
-The channel will receive the body of fetching this resource."
+  The channel will receive the body of fetching this resource."
   [item & [options]]
   {:pre [(instance? Resource item)]}
   (let [d (d/deferred)
@@ -155,29 +153,30 @@ The channel will receive the body of fetching this resource."
         ;; auth required
         (throw+ "Resource requires authorization")
         ;; no auth required
-        (let [res (l/expiring-result (lt/seconds 30))
-              auth-string (string/join
-                           " "
-                           ["Dialback"
-                            (format "host=\"%s\"" (config :domain))
-                            (format "token=\"%s\"" "4430086d")])
-              options {:headers {"User-Agent" user-agent
-                                 "date" (util/date->rfc1123 (.toDate date))
-                                 "authorization" auth-string}}]
-          (notify ::resource-updated {:item item})
-          (log/infof "Fetching %s" url)
-          (client/get url options
-                      (fn [response]
-                        (notify ::resource-realized
-                                {:item item
-                                 :response response})
-                        (model.resource/set-field! item :lastUpdated (time/now))
-                        (model.resource/set-field! item :status (:status response))
-                        (condp = (:status response)
-                          200 response
-                          401 (handle-unauthorized item response)
-                          (log/warn "Unknown status type"))))
-          res))
+        (let [res (d/deferred)]
+          (d/timeout! res (lt/seconds 30))
+          (let [auth-string (string/join
+                             " "
+                             ["Dialback"
+                              (format "host=\"%s\"" (config :domain))
+                              (format "token=\"%s\"" "4430086d")])
+                options {:headers {"User-Agent" user-agent
+                                   "date" (util/date->rfc1123 (.toDate date))
+                                   "authorization" auth-string}}]
+            (notify ::resource-updated {:item item})
+            (log/infof "Fetching %s" url)
+            (client/get url options
+                        (fn [response]
+                          (notify ::resource-realized
+                                  {:item item
+                                   :response response})
+                          (model.resource/set-field! item :lastUpdated (time/now))
+                          (model.resource/set-field! item :status (:status response))
+                          (condp = (:status response)
+                            200 response
+                            401 (handle-unauthorized item response)
+                            (log/warn "Unknown status type"))))
+            res)))
       (log/warn "Resource does not need to be updated at this time."))))
 
 (defaction update-record

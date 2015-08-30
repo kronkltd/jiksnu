@@ -5,8 +5,9 @@
             [jiksnu.channels :as ch]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.ops :as ops]
-            [lamina.core :as l]
-            [lamina.trace :as trace]))
+            [manifold.bus :as bus]
+            [manifold.stream :as s]
+            ))
 
 (defn- handle-pending-get-domain*
   [domain-name]
@@ -17,9 +18,7 @@
   (try
     (actions.service/get-discovered domain id options)
     (catch Exception ex
-      (println "can't discover")
-      )
-    ))
+      (println "can't discover"))))
 
 (def handle-pending-get-domain     (ops/op-handler handle-pending-get-domain*))
 (def handle-pending-get-discovered (ops/op-handler handle-pending-get-discovered*))
@@ -43,11 +42,8 @@
 
 (defn init-receivers
   []
-
-  (l/receive-all ch/pending-get-domain                    #'handle-pending-get-domain)
-  (l/receive-all ch/pending-get-discovered                #'handle-pending-get-discovered)
-  (l/receive-all (trace/probe-channel :domains:linkAdded) #'handle-add-link)
-
-  )
+  (s/consume #'handle-pending-get-domain ch/pending-get-domain)
+  (s/consume #'handle-pending-get-discovered ch/pending-get-discovered)
+  (s/consume #'handle-add-link (bus/subscribe events ":domains:linkAdded")))
 
 (defonce receivers (init-receivers))

@@ -7,7 +7,6 @@
             [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.referrant :as r]
-            [lamina.trace :as trace]
             [midje.sweet :refer [=> =not=> fact future-fact throws]]
             [net.cgrand.enlive-html :as enlive]
             [slingshot.slingshot :refer [try+ throw+]])
@@ -60,7 +59,7 @@
     (ref-set r/that {}))
    (actions.domain/current-domain)
    (catch Object ex
-     (trace/trace :errors:handled ex)
+     ;; FIXME: Handle error
      (throw+ ex))))
 
 (defn stop-testing

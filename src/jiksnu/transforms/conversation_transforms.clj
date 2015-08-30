@@ -6,7 +6,6 @@
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.routes.helpers :as rh]
             [jiksnu.util :as util]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI))
 
@@ -27,7 +26,8 @@
                         (try
                           (actions.feed-source/discover-source url)
                           (catch RuntimeException ex
-                            (trace/trace :errors:handled ex))))]
+                            ;; FIXME: Handle error
+                            )))]
         (assoc item :update-source (:_id source))
         (throw+ "could not determine source"))
       (throw+ "Could not determine url"))))

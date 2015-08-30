@@ -5,7 +5,7 @@
             [inflections.core :as inf]
             [jiksnu.db :refer [_db]]
             [jiksnu.namespace :as ns]
-            [lamina.trace :as trace]
+            [manifold.bus :as bus]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
@@ -14,7 +14,6 @@
            java.text.SimpleDateFormat
            java.util.Date
            java.net.URL
-           lamina.core.channel.Channel
            org.bson.types.ObjectId))
 
 (defn make-indexer*
@@ -54,7 +53,7 @@
 (defn make-add-link*
   [collection-name]
   (fn [item link]
-    (trace/trace* (str collection-name ":linkAdded") [item link])
+    (bus/publish! events (str collection-name ":linkAdded") [item link])
     (mc/update @_db collection-name
       (select-keys item #{:_id})
       {:$addToSet {:links link}})

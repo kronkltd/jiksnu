@@ -10,7 +10,6 @@
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI))
 
@@ -155,12 +154,12 @@
       (let [actor (or (try
                         (actions.user/find-or-create {:id url})
                         (catch RuntimeException ex
-                          (trace/trace "errors:handled" ex)
+                          ;; FIXME: Handle error
                           nil))
                       (try
                         (actions.group/find-or-create {:url url})
                         (catch RuntimeException ex
-                          (trace/trace "errors:handled" ex)
+                          ;; FIXME: Handle error
                           nil)))]
         (:_id actor))
       (:_id (actions.user/find-or-create (:_id url))))))

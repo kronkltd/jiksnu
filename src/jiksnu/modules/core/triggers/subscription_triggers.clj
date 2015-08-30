@@ -5,7 +5,7 @@
             [jiksnu.channels :as ch]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [lamina.core :as l]))
+            [manifold.stream :as s]))
 
 (defn handle-pending-new-subscriptions*
   [actor-id user-id]
@@ -18,10 +18,6 @@
 
 (defn init-receivers
   []
-
-  (l/receive-all ch/pending-new-subscriptions
-                 handle-pending-new-subscriptions)
-
-  )
+  (s/consume handle-pending-new-subscriptions ch/pending-new-subscriptions))
 
 (defonce receivers (init-receivers))

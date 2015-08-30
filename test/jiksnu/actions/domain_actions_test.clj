@@ -10,7 +10,6 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
-            [lamina.trace :as trace]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Domain
            nu.xom.Document))

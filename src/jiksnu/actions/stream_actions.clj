@@ -15,8 +15,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
-            [lamina.core :as l]
-            [lamina.trace :as trace]
+            [manifold.stream :as s]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.User))
 
@@ -167,12 +166,12 @@
 (defn stream-handler
   [request]
   (cm/implement)
-  #_(let [stream (l/channel)]
-    (l/siphon
+  #_(let [stream (s/stream)]
+    (s/connect
      (->> ciste.core/*actions*
-          (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
-          (l/map* format-message)
-          (l/map* (fn [m] (str m "\r\n"))))
+          (s/filter (fn [m] (#{#'actions.activity/create} (:action m))))
+          (s/map format-message)
+          (s/map (fn [m] (str m "\r\n"))))
      stream)
     {:status 200
      :headers {"content-type" "application/json"}
@@ -198,7 +197,7 @@
      (or (:body (parse-command request))
          (throw+ "no command found"))
      (catch Object ex
-       (trace/trace :client-errors:handled ex)
+       ;; FIXME: handle error
        (json/json-str
         {:action "error"
          :name (:name request)

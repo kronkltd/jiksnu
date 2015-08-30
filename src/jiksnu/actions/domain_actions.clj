@@ -13,7 +13,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
-            [lamina.time :as lt]
+            [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import java.net.URL
            jiksnu.model.Domain))

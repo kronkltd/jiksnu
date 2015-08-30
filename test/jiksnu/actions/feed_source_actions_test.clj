@@ -15,7 +15,7 @@
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
-            [lamina.core :as l]
+            [manifold.deferred :as d]
             [midje.sweet :refer :all])
   (:import jiksnu.model.FeedSource))
 
@@ -48,8 +48,7 @@
         resource (mock/a-resource-exists {:url url})
         topic (str url ".atom")
         response ""
-        result (l/result-channel)]
-    (l/enqueue result response)
+        result (d/success-deferred response)]
     (actions.feed-source/discover-source url) => (partial instance? FeedSource)
     (provided
       (ops/update-resource url) => result

@@ -7,7 +7,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import java.net.URI
            jiksnu.model.FeedSource
@@ -109,7 +108,8 @@
          (keep (comp first util/split-uri))
          first)
     (catch Throwable ex
-      (trace/trace "errors:handled" ex))))
+      ;; FIXME: Handle errors
+      )))
 
 ;; takes a document
 (defn get-username-from-xrd

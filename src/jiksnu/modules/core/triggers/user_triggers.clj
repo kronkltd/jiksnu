@@ -8,8 +8,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [lamina.core :as l]
-            [lamina.trace :as trace]
+            [manifold.stream :as s]
             [slingshot.slingshot :refer [throw+]]))
 
 ;; (defn fetch-updates-trigger
@@ -57,11 +56,9 @@
 
 (defn init-receivers
   []
-
-  (l/receive-all ch/pending-get-user-meta #'handle-pending-get-user-meta)
-
-  (l/receive-all (trace/probe-channel :users:linkAdded) #'handle-add-link)
-  )
+  (s/consume #'handle-pending-get-user-meta ch/pending-get-user-meta)
+  (s/consume #'handle-add-link
+             (bus/subscribe events ":users:linkAdded")))
 
 (defn init-hooks
   []

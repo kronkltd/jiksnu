@@ -9,10 +9,8 @@
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.registry :as registry]
-            [lamina.core :as l]
-            [lamina.executor :refer [task]]
-            [lamina.time :as time]
-            [lamina.trace :as trace]
+            [manifold.deferred :as d]
+            [manifold.time :as time]
             monger.joda-time
             monger.json
             [org.bovinegenius.exploding-fish :as uri]
@@ -30,7 +28,6 @@
            java.text.SimpleDateFormat
            java.util.Date
            java.util.UUID
-           lamina.core.channel.Channel
            org.bson.types.ObjectId
            org.joda.time.DateTime
            org.jsoup.Jsoup
@@ -206,9 +203,9 @@
 (defmacro safe-task
   [& body]
   `(let [res# (task ~@body)]
-     (l/on-realized res#
+     (d/on-realized res#
                     identity
-                    #(trace/trace :errors:handled %))
+                    )
      res#))
 
 (defn vector-namespaces

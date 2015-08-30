@@ -16,8 +16,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
-            [lamina.core :as l]
-            [lamina.time :as lt]
+            [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import java.net.URL
            jiksnu.model.Domain))
@@ -29,7 +28,7 @@
   {:pre [(string? url)]}
   (try+
    (let [res (ops/update-resource url {:force true})]
-     (l/on-realized res
+     (d/on-realized res
                     (fn [_] (log/info "Finished fetching xrd"))
                     (fn [_] (log/error "Fetching xrd caused error")))
 
@@ -110,15 +109,14 @@
   {:pre [(instance? Domain domain)
          (or (nil? url)
              (string? url))]}
-  (l/run-pipeline
+  (d/chain
    (util/safe-task (discover-capabilities domain url))
    (fn [_]
      (let [domain (model.domain/fetch-by-id (:_id domain))]
-       (l/merge-results
-        (util/safe-task (discover-webfinger domain url))
-        ;; (util/safe-task (discover-onesocialweb domain url))
-        ;; (util/safe-task (discover-statusnet-config domain url))
-        )))))
+       (util/safe-task (discover-webfinger domain url))
+       ;; (util/safe-task (discover-onesocialweb domain url))
+       ;; (util/safe-task (discover-statusnet-config domain url))
+       ))))
 
 (defaction discover
   [^Domain domain url]

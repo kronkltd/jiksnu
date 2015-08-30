@@ -8,7 +8,6 @@
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI
            java.net.URL
@@ -27,7 +26,8 @@
        (when (= 200 (:status response))
          (cm/string->document (:body response))))
      (catch RuntimeException ex
-       (trace/trace "errors:handled" ex)))
+       ;; FIXME: Handle errors
+       ))
    (throw+ "Could not fetch host meta")))
 
 (defn get-xrd-template

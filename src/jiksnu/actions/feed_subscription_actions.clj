@@ -8,7 +8,6 @@
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
-            [lamina.core :as l]
             [slingshot.slingshot :refer [throw+]]))
 
 (defn prepare-create

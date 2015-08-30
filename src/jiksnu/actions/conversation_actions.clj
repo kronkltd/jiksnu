@@ -11,7 +11,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
-            [lamina.trace :as trace]
+            [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+]]))
 
 (defonce delete-hooks (ref []))
@@ -82,10 +82,7 @@
                               (first (model.conversation/fetch-by-id id)))
                             (if-let [url (:url params)]
                               (first (model.conversation/find-by-url url)))
-                            (try
-                              (create params)
-                              (catch RuntimeException ex
-                                (trace/trace "errors:handled" ex))))]
+                            (create params))]
     conversation
     (if (< tries 3)
       (do
@@ -100,7 +97,7 @@
 (defaction add-activity
   [conversation activity]
   (when-not (:parent activity)
-    (trace/trace :conversations:parent:set [conversation activity])
+    (bus/publish! events ":conversations:parent:set" [conversation activity])
     (model.conversation/set-field! conversation :parent (:_id activity)))
   #_(let [lu (:lastUpdated conversation)
           c (:published activity)]

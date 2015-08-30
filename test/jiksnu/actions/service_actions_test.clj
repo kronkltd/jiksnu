@@ -11,8 +11,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
-            [lamina.core :as l]
-            [lamina.trace :as trace]
+            [manifold.deferred :as d]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Domain
            nu.xom.Document))
@@ -81,11 +80,11 @@
   (let [domain (mock/a-domain-exists)
         url (fseq :uri)
         statusnet-url (fseq :uri)
-        res (l/result-channel)
+        res (d/deferred)
         config {:foo "bar"}
         response {:body (json/json-str config)}]
 
-    (l/enqueue res response)
+    (d/success! res response)
     (actions.service/discover-statusnet-config domain url) => truthy
 
     (provided
