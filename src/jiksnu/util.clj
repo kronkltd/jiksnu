@@ -202,9 +202,9 @@
 
 (defmacro safe-task
   [& body]
-  `(let [res# (task ~@body)]
-     (d/on-realized res#
-                    identity
+  `(let [res# ~@body]
+     (d/on-realized (d/future res#)
+                    identity identity
                     )
      res#))
 

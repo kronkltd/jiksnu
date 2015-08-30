@@ -3,6 +3,7 @@
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
+            [jiksnu.channels :as ch]
             [jiksnu.db :refer [_db]]
             [jiksnu.namespace :as ns]
             [manifold.bus :as bus]
@@ -53,7 +54,7 @@
 (defn make-add-link*
   [collection-name]
   (fn [item link]
-    (bus/publish! events (str collection-name ":linkAdded") [item link])
+    (bus/publish! ch/events (str collection-name ":linkAdded") [item link])
     (mc/update @_db collection-name
       (select-keys item #{:_id})
       {:$addToSet {:links link}})

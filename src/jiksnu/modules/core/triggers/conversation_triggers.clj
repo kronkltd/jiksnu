@@ -13,7 +13,7 @@
 ;; TODO: make op handler
 (defn- enqueue-create-local
   [ch]
-  (l/enqueue ch (actions.conversation/create {:local true})))
+  (s/put! ch (actions.conversation/create {:local true})))
 
 (defn- handle-get-conversation*
   [url]

@@ -66,9 +66,10 @@
   []
   (try+
    (stop-application!)
-   (catch Object ex#
+   (catch Object ex
      (println "error")
-     (throw+ ex#))))
+     (log/error ex)
+     #_(throw+ ex#))))
 
 (defmacro test-environment-fixture
   [& body]

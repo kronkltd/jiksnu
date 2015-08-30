@@ -8,6 +8,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
+            [manifold.bus :as bus]
             [manifold.stream :as s]
             [slingshot.slingshot :refer [throw+]]))
 
@@ -58,7 +59,7 @@
   []
   (s/consume #'handle-pending-get-user-meta ch/pending-get-user-meta)
   (s/consume #'handle-add-link
-             (bus/subscribe events ":users:linkAdded")))
+             (bus/subscribe ch/events ":users:linkAdded")))
 
 (defn init-hooks
   []

@@ -114,7 +114,7 @@
                              (dissoc :pictures))]
 
     (do (-> activity :pictures model.activity/parse-pictures)
-        (create (log/spy :info prepared-post)))
+        (create prepared-post))
     (throw+ "error preparing")))
 
 ;; TODO: use stream update

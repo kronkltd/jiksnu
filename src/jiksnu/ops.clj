@@ -47,7 +47,7 @@
   (let [d (d/deferred)]
     (d/timeout! d default-timeout)
     (log/debugf "enqueuing #<Channel \"%s\"> << %s"
-                (channel-description ch)
+                (channel-description d)
                 (pr-str args))
     (s/put! s [d args])
     (d/on-realized d op-success op-error)

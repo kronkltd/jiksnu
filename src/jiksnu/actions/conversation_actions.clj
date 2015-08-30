@@ -97,7 +97,7 @@
 (defaction add-activity
   [conversation activity]
   (when-not (:parent activity)
-    (bus/publish! events ":conversations:parent:set" [conversation activity])
+    (bus/publish! ch/events ":conversations:parent:set" [conversation activity])
     (model.conversation/set-field! conversation :parent (:_id activity)))
   #_(let [lu (:lastUpdated conversation)
           c (:published activity)]

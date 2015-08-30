@@ -11,7 +11,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'set-recipients
+(fact "#'set-recipients"
 
   (fact "when there are no recipient uris"
     (fact "should return that activity"
@@ -21,9 +21,7 @@
   (future-fact "When the activity contains a recipient uri"
     (let [recipient (mock/a-user-exists)
           activity (factory :activity {:recipient-uris [(:_id recipient)]})]
-      (set-recipients activity) =>
-      (th/check [response]
-             (first (:recipients response)) => (:_id recipient))))
+      (set-recipients activity) => (contains {:recipients (:_id recipient)})))
   )
 
 

@@ -16,6 +16,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
+            [manifold.deferred :as d]
             [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import java.net.URL

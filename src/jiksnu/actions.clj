@@ -104,7 +104,7 @@
                        :action action-name
                        :id id
                        :body body}]
-         (bus/publish! events ":actions:invoked" response)
+         (bus/publish! ch/events ":actions:invoked" response)
          response)
        (do
          (log/warnf "could not find action for: %s(%s) => %s"
