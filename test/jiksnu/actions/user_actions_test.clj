@@ -220,8 +220,8 @@
                 :location (fseq :location)
                 :password (fseq :password)}]
     (actions.user/register params) =>
-    (th/check [response]
-           response                                          => map?
-           response                                          => (partial instance? User)
-           (model.auth-mechanism/fetch-by-user response) =not=> empty?)))
+    (every-checker
+     (partial instance? User)
+     (fn [response]
+       (seq (model.auth-mechanism/fetch-by-user response))))))
 

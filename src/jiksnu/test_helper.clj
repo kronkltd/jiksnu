@@ -41,12 +41,6 @@
   `(let [var-name# (str ~description)]
      (future-fact var-name# ~@body)))
 
-(defmacro check
-  [bindings & body]
-  `(fn ~bindings
-     (fact "checks"
-       ~@body)))
-
 (defn setup-testing
   []
   (try+

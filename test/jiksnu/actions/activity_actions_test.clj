@@ -8,7 +8,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.session :as session]
-            [jiksnu.test-helper :as th :refer [check]]
+            [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Activity))

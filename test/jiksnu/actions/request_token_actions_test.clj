@@ -18,17 +18,11 @@
         params {:client (:_id client)
                 :callback (fseq :uri)}]
     (actions.request-token/create params) =>
-    (th/check [token]
-           token => (partial instance? RequestToken)
-           (:_id token) => (partial instance? String))))
+    (every-checker
+     (partial instance? RequestToken)
+     (contains {:_id string?}))))
 
-;; (fact #'actions.request-token/get-request-token
-;;   (let [params {}]
-;;     (actions.request-token/get-request-token params) =>
-;;     (th/check [token]
-;;       token => (partial instance? RequestToken)
-;;       )
-;;     )
-;;   )
-
-
+(fact #'actions.request-token/get-request-token
+  (let [params {}]
+    (actions.request-token/get-request-token params) =>
+    (partial instance? RequestToken)))

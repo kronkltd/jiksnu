@@ -17,46 +17,47 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-;; (fact #'count-records
-;;   (fact "when there aren't any items"
-;;     (drop!)
-;;     (count-records) => 0)
-;;   (fact "when there are items"
-;;     (drop!)
-;;     (let [n 15]
-;;       (dotimes [i n]
-;;         (mock/a-feed-source-exists))
-;;       (count-records) => n)))
+(facts "#'model.feed-source/count-records"
+  (fact "when there aren't any items"
+    (model.feed-source/drop!)
+    (model.feed-source/count-records) => 0)
+  (fact "when there are items"
+    (model.feed-source/drop!)
+    (let [n 15]
+      (dotimes [i n]
+        (mock/a-feed-source-exists))
+      (model.feed-source/count-records) => n)))
 
-;; (fact #'delete
-;;   (let [source (mock/a-feed-source-exists)]
-;;     (delete source) => source
-;;     (fetch-by-id (:_id source)) => nil?))
+(facts "#'delete"
+  (let [source (mock/a-feed-source-exists)]
+    (model.feed-source/delete source) => source
+    (model.feed-source/fetch-by-id (:_id source)) => nil?))
 
-;; (fact #'fetch-by-id
-;;   (let [source (mock/a-feed-source-exists)]
-;;     (fetch-by-id (:_id source)) => source))
+(facts "#'fetch-by-id"
+  (let [source (mock/a-feed-source-exists)]
+    (model.feed-source/fetch-by-id (:_id source)) => source))
 
-;; (fact #'create
-;;   (future-fact "when given valid parameters"
-;;     (create {:_id (util/make-id)}) =>
-;;     (th/check [response]
-;;       response => (partial instance? FeedSource)
-;;       (:_id response) => (partial instance? ObjectId)
-;;       (:created response) => (partial instance? DateTime)
-;;       (:topic response) => string?)
-;;     (provided
-;;       (create-validators anything) => []))
+(facts "#'create"
+  (future-fact "when given valid parameters"
+    (model.feed-source/create {:_id (util/make-id)}) =>
+    (every-checker
+     (partial instance? FeedSource)
+     (contains
+      {:_id     (partial instance? ObjectId)
+       :created (partial instance? DateTime)
+       :topic   string?}))
+    (provided
+      (model.feed-source/create-validators anything) => []))
 
-;;   (fact "when given invalid parameters"
-;;     (create .params.) => (throws RuntimeException)
-;;     (provided
-;;       (create-validators .params.) => [.error.])))
+  (fact "when given invalid parameters"
+    (model.feed-source/create .params.) => (throws RuntimeException)
+    (provided
+      (model.feed-source/create-validators .params.) => [.error.])))
 
-;; (fact #'fetch-all
-;;   (fetch-all) => seq?)
+(facts "#'fetch-all"
+  (model.feed-source/fetch-all) => seq?)
 
-(fact #'model.feed-source/find-by-user
+(facts "#'model.feed-source/find-by-user"
 
   (fact "when the user is nil"
     (let [user nil]

@@ -17,7 +17,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'count-records
+(facts "#'count-records"
   (fact "when there aren't any items"
     (drop!)
     (count-records) => 0)
@@ -28,18 +28,18 @@
         (mock/a-feed-subscription-exists))
       (count-records) => n)))
 
-(fact #'delete
+(facts "#'delete"
   (let [item (mock/a-feed-subscription-exists)]
     (delete item) => item
     (fetch-by-id (:_id item)) => nil))
 
-(fact #'drop!
+(facts "#'drop!"
   (dotimes [i 1]
     (mock/a-feed-subscription-exists))
   (drop!)
   (count-records) => 0)
 
-(fact #'fetch-by-id
+(facts "#'fetch-by-id"
   (fact "when the item doesn't exist"
     (let [id (util/make-id)]
       (fetch-by-id id) => nil?))
@@ -48,23 +48,23 @@
     (let [item (mock/a-feed-subscription-exists)]
       (fetch-by-id (:_id item)) => item)))
 
-(fact #'create
+(facts "#'create"
   (fact "when given valid params"
     (let [params (actions.feed-subscription/prepare-create
                   (factory :feed-subscription {:local false}))]
       (create params)) =>
-      (th/check [response]
-             response => map?
-             response => (partial instance? FeedSubscription)
-             (:_id response) =>  (partial instance? ObjectId)
-             (:created response) => (partial instance? DateTime)
-             (:updated response) => (partial instance? DateTime)
-             (:url response) => string?))
+      (every-checker
+       (partial instance? FeedSubscription)
+       (contains
+        {:_id     (partial instance? ObjectId)
+         :created (partial instance? DateTime)
+         :updated (partial instance? DateTime)
+         :url     string?})))
 
   (fact "when given invalid params"
     (create {}) => (throws RuntimeException)))
 
-(fact #'fetch-all
+(facts "#'fetch-all"
   (fact "when there are no items"
     (drop!)
     (fetch-all) => empty?)
@@ -76,15 +76,5 @@
       (dotimes [i n]
         (mock/a-feed-subscription-exists))
 
-      (fetch-all) =>
-      (th/check [response]
-             response => seq?
-             (count response) => 20)
-
-      (fetch-all {} {:page 2}) =>
-      (th/check [response]
-             response => seq?
-             (count response) => (- n 20)))))
-
-
-
+      (fetch-all) => #(= (count %) 20)
+      (fetch-all {} {:page 2}) => #(= (count %) (- n 20)))))

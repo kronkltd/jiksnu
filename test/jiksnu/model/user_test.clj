@@ -72,15 +72,8 @@
       (dotimes [i n]
         (mock/a-user-exists))
 
-      (fetch-all) =>
-      (th/check [response]
-             response => seq?
-             (count response) => 20)
-
-      (fetch-all {} {:page 2}) =>
-      (th/check [response]
-             response => seq?
-             (count response) => (- n 20)))))
+      (fetch-all) => #(= (count %) 20)
+      (fetch-all {} {:page 2}) => #(= (count %) (- n 20)))))
 
 (fact #'get-domain
   (fact "when passed nil"

@@ -16,7 +16,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'count-records
+(facts "#'count-records"
   (fact "when there aren't any items"
     (drop!)
     (count-records) => 0)
@@ -27,18 +27,18 @@
         (mock/a-conversation-exists))
       (count-records) => n)))
 
-(fact #'delete
+(facts "#'delete"
   (let [item (mock/a-conversation-exists)]
     (delete item) => item
     (fetch-by-id (:_id item)) => nil))
 
-(fact #'drop!
+(facts "#'drop!"
   (dotimes [i 1]
     (mock/a-conversation-exists))
   (drop!)
   (count-records) => 0)
 
-(fact #'fetch-by-id
+(facts "#'fetch-by-id"
   (fact "when the item doesn't exist"
     (let [id (util/make-id)]
       (fetch-by-id id) => nil?))
@@ -47,7 +47,7 @@
     (let [item (mock/a-conversation-exists)]
       (fetch-by-id (:_id item)) => item)))
 
-(fact #'create
+(facts "#'create"
   (fact "when given valid params"
     (let [domain (mock/a-domain-exists)
           source (mock/a-feed-source-exists)
@@ -60,13 +60,10 @@
   (fact "when given invalid params"
     (create {}) => (throws RuntimeException)))
 
-(fact #'fetch-all
+(facts "#'fetch-all"
   (fact "when there are no items"
     (drop!)
-    (fetch-all) =>
-    (th/check [response]
-           response => seq?
-           response => empty?))
+    (fetch-all) => empty?)
 
   (fact "when there is more than a page of items"
     (drop!)
@@ -75,14 +72,6 @@
       (dotimes [i n]
         (mock/a-conversation-exists))
 
-      (fetch-all) =>
-      (th/check [response]
-             response => seq?
-             (count response) => 20)
+      (fetch-all) => #(= (count %) 20)
 
-      (fetch-all {} {:page 2}) =>
-      (th/check [response]
-             response => seq?
-             (count response) => (- n 20)))))
-
-
+      (fetch-all {} {:page 2}) => #(= (count %) (- n 20)))))
