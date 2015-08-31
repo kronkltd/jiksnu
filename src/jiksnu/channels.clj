@@ -34,7 +34,8 @@
 (defonce pending-create-conversations
   (s/stream*
    {:permanent? true
-    :description "pending-create-conversations"}))
+    ;; :description "pending-create-conversations"
+    }))
 
 (defonce pending-create-stream
   (s/stream*

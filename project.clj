@@ -37,7 +37,4 @@
                [ring-mock     "0.1.5"]
                [org.slf4j/slf4j-log4j12 "1.7.12"]]}}
   :plugins [[codox          "0.8.10"]
-            [lein-midje     "3.1.3"]]
-
-  :aot [jiksnu.model]
-  )
+            [lein-midje     "3.1.3"]])

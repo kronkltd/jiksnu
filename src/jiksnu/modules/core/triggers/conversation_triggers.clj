@@ -4,6 +4,7 @@
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.channels :as ch]
             [jiksnu.ops :as ops]
+            [manifold.deferred :as d]
             [manifold.stream :as s]))
 
 (defn filter-conversation-create
@@ -12,8 +13,8 @@
 
 ;; TODO: make op handler
 (defn- enqueue-create-local
-  [ch]
-  (s/put! ch (actions.conversation/create {:local true})))
+  [d]
+  (d/success! d (actions.conversation/create {:local true})))
 
 (defn- handle-get-conversation*
   [url]
