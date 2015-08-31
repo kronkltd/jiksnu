@@ -33,28 +33,28 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'get-username-from-atom-property
+(facts "#'get-username-from-atom-property"
   (fact "when the property has an identifier"
     (let [username (fseq :username)
           user-meta (mock-xrd-with-username username)]
       (get-username-from-atom-property user-meta) => username)))
 
-(future-fact #'get-links
+(future-facts "#'get-links"
   (fact "When it has links"
     (let [xrd nil]
       (get-links xrd)) => seq?))
 
-(fact #'get-identifiers
+(facts "#'get-identifiers"
   (let [subject "acct:foo@bar.baz"
         xrd (mock-xrd-with-subject subject)]
     (get-identifiers xrd) => (contains subject)))
 
-(fact #'get-username-from-identifiers
+(facts "#'get-username-from-identifiers"
   (let [subject "acct:foo@bar.baz"
         xrd (mock-xrd-with-subject subject)]
     (get-username-from-identifiers xrd) => "foo"))
 
-(fact #'get-username-from-xrd
+(facts "#'get-username-from-xrd"
   (let [username (fseq :username)
         domain (fseq :domain)
         subject (format "acct:%s@%s" username domain)
@@ -62,8 +62,8 @@
     (fact "when the usermeta has an identifier"
       (get-username-from-xrd user-meta) => username
       (provided
-        (get-username-from-identifiers user-meta) => username
-        (get-username-from-atom-property user-meta) => nil :times 0))
+       (get-username-from-identifiers user-meta) => username
+       (get-username-from-atom-property user-meta) => nil :times 0))
     (fact "when the usermeta does not have an identifier"
       (fact "and the atom link has an identifier"
         (let [user-meta (cm/string->document
@@ -74,8 +74,8 @@
                                    :href ""}]]))]
           (get-username-from-xrd user-meta) => .username.
           (provided
-            (get-username-from-identifiers user-meta) => nil
-            (get-username-from-atom-property user-meta) => .username.)))
+           (get-username-from-identifiers user-meta) => nil
+           (get-username-from-atom-property user-meta) => .username.)))
       (fact "and the atom link does not have an identifier"
         (let [user-meta (cm/string->document
                          (hiccup/html
@@ -85,7 +85,5 @@
                                    :href ""}]]))]
           (get-username-from-xrd user-meta) => nil
           (provided
-            (get-username-from-identifiers user-meta) => nil
-            (get-username-from-atom-property user-meta) => nil))))))
-
-
+           (get-username-from-identifiers user-meta) => nil
+           (get-username-from-atom-property user-meta) => nil))))))

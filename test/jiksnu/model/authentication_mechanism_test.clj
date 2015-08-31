@@ -7,7 +7,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'fetch-all
+(facts "#'fetch-all"
   (fact "when not given any parameters"
     (fetch-all) => seq?)
 

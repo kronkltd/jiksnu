@@ -13,7 +13,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'actions.request-token/create
+(facts "#'actions.request-token/create"
   (let [client (mock/a-client-exists)
         params {:client (:_id client)
                 :callback (fseq :uri)}]
@@ -22,7 +22,7 @@
      (partial instance? RequestToken)
      (contains {:_id string?}))))
 
-(fact #'actions.request-token/get-request-token
+(facts "#'actions.request-token/get-request-token"
   (let [params {}]
     (actions.request-token/get-request-token params) =>
     (partial instance? RequestToken)))

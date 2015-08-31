@@ -12,9 +12,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-
-
-(fact #'create
+(facts "#'create"
   (let [domain (mock/a-domain-exists)
         domain-name (:_id domain)
         url (make-uri domain-name)
@@ -26,16 +24,14 @@
                                        :update-source (:_id source)})]
     (create params)) => map?)
 
-(fact #'delete
+(facts "#'delete"
   (let [conversation (mock/a-conversation-exists)]
     (delete conversation) => map?
     (model.conversation/fetch-by-id (:_id conversation)) => nil))
 
-(fact #'index
+(facts "#'index"
   (fact "should return a page structure"
     (index) => map?))
 
-(fact #'show
+(facts "#'show"
   (show .conversation.) => .conversation.)
-
-

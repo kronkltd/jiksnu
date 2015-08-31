@@ -15,7 +15,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'set-domain
+(facts "#'set-domain"
   (fact "when the source has a domain"
     (let [domain (mock/a-record-exists :domain)
           source (factory :feed-source {:domain (:_id domain)})]

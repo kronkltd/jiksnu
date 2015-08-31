@@ -20,7 +20,7 @@
 (def domain-a (actions.domain/current-domain))
 (def user-a (mock/a-user-exists))
 
-(fact #'count-records
+(facts "#'count-records"
   (fact "when there aren't any items"
     (drop!)
     (count-records) => 0)
@@ -31,18 +31,18 @@
         (mock/a-user-exists))
       (count-records) => n)))
 
-(fact #'delete
+(facts "#'delete"
   (let [item (mock/a-user-exists)]
     (delete item) => item
     (fetch-by-id (:_id item)) => nil))
 
-(fact #'drop!
+(facts "#'drop!"
   (dotimes [i 1]
     (mock/a-user-exists))
   (drop!)
   (count-records) => 0)
 
-(fact #'fetch-by-id
+(facts "#'fetch-by-id"
   (fact "when the item doesn't exist"
     (let [id "acct:foo@bar.baz"]
       (fetch-by-id id) => nil?))
@@ -51,7 +51,7 @@
     (let [item (mock/a-user-exists)]
       (fetch-by-id (:_id item)) => item)))
 
-(fact #'create
+(facts "#'create"
   (fact "when given valid params"
     (let [params (actions.user/prepare-create
                   (factory :local-user))]
@@ -60,7 +60,7 @@
   (fact "when given invalid params"
     (create {}) => (throws RuntimeException)))
 
-(fact #'fetch-all
+(facts "#'fetch-all"
   (fact "when there are no items"
     (drop!)
     (fetch-all) => empty?)
@@ -75,13 +75,13 @@
       (fetch-all) => #(= (count %) 20)
       (fetch-all {} {:page 2}) => #(= (count %) (- n 20)))))
 
-(fact #'get-domain
+(facts "#'get-domain"
   (fact "when passed nil"
     (get-domain nil) => (throws Exception))
   (fact "when passed a user"
     (get-domain user-a) => domain-a))
 
-(fact #'local?
+(facts "#'local?"
   (fact "when passed a user"
     (fact "and it's domain is the same as the current domain"
       (let [user (mock/a-user-exists)]
@@ -90,15 +90,15 @@
       (let [user (mock/a-remote-user-exists)]
         (local? user) => false))))
 
-(fact #'display-name
+(facts "#'display-name"
   (display-name .user.) => string?)
 
-(fact #'get-link
+(facts "#'get-link"
   (let [user (factory :user {:links [{:rel "foo" :href "bar"}]})]
     (get-link user "foo" nil) => (contains {:href "bar"})
     (get-link user "baz" nil) => nil))
 
-(fact #'get-user
+(facts "#'get-user"
   (fact "when the user is found"
     (let [user (mock/a-user-exists)
           username (:username user)
@@ -111,12 +111,12 @@
           domain (mock/a-domain-exists)]
       (get-user username (:_id domain)) => nil)))
 
-(fact #'fetch-by-domain
+(facts "#'fetch-by-domain"
   (let [domain (actions.domain/current-domain)
         user (mock/a-user-exists)]
     (fetch-by-domain domain) => (contains user)))
 
-(fact #'user-meta-uri
+(facts "#'user-meta-uri"
   (fact "when the user's domain does not have a lrdd link"
     (model.domain/drop!)
     (let [user (mock/a-user-exists)]

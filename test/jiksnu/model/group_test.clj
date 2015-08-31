@@ -14,12 +14,12 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'model.group/delete
+(facts "#'model.group/delete"
   (fact "when the item exists"
     (let [item (mock/a-group-exists)]
       (model.group/delete item) =>  item)))
 
-(fact #'model.group/fetch-by-id
+(facts "#'model.group/fetch-by-id"
   (fact "when the item doesn't exist"
     (let [id (util/make-id)]
       (model.group/fetch-by-id id) => nil?))
@@ -28,7 +28,7 @@
     (let [item (mock/a-group-exists)]
       (model.group/fetch-by-id (:_id item)) => item)))
 
-(fact #'model.group/fetch-all
+(facts "#'model.group/fetch-all"
   (fact "when there are no items"
     (db/drop-all!)
     (model.group/fetch-all) => empty?)
