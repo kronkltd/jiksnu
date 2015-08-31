@@ -6,7 +6,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
-            [lamina.core :as l]
+            [manifold.deferred :as d]
             [midje.sweet :refer :all]))
 
 (namespace-state-changes
@@ -19,7 +19,7 @@
 
     (fact "when there are clients"
       (let [client (mock/a-client-exists)]
-        (let [ch (l/channel)
+        (let [ch (d/deferred)
               request {:channel ch
                        :name name
                        :format :json

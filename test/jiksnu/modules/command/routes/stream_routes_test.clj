@@ -3,7 +3,7 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.test-helper :as th]
-            [lamina.core :as l]
+            [manifold.deferred :as d]
             [midje.sweet :refer :all]))
 
 (namespace-state-changes
@@ -13,7 +13,7 @@
 (future-fact "command 'get-page streams'"
   (let [name "get-page"
         args '("streams")
-        ch (l/channel)
+        ch (d/deferred)
         request {:name name
                  :channel ch
                  :format :json

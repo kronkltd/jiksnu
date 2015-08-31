@@ -5,7 +5,7 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
-            [lamina.core :as l]
+            [manifold.deferred :as d]
             [midje.sweet :refer :all]))
 
 (namespace-state-changes
@@ -14,7 +14,7 @@
 
 (facts "command 'get-model user'"
   (let [command "get-model"
-        ch (l/channel)
+        ch (d/deferred)
         type "user"]
 
     (fact "when the record is not found"
