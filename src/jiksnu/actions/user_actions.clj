@@ -263,19 +263,20 @@
 
 (defaction update-record
   "Update the user's activities and information."
-  [user params]
+  [^User user params]
   (if-let [source-id (:update-source user)]
     (invoke-action "feed-source" "update" (str source-id))
     (log/warn "user does not have an update source"))
   user)
 
 (defn discover-user-meta
-  [user & [options]]
-  (doseq [params @(util/safe-task
-                   (discover-user-xrd user options))]
-    (let [links (:links params)]
-      (doseq [link links]
-        (add-link user link)))))
+  ([user]
+   (discover-user-meta user nil))
+  ([^User user options]
+   (doseq [params (discover-user-xrd user options)]
+     (let [links (:links params)]
+       (doseq [link links]
+         (add-link user link))))))
 
 (defn discover*
   [^User user & [options]]
@@ -287,7 +288,7 @@
 (defaction discover
   "perform a discovery on the user"
   [^User user & [options]]
-  @(util/safe-task (discover* user options)))
+  (discover* user options))
 
 (defaction register
   "Register a new user"

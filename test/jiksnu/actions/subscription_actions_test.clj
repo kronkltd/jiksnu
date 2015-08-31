@@ -20,12 +20,12 @@
 
 (fact "#'actions.subscription/subscribe"
   (fact "when the user is not already subscribed"
+    (model.subscription/drop!)
     (let [user (mock/a-user-exists)
           subscribee (mock/a-user-exists)]
-      (model.subscription/drop!)
       (session/with-user user
-        (actions.subscription/subscribe user subscribee) =>
-        (partial instance? Subscription)))))
+        (actions.subscription/subscribe user subscribee)) =>
+        (partial instance? Subscription))))
 
 (fact "#'actions.subscription/ostatussub-submit"
   (let [actor (mock/a-user-exists)
@@ -33,11 +33,11 @@
         domain-name (fseq :domain)
         uri (model.user/get-uri {:username username :domain domain-name})]
     (session/with-user actor
-      (actions.subscription/ostatussub-submit uri) =>
-      (every-checker
-       (partial instance? Subscription)
-       (contains {:from (:_id actor)
-                  :to uri})))))
+      (actions.subscription/ostatussub-submit uri)) =>
+    (every-checker
+     (partial instance? Subscription)
+     (contains {:from (:_id actor)
+                :to uri}))))
 
 (fact "#'actions.subscription/subscribed"
   (let [user (mock/a-user-exists)
