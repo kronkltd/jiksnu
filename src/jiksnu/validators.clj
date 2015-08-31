@@ -1,6 +1,9 @@
-(ns jiksnu.validators
-  (:require [validateur.validation :refer [acceptance-of]]))
+(ns jiksnu.validators)
 
 (defn type-of
-  [path type]
-  (acceptance-of path :accept (partial instance? type)))
+  [attr type]
+  (let [f (if (vector? attr) get-in get)]
+    (fn [m]
+      (if (instance? type (f m attr))
+        [true {}]
+        [false {attr #{(str "is not type: " type)}}]))))

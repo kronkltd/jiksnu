@@ -21,27 +21,27 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id                   ObjectId)
+   (type-of :_id                   ObjectId)
 
-   ;; (type-of :id                    String)
-   ;; (type-of :title                 String)
-   ;; (type-of :content               String)
-   ;; (type-of :verb                  String)
-   ;; (type-of [:object :type]        String)
+   (type-of :id                    String)
+   (type-of :title                 String)
+   (type-of :content               String)
+   (type-of :verb                  String)
+   (type-of [:object :type]        String)
 
-   ;; (type-of :local                 Boolean)
-   ;; (type-of :public                Boolean)
+   (type-of :local                 Boolean)
+   (type-of :public                Boolean)
 
-   ;; (type-of :author                String)
-   ;; ;; (type-of :update-source         ObjectId)
-   ;; ;; (type-of :conversation          ObjectId)
+   (type-of :author                String)
+   (type-of :update-source         ObjectId)
+   (type-of :conversation          ObjectId)
 
    ;; (presence-of :created)
-   ;; ;; (type-of :created               DateTime)
+   (type-of :created               DateTime)
    ;; (presence-of :published)
-   ;; ;; (type-of :published             DateTime)
+   (type-of :published             DateTime)
    ;; (presence-of :updated)
-   ;; ;; (type-of :updated               DateTime)
+   (type-of :updated               DateTime)
    ))
 
 (def count-records (templates.model/make-counter       collection-name))

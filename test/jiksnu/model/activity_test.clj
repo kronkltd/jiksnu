@@ -16,7 +16,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact #'model.activity/count-records
+(fact "#'model.activity/count-records"
 
   (fact "when there aren't any items"
     (model.activity/drop!)
@@ -30,7 +30,7 @@
       (model.activity/count-records) => n))
   )
 
-(fact #'model.activity/create
+(fact "#'model.activity/create"
   (let [domain (mock/a-domain-exists)
         feed-source (mock/a-feed-source-exists {:domain domain})
         conversation (mock/a-conversation-exists {:feed-source feed-source})
@@ -42,7 +42,7 @@
                                       :update-source (:_id feed-source)}))]
     (model.activity/create activity) => (partial instance? Activity)))
 
-(fact #'model.activity/get-author
+(fact "#'model.activity/get-author"
 
   (fact "when given an empty activity"
     (let [item (Activity.)]
