@@ -11,7 +11,7 @@
                                ;; xom
 ]]
                  [clj-factory "0.2.2-SNAPSHOT"]
-                 [clj-time "0.10.0"]
+                 [clj-time "0.11.0"]
                  [clj-http "2.0.0"]
                  [clojurewerkz/support "1.1.0"]
                  [cheshire "5.5.0"]
@@ -28,7 +28,7 @@
                  [org.clojure/clojure "1.7.0"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/data.json "0.2.6"]
-                 [org.jsoup/jsoup "1.8.2"]
+                 [org.jsoup/jsoup "1.8.3"]
                  [slingshot "0.12.2"]]
   :profiles {:dev
              {:resource-paths ["test-resources"]
