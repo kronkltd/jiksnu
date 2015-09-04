@@ -9,6 +9,7 @@
 ;; =============================================================================
 
 (defgroup resources
+  :name "Resources"
   :url "/main/resources")
 
 (defresource resources collection
@@ -16,12 +17,14 @@
   :mixins [angular-resource])
 
 (defresource resources resource
+  :name "Show Resource"
   :url "/{_id}"
   :mixins [angular-resource])
 
 ;; =============================================================================
 
 (defgroup resources-api
+  :name "Resource API"
   :url "/model/resources")
 
 (defresource resources-api collection

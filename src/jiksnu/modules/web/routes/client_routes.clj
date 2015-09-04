@@ -8,6 +8,7 @@
 
 
 (defgroup client-api
+  :name "Client API"
   :url "/api/client"
 )
 

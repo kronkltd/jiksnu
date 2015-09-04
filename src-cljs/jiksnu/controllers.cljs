@@ -108,9 +108,6 @@
   (! $scope.login (fn []
                     (let [username (.-username $scope)
                           password (.-password $scope)]
-                      (.log js/console "login"
-                            username
-                            password)
                       (.login app username password)))))
 
 (def.controller jiksnu.LogoutController [])

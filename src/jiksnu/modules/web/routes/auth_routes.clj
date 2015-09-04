@@ -12,7 +12,10 @@
                                               ]]
             [octohipster.mixins :as mixin]))
 
-(defgroup auth)
+(defgroup auth
+  :name "Authentication"
+  :description "Authentication routes"
+  )
 
 (defresource auth register-page
   :url "/main/register"
@@ -20,7 +23,7 @@
 
 (defresource auth login
   :url "/main/login"
-  ;; :mixins [angular-resource]
+  :mixins [angular-resource]
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :post! (fn [{:as ctx

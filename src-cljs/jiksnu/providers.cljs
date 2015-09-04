@@ -24,6 +24,7 @@
 
 (defn login
   [app username password]
+  (.info js/console "Logging in user." username password)
   (let [data (.param js/$ (obj :username username
                                :password password))]
     (-> (? app.di.$http)

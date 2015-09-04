@@ -17,6 +17,7 @@
 ;; =============================================================================
 
 (defgroup activities
+  :name "Activities"
   :url "/activities")
 
 (defresource activities collection
@@ -29,6 +30,7 @@
 ;; =============================================================================
 
 (defgroup activities-api
+  :name "Activities API"
   :url "/model/activities")
 
 (defresource activities-api api-collection
