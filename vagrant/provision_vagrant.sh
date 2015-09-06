@@ -15,9 +15,23 @@ fi
 
 echo "cd /vagrant" >> ~/.bashrc
 
+cd /vagrant/checkouts/ciste
+~/bin/lein install
+
+cd /vagrant/checkouts/ciste-incubator
+~/bin/lein install
+
+cd /vagrant/checkouts/jiksnu-core
+~/bin/lein install
+
+cd /vagrant/checkouts/jiksnu-command
+~/bin/lein install
+
 cd /vagrant
 
 npm install
 bower install
-lein cljsbuild once
-lein lesscss once
+~/bin/lein cljsbuild once
+~/bin/lein lesscss once
+
+byobu-enable
