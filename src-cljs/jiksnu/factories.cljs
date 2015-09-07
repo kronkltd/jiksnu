@@ -3,6 +3,11 @@
   (:use-macros [gyr.core :only [def.factory]]
                [purnam.core :only [? ?> ! !> obj arr]]))
 
+(def.factory jiksnu.$exceptionHandler
+  []
+  (fn [exception cause]
+    (throw exception)))
+
 (def.factory jiksnu.Activities
   [DS]
   (.defineResource DS
