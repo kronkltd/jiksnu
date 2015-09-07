@@ -15,6 +15,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.stream :as model.stream]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that set-this set-that this that]]
@@ -258,3 +259,14 @@
   []
   (there-is-an-activity {:modifier "public"
                          :user (get-that :user)}))
+
+(defn user-has-a-stream
+  [& options]
+  (let [stream (actions.stream/create
+                (factory :stream {:owner (or (:user options)
+                                             (:_id (get-this :user)))})
+                )]
+    (set-this :stream stream)
+    stream
+    )
+  )

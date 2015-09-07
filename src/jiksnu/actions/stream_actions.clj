@@ -42,7 +42,7 @@
 ;; actions
 
 (defaction create
-  "Create a new feed source record"
+  "Create a new stream feed source record"
   [params options]
   (let [params (prepare-create params)]
     (model.stream/create params)))

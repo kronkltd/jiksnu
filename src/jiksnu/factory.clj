@@ -239,3 +239,8 @@
 (deffactory :like
   {:user #'user-id
    :activity #'activity-id})
+
+(defrecordfactory :stream model/map->Stream
+  {:name (fseq :word)
+   :user #'user-id
+   :public true})
