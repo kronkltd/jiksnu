@@ -2,10 +2,16 @@
   (:require [ciste.commands :refer [add-command!]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.model.stream :as model.stream]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]
 ))
+
+(defparameter :model.stream/id
+  :in :path
+  :description "The Id of an stream"
+  :type "string")
 
 (defgroup streams
   :url "/main/streams")
@@ -15,6 +21,7 @@
 
 (defresource streams resource
   :url "/{_id}"
+  :parameters {:_id (path :model.stream/id)}
   :mixins [angular-resource])
 
 ;; =============================================================================
@@ -40,6 +47,7 @@
 (defresource streams-api api-item
   :desc "Resource routes for single Stream"
   :url "/{_id}"
+  :parameters {:_id (path :model.stream/id)}
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :presenter (partial into {})

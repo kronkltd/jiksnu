@@ -11,7 +11,7 @@
 
 (defparameter :model.activity/id
   :in :path
-  :description "The account Id of a user"
+  :description "The Id of an activity"
   :type "string")
 
 (def activity-schema
@@ -31,6 +31,7 @@
 
 (defresource activities resource
   :url "/{_id}"
+  :summary "Show Activity"
   :parameters {:_id (path :model.activity/id)}
   :mixins [angular-resource])
 

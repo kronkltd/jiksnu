@@ -2,9 +2,14 @@
   (:require [ciste.loader :refer [require-namespaces]]
             [jiksnu.actions.resource-actions :refer [delete discover index show
                                                      update-record]]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
+
+(defparameter :model.resource/id
+  :description "The Id of a conversation"
+  :type "string")
 
 ;; =============================================================================
 
@@ -19,6 +24,7 @@
 (defresource resources resource
   :name "Show Resource"
   :url "/{_id}"
+  :parameters {:_id (path :model.resource/id)}
   :mixins [angular-resource])
 
 ;; =============================================================================

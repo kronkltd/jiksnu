@@ -7,10 +7,14 @@
             jiksnu.modules.core.filters.group-filters
             jiksnu.modules.core.views.group-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [jiksnu.modules.web.routes :as r]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.Group))
+
+(defparameter :model.group/id
+  :description "The Id of a conversation"
+  :type "string")
 
 ;; =============================================================================
 
@@ -23,6 +27,7 @@
 
 (defresource groups resource
   :url "/{_id}"
+  :parameters {:_id (path :model.group/id)}
   :mixins [angular-resource])
 
 ;; (defresource groups resource
@@ -42,6 +47,7 @@
 (defresource groups-api item
   :desc "Resource routes for single Group"
   :url "/{_id}"
+  :parameters {:_id (path :model.group/id)}
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :presenter (partial into {})

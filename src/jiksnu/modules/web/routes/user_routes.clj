@@ -22,7 +22,6 @@
            jiksnu.model.User))
 
 (defparameter :model.user/id
-  :in :path
   :description "The account Id of a user"
   :type "string")
 
@@ -52,7 +51,7 @@
   :url "/{_id}"
   :name "show user"
   :description "show a user"
-  :params {:_id  (path :model.user/id)}
+  :parameters {:_id  (path :model.user/id)}
   :mixins [angular-resource])
 
 ;; =============================================================================
@@ -68,7 +67,7 @@
   :name "user profile"
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
-  :params {:username (path :model.user/username)}
+  :parameters {:username (path :model.user/username)}
   :exists? (fn [ctx]
              (let [user (get-user ctx)]
                {:data user}))
@@ -102,7 +101,7 @@
   :url "/{username}/outbox"
   :mixins [subpage-resource]
   :name "user outbox"
-  :params {:username (path :model.user/username)}
+  :parameters {:username (path :model.user/username)}
   :subpage "outbox"
   ;; :target-model "User"
   :target get-user
@@ -132,7 +131,7 @@
   :url "/{_id}"
   :name "user routes"
   :mixins [mixin/item-resource]
-  :params {:_id (path :model.user/id)}
+  :parameters {:_id (path :model.user/id)}
   :available-media-types ["application/json"]
   :presenter (partial into {})
   :exists? (fn [ctx]
@@ -144,7 +143,7 @@
   :url "/{_id}/groups"
   :name "user groups"
   :mixins [subpage-resource]
-  :params {:_id  (path :model.user/id)}
+  :parameters  {:_id  (path :model.user/id)}
   :subpage "groups"
   :target-model "user"
   :description "Groups of {{username}}"
@@ -161,7 +160,7 @@
 (defresource users-api followers-collection
   :url "/{_id}/followers"
   :mixins [mixin/item-resource]
-  :params {:_id  (path :model.user/id)}
+  :parameters {:_id  (path :model.user/id)}
   :available-media-types ["application/json"]
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)]
@@ -171,7 +170,7 @@
 
 (defresource users-api following-collection
   :url "/{_id}/following"
-  :params {:_id  (path :model.user/id)}
+  :parameters {:_id  (path :model.user/id)}
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :exists? (fn [ctx]
@@ -183,7 +182,7 @@
 (defresource users-api streams-collection
   :url "/{_id}/streams"
   :mixins [subpage-resource]
-  :params {:_id (path :model.user/id)}
+  :parameters {:_id (path :model.user/id)}
   :subpage "streams"
   :target-model "user"
   :description "Streams of {{username}}"

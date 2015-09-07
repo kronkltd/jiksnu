@@ -8,9 +8,7 @@
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
                     appProvider wsProvider
-                    DSProvider
-
-]
+                    DSProvider]
 
   (.setUrl wsProvider (str "ws"
                            (when (= (? js/window.location.protocol) "https:")
@@ -19,8 +17,15 @@
                            (? js/window.location.host)
                            "/"))
 
-  (! DSProvider.defaults.idAttribute "_id")
-  (! DSProvider.defaults.basePath "/model")
+
+  (.log js/console (.-defaults DSProvider))
+  (.extend js/angular (.-defaults DSProvider) (obj
+                                               :idAttribute "_id"
+                                               :basePath "/model"
+                                               ))
+
+  ;; (! DSProvider.defaults.idAttribute "_id")
+  ;; (! DSProvider.defaults.basePath "/model")
 
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider

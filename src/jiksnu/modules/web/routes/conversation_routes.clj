@@ -3,10 +3,15 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation]
+            [jiksnu.model.conversation :as model.conversation]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.Conversation))
+
+(defparameter :model.conversation/id
+  :description "The Id of a conversation"
+  :type "string")
 
 ;; =============================================================================
 
@@ -20,6 +25,7 @@
 
 (defresource conversations resource
   :mixins [angular-resource]
+  :parameters {:_id (path :model.conversation/id)}
   :url "/{_id}")
 
 ;; =============================================================================

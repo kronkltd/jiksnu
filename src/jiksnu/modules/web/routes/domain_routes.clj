@@ -7,9 +7,13 @@
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers
-             :refer [angular-resource page-resource]]
+             :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
 
+
+(defparameter :model.domain/id
+  :description "The Id of an domain"
+  :type "string")
 
 ;; =============================================================================
 
@@ -31,6 +35,7 @@
 
 (defresource domains resource
   :url "/{_id}"
+  :parameters {:_id (path :model.domain/id)}
   :mixins [angular-resource]
   :delete! actions.domain/delete
   :delete-summary "Delete a domain")
@@ -48,6 +53,7 @@
 (defresource domains-api api-item
   :desc "Resource routes for single Domain"
   :url "/{_id}"
+  :parameters {:_id (path :model.domain/id)}
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :presenter (partial into {})

@@ -1,8 +1,13 @@
 (ns jiksnu.modules.web.routes.feed-source-routes
   (:require [jiksnu.actions.feed-source-actions :as feed-source]
+            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
+
+(defparameter :model.feed-source/id
+  :description "The feed source id"
+  :type "string")
 
 ;; =============================================================================
 
@@ -15,6 +20,7 @@
 
 (defresource feed-sources resource
   :url "/{_id}"
+  :parameters {:_id (path :model.feed-source/id)}
   :mixins [angular-resource])
 
 ;; =============================================================================

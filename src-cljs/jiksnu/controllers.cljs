@@ -242,6 +242,7 @@
     (! $scope.loaded false)
     (! $scope.init
        (fn [id]
+         (.log js/console "Showing user: " id)
          (when (and id (not= id ""))
            (.bindOne Users id $scope "user")
            (.find Users id))))
