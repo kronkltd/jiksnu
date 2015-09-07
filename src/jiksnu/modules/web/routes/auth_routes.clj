@@ -7,7 +7,7 @@
             [jiksnu.modules.web.helpers
              :refer [angular-resource page-resource]]
             [liberator.representation :refer [
-                                              as-response 
+                                              as-response
                                               ring-response
                                               ]]
             [octohipster.mixins :as mixin]))
@@ -25,6 +25,16 @@
   :url "/main/login"
   :mixins [angular-resource]
   :allowed-methods [:post]
+  :params {
+           :username {:in :formData
+                      :type "string"
+                      :description "The username"
+                      :required true}
+           :password {:in :formData
+                      :type "string"
+                      :description "the password"
+                      :required true}
+           }
   :available-media-types ["application/json"]
   :post! (fn [{:as ctx
               {{:keys [username password]} :params} :request}]
@@ -47,8 +57,8 @@
                     (ring-response
                      (friend/logout* (as-response {:data "ok"} ctx)))))
 
-(defresource auth verify-credentials
-  :url "/api/account/verify_credentials.json"
-  :exists? (fn [ctx]
-             {:data (auth/verify-credentials)}))
+;; (defresource auth verify-credentials
+;;   :url "/api/account/verify_credentials.json"
+;;   :exists? (fn [ctx]
+;;              {:data (auth/verify-credentials)}))
 

@@ -176,7 +176,12 @@
   (merge
    {:exists? true
     :available-media-types (mapv types [:html])
-    :handle-ok index}
+    :handle-ok index
+    :handle-ok-info {
+                     :contentType "text/html"
+                     :description "This is a double for an angular route. Requesting this page directly will return the angular page."
+                     }
+    }
    r))
 
 (defn make-page-handler

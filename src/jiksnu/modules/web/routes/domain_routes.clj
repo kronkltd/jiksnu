@@ -21,13 +21,13 @@
   :desc "collection of domains"
   :mixins [angular-resource])
 
-(defresource domains discover
-  :url "/{_id}/discover"
-  :post actions.service/discover)
+;; (defresource domains discover
+;;   :url "/{_id}/discover"
+;;   :post actions.service/discover)
 
-(defresource domains edit
-  :url "/{_id}/edit"
-  :handle-ok actions.domain/edit-page)
+;; (defresource domains edit
+;;   :url "/{_id}/edit"
+;;   :handle-ok actions.domain/edit-page)
 
 (defresource domains resource
   :url "/{_id}"
@@ -69,6 +69,7 @@
 (defresource well-known host-meta
   :url "/host-meta"
   :summary "Webfinger Host Meta Document"
+  :available-media-types ["application/json"]
   :handle-ok actions.domain/host-meta)
 
 

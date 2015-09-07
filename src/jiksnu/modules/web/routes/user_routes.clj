@@ -21,6 +21,36 @@
            jiksnu.model.Group
            jiksnu.model.User))
 
+(defonce parameters (ref {}))
+
+(defn defparameter
+  [k & {:as options}]
+  (dosync
+   (alter parameters assoc k options)))
+
+(defn get-parameter
+  [k]
+  (k @parameters))
+
+(defn path
+  ([k] (path k nil))
+  ([k required?]
+   (merge (get-parameter k)
+          {:in "path"})))
+
+
+
+
+
+(defparameter :model.user/id
+  :in :path
+  :description "The account Id of a user"
+  :type "string")
+
+(defparameter :model.user/username
+  :description "The user's local username"
+  :type "string")
+
 (defn get-user
   "Gets the user from the context"
   [ctx]
@@ -31,30 +61,35 @@
 
 (defgroup users
   :url "/main/users"
+  :name "user routes"
   :description "Routes related to users")
 
 (defresource users collection
+  :name "list users"
   :desc "Collection route for users"
   :mixins [angular-resource])
 
 (defresource users resource
   :url "/{_id}"
+  :name "show user"
   :description "show a user"
+  :params {:_id  (path :model.user/id)}
   :mixins [angular-resource])
-
-
 
 ;; =============================================================================
 
 (defgroup user-pump-api
   :url "/api/user"
+  :name "Pump API"
   :description "User api matching pump.io spec")
 
 
 (defresource user-pump-api user-profile
   :url "/{username}/profile"
+  :name "user profile"
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
+  :params {:username (path :model.user/username)}
   :exists? (fn [ctx]
              (let [user (get-user ctx)]
                {:data user}))
@@ -87,6 +122,8 @@
 (defresource user-pump-api user-outbox
   :url "/{username}/outbox"
   :mixins [subpage-resource]
+  :name "user outbox"
+  :params {:username (path :model.user/username)}
   :subpage "outbox"
   ;; :target-model "User"
   :target get-user
@@ -114,7 +151,9 @@
 (defresource users-api item
   :desc "Resource routes for single User"
   :url "/{_id}"
+  :name "user routes"
   :mixins [mixin/item-resource]
+  :params {:_id (path :model.user/id)}
   :available-media-types ["application/json"]
   :presenter (partial into {})
   :exists? (fn [ctx]
@@ -124,7 +163,9 @@
 
 (defresource users-api groups-collection
   :url "/{_id}/groups"
+  :name "user groups"
   :mixins [subpage-resource]
+  :params {:_id  (path :model.user/id)}
   :subpage "groups"
   :target-model "user"
   :description "Groups of {{username}}"
@@ -141,6 +182,7 @@
 (defresource users-api followers-collection
   :url "/{_id}/followers"
   :mixins [mixin/item-resource]
+  :params {:_id  (path :model.user/id)}
   :available-media-types ["application/json"]
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)]
@@ -150,6 +192,7 @@
 
 (defresource users-api following-collection
   :url "/{_id}/following"
+  :params {:_id  (path :model.user/id)}
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :exists? (fn [ctx]
@@ -161,6 +204,7 @@
 (defresource users-api streams-collection
   :url "/{_id}/streams"
   :mixins [subpage-resource]
+  :params {:_id (path :model.user/id)}
   :subpage "streams"
   :target-model "user"
   :description "Streams of {{username}}"
@@ -177,9 +221,6 @@
 ;; =============================================================================
 
 (defn routes
-
-
-
   []
   [
    ;; [[:get    "/api/friendships/exists.:format"] #'user/exists?]

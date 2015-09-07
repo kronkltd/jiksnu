@@ -39,9 +39,9 @@
   :available-media-types ["text/html"]
   :exists? (fn [ctx] {:data (str @r/resources )}))
 
-(defresource root register
-  :name "Register"
-  :url "/register"
-  :summary "Register user"
-  ;; :mixins [item-resource]
-  :post! (fn [ctx] ctx))
+;; (defresource root register
+;;   :name "Register"
+;;   :url "/register"
+;;   :summary "Register user"
+;;   ;; :mixins [item-resource]
+;;   :post! (fn [ctx] ctx))
