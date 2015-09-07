@@ -149,7 +149,6 @@
           (fn [b]
             (.log js/console "b" b)
             (when b
-
               (-> (.getLocation geolocation)
                   (.then (fn [data]
                            (! $scope.activity.geo.latitude
