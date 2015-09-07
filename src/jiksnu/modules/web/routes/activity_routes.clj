@@ -6,8 +6,13 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
+
+(defparameter :model.activity/id
+  :in :path
+  :description "The account Id of a user"
+  :type "string")
 
 (def activity-schema
   {:id "Activity"
@@ -26,9 +31,7 @@
 
 (defresource activities resource
   :url "/{_id}"
-  :parameters {"_id" {:name "Activity ID"
-                      :in :path
-                      :description "The ID of the activity"}}
+  :parameters {:_id (path :model.activity/id)}
   :mixins [angular-resource])
 
 ;; =============================================================================
@@ -37,24 +40,28 @@
   :name "Activities API"
   :url "/model/activities")
 
+(defn activities-api-post
+  [ctx]
+  (let [{{params :params
+          :as request} :request} ctx
+          username (:current (friend/identity request))
+          id (str "acct:" username "@" (config :domain))
+          params (assoc params :author id)]
+    (actions.activity/post params)))
+
 (defresource activities-api api-collection
   :desc "Collection route for activities"
   :mixins [page-resource]
   :available-formats [:json]
   :allowed-methods [:get :post]
-  :post! (fn [ctx]
-           (let [{{params :params
-                   :as request} :request} ctx
-                   username (:current (friend/identity request))
-                   id (str "acct:" username "@" (config :domain))
-                   params (assoc params :author id)]
-             (actions.activity/post params)))
+  :post! activities-api-post
   :schema activity-schema
   :ns 'jiksnu.actions.activity-actions)
 
 (defresource activities-api api-item
   :desc "Resource routes for single Activity"
   :url "/{_id}"
+  :parameters {:_id (path :model.activity/id)}
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :presenter (partial into {})

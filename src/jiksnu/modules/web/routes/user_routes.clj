@@ -13,34 +13,13 @@
             jiksnu.modules.core.filters.stream-filters
             jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :refer [angular-resource page-resource
-                                                subpage-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
+                                                path subpage-resource]]
             [liberator.core :as lib]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.Activity
            jiksnu.model.Group
            jiksnu.model.User))
-
-(defonce parameters (ref {}))
-
-(defn defparameter
-  [k & {:as options}]
-  (dosync
-   (alter parameters assoc k options)))
-
-(defn get-parameter
-  [k]
-  (k @parameters))
-
-(defn path
-  ([k] (path k nil))
-  ([k required?]
-   (merge (get-parameter k)
-          {:in "path"})))
-
-
-
-
 
 (defparameter :model.user/id
   :in :path

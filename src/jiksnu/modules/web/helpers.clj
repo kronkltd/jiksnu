@@ -190,3 +190,21 @@
     (->> opts
          page-resource
          (mapcat (fn [[k v]] [k v])))))
+
+(defonce parameters (ref {}))
+
+(defn defparameter
+  [k & {:as options}]
+  (dosync
+   (alter parameters assoc k options)))
+
+(defn get-parameter
+  [k]
+  (k @parameters))
+
+(defn path
+  ([k] (path k nil))
+  ([k required?]
+   (merge (get-parameter k)
+          {:in "path"})))
+
