@@ -41,10 +41,9 @@
            true)
   :post-redirect? false
   :handle-created (fn [ctx]
-                    (ring-response
-                     (friend/authenticate-response
-                      (:request ctx)
-                      {:body "ok"}))))
+                    (friend/authenticate-response
+                     (:request ctx)
+                     {:body "ok"})))
 
 (defresource auth logout
   :url "/main/logout"

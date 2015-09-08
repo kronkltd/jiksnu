@@ -12,7 +12,7 @@
        [:link-to {:data-id "{{user.id}}" :data-model "User"}]]
       [:p "{{user.username}}@{{user.domain}}"]
       [:p "{{user.id}}"]
-      [:p "{{user.displayName}}"]
+      [:p "{{user.name}}"]
       [:p "{{user.uri}}"]
       [:p "{{user.bio}}"]]]
     [:td #_(actions-section user)]]]]]

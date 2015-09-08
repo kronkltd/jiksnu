@@ -1,5 +1,5 @@
 [:div {:data-model "group"}
- [:p "{{group.fullname}}"]
+ [:p "{{group.name}}"]
  [:p "{{group.homepage}}"]
  [:p "{{group.location}}"]
  [:p "{{group.aliases}}"]
