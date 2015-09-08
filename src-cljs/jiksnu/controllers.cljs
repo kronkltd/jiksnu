@@ -222,6 +222,12 @@
 (def.controller jiksnu.ShowGroupController
   [$scope $http $stateParams]
   (! $scope.loaded false)
+  (! $scope.addAdmin (fn [& opts]
+                      (.log js/console opts)
+                      ))
+  (! $scope.addMember (fn [& opts]
+                      (.log js/console opts)
+                      ))
   (! $scope.init
      (fn [id]
        (let [url (str "/model/groups/" id)]

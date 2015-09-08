@@ -5,7 +5,7 @@
     [:a.url.entry-title {:ui-sref "showGroup(group)"}
      [:img {:ng-src "{{group.avatarUrl}}"}]
      [:span.nickname
-      "{{group.fullname}} ({{group.nickname}})"]]]
+      "{{group.name}} ({{group.nickname}})"]]]
    [:a.url {:href "{{group.homepage}}"}
     "{{group.homepage}}"]
    [:p.note "{{group.description}}"]]]]

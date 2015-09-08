@@ -1,18 +1,28 @@
-[:div {:data-model "group"}
- [:p "{{group.name}}"]
+[:div
+ [:h2 "{{group.name}}"]
  [:p "{{group.homepage}}"]
  [:p "{{group.location}}"]
  [:p "{{group.aliases}}"]
- [:p "{{group.created}}"]
+ [:p "Created: "
+  [:time "{{group.created}}"]
+  ]
  [:p "{{group.updated}}"]
  [:div
   [:h3 "Admins {{group.admins.length}}"]
+  [:div
+   [:form {:name "addAdmin()" :ng-submit "addAdmin"}
+    [:input {:ng-model "id"}]
+    [:input.btn.btn-default {:type "submit"}]]]
   [:ul
    [:li {:ng-repeat "user in group.admins"}
     [:a {:ui-sref "showUser({_id: user})"}
      "{{user}}"]]]]
  [:div
   [:h3 "Members {{group.members.length}}"]
+  [:div
+   [:form {:name "addMember()" :ng-submit "addMember"}
+    [:input {:ng-model "id"}]
+    [:input.btn.btn-default {:type "submit"}]]]
   [:ul
    [:li {:ng-repeat "user in group.members"}
     [:a {:ui-sref "showUser({_id: user})"}
