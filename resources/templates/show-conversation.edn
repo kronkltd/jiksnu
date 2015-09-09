@@ -1,6 +1,5 @@
-[:div.conversations
- [:div.conversation-section {:ng-repeat "conversation in page.items"}
-  [:p [:a {:ui-sref "showConversation(conversation)"} "{{conversation._id}}"]]
+[:div
+ [:p [:a {:ui-sref "showConversation(conversation)"} "{{conversation._id}}"]]
   [:div {:ng-if "conversation.parent"}
    [:show-activity {:data-id "{{conversation.parent}}"}]
    [:ul.comments.clearfix
@@ -15,4 +14,5 @@
    [:p.error "Parent Activity has not been set"]
    [:code [:pre "{{conversation|json}}"]]
    ]
-  ]]
+
+ ]

@@ -97,6 +97,7 @@
    ["registerPage"     "/main/register"     "RegisterPage"        :register-page]
    ["settingsPage"     "/main/settings"     "SettingsPage"        :settings-page]
    ["showActivity"     "/notice/:id"        "ShowActivity"        :show-activity]
+   ["showConversation" "/main/conversations/:_id" "ShowConversation"          :show-conversation]
    ["showDomain"       "/main/domains/:_id" "ShowDomain"          :show-domain]
    ["showGroup"        "/main/groups/:_id"  "ShowGroup"           :show-group]
    ["showUser"         "/main/users/:_id"   "ShowUser"            :show-user]

@@ -3,11 +3,19 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation]
+            jiksnu.modules.core.filters.activity-filters
+            jiksnu.modules.core.views.activity-views
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path subpage-resource]]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.Conversation))
+
+(defn get-conversation
+  "Gets the item from context by id"
+  [ctx]
+  (let [id (-> ctx :request :route-params :_id)]
+    (model.conversation/fetch-by-id id)))
 
 (defparameter :model.conversation/id
   :description "The Id of a conversation"
@@ -31,8 +39,7 @@
 ;; =============================================================================
 
 (defgroup conversations-pump-api
-  :url "/api/conversations"
-)
+  :url "/api/conversations")
 
 ;; =============================================================================
 
@@ -44,15 +51,50 @@
   :available-formats [:json]
   :ns 'jiksnu.actions.conversation-actions)
 
+(defresource conversations-api api-item
+  :desc "Resource routes for single Conversation"
+  :url "/{_id}"
+  :parameters {:_id (path :model.conversation/id)}
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :presenter (partial into {})
+  :exists? (fn [ctx]
+             (let [id (-> ctx :request :route-params :_id)
+                   conversation (model.conversation/fetch-by-id id)]
+               {:data conversation}))
+  ;; :delete! #'actions.conversation/delete
+  ;; :put!    #'actions.conversation/update-record
+  )
+
+(defresource conversations-api activities-stream
+  :desc "Activities related to a conversation"
+  :url "/{_id}/activities"
+  :parameters {:_id (path :model.conversation/id)}
+  :mixins [subpage-resource]
+  :target get-conversation
+  :target-model "conversation"
+  :available-formats [:json]
+  :available-media-types ["application/json"]
+  :presenter (partial into {})
+  ;; :exists? (fn [ctx]
+  ;;            (let [id (-> ctx :request :route-params :_id)
+  ;;                  conversation (model.conversation/fetch-by-id id)]
+  ;;              (log/spy :info {:data conversation})))
+  ;; :delete! #'actions.conversation/delete
+  ;; :put!    #'actions.conversation/update-record
+  )
+
+
 ;; =============================================================================
 
 (defn routes
   []
-  [[[:get "/main/conversations.:format"] #'conversation/index]
-   [[:get "/main/conversations"] #'conversation/index]
-   [[:get "/main/conversations/:id.:format"]  #'conversation/show]
-   [[:get "/main/conversations/:id"]  #'conversation/show]
-   [[:get "/model/conversations/:id"] #'conversation/show]
+  [
+   ;; [[:get "/main/conversations.:format"] #'conversation/index]
+   ;; [[:get "/main/conversations"] #'conversation/index]
+   ;; [[:get "/main/conversations/:id.:format"]  #'conversation/show]
+   ;; [[:get "/main/conversations/:id"]  #'conversation/show]
+   ;; [[:get "/model/conversations/:id"] #'conversation/show]
    ])
 
 (defn pages

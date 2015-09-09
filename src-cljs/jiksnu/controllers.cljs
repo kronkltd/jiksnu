@@ -219,6 +219,20 @@
                 (! $scope.loaded true)))))))
   (.init $scope (.-_id $stateParams)))
 
+(def.controller jiksnu.ShowConversationController
+  [$scope $http $stateParams]
+  (! $scope.loaded false)
+  (! $scope.init
+     (fn [id]
+       (let [url (str "/model/conversations/" id)]
+         (-> $http
+             (.get url)
+             (.success
+              (fn [data]
+                (! $scope.conversation data)
+                (! $scope.loaded true)))))))
+  (.init $scope (.-_id $stateParams)))
+
 (def.controller jiksnu.ShowGroupController
   [$scope $http $stateParams]
   (! $scope.loaded false)
