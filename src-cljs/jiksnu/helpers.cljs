@@ -53,10 +53,10 @@
      {:title "Resources"            :state "indexResources"}
      {:title "Streams"              :state "indexStreams"}
 ]}
-   {:label "Settings"
+   #_{:label "Settings"
     :items
     [{:title "Settings"           :state "settingsPage"}]}
-   {:label "Admin"
+   #_{:label "Admin"
     :items
     [{:title "Activities"         :state "adminActivities"}
      ;; {:title "Auth"               :state "adminAuthentication"}

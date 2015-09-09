@@ -73,6 +73,7 @@
   :mixins [subpage-resource]
   :target get-conversation
   :target-model "conversation"
+  :subpage "activities"
   :available-formats [:json]
   :available-media-types ["application/json"]
   :presenter (partial into {})

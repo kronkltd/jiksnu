@@ -169,7 +169,7 @@
                                  (actions/get-model
                                   target-model
                                   (:_id (:route-params (:request ctx)))))]
-                 {:data (actions/get-sub-page item subpage)})))))
+                 {:data (log/spy :info (actions/get-sub-page item subpage))})))))
 
 (defn angular-resource
   [r]
