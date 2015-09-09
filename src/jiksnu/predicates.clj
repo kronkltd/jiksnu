@@ -39,7 +39,10 @@
           By default, commands are dispatched by name."}
   *sub-page-predicates*
   (ref [#'item-class-matches
-        #'name-path-matches?]))
+        #'pred/name-matches?
+
+        ;; #'name-path-matches?
+        ]))
 
 (defonce
   ^{:dynamic true}

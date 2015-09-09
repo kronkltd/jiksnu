@@ -81,8 +81,8 @@
                  :item item
                  :args args}
         route-handler (resolve-routes [@pred/*sub-page-predicates*]
-                                      @pred/*sub-page-matchers*)]
-    (or (route-handler request)
+                                      (log/spy :info @pred/*sub-page-matchers*))]
+    (or (route-handler (log/spy :info request))
         (throw+ {:action "error"
                  :page page-name
                  :item item
