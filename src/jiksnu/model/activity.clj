@@ -33,8 +33,8 @@
    (type-of :public                Boolean)
 
    (type-of :author                String)
-   (type-of :update-source         ObjectId)
-   (type-of :conversation          ObjectId)
+   ;; (type-of :update-source         ObjectId)
+   ;; (type-of :conversation          ObjectId)
 
    ;; (presence-of :created)
    (type-of :created               DateTime)

@@ -202,12 +202,14 @@
   {:_id (fseq :uri)})
 
 (defrecordfactory :activity model/map->Activity
-  {:title (fseq :title)
+  {
+   :title (fseq :title)
    :content (fseq :content)
-   :published (time/now)
-   :url (fseq :uri)
+   ;; :published (time/now)
+   ;; :url (fseq :uri)
    :author #'user-id
-   :verb "post"})
+   ;; :verb "post"
+   })
 
 (defrecordfactory :client model/map->Client
   {:_id (fseq :word)}

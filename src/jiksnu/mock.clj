@@ -257,8 +257,11 @@
 
 (defn that-user-posts-activity
   []
-  (there-is-an-activity {:modifier "public"
-                         :user (get-that :user)}))
+  (let [user (get-that :user)
+        params (factory :activity {:author (:_id user)})]
+    (actions.activity/post params)
+    #_(there-is-an-activity {:modifier "public"
+                           :user user})))
 
 (defn user-has-a-stream
   [& options]

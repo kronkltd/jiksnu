@@ -118,8 +118,7 @@
 (defn set-actor
   [activity]
   ;; TODO: Should we be allowing an author to be passed in?
-  (if-let [author (or (:author activity)
-                      (session/current-user-id))]
+  (if-let [author (or (:author activity) (session/current-user-id))]
     (assoc activity :author author)))
 
 ;; TODO: This operation should be performed on local posts. Remote
