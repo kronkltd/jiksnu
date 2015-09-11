@@ -1,4 +1,4 @@
-[:div {:ng-if "app.user"}
+[:div {:ng-show "app.user"}
  [:form  {:ng-submit "submit()" :name "activityForm"}
   [:input {:type "hidden" :ng-model "source"}]
   [:div {:collapse "form.shown"}

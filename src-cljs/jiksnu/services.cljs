@@ -15,14 +15,11 @@
    })
 
 (def subpage-mappings
-  {"following" (fn [parent]
-                 (str "/model/users/" (.-_id parent) "/following"))
-   "followers" (fn [parent]
-                 (str "/model/users/" (.-_id parent) "/followers"))
-   "groups" (fn [parent]
-              (str "/model/users/" (.-_id parent) "/groups"))
-   "streams" (fn [parent]
-               (str "/model/users/" (.-_id parent) "/streams"))})
+  {"activities" (fn [parent] (str "/model/conversations/" (.-_id parent) "/activities"))
+   "following"  (fn [parent] (str "/model/users/" (.-_id parent) "/following"))
+   "followers"  (fn [parent] (str "/model/users/" (.-_id parent) "/followers"))
+   "groups"     (fn [parent] (str "/model/users/" (.-_id parent) "/groups"))
+   "streams"    (fn [parent] (str "/model/users/" (.-_id parent) "/streams"))})
 
 (def.service jiksnu.pageService
   [$q $http]
@@ -49,7 +46,7 @@
          (let [d (.defer $q)]
            (if-let [mapping-fn (get subpage-mappings page-name)]
              (let [url (mapping-fn parent)]
-               (.log js/console "url" url)
+               (.log js/console "url" url parent)
                (-> $http
                    (.get url)
                    (.success #(.resolve d %))

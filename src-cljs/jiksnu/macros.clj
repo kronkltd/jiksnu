@@ -3,9 +3,9 @@
 )
 
 (defmacro page-controller
-  [klass-name collection-name]
+  [klass-name collection-name subpages]
   (let [controller-sym (symbol (str "jiksnu.Index" klass-name "Controller"))]
     (list 'def.controller controller-sym
-       ['$scope 'pageService]
-       (list 'init-page '$scope 'pageService collection-name)
-       (list '.init '$scope))))
+          ['$scope '$rootScope 'pageService 'subpageService]
+          (list 'init-page '$scope '$rootScope 'pageService 'subpageService collection-name subpages)
+          (list '.init '$scope))))

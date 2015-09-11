@@ -9,8 +9,21 @@
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
 
+(defn fetch-sub-page
+  [item subpageService subpage]
+  (.log js/console "Fetching subpage:" item subpage)
+  (-> subpageService
+      (.fetch item subpage)
+      (.then (fn [response] (aset item subpage (? response.body))))))
+
 (defn init-page
-  [$scope pageService page-type]
+  [$scope $rootScope pageService subpageService page-type subpages]
+  (.$on $rootScope "updateCollection"
+       (fn []
+         (.init $scope)
+         )
+       )
+
   (! $scope.loaded false)
   (! $scope.init
      (fn []
@@ -18,7 +31,15 @@
            (.fetch page-type)
            (.then (fn [page]
                     (! $scope.page page)
-                    (! $scope.loaded true)))))))
+                    (! $scope.loaded true)
+                    (doall (map
+                      (fn [item]
+                        (doall (map (partial fetch-sub-page item subpageService)
+                                    subpages))
+                        )
+                      (?
+                       page.items)))
+                    ))))))
 
 (def.controller jiksnu.AdminActivitiesController
   [$scope $http]
@@ -112,15 +133,15 @@
 
 (def.controller jiksnu.LogoutController [])
 
-(page-controller Activities    "activities")
-(page-controller Clients       "clients")
-(page-controller Conversations "conversations")
-(page-controller Domains       "domains")
-(page-controller FeedSources   "feed-sources")
-(page-controller Groups        "groups")
-(page-controller Resources     "resources")
-(page-controller Streams       "streams")
-(page-controller Users         "users")
+(page-controller Activities    "activities" [])
+(page-controller Clients       "clients" [])
+(page-controller Conversations "conversations" ["activities"])
+(page-controller Domains       "domains" [])
+(page-controller FeedSources   "feed-sources" [])
+(page-controller Groups        "groups" [])
+(page-controller Resources     "resources" [])
+(page-controller Streams       "streams" [])
+(page-controller Users         "users" [])
 
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
@@ -140,7 +161,7 @@
   (.fetchStatus app))
 
 (def.controller jiksnu.NewPostController
-  [$scope $http $rootScope geolocation app]
+  [$scope $http $rootScope geolocation app pageService]
 
   (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
 
@@ -230,7 +251,15 @@
          (let [d (.find Conversations id)]
            (.then d (fn [conversation]
                       (.log js/console conversation)
-                      (.log js/console (.getActivities conversation))))
+                      (.then (.getActivities conversation) (fn [response]
+                                                             (.log js/console "Activities" response)
+                                                             (! $scope.activities
+                                                                (? response.body)
+                                                                )
+                                                             ))
+
+                      ))
+
 
            d)
 

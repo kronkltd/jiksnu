@@ -1,6 +1,12 @@
 [:div
- [:p [:a {:ui-sref "showConversation(conversation)"} "{{conversation._id}}"]]
-  [:div {:ng-if "conversation.parent"}
+ #_[:p [:a {:ui-sref "showConversation(conversation)"} "{{conversation._id}}"]]
+ [:div
+  [:div {:ng-repeat "activity in activities.items"}
+   [:show-activity {:data-id "{{activity}}"}]
+   ]
+  ]
+
+ #_[:div {:ng-if "conversation.parent"}
    [:show-activity {:data-id "{{conversation.parent}}"}]
    [:ul.comments.clearfix
     [:li.comment {:ng-repeat "comment in conversation.comments"}
@@ -10,7 +16,7 @@
       [:link-to {:data-id "{{comment.actor.id}}" :data-model "User"}]]
      [:span.comment-content
       "{{comment.content}}"]]]]
-  [:div {:ng-if "!conversation.parent"}
+  #_[:div {:ng-if "!conversation.parent"}
    [:p.error "Parent Activity has not been set"]
    [:code [:pre "{{conversation|json}}"]]
    ]
