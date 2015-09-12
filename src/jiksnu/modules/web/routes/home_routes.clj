@@ -16,21 +16,22 @@
   :summary "Root")
 
 (defresource root home
-  :url "/"
-  :name "Home"
-  :summary "home page"
-  :mixins [angular-resource]
-  :doc {:get {:nickname "home-page"
-              :summary "Home Page"}})
+  :name        "Home"
+  :url         "/"
+  :summary     "home page"
+  :description "The base page. Shows new public activities"
+  :mixins      [angular-resource]
+  :doc         {:get {:nickname "home-page"
+                      :summary "Home Page"}})
 
 (defresource root status
-  :url "/status"
-  :name "Status"
-  :summary "Site Status"
+  :name        "Status"
+  :url         "/status"
+  :summary     "Site Status"
   :description "Contains base data used to initialize the front-end application"
-  :mixins [item-resource]
-  :exists? (fn [ctx]
-             {:data (site/status (:request ctx))}))
+  :mixins      [item-resource]
+  :exists?     (fn [ctx]
+                 {:data (site/status (:request ctx))}))
 
 (defresource root resources
   :name "Resources"
@@ -38,6 +39,16 @@
   :mixins [item-resource]
   :available-media-types ["text/html"]
   :exists? (fn [ctx] {:data (str @r/resources )}))
+
+(defresource root home
+  :url "/main/settings"
+  :name "Settings Page"
+  :summary "settings page"
+  :mixins [angular-resource]
+  :doc {:get {:nickname "settings-page"
+              :summary "Settings Page"}})
+
+
 
 ;; (defresource root register
 ;;   :name "Register"
