@@ -18,7 +18,7 @@
                            "/"))
 
 
-  (.log js/console (.-defaults DSProvider))
+  ;; (.log js/console (.-defaults DSProvider))
   (.extend js/angular (.-defaults DSProvider) (obj
                                                :idAttribute "_id"
                                                :basePath "/model"

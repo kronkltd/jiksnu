@@ -46,7 +46,7 @@
          (let [d (.defer $q)]
            (if-let [mapping-fn (get subpage-mappings page-name)]
              (let [url (mapping-fn parent)]
-               (.log js/console "url" url parent)
+               ;; (.log js/console "url" url parent)
                (-> $http
                    (.get url)
                    (.success #(.resolve d %))

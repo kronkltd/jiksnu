@@ -1,9 +1,8 @@
 [:div
  [:h2 "Streams"]
- [:form
+ [:form {:ng-submit "addStream()"}
   [:input {:ng-bind "name"}]
-  [:input.btn.btm-default {:type "submit"}]
-  ]
+  [:input.btn.btm-default {:type "submit"}]]
  [:ul
   [:li {:ng-repeat "stream in user.streams.items"}
    [:code [:pre  "{{stream | json}}"]]]]]

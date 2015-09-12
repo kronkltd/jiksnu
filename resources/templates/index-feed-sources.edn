@@ -2,9 +2,12 @@
  [:h1 "Index Feed Sources"]
  [:table.table
   [:thead
-
-   ]
+   [:tr
+    [:th "Topic"]
+    [:th "Status"]
+    [:th "Local"]]]
   [:tbody
    [:tr {:ng-repeat "item in page.items"}
-    [:td
-     "{{item | json}}"]]]]]
+    [:td "{{item.topic}}"]
+    [:td "{{item.status}}"]
+    [:td "{{item.local}}"]]]]]

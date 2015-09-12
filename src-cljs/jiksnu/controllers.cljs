@@ -101,7 +101,7 @@
                 (-> user
                     (.getFollowing)
                     (.then (fn [page]
-                             (.log js/console "following resolved" page)
+                             ;; (.log js/console "following resolved" page)
                              (! $scope.page page)))))))))))
 
 (def.controller jiksnu.GroupsListController
@@ -250,31 +250,23 @@
          (.bindOne Conversations id $scope "conversation")
          (let [d (.find Conversations id)]
            (.then d (fn [conversation]
-                      (.log js/console conversation)
-                      (.then (.getActivities conversation) (fn [response]
-                                                             (.log js/console "Activities" response)
-                                                             (! $scope.activities
-                                                                (? response.body)
-                                                                )
-                                                             ))
-
-                      ))
-
-
-           d)
-
-         )))
+                      (.log js/console )
+                      (-> conversation
+                          .getActivities
+                          (.then  (fn [response]
+                                    (.log js/console "Activities" response)
+                                    (! $scope.activities
+                                       (? response.body)))))))
+           d))))
   (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowGroupController
   [$scope $http $stateParams]
   (! $scope.loaded false)
   (! $scope.addAdmin (fn [& opts]
-                      (.log js/console opts)
-                      ))
+                      (.log js/console opts)))
   (! $scope.addMember (fn [& opts]
-                      (.log js/console opts)
-                      ))
+                      (.log js/console opts)))
   (! $scope.init
      (fn [id]
        (let [url (str "/model/groups/" id)]
@@ -302,21 +294,18 @@
     (.init $scope id)))
 
 (def.controller jiksnu.StreamListController
-  [$scope Users]
-  (! $scope.foo "Bar")
-  (! $scope.items (arr "foo" "bar"))
-
+  [$scope Users subpageService]
+  ;; (! $scope.foo "Bar")
+  ;; (! $scope.items (arr "foo" "bar"))
   (! $scope.init
      (fn [id]
        (if (and id (not= id ""))
          (-> Users
              (.find id)
              (.then (fn [user]
-                      (-> user
-                          (.getStreams)
+                      (-> subpageService
+                          (.fetch  user "streams")
                           (.then (fn [page]
-                                   (! $scope.page page))))))))))
-
-
-)
+                                   ;; (.log js/console page)
+                                   (aset user "streams" page)))))))))))
 

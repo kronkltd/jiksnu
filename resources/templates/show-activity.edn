@@ -1,5 +1,4 @@
 [:article.hentry.media #_{:ng-show "loaded"}
- #_(actions-section activity)
  [:div.media-left
   [:display-avatar {:data-id "{{activity.author}}"}]]
  [:div.media-body
@@ -13,7 +12,7 @@
     [:link-to {:data-id "{{user.id}}"}]]]
   [:div.entry-content
    [:div {:btf-markdown "activity.content"}]]
-  [:footer
+  [:div
    [:span.posted
     "{{activity.verb}}ed a {{activity.object.type}} "
     [:span {:ng-if "!activity.public"}
@@ -30,13 +29,14 @@
      " "]
     [:span {:ng-if "activity.geo.latitude && activity.geo.longitude"}
      "near "
-     [:a.geo-link {:href "#"}
-      "{{activity.geo.latitude}}, {{activity.geo.longitude}}"]
+     ;; [:a.geo-link {:href "#"}
+      "({{activity.geo.latitude | number:2}}, {{activity.geo.longitude | number:2}})"
+      ;; ]
      " "]
-    [:span {:ng-if "!activity.localId"}
+    [:span {:ng-if "!activity.local"}
      "via a "
      [:a {:href "{{activity.service}}"}
       "foreign service"]
      " "]
-    [:a {:href "/main/conversations/{{activity.conversation}}"}
+    #_[:a {:href "/main/conversations/{{activity.conversation}}"}
      "in context"]]]]]
