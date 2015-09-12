@@ -1,6 +1,10 @@
 [:div
- [:h2 "Foo {{foo}}"]
+ [:h2 "Streams"]
+ [:form
+  [:input {:ng-bind "name"}]
+  [:input.btn.btm-default {:type "submit"}]
+  ]
  [:ul
-  [:li {:ng-repeat "stream in items"}
-   "{{stream}}"]]]
+  [:li {:ng-repeat "stream in user.streams.items"}
+   [:code [:pre  "{{stream | json}}"]]]]]
 

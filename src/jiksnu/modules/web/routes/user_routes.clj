@@ -191,10 +191,12 @@
                (with-context [:http :json]
                  (let [page (:body rsp)
                        items (:items page)]
-                   (-> (if (seq items)
-                         (-> (index-section items page))
-                         {})
-                       (assoc :displayName "Streams"))))))
+                   #_(-> (log/spy :info (if (seq items)
+                          (-> (index-section items page))
+                          {}))
+                       (assoc :displayName "Streams"))
+                   page
+                   ))))
 
 ;; =============================================================================
 
