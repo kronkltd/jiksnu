@@ -182,13 +182,13 @@
      [:nav-bar]
      ;; [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
      [:div.row
-      [:div.col-sm-2 {:left-column ""}]
+      [:left-column.col-sm-2]
       [:div.col-sm-8
-       [:div.row {:add-post-form ""}]
+       [:add-post-form.row]
        [:div.row
         [:h1 {:data-bind "text: title"}]
         [:div {:ui-view ""}]]]
-      [:div.col-sm-2 {:right-column ""}]]]
+      [:right-column.col-sm-2]]]
     [:footer.row.page-footer
      [:p "Copyright © 2011 KRONK Ltd."]
      [:p "Powered by "

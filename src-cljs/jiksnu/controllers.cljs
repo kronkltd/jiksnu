@@ -289,23 +289,43 @@
        (fn [id]
          (.log js/console "Showing user: " id)
          (when (and id (not= id ""))
+           (! $scope.loaded false)
            (.bindOne Users id $scope "user")
-           (.find Users id))))
+           (-> (.find Users id)
+               (.then (fn [user] (! $scope.loaded true)))))))
     (.init $scope id)))
+
+(defn add-stream
+  [user stream-name]
+  (.log js/console "Adding Stream: " stream-name))
 
 (def.controller jiksnu.StreamListController
   [$scope Users subpageService]
-  ;; (! $scope.foo "Bar")
-  ;; (! $scope.items (arr "foo" "bar"))
+  (! $scope.formShown false)
+  (! $scope.addStream
+     (fn []
+       (.log js/console "Adding Stream" $scope)
+       (add-stream (? $scope.user) (? $scope.stream.name))))
+
+  (! $scope.fetchStreams
+     (fn [user]
+       (! $scope.stream.userId (.-_id user))
+       (-> subpageService
+           (.fetch user "streams")
+           (.then (fn [page]
+                    ;; (.log js/console page)
+                    (aset user "streams" page))))))
+
   (! $scope.init
      (fn [id]
-       (if (and id (not= id ""))
-         (-> Users
-             (.find id)
-             (.then (fn [user]
-                      (-> subpageService
-                          (.fetch  user "streams")
-                          (.then (fn [page]
-                                   ;; (.log js/console page)
-                                   (aset user "streams" page)))))))))))
+       (.log js/console "Init Stream list" id)
+       (when (and id (not= id ""))
+         (.then (.find Users id)
+                (fn [user]
+                  (.fetchStreams $scope user))))))
 
+  (if-let [user (.-user $scope)]
+    (.fetchStreams $scope user)
+    (if-let [user-id (.-userId $scope)]
+      (.init $scope user-id)
+      (.error js/console "Couldn't determine user id"))))

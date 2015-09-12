@@ -79,21 +79,22 @@
                          (actions.stream/handle-closed request channel status))))))
 
 (def app
-    (-> (routes
-         async-handler
-         (route/resources "/")
-         (GET "/templates/*" [] #'helpers/serve-template)
-         (-> #'site
-             (friend/authenticate auth-config)
-             (handler/site {:session {:store (ms/session-store @_db "session")}})))
-        wrap-file-info
-        wrap-content-type
-        wrap-not-modified))
+  (-> (routes
+       async-handler
+       (route/resources "/")
+       (GET "/templates/*" [] #'helpers/serve-template)
+       (-> #'site
+           (friend/authenticate auth-config)
+           (handler/site {:session {:store (ms/session-store @_db "session")}})))
+      wrap-file-info
+      wrap-content-type
+      wrap-not-modified))
 
 (definitializer
   (load-routes)
   (set-site)
-  (add-watch r/resources :site (fn [k r os ns]
-                                 (log/info "refreshing site")
-                                 (set-site)))
-  )
+  (add-watch
+   r/resources
+   :site (fn [k r os ns]
+           (log/info "refreshing site")
+           (set-site))))

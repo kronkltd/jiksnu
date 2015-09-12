@@ -103,12 +103,8 @@
   []
   (obj
    :templateUrl "/templates/stream-list"
-   :scope true
-   :link (fn [$scope element attrs]
-           (.init $scope (.-id attrs))
-           (.$watch $scope
-                    (fn [] (.-id attrs))
-                    (fn [nv] (.init $scope nv))))
+   :restrict "E"
+   :scope (obj :userId "@" :user "=")
    :controller "StreamListController" ))
 
 (def.directive jiksnu.streamsWidget []

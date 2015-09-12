@@ -100,6 +100,7 @@
    ["showConversation" "/main/conversations/:_id" "ShowConversation"   :show-conversation]
    ["showDomain"       "/main/domains/:_id"       "ShowDomain"         :show-domain]
    ["showGroup"        "/main/groups/:_id"        "ShowGroup"          :show-group]
+   ["showStream"       "/main/streams/:_id"       "ShowStream"         :show-stream]
    ["showUser"         "/main/users/:_id"         "ShowUser"           :show-user]
    ]
   )

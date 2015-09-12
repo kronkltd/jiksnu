@@ -1,9 +1,13 @@
 [:div
- [:h2 "Streams"]
- [:form {:ng-submit "addStream()"}
-  [:input {:ng-bind "name"}]
-  [:input.btn.btm-default {:type "submit"}]]
+ [:h3 "Streams" [:i.btn {:ng-click "formShown = !formShown"}
+                 [:span {:ng-show "formShown"} "-"]
+                 [:span {:ng-hide "formShown"} "+"]]]
+ [:form {:ng-submit "addStream()" :name "addStreamForm" :ng-show "formShown"}
+  ;; [:code [:pre "{{stream | json}}"]]
+  [:input {:ng-model "stream.userId" :name "user" :type "hidden"}]
+  [:input {:ng-model "stream.name" :name "name" :type "text"}]
+  [:input.btn.btn-default {:type "submit"}]]
  [:ul
-  [:li {:ng-repeat "stream in user.streams.items"}
-   [:code [:pre  "{{stream | json}}"]]]]]
+  [:li {:ng-repeat "id in user.streams.items"}
+   [:show-stream-minimal {:stream-id "id"}]]]]
 
