@@ -49,7 +49,7 @@
    :scope (obj :id "@" :item "=")
    :controller "ListFollowersController"))
 
-(def.directive jiksnu.listFollowingList
+(def.directive jiksnu.listFollowing
   []
   (obj
    :templateUrl "/templates/list-following"
@@ -57,7 +57,7 @@
    :scope (obj :id "@" :item "=")
    :controller "ListFollowingController"))
 
-(def.directive jiksnu.listGroupsList
+(def.directive jiksnu.listGroups
   []
   (obj
    :templateUrl "/templates/list-groups"
