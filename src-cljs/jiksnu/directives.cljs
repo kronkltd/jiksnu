@@ -99,6 +99,18 @@
            (let [id (.-id attrs)]
              (.init $scope id)))))
 
+(def.directive jiksnu.showStreamMinimal
+  []
+  (obj
+   :templateUrl "/templates/show-stream-minimal"
+   :scope (obj :streamId "@" :stream "=")
+   :controller "ShowStreamMinimalController"
+   ;; :link (fn [$scope element attrs]
+   ;;         (let [id (.-id attrs)]
+   ;;           (.init $scope id)))
+
+   ))
+
 (def.directive jiksnu.streamList
   []
   (obj

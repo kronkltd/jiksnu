@@ -278,6 +278,22 @@
                 (! $scope.loaded true)))))))
   (.init $scope (.-_id $stateParams)))
 
+(def.controller jiksnu.ShowStreamMinimalController
+  [$scope Streams]
+  (! $scope.loaded false)
+  (! $scope.init (fn [stream]
+                   (.log js/console "init minimal show stream" stream)
+                   (! $scope.loaded true)))
+
+  (if-let [stream (? $scope.stream)]
+    (.init $scope stream)
+    (if-let [id (? $scope.streamId)]
+      (-> (.find Streams id)
+          (.then (fn [stream]
+                   (! $scope.stream stream)
+                   (.init $scope stream))))
+      (throw "No stream or stream id provided"))))
+
 (def.controller jiksnu.ShowUserController
   [$scope $http $stateParams Users]
   (let [username (.-username $stateParams)

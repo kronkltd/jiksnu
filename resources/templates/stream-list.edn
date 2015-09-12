@@ -9,5 +9,5 @@
   [:input.btn.btn-default {:type "submit"}]]
  [:ul
   [:li {:ng-repeat "id in user.streams.items"}
-   [:show-stream-minimal {:stream-id "id"}]]]]
+   [:show-stream-minimal {:stream-id "{{id}}"}]]]]
 

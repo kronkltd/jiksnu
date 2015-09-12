@@ -52,9 +52,9 @@
   :available-media-types ["application/json"]
   :presenter (partial into {})
   :exists? (fn [ctx]
-             #_(let [id (-> ctx :request :route-params :_id)
-                   activity (model.stream/fetch-by-id id)]
-               {:data activity}))
+             (let [id (-> ctx :request :route-params :_id)
+                   item (model.stream/fetch-by-id id)]
+               {:data item}))
   ;; :delete! #'actions.stream/delete
   ;; :put!    #'actions.stream/update-record
   )
