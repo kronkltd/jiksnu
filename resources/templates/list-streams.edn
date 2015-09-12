@@ -8,6 +8,6 @@
   [:input {:ng-model "stream.name" :name "name" :type "text"}]
   [:input.btn.btn-default {:type "submit"}]]
  [:ul
-  [:li {:ng-repeat "id in user.streams.items"}
+  [:li {:ng-repeat "id in item.streams.items"}
    [:show-stream-minimal {:stream-id "{{id}}"}]]]]
 

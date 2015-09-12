@@ -16,13 +16,25 @@
       (.fetch item subpage)
       (.then (fn [response] (aset item subpage (? response.body))))))
 
+(defn init-subpage
+  [$scope subpageService collection subpage]
+  (! $scope.init
+     (fn [item subpage]
+       (.log js/console "init subpage" subpage item)
+       (-> (.fetch subpageService item subpage)
+           (.then (fn [page] (aset item subpage page))))))
+  (if-let [item (.-item $scope)]
+    (.init $scope item subpage)
+    (if-let [id (.-id $scope)]
+      (-> (.find collection id)
+          (.fhen (fn [item] (.init $scope item subpage))))
+      (.error js/console "Couldn't determine item id"))))
+
 (defn init-page
   [$scope $rootScope pageService subpageService page-type subpages]
   (.$on $rootScope "updateCollection"
        (fn []
-         (.init $scope)
-         )
-       )
+         (.init $scope)))
 
   (! $scope.loaded false)
   (! $scope.init
@@ -35,18 +47,20 @@
                     (doall (map
                       (fn [item]
                         (doall (map (partial fetch-sub-page item subpageService)
-                                    subpages))
-                        )
-                      (?
-                       page.items)))
-                    ))))))
+                                    subpages)))
+                      (? page.items)))))))))
+
+
+(defn add-stream
+  [$scope]
+  (let [user (? $scope.user)
+        stream-name (? $scope.stream.name)]
+    (.log js/console "Adding Stream: " stream-name)))
 
 (def.controller jiksnu.AdminActivitiesController
   [$scope $http]
   (! $scope.init (helpers/fetch-page $scope $http "/model/activities.json"))
-  (.init $scope)
-
-)
+  (.init $scope))
 
 (def.controller jiksnu.AdminConversationsController
   [$scope $http]
@@ -54,7 +68,6 @@
   (.init $scope))
 
 (def.controller jiksnu.AdminGroupsController [])
-
 
 (def.controller jiksnu.AdminUsersController
   [$scope $http]
@@ -73,56 +86,32 @@
          (.bindOne Users id $scope "user")
          (.find Users id)))))
 
-(def.controller jiksnu.FollowersListController
-  [$scope subpageService Users]
-
-  (! $scope.init
-     (fn [id]
-       (if (and id (not= id ""))
-         (-> Users
-             (.find id)
-             (.then
-              (fn [user]
-                (-> user
-                    (.getFollowers)
-                    (.then (fn [page]
-                             (! $scope.page page)))))))))))
-
-(def.controller jiksnu.FollowingListController
-  [$scope $http subpageService Users]
-
-  (! $scope.init
-     (fn [id]
-       (if (and id (not= id ""))
-         (-> Users
-             (.find id)
-             (.then
-              (fn [user]
-                (-> user
-                    (.getFollowing)
-                    (.then (fn [page]
-                             ;; (.log js/console "following resolved" page)
-                             (! $scope.page page)))))))))))
-
-(def.controller jiksnu.GroupsListController
-  [$scope subpageService Users]
-
-  (! $scope.init
-     (fn [id]
-       (if (and id (not= id ""))
-         (-> Users
-             (.find id)
-             (.then (fn [user]
-                      (-> user
-                          (.getGroups)
-                          (.then (fn [page]
-                                   (! $scope.page page))))))))))
-)
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
   (! $scope.groups (clj->js helpers/nav-info)))
 
+
+(def.controller jiksnu.ListFollowersController
+  [$scope subpageService Users]
+  (! $scope.formShown false)
+  (init-subpage $scope subpageService Users "followers"))
+
+(def.controller jiksnu.ListFollowingController
+  [$scope subpageService Users]
+  (! $scope.formShown false)
+  (init-subpage $scope subpageService Users "following"))
+
+(def.controller jiksnu.ListGroupsController
+  [$scope subpageService Users]
+  (! $scope.formShown false)
+  (init-subpage $scope subpageService Users "groups"))
+
+(def.controller jiksnu.ListStreamsController
+  [$scope subpageService Users]
+  (! $scope.formShown false)
+  (! $scope.addStream (partial add-stream $scope))
+  (init-subpage $scope subpageService Users "streams"))
 
 (def.controller jiksnu.LoginPageController
   [$scope app]
@@ -310,38 +299,3 @@
            (-> (.find Users id)
                (.then (fn [user] (! $scope.loaded true)))))))
     (.init $scope id)))
-
-(defn add-stream
-  [user stream-name]
-  (.log js/console "Adding Stream: " stream-name))
-
-(def.controller jiksnu.StreamListController
-  [$scope Users subpageService]
-  (! $scope.formShown false)
-  (! $scope.addStream
-     (fn []
-       (.log js/console "Adding Stream" $scope)
-       (add-stream (? $scope.user) (? $scope.stream.name))))
-
-  (! $scope.fetchStreams
-     (fn [user]
-       (! $scope.stream.userId (.-_id user))
-       (-> subpageService
-           (.fetch user "streams")
-           (.then (fn [page]
-                    ;; (.log js/console page)
-                    (aset user "streams" page))))))
-
-  (! $scope.init
-     (fn [id]
-       (.log js/console "Init Stream list" id)
-       (when (and id (not= id ""))
-         (.then (.find Users id)
-                (fn [user]
-                  (.fetchStreams $scope user))))))
-
-  (if-let [user (.-user $scope)]
-    (.fetchStreams $scope user)
-    (if-let [user-id (.-userId $scope)]
-      (.init $scope user-id)
-      (.error js/console "Couldn't determine user id"))))

@@ -1,7 +1,7 @@
 [:div
  [:h3 "Following"]
  [:ul
-  [:li {:ng-repeat "follow in page.items"}
+  [:li {:ng-repeat "follow in item.following.items"}
    [:display-avatar {:data-id "{{follow.to}}"}]
    [:show-user {:data-id "{{follow.to}}"}]
    #_[:a {:ui-sref "showUser({_id: follow.to})"}

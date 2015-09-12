@@ -29,42 +29,6 @@
    :scope true
    :controller "DisplayAvatarController"))
 
-(def.directive jiksnu.followersList
-  []
-  (obj
-   :templateUrl "/templates/followers-list"
-   :scope true
-   :link (fn [$scope element attrs]
-           (.init $scope (.-id attrs))
-           (.$watch $scope
-                    (fn [] (.-id attrs))
-                    (fn [nv] (.init $scope nv))))
-   :controller "FollowersListController"))
-
-(def.directive jiksnu.followingList
-  []
-  (obj
-   :templateUrl "/templates/following-list"
-   :scope true
-   :link (fn [$scope element attrs]
-           (.init $scope (.-id attrs))
-           (.$watch $scope
-                    #(.-id attrs)
-                    #(.init $scope %)))
-   :controller "FollowingListController"))
-
-(def.directive jiksnu.groupsList
-  []
-  (obj
-   :templateUrl "/templates/groups-list"
-   :scope true
-   :link (fn [$scope element attrs]
-           (.init $scope (.-id attrs))
-           (.$watch $scope
-                    #(.-id attrs)
-                    #(.init $scope %)))
-   :controller "GroupsListController"))
-
 (def.directive jiksnu.groupsWidget
   []
   (obj
@@ -76,6 +40,38 @@
    :templateUrl "/templates/left-column-section"
    :scope true
    :controller "LeftColumnController"))
+
+(def.directive jiksnu.listFollowers
+  []
+  (obj
+   :templateUrl "/templates/list-followers"
+   :restrict "E"
+   :scope (obj :id "@" :item "=")
+   :controller "ListFollowersController"))
+
+(def.directive jiksnu.listFollowingList
+  []
+  (obj
+   :templateUrl "/templates/list-following"
+   :restrict "E"
+   :scope (obj :id "@" :item "=")
+   :controller "ListFollowingController"))
+
+(def.directive jiksnu.listGroupsList
+  []
+  (obj
+   :templateUrl "/templates/list-groups"
+   :restrict "E"
+   :scope (obj :id "@" :item "=")
+   :controller "ListGroupsController"))
+
+(def.directive jiksnu.listStreams
+  []
+  (obj
+   :templateUrl "/templates/list-streams"
+   :restrict "E"
+   :scope (obj :id "@" :item "=")
+   :controller "ListStreamsController" ))
 
 (def.directive jiksnu.navBar []
   (obj
@@ -104,20 +100,7 @@
   (obj
    :templateUrl "/templates/show-stream-minimal"
    :scope (obj :streamId "@" :stream "=")
-   :controller "ShowStreamMinimalController"
-   ;; :link (fn [$scope element attrs]
-   ;;         (let [id (.-id attrs)]
-   ;;           (.init $scope id)))
-
-   ))
-
-(def.directive jiksnu.streamList
-  []
-  (obj
-   :templateUrl "/templates/stream-list"
-   :restrict "E"
-   :scope (obj :userId "@" :user "=")
-   :controller "StreamListController" ))
+   :controller "ShowStreamMinimalController"))
 
 (def.directive jiksnu.streamsWidget []
   (obj))
