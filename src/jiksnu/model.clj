@@ -6,6 +6,7 @@
 
 (defrecord AccessToken             [])
 (defrecord Activity                [])
+(defrecord ActivityObject          [])
 (defrecord AuthenticationMechanism [])
 (defrecord Client                  [])
 (defrecord Conversation            [])
@@ -29,6 +30,7 @@
   [
    AccessToken
    Activity
+   ActivityObject
    AuthenticationMechanism
    Client
    Conversation

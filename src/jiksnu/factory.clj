@@ -211,6 +211,16 @@
    ;; :verb "post"
    })
 
+(defrecordfactory :full-activity model/map->Activity
+  {
+   :title (fseq :title)
+   :content (fseq :content)
+   :published (time/now)
+   :url (fseq :uri)
+   :author #'user-id
+   :verb "post"
+   })
+
 (defrecordfactory :client model/map->Client
   {:_id (fseq :word)}
   )

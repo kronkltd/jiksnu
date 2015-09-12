@@ -1,6 +1,7 @@
 (ns jiksnu.actions.activity-actions-test
   (:require [ciste.sections.default :refer [show-section]]
             [clj-factory.core :refer [factory fseq]]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.db :as db]
@@ -11,7 +12,9 @@
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Activity))
+  (:import jiksnu.model.Activity
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))
@@ -27,6 +30,8 @@
             activity (factory :activity {:author        (:_id user)
                                          :conversation  (:_id conversation)
                                          :update-source (:_id feed-source)
+                                         :verb "post"
+                                         :published (time/now)
                                          :local         true})]
         (actions.activity/create activity) => (partial instance? Activity)))))
 
@@ -68,7 +73,22 @@
 (fact "#'actions.activity/post"
   (fact "when the user is not logged in"
     (let [activity (dissoc (factory :activity) :author)]
-      (actions.activity/post activity) => (throws RuntimeException))))
+      (actions.activity/post activity) => (throws RuntimeException)))
+
+  (fact "when there is an authenticated user"
+    (let [user (mock/a-user-exists)
+          params (factory :activity {:author (:_id user)})]
+      (actions.activity/post params) =>
+      (every-checker
+       (partial instance? Activity)
+       (contains {:_id (partial instance? ObjectId)})
+       (contains {:created (partial instance? DateTime)})
+       (contains {:author string?})
+       )
+      )
+    )
+
+  )
 
 (fact "#'actions.activity/show"
   (fact "when the record exists"

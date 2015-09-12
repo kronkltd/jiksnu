@@ -1,5 +1,6 @@
 (ns jiksnu.mock
   (:require [clj-factory.core :refer [factory fseq]]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.client-actions :as actions.client]
@@ -186,7 +187,9 @@
                              {:author (:_id user)
                               :id url
                               :update-source (:_id source)
+                              :verb "post"
                               :conversation (:_id conversation)
+                              :published (time/now)
                               ;; :local true
                               :public (= modifier "public")})))]
     (set-this :activity activity)

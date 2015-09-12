@@ -84,7 +84,7 @@
   (let [links (:links params)
         item (dissoc params :links)
         item (prepare-create item)
-        item (model.activity/create (log/spy :info item))]
+        item (model.activity/create item)]
     (doseq [link links]
       (add-link item link))
     (model.activity/fetch-by-id (:_id item))))

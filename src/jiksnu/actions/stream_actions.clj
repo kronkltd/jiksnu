@@ -83,6 +83,18 @@
                             {:sort-clause {:updated -1}}
                             options)))
 
+(defn add-stream
+  ([user name]
+   (add-stream user name {})
+   )
+  ([user stream-name options]
+   (create {:user (:_id user)
+            :name stream-name
+            })
+
+   )
+  )
+
 (defaction inbox-major
   [user & [options]]
   [user
