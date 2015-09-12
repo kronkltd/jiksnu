@@ -20,7 +20,7 @@
   [$scope subpageService collection subpage]
   (! $scope.init
      (fn [item subpage]
-       (.log js/console "init subpage" subpage item)
+       ;; (.log js/console "init subpage" subpage item)
        (-> (.fetch subpageService item subpage)
            (.then (fn [page] (aset item subpage page))))))
   (if-let [item (.-item $scope)]
@@ -35,7 +35,6 @@
   (.$on $rootScope "updateCollection"
        (fn []
          (.init $scope)))
-
   (! $scope.loaded false)
   (! $scope.init
      (fn []
@@ -86,6 +85,17 @@
          (.bindOne Users id $scope "user")
          (.find Users id)))))
 
+(def.controller jiksnu.FollowButtonController
+  [$scope app Users]
+
+  (! $scope.submit
+     (fn []
+       (.log js/console "Submit button pressed" app)
+       )
+     )
+
+  )
+
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
@@ -95,21 +105,25 @@
 (def.controller jiksnu.ListFollowersController
   [$scope subpageService Users]
   (! $scope.formShown false)
+  (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
   (init-subpage $scope subpageService Users "followers"))
 
 (def.controller jiksnu.ListFollowingController
   [$scope subpageService Users]
   (! $scope.formShown false)
+  (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
   (init-subpage $scope subpageService Users "following"))
 
 (def.controller jiksnu.ListGroupsController
   [$scope subpageService Users]
   (! $scope.formShown false)
+  (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
   (init-subpage $scope subpageService Users "groups"))
 
 (def.controller jiksnu.ListStreamsController
   [$scope subpageService Users]
   (! $scope.formShown false)
+  (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
   (! $scope.addStream (partial add-stream $scope))
   (init-subpage $scope subpageService Users "streams"))
 

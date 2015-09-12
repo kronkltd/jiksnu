@@ -1,0 +1,2 @@
+[:form {:name "followButton" :ng-submit "submit()"}
+ [:input.btn.btn-default {:type "submit" :value "Follow"}]]

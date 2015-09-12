@@ -8,9 +8,9 @@
 (def.directive jiksnu.addPostForm
   []
   (obj
-   :templateUrl "/templates/add-post-form"
+   :controller "NewPostController"
    :scope true
-   :controller "NewPostController"))
+   :templateUrl "/templates/add-post-form"))
 
 (def.directive jiksnu.addStreamForm []
   (obj))
@@ -21,26 +21,33 @@
 (def.directive jiksnu.displayAvatar
   []
   (obj
-   :templateUrl "/templates/display-avatar"
+   :controller "DisplayAvatarController"
    :link (fn [$scope element attrs]
            (.init $scope (.-id attrs))
            (.$watch $scope
                     #(.-id attrs)
                     #(.init $scope %)))
    :scope true
-   :controller "DisplayAvatarController"))
+   :templateUrl "/templates/display-avatar"))
+
+(def.directive jiksnu.followButton
+  []
+  (obj
+   :controller "FollowButtonController"
+   :scope (obj :item "=")
+   :templateUrl "/templates/follow-button"))
 
 (def.directive jiksnu.groupsWidget
   []
   (obj
-   :templateUrl "/templates/groups-widget"
-   :scope true))
+   :scope true
+   :templateUrl "/templates/groups-widget"))
 
 (def.directive jiksnu.leftColumn []
   (obj
-   :templateUrl "/templates/left-column-section"
+   :controller "LeftColumnController"
    :scope true
-   :controller "LeftColumnController"))
+   :templateUrl "/templates/left-column-section"))
 
 (list-directive "Followers" "followers")
 (list-directive "Following" "following")
@@ -49,25 +56,25 @@
 
 (def.directive jiksnu.navBar []
   (obj
-   :templateUrl "/templates/navbar-section"
+   :controller "NavBarController"
    :scope true
-   :controller "NavBarController"))
+   :templateUrl "/templates/navbar-section"))
 
 (def.directive jiksnu.rightColumn []
   (obj
-   :templateUrl "/templates/right-column-section"
+   :controller "RightColumnController"
    :scope true
-   :controller "RightColumnController"))
+   :templateUrl "/templates/right-column-section"))
 
 (def.directive jiksnu.showActivity
   []
   (obj
-   :templateUrl "/templates/show-activity"
-   :scope (obj)
-   :controller controller/jiksnu_ShowActivityController
+   :controller "ShowActivityController"
    :link (fn [$scope element attrs]
            (let [id (.-id attrs)]
-             (.init $scope id)))))
+             (.init $scope id)))
+   :scope (obj)
+   :templateUrl "/templates/show-activity"))
 
 (def.directive jiksnu.showStreamMinimal
   []
@@ -89,6 +96,4 @@
   []
   (obj
    :templateUrl "/templates/subscriptions-widget"
-   :scope true
-   )
-  )
+   :scope true))
