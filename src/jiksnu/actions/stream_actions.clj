@@ -85,15 +85,10 @@
 
 (defn add-stream
   ([user name]
-   (add-stream user name {})
-   )
+   (add-stream user name {}))
   ([user stream-name options]
    (create {:user (:_id user)
-            :name stream-name
-            })
-
-   )
-  )
+            :name stream-name})))
 
 (defaction inbox-major
   [user & [options]]
@@ -102,13 +97,11 @@
 
 (defaction inbox-minor
   [& _]
-  []
-  )
+  [])
 
 (defaction direct-inbox-major
   [& _]
-  []
-  )
+  [])
 
 (defaction direct-inbox-minor
   [& _]

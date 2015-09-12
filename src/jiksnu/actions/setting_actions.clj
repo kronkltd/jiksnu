@@ -8,11 +8,11 @@
 
   )
 
-(describe-config [:site :brought-by :name]
+(describe-config [:site :broughtBy :name]
   String
   "The name of the organization running this service")
 
-(describe-config [:site :brought-by :url]
+(describe-config [:site :broughtBy :url]
   String
   "The url of the organization running this service")
 
@@ -33,7 +33,7 @@
   String
   "The email address of the administrator")
 
-(describe-config [:site :invite-only]
+(describe-config [:site :inviteOnly]
   Boolean
   "Can users invite new users")
 
@@ -64,13 +64,13 @@
     :language (config :site :default :language)
     ;; TODO: email
     :email (config :site :email)
-    :broughtby (config :site :brought-by :name)
-    :broughtbyurl (config :site :brought-by :url)
+    :broughtby (config :site :broughtBy :name)
+    :broughtbyurl (config :site :broughtBy :url)
     :timezone (config :site :default :timezone)
     :closed (config :site :closed)
-    :inviteonly (config :site :invite-only)
+    :inviteonly (config :site :inviteOnly)
     :private (config :site :private)
-    :textlimit (config :site :limit :text)
+    ;; :textlimit (config :site :limit :text)
     :ssl "sometimes"
     :sslserver (config :domain)
     :shorturllength 30
