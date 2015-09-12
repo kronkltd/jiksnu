@@ -2,6 +2,7 @@
   (:require jiksnu.app
             [jiksnu.controllers :as controller])
   (:use-macros [gyr.core :only [def.directive]]
+               [jiksnu.macros :only [list-directive]]
                [purnam.core :only [! ? arr obj]]))
 
 (def.directive jiksnu.addPostForm
@@ -41,37 +42,10 @@
    :scope true
    :controller "LeftColumnController"))
 
-(def.directive jiksnu.listFollowers
-  []
-  (obj
-   :templateUrl "/templates/list-followers"
-   :restrict "E"
-   :scope (obj :id "@" :item "=")
-   :controller "ListFollowersController"))
-
-(def.directive jiksnu.listFollowing
-  []
-  (obj
-   :templateUrl "/templates/list-following"
-   :restrict "E"
-   :scope (obj :id "@" :item "=")
-   :controller "ListFollowingController"))
-
-(def.directive jiksnu.listGroups
-  []
-  (obj
-   :templateUrl "/templates/list-groups"
-   :restrict "E"
-   :scope (obj :id "@" :item "=")
-   :controller "ListGroupsController"))
-
-(def.directive jiksnu.listStreams
-  []
-  (obj
-   :templateUrl "/templates/list-streams"
-   :restrict "E"
-   :scope (obj :id "@" :item "=")
-   :controller "ListStreamsController" ))
+(list-directive "Followers" "followers")
+(list-directive "Following" "following")
+(list-directive "Groups" "groups")
+(list-directive "Streams" "streams")
 
 (def.directive jiksnu.navBar []
   (obj
