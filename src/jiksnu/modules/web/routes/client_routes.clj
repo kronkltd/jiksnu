@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.client-routes
-  (:require [jiksnu.actions.client-actions :as actions.client]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers
@@ -14,12 +15,15 @@
 
 (defresource client-api register
   :url "/register"
-  :id "registerClient"
-  :mixins [mixin/item-resource]
+  :methods {:get {:summary "Register Client"}
+            :post {:summary "Register Client"}
+            }
+  :allowed-methods [:get :post]
+  ;; :mixins [mixin/item-resource]
+  :exists? (fn [ctx]
+             {:data (log/spy :info (actions.client/register (log/spy :info (:params (:request ctx)))))})
   :post! (fn [ctx]
-           (actions.client/register (:request ctx))
-)
-)
+           true #_{:data (actions.client/register (log/spy :info (:params (:request ctx))))}))
 
 (defn routes
   []

@@ -1,8 +1,7 @@
 (ns jiksnu.modules.web.sections.conversation-sections
   (:require [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section delete-button title
-                                           index-line index-block index-line link-to
-                                           show-section update-button]]
+            [ciste.sections.default :refer [actions-section title index-line index-block
+                                            index-line link-to show-section update-button]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
@@ -18,14 +17,6 @@
            jiksnu.model.Domain
            jiksnu.model.FeedSource
            jiksnu.model.User))
-
-(defsection link-to [Conversation :html]
-  [item & options]
-  (let [options-map (apply hash-map options)]
-    [:a {:href "/main/conversations/{{conversation.id}}"}
-     [:span {:property "dc:title"
-             :about "{{conversatio.uri}}"}
-      "{{conversation.id}}"]]))
 
 (defn show-details
   [item & [page]]
