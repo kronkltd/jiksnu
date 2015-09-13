@@ -26,12 +26,12 @@
   :url "/activities")
 
 (defresource activities collection
-  :name "List Activities"
+  :methods {:get {:summary "Index Activities Page"}}
   :mixins [angular-resource])
 
 (defresource activities resource
   :url "/{_id}"
-  :summary "Show Activity"
+  :methods {:get {:summary "Show Activity Page"}}
   :parameters {:_id (path :model.activity/id)}
   :mixins [angular-resource])
 
@@ -55,6 +55,9 @@
   :mixins [page-resource]
   :available-formats [:json]
   :allowed-methods [:get :post]
+  :methods {:get {:summary "Index Activities"}
+            :post {:summary "Create Activity"}
+            }
   :post! activities-api-post
   :schema activity-schema
   :ns 'jiksnu.actions.activity-actions)
@@ -63,6 +66,8 @@
   :desc "Resource routes for single Activity"
   :url "/{_id}"
   :parameters {:_id (path :model.activity/id)}
+  :methods {:get {:summary "Show Activity"}
+            :delete {:summary "Delete Activity"}}
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :presenter (partial into {})
