@@ -1,10 +1,8 @@
 (ns jiksnu.modules.core.sections
   (:require [ciste.config :refer [config]]
             [ciste.sections :refer [declare-section defsection]]
-            [ciste.sections.default :refer [delete-button edit-button
-                                            full-uri index-block
-                                            index-line index-section
-                                            link-to show-section title uri]]
+            [ciste.sections.default :refer [edit-button full-uri index-block index-line index-section link-to
+                                            show-section title uri]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]))
@@ -30,22 +28,6 @@
 (defsection admin-show-section :default
   [item & [page]]
   (show-section item page))
-
-;; TODO: only for html
-;; (defsection delete-button :default
-;;   [record & _]
-;;   ;; (log/debug "delete-button :default")
-;;   [:form {:method "post"
-;;           :action (str (uri record) "/delete")}
-;;    [:button.btn.delete-button {:type "submit"}
-;;     [:i.icon-trash] [:span.button-text "Delete"]]])
-
-;; TODO: only for html
-;; (defsection edit-button :default
-;;   [domain & _]
-;;   [:form {:method "post" :action (str (uri domain) "/edit")}
-;;    [:button.btn.edit-button {:type "submit"}
-;;     [:i.icon-pencil] [:span.button-text "Edit"]]])
 
 (defsection full-uri :default
   [record & options]

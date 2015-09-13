@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.sections.feed-source-sections
   (:require [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section delete-button
-                                            show-section index-line index-block
+            [ciste.sections.default :refer [actions-section show-section index-line index-block
                                             index-section link-to title
                                             update-button]]
             [clojure.string :as string]
