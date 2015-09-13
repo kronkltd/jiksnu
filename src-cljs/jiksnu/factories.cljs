@@ -15,6 +15,12 @@
    (obj
     :name "activities")))
 
+(defn deserializer
+  [resource-name data]
+  (if-let [items (.-items (.-data data))]
+    items
+    (.-data data)))
+
 (def.factory jiksnu.Conversations
   [DS subpageService]
   (.defineResource
@@ -22,13 +28,29 @@
    (obj
     :name "conversations"
     :endpoint "conversations"
-    :deserialize (fn [resource-name data]
-                   (if-let [items (.-items (.-data data))]
-                     items
-                     (.-data data)))
+    :deserialize deserializer
     :methods
     (obj
      :getActivities (fn [] (this-as item (.fetch subpageService item "activities")))))))
+
+
+(def.factory jiksnu.Domains
+  [DS subpageService]
+  (.defineResource
+   DS
+   (obj
+    :name "domains"
+    :endpoint "domains"
+    :deserialize deserializer)))
+
+(def.factory jiksnu.Groups
+  [DS subpageService]
+  (.defineResource
+   DS
+   (obj
+    :name "groups"
+    :endpoint "groups"
+    :deserialize deserializer)))
 
 (def.factory jiksnu.Streams
   [DS]
@@ -39,17 +61,12 @@
 
 (def.factory jiksnu.Users
   [DS subpageService]
-  (! js/window.DS DS)
-  (! js/window.suppageService subpageService)
   (.defineResource
    DS
    (obj
-    :name "user"
-    :endpoint "users"
-    :deserialize (fn [resource-name data]
-                   (if-let [items (.-items (.-data data))]
-                     items
-                     (.-data data)))
+    :name        "user"
+    :endpoint    "users"
+    :deserialize deserializer
     :methods
     (obj
      :getFollowers (fn [] (this-as item (.fetch subpageService item "followers")))

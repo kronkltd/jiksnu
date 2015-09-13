@@ -81,10 +81,6 @@
   :available-media-types ["application/json"]
   :handle-ok actions.domain/host-meta)
 
-
-
-
-
 (defn routes
   []
   [

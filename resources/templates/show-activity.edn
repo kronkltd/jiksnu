@@ -1,4 +1,4 @@
-[:article.hentry.media #_{:ng-show "loaded"}
+[:article.hentry.media {:ng-if "loaded"}
  [:div.media-left
   [:display-avatar {:data-id "{{activity.author}}"}]]
  [:div.media-body

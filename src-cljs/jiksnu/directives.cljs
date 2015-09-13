@@ -70,10 +70,7 @@
   []
   (obj
    :controller "ShowActivityController"
-   :link (fn [$scope element attrs]
-           (let [id (.-id attrs)]
-             (.init $scope id)))
-   :scope (obj)
+   :scope (obj :id "@" :item "=")
    :templateUrl "/templates/show-activity"))
 
 (def.directive jiksnu.showStreamMinimal

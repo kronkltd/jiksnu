@@ -136,15 +136,15 @@
 
 (def.controller jiksnu.LogoutController [])
 
-(page-controller Activities    "activities" [])
-(page-controller Clients       "clients" [])
+(page-controller Activities    "activities"    [])
+(page-controller Clients       "clients"       [])
 (page-controller Conversations "conversations" ["activities"])
-(page-controller Domains       "domains" [])
-(page-controller FeedSources   "feed-sources" [])
-(page-controller Groups        "groups" [])
-(page-controller Resources     "resources" [])
-(page-controller Streams       "streams" [])
-(page-controller Users         "users" [])
+(page-controller Domains       "domains"       [])
+(page-controller FeedSources   "feed-sources"  [])
+(page-controller Groups        "groups"        [])
+(page-controller Resources     "resources"     [])
+(page-controller Streams       "streams"       [])
+(page-controller Users         "users"         [])
 
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
@@ -171,17 +171,13 @@
   (.$watch $scope
           #(? $scope.form.shown)
           (fn [b]
-            (.log js/console "b" b)
             (when b
               (-> (.getLocation geolocation)
                   (.then (fn [data]
-                           (! $scope.activity.geo.latitude
-                              data.coords.latitude)
-                           (! $scope.activity.geo.longitude
-                              data.coords.longitude)))))))
+                           (! $scope.activity.geo.latitude data.coords.latitude)
+                           (! $scope.activity.geo.longitude data.coords.longitude)))))))
 
-  (! $scope.toggle (fn []
-                     (! $scope.form.shown (not $scope.form.shown))))
+  (! $scope.toggle (fn [] (! $scope.form.shown (not $scope.form.shown))))
 
   (! $scope.reset
      (fn []
@@ -226,21 +222,19 @@
      (fn [id]
        (when (and id (not= id ""))
          (.bindOne Activities id $scope "activity")
-         (.find Activities id))))
-  (.init $scope (.-id $stateParams)))
+         (-> (.find Activities id)
+             (.then (fn [] (! $scope.loaded true)))))))
+
+  (.init $scope (.-id $scope)))
 
 (def.controller jiksnu.ShowDomainController
-  [$scope $http $stateParams]
+  [$scope $http $stateParams Domains]
   (! $scope.loaded false)
   (! $scope.init
      (fn [id]
-       (let [url (str "/model/domains/" id)]
-         (-> $http
-             (.get url)
-             (.success
-              (fn [data]
-                (! $scope.domain data)
-                (! $scope.loaded true)))))))
+       (.bindOne Domains id $scope "domain")
+       (-> (.find Domains id)
+           (.then (fn [] (! $scope.loaded true))))))
   (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowConversationController
