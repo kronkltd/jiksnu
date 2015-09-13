@@ -57,25 +57,58 @@
   (.info js/console "Posting Activity" activity)
   (?> app.di.$http.post "/model/activities" activity))
 
+(defn get-user
+  [app]
+  (let [username (? app.data.user)
+        domain (? app.data.domain)
+        id (str "acct:" username "@" domain)
+        Users (? app.di.Users)]
+    (.find Users id)))
+
+(defn following?
+  [app target]
+  (-> (.getUser app)
+      (.then (fn [user]
+               (let [response (= (? user._id) (? target._id))]
+                 (.log js/console "following?" response)
+                 response
+                 )))))
+
+(defn follow
+  [app target]
+  (.log js/console "follow" target)
+  )
+
+(defn unfollow
+  [app target]
+  (.log js/console "unfollow" target)
+
+  )
+
 (def app-methods
   {
    :connect       connect
+   :getUser       get-user
    :fetchStatus   fetch-status
+   :follow        follow
    :handleMessage handle-message
+   :isFollowing   following?
    :login         login
    :logout        logout
    :ping          ping
    :post          post
    :send          send
+   :unfollow      unfollow
    })
 
 (defn app-service
-  [$http ws $state notify]
+  [$http ws $state notify Users]
   (let [app (obj)]
     (! app.di (obj :$http $http
                    :ws ws
                    :$state $state
-                   :notify notify))
+                   :notify notify
+                   :Users Users))
     (! app.data (obj))
 
     (doseq [[n f] app-methods]
@@ -90,4 +123,4 @@
 (def.provider jiksnu.app
   []
   (obj
-   :$get (arr "$http" "ws" "$state" "notify" app-service)))
+   :$get (arr "$http" "ws" "$state" "notify" "Users" app-service)))

@@ -40,14 +40,22 @@
 
 (def.controller jiksnu.FollowButtonController
   [$scope app Users]
-
+  (! $scope.app app)
+  (! $scope.followLabel "Follow")
+  (! $scope.isFollowing
+     (fn []
+       (and (not (.isActor $scope))
+            ;; TODO: write follow checking code
+            )))
+  (! $scope.isActor (fn []
+                          (= (.-_id (.-item $scope))
+                             (.-_id (.-user app)))))
   (! $scope.submit
      (fn []
        (.log js/console "Submit button pressed" app)
-       )
-     )
-
-  )
+       (if (.isFollowing $scope)
+         (.follow app (.-item $scope))
+         (.unfollow app (.-item $scope))))))
 
 
 (def.controller jiksnu.LeftColumnController
@@ -104,7 +112,10 @@
   (helpers/setup-hotkeys hotkeys $state)
   (.$watch $scope
            (fn []  (.-data app))
-           (fn [d] (! $scope.app d)))
+           (fn [d]
+             (! $scope.app d)
+             (-> (.getUser app)
+                 (.then (fn [user] (! app.user user))))))
   (! $scope.app2 app)
   (! $scope.logout (.-logout app))
   (.fetchStatus app))
