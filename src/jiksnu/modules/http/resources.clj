@@ -1,9 +1,7 @@
 (ns jiksnu.modules.http.resources
   (:require [clojure.tools.logging :as log]
             [jiksnu.modules.http.routes :as r]
-            [octohipster.core :as octo]
-            )
-  )
+            [octohipster.core :as octo]))
 
 (defmacro defresource
   [group name & opts]

@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.views.auth-views
   (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.modules.web.sections.auth-sections :as sections.auth]))

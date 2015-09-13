@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.sections.activity-sections
   (:require [ciste.core :refer [with-format]]
             [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section edit-button show-section-minimal show-section
-                                            link-to uri title index-block index-line index-section update-button]]
+            [ciste.sections.default :refer [actions-section edit-button link-to uri title index-block
+                                            index-line index-section update-button]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]

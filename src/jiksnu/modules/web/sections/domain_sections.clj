@@ -2,7 +2,7 @@
   (:require [ciste.core :refer [with-format]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section add-form index-block index-line
-                                            link-to show-section uri]]
+                                            link-to uri]]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.web.sections :refer [action-link control-line

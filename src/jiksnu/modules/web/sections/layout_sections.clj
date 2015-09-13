@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.sections.layout-sections
   (:require [ciste.core :refer [apply-template]]
             [ciste.config :refer [config environment]]
-            [ciste.sections.default :refer [show-section]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
