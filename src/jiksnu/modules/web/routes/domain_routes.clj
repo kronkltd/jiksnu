@@ -43,6 +43,7 @@
 ;; =============================================================================
 
 (defgroup domains-api
+  :name "Domains API"
   :url "/model/domains")
 
 (defresource domains-api collection-api

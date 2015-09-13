@@ -24,6 +24,7 @@
 ;; =============================================================================
 
 (defgroup conversations
+  :name "Conversations"
   :url "/main/conversations")
 
 (defresource conversations collection
@@ -39,11 +40,13 @@
 ;; =============================================================================
 
 (defgroup conversations-pump-api
+  :name "Pump API - Conversations"
   :url "/api/conversations")
 
 ;; =============================================================================
 
 (defgroup conversations-api
+  :name "Conversations API"
   :url "/model/conversations")
 
 (defresource conversations-api collection

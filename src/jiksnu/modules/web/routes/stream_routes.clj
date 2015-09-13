@@ -14,6 +14,7 @@
   :type "string")
 
 (defgroup streams
+  :name "Streams"
   :url "/main/streams")
 
 (defresource streams collection
@@ -27,6 +28,7 @@
 ;; =============================================================================
 
 (defgroup streams-api
+  :name "Streams API"
   :url "/model/streams")
 
 (defresource streams-api api-collection

@@ -20,7 +20,7 @@
 
 (defgroup groups
   :url "/main/groups"
-  :name "groups")
+  :name "Groups")
 
 (defresource groups collection
   :mixins [angular-resource])
@@ -37,6 +37,7 @@
 ;; =============================================================================
 
 (defgroup groups-api
+  :name "Groups API"
   :url "/model/groups")
 
 (defresource groups-api collection

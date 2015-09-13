@@ -12,6 +12,7 @@
 ;; =============================================================================
 
 (defgroup feed-sources
+  :name "Feed Sources"
   :url "/main/feed-sources")
 
 (defresource feed-sources collection
@@ -26,6 +27,7 @@
 ;; =============================================================================
 
 (defgroup feed-sources-api
+  :name "Feed Sources API"
   :url "/model/feed-sources")
 
 (defresource feed-sources-api collection

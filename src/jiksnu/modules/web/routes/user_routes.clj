@@ -39,7 +39,7 @@
 
 (defgroup users
   :url "/main/users"
-  :name "user routes"
+  :name "Users"
   :description "Routes related to users")
 
 (defresource users collection
@@ -119,6 +119,7 @@
 ;; =============================================================================
 
 (defgroup users-api
+  :name "Users API"
   :url "/model/users")
 
 (defresource users-api collection
