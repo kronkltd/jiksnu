@@ -102,18 +102,19 @@
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
   (helpers/setup-hotkeys hotkeys $state)
-  (.$watch $scope (.-data app) (fn [d] (! $scope.app d)))
-  (! $scope.app app)
+  (.$watch $scope
+           (fn []  (.-data app))
+           (fn [d] (! $scope.app d)))
+  (! $scope.app2 app)
   (! $scope.logout (.-logout app))
   (.fetchStatus app))
 
 (def.controller jiksnu.NewPostController
-  [$scope geolocation app pageService]
-  (let [default-form (obj
-                      :source "web"
+  [$scope $rootScope geolocation app pageService]
+  (let [default-form {:source "web"
                       :privacy "public"
                       :title ""
-                      :content "")]
+                      :content ""}]
     (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
 
     (.$watch $scope
@@ -126,13 +127,13 @@
                               (! $scope.activity.geo.longitude data.coords.longitude)))))))
 
     (! $scope.toggle (fn [] (! $scope.form.shown (not $scope.form.shown))))
-    (! $scope.reset  (fn [] (! $scope.activity default-form)))
+    (! $scope.reset  (fn [] (! $scope.activity (clj->js default-form))))
     (! $scope.submit (fn []
                        (-> (.post app $scope.activity)
                            (.then (fn []
                                     (.reset $scope)
                                     (.toggle $scope)
-                                    (.fetch pageService "activities"))))))
+                                    (.$broadcast $rootScope "updateCollection"))))))
     (.reset $scope)))
 
 (def.controller jiksnu.RegisterPageController
