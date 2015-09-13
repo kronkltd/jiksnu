@@ -1,7 +1,13 @@
-(ns jiksnu.factories
+(ns jiksnu.models
   (:require jiksnu.app)
   (:use-macros [gyr.core :only [def.factory]]
                [purnam.core :only [? ?> ! !> obj arr]]))
+
+(defn deserializer
+  [resource-name data]
+  (if-let [items (.-items (.-data data))]
+    items
+    (.-data data)))
 
 ;; (def.factory jiksnu.$exceptionHandler
 ;;   []
@@ -14,12 +20,6 @@
    DS
    (obj
     :name "activities")))
-
-(defn deserializer
-  [resource-name data]
-  (if-let [items (.-items (.-data data))]
-    items
-    (.-data data)))
 
 (def.factory jiksnu.Conversations
   [DS subpageService]

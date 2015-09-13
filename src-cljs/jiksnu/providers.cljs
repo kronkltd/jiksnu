@@ -52,6 +52,11 @@
   [app command]
   (?> app.di.ws.send command))
 
+(defn post
+  [app activity]
+  (.info js/console "Posting Activity" activity)
+  (?> app.di.$http.post "/model/activities" activity))
+
 (def app-methods
   {
    :connect       connect
@@ -60,6 +65,7 @@
    :login         login
    :logout        logout
    :ping          ping
+   :post          post
    :send          send
    })
 

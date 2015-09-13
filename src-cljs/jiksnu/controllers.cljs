@@ -1,6 +1,6 @@
 (ns jiksnu.controllers
   (:require jiksnu.app
-            jiksnu.factories
+            jiksnu.models
             [jiksnu.helpers :as helpers]
             jiksnu.services
             [jiksnu.templates :as templates])
@@ -8,53 +8,6 @@
                [jiksnu.macros :only [page-controller]]
                [purnam.core :only [? ?> ! !> f.n def.n do.n
                                    obj arr def* do*n def*n f*n]]))
-
-(defn fetch-sub-page
-  [item subpageService subpage]
-  (.log js/console "Fetching subpage:" item subpage)
-  (-> subpageService
-      (.fetch item subpage)
-      (.then (fn [response] (aset item subpage (? response.body))))))
-
-(defn init-subpage
-  [$scope subpageService collection subpage]
-  (! $scope.init
-     (fn [item subpage]
-       ;; (.log js/console "init subpage" subpage item)
-       (-> (.fetch subpageService item subpage)
-           (.then (fn [page] (aset item subpage page))))))
-  (if-let [item (.-item $scope)]
-    (.init $scope item subpage)
-    (if-let [id (.-id $scope)]
-      (-> (.find collection id)
-          (.fhen (fn [item] (.init $scope item subpage))))
-      (.error js/console "Couldn't determine item id"))))
-
-(defn init-page
-  [$scope $rootScope pageService subpageService page-type subpages]
-  (.$on $rootScope "updateCollection"
-       (fn []
-         (.init $scope)))
-  (! $scope.loaded false)
-  (! $scope.init
-     (fn []
-       (-> pageService
-           (.fetch page-type)
-           (.then (fn [page]
-                    (! $scope.page page)
-                    (! $scope.loaded true)
-                    (doall (map
-                      (fn [item]
-                        (doall (map (partial fetch-sub-page item subpageService)
-                                    subpages)))
-                      (? page.items)))))))))
-
-
-(defn add-stream
-  [$scope]
-  (let [user (? $scope.user)
-        stream-name (? $scope.stream.name)]
-    (.log js/console "Adding Stream: " stream-name)))
 
 (def.controller jiksnu.AdminActivitiesController
   [$scope $http]
@@ -106,26 +59,26 @@
   [$scope subpageService Users]
   (! $scope.formShown false)
   (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
-  (init-subpage $scope subpageService Users "followers"))
+  (helpers/init-subpage $scope subpageService Users "followers"))
 
 (def.controller jiksnu.ListFollowingController
   [$scope subpageService Users]
   (! $scope.formShown false)
   (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
-  (init-subpage $scope subpageService Users "following"))
+  (helpers/init-subpage $scope subpageService Users "following"))
 
 (def.controller jiksnu.ListGroupsController
   [$scope subpageService Users]
   (! $scope.formShown false)
   (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
-  (init-subpage $scope subpageService Users "groups"))
+  (helpers/init-subpage $scope subpageService Users "groups"))
 
 (def.controller jiksnu.ListStreamsController
   [$scope subpageService Users]
   (! $scope.formShown false)
   (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
-  (! $scope.addStream (partial add-stream $scope))
-  (init-subpage $scope subpageService Users "streams"))
+  (! $scope.addStream (partial helpers/add-stream $scope))
+  (helpers/init-subpage $scope subpageService Users "streams"))
 
 (def.controller jiksnu.LoginPageController
   [$scope app]
@@ -148,57 +101,42 @@
 
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
-
-  (.add hotkeys (obj
-                 :combo "g h"
-                 :description "go home"
-                 :callback (fn []
-                             (.go $state "home"))))
-
-  (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
-  (! $scope.app2 app)
-  (! $scope.logout
-     (fn []
-       (.log js/console "logging out")
-       (.logout app)))
+  (helpers/setup-hotkeys hotkeys $state)
+  (.$watch $scope (.-data app) (fn [d] (! $scope.app d)))
+  (! $scope.app app)
+  (! $scope.logout (.-logout app))
   (.fetchStatus app))
 
 (def.controller jiksnu.NewPostController
-  [$scope $http $rootScope geolocation app pageService]
+  [$scope geolocation app pageService]
+  (let [default-form (obj
+                      :source "web"
+                      :privacy "public"
+                      :title ""
+                      :content "")]
+    (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
 
-  (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
+    (.$watch $scope
+             #(? $scope.form.shown)
+             (fn [b]
+               (when b
+                 (-> (.getLocation geolocation)
+                     (.then (fn [data]
+                              (! $scope.activity.geo.latitude data.coords.latitude)
+                              (! $scope.activity.geo.longitude data.coords.longitude)))))))
 
-  (.$watch $scope
-          #(? $scope.form.shown)
-          (fn [b]
-            (when b
-              (-> (.getLocation geolocation)
-                  (.then (fn [data]
-                           (! $scope.activity.geo.latitude data.coords.latitude)
-                           (! $scope.activity.geo.longitude data.coords.longitude)))))))
+    (! $scope.toggle (fn [] (! $scope.form.shown (not $scope.form.shown))))
+    (! $scope.reset  (fn [] (! $scope.activity default-form)))
+    (! $scope.submit (fn []
+                       (-> (.post app $scope.activity)
+                           (.then (fn []
+                                    (.reset $scope)
+                                    (.toggle $scope)
+                                    (.fetch pageService "activities"))))))
+    (.reset $scope)))
 
-  (! $scope.toggle (fn [] (! $scope.form.shown (not $scope.form.shown))))
-
-  (! $scope.reset
-     (fn []
-       (! $scope.activity
-          (obj
-           :source "web"
-           :privacy "public"
-           :title ""
-           :content ""))))
-
-  (! $scope.submit
-     (fn []
-       (-> $http
-           (.post "/model/activities" $scope.activity)
-           (.success
-            (fn [data]
-              (.$broadcast $rootScope "updateConversations"))))))
-
-  (.reset $scope))
-
-(def.controller jiksnu.RegisterPageController [$http $scope]
+(def.controller jiksnu.RegisterPageController
+  [$http $scope]
   (! $scope.register
      (fn []
        (.log js/console "Registering" (? $scope.reg))
@@ -212,10 +150,10 @@
 (def.controller jiksnu.SettingsPageController [])
 
 (def.controller jiksnu.SubscribersWidgetController
-  [$scope app])
+  [$scope])
 
 (def.controller jiksnu.ShowActivityController
-  [$scope $http $stateParams Activities]
+  [$scope $stateParams Activities]
   (! $scope.loaded false)
 
   (! $scope.init
@@ -228,7 +166,7 @@
   (.init $scope (.-id $scope)))
 
 (def.controller jiksnu.ShowDomainController
-  [$scope $http $stateParams Domains]
+  [$scope $stateParams Domains]
   (! $scope.loaded false)
   (! $scope.init
      (fn [id]
@@ -238,7 +176,7 @@
   (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowConversationController
-  [$scope $http $stateParams Conversations]
+  [$scope $stateParams Conversations]
   (! $scope.loaded false)
   (! $scope.init
      (fn [id]
@@ -278,9 +216,7 @@
 (def.controller jiksnu.ShowStreamMinimalController
   [$scope Streams]
   (! $scope.loaded false)
-  (! $scope.init (fn [stream]
-                   (.log js/console "init minimal show stream" stream)
-                   (! $scope.loaded true)))
+  (! $scope.init (fn [stream] (! $scope.loaded true)))
 
   (if-let [stream (? $scope.stream)]
     (.init $scope stream)
@@ -292,18 +228,15 @@
       (throw "No stream or stream id provided"))))
 
 (def.controller jiksnu.ShowUserController
-  [$scope $http $stateParams Users]
+  [$scope $stateParams Users]
   (let [username (.-username $stateParams)
         domain (.-domain $stateParams)
         id (or (.-_id $stateParams)
                (str "acct:" username "@" domain))]
-    (! $scope.loaded false)
     (! $scope.init
        (fn [id]
-         (.log js/console "Showing user: " id)
-         (when (and id (not= id ""))
-           (! $scope.loaded false)
-           (.bindOne Users id $scope "user")
-           (-> (.find Users id)
-               (.then (fn [user] (! $scope.loaded true)))))))
+         (! $scope.loaded false)
+         (.bindOne Users id $scope "user")
+         (-> (.find Users id)
+             (.then (fn [user] (! $scope.loaded true))))))
     (.init $scope id)))

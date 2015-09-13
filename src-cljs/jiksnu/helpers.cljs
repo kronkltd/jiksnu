@@ -1,6 +1,6 @@
 (ns jiksnu.helpers
   (:require [clojure.string :as string])
-  (:use-macros [purnam.core :only [! obj]]))
+  (:use-macros [purnam.core :only [! ? obj]]))
 
 (defn add-states
   [$stateProvider data]
@@ -108,3 +108,60 @@
 (def states
   (let [as (admin-states admin-data)]
     (concat as route-data)))
+
+(defn fetch-sub-page
+  [item subpageService subpage]
+  ;; (.log js/console "Fetching subpage:" item subpage)
+  (-> subpageService
+      (.fetch item subpage)
+      (.then (fn [response] (aset item subpage (? response.body))))))
+
+(defn init-subpage
+  [$scope subpageService collection subpage]
+  (! $scope.init
+     (fn [item subpage]
+       ;; (.log js/console "init subpage" subpage item)
+       (-> (.fetch subpageService item subpage)
+           (.then (fn [page] (aset item subpage page))))))
+  (if-let [item (.-item $scope)]
+    (.init $scope item subpage)
+    (if-let [id (.-id $scope)]
+      (-> (.find collection id)
+          (.fhen (fn [item] (.init $scope item subpage))))
+      (.error js/console "Couldn't determine item id"))))
+
+(defn init-page
+  [$scope $rootScope pageService subpageService page-type subpages]
+  (.$on $rootScope "updateCollection"
+       (fn []
+         (.init $scope)))
+  (! $scope.loaded false)
+  (! $scope.init
+     (fn []
+       (-> pageService
+           (.fetch page-type)
+           (.then (fn [page]
+                    (! $scope.page page)
+                    (! $scope.loaded true)
+                    (doall (map
+                      (fn [item]
+                        (doall (map (partial fetch-sub-page item subpageService)
+                                    subpages)))
+                      (? page.items)))))))))
+
+
+(defn add-stream
+  [$scope]
+  (let [user (? $scope.user)
+        stream-name (? $scope.stream.name)]
+    (.log js/console "Adding Stream: " stream-name)))
+
+(defn setup-hotkeys
+  [hotkeys $state]
+  (.add hotkeys (obj
+                 :combo "g h"
+                 :description "go home"
+                 :callback (fn []
+                             (.go $state "home"))))
+
+  )
