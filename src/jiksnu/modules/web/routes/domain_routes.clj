@@ -23,6 +23,7 @@
 
 (defresource domains collection
   :desc "collection of domains"
+  :summary "Index Domains"
   :mixins [angular-resource])
 
 ;; (defresource domains discover
@@ -34,6 +35,7 @@
 ;;   :handle-ok actions.domain/edit-page)
 
 (defresource domains resource
+  :summary "Show Domain"
   :url "/{_id}"
   :parameters {:_id (path :model.domain/id)}
   :mixins [angular-resource]
