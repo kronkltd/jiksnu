@@ -40,7 +40,7 @@
   :available-media-types ["text/html"]
   :exists? (fn [ctx] {:data (str @r/resources )}))
 
-(defresource root home
+(defresource root settings
   :url "/main/settings"
   :name "Settings Page"
   :summary "settings page"
