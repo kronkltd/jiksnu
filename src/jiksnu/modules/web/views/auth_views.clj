@@ -11,22 +11,6 @@
    :session {:pending-id (:_id user)}
    :headers {"Location" "/main/password"}})
 
-(defview #'actions.auth/login :html
-  [request user]
-  (if user
-    {:session {:id (:_id user)}
-     :status 303
-     :template false
-     :headers {"Location" "/"}}))
-
-(defview #'actions.auth/logout :html
-  [request successful]
-  (if successful
-    {:session {:id nil}
-     :status 303
-     :template false
-     :headers {"Location" "/"}}))
-
 (defview #'actions.auth/password-page :html
   [request user]
   {:body (sections.auth/password-page user)})

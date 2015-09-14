@@ -21,10 +21,6 @@
     (action user password)
     (throw+ {:type :authentication :message "user not found"})))
 
-(deffilter #'actions.auth/logout :http
-  [action request]
-  (action))
-
 (deffilter #'actions.auth/password-page :http
   [action request]
   (when-let [id (some-> request :session :pending-id)]

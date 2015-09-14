@@ -22,10 +22,8 @@
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [octohipster.documenters.schema
-             :refer [schema-doc schema-root-doc]]
-            [octohipster.documenters.swagger
-             :refer [swagger-doc swagger-root-doc]]
+            [octohipster.documenters.schema :refer [schema-doc schema-root-doc]]
+            [octohipster.documenters.swagger :refer [swagger-doc]]
             [octohipster.routes :refer [defroutes update-groups]]
             [org.httpkit.server :as server]
             [ring.middleware.file :refer [wrap-file]]
@@ -51,12 +49,11 @@
     :name "Jiksnu"
     :description "Jiksnu Social Networking"
     :schemes [
-              :http
-              ;; :https
+              "http"
+              ;; "https"
               ]
     :groups (update-groups @r/groups @r/resources)
-    :documenters [swagger-doc swagger-root-doc
-                  schema-doc schema-root-doc])
+    :documenters [swagger-doc schema-doc schema-root-doc])
   site)
 
 (def auth-config
