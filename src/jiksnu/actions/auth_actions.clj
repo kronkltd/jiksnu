@@ -39,16 +39,6 @@
       (throw+ {:type :authentication :message "No authentication mechanisms found"}))
     (throw+ {:type :authentication :message "User not found"})))
 
-(defaction login-page
-  [request]
-  ;; TODO: Should this display the login page if already logged in?
-  true)
-
-(defn logout
-  [request]
-  ;; TODO: close any open session resources, send away presence?
-  true)
-
 (defn password-page
   "Page for when the identifier has come from elsewhere"
   [user]
