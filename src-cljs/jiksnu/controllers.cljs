@@ -248,17 +248,21 @@
 
 (def.controller jiksnu.ShowStreamMinimalController
   [$scope Streams]
-  (! $scope.loaded false)
-  (! $scope.init (fn [stream] (! $scope.loaded true)))
+  (aset $scope "loaded" false)
+  (aset $scope "init" (fn [id]
+                        (.bindOne Streams id $scope "stream")
+                        (-> (.find Streams id)
+                            (.then (fn [stream]
+                                     (aset $scope "stream" stream)
+                                     (aset $scope "loaded" true))))))
 
-  (if-let [stream (? $scope.stream)]
-    (.init $scope stream)
-    (if-let [id (? $scope.streamId)]
-      (-> (.find Streams id)
-          (.then (fn [stream]
-                   (! $scope.stream stream)
-                   (.init $scope stream))))
-      (throw "No stream or stream id provided"))))
+  (aset $scope "toggle" (fn []
+                          (let [shown? (not (.-formShown $scope))]
+                            (aset $scope "formShown" shown?)
+                            (aset $scope "btnLabel" (if shown? "-" "+")))))
+
+  (let [id (.-id $scope)]
+    (.init $scope id)))
 
 (def.controller jiksnu.ShowUserController
   [$scope $stateParams Users]

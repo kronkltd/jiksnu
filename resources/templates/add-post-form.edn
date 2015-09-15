@@ -56,10 +56,9 @@
      [:div
       [:p "Streams"]
       [:ul
-       [:li {:ng-repeat "stream in streams"}
-        [:pre
-         [:code "{{stream | json}}"]]
-        [:show-stream {:data-id "{{stream}}"}]]]
+       [:li {:ng-repeat "stream in streams.items"}
+        [:pre [:code "{{stream | json}}"]]
+        [:show-stream-minimal {:data-id "{{stream}}"}]]]
       [:pre
        [:code "{{streams | json}}"]]
       ]

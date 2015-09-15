@@ -77,7 +77,7 @@
   []
   (obj
    :templateUrl "/templates/show-stream-minimal"
-   :scope (obj :streamId "@" :stream "=")
+   :scope (obj :id "@" :item "=")
    :controller "ShowStreamMinimalController"))
 
 (def.directive jiksnu.streamsWidget []
