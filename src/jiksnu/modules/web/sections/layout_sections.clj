@@ -156,39 +156,31 @@
 (defn page-template-content
   [request response]
   (p/html5
-   {:xmlns:sioc ns/sioc
-    :xmlns:dc ns/dc
-    :xmlns:foaf ns/foaf
-    :xmlns:dcterms ns/dcterms
-    :lang "en"
-    :xml:lang "en"
-    :ng-app "jiksnu"
-    ;; :ng-strict-di ""
-    :prefix (get-prefixes)}
+   {:ng-app "jiksnu"}
    [:head
     [:meta {:charset "UTF-8"}]
     [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
-    [:meta {:name "viewport"
-            :content "width=device-width, initial-scale=1.0"}]
+    [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
     [:base {:href "/"}]
     [:title {:property "dc:title"} (config :site :name)]
     (style-section)
     (links-section request response)
     (scripts-section request response)]
    [:body
+    [:nav-bar]
     [:div.container
-     [:nav-bar]
      ;; [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
      [:div.row
-      [:left-column.col-sm-2]
-      [:div.col-sm-8
-       [:add-post-form.row]
-       [:div.row
-        [:h1 {:data-bind "text: title"}]
-        [:div {:ui-view ""}]]]
-      [:right-column.col-sm-2]]]
+      #_[:left-column.col-sm-2]
+      [:div.col-sm-12
+       [:add-post-form.center]
+       [:h1 {:data-bind "text: title"}]
+       [:div {:ui-view ""}]]
+      #_[:right-column.col-sm-2]
+
+      ]]
     [:footer.row.page-footer
-     [:p "Copyright © 2011 KRONK Ltd."]
+     [:p "Copyright © 2011-2015 KRONK Ltd."]
      [:p "Powered by "
       [:a {:href "https://github.com/duck1123/jiksnu"}
        "Jiksnu"]]]]))
