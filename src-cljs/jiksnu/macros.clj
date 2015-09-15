@@ -20,3 +20,9 @@
                 :restrict "E"
                 :scope (list 'obj :id "@" :item "=")
                 :controller (str "List" klass-name "Controller")))))
+
+(defmacro state-hotkey
+  [combo state description]
+  (list '.add 'hotkeys
+   (list 'obj :combo combo :description description
+    :callback (list 'fn [] (list '.go '$state state)))))

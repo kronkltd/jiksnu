@@ -1,6 +1,7 @@
 (ns jiksnu.helpers
   (:require [clojure.string :as string])
-  (:use-macros [purnam.core :only [! ? obj]]))
+  (:use-macros [purnam.core :only [! ? obj]]
+               [jiksnu.macros :only [state-hotkey]]))
 
 (defn add-states
   [$stateProvider data]
@@ -168,12 +169,13 @@
         )
     ))
 
+
 (defn setup-hotkeys
   [hotkeys $state]
-  (.add hotkeys (obj
-                 :combo "g h"
-                 :description "go home"
-                 :callback (fn []
-                             (.go $state "home"))))
+  (state-hotkey "g d" "indexDomains" "Go to Domains")
+  (state-hotkey "g g" "indexGroups" "Go to Groups")
+  (state-hotkey "g h" "home" "Go to Home")
+  (state-hotkey "g s" "settingsPage" "Go to Settings")
+  (state-hotkey "g u" "indexUsers" "Go to Users")
 
   )
