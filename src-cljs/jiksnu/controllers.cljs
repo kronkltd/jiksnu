@@ -136,7 +136,7 @@
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService]
-  (.log js/console "Loading New Post Controller")
+  (js/console.log "Loading New Post Controller")
   (let [default-form {:source "web"
                       :privacy "public"
                       :title ""
@@ -151,6 +151,10 @@
                                                          coords (.-coords data)]
                                                      (aset geo "latitude" (.-latitude coords))
                                                      (aset geo "longitude" (.-longitude coords))))))))
+    (aset $scope "addStream" (fn [id]
+                               (let [streams (.-streams (.-activity $scope))]
+                                 (if (not-any? (partial = id) streams)
+                                   (.push streams id)))))
     (aset $scope "fetchStreams" (fn [] (-> (.getUser app)
                                           (.then (fn [user]
                                                    (.log js/console "Got User" user)
@@ -163,7 +167,9 @@
                                   (! $scope.form.shown (not $scope.form.shown))
                                   (when (? $scope.form.shown)
                                     (.fetchStreams $scope))))
-    (aset $scope "reset"        (fn [] (! $scope.activity (clj->js default-form))))
+    (aset $scope "reset"        (fn []
+                                  (! $scope.activity (clj->js default-form))
+                                  (aset (.-activity $scope) "streams" (arr))))
     (aset $scope "submit"       (fn [] (-> (.post app $scope.activity)
                                           (.then (fn []
                                                    (.reset $scope)

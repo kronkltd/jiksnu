@@ -53,15 +53,18 @@
       [:a.btn {:ng-click "addTag"}
        "Add Tags"]]]
     [:div.actions
+     #_[:code [:pre "{{addedStreams | json}}"]]
      [:div
       [:p "Streams"]
       [:ul
-       [:li {:ng-repeat "stream in streams.items"}
-        [:pre [:code "{{stream | json}}"]]
-        [:show-stream-minimal {:data-id "{{stream}}"}]]]
-      [:pre
-       [:code "{{streams | json}}"]]
-      ]
+       [:li {:ng-repeat "id in activity.streams"}
+        #_[:code [:pre "{{id | json}}"]]
+        [:show-stream-minimal {:data-id "{{id}}"}]]]
+      [:ul
+       [:li {:ng-repeat "id in streams.items"}
+        [:a {:ng-click "addStream(id)"}
+         [:show-stream-minimal {:data-id "{{id}}"}]]]]
+      #_[:code [:pre "{{streams | json}}"]]]
      [:select {:name "privacy" :ng-model "activity.privacy"}
       [:option {:value "public"} "Public"]
       [:option {:value "group"} "Group"]
@@ -70,6 +73,4 @@
      ;; TODO: Group dropdown
      [:group-select]]
     [:button.btn.btn-primary.pull-right {:type "submit"} "Post"]
-    #_[:div
-     [:pre "{{activity | json}}"]]
-    ]]]]
+    #_[:code [:pre "{{activity | json}}"]]]]]]
