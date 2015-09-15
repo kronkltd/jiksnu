@@ -73,4 +73,4 @@
      ;; TODO: Group dropdown
      [:group-select]]
     [:button.btn.btn-primary.pull-right {:type "submit"} "Post"]
-    #_[:code [:pre "{{activity | json}}"]]]]]]
+    [:code [:pre "{{activity | json}}"]]]]]]

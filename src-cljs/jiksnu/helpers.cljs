@@ -151,23 +151,16 @@
                                     subpages)))
                       (? page.items)))))))))
 
-
 (defn add-stream
   [$scope $http]
   (let [user (? $scope.user)
         stream-name (? $scope.stream.name)]
     (.log js/console "Adding Stream: " user stream-name)
     (-> (.post $http "/model/stream"
-               (obj
-                :actor (.-_id user)
-                :name stream-name
-                )
-               )
+               (obj :actor (.-_id user)
+                    :name stream-name))
         (.then (fn [res]
-                 (.info js/console "got response" res)
-                 ))
-        )
-    ))
+                 (.info js/console "got response" res))))))
 
 
 (defn setup-hotkeys
@@ -176,6 +169,4 @@
   (state-hotkey "g g" "indexGroups" "Go to Groups")
   (state-hotkey "g h" "home" "Go to Home")
   (state-hotkey "g s" "settingsPage" "Go to Settings")
-  (state-hotkey "g u" "indexUsers" "Go to Users")
-
-  )
+  (state-hotkey "g u" "indexUsers" "Go to Users"))
