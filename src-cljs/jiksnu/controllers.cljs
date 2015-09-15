@@ -27,14 +27,17 @@
   (.init $scope))
 
 (def.controller jiksnu.AppController [])
+
 (def.controller jiksnu.AvatarPageController [])
 
 (def.controller jiksnu.DisplayAvatarController
   [$scope Users]
   (! $scope.init
      (fn [id]
+       (.debug js/console "Displaying avatar for " id)
        (when (and id (not= id ""))
          (! $scope.size 32)
+         (.info js/console "binding user" id)
          (.bindOne Users id $scope "user")
          (.find Users id)))))
 
@@ -47,21 +50,22 @@
        (and (not (.isActor $scope))
             ;; TODO: write follow checking code
             )))
-  (! $scope.isActor (fn []
-                          (= (.-_id (.-item $scope))
-                             (.-_id (.-user app)))))
+  (! $scope.isActor
+     (fn []
+       (let [item-id (.-_id (.-item $scope))
+             user-id (.-_id (.-user app))]
+         (= item-id user-id))))
   (! $scope.submit
      (fn []
        (.log js/console "Submit button pressed" app)
-       (if (.isFollowing $scope)
-         (.follow app (.-item $scope))
-         (.unfollow app (.-item $scope))))))
-
+       (let [item (.-item $scope)]
+         (if (.isFollowing $scope)
+           (.follow app item)
+           (.unfollow app item))))))
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
   (! $scope.groups (clj->js helpers/nav-info)))
-
 
 (def.controller jiksnu.ListFollowersController
   [$scope subpageService Users]
@@ -109,42 +113,62 @@
 
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
+  (.log js/console "Loading NavBarController")
+  (! $scope.loaded false)
   (helpers/setup-hotkeys hotkeys $state)
+
   (.$watch $scope
            (fn []  (.-data app))
            (fn [d]
-             (! $scope.app d)
-             (-> (.getUser app)
-                 (.then (fn [user] (! app.user user))))))
+             (when (.-loaded $scope)
+               (.log js/console "Running navbarcontroller watcher")
+               (! $scope.app d)
+               (-> (.getUser app)
+                   (.then (fn [user] (! app.user user)))))))
+
   (! $scope.app2 app)
   (! $scope.logout (.-logout app))
-  (.fetchStatus app))
+
+  (-> (.fetchStatus app)
+      (.then (fn []
+               (.log js/console "Status Loaded")
+               (! $scope.loaded true)))))
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService]
+  (.log js/console "Loading New Post Controller")
   (let [default-form {:source "web"
                       :privacy "public"
                       :title ""
+                      :geo {:latitude nil
+                            :longitude nil}
                       :content ""}]
-    (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
-
-    (.$watch $scope
-             #(? $scope.form.shown)
-             (fn [b]
-               (when b
-                 (-> (.getLocation geolocation)
-                     (.then (fn [data]
-                              (! $scope.activity.geo.latitude data.coords.latitude)
-                              (! $scope.activity.geo.longitude data.coords.longitude)))))))
-
-    (! $scope.toggle (fn [] (! $scope.form.shown (not $scope.form.shown))))
-    (! $scope.reset  (fn [] (! $scope.activity (clj->js default-form))))
-    (! $scope.submit (fn []
-                       (-> (.post app $scope.activity)
-                           (.then (fn []
-                                    (.reset $scope)
-                                    (.toggle $scope)
-                                    (.$broadcast $rootScope "updateCollection"))))))
+    (.$watch $scope #(? app.data)          (fn [data] (! $scope.app data)))
+    (.$watch $scope #(? $scope.form.shown) (fn [shown?] (when shown? (.getLocation $scope))))
+    (aset $scope "getLocation"  (fn [] (-> (.getLocation geolocation)
+                                          (.then (fn [data]
+                                                   (let [geo (? $scope.activity.geo)
+                                                         coords (.-coords data)]
+                                                     (aset geo "latitude" (.-latitude coords))
+                                                     (aset geo "longitude" (.-longitude coords))))))))
+    (aset $scope "fetchStreams" (fn [] (-> (.getUser app)
+                                          (.then (fn [user]
+                                                   (.log js/console "Got User" user)
+                                                   (-> (.getStreams user)
+                                                       (.then (fn [streams]
+                                                                (.log js/console "Got Streams" streams)
+                                                                (! $scope.streams streams)))))))))
+    (aset $scope "toggle"       (fn []
+                                  (.debug js/console "Toggling New Post form")
+                                  (! $scope.form.shown (not $scope.form.shown))
+                                  (when (? $scope.form.shown)
+                                    (.fetchStreams $scope))))
+    (aset $scope "reset"        (fn [] (! $scope.activity (clj->js default-form))))
+    (aset $scope "submit"       (fn [] (-> (.post app $scope.activity)
+                                          (.then (fn []
+                                                   (.reset $scope)
+                                                   (.toggle $scope)
+                                                   (.$broadcast $rootScope "updateCollection"))))))
     (.reset $scope)))
 
 (def.controller jiksnu.RegisterPageController
@@ -180,49 +204,46 @@
 (def.controller jiksnu.ShowDomainController
   [$scope $stateParams Domains]
   (! $scope.loaded false)
-  (! $scope.init
-     (fn [id]
-       (.bindOne Domains id $scope "domain")
-       (-> (.find Domains id)
-           (.then (fn [] (! $scope.loaded true))))))
+  (! $scope.init (fn [id]
+                   (.bindOne Domains id $scope "domain")
+                   (-> (.find Domains id)
+                       (.then (fn [] (! $scope.loaded true))))))
   (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowConversationController
-  [$scope $stateParams Conversations]
-  (! $scope.loaded false)
-  (! $scope.init
-     (fn [id]
-       (.log js/console "id" id)
-       (when (and id (not= id ""))
-         (.bindOne Conversations id $scope "conversation")
-         (let [d (.find Conversations id)]
-           (.then d (fn [conversation]
-                      (.log js/console )
-                      (-> conversation
-                          .getActivities
-                          (.then  (fn [response]
-                                    (.log js/console "Activities" response)
-                                    (! $scope.activities
-                                       (? response.body)))))))
-           d))))
+  [$scope $stateParams Conversations app]
+  (.log js/console "loading ShowConversationController")
+
+  (aset $scope "loaded" false)
+  (aset $scope "init" (fn [id]
+                        (.bindOne Conversations id $scope "conversation")
+                        (-> (.find Conversations id)
+                            (.then (.-fetchActivities app))
+                            (.then (fn [] (aset $scope "loaded" true))))))
+
+  (aset $scope "fetchActivities" (fn [conversation]
+                                   (.log js/console )
+                                   (-> (.getActivities conversation)
+                                       (.then  (fn [response]
+                                                 (.log js/console "Activities" response)
+                                                 (aset $scope "activities" (.-body response)))))))
+
   (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowGroupController
-  [$scope $http $stateParams]
-  (! $scope.loaded false)
-  (! $scope.addAdmin (fn [& opts]
-                      (.log js/console opts)))
-  (! $scope.addMember (fn [& opts]
-                      (.log js/console opts)))
-  (! $scope.init
-     (fn [id]
-       (let [url (str "/model/groups/" id)]
-         (-> $http
-             (.get url)
-             (.success
-              (fn [data]
-                (! $scope.group data)
-                (! $scope.loaded true)))))))
+  [$scope $http $stateParams Groups]
+  (.log js/console "loading ShowGroupController")
+  (aset $scope "loaded" false)
+  (aset $scope "addAdmin" (fn [& opts] (.log js/console opts)))
+  (aset $scope "addMember" (fn [& opts] (.log js/console opts)))
+  (aset $scope "init"
+        (fn [id]
+          (.bindOne Groups id $scope "group")
+          (-> (.find Groups id)
+              (.then (fn [data]
+                       (aset $scope "group" data)
+                       (aset $scope "loaded" true))))))
+
   (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowStreamMinimalController
@@ -248,6 +269,7 @@
     (! $scope.init
        (fn [id]
          (! $scope.loaded false)
+         (.info js/console "binding user" id)
          (.bindOne Users id $scope "user")
          (-> (.find Users id)
              (.then (fn [user] (! $scope.loaded true))))))

@@ -63,6 +63,7 @@
         domain (? app.data.domain)
         id (str "acct:" username "@" domain)
         Users (? app.di.Users)]
+    (.log js/console "getting user: " id)
     (.find Users id)))
 
 (defn following?

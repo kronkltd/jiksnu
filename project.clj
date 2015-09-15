@@ -54,7 +54,7 @@
                            :foreign-libs [{:file "node_modules/angular/angular.min.js"
                                            :provides ["angular.core"]}]
                            :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
-                                      :optimizations :whitespace
+                                      :optimizations :simple
                                       :pretty-print true}}
                :advanced   {:source-paths ["src-cljs"]
                             :compiler {:output-to "target/resources/public/cljs/jiksnu.min.js"

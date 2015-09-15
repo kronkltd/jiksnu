@@ -53,6 +53,16 @@
       [:a.btn {:ng-click "addTag"}
        "Add Tags"]]]
     [:div.actions
+     [:div
+      [:p "Streams"]
+      [:ul
+       [:li {:ng-repeat "stream in streams"}
+        [:pre
+         [:code "{{stream | json}}"]]
+        [:show-stream {:data-id "{{stream}}"}]]]
+      [:pre
+       [:code "{{streams | json}}"]]
+      ]
      [:select {:name "privacy" :ng-model "activity.privacy"}
       [:option {:value "public"} "Public"]
       [:option {:value "group"} "Group"]

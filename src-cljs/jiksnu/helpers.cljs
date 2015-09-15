@@ -120,7 +120,7 @@
   [$scope subpageService collection subpage]
   (! $scope.init
      (fn [item subpage]
-       ;; (.log js/console "init subpage" subpage item)
+       (.debug js/console "init subpage" subpage (type item))
        (-> (.fetch subpageService item subpage)
            (.then (fn [page] (aset item subpage page))))))
   (if-let [item (.-item $scope)]
@@ -138,6 +138,7 @@
   (! $scope.loaded false)
   (! $scope.init
      (fn []
+       (.debug js/console "Loading page: " page-type)
        (-> pageService
            (.fetch page-type)
            (.then (fn [page]
@@ -151,10 +152,21 @@
 
 
 (defn add-stream
-  [$scope]
+  [$scope $http]
   (let [user (? $scope.user)
         stream-name (? $scope.stream.name)]
-    (.log js/console "Adding Stream: " stream-name)))
+    (.log js/console "Adding Stream: " user stream-name)
+    (-> (.post $http "/model/stream"
+               (obj
+                :actor (.-_id user)
+                :name stream-name
+                )
+               )
+        (.then (fn [res]
+                 (.info js/console "got response" res)
+                 ))
+        )
+    ))
 
 (defn setup-hotkeys
   [hotkeys $state]

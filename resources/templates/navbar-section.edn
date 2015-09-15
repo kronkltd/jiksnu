@@ -1,6 +1,6 @@
 [:nav.navbar.navbar-default.navbar-inverse
  {:role "navigation"}
- [:div.container
+ [:div.container {:ng-if "loaded"}
   [:div.navbar-header
    [:button.navbar-toggle
     {:type "button"
