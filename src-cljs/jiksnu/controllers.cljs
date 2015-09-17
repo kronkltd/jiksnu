@@ -182,13 +182,11 @@
 
   (.reset $scope))
 
-(def.controller jiksnu.RegisterPageController [$scope]
-  (! $scope.register 
+(def.controller jiksnu.RegisterPageController [$http $scope]
+  (! $scope.register
      (fn []
        (.log js/console "Registering" (? $scope.reg))
-)
-)
-)
+       (.post $http "/register" $scope))))
 
 (def.controller jiksnu.RightColumnController
   [$scope app]
@@ -198,9 +196,7 @@
 (def.controller jiksnu.SettingsPageController [])
 
 (def.controller jiksnu.SubscribersWidgetController
-  [$scope app]
-
-)
+  [$scope app])
 
 (def.controller jiksnu.ShowActivityController
   [$scope $http $stateParams Activities]
