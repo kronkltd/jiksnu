@@ -8,7 +8,7 @@
            ;; "jiksnu.modules.core"
            ;; "jiksnu.modules.json"
            "jiksnu.modules.http"
-           ;; "jiksnu.modules.web"
+           "jiksnu.modules.web"
            ]
  :services [
             "ciste.services.http-kit"
