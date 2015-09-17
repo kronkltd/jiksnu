@@ -36,7 +36,7 @@
         conversation (mock/a-conversation-exists {:feed-source feed-source})
         id (factory/make-uri (:_id domain) (fseq :path))
         activity (actions.activity/prepare-create
-                  (factory :activity {:conversation (:_id conversation)
+                  (factory :full-activity {:conversation (:_id conversation)
                                       :id id
                                       :local false
                                       :update-source (:_id feed-source)}))]
