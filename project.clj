@@ -89,18 +89,6 @@
              "-Dfile.encoding=UTF-8"]
   :warn-on-reflection false
 
-  :node-dependencies [
-                      [angular "1.3.14"]
-                      [karma "0.12.31"]
-                      [karma-cli "0.0.4"]
-                      [karma-chrome-launcher "0.1.7"]
-                      [karma-coverage "0.2.7"]
-                      [karma-growl "0.1.0"]
-                      [karma-jasmine "0.1.4"]
-                      [karma-junit-reporter "0.2.2"]
-                      [protractor "1.8.0"]
-                      ]
-
   :profiles {:dev [:dev-core :user-dev]
              :dev-core
              {:resource-paths ["test-resources"]
