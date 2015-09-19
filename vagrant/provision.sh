@@ -6,3 +6,5 @@ then
 else
     ln -s /usr/bin/nodejs /usr/bin/node
 fi
+
+npm install -g bower

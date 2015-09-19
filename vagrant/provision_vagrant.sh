@@ -14,3 +14,10 @@ fi
 
 
 echo "cd /vagrant" >> ~/.bashrc
+
+cd /vagrant
+
+npm install
+bower install
+lein cljsbuild once
+lein lesscss once
