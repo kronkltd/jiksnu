@@ -12,7 +12,9 @@
 
 ]
 
-  (.setUrl wsProvider "wss://jiksnu.com/")
+  (.setUrl wsProvider (str "wss://"
+                           (? window.location.host)
+                           "/"))
 
   (! DSProvider.defaults.idAttribute "_id")
   (! DSProvider.defaults.basePath "/model")
