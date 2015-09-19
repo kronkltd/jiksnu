@@ -12,8 +12,11 @@
 
 ]
 
-  (.setUrl wsProvider (str "wss://"
-                           (? window.location.host)
+  (.setUrl wsProvider (str "ws"
+                           (when (= (? js/window.location.protocol) "https:")
+                             "s")
+                           "://"
+                           (? js/window.location.host)
                            "/"))
 
   (! DSProvider.defaults.idAttribute "_id")
