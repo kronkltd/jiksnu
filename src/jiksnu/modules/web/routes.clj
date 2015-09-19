@@ -26,7 +26,7 @@
              :refer [schema-doc schema-root-doc]]
             [octohipster.documenters.swagger
              :refer [swagger-doc swagger-root-doc]]
-            [octohipster.routes :refer [defroutes]]
+            [octohipster.routes :refer [defroutes update-groups]]
             [org.httpkit.server :as server]
             [ring.middleware.file :refer [wrap-file]]
             [ring.middleware.content-type :refer [wrap-content-type]]
@@ -48,11 +48,13 @@
 (defn set-site
   []
   (defroutes site
-    :groups
-    (map (fn [[gvar group]]
-           (assoc group :resources
-                  (map val (get @r/resources gvar))))
-         @r/groups)
+    :name "Jiksnu"
+    :description "Jiksnu Social Networking"
+    :schemes [
+              :http
+              ;; :https
+              ]
+    :groups (update-groups @r/groups @r/resources)
     :documenters [swagger-doc swagger-root-doc
                   schema-doc schema-root-doc])
   site)
