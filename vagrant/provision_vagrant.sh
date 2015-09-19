@@ -8,9 +8,9 @@ else
     mkdir ~/bin
     mv lein ~/bin/lein
     chmod a+x ~/bin/lein
-    echo 'export PATH=~/bin:$PATH' >> ~/.bashrc
+    echo "export PATH=~/bin:$PATH" >> ~/.bashrc
     . ~/.bashrc
 fi
 
 
-echo 'cd /vagrant' >> ~/.bashrc
+echo "cd /vagrant" >> ~/.bashrc

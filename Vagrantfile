@@ -17,36 +17,36 @@ Vagrant.configure(2) do |config|
 
   config.git.add_repo do |rc|
     rc.target = "git@github.com:duck1123/jiksnu-core.git"
-    rc.path = "/vagrant/checkouts/jiksnu-core"
+    rc.path = "checkouts/jiksnu-core"
     rc.branch = "master"
     rc.clone_in_host = true
   end
 
   config.git.add_repo do |rc|
     rc.target = "git@github.com:duck1123/octohipster.git"
-    rc.path = "/vagrant/checkouts/octohipster"
+    rc.path = "checkouts/octohipster"
     rc.branch = "edge"
     rc.clone_in_host = true
   end
 
   config.git.add_repo do |rc|
     rc.target = "git@github.com:duck1123/ciste.git"
-    rc.path = "/vagrant/checkouts/ciste"
-    rc.branch = "edge"
+    rc.path = "checkouts/ciste"
+    rc.branch = "develop"
     rc.clone_in_host = true
   end
 
   config.git.add_repo do |rc|
     rc.target = "git@github.com:duck1123/ciste-incubator.git"
-    rc.path = "/vagrant/checkouts/ciste-incubator"
-    rc.branch = "edge"
+    rc.path = "checkouts/ciste-incubator"
+    rc.branch = "master"
     rc.clone_in_host = true
   end
 
   config.git.add_repo do |rc|
     rc.target = "git@github.com:duck1123/jiksnu-command.git"
-    rc.path = "/vagrant/checkouts/jiksnu-command"
-    rc.branch = "edge"
+    rc.path = "checkouts/jiksnu-command"
+    rc.branch = "master"
     rc.clone_in_host = true
   end
 
