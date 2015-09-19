@@ -17,7 +17,7 @@
             [jiksnu.registry :as registry]
             jiksnu.modules.core.formats
             jiksnu.modules.core.views
-            [jiksnu.modules.http.routes :as r]
+            [jiksnu.modules.http.resources :refer [groups resources]]
             [jiksnu.modules.web.helpers :as helpers]
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
@@ -52,7 +52,7 @@
               "http"
               ;; "https"
               ]
-    :groups (update-groups @r/groups @r/resources)
+    :groups (update-groups @groups @resources)
     :documenters [swagger-doc schema-doc schema-root-doc])
   site)
 
@@ -91,7 +91,7 @@
   (load-routes)
   (set-site)
   (add-watch
-   r/resources
+   resources
    :site (fn [k r os ns]
            (log/info "refreshing site")
            (set-site))))

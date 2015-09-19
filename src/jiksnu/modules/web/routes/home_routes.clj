@@ -3,8 +3,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.site-actions :as site]
-            [jiksnu.modules.http.resources :refer [defresource defgroup]]
-            [jiksnu.modules.http.routes :as r]
+            [jiksnu.modules.http.resources :refer [defresource defgroup resources]]
             [jiksnu.modules.web.helpers :as helpers
              :refer [angular-resource]]
             [octohipster.mixins :as mixin
@@ -33,12 +32,12 @@
   :exists?     (fn [ctx]
                  {:data (site/status (:request ctx))}))
 
-(defresource root resources
+(defresource root resources-page
   :name "Resources"
   :url "/resources"
   :mixins [item-resource]
   :available-media-types ["text/html"]
-  :exists? (fn [ctx] {:data (str @r/resources )}))
+  :exists? (fn [ctx] {:data (str @resources )}))
 
 (defresource root settings
   :url "/main/settings"

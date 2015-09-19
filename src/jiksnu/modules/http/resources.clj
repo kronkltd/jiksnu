@@ -1,7 +1,12 @@
 (ns jiksnu.modules.http.resources
   (:require [clojure.tools.logging :as log]
-            [jiksnu.modules.http.routes :as r]
             [octohipster.core :as octo]))
+
+(defonce groups
+  ;; "Ref holding each api group"
+  (ref {}))
+
+(defonce resources (ref {}))
 
 (defmacro defresource
   [group name & opts]
@@ -12,7 +17,7 @@
        ~@opts)
 
      (dosync
-      (alter r/resources assoc-in [(var ~group) (var ~name)] ~name))))
+      (alter resources assoc-in [(var ~group) (var ~name)] ~name))))
 
 
 (defmacro defgroup
@@ -23,5 +28,5 @@
        ~@opts)
 
      (dosync
-      (alter r/groups assoc (var ~name) ~name))))
+      (alter groups assoc (var ~name) ~name))))
 
