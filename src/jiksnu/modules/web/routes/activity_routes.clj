@@ -21,10 +21,14 @@
   :url "/activities")
 
 (defresource activities collection
+  :name "List Activities"
   :mixins [angular-resource])
 
 (defresource activities resource
   :url "/{_id}"
+  :parameters {"_id" {:name "Activity ID"
+                      :in :path
+                      :description "The ID of the activity"}}
   :mixins [angular-resource])
 
 ;; =============================================================================

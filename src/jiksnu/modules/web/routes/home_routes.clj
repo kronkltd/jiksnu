@@ -11,11 +11,13 @@
              :refer [item-resource]]))
 
 (defgroup root
+  :name "Root"
   :url ""
   :summary "Root")
 
 (defresource root home
   :url "/"
+  :name "Home"
   :summary "home page"
   :mixins [angular-resource]
   :doc {:get {:nickname "home-page"
@@ -23,6 +25,7 @@
 
 (defresource root status
   :url "/status"
+  :name "Status"
   :summary "Site Status"
   :description "Contains base data used to initialize the front-end application"
   :mixins [item-resource]
@@ -30,12 +33,14 @@
              {:data (site/status (:request ctx))}))
 
 (defresource root resources
+  :name "Resources"
   :url "/resources"
   :mixins [item-resource]
   :available-media-types ["text/html"]
   :exists? (fn [ctx] {:data (str @r/resources )}))
 
 (defresource root register
+  :name "Register"
   :url "/register"
   :summary "Register user"
   ;; :mixins [item-resource]
