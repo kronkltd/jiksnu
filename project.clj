@@ -76,7 +76,7 @@
                                        :pretty-print true}}
 
 }}
-  :hooks [leiningen.cljsbuild]
+  ;; :hooks [leiningen.cljsbuild]
   :aliases {"karma" ["shell" "./node_modules/karma-cli/bin/karma" "start"]
             "protractor" ["shell" "./node_modules/protractor/bin/protractor" "protractor-config.js"]
             "protractor-start" ["shell" "./node_modules/protractor/bin/webdriver-manager" "start"]
