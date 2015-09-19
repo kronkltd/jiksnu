@@ -30,7 +30,8 @@
 ;; =============================================================================
 
 (defgroup users
-  :url "/main/users")
+  :url "/main/users"
+  :description "Routes related to users")
 
 (defresource users collection
   :desc "Collection route for users"
@@ -38,6 +39,7 @@
 
 (defresource users resource
   :url "/{_id}"
+  :description "show a user"
   :mixins [angular-resource])
 
 
