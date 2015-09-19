@@ -13,7 +13,7 @@
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
-            [lamina.core :as l]
+            [manifold.deferred :as d]
             [midje.sweet :refer :all]))
 
 (namespace-state-changes
@@ -51,7 +51,7 @@
             (session/with-user actor
               (filter-action action request)) => map?
               #_(provided
-                (ops/get-discovered anything) => (l/success-result
+                (ops/get-discovered anything) => (d/success-deferred
                                                   (model/map->Domain
                                                    {:_id domain-name}))))))))
 
