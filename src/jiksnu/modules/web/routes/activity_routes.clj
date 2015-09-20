@@ -35,6 +35,8 @@
   :parameters {:_id (path :model.activity/id)}
   :mixins [angular-resource])
 
+(add-group! jiksnu activities)
+
 ;; =============================================================================
 
 (defgroup activities-api

@@ -13,7 +13,7 @@
   [group resource-name & opts]
   `(do
      (declare ~resource-name)
-     (log/debugf "defining resource: %s" (var ~resource-name))
+     #_(log/debugf "defining resource: %s(%s)" ~group ~resource-name)
      (octo/defresource ~resource-name
        ~@opts)
 
@@ -23,13 +23,15 @@
 
 (defmacro defgroup
   [group-name & opts]
-  `(do
-     (declare ~group-name)
-     (octo/defgroup ~group-name
-       ~@opts)
+  (let [resources-sym (symbol (str group-name "-resources"))]
+    `(do
+       (declare ~group-name)
+       (defonce ~resources-sym (ref []))
+       #_(octo/defgroup ~group-name
+           ~@opts)
 
-     (dosync
-      (alter groups conj (var ~group-name)))))
+            (dosync
+             (alter groups conj (var ~group-name))))))
 
 (defn init-site-reloading!
   [f]
@@ -44,12 +46,15 @@
   (map
    (fn [gvar]
      (log/debug (str "Processing Group: " gvar))
-     (let [group (log/spy :info (var-get gvar))
-           group-resources (map val (get resources gvar))]
-       (doseq [r group-resources]
-         (log/debug (str "- " (:id r))))
-       (assoc group :resources group-resources)))
+     (let [options (log/spy :info (var-get gvar))
+           group-resources (map val (get resources gvar))
+           options (assoc options :resources group-resources)]
+       (octo/group options)))
    groups))
+
+(defn add-group!
+  [site group]
+  (log/infof "adding group %s %s" site group))
 
 (defmacro defsite
   [site-name & {:as opts}]
@@ -57,19 +62,16 @@
         resource-sym (symbol (str site-name "-resources"))
         group-sym (symbol (str site-name "-groups"))
         options (merge {:name (str site-name)
-                        :groups @groups
-                        } opts)]
+                        :groups @groups}
+                       opts)]
     `(do
        (def ~site-name ~options)
        (declare ~route-sym)
        (defonce ~group-sym (ref []))
        (defonce ~resource-sym (ref []))
-       (let [body ~(->> (update-groups (:groups options) resources)
-                        (assoc options :groups)
-                        (mapcat identity)
-                        (log/spy :info))
-             f# (fn []
-                  (let [routes# (octo-routes/routes body)]
+       (let [f# (fn []
+                  (let [body# (assoc ~options :groups (update-groups @~group-sym @~resource-sym))
+                        routes# (octo-routes/routes body#)]
                     (def ~route-sym routes#)))]
          (init-site-reloading! f#)
          (f#)))))
