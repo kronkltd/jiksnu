@@ -17,7 +17,7 @@
             [jiksnu.registry :as registry]
             jiksnu.modules.core.formats
             jiksnu.modules.core.views
-            [jiksnu.modules.http.resources :refer [groups resources]]
+            [jiksnu.modules.http.resources :refer [defsite groups resources]]
             [jiksnu.modules.web.helpers :as helpers]
             [jiksnu.modules.web.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
@@ -43,18 +43,15 @@
   (doseq [group registry/action-group-names]
     (helpers/load-group group)))
 
-(defn set-site
-  []
-  (defroutes site
-    :name "Jiksnu"
-    :description "Jiksnu Social Networking"
-    :schemes [
-              "http"
-              ;; "https"
-              ]
-    :groups (update-groups @groups @resources)
-    :documenters [swagger-doc schema-doc schema-root-doc])
-  site)
+(defsite jiksnu
+  :description "Jiksnu Social Networking"
+  :schemes [
+            "http"
+            ;; "https"
+            ]
+  :groups (update-groups @groups @resources)
+  :documenters [swagger-doc schema-doc schema-root-doc])
+
 
 (def auth-config
   {:credential-fn actions.auth/check-credentials
@@ -75,23 +72,16 @@
                        (fn [status]
                          (actions.stream/handle-closed request channel status))))))
 
+
+
 (def app
   (-> (routes
        async-handler
        (route/resources "/")
        (GET "/templates/*" [] #'helpers/serve-template)
-       (-> #'site
+       (-> #'jiksnu-routes
            (friend/authenticate auth-config)
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info
       wrap-content-type
       wrap-not-modified))
-
-(definitializer
-  (load-routes)
-  (set-site)
-  (add-watch
-   resources
-   :site (fn [k r os ns]
-           (log/info "refreshing site")
-           (set-site))))
