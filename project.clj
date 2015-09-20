@@ -40,6 +40,8 @@
                  [ring/ring-core "1.4.0"]
                  [ring-basic-authentication "1.0.5"]
                  [slingshot "0.12.2"]
+                 [mvxcvi/whidbey "1.0.0"]
+
                  [xerces/xercesImpl "2.11.0"]]
   :plugins [[lein-cljsbuild "1.0.6"]
             [codox          "0.8.12"]

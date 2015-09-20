@@ -69,6 +69,11 @@
         (log/error ex)
         (throw+ ex)))))
 
+(defn load-routes
+  []
+  (doseq [group registry/action-group-names]
+    (load-group group)))
+
 (defn make-matchers
   [handlers]
   (log/debug "making matchers")

@@ -8,7 +8,6 @@
             jiksnu.modules.core.views.group-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
-            [jiksnu.modules.web.routes :as r]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.Group))
 

@@ -1,10 +1,6 @@
 (ns jiksnu.modules.web.routes
   (:require [cemerick.friend :as friend]
-            [cemerick.friend.credentials :as creds]
             [cemerick.friend.workflows :as workflows]
-            [ciste.initializer :refer [definitializer]]
-            [ciste.middleware :as middleware]
-            [ciste.routes :refer [resolve-routes]]
             [clojure.tools.logging :as log]
             [compojure.core :refer [GET routes]]
             [compojure.handler :as handler]
@@ -12,46 +8,17 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.db :refer [_db]]
-            [jiksnu.model :as model]
+            [jiksnu.modules.http.resources :refer [defsite groups resources update-groups]]
             [jiksnu.modules.web.middleware :as jm]
-            [jiksnu.registry :as registry]
-            jiksnu.modules.core.formats
-            jiksnu.modules.core.views
-            [jiksnu.modules.http.resources :refer [defsite groups resources]]
             [jiksnu.modules.web.helpers :as helpers]
-            [jiksnu.modules.web.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
-            [jiksnu.util :as util]
             [octohipster.documenters.schema :refer [schema-doc schema-root-doc]]
             [octohipster.documenters.swagger :refer [swagger-doc]]
-            [octohipster.routes :refer [defroutes update-groups]]
             [org.httpkit.server :as server]
-            [ring.middleware.file :refer [wrap-file]]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.file-info :refer [wrap-file-info]]
-            [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
-            [ring.middleware.resource :refer [wrap-resource]]
-            [monger.ring.session-store :as ms]
-            [slingshot.slingshot :refer [throw+]]))
-
-(declare app)
-(declare site)
-
-(defn load-routes
-  []
-  (doseq [group registry/action-group-names]
-    (helpers/load-group group)))
-
-(defsite jiksnu
-  :description "Jiksnu Social Networking"
-  :schemes [
-            "http"
-            ;; "https"
-            ]
-  :groups (update-groups @groups @resources)
-  :documenters [swagger-doc schema-doc schema-root-doc])
-
+            [monger.ring.session-store :as ms]))
 
 (def auth-config
   {:credential-fn actions.auth/check-credentials
@@ -72,7 +39,10 @@
                        (fn [status]
                          (actions.stream/handle-closed request channel status))))))
 
-
+(defsite jiksnu
+  :description "Jiksnu Social Networking"
+  :schemes ["http"]
+  :documenters [swagger-doc schema-doc schema-root-doc])
 
 (def app
   (-> (routes
