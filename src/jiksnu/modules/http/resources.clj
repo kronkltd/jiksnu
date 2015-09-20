@@ -53,6 +53,6 @@
        (let [f#
              (fn []
                (octo-routes/defroutes ~route-sym
-                 ~@options))]
+                 ~@(log/spy :info (mapcat identity options))))]
          (init-site-reloading! f#)
          (f#)))))

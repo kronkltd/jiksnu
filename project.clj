@@ -45,6 +45,7 @@
             [codox          "0.8.12"]
             [lein-lesscss   "1.2"]
             [lein-midje     "3.1.3"]
+            [mvxcvi/whidbey "1.0.0"]
             [cider/cider-nrepl "0.10.0-SNAPSHOT"]
             ]
   :cljsbuild {:repl-listen-port 9001
