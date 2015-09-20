@@ -51,22 +51,25 @@
        (assoc group :resources group-resources)))
    groups))
 
-
-
 (defmacro defsite
   [site-name & {:as opts}]
   (let [route-sym (symbol (str site-name "-routes"))
+        resource-sym (symbol (str site-name "-resources"))
+        group-sym (symbol (str site-name "-groups"))
         options (merge {:name (str site-name)
                         :groups @groups
                         } opts)]
     `(do
        (def ~site-name ~options)
-       #_(let [f#
-             (fn []
-               (octo-routes/defroutes ~route-sym
-                 ~@(->> (update-groups (:groups options) resources)
+       (declare ~route-sym)
+       (defonce ~group-sym (ref []))
+       (defonce ~resource-sym (ref []))
+       (let [body ~(->> (update-groups (:groups options) resources)
                         (assoc options :groups)
                         (mapcat identity)
-                        (log/spy :info))))]
+                        (log/spy :info))
+             f# (fn []
+                  (let [routes# (octo-routes/routes body)]
+                    (def ~route-sym routes#)))]
          (init-site-reloading! f#)
          (f#)))))
