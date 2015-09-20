@@ -1,6 +1,7 @@
 (ns jiksnu.modules.http.resources
   (:require [clojure.tools.logging :as log]
-            [octohipster.core :as octo]))
+            [octohipster.core :as octo]
+            [octohipster.routes :as octo-routes]))
 
 (defonce groups
   ;; "Ref holding each api group"
@@ -51,7 +52,7 @@
        (def ~site-name ~options)
        (let [f#
              (fn []
-               (octo/defroutes ~route-sym
+               (octo-routes/defroutes ~route-sym
                  ~@options))]
          (init-site-reloading! f#)
          (f#)))))
