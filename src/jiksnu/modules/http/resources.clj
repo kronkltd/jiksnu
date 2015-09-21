@@ -67,10 +67,10 @@
 
 (defmacro defsite
   [site-name & {:as opts}]
-  (let [route-sym (symbol (str site-name "-routes"))
+  (let [route-sym    (symbol (str site-name "-routes"))
         resource-sym (symbol (str site-name "-resources"))
-        group-sym (symbol (str site-name "-groups"))
-        init-sym (symbol (str site-name "-init"))
+        group-sym    (symbol (str site-name "-groups"))
+        init-sym     (symbol (str site-name "-init"))
         options (merge {:name (str site-name)
                         :groups @groups}
                        opts)]
