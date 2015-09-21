@@ -13,7 +13,7 @@
   [group resource-name & opts]
   `(do
      (declare ~resource-name)
-     #_(log/debugf "defining resource: %s(%s)" ~group ~resource-name)
+     (log/debugf "defining resource: %s(%s)" (var ~group) ~(symbol resource-name))
      (octo/defresource ~resource-name
        ~@opts)
 
@@ -49,11 +49,21 @@
        (octo/group options)))
    groups))
 
+(defn get-route
+  [site-var]
+  (let [m (meta site-var)]
+    (var-get (ns-resolve (:ns m) (symbol (str (:name m) "-routes"))))))
+
+(defn get-groups
+  [site-var]
+  (let [m (meta site-var)]
+    (var-get (ns-resolve (:ns m) (symbol (str (:name m) "-groups"))))))
+
 (defn add-group!
   [site group]
   (log/infof "adding group %s %s" site group)
-
-  )
+  (dosync
+   (alter (get-groups site) conj group)))
 
 (defmacro defsite
   [site-name & {:as opts}]
