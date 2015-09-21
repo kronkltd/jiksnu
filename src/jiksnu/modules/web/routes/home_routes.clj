@@ -3,7 +3,8 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.site-actions :as site]
-            [jiksnu.modules.http.resources :refer [defresource defgroup resources]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
+            [jiksnu.modules.http.resources :refer [add-group! defresource defgroup resources]]
             [jiksnu.modules.web.helpers :as helpers
              :refer [angular-resource]]
             [octohipster.mixins :as mixin
@@ -47,6 +48,7 @@
   :doc {:get {:nickname "settings-page"
               :summary "Settings Page"}})
 
+(add-group! #'jiksnu #'root)
 
 
 ;; (defresource root register

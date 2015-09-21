@@ -22,23 +22,20 @@
 
 
 (defmacro defgroup
-  [group-name & opts]
+  [group-name & {:as opts}]
   (let [resources-sym (symbol (str group-name "-resources"))]
     `(do
-       (declare ~group-name)
+       (def ~group-name ~opts)
        (defonce ~resources-sym (ref []))
-       #_(octo/defgroup ~group-name
-           ~@opts)
-
-            (dosync
-             (alter groups conj (var ~group-name))))))
+       (dosync
+        (alter groups conj (var ~group-name))))))
 
 (defn init-site-reloading!
   [f]
   (add-watch
    resources
    :site (fn [k r os ns]
-           (log/info "refreshing site")
+           (log/debug "refreshing site")
            (f))))
 
 (defn update-groups
@@ -54,13 +51,16 @@
 
 (defn add-group!
   [site group]
-  (log/infof "adding group %s %s" site group))
+  (log/infof "adding group %s %s" site group)
+
+  )
 
 (defmacro defsite
   [site-name & {:as opts}]
   (let [route-sym (symbol (str site-name "-routes"))
         resource-sym (symbol (str site-name "-resources"))
         group-sym (symbol (str site-name "-groups"))
+        init-sym (symbol (str site-name "-init"))
         options (merge {:name (str site-name)
                         :groups @groups}
                        opts)]
@@ -69,9 +69,10 @@
        (declare ~route-sym)
        (defonce ~group-sym (ref []))
        (defonce ~resource-sym (ref []))
-       (let [f# (fn []
-                  (let [body# (assoc ~options :groups (update-groups @~group-sym @~resource-sym))
-                        routes# (octo-routes/routes body#)]
-                    (def ~route-sym routes#)))]
-         (init-site-reloading! f#)
-         (f#)))))
+       (def ~init-sym (fn []
+                        (let [groups# (update-groups @~group-sym @~resource-sym)
+                              body# (assoc ~options :groups groups#)]
+                          (log/debugf "Creating Site. Groups %s" (count groups#))
+                          (let [routes# (octo-routes/routes body#)]
+                            (def ~route-sym routes#)))))
+       (~init-sym))))

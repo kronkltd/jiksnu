@@ -5,7 +5,8 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
 
@@ -35,7 +36,7 @@
   :parameters {:_id (path :model.activity/id)}
   :mixins [angular-resource])
 
-(add-group! jiksnu activities)
+(add-group! #'jiksnu #'activities)
 
 ;; =============================================================================
 
