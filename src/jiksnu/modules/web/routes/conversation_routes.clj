@@ -91,16 +91,6 @@
 
 ;; =============================================================================
 
-(defn routes
-  []
-  [
-   ;; [[:get "/main/conversations.:format"] #'conversation/index]
-   ;; [[:get "/main/conversations"] #'conversation/index]
-   ;; [[:get "/main/conversations/:id.:format"]  #'conversation/show]
-   ;; [[:get "/main/conversations/:id"]  #'conversation/show]
-   ;; [[:get "/model/conversations/:id"] #'conversation/show]
-   ])
-
 (defn pages
   []
   [

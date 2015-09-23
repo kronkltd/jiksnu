@@ -81,22 +81,6 @@
   :available-media-types ["application/json"]
   :handle-ok actions.domain/host-meta)
 
-(defn routes
-  []
-  [
-   ;; [[:get    "/.well-known/host-meta.:format"]   #'actions.domain/show]
-   ;; [[:get    "/.well-known/host-meta"]           {:action #'actions.domain/show
-   ;;                                                :format :xrd}]
-   ;; [[:get    "/main/domains.:format"]            #'actions.domain/index]
-   ;; [[:get    "/main/domains"]                    #'actions.domain/index]
-   ;; [[:get    "/main/domains/:id.:format"]        #'actions.domain/show]
-   ;; [[:get    "/main/domains/:id"]                #'actions.domain/show]
-   ;; [[:delete "/main/domains/*"]                  #'actions.domain/delete]
-   ;; [[:post   "/main/domains/:id/edit"]           #'actions.domain/edit-page]
-   ;; [[:post   "/main/domains"]                    #'actions.domain/find-or-create]
-   ;; [[:get    "/api/dialback"]                    #'actions.domain/dialback]
-   ])
-
 (defn pages
   []
   [

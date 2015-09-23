@@ -84,23 +84,6 @@
 
 ;; =============================================================================
 
-(defn routes
-  []
-  [
-   [[:post   "/api/statuses/update.:format"]   #'actions.activity/post]
-   [[:get    "/api/statuses/show/:id.:format"] #'actions.activity/show]
-   ;; [[:get    "/main/oembed"]                   #'actions.activity/oembed]
-   [[:get    "/notice/:id.:format"]            #'actions.activity/show]
-   [[:get    "/notice/:id"]                    #'actions.activity/show]
-   [[:post   "/notice/new"]                    #'actions.activity/post]
-   [[:post   "/notice/:id"]                    #'actions.activity/edit]
-   [[:delete "/notice/:id.:format"]            #'actions.activity/delete]
-   [[:delete "/notice/:id"]                    #'actions.activity/delete]
-   ;; [[:get    "/notice/:id/edit"]               #'actions.activity/edit-page]
-   ;; [[:get    "/model/activities/:id"]          #'actions.activity/show]
-   ;; [[:get "/main/events"]                      #'actions.activity/stream]
-   ])
-
 (defn pages
   []
   [

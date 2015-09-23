@@ -24,11 +24,3 @@
   :mixins [mixin/item-resource]
   :exists? (fn [ctx]
              {:data (setting/config-output)}))
-
-(defn routes
-  []
-  [[[:get "/api/statusnet/config.:format"] #'setting/config-output]
-   [[:get "/settings/avatar"]              #'setting/avatar-page]
-   [[:get "/settings/oauthapps"]           #'setting/oauth-apps]])
-
-

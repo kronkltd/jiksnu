@@ -10,26 +10,18 @@
 
 (defgroup client-api
   :name "Client API"
-  :url "/api/client"
-)
+  :url "/api/client")
 
 (defresource client-api :register
   :url "/register"
   :methods {:get {:summary "Register Client"}
-            :post {:summary "Register Client"}
-            }
+            :post {:summary "Register Client"}}
   :allowed-methods [:get :post]
   ;; :mixins [mixin/item-resource]
   :exists? (fn [ctx]
              {:data (log/spy :info (actions.client/register (log/spy :info (:params (:request ctx)))))})
   :post! (fn [ctx]
            true #_{:data (actions.client/register (log/spy :info (:params (:request ctx))))}))
-
-(defn routes
-  []
-  [[[:post "/api/client/register"]           {:action #'actions.client/register
-                                              :format :json}]]
-  )
 
 (defn pages
   []
