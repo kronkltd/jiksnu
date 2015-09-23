@@ -7,6 +7,7 @@
             jiksnu.modules.core.views.activity-views
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path subpage-resource]]
             [octohipster.mixins :as mixin])
   (:import jiksnu.model.Conversation))

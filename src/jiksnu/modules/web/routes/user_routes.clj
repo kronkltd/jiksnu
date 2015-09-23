@@ -13,6 +13,7 @@
             jiksnu.modules.core.filters.stream-filters
             jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
                                                 path subpage-resource]]
             [liberator.core :as lib]

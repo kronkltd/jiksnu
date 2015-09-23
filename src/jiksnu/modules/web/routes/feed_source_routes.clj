@@ -2,6 +2,7 @@
   (:require [jiksnu.actions.feed-source-actions :as feed-source]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
 

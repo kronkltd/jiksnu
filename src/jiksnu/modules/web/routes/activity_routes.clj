@@ -26,6 +26,8 @@
   :name "Activities"
   :url "/activities")
 
+(add-group! #'jiksnu #'activities)
+
 (defresource activities :collection
   :methods {:get {:summary "Index Activities Page"}}
   :mixins [angular-resource])
@@ -36,13 +38,14 @@
   :parameters {:_id (path :model.activity/id)}
   :mixins [angular-resource])
 
-(add-group! #'jiksnu #'activities)
 
 ;; =============================================================================
 
 (defgroup activities-api
   :name "Activities API"
   :url "/model/activities")
+
+(add-group! #'jiksnu #'activities-api)
 
 (defn activities-api-post
   [ctx]

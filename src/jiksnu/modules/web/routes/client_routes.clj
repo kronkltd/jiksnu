@@ -3,6 +3,7 @@
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers
              :refer [angular-resource page-resource]]
             [octohipster.mixins :as mixin]))

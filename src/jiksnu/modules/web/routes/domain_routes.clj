@@ -6,6 +6,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers
              :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))

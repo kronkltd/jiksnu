@@ -4,6 +4,7 @@
                                                      update-record]]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
 

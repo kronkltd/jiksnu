@@ -2,20 +2,17 @@
   (:require [cemerick.friend :as friend]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as auth]
-            [jiksnu.modules.http.resources
-             :refer [defresource defgroup]]
-            [jiksnu.modules.web.helpers
-             :refer [angular-resource page-resource]]
-            [liberator.representation :refer [
-                                              as-response
-                                              ring-response
-                                              ]]
+            [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
+            [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]))
 
 (defgroup auth
   :name "Authentication"
-  :description "Authentication routes"
-  )
+  :description "Authentication routes")
+
+(add-group! #'jiksnu #'auth)
 
 (defresource auth :register
   :url "/main/register"
