@@ -8,7 +8,6 @@
              :refer [angular-resource page-resource]]
             [octohipster.mixins :as mixin]))
 
-
 (defgroup client-api
   :name "Client API"
   :url "/api/client")
@@ -23,10 +22,3 @@
              {:data (log/spy :info (actions.client/register (log/spy :info (:params (:request ctx)))))})
   :post! (fn [ctx]
            true #_{:data (actions.client/register (log/spy :info (:params (:request ctx))))}))
-
-(defn pages
-  []
-  [
-   [{:name "clients"} {:action #'actions.client/index}]
-   ]
-  )

@@ -61,4 +61,3 @@
   :url "/api/account/verify_credentials.json"
   :exists? (fn [ctx]
              {:data (auth/verify-credentials)}))
-

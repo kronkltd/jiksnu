@@ -38,11 +38,3 @@
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.resource-actions)
-
-;; =============================================================================
-
-(defn pages
-  []
-  [
-   [{:name "resources"}    {:action #'index}]
-   ])

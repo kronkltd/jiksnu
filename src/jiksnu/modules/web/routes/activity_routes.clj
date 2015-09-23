@@ -38,7 +38,6 @@
   :parameters {:_id (path :model.activity/id)}
   :mixins [angular-resource])
 
-
 ;; =============================================================================
 
 (defgroup activities-api
@@ -62,8 +61,7 @@
   :available-formats [:json]
   :allowed-methods [:get :post]
   :methods {:get {:summary "Index Activities"}
-            :post {:summary "Create Activity"}
-            }
+            :post {:summary "Create Activity"}}
   :post! activities-api-post
   :schema activity-schema
   :ns 'jiksnu.actions.activity-actions)
@@ -81,15 +79,5 @@
              (let [id (-> ctx :request :route-params :_id)
                    activity (model.activity/fetch-by-id id)]
                {:data activity}))
-  :delete! #'actions.activity/delete
   ;; :put!    #'actions.activity/update-record
-  )
-
-;; =============================================================================
-
-(defn pages
-  []
-  [
-   [{:name "activities"}    {:action #'actions.activity/index}]
-   ])
-
+  :delete! #'actions.activity/delete)

@@ -88,18 +88,3 @@
   ;; :delete! #'actions.conversation/delete
   ;; :put!    #'actions.conversation/update-record
   )
-
-
-;; =============================================================================
-
-(defn pages
-  []
-  [
-   [{:name "conversations"}    {:action #'conversation/index}]
-   ])
-
-(defn sub-pages
-  []
-  [
-   [{:type Conversation :name "activities"} {:action #'activity/fetch-by-conversation}]
-   ])

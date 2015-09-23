@@ -55,18 +55,3 @@
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)]
                {:data (model.group/fetch-by-id id)})))
-
-;; =============================================================================
-
-(defn pages
-  []
-  [
-   [{:name "groups"}    {:action #'group/index}]
-   ])
-
-(defn sub-pages
-  []
-  [
-   [{:type Group :name "admins"}        {:action #'group/fetch-admins}]
-   [{:type Group :name "conversations"} {:action #'conversation/fetch-by-group}]
-  ])

@@ -35,11 +35,3 @@
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.feed-source-actions)
-
-;; =============================================================================
-
-(defn pages
-  []
-  [
-   [{:name "feed-sources"}    {:action #'feed-source/index}]
-   ])

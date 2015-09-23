@@ -61,11 +61,3 @@
   ;; :delete! #'actions.stream/delete
   ;; :put!    #'actions.stream/update-record
   )
-
-(defn pages
-  []
-  [
-   [{:name "public-timeline"} {:action #'actions.stream/public-timeline}]
-   [{:name "streams"}         {:action #'actions.stream/index}]
-   ])
-

@@ -86,13 +86,10 @@
         domain (:domain user)
         display-name (str "Activities for " username)
         outbox-url (format outbox-pattern domain username)
-        links {
-               :first {:href outbox-url}
+        links {:first {:href outbox-url}
                :self {:href outbox-url}
-               :prev {
-                      ;; TODO: add a since link
-                      :href outbox-url
-                      }}]
+               ;; TODO: add a since link
+               :prev {:href outbox-url}}]
     (-> (index-section (:items page) page)
         (assoc :displayName display-name)
         (assoc :links links)
@@ -111,11 +108,7 @@
   :presenter
   (fn [rsp]
     (with-context [:http :as]
-      (present-outbox rsp)
-      )))
-
-
-
+      (present-outbox rsp))))
 
 ;; =============================================================================
 
@@ -197,25 +190,4 @@
                           (-> (index-section items page))
                           {}))
                        (assoc :displayName "Streams"))
-                   page
-                   ))))
-
-;; =============================================================================
-
-(defn pages
-  []
-  [
-   [{:name "users"}         {:action #'user/index}]
-   ])
-
-(defn sub-pages
-  []
-  [
-   [{:type User :name "activities"}       {:action #'stream/user-timeline}]
-   [{:type User :name "subscriptions"}    {:action #'actions.subscription/get-subscriptions}]
-   [{:type User :name "subscribers"}      {:action #'actions.subscription/get-subscribers}]
-   [{:type User :name "streams"}          {:action #'stream/fetch-by-user}]
-   [{:type User :name "groups"}           {:action #'group/fetch-by-user}]
-   [{:type User :name "outbox"}           {:action #'stream/outbox}]
-
-   ])
+                   page))))

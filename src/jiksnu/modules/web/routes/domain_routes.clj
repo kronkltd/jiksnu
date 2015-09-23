@@ -81,9 +81,3 @@
   :summary "Webfinger Host Meta Document"
   :available-media-types ["application/json"]
   :handle-ok actions.domain/host-meta)
-
-(defn pages
-  []
-  [
-   [{:name "domains"}    {:action #'actions.domain/index}]
-   ])
