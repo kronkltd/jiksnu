@@ -26,8 +26,6 @@
   :name "Activities"
   :url "/activities")
 
-(add-group! #'jiksnu #'activities)
-
 (defresource activities :collection
   :methods {:get {:summary "Index Activities Page"}}
   :mixins [angular-resource])

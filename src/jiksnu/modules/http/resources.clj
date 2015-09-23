@@ -15,10 +15,10 @@
     (var-get (ns-resolve (:ns m) (symbol (str (:name m) "-groups"))))))
 
 (defn add-group!
-  [site group]
-  (log/infof "adding group %s %s" site group)
+  [site-var group-var]
+  (log/infof "adding group %s %s" site-var group-var)
   (dosync
-   (alter (get-groups site) conj group)))
+   (alter (get-groups site-var) conj group-var)))
 
 (defn get-resource
   [group-var resource-name]
@@ -67,14 +67,12 @@
   `(add-resource! (var ~group) ~resource-name (octo/resource ~options)))
 
 (defmacro defgroup
-  [site-var group-name & {:as opts}]
-  (let [resources-sym (symbol (str group-name "-resources"))]
+  [site-sym group-sym & {:as opts}]
+  (let [resources-sym (symbol (str group-sym "-resources"))]
     `(do
-       (def ~group-name ~opts)
+       (def ~group-sym ~opts)
        (defonce ~resources-sym (ref {}))
-       (add-group! ~site-var (var ~group-name))
-       (dosync
-        (alter groups conj (var ~group-name))))))
+       (add-group! (var ~site-sym) (var ~group-sym)))))
 
 (defmacro defsite
   [site-name & {:as opts}]

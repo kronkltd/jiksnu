@@ -66,7 +66,7 @@
       (trigger-on-loaded! route-sym)
       (load-routes! route-sym)
       (catch Exception ex
-        (log/error ex)
+        #_(log/error ex)
         #_(throw+ ex)))))
 
 (defn load-routes
