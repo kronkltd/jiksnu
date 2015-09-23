@@ -15,7 +15,7 @@
   :url ""
   :summary "Root")
 
-(defresource root home
+(defresource root :home
   :name        "Home"
   :url         "/"
   :summary     "home page"
@@ -24,7 +24,7 @@
   :doc         {:get {:nickname "home-page"
                       :summary "Home Page"}})
 
-(defresource root status
+(defresource root :status
   :name        "Status"
   :url         "/status"
   :summary     "Site Status"
@@ -33,14 +33,14 @@
   :exists?     (fn [ctx]
                  {:data (site/status (:request ctx))}))
 
-(defresource root resources-page
+(defresource root :resources
   :name "Resources"
   :url "/resources"
   :mixins [item-resource]
   :available-media-types ["text/html"]
   :exists? (fn [ctx] {:data (str @resources )}))
 
-(defresource root settings
+(defresource root :settings
   :url "/main/settings"
   :name "Settings Page"
   :summary "settings page"

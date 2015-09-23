@@ -17,11 +17,11 @@
   :name "Resources"
   :url "/main/resources")
 
-(defresource resources collection
+(defresource resources :collection
   :desc "Collection route for resources"
   :mixins [angular-resource])
 
-(defresource resources resource
+(defresource resources :item
   :name "Show Resource"
   :url "/{_id}"
   :parameters {:_id (path :model.resource/id)}
@@ -33,7 +33,7 @@
   :name "Resource API"
   :url "/model/resources")
 
-(defresource resources-api collection
+(defresource resources-api :collection
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.resource-actions)

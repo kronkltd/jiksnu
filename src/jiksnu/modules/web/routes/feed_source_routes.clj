@@ -15,11 +15,11 @@
   :name "Feed Sources"
   :url "/main/feed-sources")
 
-(defresource feed-sources collection
+(defresource feed-sources :collection
   :desc "Collection route for feed-sources"
   :mixins [angular-resource])
 
-(defresource feed-sources resource
+(defresource feed-sources :item
   :url "/{_id}"
   :parameters {:_id (path :model.feed-source/id)}
   :mixins [angular-resource])
@@ -30,7 +30,7 @@
   :name "Feed Sources API"
   :url "/model/feed-sources")
 
-(defresource feed-sources-api collection
+(defresource feed-sources-api :collection
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.feed-source-actions)

@@ -20,16 +20,21 @@
   (dosync
    (alter (get-groups site) conj group)))
 
+(defn get-resource
+  [group-var resource-name]
+  ;; TODO: implement
+  )
+
 (defn get-resources
   [group-var]
   (let [m (meta group-var)]
     (var-get (ns-resolve (:ns m) (symbol (str (:name m) "-resources"))))))
 
 (defn add-resource!
-  [group resource]
-  (log/infof "adding resource %s %s" group resource)
+  [group-var resource-name resource]
+  (log/infof "adding resource %s(%s)" group-var resource-name)
   (dosync
-   (alter (get-resources group) conj resource)))
+   (alter (get-resources group-var) assoc resource-name resource)))
 
 (defn get-route
   [site-var]
@@ -50,28 +55,23 @@
    (fn [gvar]
      (log/debug (str "Processing Group: " gvar))
      (let [options (log/spy :info (var-get gvar))
-           group-resources (map var-get @(get-resources gvar))
+           group-resources (map val @(get-resources gvar))
            options (assoc options :resources (log/spy :info group-resources))]
 
        (octo/group options)))
    groups))
 
 (defmacro defresource
-  [group resource-name & opts]
-  (let []
-   `(do
-      (declare ~resource-name)
-      (log/debugf "defining resource: %s(%s)" (var ~group) ~(symbol resource-name))
-      (octo/defresource ~resource-name
-        ~@opts)
-      (add-resource! (var ~group) (var ~resource-name)))))
+  [group resource-name & {:as options}]
+  (log/debugf "defining resource: %s(%s)" group resource-name)
+  `(add-resource! (var ~group) ~resource-name (octo/resource ~options)))
 
 (defmacro defgroup
   [group-name & {:as opts}]
   (let [resources-sym (symbol (str group-name "-resources"))]
     `(do
        (def ~group-name ~opts)
-       (defonce ~resources-sym (ref []))
+       (defonce ~resources-sym (ref {}))
        (dosync
         (alter groups conj (var ~group-name))))))
 

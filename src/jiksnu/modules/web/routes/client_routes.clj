@@ -13,7 +13,7 @@
   :url "/api/client"
 )
 
-(defresource client-api register
+(defresource client-api :register
   :url "/register"
   :methods {:get {:summary "Register Client"}
             :post {:summary "Register Client"}

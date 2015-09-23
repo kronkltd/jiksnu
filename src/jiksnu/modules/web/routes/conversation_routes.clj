@@ -27,12 +27,12 @@
   :name "Conversations"
   :url "/main/conversations")
 
-(defresource conversations collection
+(defresource conversations :collection
   :summary "Index Conversations"
   :desc "collection of conversations"
   :mixins [angular-resource])
 
-(defresource conversations resource
+(defresource conversations :resource
   :mixins [angular-resource]
   :parameters {:_id (path :model.conversation/id)}
   :url "/{_id}")
@@ -49,12 +49,12 @@
   :name "Conversations API"
   :url "/model/conversations")
 
-(defresource conversations-api collection
+(defresource conversations-api :collection
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.conversation-actions)
 
-(defresource conversations-api api-item
+(defresource conversations-api :item
   :desc "Resource routes for single Conversation"
   :url "/{_id}"
   :parameters {:_id (path :model.conversation/id)}
@@ -69,7 +69,7 @@
   ;; :put!    #'actions.conversation/update-record
   )
 
-(defresource conversations-api activities-stream
+(defresource conversations-api :activities-stream
   :desc "Activities related to a conversation"
   :url "/{_id}/activities"
   :parameters {:_id (path :model.conversation/id)}

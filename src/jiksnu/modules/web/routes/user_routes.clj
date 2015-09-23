@@ -42,12 +42,12 @@
   :name "Users"
   :description "Routes related to users")
 
-(defresource users collection
+(defresource users :collection
   :name "list users"
   :desc "Collection route for users"
   :mixins [angular-resource])
 
-(defresource users resource
+(defresource users :resource
   :url "/{_id}"
   :name "show user"
   :description "show a user"
@@ -62,7 +62,7 @@
   :description "User api matching pump.io spec")
 
 
-(defresource user-pump-api user-profile
+(defresource user-pump-api :profile
   :url "/{username}/profile"
   :name "user profile"
   :mixins [mixin/item-resource]
@@ -97,7 +97,7 @@
         (assoc :links links)
         (assoc :url outbox-url))))
 
-(defresource user-pump-api user-outbox
+(defresource user-pump-api :outbox
   :url "/{username}/outbox"
   :mixins [subpage-resource]
   :name "user outbox"
@@ -122,12 +122,12 @@
   :name "Users API"
   :url "/model/users")
 
-(defresource users-api collection
+(defresource users-api :collection
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.user-actions)
 
-(defresource users-api item
+(defresource users-api :item
   :desc "Resource routes for single User"
   :url "/{_id}"
   :name "user routes"
@@ -140,7 +140,7 @@
                (when-let [user (model.user/fetch-by-id id)]
                  {:data user}))))
 
-(defresource users-api groups-collection
+(defresource users-api :groups
   :url "/{_id}/groups"
   :name "user groups"
   :mixins [subpage-resource]
@@ -158,7 +158,7 @@
                          {})
                        (assoc :displayName "Groups"))))))
 
-(defresource users-api followers-collection
+(defresource users-api :followers
   :url "/{_id}/followers"
   :mixins [mixin/item-resource]
   :parameters {:_id  (path :model.user/id)}
@@ -169,7 +169,7 @@
                  (let [[_ page] (actions.subscription/get-subscribers user)]
                    {:data page})))))
 
-(defresource users-api following-collection
+(defresource users-api :following
   :url "/{_id}/following"
   :parameters {:_id  (path :model.user/id)}
   :mixins [mixin/item-resource]
@@ -180,7 +180,7 @@
                  (let [[_ page] (actions.subscription/get-subscriptions user)]
                    {:data page})))))
 
-(defresource users-api streams-collection
+(defresource users-api :streams
   :url "/{_id}/streams"
   :mixins [subpage-resource]
   :parameters {:_id (path :model.user/id)}

@@ -21,20 +21,20 @@
   :name "Domains"
   :url "/main/domains")
 
-(defresource domains collection
+(defresource domains :collection
   :desc "collection of domains"
   :summary "Index Domains"
   :mixins [angular-resource])
 
-;; (defresource domains discover
+;; (defresource domains :discover
 ;;   :url "/{_id}/discover"
 ;;   :post actions.service/discover)
 
-;; (defresource domains edit
+;; (defresource domains :edit
 ;;   :url "/{_id}/edit"
 ;;   :handle-ok actions.domain/edit-page)
 
-(defresource domains resource
+(defresource domains :item
   :summary "Show Domain"
   :url "/{_id}"
   :parameters {:_id (path :model.domain/id)}
@@ -48,12 +48,12 @@
   :name "Domains API"
   :url "/model/domains")
 
-(defresource domains-api collection-api
+(defresource domains-api :collection
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.domain-actions)
 
-(defresource domains-api api-item
+(defresource domains-api :item
   :desc "Resource routes for single Domain"
   :url "/{_id}"
   :parameters {:_id (path :model.domain/id)}
@@ -75,7 +75,7 @@
   :name "Well Known"
   :summary "Well Known")
 
-(defresource well-known host-meta
+(defresource well-known :host-meta
   :url "/host-meta"
   :summary "Webfinger Host Meta Document"
   :available-media-types ["application/json"]

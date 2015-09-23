@@ -7,7 +7,7 @@
   :name "Statusnet API"
   :url "/api/statusnet")
 
-(defresource statusnet config
+(defresource statusnet :config
   :name        "Config"
   :url         "/config.json"
   :description "Config for interop with statusnet")
@@ -17,7 +17,7 @@
   :name "Settings API"
   :url "/model/settings")
 
-(defresource settings-api item
+(defresource settings-api :item
   :name "Settings"
   :url ""
   :available-media-types ["application/json"]

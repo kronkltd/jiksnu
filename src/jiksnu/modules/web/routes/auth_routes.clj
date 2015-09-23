@@ -17,12 +17,12 @@
   :description "Authentication routes"
   )
 
-(defresource auth register-page
+(defresource auth :register
   :url "/main/register"
   :methods {:get {:summary "Register Page"}}
   :mixins [angular-resource])
 
-(defresource auth login
+(defresource auth :login
   :url "/main/login"
   :mixins [angular-resource]
   :allowed-methods [:get :post]
@@ -47,7 +47,7 @@
                      (:request ctx)
                      {:body "ok"})))
 
-(defresource auth logout
+(defresource auth :logout
   :url                   "/main/logout"
   :allowed-methods       [:post]
   :available-media-types ["application/json"]
@@ -59,7 +59,7 @@
                     (ring-response
                      (friend/logout* (as-response {:data "ok"} ctx)))))
 
-(defresource auth verify-credentials
+(defresource auth :verify
   :methods {:get {:summary "Verify Credentials"}}
   :url "/api/account/verify_credentials.json"
   :exists? (fn [ctx]

@@ -21,10 +21,10 @@
   :url "/main/groups"
   :name "Groups")
 
-(defresource groups collection
+(defresource groups :collection
   :mixins [angular-resource])
 
-(defresource groups resource
+(defresource groups :item
   :url "/{_id}"
   :parameters {:_id (path :model.group/id)}
   :mixins [angular-resource])
@@ -39,12 +39,12 @@
   :name "Groups API"
   :url "/model/groups")
 
-(defresource groups-api collection
+(defresource groups-api :collection
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.group-actions)
 
-(defresource groups-api item
+(defresource groups-api :item
   :desc "Resource routes for single Group"
   :url "/{_id}"
   :parameters {:_id (path :model.group/id)}

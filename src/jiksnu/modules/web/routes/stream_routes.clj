@@ -17,10 +17,10 @@
   :name "Streams"
   :url "/main/streams")
 
-(defresource streams collection
+(defresource streams :collection
   :mixins [angular-resource])
 
-(defresource streams resource
+(defresource streams :item
   :url "/{_id}"
   :parameters {:_id (path :model.stream/id)}
   :mixins [angular-resource])
@@ -31,7 +31,7 @@
   :name "Streams API"
   :url "/model/streams")
 
-(defresource streams-api api-collection
+(defresource streams-api :collection
   :desc "Collection route for streams"
   :mixins [page-resource]
   :available-formats [:json]
@@ -46,7 +46,7 @@
   ;; :schema stream-schema
   :ns 'jiksnu.actions.stream-actions)
 
-(defresource streams-api api-item
+(defresource streams-api :item
   :desc "Resource routes for single Stream"
   :url "/{_id}"
   :parameters {:_id (path :model.stream/id)}
