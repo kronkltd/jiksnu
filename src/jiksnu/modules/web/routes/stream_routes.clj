@@ -14,7 +14,7 @@
   :description "The Id of an stream"
   :type "string")
 
-(defgroup streams
+(defgroup jiksnu streams
   :name "Streams"
   :url "/main/streams")
 
@@ -28,7 +28,7 @@
 
 ;; =============================================================================
 
-(defgroup streams-api
+(defgroup jiksnu streams-api
   :name "Streams API"
   :url "/model/streams")
 

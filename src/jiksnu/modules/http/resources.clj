@@ -67,11 +67,12 @@
   `(add-resource! (var ~group) ~resource-name (octo/resource ~options)))
 
 (defmacro defgroup
-  [group-name & {:as opts}]
+  [site-var group-name & {:as opts}]
   (let [resources-sym (symbol (str group-name "-resources"))]
     `(do
        (def ~group-name ~opts)
        (defonce ~resources-sym (ref {}))
+       (add-group! ~site-var (var ~group-name))
        (dosync
         (alter groups conj (var ~group-name))))))
 

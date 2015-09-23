@@ -14,7 +14,7 @@
 
 ;; =============================================================================
 
-(defgroup resources
+(defgroup jiksnu resources
   :name "Resources"
   :url "/main/resources")
 
@@ -30,7 +30,7 @@
 
 ;; =============================================================================
 
-(defgroup resources-api
+(defgroup jiksnu resources-api
   :name "Resource API"
   :url "/model/resources")
 

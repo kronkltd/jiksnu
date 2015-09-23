@@ -12,7 +12,7 @@
 
 ;; =============================================================================
 
-(defgroup feed-sources
+(defgroup jiksnu feed-sources
   :name "Feed Sources"
   :url "/main/feed-sources")
 
@@ -27,7 +27,7 @@
 
 ;; =============================================================================
 
-(defgroup feed-sources-api
+(defgroup jiksnu feed-sources-api
   :name "Feed Sources API"
   :url "/model/feed-sources")
 

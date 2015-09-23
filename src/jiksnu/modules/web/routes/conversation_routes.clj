@@ -24,7 +24,7 @@
 
 ;; =============================================================================
 
-(defgroup conversations
+(defgroup jiksnu conversations
   :name "Conversations"
   :url "/main/conversations")
 
@@ -40,13 +40,13 @@
 
 ;; =============================================================================
 
-(defgroup conversations-pump-api
+(defgroup jiksnu conversations-pump-api
   :name "Pump API - Conversations"
   :url "/api/conversations")
 
 ;; =============================================================================
 
-(defgroup conversations-api
+(defgroup jiksnu conversations-api
   :name "Conversations API"
   :url "/model/conversations")
 

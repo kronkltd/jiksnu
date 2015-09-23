@@ -38,7 +38,7 @@
 
 ;; =============================================================================
 
-(defgroup users
+(defgroup jiksnu users
   :url "/main/users"
   :name "Users"
   :description "Routes related to users")
@@ -57,7 +57,7 @@
 
 ;; =============================================================================
 
-(defgroup user-pump-api
+(defgroup jiksnu user-pump-api
   :url "/api/user"
   :name "Pump API"
   :description "User api matching pump.io spec")
@@ -112,7 +112,7 @@
 
 ;; =============================================================================
 
-(defgroup users-api
+(defgroup jiksnu users-api
   :name "Users API"
   :url "/model/users")
 

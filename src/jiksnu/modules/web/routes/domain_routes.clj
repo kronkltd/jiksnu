@@ -18,7 +18,7 @@
 
 ;; =============================================================================
 
-(defgroup domains
+(defgroup jiksnu domains
   :name "Domains"
   :url "/main/domains")
 
@@ -45,7 +45,7 @@
 
 ;; =============================================================================
 
-(defgroup domains-api
+(defgroup jiksnu domains-api
   :name "Domains API"
   :url "/model/domains")
 
@@ -71,7 +71,7 @@
 
 ;; =============================================================================
 
-(defgroup well-known
+(defgroup jiksnu well-known
   :url "/.well-known"
   :name "Well Known"
   :summary "Well Known")

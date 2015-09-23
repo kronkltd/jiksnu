@@ -18,7 +18,7 @@
 
 ;; =============================================================================
 
-(defgroup groups
+(defgroup jiksnu groups
   :url "/main/groups"
   :name "Groups")
 
@@ -36,7 +36,7 @@
 
 ;; =============================================================================
 
-(defgroup groups-api
+(defgroup jiksnu groups-api
   :name "Groups API"
   :url "/model/groups")
 

@@ -10,7 +10,7 @@
             [octohipster.mixins :as mixin
              :refer [item-resource]]))
 
-(defgroup root
+(defgroup jiksnu root
   :name "Root"
   :url ""
   :summary "Root")
@@ -47,9 +47,6 @@
   :mixins [angular-resource]
   :doc {:get {:nickname "settings-page"
               :summary "Settings Page"}})
-
-(add-group! #'jiksnu #'root)
-
 
 ;; (defresource root register
 ;;   :name "Register"

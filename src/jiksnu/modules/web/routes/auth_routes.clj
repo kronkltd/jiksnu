@@ -8,11 +8,9 @@
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]))
 
-(defgroup auth
+(defgroup jiksnu auth
   :name "Authentication"
   :description "Authentication routes")
-
-(add-group! #'jiksnu #'auth)
 
 (defresource auth :register
   :url "/main/register"

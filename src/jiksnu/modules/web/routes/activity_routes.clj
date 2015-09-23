@@ -22,7 +22,7 @@
 
 ;; =============================================================================
 
-(defgroup activities
+(defgroup jiksnu activities
   :name "Activities"
   :url "/activities")
 
@@ -40,11 +40,9 @@
 
 ;; =============================================================================
 
-(defgroup activities-api
+(defgroup jiksnu activities-api
   :name "Activities API"
   :url "/model/activities")
-
-(add-group! #'jiksnu #'activities-api)
 
 (defn activities-api-post
   [ctx]

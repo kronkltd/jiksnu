@@ -8,7 +8,7 @@
              :refer [angular-resource page-resource]]
             [octohipster.mixins :as mixin]))
 
-(defgroup client-api
+(defgroup jiksnu client-api
   :name "Client API"
   :url "/api/client")
 

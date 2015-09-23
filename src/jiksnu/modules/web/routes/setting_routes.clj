@@ -4,7 +4,7 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [octohipster.mixins :as mixin]))
 
-(defgroup statusnet
+(defgroup jiksnu statusnet
   :name "Statusnet API"
   :url "/api/statusnet")
 
