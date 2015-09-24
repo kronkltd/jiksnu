@@ -11,6 +11,7 @@
             [jiksnu.modules.web.core :as core]
             [jiksnu.modules.web.middleware :as jm]
             [jiksnu.modules.web.helpers :as helpers]
+            [jiksnu.modules.web.routes.pages :as pages]
             [jiksnu.session :as session]
             [org.httpkit.server :as server]
             [ring.middleware.content-type :refer [wrap-content-type]]
@@ -48,3 +49,6 @@
       wrap-file-info
       wrap-content-type
       wrap-not-modified))
+
+(helpers/load-pages! 'jiksnu.modules.web.routes.pages)
+(helpers/load-sub-pages! 'jiksnu.modules.web.routes.pages)

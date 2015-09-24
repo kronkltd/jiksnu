@@ -54,10 +54,9 @@
   (map
    (fn [gvar]
      (log/debug (str "Processing Group: " gvar))
-     (let [options (log/spy :info (var-get gvar))
+     (let [options (var-get gvar)
            group-resources (map val @(get-resources gvar))
-           options (assoc options :resources (log/spy :info group-resources))]
-
+           options (assoc options :resources group-resources)]
        (octo/group options)))
    groups))
 
