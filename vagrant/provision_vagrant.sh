@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/env sh
 
 if [ -f "bin/lein" ]
 then
