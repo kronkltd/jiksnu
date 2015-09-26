@@ -9,6 +9,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.web.middleware :as m]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
@@ -35,6 +36,7 @@
         response-for) =>
         (contains {:status status/success?
                    :headers (contains {"Content-Type" "application/json"})})
+
         #_(let [response ]
             (let [body (json/read-str (:body response) :key-fn keyword)]
               body => map?
@@ -51,9 +53,7 @@
               ;; Optional
               ;; (:client_secret body) => string?
               ;; (:client_secret_expires_at body) => number?
-
-        )
-      ))
+        )))
 
 
 (fact "route: oauth/access-token :get"
@@ -78,8 +78,7 @@
                        response-for)]
 
       (fact "should be successful"
-        (:status response) => status/success?)
-      ))
+        (:status response) => status/success?))))
 
 
 

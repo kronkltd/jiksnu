@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.auth-routes-test
   (:require [clj-factory.core :refer [fseq]]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.user-actions :as actions.user]
@@ -24,7 +25,7 @@
                          (string/join "&"))
                     "UTF-8"))))
 
-(future-fact "login"
+(future-fact "route: auth/login :post"
   (fact "when given correct parameters"
     (db/drop-all!)
     (let [username (fseq :username)
