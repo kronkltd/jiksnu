@@ -100,7 +100,6 @@
 
    ;; [[:get    "/api/people/@me/@all/:id"]        #'user/show]
    ;; [[:get    "/main/profile"]                   #'user/profile]
-   ;; [[:get    "/main/register"]                  #'user/register-page]
    ;; [[:get    "/main/xrd"]                       #'user/user-meta]
    ;; [[:get    "/model/users/:id"]                #'user/show]
    ;; [[:get    "/users"]                          #'user/index]

@@ -67,12 +67,6 @@
       (throw+ "Password and confirm password do not match"))
     (throw+ "you didn't check the box")))
 
-;; register-page
-
-(deffilter #'actions.user/register-page :http
-  [action request]
-  (action))
-
 ;; show
 
 (deffilter #'actions.user/show :http
