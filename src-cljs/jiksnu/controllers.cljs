@@ -43,19 +43,19 @@
 
 (def.controller jiksnu.FollowButtonController
   [$scope app Users]
-  (! $scope.app app)
-  (! $scope.followLabel "Follow")
-  (! $scope.isFollowing
+  (aset $scope "app" app)
+  (aset $scope "followLabel" "Follow")
+  (aset $scope "isFollowing"
      (fn []
        (and (not (.isActor $scope))
             ;; TODO: write follow checking code
             )))
-  (! $scope.isActor
+  (aset $scope "isActor"
      (fn []
        (let [item-id (.-_id (.-item $scope))
              user-id (.-_id (.-user app))]
          (= item-id user-id))))
-  (! $scope.submit
+  (aset $scope "submit"
      (fn []
        (js/console.log "Submit button pressed" app)
        (let [item (.-item $scope)]
@@ -65,24 +65,24 @@
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
-  (! $scope.groups (clj->js helpers/nav-info)))
+  (aset $scope "groups" (clj->js helpers/nav-info)))
 
 (def.controller jiksnu.ListFollowersController
   [$scope subpageService Users]
-  (! $scope.formShown false)
-  (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
+  (aset $scope "formShown" false)
+  (aset $scope "toggle" (fn [] (! $scope.formShown (not (? $scope.formShown)))))
   (helpers/init-subpage $scope subpageService Users "followers"))
 
 (def.controller jiksnu.ListFollowingController
   [$scope subpageService Users]
-  (! $scope.formShown false)
-  (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
+  (aset $scope "formShown" false)
+  (aset $scope "toggle" (fn [] (! $scope.formShown (not (? $scope.formShown)))))
   (helpers/init-subpage $scope subpageService Users "following"))
 
 (def.controller jiksnu.ListGroupsController
   [$scope subpageService Users]
-  (! $scope.formShown false)
-  (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
+  (aset $scope "formShown" false)
+  (aset $scope "toggle" (fn [] (! $scope.formShown (not (? $scope.formShown)))))
   (helpers/init-subpage $scope subpageService Users "groups"))
 
 (def.controller jiksnu.ListStreamsController

@@ -59,12 +59,15 @@
 
 (defn get-user
   [app]
-  (let [username (? app.data.user)
-        domain (? app.data.domain)
-        id (str "acct:" username "@" domain)
-        Users (? app.di.Users)]
-    (js/console.log "getting user: " id)
-    (.find Users id)))
+  (if-let [username (? app.data.user)]
+    (let [domain (? app.data.domain)
+          id (str "acct:" username "@" domain)
+          Users (? app.di.Users)]
+      (js/console.log "getting user: " id)
+      (.find Users id))
+    (let [d (.defer (.-$q (.-di app)))]
+      (.resolve d nil)
+      (.-promise d))))
 
 (defn following?
   [app target]
@@ -99,13 +102,14 @@
    })
 
 (defn app-service
-  [$http ws $state notify Users]
+  [$http $q $state notify Users ws]
   (let [app (obj)]
     (! app.di (obj :$http $http
-                   :ws ws
+                   :$q $q
                    :$state $state
                    :notify notify
-                   :Users Users))
+                   :Users Users
+                   :ws ws))
     (! app.data (obj))
 
     (doseq [[n f] app-methods]
@@ -120,4 +124,4 @@
 (def.provider jiksnu.app
   []
   (obj
-   :$get (arr "$http" "ws" "$state" "notify" "Users" app-service)))
+   :$get (arr "$http" "$q" "$state" "notify" "Users" "ws" app-service)))
