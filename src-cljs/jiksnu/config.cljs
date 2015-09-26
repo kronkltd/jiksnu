@@ -2,30 +2,22 @@
   (:require jiksnu.app
             [jiksnu.helpers :as helpers]
             jiksnu.providers)
-  (:use-macros [gyr.core :only [def.config]]
-               [purnam.core :only [? ?> ! !> f.n def.n do.n
-                                   obj arr def* do*n def*n f*n]]))
+  (:use-macros [gyr.core :only [def.config]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
                     appProvider wsProvider
                     DSProvider]
 
-  (.setUrl wsProvider (str "ws"
-                           (when (= (? js/window.location.protocol) "https:")
-                             "s")
-                           "://"
-                           (? js/window.location.host)
-                           "/"))
-
+  (if-let [location js/window.location]
+    (let [scheme (str "ws" (when (= (.-protocol location) "https") "s"))
+          host (.-host location)]
+      (.setUrl wsProvider (str scheme "://" host "/")))
+    (throw (js/Exception. "No location available")))
 
   ;; (js/console.log (.-defaults DSProvider))
-  (.extend js/angular (.-defaults DSProvider) (obj
-                                               :idAttribute "_id"
-                                               :basePath "/model"
-                                               ))
-
-  ;; (! DSProvider.defaults.idAttribute "_id")
-  ;; (! DSProvider.defaults.basePath "/model")
+  (js/angular.extend (.-defaults DSProvider) (js-obj
+                                              "idAttribute" "_id"
+                                              "basePath" "/model"))
 
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider
