@@ -11,10 +11,6 @@
   (-> request :args first Integer/parseInt action)
   true)
 
-
-
-
-
 (deffilter #'index :http
   [action request]
   (action))
