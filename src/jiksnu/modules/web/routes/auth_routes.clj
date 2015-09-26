@@ -15,27 +15,24 @@
   :name "Authentication"
   :description "Authentication routes")
 
+
 (defresource auth :register
   :url "/main/register"
   :allowed-methods [:get :post]
   :methods {:get {:summary "Register Page"
                   :state "registerPage"}
             :post {:summary "Do Register"
-                   :parameters {
-                                :username {:in :formData
-                                           :type "string"}}}}
+                   :parameters {:username {:in :formData
+                                           :type "string"}}
+                   :response {"409" {:description "Username conflict"}}}}
   :mixins [angular-resource]
   :parameters {}
-
   :post! (fn [ctx]
-           (try+ {:data (actions.user/register (:params (:request ctx)))}
-                 (catch [:type :conflict] ex
-                   (log/spy :info &throw-context)
-                   (log/spy :info {:status 409
-                     :body (log/spy :info ex)
-                     })
-                   )
-                 )))
+           (log/spy :info
+                    (try+ {:data (actions.user/register (:params (:request ctx)))}
+                          (catch [:type :conflict] ex
+                            ;; (log/spy :info &throw-context)
+                            (ring-response (:msg ex) {:status 409}))))))
 
 (defresource auth :login
   :url "/main/login"

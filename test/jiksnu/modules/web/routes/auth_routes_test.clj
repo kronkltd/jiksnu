@@ -42,12 +42,15 @@
         (:body response) => string?))))
 
 (fact "route: auth/register :post"
-  (fact "With correct parameters, form encoded"
-    (let [params {:username ""
-                  :password ""
-                  :confirmPassword ""
-
-                  }
-          request (-> (req/request :post "/main/register")
-                      (add-form-params params))]
-      (response-for request) => nil)))
+  (let [username (fseq :username)
+        password (fseq :password)
+        params {:username        (fseq :username)
+                :password        password
+                :confirmPassword password}
+        request (-> (req/request :post "/main/register")
+                    (add-form-params params))]
+    (fact "With correct parameters, form encoded"
+      (response-for request) => (contains {:status 201}))
+    (fact "When a user with that username already exists"
+      (mock/a-user-exists {:username username})
+      (response-for request) => (contains {:status 409}))))
