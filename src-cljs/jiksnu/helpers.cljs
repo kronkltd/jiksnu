@@ -112,7 +112,7 @@
 
 (defn fetch-sub-page
   [item subpageService subpage]
-  ;; (.log js/console "Fetching subpage:" item subpage)
+  ;; (js/console.log "Fetching subpage:" item subpage)
   (-> subpageService
       (.fetch item subpage)
       (.then (fn [response] (aset item subpage (? response.body))))))
@@ -121,7 +121,7 @@
   [$scope subpageService collection subpage]
   (! $scope.init
      (fn [item subpage]
-       (.debug js/console "init subpage" subpage (type item))
+       (js/console.debug "init subpage" subpage (type item))
        (-> (.fetch subpageService item subpage)
            (.then (fn [page] (aset item subpage page))))))
   (if-let [item (.-item $scope)]
@@ -129,7 +129,7 @@
     (if-let [id (.-id $scope)]
       (-> (.find collection id)
           (.fhen (fn [item] (.init $scope item subpage))))
-      (.error js/console "Couldn't determine item id"))))
+      (js/console.error "Couldn't determine item id"))))
 
 (defn init-page
   [$scope $rootScope pageService subpageService page-type subpages]
@@ -139,7 +139,7 @@
   (! $scope.loaded false)
   (! $scope.init
      (fn []
-       (.debug js/console "Loading page: " page-type)
+       (js/console.debug "Loading page: " page-type)
        (-> pageService
            (.fetch page-type)
            (.then (fn [page]
@@ -155,12 +155,12 @@
   [$scope $http]
   (let [user (? $scope.user)
         stream-name (? $scope.stream.name)]
-    (.log js/console "Adding Stream: " user stream-name)
+    (js/console.log "Adding Stream: " user stream-name)
     (-> (.post $http "/model/stream"
                (obj :actor (.-_id user)
                     :name stream-name))
         (.then (fn [res]
-                 (.info js/console "got response" res))))))
+                 (js/console.info "got response" res))))))
 
 
 (defn setup-hotkeys

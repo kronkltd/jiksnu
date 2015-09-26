@@ -34,10 +34,10 @@
   [$scope Users]
   (! $scope.init
      (fn [id]
-       (.debug js/console "Displaying avatar for " id)
+       (js/console.debug "Displaying avatar for " id)
        (when (and id (not= id ""))
          (! $scope.size 32)
-         (.info js/console "binding user" id)
+         (js/console.info "binding user" id)
          (.bindOne Users id $scope "user")
          (.find Users id)))))
 
@@ -57,7 +57,7 @@
          (= item-id user-id))))
   (! $scope.submit
      (fn []
-       (.log js/console "Submit button pressed" app)
+       (js/console.log "Submit button pressed" app)
        (let [item (.-item $scope)]
          (if (.isFollowing $scope)
            (.follow app item)
@@ -113,7 +113,7 @@
 
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
-  (.log js/console "Loading NavBarController")
+  (js/console.log "Loading NavBarController")
   (! $scope.loaded false)
   (helpers/setup-hotkeys hotkeys $state)
 
@@ -121,7 +121,7 @@
            (fn []  (.-data app))
            (fn [d]
              (when (.-loaded $scope)
-               (.log js/console "Running navbarcontroller watcher")
+               (js/console.log "Running navbarcontroller watcher")
                (! $scope.app d)
                (-> (.getUser app)
                    (.then (fn [user] (! app.user user)))))))
@@ -131,7 +131,7 @@
 
   (-> (.fetchStatus app)
       (.then (fn []
-               (.log js/console "Status Loaded")
+               (js/console.log "Status Loaded")
                (! $scope.loaded true)))))
 
 (def.controller jiksnu.NewPostController
@@ -157,13 +157,13 @@
                                    (.push streams id)))))
     (aset $scope "fetchStreams" (fn [] (-> (.getUser app)
                                           (.then (fn [user]
-                                                   (.log js/console "Got User" user)
+                                                   (js/console.log "Got User" user)
                                                    (-> (.getStreams user)
                                                        (.then (fn [streams]
-                                                                (.log js/console "Got Streams" streams)
+                                                                (js/console.log "Got Streams" streams)
                                                                 (! $scope.streams streams)))))))))
     (aset $scope "toggle"       (fn []
-                                  (.debug js/console "Toggling New Post form")
+                                  (js/console.debug "Toggling New Post form")
                                   (! $scope.form.shown (not $scope.form.shown))
                                   (when (? $scope.form.shown)
                                     (.fetchStreams $scope))))
@@ -181,8 +181,10 @@
   [$http $scope]
   (! $scope.register
      (fn []
-       (.log js/console "Registering" (? $scope.reg))
-       (.post $http "/register" $scope))))
+       (js/console.log "Registering" (? $scope.reg))
+       (-> (.post $http "/main/register" $scope)
+           (.then (fn [data]
+                    (js/console.log "Response" data)))))))
 
 (def.controller jiksnu.RightColumnController
   [$scope app]
@@ -218,7 +220,7 @@
 
 (def.controller jiksnu.ShowConversationController
   [$scope $stateParams Conversations app]
-  (.log js/console "loading ShowConversationController")
+  (js/console.log "loading ShowConversationController")
 
   (aset $scope "loaded" false)
   (aset $scope "init" (fn [id]
@@ -228,20 +230,20 @@
                             (.then (fn [] (aset $scope "loaded" true))))))
 
   (aset $scope "fetchActivities" (fn [conversation]
-                                   (.log js/console )
+                                   (js/console.log "fetch activities")
                                    (-> (.getActivities conversation)
                                        (.then  (fn [response]
-                                                 (.log js/console "Activities" response)
+                                                 (js/console.log "Activities" response)
                                                  (aset $scope "activities" (.-body response)))))))
 
   (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowGroupController
   [$scope $http $stateParams Groups]
-  (.log js/console "loading ShowGroupController")
+  (js/console.log "loading ShowGroupController")
   (aset $scope "loaded" false)
-  (aset $scope "addAdmin" (fn [& opts] (.log js/console opts)))
-  (aset $scope "addMember" (fn [& opts] (.log js/console opts)))
+  (aset $scope "addAdmin" (fn [& opts] (js/console.log opts)))
+  (aset $scope "addMember" (fn [& opts] (js/console.log opts)))
   (aset $scope "init"
         (fn [id]
           (.bindOne Groups id $scope "group")
@@ -279,7 +281,7 @@
     (! $scope.init
        (fn [id]
          (! $scope.loaded false)
-         (.info js/console "binding user" id)
+         (js/console.info "binding user" id)
          (.bindOne Users id $scope "user")
          (-> (.find Users id)
              (.then (fn [user] (! $scope.loaded true))))))

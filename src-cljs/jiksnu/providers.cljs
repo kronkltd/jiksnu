@@ -24,7 +24,7 @@
 
 (defn login
   [app username password]
-  (.info js/console "Logging in user." username password)
+  (js/console.info "Logging in user." username password)
   (let [data (.param js/$ (obj :username username
                                :password password))]
     (-> (? app.di.$http)
@@ -54,7 +54,7 @@
 
 (defn post
   [app activity]
-  (.info js/console "Posting Activity" activity)
+  (js/console.info "Posting Activity" activity)
   (?> app.di.$http.post "/model/activities" activity))
 
 (defn get-user
@@ -63,7 +63,7 @@
         domain (? app.data.domain)
         id (str "acct:" username "@" domain)
         Users (? app.di.Users)]
-    (.log js/console "getting user: " id)
+    (js/console.log "getting user: " id)
     (.find Users id)))
 
 (defn following?
@@ -71,20 +71,16 @@
   (-> (.getUser app)
       (.then (fn [user]
                (let [response (= (? user._id) (? target._id))]
-                 (.log js/console "following?" response)
-                 response
-                 )))))
+                 (js/console.log "following?" response)
+                 response)))))
 
 (defn follow
   [app target]
-  (.log js/console "follow" target)
-  )
+  (js/console.log "follow" target))
 
 (defn unfollow
   [app target]
-  (.log js/console "unfollow" target)
-
-  )
+  (js/console.log "unfollow" target))
 
 (def app-methods
   {
