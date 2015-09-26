@@ -27,15 +27,11 @@
                         {:id (:name request)
                          :items (map :_id items)})]
     {:body {:action "sub-page-updated"
+            :title (str "Subscribers of " (:name user))
             :model "user"
+            :target (:_id user)
             :id (:_id (:item request))
             :body response}}))
-
-(defview #'actions.subscription/get-subscribers :viewmodel
-  [request [user {:keys [items] :as page}]]
-  {:body {:title (str "Subscribers of " (:name user))
-          :user (show-section user)
-          :pages {:subscribers (format-page-info page)}}})
 
 (defview #'actions.subscription/get-subscriptions :page
   [request [user page]]
@@ -45,15 +41,9 @@
                          :items (map :_id items)})]
     {:body {:action "sub-page-updated"
             :model "user"
+            :title (str "Subscriptions of " (:name user))
             :id (:_id (:item request))
             :body response}}))
-
-(defview #'actions.subscription/get-subscriptions :viewmodel
-  [request [user {:keys [items] :as page}]]
-  {:body
-   {:title (str "Subscriptions of " (:name user))
-    :targetUser (:_id user)
-    :pages {:subscriptions (format-page-info page)}}})
 
 (defview #'actions.subscription/index :page
   [request response]
@@ -62,12 +52,8 @@
                         {:id (:name request)
                          :items (map :_id items)})]
     {:body {:action "page-updated"
+            :title "Subscribe"
             :body response}}))
-
-(defview #'actions.subscription/ostatussub :viewmodel
-  [request _]
-  {:body
-   {:title "Subscribe"}})
 
 (defview #'actions.subscription/show :model
   [request item]

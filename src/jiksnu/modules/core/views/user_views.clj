@@ -12,22 +12,9 @@
                         {:id (:name request)
                          :items (map :_id items)})]
     {:body {:action "page-updated"
+            :title "Users"
             :body response}}))
-
-(defview #'actions.user/index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Users"
-          :pages {:users (format-page-info page)}}})
-
-(defview #'actions.user/register-page :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Register"}})
-
-(defview #'actions.user/profile :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Profile"}})
 
 (defview #'actions.user/show :model
   [request user]
   {:body (doall (show-section user))})
-

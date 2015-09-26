@@ -17,17 +17,6 @@
     {:body {:action "page-updated"
             :body response}}))
 
-(defview #'actions.resource/index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Resources"
-          :pages {:resources (format-page-info page)}}})
-
 (defview #'actions.resource/show :model
   [request item]
   {:body item})
-
-(defview #'actions.resource/show :viewmodel
-  [request item]
-  {:body {:targetResource (:_id item)
-          :title (or (:title item) "Resource")}})
-

@@ -20,29 +20,13 @@
   [items & [page]]
   (map #(admin-index-line % page) items))
 
-(defsection admin-index-block [Activity :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
-
 (defsection admin-index-section [Activity]
-  [items & [page]]
-  (admin-index-block items page))
-
-(defsection admin-index-section [Activity :viewmodel]
   [items & [page]]
   (admin-index-block items page))
 
 (defsection index-block [Activity]
   [items & [page]]
   (doall (map #(index-line % page) items)))
-
-(defsection index-block [Activity :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
 
 (defsection index-block [Activity :xml]
   [activities & _]
@@ -86,10 +70,6 @@
   ;; (dissoc activity :links)
   activity
   )
-
-;; (defsection show-section [Activity :viewmodel]
-;;   [activity & [page]]
-;;   (dissoc activity :links))
 
 (defsection show-section [Activity :xml]
   [activity & _]

@@ -29,14 +29,6 @@
             :id (:_id (:item request))
             :body response}}))
 
-(defview #'actions.stream/group-timeline :viewmodel
-  [request data]
-  (let [[group {:keys [items] :as page}] data]
-    {:body {:title (:nickname group)
-            :pages {:conversations (format-page-info page)}
-            :postForm {:visible true}
-            :targetGroup (:_id group)}}))
-
 (defview #'actions.stream/home-timeline :xml
   [request activities]
   {:body (index-section activities)})
@@ -66,14 +58,8 @@
                         {:id (:name request)
                          :items (map :_id items)})]
     {:body {:action "page-updated"
+            :title "Public Timeline"
             :body response}}))
-
-(defview #'actions.stream/public-timeline :viewmodel
-  [request {:keys [items] :as page}]
-  {:body
-   {:single false
-    :title "Public Timeline"
-    :postForm {:visible true}}})
 
 (defview #'actions.stream/public-timeline :xml
   [request {:keys [items] :as page}]
@@ -100,20 +86,12 @@
         response (merge page
                         {:id (:name request)
                          :items items})]
-    {:body {:action "sub-page-updated"
+    {:title (title user)
+     :body {:action "sub-page-updated"
             :model "user"
             :user user
             :id (:_id (:item request))
             :body response}}))
-
-(defview #'actions.stream/user-timeline :viewmodel
-  [request [user page]]
-  {:body
-   {:users (index-section [user])
-    :title (title user)
-    :pages {:conversations (format-page-info page)}
-    :targetUser (:_id user)
-    :activities (index-section (:items page))}})
 
 (defview #'actions.stream/user-timeline :xml
   [request [user activities]]

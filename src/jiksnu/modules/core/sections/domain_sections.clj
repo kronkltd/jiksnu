@@ -13,18 +13,6 @@
 
 ;; admin-index-block
 
-(defsection admin-index-block [Domain :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] {(:_id m) (admin-index-line m page)}))
-       (into {})))
-
-(defsection index-block [Domain :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
-
 (defsection show-section [Domain :jrd]
   [item & [page]]
   (let [id (:_id item)
@@ -35,10 +23,6 @@
               :title "Resource Descriptor"}]}))
 
 (defsection show-section [Domain :model]
-  [item & [page]]
-  item)
-
-(defsection show-section [Domain :viewmodel]
   [item & [page]]
   item)
 
