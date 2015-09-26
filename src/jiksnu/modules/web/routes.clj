@@ -49,9 +49,9 @@
       wrap-file-info
       wrap-content-type
       wrap-not-modified
-      ((fn [handler]
-         (fn [request]
-           (log/spy :info (handler (log/spy :info request))))))
+      ;; ((fn [handler]
+      ;;    (fn [request]
+      ;;      (log/spy :info (handler (log/spy :info request))))))
       ))
 
 (helpers/load-pages! 'jiksnu.modules.web.routes.pages)
