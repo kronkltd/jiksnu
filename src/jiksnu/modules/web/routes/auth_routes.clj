@@ -7,7 +7,9 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [liberator.representation :refer [as-response ring-response]]
-            [octohipster.mixins :as mixin]))
+            [octohipster.mixins :as mixin]
+            [slingshot.slingshot :refer [try+]]
+            ))
 
 (defgroup jiksnu auth
   :name "Authentication"
@@ -24,8 +26,16 @@
                                            :type "string"}}}}
   :mixins [angular-resource]
   :parameters {}
+
   :post! (fn [ctx]
-           (actions.user/register (:params (:request ctx)))))
+           (try+ {:data (actions.user/register (:params (:request ctx)))}
+                 (catch [:type :conflict] ex
+                   (log/spy :info &throw-context)
+                   (log/spy :info {:status 409
+                     :body (log/spy :info ex)
+                     })
+                   )
+                 )))
 
 (defresource auth :login
   :url "/main/login"
