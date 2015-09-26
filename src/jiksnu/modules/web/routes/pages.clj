@@ -39,14 +39,13 @@
 (defn sub-pages
   []
   [
-   [{:type User :name "activities"}       {:action #'stream/user-timeline}]
-   [{:type User :name "subscriptions"}    {:action #'subscription/get-subscriptions}]
-   [{:type User :name "subscribers"}      {:action #'subscription/get-subscribers}]
-   [{:type User :name "streams"}          {:action #'stream/fetch-by-user}]
-   [{:type User :name "groups"}           {:action #'group/fetch-by-user}]
-   [{:type User :name "outbox"}           {:action #'stream/outbox}]
+   [{:type User :name "activities"}         {:action #'stream/user-timeline}]
+   [{:type User :name "subscriptions"}      {:action #'subscription/get-subscriptions}]
+   [{:type User :name "subscribers"}        {:action #'subscription/get-subscribers}]
+   [{:type User :name "streams"}            {:action #'stream/fetch-by-user}]
+   [{:type User :name "groups"}             {:action #'group/fetch-by-user}]
+   [{:type User :name "outbox"}             {:action #'stream/outbox}]
    [{:type Conversation :name "activities"} {:action #'activity/fetch-by-conversation}]
-   [{:type Group :name "admins"}        {:action #'group/fetch-admins}]
-   [{:type Group :name "conversations"} {:action #'conversation/fetch-by-group}]
-
+   [{:type Group :name "admins"}            {:action #'group/fetch-admins}]
+   [{:type Group :name "conversations"}     {:action #'conversation/fetch-by-group}]
    ])
