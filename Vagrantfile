@@ -16,12 +16,6 @@ config.vm.network "private_network", type: "dhcp"
     end
   end
 
-  config.vm.provision :chef_solo do |chef|
-    chef.cookbooks_path = ["site-cookbooks", "cookbooks"]
-    chef.roles_path = "roles"
-    chef.data_bags_path = "data_bags"
-  end
-
   # config.vm.network "forwarded_port", guest: 8080, host: 8080
   # config.vm.network "forwarded_port", guest: 27017, host: 27017
   # config.vm.network "forwarded_port", guest: 7888, host: 7888
@@ -72,12 +66,31 @@ config.vm.network "private_network", type: "dhcp"
 
   config.vm.define :jiksnu, primary: true do |node|
     node.vm.hostname = 'jiksnu'
+
+    node.vm.provision :chef_solo do |chef|
+      chef.cookbooks_path = ["site-cookbooks", "cookbooks"]
+      chef.roles_path = "roles"
+      chef.data_bags_path = "data_bags"
+      chef.add_recipe 'mongodb'
+      chef.add_recipe 'java'
+      chef.add_recipe 'lein'
+      chef.add_recipe 'nginx'
+      chef.add_recipe 'nodejs'
+      chef.json = {
+        :java => {
+          :jdk_version => '7'
+        }
+      }
+    end
+
+
+
     # node.vm.provision "shell", name: "jiksnu-root", path: "vagrant/provision_jiksnu.sh"
-    # node.vm.provision "shell", name: "jiksnu-local", path: "vagrant/provision_vagrant.sh", privileged: false
+    node.vm.provision "shell", name: "jiksnu-local", path: "vagrant/provision_vagrant.sh", privileged: false
   end
 
-  config.vm.define :sentry do |node|
-    node.vm.hostname = 'sentry'
-    # node.vm.provision "shell", name: "sentry", path: "vagrant/provision_sentry.sh"
-  end
+  # config.vm.define :sentry do |node|
+  #   node.vm.hostname = 'sentry'
+  #   # node.vm.provision "shell", name: "sentry", path: "vagrant/provision_sentry.sh"
+  # end
 end

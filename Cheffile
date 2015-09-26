@@ -11,8 +11,11 @@ site 'https://supermarket.getchef.com/api/v1'
 #   :git => 'https://github.com/fnichol/chef-rvm'
 
 cookbook 'mongodb'
+cookbook 'java'
 cookbook 'lein'
 cookbook 'nginx'
+cookbook 'nodejs'
+# cookbook 'byobu'
 
 # cookbook 'postgresql',
 #   :git => 'https://github.com/findsyou/cookbooks',
