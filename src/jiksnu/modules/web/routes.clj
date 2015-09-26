@@ -13,6 +13,7 @@
             [jiksnu.modules.web.helpers :as helpers]
             [jiksnu.modules.web.routes.pages :as pages]
             [jiksnu.session :as session]
+            [liberator.dev :refer [wrap-trace]]
             [org.httpkit.server :as server]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.file-info :refer [wrap-file-info]]
@@ -44,6 +45,7 @@
        (route/resources "/")
        (GET "/templates/*" [] #'helpers/serve-template)
        (-> #'core/jiksnu-routes
+           (wrap-trace :header :ui)
            (friend/authenticate auth-config)
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info
