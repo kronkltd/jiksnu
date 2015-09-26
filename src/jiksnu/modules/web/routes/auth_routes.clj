@@ -14,14 +14,30 @@
 
 (defresource auth :register
   :url "/main/register"
-  :methods {:get {:summary "Register Page"}}
-  :mixins [angular-resource])
+  :allowed-methods [:get :post]
+  :methods {:get {:summary "Register Page"
+                  :state "registerPage"}
+            :post {:summary "Do Register"
+                   :parameters {
+                                :username {:in :formData
+                                           :type "string"
+                                           }
+                                }
+                   }}
+  :mixins [angular-resource]
+  :parameters {
+
+               }
+  :post! (fn [ctx]
+           (actions.user/register (:params (:request ctx))))
+  )
 
 (defresource auth :login
   :url "/main/login"
   :mixins [angular-resource]
   :allowed-methods [:get :post]
-  :methods {:get  {:summary "Login Page"}
+  :methods {:get  {:summary "Login Page"
+                   :state "loginPage"}
             :post {:summary "Do Login"
                    :parameters {:username {:in :formData
                                            :type "string"

@@ -14,6 +14,16 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
+(defn add-form-params
+  [request params]
+  (-> request
+      (assoc :content-type "application/x-www-form-urlencoded")
+      (assoc :body (.getBytes
+                    (->> params
+                         (map (fn [[k v]] (str (name k) "=" v)))
+                         (string/join "&"))
+                    "UTF-8"))))
+
 (future-fact "login"
   (fact "when given correct parameters"
     (db/drop-all!)
@@ -23,12 +33,7 @@
                                        :password password
                                        :accepted true})]
       (let [response (-> (req/request :post "/main/login")
-                         (assoc :content-type "application/x-www-form-urlencoded")
-                         (assoc :body
-                                (.getBytes
-                                 (str "username=" username
-                                      "&password=" password)
-                                 "UTF-8"))
+                         (add-form-params {:username username :password password})
                          response-for)]
         response => map?
         (get-in response [:headers "Set-Cookie"]) => truthy
@@ -36,3 +41,18 @@
         (:body response) => string?))))
 
 
+
+(fact "route: auth/register :post"
+  (fact "With correct parameters, form encoded"
+    (let [params {:username ""
+                  :password ""
+                  :confirmPassword ""
+
+                  }
+          request (-> (req/request :post "/main/register")
+                      (add-form-params params))]
+      (response-for request) => nil
+
+      )
+    )
+  )
