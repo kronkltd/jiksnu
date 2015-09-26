@@ -10,8 +10,3 @@
    :status 200
    :single true
    :body (admin-index-section items page)})
-
-(defview #'actions.feed-subscription/index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Feed Subscriptions"
-          :pages {:feedSubscriptions (format-page-info page)}}})

@@ -15,10 +15,3 @@
    [:div
     (admin-index-section items response)
     (add-form (model/->AuthenticationMechanism))]})
-
-(defview #'index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body
-   {:title "Authentication Mechanisms"
-    :pages {:authMechanisms (format-page-info page)}
-    :authenticationMechanisms (admin-index-section items page)}})

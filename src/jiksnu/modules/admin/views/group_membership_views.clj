@@ -11,9 +11,3 @@
   {:single true
    :title "Groups Memberships"
    :body (admin-index-section items page)})
-
-(defview #'index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Groups Memberships"
-          :pages {:groups (format-page-info page)}
-          :groups (admin-index-section items page)}})

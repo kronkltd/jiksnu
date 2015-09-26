@@ -44,10 +44,7 @@
                :type  "application/rdf+xml"}
    :xml       {:label "XML"
                :icon  "file_xml.png"
-               :type  "application/xml"}
-   :viewmodel {:label "Viewmodel"
-               :icon ""
-               :type  "application/json"}})
+               :type  "application/xml"}})
 
 (defn action-link
   [model action id & [options]]

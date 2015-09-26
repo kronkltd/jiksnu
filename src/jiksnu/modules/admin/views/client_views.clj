@@ -7,8 +7,3 @@
   [request page]
   {:title "Clients"
    :body (admin-index-section (:items page) page)})
-
-(defview #'actions.admin.client/index :viewmodel
-  [request _]
-  {:body
-   {:title "Clients"}})

@@ -13,9 +13,3 @@
       (pagination-links response)
       (admin-index-section items response)))
    :title "Keys"})
-
-(defview #'index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Keys"
-          :pages {:keys (format-page-info page)}
-          :keys (doall (admin-index-section items page))}})

@@ -33,13 +33,6 @@
            (pagination-links page)
            (admin-index-section items page))})
 
-(defview #'index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Subscriptions"
-          :items (map :_id items)
-          :pages {:subscriptions (format-page-info page)}
-          :subscriptions (doall (admin-index-section items page))}})
-
 ;; show
 
 (defview #'show :html
@@ -50,9 +43,3 @@
 (defview #'show :model
   [request subscription]
   {:body (show-section subscription)})
-
-(defview #'show :viewmodel
-  [request subscription]
-  {:body {:title "Subscription"
-          :subscriptions (admin-index-section [subscription])
-          :targetSubscription (:_id subscription)}})

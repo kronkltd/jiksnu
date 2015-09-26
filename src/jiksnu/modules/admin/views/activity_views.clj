@@ -11,11 +11,3 @@
   {:title "Activities"
    :single true
    :body (admin-index-section items page)})
-
-(defview #'index :viewmodel
-  [request {:keys [items] :as page}]
-  (doall
-   {:body
-    {:title "Activities"
-     :pages {:activities (format-page-info page)}
-     :activities (admin-index-section items page)}}))

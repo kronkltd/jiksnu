@@ -40,7 +40,6 @@
     [:json      "/api/statuses/public_timeline.json"]
     [:n3        "/api/statuses/public_timeline.n3"]
     [:rdf       "/api/statuses/public_timeline.rdf"]
-    [:viewmodel "/api/statuses/public_timeline.viewmodel"]
     [:xml       "/api/statuses/public_timeline.xml"]]))
 
 (defn timeline-formats

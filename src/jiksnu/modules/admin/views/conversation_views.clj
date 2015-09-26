@@ -17,10 +17,6 @@
     {:url "/admin/conversations.json"}
     {:items (admin-index-section items page)})})
 
-(defview #'index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Conversations"}})
-
 (defview #'show :html
   [request conversation]
   {:title "Conversation"

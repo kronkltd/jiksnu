@@ -9,8 +9,3 @@
   [request page]
   {:title "Request Tokens"
    :body (admin-index-section (:items page) page)})
-
-(defview #'actions.admin.request-token/index :viewmodel
-  [request response]
-  {:body
-   {:title "Request Tokens"}})

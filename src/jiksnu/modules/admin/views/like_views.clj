@@ -12,12 +12,6 @@
    :title "Likes"
    :body (admin-index-section items page)})
 
-(defview #'index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Likes"
-          :pages {:likes (format-page-info page)}
-          :likes (admin-index-section items page)}})
-
 (defview #'delete :html
   [request _]
   (redirect "/admin/likes" "like deleted"))

@@ -7,7 +7,6 @@
   :default {:timezone "+0:00", :language "en-us"},
   :name "Jiksnu",
   :brought-by {:name "Jiksnu", :url "https://jiksnu.org/"}},
- ;; :modules ["jiksnu.modules.web.viewmodel"],
  :admins ["admin"],
  :run-triggers true,
  :debug false,
