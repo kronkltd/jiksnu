@@ -1,6 +1,8 @@
 (ns jiksnu.modules.web.routes.client-routes
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.client-actions :as actions.client]
+            [jiksnu.actions.oauth-actions :as actions.oauth]
+            [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]

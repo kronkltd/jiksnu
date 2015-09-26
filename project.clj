@@ -107,6 +107,7 @@
               :dependencies
               [[midje         "1.7.0"
                 :exclusions [org.clojure/clojure]]
+               [slamhound "1.5.5"]
                [ring-mock     "0.1.5"]]}}
   :lesscss-output-path "target/resources/public/css"
   :resource-paths ["resources" "target/resources"]
