@@ -34,3 +34,4 @@ deps.txt
 .kitchen.local.yml
 chef/cookbooks/
 chef/tmp/
+/tmp/
