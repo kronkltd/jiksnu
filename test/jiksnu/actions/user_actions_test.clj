@@ -209,9 +209,6 @@
             (actions.user/create anything) => .user.))))
     ))
 
-(fact "#'actions.user/register-page"
-  (actions.user/register-page) => (partial instance? User))
-
 (fact "#'actions.user/register"
   (let [params {:username (fseq :username)
                 :email (fseq :email)

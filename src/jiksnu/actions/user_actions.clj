@@ -313,11 +313,6 @@
         user))
     (throw+ "Missing required params")))
 
-(defaction register-page
-  "Display the form to reqister a user"
-  []
-  (model/->User))
-
 (defaction show
   "This action just returns the passed user.
    The user needs to be retreived in the filter."
