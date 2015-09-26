@@ -28,4 +28,3 @@
 (defview #'actions.conversation/show :model
   [request item]
   {:body item})
-

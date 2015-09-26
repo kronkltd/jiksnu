@@ -68,8 +68,7 @@
   [activity & [page]]
 
   ;; (dissoc activity :links)
-  activity
-  )
+  activity)
 
 (defsection show-section [Activity :xml]
   [activity & _]

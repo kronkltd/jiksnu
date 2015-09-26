@@ -97,4 +97,3 @@
   [request [user activities]]
   {:body (index-block activities)
    :template :false})
-

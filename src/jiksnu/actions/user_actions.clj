@@ -341,8 +341,7 @@
 (defaction add-stream
   [user params]
   (let [params (assoc params :user (:_id user))]
-    [user @(ops/create-new-stream params)])
-  )
+    [user @(ops/create-new-stream params)]))
 
 ;; (definitializer
 ;;   (model.user/ensure-indexes))

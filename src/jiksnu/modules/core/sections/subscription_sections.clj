@@ -34,4 +34,3 @@
 (defsection uri [Subscription]
   [subscription & _]
   (str "/admin/subscriptions/" (:_id subscription)))
-
