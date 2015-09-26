@@ -76,14 +76,37 @@ config.vm.network "private_network", type: "dhcp"
       chef.add_recipe 'lein'
       chef.add_recipe 'nginx'
       chef.add_recipe 'nodejs'
+      chef.add_recipe 'bower'
+      chef.add_recipe 'application'
+      chef.add_recipe 'application_nginx'
+
       chef.json = {
+        :nginx => {
+          :host => "jiksnu"
+        },
         :java => {
           :jdk_version => '7'
         }
       }
     end
 
+    nginx_site "jiksnu" do
+      host "jiksnu"
+      custom_data {
+        'env' => 'dev'
 
+      }
+    end
+
+    application '/opt/jiksnu' do
+
+      owner 'root'
+      group 'root'
+
+      nginx_load_balancer do
+        only_if { node['roles'].include?('my-app_load_balancer') }
+      end
+    end
 
     # node.vm.provision "shell", name: "jiksnu-root", path: "vagrant/provision_jiksnu.sh"
     node.vm.provision "shell", name: "jiksnu-local", path: "vagrant/provision_vagrant.sh", privileged: false
