@@ -1,10 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+VAGRANTFILE_API_VERSION = "2"
 
-Vagrant.configure(2) do |config|
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
-config.vm.network "private_network", type: "dhcp"
+  config.vm.network "private_network", type: "dhcp"
 
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
@@ -64,49 +65,54 @@ config.vm.network "private_network", type: "dhcp"
 
   # config.vm.provision "shell", name: "base", path: "vagrant/provision.sh"
 
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = ["chef/site-cookbooks", "chef/cookbooks"]
+    chef.roles_path = "chef/roles"
+    chef.data_bags_path = "chef/data_bags"
+
+    chef.add_recipe 'mongodb'
+    chef.add_recipe 'java'
+    chef.add_recipe 'lein'
+    chef.add_recipe 'nginx'
+    chef.add_recipe 'nodejs'
+    # chef.add_recipe 'bower'
+    # chef.add_recipe 'application'
+    # chef.add_recipe 'application_nginx'
+    chef.add_recipe 'ack'
+    # chef.add_recipe 'application_java'
+    chef.add_recipe 'emacs'
+    chef.add_recipe 'git'
+
+    # chef.application '/opt/jiksnu' do
+
+    #   owner 'root'
+    #   group 'root'
+
+    #   nginx_load_balancer do
+    #     only_if { node['roles'].include?('jiksnu_load_balancer') }
+    #   end
+    # end
+
+    # chef.nginx_site "jiksnu" do
+    #   host "jiksnu"
+    #   # custom_data {
+    #   #   :env => 'dev'
+    #   # }
+    # end
+
+    chef.json = {
+      :nginx => {
+        :host => "jiksnu"
+      },
+      :java => {
+        :jdk_version => '7'
+      }
+    }
+  end
+
   config.vm.define :jiksnu, primary: true do |node|
     node.vm.hostname = 'jiksnu'
 
-    node.vm.provision :chef_solo do |chef|
-      chef.cookbooks_path = ["site-cookbooks", "cookbooks"]
-      chef.roles_path = "roles"
-      chef.data_bags_path = "data_bags"
-      chef.add_recipe 'mongodb'
-      chef.add_recipe 'java'
-      chef.add_recipe 'lein'
-      chef.add_recipe 'nginx'
-      chef.add_recipe 'nodejs'
-      chef.add_recipe 'bower'
-      chef.add_recipe 'application'
-      chef.add_recipe 'application_nginx'
-
-      chef.json = {
-        :nginx => {
-          :host => "jiksnu"
-        },
-        :java => {
-          :jdk_version => '7'
-        }
-      }
-    end
-
-    nginx_site "jiksnu" do
-      host "jiksnu"
-      custom_data {
-        'env' => 'dev'
-
-      }
-    end
-
-    application '/opt/jiksnu' do
-
-      owner 'root'
-      group 'root'
-
-      nginx_load_balancer do
-        only_if { node['roles'].include?('my-app_load_balancer') }
-      end
-    end
 
     # node.vm.provision "shell", name: "jiksnu-root", path: "vagrant/provision_jiksnu.sh"
     node.vm.provision "shell", name: "jiksnu-local", path: "vagrant/provision_vagrant.sh", privileged: false

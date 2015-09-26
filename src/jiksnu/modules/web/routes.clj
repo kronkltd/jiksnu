@@ -48,7 +48,11 @@
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info
       wrap-content-type
-      wrap-not-modified))
+      wrap-not-modified
+      ((fn [handler]
+         (fn [request]
+           (log/spy :info (handler (log/spy :info request))))))
+      ))
 
 (helpers/load-pages! 'jiksnu.modules.web.routes.pages)
 (helpers/load-sub-pages! 'jiksnu.modules.web.routes.pages)

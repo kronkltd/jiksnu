@@ -22,7 +22,7 @@ cookbook 'application_nginx'
 # cookbook 'bower'
 cookbook 'ack'
 cookbook 'artifactory'
-
+cookbook 'git'
 
 
 # cookbook 'postgresql',
