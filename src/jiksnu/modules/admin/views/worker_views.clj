@@ -39,10 +39,6 @@
   [request data]
   {:body data})
 
-
-
-
-
 (defview #'stop-all-workers :html
   [request _]
   {:status 303

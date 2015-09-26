@@ -2,6 +2,7 @@
   (:require [cemerick.friend :as friend]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as auth]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
@@ -20,17 +21,11 @@
             :post {:summary "Do Register"
                    :parameters {
                                 :username {:in :formData
-                                           :type "string"
-                                           }
-                                }
-                   }}
+                                           :type "string"}}}}
   :mixins [angular-resource]
-  :parameters {
-
-               }
+  :parameters {}
   :post! (fn [ctx]
-           (actions.user/register (:params (:request ctx))))
-  )
+           (actions.user/register (:params (:request ctx)))))
 
 (defresource auth :login
   :url "/main/login"

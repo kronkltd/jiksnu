@@ -92,8 +92,7 @@
 
 (defn links-section
   [activity]
-  [:h3 "Links"]
-  )
+  [:h3 "Links"])
 
 (defn maps-section
   [activity]
@@ -167,12 +166,10 @@
    #'likes-section
    #'maps-section
    #'tags-section
-   #'posted-link-section
-   ])
+   #'posted-link-section])
 
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
    {:data-bind "foreach: items"}
    (map #(index-line % options) records)])
-

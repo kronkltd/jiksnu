@@ -50,8 +50,7 @@
             [lein-lesscss   "1.2"]
             [lein-midje     "3.1.3"]
             [mvxcvi/whidbey "1.0.0"]
-            [cider/cider-nrepl "0.10.0-SNAPSHOT"]
-            ]
+            [cider/cider-nrepl "0.10.0-SNAPSHOT"]]
   :cljsbuild {:repl-listen-port 9001
               :repl-launch-commands {"my-launch" ["google-chrome"]}
               :builds
@@ -78,16 +77,12 @@
                :protractor {:source-paths ["specs"]
                             :compiler {:output-to "target/protractor-tests.js"
                                        :optimizations :simple
-                                       :pretty-print true}}
-
-}}
+                                       :pretty-print true}}}}
   ;; :hooks [leiningen.cljsbuild]
   :aliases {"karma" ["shell" "./node_modules/karma-cli/bin/karma" "start"]
             "protractor" ["shell" "./node_modules/protractor/bin/protractor" "protractor-config.js"]
             "protractor-start" ["shell" "./node_modules/protractor/bin/webdriver-manager" "start"]
-            "protractor-update" ["shell" "./node_modules/protractor/bin/webdriver-manager" "update"]
-
-}
+            "protractor-update" ["shell" "./node_modules/protractor/bin/webdriver-manager" "update"]}
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
@@ -99,11 +94,9 @@
              {:resource-paths ["test-resources"]
               :repl-options {:init-ns ciste.runner
                              :port 7888}
-              :plugins [
-                        [lein-cloverage "1.0.2"]
+              :plugins [[lein-cloverage "1.0.2"]
                         [lein-npm "0.5.0"]
-                        [lein-shell "0.4.0"]
-                        ]
+                        [lein-shell "0.4.0"]]
               :dependencies
               [[midje         "1.7.0"
                 :exclusions [org.clojure/clojure]]

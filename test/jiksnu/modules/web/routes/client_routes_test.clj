@@ -78,13 +78,4 @@
                        response-for)]
 
       (fact "should be successful"
-        (:status response) => status/success?))))
-
-
-
-
-
-
-  )
-
-
+        (:status response) => status/success?)))))

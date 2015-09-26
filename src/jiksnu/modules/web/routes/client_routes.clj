@@ -27,42 +27,25 @@
 
 (defgroup jiksnu oauth
   :name "OAuth API"
-  :url "/oauth"
-  )
+  :url "/oauth")
 
 (defresource oauth :access-token
   :name "Access Token"
   :url "/access_token"
-  :exists? (fn [ctx]
-             (actions.oauth/access-token (:request ctx))
-             )
-  )
+  :exists? (fn [ctx] (actions.oauth/access-token (:request ctx))))
 
 (defresource oauth :authorize
   :name "Authorize"
   :url "/authorize"
   :methods {:get {:summary "Authorize Client"
-                  :state "authorizeClient"
-                  }
-            :post {:summary "Do Authorize Client"}
-            }
-  :exists? (fn [ctx]
-
-             )
-  :post! (fn [ctx]
-           (actions.oauth/authorize (:request ctx))
-
-           )
-  )
+                  :state "authorizeClient"}
+            :post {:summary "Do Authorize Client"}}
+  :exists? (fn [ctx])
+  :post! (fn [ctx] (actions.oauth/authorize (:request ctx))))
 
 (defresource oauth :request-token
   :name "Request Token"
   :url "/request_token"
   :exists? (fn [ctx]
              (actions.oauth/request-token (:request ctx)))
-  :post! (fn [ctx]
-           (actions.request-token/get-request-token (:request ctx))
-           )
-
-
-  )
+  :post! (fn [ctx] (actions.request-token/get-request-token (:request ctx))))

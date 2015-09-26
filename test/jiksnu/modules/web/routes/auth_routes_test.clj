@@ -41,8 +41,6 @@
         (:status response) => status/redirect?
         (:body response) => string?))))
 
-
-
 (fact "route: auth/register :post"
   (fact "With correct parameters, form encoded"
     (let [params {:username ""
@@ -52,8 +50,4 @@
                   }
           request (-> (req/request :post "/main/register")
                       (add-form-params params))]
-      (response-for request) => nil
-
-      )
-    )
-  )
+      (response-for request) => nil)))
