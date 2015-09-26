@@ -178,13 +178,12 @@
     (.reset $scope)))
 
 (def.controller jiksnu.RegisterPageController
-  [$http $scope]
-  (! $scope.register
-     (fn []
-       (js/console.log "Registering" (? $scope.reg))
-       (-> (.post $http "/main/register" $scope)
-           (.then (fn [data]
-                    (js/console.log "Response" data)))))))
+  [app $scope]
+  (aset $scope "register" (fn []
+                            (-> (.register app $scope)
+                                (.then (fn [data]
+                                         (aset (.-data app) "user" (.-user (.-data data)))
+                                         (.go app "home")))))))
 
 (def.controller jiksnu.RightColumnController
   [$scope app]

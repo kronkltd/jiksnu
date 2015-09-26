@@ -85,10 +85,28 @@
   [app target]
   (js/console.log "unfollow" target))
 
+(defn register
+  [app params]
+  (js/console.log "Registering" (.-reg params))
+  (-> (.$http (.-di app)
+              (js-obj
+               "method" "post"
+               "url"    "/main/register"
+               "data"   (.-reg params)))
+      (.then (fn [data]
+               (js/console.log "Response" data)
+               data))))
+
+(defn go
+  [app state]
+  (.go (.-$state (.-di app)) state))
+
 (def app-methods
   {
    :connect       connect
    :getUser       get-user
+   :go            go
+   :register      register
    :fetchStatus   fetch-status
    :follow        follow
    :handleMessage handle-message
