@@ -6,43 +6,38 @@
 
 (defn connect
   [app]
-  (?> app.send "connect"))
+  (.send app "connect"))
 
 (defn ping
   [app]
-  (?> app.send "ping"))
+  (.send app "ping"))
 
 (defn fetch-status
   [app]
-  (-> (?> app.di.$http.get "/status")
-      (.success
-       (fn [data]
-         (! app.data data)
-         ;; (! app.data.name data.name)
-         ;; (! app.data.user data.user)
-         ))))
+  (let [$http (.-$http (.-di app))]
+    (-> (.get $http "/status")
+        (.success #(aset app "data" %)))))
 
 (defn login
   [app username password]
   (js/console.info "Logging in user." username password)
-  (let [data (.param js/$ (obj :username username
-                               :password password))]
-    (-> (? app.di.$http)
-        (.post "/main/login"
+  (let [$http (.-$http (.-di app))
+        data (js/$.param (js-obj
+                          "username" username
+                          "password" password))]
+    (-> (.post $http "/main/login"
                data
                (obj
                 :headers {"Content-Type" "application/x-www-form-urlencoded"}))
-        (.success
-         (fn [data]
-           (.fetchStatus app)
-           (.go (? app.di.$state) "home"))))))
+        (.success (fn [data]
+                    (.fetchStatus app)
+                    (.go app "home"))))))
 
 (defn logout
   [app]
-  (-> (? app.di.$http)
-      (.post "/main/logout")
-      (.success (fn [data]
-                  (.fetchStatus app)))))
+  (let [$http (.-$http (.-di app))]
+    (-> (.post $http "/main/logout")
+        (.success (fn [data] (.fetchStatus app))))))
 
 (defn handle-message
   [app message]
@@ -59,15 +54,17 @@
 
 (defn get-user
   [app]
-  (if-let [username (? app.data.user)]
-    (let [domain (? app.data.domain)
-          id (str "acct:" username "@" domain)
-          Users (? app.di.Users)]
-      (js/console.log "getting user: " id)
-      (.find Users id))
-    (let [d (.defer (.-$q (.-di app)))]
-      (.resolve d nil)
-      (.-promise d))))
+  (let [$q (.-$q (.-di app))
+        Users (? app.di.Users)
+        data (.-data app)]
+    (if-let [username (.-user data)]
+      (let [domain (.-domain data)
+            id (str "acct:" username "@" domain)]
+        (js/console.log "getting user: " id)
+        (.find Users id))
+      (let [d (.defer $q)]
+        (.resolve d nil)
+        (.-promise d)))))
 
 (defn following?
   [app target]

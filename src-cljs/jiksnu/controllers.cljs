@@ -114,7 +114,7 @@
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
   (js/console.log "Loading NavBarController")
-  (! $scope.loaded false)
+  (aset $scope "loaded" false)
   (helpers/setup-hotkeys hotkeys $state)
 
   (.$watch $scope
@@ -122,17 +122,17 @@
            (fn [d]
              (when (.-loaded $scope)
                (js/console.log "Running navbarcontroller watcher")
-               (! $scope.app d)
+               (aset $scope "app" d)
                (-> (.getUser app)
                    (.then (fn [user] (! app.user user)))))))
 
-  (! $scope.app2 app)
-  (! $scope.logout (.-logout app))
+  (aset $scope "app2" app)
+  (aset $scope "logout" (.-logout app))
 
   (-> (.fetchStatus app)
       (.then (fn []
                (js/console.log "Status Loaded")
-               (! $scope.loaded true)))))
+               (aset $scope "loaded" true)))))
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService]
@@ -143,7 +143,7 @@
                       :geo {:latitude nil
                             :longitude nil}
                       :content ""}]
-    (.$watch $scope #(? app.data)          (fn [data] (! $scope.app data)))
+    (.$watch $scope #(? app.data)          (fn [data] (aset $scope "app" data)))
     (.$watch $scope #(? $scope.form.shown) (fn [shown?] (when shown? (.getLocation $scope))))
     (aset $scope "getLocation"  (fn [] (-> (.getLocation geolocation)
                                           (.then (fn [data]
@@ -183,7 +183,8 @@
                             (-> (.register app $scope)
                                 (.then (fn [data]
                                          (aset (.-data app) "user" (.-user (.-data data)))
-                                         (.go app "home")))))))
+                                         (-> (.fetchStatus app)
+                                             (.then (fn [] (.go app "home"))))))))))
 
 (def.controller jiksnu.RightColumnController
   [$scope app]
