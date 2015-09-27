@@ -29,13 +29,16 @@
   :parameters {}
   :available-media-types ["application/json"]
   :post! (fn [ctx]
-           (try+ {:data (when (actions.user/register (:params (:request ctx)))
-                          {:status "ok"})}
-                 (catch [:type :conflict] ex
-                   {:data (ring-response ex {:status 409})})))
-  :handle-created (fn [ctx]
-                    (log/info "handling created")
-                    (:data ctx)))
+           (let [params (:params (:request ctx))
+                 data (try+
+                       (when (actions.user/register params)
+                         {:status "ok"})
+                       (catch [:type :conflict] ex
+                         (ring-response ex {:status 409}))
+                       (catch [:type :missing-param] ex
+                         (ring-response ex {:status 400})))]
+             {:data data}))
+  :handle-created :data)
 
 (defresource auth :login
   :url "/main/login"
