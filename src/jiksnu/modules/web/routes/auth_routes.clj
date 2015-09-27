@@ -27,12 +27,15 @@
                    :response {"409" {:description "Username conflict"}}}}
   :mixins [angular-resource]
   :parameters {}
+  :available-media-types ["application/json"]
   :post! (fn [ctx]
-           (log/spy :info
-                    (try+ {:data (actions.user/register (:params (:request ctx)))}
-                          (catch [:type :conflict] ex
-                            ;; (log/spy :info &throw-context)
-                            (ring-response (:msg ex) {:status 409}))))))
+           (try+ {:data (when (actions.user/register (:params (:request ctx)))
+                          {:status "ok"})}
+                 (catch [:type :conflict] ex
+                   {:data (ring-response ex {:status 409})})))
+  :handle-created (fn [ctx]
+                    (log/info "handling created")
+                    (:data ctx)))
 
 (defresource auth :login
   :url "/main/login"

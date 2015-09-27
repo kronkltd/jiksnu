@@ -21,9 +21,9 @@
   :allowed-methods [:get :post]
   ;; :mixins [mixin/item-resource]
   :exists? (fn [ctx]
-             {:data (log/spy :info (actions.client/register (log/spy :info (:params (:request ctx)))))})
+             {:data (actions.client/register (:params (:request ctx)))})
   :post! (fn [ctx]
-           true #_{:data (actions.client/register (log/spy :info (:params (:request ctx))))}))
+           true #_{:data (actions.client/register (:params (:request ctx)))}))
 
 (defgroup jiksnu oauth
   :name "OAuth API"

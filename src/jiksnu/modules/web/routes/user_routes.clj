@@ -184,7 +184,7 @@
   :available-formats [:json]
   :presenter (fn [rsp]
                (with-context [:http :json]
-                 (let [page (:body (log/spy :info rsp))
+                 (let [page (:body rsp)
                        items (:items page)]
                    #_(-> (log/spy :info (if (seq items)
                           (-> (index-section items page))
