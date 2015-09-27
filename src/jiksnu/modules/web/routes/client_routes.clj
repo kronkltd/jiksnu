@@ -19,11 +19,21 @@
   :methods {:get {:summary "Register Client"}
             :post {:summary "Register Client"}}
   :allowed-methods [:get :post]
+  :available-media-types ["application/json"]
   ;; :mixins [mixin/item-resource]
   :exists? (fn [ctx]
-             {:data (actions.client/register (:params (:request ctx)))})
+             (let [params (:params (:request ctx))]
+               {:data true #_(actions.client/register params)}))
   :post! (fn [ctx]
-           true #_{:data (actions.client/register (:params (:request ctx)))}))
+           (let [params (:params (:request ctx))]
+             (when-let [client (actions.client/register params)]
+               {:data "{status: 'ok'}"})))
+
+  ;; :data #_(fn [ctx]
+  ;;           true #_{:data (actions.client/register (:params (:request ctx)))})
+  :handle-created :data
+
+  )
 
 (defgroup jiksnu oauth
   :name "OAuth API"
