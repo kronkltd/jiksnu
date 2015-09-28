@@ -24,12 +24,6 @@
   [request workers]
   {:body workers})
 
-(defview #'index :viewmodel
-  [request workers]
-  {:body {:title "Index"}})
-
-
-
 (defview #'start-worker :html
   [request _]
   {:status 303
@@ -44,10 +38,6 @@
 (defview #'start-worker :json
   [request data]
   {:body data})
-
-
-
-
 
 (defview #'stop-all-workers :html
   [request _]

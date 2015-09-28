@@ -7,7 +7,6 @@
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.session :refer [with-user-id]]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+ throw+]])
   (:import javax.security.auth.login.LoginException))
 
@@ -109,7 +108,6 @@
       (handler request)
       (catch Exception ex
         ;; (.printStackTrace ex)
-        (trace/trace "errors:handled" ex)
         (try
           (let [st (with-out-str (print-stack-trace ex))]
             ;; (println st)
@@ -117,7 +115,7 @@
              :headers {"content-type" "text/plain"}
              :body st})
           (catch Throwable ex
-            (trace/trace :errors:handled ex)
+            ;; FIXME: handle error
             (log/fatalf ex "Error parsing exception: %s")))))))
 
 (defn default-html-mode

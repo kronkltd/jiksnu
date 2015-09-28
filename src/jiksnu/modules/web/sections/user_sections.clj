@@ -1,9 +1,7 @@
 (ns jiksnu.modules.web.sections.user-sections
   (:require [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section title show-section
-                                            edit-button delete-button link-to
-                                            index-line show-section-minimal
-                                            update-button index-block]]
+            [ciste.sections.default :refer [actions-section title show-section edit-button link-to index-line
+                                            show-section-minimal update-button index-block]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -74,23 +72,6 @@
   [:a {:href "/admin/users/{{user.id}}"}
    "Admin"])
 
-(defn get-buttons
-  []
-  (concat
-   [#'subscribe-button]
-   (when (session/current-user)
-     [#'discover-button
-      #'model-button
-      #'update-button])
-   (when (session/is-admin?)
-     [#'edit-button
-      #'admin-button
-      #'delete-button])))
-
-(defsection actions-section [User :html]
-  [item]
-  (dropdown-menu item (get-buttons)))
-
 (defsection admin-actions-section [User :html]
   [user & [page & _]]
   (actions-section user page))
@@ -98,14 +79,6 @@
 (defsection admin-index-section [User :html]
   [items & [page & _]]
   (admin-index-block items page))
-
-(defsection delete-button [User :html]
-  [user & _]
-  (action-link "user" "delete" (:_id user)))
-
-(defsection edit-button [User :html]
-  [user & _]
-  (action-link "user" "edit" (:_id user)))
 
 (defsection link-to [User :html]
   [record & options]

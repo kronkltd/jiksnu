@@ -5,7 +5,6 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.util :as util]
-            [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+]]))
 
 ;; delete
@@ -14,7 +13,8 @@
   [action request]
   (if-let [id (try+ (-> request :params :id)
                     (catch RuntimeException ex
-                      (trace/trace "errors:handled" ex)))]
+                      ;; FIXME: handle error
+                      ))]
     (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
 

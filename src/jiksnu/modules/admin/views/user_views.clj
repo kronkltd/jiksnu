@@ -26,15 +26,6 @@
   [request {:keys [items] :as page}]
   {:body (admin-index-section items page)})
 
-(defview #'index :viewmodel
-  [request {:keys [items] :as page}]
-  {:single true
-   :body
-   {:title "Users"
-    :site {:name (config :site :name)}
-    :showPostForm false
-    :notifications []}})
-
 ;; show
 
 (defview #'show :html
@@ -62,9 +53,3 @@
 (defview #'show :model
   [request user]
   {:body (admin-show-section user) })
-
-(defview #'show :viewmodel
-  [request user]
-  {:body
-   {:title (title user)
-    :targetUser (:_id user)}})

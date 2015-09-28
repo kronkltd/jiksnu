@@ -66,8 +66,13 @@
       (trigger-on-loaded! route-sym)
       (load-routes! route-sym)
       (catch Exception ex
-        (log/error ex)
-        (throw+ ex)))))
+        #_(log/error ex)
+        #_(throw+ ex)))))
+
+(defn load-routes
+  []
+  (doseq [group registry/action-group-names]
+    (load-group group)))
 
 (defn make-matchers
   [handlers]
@@ -173,11 +178,24 @@
 
 (defn angular-resource
   [r]
-  (merge
-   {:exists? true
-    :available-media-types (mapv types [:html])
-    :handle-ok index}
-   r))
+  (let [methods (:methods r)
+        get-method (:get methods)]
+    (-> {:exists? true
+         :handle-ok index
+         :available-media-types (mapv types [:html])}
+        (merge r)
+        (assoc-in
+         [:methods :get]
+         (merge
+          {:summary "Angular Template"
+           :description "This is a double for an angular route. Requesting this page directly will return the angular page."
+           :contentType "text/html"
+           :responses {"200" {:description (or (get-in r [:methods :get :description])
+                                               (:description r)
+                                               "Angular Template")
+                              :headers {"Content-Type" {:description "The Content Type"}}}}}
+          get-method
+          )))))
 
 (defn make-page-handler
   [& {:as opts}]
@@ -185,3 +203,21 @@
     (->> opts
          page-resource
          (mapcat (fn [[k v]] [k v])))))
+
+(defonce parameters (ref {}))
+
+(defn defparameter
+  [k & {:as options}]
+  (dosync
+   (alter parameters assoc k options)))
+
+(defn get-parameter
+  [k]
+  (k @parameters))
+
+(defn path
+  ([k] (path k nil))
+  ([k required?]
+   (merge (get-parameter k)
+          {:in "path"})))
+

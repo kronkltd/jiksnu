@@ -15,14 +15,10 @@
         user (model.user/fetch-by-id id)]
     (action user params)))
 
-;; create
-
 (deffilter #'actions.user/create :http
   [action request]
   (let [{:keys [params]} request]
     (action params)))
-
-;; delete
 
 (deffilter #'actions.user/delete :http
   [action request]
@@ -30,15 +26,11 @@
     (when-let [item (model.user/fetch-by-id id)]
       (action item))))
 
-;; discover
-
 (deffilter #'actions.user/discover :http
   [action request]
   (let [{{id :id} :params} request]
     (if-let [user (model.user/fetch-by-id id)]
       (action user {:force true}))))
-
-;; index
 
 (deffilter #'actions.user/index :http
   [action request]
@@ -50,14 +42,10 @@
   [action request]
   (action))
 
-;; profile
-
 (deffilter #'actions.user/profile :http
   [action request]
   (if-let [user (session/current-user)]
     user (log/error "no user")))
-
-;; register
 
 (deffilter #'actions.user/register :http
   [action {{:keys [username password confirm-password] :as params} :params}]
@@ -66,14 +54,6 @@
       (action params)
       (throw+ "Password and confirm password do not match"))
     (throw+ "you didn't check the box")))
-
-;; register-page
-
-(deffilter #'actions.user/register-page :http
-  [action request]
-  (action))
-
-;; show
 
 (deffilter #'actions.user/show :http
   [action request]
@@ -99,17 +79,11 @@
                             (and username (model.user/get-user username)))]
           (action user))))))
 
-
-
-;; update-record
-
 (deffilter #'actions.user/update-record :http
   [action request]
   (let [{{id :id} :params} request]
     (if-let [user (model.user/fetch-by-id id)]
      (action user {:force true}))))
-
-;; update-profile
 
 (deffilter #'actions.user/update-profile :http
   [action {params :params}]

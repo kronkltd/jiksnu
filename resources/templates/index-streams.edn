@@ -1,1 +1,11 @@
-[:h1 "Hello world"]
+[:div
+ [:h1 "Streams"]
+ [:table.table
+  [:thead
+   [:tr
+    [:th "Name"]
+    [:th "Owner"]]]
+  [:tbody
+   [:tr {:ng-repeat "item in page.items"}
+    [:td "{{item.name}}"]
+    [:td "{{item.user}}"]]]]]

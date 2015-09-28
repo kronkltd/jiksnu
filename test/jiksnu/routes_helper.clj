@@ -6,8 +6,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.modules.web.routes :as r]
-            [lamina.core :as l]
-            [lamina.time :as time]
+            [manifold.time :as time]
             [ring.mock.request :as req]
             [ring.util.codec :as codec]
             [slingshot.slingshot :refer [try+]])

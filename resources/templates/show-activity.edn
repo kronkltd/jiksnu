@@ -1,5 +1,4 @@
-[:article.hentry.media #_{:ng-show "loaded"}
- #_(actions-section activity)
+[:article.hentry.media {:ng-if "loaded"}
  [:div.media-left
   [:display-avatar {:data-id "{{activity.author}}"}]]
  [:div.media-body
@@ -11,9 +10,15 @@
    [:li {:ng-repeat "user in activity.mentioned"}
     [:i.icon-chevron-right]
     [:link-to {:data-id "{{user.id}}"}]]]
+  [:ul
+   [:li {:ng-repeat "id in activity.streams"}
+    [:show-stream-minimal {:data-id "{{id}}"}]
+    ]
+   ]
+
   [:div.entry-content
    [:div {:btf-markdown "activity.content"}]]
-  [:footer
+  [:div
    [:span.posted
     "{{activity.verb}}ed a {{activity.object.type}} "
     [:span {:ng-if "!activity.public"}
@@ -29,14 +34,18 @@
      "using {{activity.source}}"
      " "]
     [:span {:ng-if "activity.geo.latitude && activity.geo.longitude"}
-     "near "
-     [:a.geo-link {:href "#"}
-      "{{activity.geo.latitude}}, {{activity.geo.longitude}}"]
-     " "]
-    [:span {:ng-if "!activity.localId"}
+     "near ("
+     [:abbr {:title "{{activity.geo.latitude}}"}
+      "{{activity.geo.latitude | number:2}}"]
+     ", "
+     [:arrr {:title "{{activity.geo.longitude}}"}
+      "{{activity.geo.longitude | number:2}}"]
+     ") "]
+    [:span {:ng-if "!activity.local"}
      "via a "
      [:a {:href "{{activity.service}}"}
       "foreign service"]
      " "]
-    [:a {:href "/main/conversations/{{activity.conversation}}"}
-     "in context"]]]]]
+    #_[:a {:href "/main/conversations/{{activity.conversation}}"}
+       "in context"]]]]
+ #_[:code [:pre "{{activity | json}}"]]]

@@ -1,93 +1,125 @@
-Vagrant::Config.run do |config|
-  # All Vagrant configuration is done here. The most common configuration
-  # options are documented and commented below. For a complete reference,
-  # please see the online documentation at vagrantup.com.
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+VAGRANTFILE_API_VERSION = "2"
 
-  # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "ubuntu-11.10"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/trusty64"
 
-  # The url from where the 'config.vm.box' box will be fetched if it
-  # doesn't already exist on the user's system.
-  config.vm.box_url = "http://timhuegdon.com/vagrant-boxes/ubuntu-11.10.box"
+  config.vm.network "private_network", type: "dhcp"
 
-  # Boot with a GUI so you can see the screen. (Default is headless)
-  # config.vm.boot_mode = :gui
-
-  # Assign this VM to a host only network IP, allowing you to access it
-  # via the IP.
-  # config.vm.network "33.33.33.10"
-
-  # Forward a port from the guest to the host, which allows for outside
-  # computers to access the VM, whereas host only networking does not.
-  # config.vm.forward_port "http", 80, 8080
-
-  # Share an additional folder to the guest VM. The first argument is
-  # an identifier, the second is the path on the guest to mount the
-  # folder, and the third is the path on the host to the actual folder.
-  # config.vm.share_folder "v-data", "/vagrant_data", "../data"
-
-  # Enable provisioning with Puppet stand alone.  Puppet manifests
-  # are contained in a directory path relative to this Vagrantfile.
-  # You will need to create the manifests directory and a manifest in
-  # the file base.pp in the manifests_path directory.
-  #
-  # An example Puppet manifest to provision the message of the day:
-  #
-  # # group { "puppet":
-  # #   ensure => "present",
-  # # }
-  # #
-  # # File { owner => 0, group => 0, mode => 0644 }
-  # #
-  # # file { '/etc/motd':
-  # #   content => "Welcome to your Vagrant-built virtual machine!
-  # #               Managed by Puppet.\n"
-  # # }
-  #
-  # config.vm.provision :puppet do |puppet|
-  #   puppet.manifests_path = "manifests"
-  #   puppet.manifest_file  = "base.pp"
-  # end
-
-  # Enable provisioning with chef solo, specifying a cookbooks path (relative
-  # to this Vagrantfile), and adding some recipes and/or roles.
-  #
-  # config.vm.provision :chef_solo do |chef|
-  #   chef.cookbooks_path = "cookbooks"
-  #   chef.add_recipe "mysql"
-  #   chef.add_role "web"
-  #
-  #   # You may also specify custom JSON attributes:
-  #   chef.json = { :mysql_password => "foo" }
-  # end
-
-  Vagrant::Config.run do |config|
-    config.vm.provision :shell, :path => "install.sh"
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+  config.hostmanager.ignore_private_ip = false
+  config.hostmanager.include_offline = true
+  config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
+    if vm.id
+      `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
+    end
   end
 
+  # config.vm.network "forwarded_port", guest: 8080, host: 8080
+  # config.vm.network "forwarded_port", guest: 27017, host: 27017
+  # config.vm.network "forwarded_port", guest: 7888, host: 7888
+  # config.vm.network "forwarded_port", guest: 9000, host: 9000
 
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+  end
 
-  
-  # Enable provisioning with chef server, specifying the chef server URL,
-  # and the path to the validation key (relative to this Vagrantfile).
-  #
-  # The Opscode Platform uses HTTPS. Substitute your organization for
-  # ORGNAME in the URL and validation key.
-  #
-  # If you have your own Chef Server, use the appropriate URL, which may be
-  # HTTP instead of HTTPS depending on your configuration. Also change the
-  # validation key to validation.pem.
-  #
-  # config.vm.provision :chef_client do |chef|
-  #   chef.chef_server_url = "https://api.opscode.com/organizations/ORGNAME"
-  #   chef.validation_key_path = "ORGNAME-validator.pem"
+  config.ssh.forward_agent = true
+
+  # config.git.add_repo do |rc|
+  #   rc.target = "git@github.com:duck1123/jiksnu-core.git"
+  #   rc.path = "checkouts/jiksnu-core"
+  #   rc.branch = "master"
+  #   rc.clone_in_host = true
   # end
-  #
-  # If you're using the Opscode platform, your validator client is
-  # ORGNAME-validator, replacing ORGNAME with your organization name.
-  #
-  # IF you have your own Chef Server, the default validation client name is
-  # chef-validator, unless you changed the configuration.
-  #
-  #   chef.validation_client_name = "ORGNAME-validator"
+
+  # config.git.add_repo do |rc|
+  #   rc.target = "git@github.com:duck1123/octohipster.git"
+  #   rc.path = "checkouts/octohipster"
+  #   rc.branch = "feature/swagger"
+  #   rc.clone_in_host = true
+  # end
+
+  # config.git.add_repo do |rc|
+  #   rc.target = "git@github.com:duck1123/ciste.git"
+  #   rc.path = "checkouts/ciste"
+  #   rc.branch = "develop"
+  #   rc.clone_in_host = true
+  # end
+
+  # config.git.add_repo do |rc|
+  #   rc.target = "git@github.com:duck1123/ciste-incubator.git"
+  #   rc.path = "checkouts/ciste-incubator"
+  #   rc.branch = "master"
+  #   rc.clone_in_host = true
+  # end
+
+  # config.git.add_repo do |rc|
+  #   rc.target = "git@github.com:duck1123/jiksnu-command.git"
+  #   rc.path = "checkouts/jiksnu-command"
+  #   rc.branch = "master"
+  #   rc.clone_in_host = true
+  # end
+
+  # config.vm.provision "shell", name: "base", path: "vagrant/provision.sh"
+
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = ["chef/site-cookbooks", "chef/cookbooks"]
+    chef.roles_path = "chef/roles"
+    chef.data_bags_path = "chef/data_bags"
+
+    chef.add_recipe 'mongodb'
+    chef.add_recipe 'java'
+    chef.add_recipe 'lein'
+    chef.add_recipe 'nginx'
+    chef.add_recipe 'nodejs'
+    # chef.add_recipe 'bower'
+    # chef.add_recipe 'application'
+    # chef.add_recipe 'application_nginx'
+    chef.add_recipe 'ack'
+    # chef.add_recipe 'application_java'
+    chef.add_recipe 'emacs'
+    chef.add_recipe 'git'
+
+    # chef.application '/opt/jiksnu' do
+
+    #   owner 'root'
+    #   group 'root'
+
+    #   nginx_load_balancer do
+    #     only_if { node['roles'].include?('jiksnu_load_balancer') }
+    #   end
+    # end
+
+    # chef.nginx_site "jiksnu" do
+    #   host "jiksnu"
+    #   # custom_data {
+    #   #   :env => 'dev'
+    #   # }
+    # end
+
+    chef.json = {
+      :nginx => {
+        :host => "jiksnu"
+      },
+      :java => {
+        :jdk_version => '7'
+      }
+    }
+  end
+
+  config.vm.define :jiksnu, primary: true do |node|
+    node.vm.hostname = 'jiksnu'
+
+
+    # node.vm.provision "shell", name: "jiksnu-root", path: "vagrant/provision_jiksnu.sh"
+    node.vm.provision "shell", name: "jiksnu-local", path: "vagrant/provision_vagrant.sh", privileged: false
+  end
+
+  # config.vm.define :sentry do |node|
+  #   node.vm.hostname = 'sentry'
+  #   # node.vm.provision "shell", name: "sentry", path: "vagrant/provision_sentry.sh"
+  # end
 end

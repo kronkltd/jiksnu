@@ -1,6 +1,0 @@
-[:div
- [:h3 "Groups"]
- [:ul
-  [:li {:ng-repeat "group in page.items"}
-   [:a {:ui-sref "showGroup(group)"}
-    "{{group.description}}"]]]]

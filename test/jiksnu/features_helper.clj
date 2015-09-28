@@ -18,7 +18,6 @@
             [jiksnu.referrant :refer [this that set-this set-that]]
             jiksnu.modules.web.routes
             [jiksnu.session :as session]
-            [lamina.core :as l]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Domain
            jiksnu.model.User))

@@ -17,8 +17,3 @@
           :body (merge page
                        {:id (:name request)
                         :items (map :_id (:items page))})}})
-
-(defview #'actions.admin.stream/index :viewmodel
-  [request page]
-  {:body {:title "Streams"
-          :single true}})

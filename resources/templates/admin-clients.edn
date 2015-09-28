@@ -1,0 +1,15 @@
+[:table.table
+   [:thead
+    [:tr
+     [:th "Id"]
+     [:th "Created"]
+     [:th "Updated"]]]
+   [:tbody
+    [:tr {:data-model "client"
+          :data-id "{{client.id}}"
+          :ng-repeat "client in clients"}
+     [:td "{{client.id}}"]
+     [:td "{{client.created}}"]
+     [:td "{{client.updated}}"]
+     #_[:td (actions-section activity)]]
+    ]]

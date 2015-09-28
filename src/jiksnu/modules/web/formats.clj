@@ -28,14 +28,6 @@
   (-> response
       (assoc-in [:headers "Content-Type"] "text/plain; charset=utf-8")))
 
-(defmethod format-as :viewmodel
-  [format request response]
-  (let [response (if-let [id (session/current-user-id)]
-                   (assoc-in response [:body :currentUser] id)
-                   response)]
-    (with-format :json
-      (doall (format-as :json request response)))))
-
 (defmethod format-as :xrd
   [format request response]
   (-> response

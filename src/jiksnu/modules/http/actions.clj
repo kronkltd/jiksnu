@@ -12,9 +12,9 @@
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]
-            [lamina.core :as l]
-            [lamina.time :as lt]
-            [lamina.trace :as trace]
+            [manifold.bus :as bus]
+            [manifold.stream :as s]
+            [manifold.time :as lt]
             [org.httpkit.server :as server]
             [slingshot.slingshot :refer [throw+ try+]]))
 
@@ -30,7 +30,7 @@
                   :connection-id connection-id
                   :type "activity"
                   :body (:records e)}]
-    (trace/trace "activities:pushed" response)
+    (bus/publish! ch/events "activities:pushed" response)
     (json/json-str response)))
 
 (defn transform-conversations
@@ -39,7 +39,7 @@
                   :connection-id connection-id
                   :name "public-timeline"
                   :body (:_id (:records e))}]
-    (trace/trace "conversations:pushed" response)
+    (bus/publish! ch/events "conversations:pushed" response)
     (json/json-str response)))
 
 (defn connection-closed
@@ -53,35 +53,41 @@
   (doseq [ch (all-channels)]
     (let [response (json/json-str {:action "add notice"
                                    :message message})]
-      (l/enqueue ch response))))
+      (s/put! ch response))))
 
 (defn connect
   [ch]
-  (trace/trace :websocket:connections:established 1)
+  ;; (trace/trace :websocket:connections:established 1)
   (let [user-id (:_id (session/current-user))
         connection-id (util/new-id)]
 
 
-    (let [response-channel (l/channel*
-                            :description (format "Outgoing messages for %s" connection-id))]
+    (let [response-channel (s/stream
+                            ;; {
+                            ;;  ;; :description (format "Outgoing messages for %s" connection-id)
+
+                            ;;  }
+
+                            )]
 
       (dosync
        (alter connections #(assoc-in % [user-id connection-id] response-channel)))
 
-      (l/siphon
-       (l/map* (partial transform-activities connection-id)
-               ch/posted-activities)
+      (s/connect
+       (s/map (partial transform-activities connection-id)
+              ch/posted-activities)
        response-channel)
 
-      (l/siphon
-       (l/map* (partial transform-conversations connection-id)
+      (s/connect
+       (s/map (partial transform-conversations connection-id)
                ch/posted-conversations)
        response-channel)
 
-      (l/receive-all response-channel
-                     (fn [m]
-                       (server/send! ch m))))
+      (s/consume
+       (partial server/send! ch)
+       response-channel))
 
-    #_(l/on-closed ch (partial connection-closed user-id connection-id))
+    #_(s/on-closed ch (partial connection-closed user-id connection-id))
+
     connection-id))
 

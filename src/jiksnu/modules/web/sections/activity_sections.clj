@@ -1,11 +1,7 @@
 (ns jiksnu.modules.web.sections.activity-sections
   (:require [ciste.core :refer [with-format]]
             [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section
-                                            delete-button edit-button
-                                            show-section-minimal
-                                            show-section link-to uri title
-                                            index-block
+            [ciste.sections.default :refer [actions-section edit-button link-to uri title index-block
                                             index-line index-section update-button]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -44,7 +40,6 @@
     [:json      "/api/statuses/public_timeline.json"]
     [:n3        "/api/statuses/public_timeline.n3"]
     [:rdf       "/api/statuses/public_timeline.rdf"]
-    [:viewmodel "/api/statuses/public_timeline.viewmodel"]
     [:xml       "/api/statuses/public_timeline.xml"]]))
 
 (defn timeline-formats
@@ -95,24 +90,9 @@
   [:a {:href "/model/activities/{{activity.id}}.model" }
    "Model"])
 
-(defn get-buttons
-  []
-  (concat
-   [#'model-button]
-   (when (session/current-user)
-     [#'like-button
-      #'comment-button])
-   (when (or #_(model.activity/author? activity user)
-             (session/is-admin?))
-     [#'edit-button
-      #'delete-button])
-   (when (session/is-admin?)
-     [#'update-button])))
-
 (defn links-section
   [activity]
-  [:h3 "Links"]
-  )
+  [:h3 "Links"])
 
 (defn maps-section
   [activity]
@@ -186,12 +166,10 @@
    #'likes-section
    #'maps-section
    #'tags-section
-   #'posted-link-section
-   ])
+   #'posted-link-section])
 
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
    {:data-bind "foreach: items"}
    (map #(index-line % options) records)])
-

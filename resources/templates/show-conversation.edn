@@ -1,0 +1,3 @@
+[:div {:ng-if "loaded"}
+ [:div {:ng-repeat "activity in activities.items"}
+  [:show-activity {:data-id "{{activity}}"}]]]

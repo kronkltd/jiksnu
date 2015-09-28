@@ -19,6 +19,7 @@
                  [com.novemberain/monger "3.0.0"]
                  [com.novemberain/validateur "2.4.2"]
                  [hiccup "1.0.5"]
+                 [http-kit "2.1.19"]
                  [im.chit/gyr "0.3.1"]
                  [im.chit/purnam "0.5.2"]
                  [liberator "0.13"]
@@ -40,11 +41,16 @@
                  [ring/ring-core "1.4.0"]
                  [ring-basic-authentication "1.0.5"]
                  [slingshot "0.12.2"]
+                 [mvxcvi/whidbey "1.0.0"]
+                 [net.kencochrane.raven/raven-log4j "6.0.0"]
                  [xerces/xercesImpl "2.11.0"]]
   :plugins [[lein-cljsbuild "1.0.6"]
             [codox          "0.8.12"]
+            [lein-checkouts "1.1.0"]
             [lein-lesscss   "1.2"]
-            [lein-midje     "3.1.3"]]
+            [lein-midje     "3.1.3"]
+            [mvxcvi/whidbey "1.0.0"]
+            [cider/cider-nrepl "0.10.0-SNAPSHOT"]]
   :cljsbuild {:repl-listen-port 9001
               :repl-launch-commands {"my-launch" ["google-chrome"]}
               :builds
@@ -52,7 +58,7 @@
                            :foreign-libs [{:file "node_modules/angular/angular.min.js"
                                            :provides ["angular.core"]}]
                            :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
-                                      :optimizations :whitespace
+                                      :optimizations :simple
                                       :pretty-print true}}
                :advanced   {:source-paths ["src-cljs"]
                             :compiler {:output-to "target/resources/public/cljs/jiksnu.min.js"
@@ -71,47 +77,31 @@
                :protractor {:source-paths ["specs"]
                             :compiler {:output-to "target/protractor-tests.js"
                                        :optimizations :simple
-                                       :pretty-print true}}
-
-}}
-  :hooks [leiningen.cljsbuild]
+                                       :pretty-print true}}}}
+  ;; :hooks [leiningen.cljsbuild]
   :aliases {"karma" ["shell" "./node_modules/karma-cli/bin/karma" "start"]
             "protractor" ["shell" "./node_modules/protractor/bin/protractor" "protractor-config.js"]
             "protractor-start" ["shell" "./node_modules/protractor/bin/webdriver-manager" "start"]
-            "protractor-update" ["shell" "./node_modules/protractor/bin/webdriver-manager" "update"]
-
-}
+            "protractor-update" ["shell" "./node_modules/protractor/bin/webdriver-manager" "update"]}
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
              "-Dfile.encoding=UTF-8"]
   :warn-on-reflection false
 
-  :node-dependencies [
-                      [angular "1.3.14"]
-                      [karma "0.12.31"]
-                      [karma-cli "0.0.4"]
-                      [karma-chrome-launcher "0.1.7"]
-                      [karma-coverage "0.2.7"]
-                      [karma-growl "0.1.0"]
-                      [karma-jasmine "0.1.4"]
-                      [karma-junit-reporter "0.2.2"]
-                      [protractor "1.8.0"]
-                      ]
-
   :profiles {:dev [:dev-core :user-dev]
              :dev-core
              {:resource-paths ["test-resources"]
               :repl-options {:init-ns ciste.runner
                              :port 7888}
-              :plugins [
-                        [lein-cloverage "1.0.2"]
+              :plugins [[lein-cloverage "1.0.2"]
                         [lein-npm "0.5.0"]
-                        [lein-shell "0.4.0"]
-                        ]
+                        [lein-shell "0.4.0"]]
               :dependencies
               [[midje         "1.7.0"
                 :exclusions [org.clojure/clojure]]
+               [slamhound "1.5.5"]
+               [org.clojure/tools.nrepl "0.2.9"]
                [ring-mock     "0.1.5"]]}}
   :lesscss-output-path "target/resources/public/css"
   :resource-paths ["resources" "target/resources"]

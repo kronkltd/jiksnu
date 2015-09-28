@@ -30,3 +30,8 @@ repl
 reset.sh
 resources/public/vendor
 deps.txt
+.kitchen/
+.kitchen.local.yml
+chef/cookbooks/
+chef/tmp/
+/tmp/

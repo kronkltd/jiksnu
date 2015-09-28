@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+#^syntax detection
+
+site 'https://supermarket.getchef.com/api/v1'
+
+# cookbook 'chef-client'
+
+# cookbook 'apache2', '>= 1.0.0'
+
+# cookbook 'rvm',
+#   :git => 'https://github.com/fnichol/chef-rvm'
+
+cookbook 'mongodb'
+cookbook 'java'
+cookbook 'lein'
+cookbook 'nginx'
+cookbook 'nodejs'
+# cookbook 'byobu'
+cookbook 'emacs'
+cookbook 'application_java'
+cookbook 'application_nginx'
+# cookbook 'bower'
+cookbook 'ack'
+cookbook 'artifactory'
+cookbook 'git'
+
+
+# cookbook 'postgresql',
+#   :git => 'https://github.com/findsyou/cookbooks',
+#   :ref => 'postgresql-improvements'

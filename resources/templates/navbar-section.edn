@@ -1,6 +1,6 @@
 [:nav.navbar.navbar-default.navbar-inverse
  {:role "navigation"}
- [:div.container
+ [:div.container {:ng-if "loaded"}
   [:div.navbar-header
    [:button.navbar-toggle
     {:type "button"
@@ -17,16 +17,20 @@
     [:li.dropdown {:dropdown ""}
      [:a.dropdown-toggle
       {:dropdown-toggle ""}
-      [:span {:data-model "user"}
-       [:display-avatar {:data-id "acct:{{app.user}}@{{app.domain}}"}]
-       "{{app.user}}"
-       [:link-to {:data-id "{{app.user}}" :data-model "user"}]]
+      "{{app.user}}"
       [:b.caret]]
      [:ul.dropdown-menu {:role "menu"}
-      ;; [:li [:a {:ui-sref "settings"} "Settings"]]
-      ;; [:li [:a {:ui-sref "profile"}  "Profile"]]
+      [:li [:a {:ui-sref "home"} "Public Timeline"]]
+      [:li [:a {:ui-sref "indexDomains"} "Domains"]]
+      [:li [:a {:ui-sref "indexGroups"} "Groups"]]
+      [:li [:a {:ui-sref "indexStreams"} "Streams"]]
+      [:li [:a {:ui-sref "indexUsers"} "Users"]]
+
+      [:li [:a {:ui-sref "settingsPage"} "Settings"]]
+      [:li [:a {:ui-sref "profile"}  "Profile"]]
       [:li [:a {:ng-click "logout()"}   "Log out"]]]]]
    [:ul.nav.navbar-nav.navbar-right {:ng-if "!app.user"}
     [:li [:a {:ui-sref "loginPage"} "Login"]]
     [:li.divider-vertical]
-    [:li [:a {:ui-sref "registerPage"} "Register"]]]]]]
+    [:li [:a {:ui-sref "registerPage"} "Register"]]]
+   [:display-avatar.navbar-right.navbar-btn  {:ng-if "app.user" :data-id "acct:{{app.user}}@{{app.domain}}"}]]]]

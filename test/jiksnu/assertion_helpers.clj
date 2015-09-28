@@ -12,7 +12,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-that get-this]]
             [jiksnu.session :as session]
-            [lamina.core :as l]
+            [manifold.stream :as s]
+            [manifold.time :as time]
             [midje.sweet :refer :all]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import org.openqa.selenium.NoSuchElementException))
@@ -80,8 +81,7 @@
    (:displayName
     (:object
      (json/read-str
-      @(l/read-channel* that-stream
-                        :timeout 60000)
+      @(s/try-take! that-stream (time/seconds 6))
       :key-fn keyword))) => (:title (get-this :activity))))
 
 (defn should-receive-oembed

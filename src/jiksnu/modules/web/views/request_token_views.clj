@@ -8,17 +8,12 @@
 
 (defview #'actions.request-token/authorize :html
   [request token]
-  {:body
+  {:title "Authorization Complete"
+   :body
    [:div
     [:p "Authorization Complete"]
     [:p "Token: " (:_id token)]
     [:p "Verifier: " (:verifier token)]]})
-
-(defview #'actions.request-token/authorize :viewmodel
-  [request domain]
-  (let [id (:_id domain)]
-    {:body
-     {:title "Authorization Complete"}}))
 
 (defview #'actions.request-token/show-authorization-form :html
   [request [user token]]
@@ -35,12 +30,6 @@
      [:input {:type "hidden" :name "oauth_token" :value (:_id token)}]
      [:input {:type "hidden" :name "verifier" :value (:verifier token)}]
      [:button.btn "Allow"]]]})
-
-(defview #'actions.request-token/show-authorization-form :viewmodel
-  [request domain]
-  (let [id (:_id domain)]
-    {:body
-     {:title "Show Authorization Form"}}))
 
 (defview #'actions.request-token/get-request-token :text
   [request response]

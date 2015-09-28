@@ -11,7 +11,7 @@
             [jiksnu.ops :as ops]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
-            [lamina.core :as l]
+            [manifold.deferred :as d]
             [midje.sweet :refer :all]
             [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]))
@@ -43,7 +43,7 @@
               response-for) =>
               (contains {:status status/redirect?})
               (provided
-                (ops/get-discovered anything) => (l/success-result
+                (ops/get-discovered anything) => (d/success-deferred
                                                   (model/map->Domain {:_id domain-name}))))))))
 
 (future-fact "get-subscriptions"

@@ -1,6 +1,0 @@
-[:div
- [:h2 "Foo {{foo}}"]
- [:ul
-  [:li {:ng-repeat "stream in items"}
-   "{{stream}}"]]]
-

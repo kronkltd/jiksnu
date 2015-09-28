@@ -33,11 +33,6 @@
    :single true
    :body (admin-index-section items page)})
 
-(defview #'actions.feed-source/index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Feed Sources"
-          :pages {:feedSources (format-page-info page)}}})
-
 (defview #'actions.feed-source/remove-watcher :html
   [request source]
   (redirect (str "/admin/feed-sources/" (:_id source))
@@ -58,8 +53,3 @@
 (defview #'actions.feed-source/show :model
   [request source]
   {:body (admin-show-section source)})
-
-(defview #'actions.feed-source/show :viewmodel
-  [request source]
-  {:body {:title (title source)
-          :targetFeedSource (:_id source)}})

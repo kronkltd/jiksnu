@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.filters.feed-source-filters
   (:require [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source] 
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]

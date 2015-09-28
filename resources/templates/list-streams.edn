@@ -1,0 +1,10 @@
+[:div
+ [:h3 "Streams" [:i.btn {:ng-click "toggle()"} "{{btnLabel}}"]]
+ [:form {:ng-submit "addStream()" :name "addStreamForm" :ng-show "formShown"}
+  ;; [:code [:pre "{{stream | json}}"]]
+  [:input {:ng-model "stream.userId" :name "user" :type "hidden"}]
+  [:input {:ng-model "stream.name" :name "name" :type "text"}]
+  [:input.btn.btn-default {:type "submit"}]]
+ [:ul
+  [:li {:ng-repeat "id in item.streams.items"}
+   [:show-stream-minimal {:data-id "{{id}}"}]]]]

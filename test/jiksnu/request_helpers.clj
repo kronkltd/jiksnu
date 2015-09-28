@@ -1,11 +1,11 @@
 (ns jiksnu.request-helpers
   (:require [clj-http.client :as client]
             [clojure.string :as string]
-            [lamina.core :as l]
             [jiksnu.action-helpers :refer [expand-url fetch-page fetch-page-browser page-names
                                            that-stream]]
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that]]
+            [manifold.stream :as s]
             [ring.mock.request :as req]))
 
 (defn request-oembed-resource
@@ -16,7 +16,7 @@
   [stream-name]
   ;; TODO: FIXME
   (let [ch (:body @(client/get (expand-url (page-names stream-name))))]
-    (l/siphon ch that-stream)
+    (s/connect ch that-stream)
     (Thread/sleep 3000)))
 
 (defn request-page-for-user

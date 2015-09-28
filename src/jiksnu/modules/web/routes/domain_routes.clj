@@ -6,48 +6,58 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
+            [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers
-             :refer [angular-resource page-resource]]
+             :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
 
 
+(defparameter :model.domain/id
+  :description "The Id of an domain"
+  :type "string")
+
 ;; =============================================================================
 
-(defgroup domains
+(defgroup jiksnu domains
   :name "Domains"
   :url "/main/domains")
 
-(defresource domains collection
+(defresource domains :collection
   :desc "collection of domains"
+  :summary "Index Domains"
   :mixins [angular-resource])
 
-(defresource domains discover
-  :url "/{_id}/discover"
-  :post actions.service/discover)
+;; (defresource domains :discover
+;;   :url "/{_id}/discover"
+;;   :post actions.service/discover)
 
-(defresource domains edit
-  :url "/{_id}/edit"
-  :handle-ok actions.domain/edit-page)
+;; (defresource domains :edit
+;;   :url "/{_id}/edit"
+;;   :handle-ok actions.domain/edit-page)
 
-(defresource domains resource
+(defresource domains :item
+  :summary "Show Domain"
   :url "/{_id}"
+  :parameters {:_id (path :model.domain/id)}
   :mixins [angular-resource]
   :delete! actions.domain/delete
   :delete-summary "Delete a domain")
 
 ;; =============================================================================
 
-(defgroup domains-api
+(defgroup jiksnu domains-api
+  :name "Domains API"
   :url "/model/domains")
 
-(defresource domains-api collection-api
+(defresource domains-api :collection
   :mixins [page-resource]
   :available-formats [:json]
   :ns 'jiksnu.actions.domain-actions)
 
-(defresource domains-api api-item
+(defresource domains-api :item
   :desc "Resource routes for single Domain"
   :url "/{_id}"
+  :parameters {:_id (path :model.domain/id)}
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :presenter (partial into {})
@@ -61,38 +71,13 @@
 
 ;; =============================================================================
 
-(defgroup well-known
+(defgroup jiksnu well-known
   :url "/.well-known"
   :name "Well Known"
   :summary "Well Known")
 
-(defresource well-known host-meta
+(defresource well-known :host-meta
   :url "/host-meta"
   :summary "Webfinger Host Meta Document"
+  :available-media-types ["application/json"]
   :handle-ok actions.domain/host-meta)
-
-
-
-
-
-(defn routes
-  []
-  [
-   ;; [[:get    "/.well-known/host-meta.:format"]   #'actions.domain/show]
-   ;; [[:get    "/.well-known/host-meta"]           {:action #'actions.domain/show
-   ;;                                                :format :xrd}]
-   ;; [[:get    "/main/domains.:format"]            #'actions.domain/index]
-   ;; [[:get    "/main/domains"]                    #'actions.domain/index]
-   ;; [[:get    "/main/domains/:id.:format"]        #'actions.domain/show]
-   ;; [[:get    "/main/domains/:id"]                #'actions.domain/show]
-   ;; [[:delete "/main/domains/*"]                  #'actions.domain/delete]
-   ;; [[:post   "/main/domains/:id/edit"]           #'actions.domain/edit-page]
-   ;; [[:post   "/main/domains"]                    #'actions.domain/find-or-create]
-   ;; [[:get    "/api/dialback"]                    #'actions.domain/dialback]
-   ])
-
-(defn pages
-  []
-  [
-   [{:name "domains"}    {:action #'actions.domain/index}]
-   ])

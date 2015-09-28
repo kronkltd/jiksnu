@@ -1,0 +1,6 @@
+# -*- mode: ruby -*-
+
+Vagrant::Config.run do |config|
+  config.vm.forward_port 80, 8080
+  config.ssh.forward_agent = true # important for recipe[homesick_agent::data_bag]
+end

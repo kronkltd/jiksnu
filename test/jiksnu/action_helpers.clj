@@ -3,8 +3,8 @@
             [clj-webdriver.taxi :refer [to]]
             [clojure.tools.logging :as log]
             jiksnu.modules.web.routes
-            [lamina.core :as l]
-            [lamina.time :as time]
+            [manifold.stream :as s]
+            [manifold.time :as time]
             [midje.sweet :refer :all]
             [slingshot.slingshot :refer [throw+ try+]]))
 
@@ -30,7 +30,7 @@
 (def current-page (ref nil))
 (def domain "localhost")
 (def port 8175)
-(def that-stream (l/permanent-channel))
+(def that-stream (s/stream* {:permanent? true}))
 
 (defn get-domain
   []
