@@ -26,6 +26,19 @@ of it's Action Routing framework and services.
 * XMPP notifications
 * Federated user and domain discovery
 
+## Developing
+
+    sudo apt-get install -y vagrant
+    vagrant plugin install vagrant-git
+    vagrant plugin install vagrant-hostmanager
+
+    git clone https://github.com/duck1123/jiksnu.git
+    cd jiksnu/chef
+    librarian-chef update
+    cd ../
+    vagrant up
+
+
 ## Thanks
 
 I would like to thank the authors of the many excellent free software,
