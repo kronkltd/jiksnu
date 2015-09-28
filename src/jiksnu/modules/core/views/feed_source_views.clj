@@ -18,17 +18,6 @@
     {:body {:action "page-updated"
             :body response}}))
 
-(defview #'actions.feed-source/index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Feed Sources"
-          :pages {:feedSources (format-page-info page)}}})
-
 (defview #'actions.feed-source/show :model
   [request activity]
   {:body (show-section activity)})
-
-(defview #'actions.feed-source/show :viewmodel
-  [request item]
-  {:body {:targetFeedSource (:_id item)
-          :title (:title item)}})
-

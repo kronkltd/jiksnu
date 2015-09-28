@@ -14,12 +14,6 @@
   [groups & [page]]
   (map #(admin-index-line % page) groups))
 
-(defsection admin-index-block [Group :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
-
 (defsection admin-index-line [Group]
   [item & [page]]
   (admin-show-section item page))
@@ -31,12 +25,6 @@
 (defsection admin-show-section [Group]
   [item & [page]]
   (show-section item page))
-
-(defsection index-block [Group :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
 
 (defsection index-line [Group]
   [group & [page]]
@@ -51,6 +39,4 @@
   item)
 
 (defn user-groups
-  [user]
-
-  )
+  [user])

@@ -22,14 +22,10 @@
         response (merge page
                         {:id (:name request)})]
     {:body {:action "sub-page-updated"
+            :title "Groups"
             :model "user"
             :id (:_id (:item request))
             :body response}}))
-
-(defview #'actions.group/fetch-by-user :viewmodel
-  [request page]
-  {:body {:title "Groups"
-          :pages {:groups (format-page-info page)}}})
 
 ;; index
 
@@ -39,31 +35,12 @@
         response (merge response
                         {:id (:name request)})]
     {:body {:action "page-updated"
+            :title "Groups"
             :body response}}))
-
-(defview #'actions.group/index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Groups"
-          :pages {:groups (format-page-info page)}
-          :groups (index-section items page)}})
-
-;; new-page
-
-(defview #'actions.group/new-page :viewmodel
-  [request group]
-  {:body {:title "Create New Group"}})
 
 ;; show
 
 (defview #'actions.group/show :model
   [request item]
-  {:body (doall (show-section item))})
-
-(defview #'actions.group/show :viewmodel
-  [request item]
-  (let [id (:_id item)]
-    {:body
-     {:title (:nickname item)
-      :pages {:activities (let [page (actions.activity/index {:group id})]
-                            (format-page-info page))}
-      :targetGroup (:_id item)}}))
+  {:title (:nickname item)
+   :body (doall (show-section item))})

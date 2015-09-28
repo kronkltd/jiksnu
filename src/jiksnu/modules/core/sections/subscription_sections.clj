@@ -17,24 +17,6 @@
 (declare-section subscriptions-block :seq)
 (declare-section subscriptions-line)
 
-(defsection admin-index-line [Subscription :viewmodel]
-  [item & [page]]
-  item)
-
-(defsection admin-index-block [Subscription :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
-
-;; index-block
-
-(defsection index-block [Subscription :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] {(:_id m) (index-line m page)}))
-       (into {})))
-
 ;; index-line
 
 (defsection index-line [Subscription :as]
@@ -45,16 +27,6 @@
      :actor (show-section actor)
      :target (show-section target)}))
 
-(defsection index-line [Subscription :viewmodel]
-  [item & [page]]
-  item)
-
-;; index-section
-
-(defsection index-section [Subscription :viewmodel]
-  [items & [page]]
-  (index-block items page))
-
 (defsection show-section [Subscription :model]
   [item & _]
   item)
@@ -62,4 +34,3 @@
 (defsection uri [Subscription]
   [subscription & _]
   (str "/admin/subscriptions/" (:_id subscription)))
-

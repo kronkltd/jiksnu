@@ -16,12 +16,6 @@
   [items & [page]]
   (map #(admin-index-line % page) items))
 
-(defsection admin-index-block [FeedSource :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
-
 (defsection admin-index-section [FeedSource]
   [items & [page]]
   (admin-index-block items page))
@@ -30,19 +24,9 @@
   [item & [page]]
   (show-section item))
 
-(defsection index-block [FeedSource :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
-
 (defsection show-section [FeedSource :model]
   [activity & [page]]
   activity)
-
-(defsection show-section [FeedSource :viewmodel]
-  [item & _]
-  item)
 
 (defsection title [FeedSource]
   [item & _]

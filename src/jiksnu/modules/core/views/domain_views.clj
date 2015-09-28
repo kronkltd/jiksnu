@@ -15,11 +15,6 @@
     {:body {:action "page-updated"
             :body response}}))
 
-(defview #'actions.domain/index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Domains"
-          :pages {:domains (format-page-info page)}}})
-
 (defview #'actions.domain/show :jrd
   [request domain]
   {:body (show-section domain)})
@@ -35,12 +30,3 @@
 (defview #'actions.domain/show :xrd
   [request domain]
   {:body (show-section domain)})
-
-(defview #'actions.domain/show :viewmodel
-  [request domain]
-  (let [id (:_id domain)]
-    {:body
-     {:title id
-      :pages {:users (let [page (actions.user/index {:domain id})]
-                       (format-page-info page))}
-      :targetDomain (:_id domain)}}))

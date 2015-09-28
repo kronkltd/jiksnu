@@ -21,8 +21,7 @@
             [manifold.deferred :as d]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Domain
-           jiksnu.model.User
-           ))
+           jiksnu.model.User))
 
 (defn mock-user-meta
   [username domain-name uri source-link]
@@ -74,16 +73,13 @@
             (actions.user/get-username params) => (contains {:username username})
             (provided
               (actions.user/discover-user-xrd anything anything) =>
-              {:username username})))
-        )
-      )
+              {:username username})))))
 
     (fact "when given an acct uri"
       (let [uri (str "acct:" username "@" domain-name)
             params {:_id uri}]
         (actions.user/get-username params) =>
-        (contains {:username username})))
-    ))
+        (contains {:username username})))))
 
 (fact "#'actions.user/get-domain"
   (fact "when the domain already exists"
@@ -114,11 +110,7 @@
               (actions.user/get-domain params) =>
               (every-checker
                (partial instance? Domain)
-               (contains {:_id (:_id domain)}))))
-          )
-        )
-      ))
-  )
+               (contains {:_id (:_id domain)})))))))))
 
 (fact "#'actions.user/create"
   (fact "when the params are nil"
@@ -192,8 +184,7 @@
             (fact "when the username can be determined"
               (actions.user/find-or-create params) => (partial instance? User)
               (provided
-               (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd})))))
-        ))
+               (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd})))))))
 
     (fact "when given an acct uri uri"
       (db/drop-all!)
@@ -206,11 +197,7 @@
           (actions.user/find-or-create {:_id uri}) => .user.
 
           (provided
-            (actions.user/create anything) => .user.))))
-    ))
-
-(fact "#'actions.user/register-page"
-  (actions.user/register-page) => (partial instance? User))
+            (actions.user/create anything) => .user.))))))
 
 (fact "#'actions.user/register"
   (let [params {:username (fseq :username)

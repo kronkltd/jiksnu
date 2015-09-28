@@ -31,44 +31,13 @@
 ;; Sections
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsection admin-index-block [User :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
-
-(defsection admin-index-section [User :viewmodel]
-  [items & [page]]
-  (admin-index-block items page))
-
-(defsection index-block [User :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
-
 (defsection index-line [User :model]
   [item & page]
   (show-section item page))
 
-(defsection index-line [User :viewmodel]
-  [item & page]
-  (show-section item page))
-
-(defsection index-section [User :viewmodel]
-  [items & [page]]
-  (index-block items page))
-
 (defsection show-section [User :model]
   [user & _]
   user)
-
-(defsection show-section [User :viewmodel]
-  [item & [page]]
-  (->> item
-       (map (fn [[k v]] [(inf/camel-case (name k) :lower)
-                         v]))
-       (into {})))
 
 (defsection show-section [User :xml]
   [user & options]
