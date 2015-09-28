@@ -82,6 +82,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # chef.add_recipe 'application_java'
     chef.add_recipe 'emacs'
     chef.add_recipe 'git'
+    chef.add_recipe 'nginx-proxy'
 
     # chef.application '/opt/jiksnu' do
 
@@ -101,9 +102,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # end
 
     chef.json = {
-      :nginx => {
-        :host => "jiksnu"
+      :nginx_proxy => {
+        :proxies => {
+          'jiksnu-dev' => 8080
+        }
       },
+      # :nginx => {
+      #   :host => "jiksnu"
+      # },
       :java => {
         :jdk_version => '7'
       }
@@ -111,7 +117,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define :jiksnu, primary: true do |node|
-    node.vm.hostname = 'jiksnu'
+    node.vm.hostname = 'jiksnu-dev'
 
 
     # node.vm.provision "shell", name: "jiksnu-root", path: "vagrant/provision_jiksnu.sh"
