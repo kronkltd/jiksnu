@@ -2,6 +2,7 @@
 
 [![Stack Share](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/duck1123/jiksnu)
 [![Build Status](http://build.jiksnu.org/job/jiksnu-core/branch/master/badge/icon)](http://build.jiksnu.org/job/jiksnu-core/branch/master/)
+[![Stories in Ready](https://badge.waffle.io/duck1123/jiksnu.png?label=ready&title=Ready)](http://waffle.io/duck1123/jiksnu)
 
 Jiksnu is a Lojban compound word (lujvo) for the words "Jikca
 Casnu". This translates roughly to "is a social type of interaction"
