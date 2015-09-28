@@ -73,7 +73,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.add_recipe 'mongodb'
     chef.add_recipe 'java'
     chef.add_recipe 'lein'
-    chef.add_recipe 'nginx'
+    # chef.add_recipe 'nginx'
     chef.add_recipe 'nodejs'
     # chef.add_recipe 'bower'
     # chef.add_recipe 'application'
