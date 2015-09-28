@@ -58,7 +58,8 @@
   (let [password (or (:password opts)
                      (fseq :password))
         user (actions.user/register
-              {:username (fseq :username)
+              {:username (or (:username opts)
+                             (fseq :username))
                :password password
                :name (fseq :name)
                :accepted true})
