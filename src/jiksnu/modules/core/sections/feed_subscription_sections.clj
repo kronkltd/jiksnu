@@ -32,8 +32,3 @@
 (defsection show-section [FeedSubscription :model]
   [item & [page]]
   item)
-
-(defsection show-section [FeedSubscription :viewmodel]
-  [item & _]
-  item)
-

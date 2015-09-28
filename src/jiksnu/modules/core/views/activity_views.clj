@@ -52,9 +52,3 @@
 (defview #'actions.activity/show :model
   [request activity]
   {:body (show-section activity)})
-
-(defview #'actions.activity/show :viewmodel
-  [request activity]
-  {:body {:activities (doall (index-section [activity]))
-          :targetActivity (:_id activity)
-          :title (:title activity)}})

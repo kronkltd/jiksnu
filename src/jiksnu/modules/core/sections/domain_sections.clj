@@ -1,9 +1,8 @@
 (ns jiksnu.modules.core.sections.domain-sections
   (:require [ciste.core :refer [with-format]]
             [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section delete-button
-                                            index-block index-line show-section
-                                            uri]]
+            [ciste.sections.default :refer [actions-section index-block index-line
+                                            show-section uri]]
             [clojure.tools.logging :as log]
             [jiksnu.session :refer [current-user is-admin?]]
             [jiksnu.modules.core.sections :refer [admin-index-block
@@ -13,18 +12,6 @@
   (:import jiksnu.model.Domain))
 
 ;; admin-index-block
-
-(defsection admin-index-block [Domain :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] {(:_id m) (admin-index-line m page)}))
-       (into {})))
-
-(defsection index-block [Domain :viewmodel]
-  [items & [page]]
-  (->> items
-       (map (fn [m] (index-line m page)))
-       doall))
 
 (defsection show-section [Domain :jrd]
   [item & [page]]
@@ -36,10 +23,6 @@
               :title "Resource Descriptor"}]}))
 
 (defsection show-section [Domain :model]
-  [item & [page]]
-  item)
-
-(defsection show-section [Domain :viewmodel]
   [item & [page]]
   item)
 

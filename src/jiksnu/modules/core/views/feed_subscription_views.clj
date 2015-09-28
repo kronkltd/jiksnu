@@ -18,9 +18,3 @@
 (defview #'actions.feed-subscription/show :model
   [request activity]
   {:body (show-section activity)})
-
-(defview #'actions.feed-subscription/show :viewmodel
-  [request item]
-  {:body {:targetFeedSubscription (:_id item)
-          :title (:title item)}})
-

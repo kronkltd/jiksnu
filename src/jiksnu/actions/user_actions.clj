@@ -297,7 +297,9 @@
   ;; verify submission.
   (if (and username password)
     (if-let [user (model.user/get-user username)]
-      (throw+ "user already exists")
+      (throw+ {:type :conflict
+               :msg "user already exists"
+               :username username})
       (let [params (merge {:username username
                            :domain (:_id (actions.domain/current-domain))
                            :discovered true
@@ -311,12 +313,8 @@
         (actions.auth/add-password user password)
         (actions.key/generate-key-for-user user)
         user))
-    (throw+ "Missing required params")))
-
-(defaction register-page
-  "Display the form to reqister a user"
-  []
-  (model/->User))
+    (throw+ {:type :missing-param
+             :msg "Missing required params"})))
 
 (defaction show
   "This action just returns the passed user.
@@ -341,13 +339,13 @@
       (log/infof "Subscribing to %s" (:_id user))
       (ops/create-new-subscription actor-id (:_id user))
       true)
-    (throw+ "Must be authenticated")))
+    (throw+ {:type :auth
+             :msg "Must be authenticated"})))
 
 (defaction add-stream
   [user params]
   (let [params (assoc params :user (:_id user))]
-    [user @(ops/create-new-stream params)])
-  )
+    [user @(ops/create-new-stream params)]))
 
 ;; (definitializer
 ;;   (model.user/ensure-indexes))
