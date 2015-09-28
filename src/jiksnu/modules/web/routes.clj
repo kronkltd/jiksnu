@@ -45,16 +45,15 @@
        (route/resources "/")
        (GET "/templates/*" [] #'helpers/serve-template)
        (-> #'core/jiksnu-routes
+           ;; ((fn [handler]
+           ;;    (fn [request]
+           ;;      (log/spy :info (handler (log/spy :info request))))))
            (wrap-trace :header :ui)
            (friend/authenticate auth-config)
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info
       wrap-content-type
-      wrap-not-modified
-      ;; ((fn [handler]
-      ;;    (fn [request]
-      ;;      (log/spy :info (handler (log/spy :info request))))))
-      ))
+      wrap-not-modified))
 
 (helpers/load-pages! 'jiksnu.modules.web.routes.pages)
 (helpers/load-sub-pages! 'jiksnu.modules.web.routes.pages)

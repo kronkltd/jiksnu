@@ -5,11 +5,14 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
+            jiksnu.modules.web.routes.auth-routes
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req])
+  (:import java.io.ByteArrayInputStream))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))
@@ -17,13 +20,12 @@
 
 (defn add-form-params
   [request params]
-  (-> request
-      (assoc :content-type "application/x-www-form-urlencoded")
-      (assoc :body (.getBytes
-                    (->> params
-                         (map (fn [[k v]] (str (name k) "=" v)))
-                         (string/join "&"))
-                    "UTF-8"))))
+  (let [body (->> params
+                  (map (fn [[k v]] (str (name k) "=" v)))
+                  (string/join "&"))]
+    (-> request
+        (req/body body)
+        (req/content-type "application/x-www-form-urlencoded"))))
 
 (future-fact "route: auth/login :post"
   (fact "when given correct parameters"
@@ -34,23 +36,29 @@
                                        :password password
                                        :accepted true})]
       (let [response (-> (req/request :post "/main/login")
-                         (add-form-params {:username username :password password})
+                         (req/body {:username username :password password})
                          response-for)]
         response => map?
         (get-in response [:headers "Set-Cookie"]) => truthy
         (:status response) => status/redirect?
         (:body response) => string?))))
 
+
 (fact "route: auth/register :post"
   (let [username (fseq :username)
         password (fseq :password)
-        params {:username        (fseq :username)
+        params {:username        username
                 :password        password
                 :confirmPassword password}
-        request (-> (req/request :post "/main/register")
-                    (add-form-params params))]
+        request (req/request :post "/main/register")]
+
     (fact "With correct parameters, form encoded"
-      (response-for request) => (contains {:status 201}))
+      (let [request (add-form-params request params)]
+        (db/drop-all!)
+        (response-for request) => (contains {:status 201})))
+
     (fact "When a user with that username already exists"
+      (db/drop-all!)
       (mock/a-user-exists {:username username})
-      (response-for request) => (contains {:status 409}))))
+      (let [request (add-form-params request params)]
+        (response-for request) => (contains {:status 409})))))
