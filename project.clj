@@ -106,7 +106,7 @@
                [slamhound "1.5.5"]
                [org.clojure/tools.nrepl "0.2.9"]
                [ring-mock     "0.1.5"]]}}
-  :less {:source-paths ["src/less"]
+  :less {:source-paths ["less"]
          :target-path "target/resources/public/css"}
   :filespecs [{:type :path :path "ciste.clj"}]
   :resource-paths ["resources" "target/resources"]

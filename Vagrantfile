@@ -107,9 +107,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           'jiksnu-dev' => 8080
         }
       },
-      # :nginx => {
-      #   :host => "jiksnu"
-      # },
+      :nginx => {
+        :default_site_enabled => false
+      },
+      :nodejs => {
+        :npm_packages => [
+          {
+            :name => "bower"
+          }
+        ]
+      },
       :java => {
         :jdk_version => '7'
       }
@@ -120,7 +127,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     node.vm.hostname = 'jiksnu-dev'
 
 
-    # node.vm.provision "shell", name: "jiksnu-root", path: "vagrant/provision_jiksnu.sh"
     node.vm.provision "shell", name: "jiksnu-local", path: "vagrant/provision_vagrant.sh", privileged: false
   end
 
