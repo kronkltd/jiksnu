@@ -16,7 +16,7 @@
                  [clojurewerkz/support "1.1.0"]
                  [cheshire "5.5.0"]
                  [com.cemerick/friend "0.2.1"]
-                 [com.novemberain/monger "3.0.0"]
+                 [com.novemberain/monger "3.0.1"]
                  [com.novemberain/validateur "2.4.2"
                   :exclusions [org.clojure/tools.reader]]
                  [crypto-random "1.2.0"]
@@ -35,9 +35,10 @@
               :dependencies
               [[midje         "1.7.0"]
                [ring-mock     "0.1.5"]
-               [org.slf4j/slf4j-log4j12 "1.7.12"]]}}
+               [org.slf4j/slf4j-log4j12 "1.7.12"]
+               [org.clojure/tools.nrepl "0.2.11"]]}}
   :plugins [[cider/cider-nrepl "0.10.0-SNAPSHOT"]
-            [codox          "0.8.10"]
+            [codox          "0.8.13"]
             [lein-midje     "3.1.3"]
             [lein-ancient "0.6.7"]
             [lein-bikeshed "0.2.0"]
