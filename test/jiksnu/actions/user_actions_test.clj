@@ -43,7 +43,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(future-fact "#'actions.user/get-username-from-http-uri"
+(fact "#'jiksnu.actions.user-actions/get-username-from-http-uri"
   (fact "when the uri does not have user info"
     (let [username (fseq :username)
           domain-name (fseq :domain)
@@ -51,7 +51,7 @@
           params {:_id uri}]
       (actions.user/get-username-from-http-uri params) => (contains {:username username}))))
 
-(fact "#'actions.user/get-username"
+(fact "#'jiksnu.actions.user-actions/get-username"
   (let [username (fseq :username)
         domain-name (fseq :domain)
         template (str "http://" domain-name "/xrd?uri={uri}")
@@ -64,7 +64,6 @@
       (future-fact "and it has user info")
 
       (fact "and it does not have user info"
-
         (fact "and the xrd request returns info"
           (let [uri (factory/make-uri domain-name "/users/1")
                 params {:_id uri}]
@@ -79,7 +78,7 @@
         (actions.user/get-username params) =>
         (contains {:username username})))))
 
-(fact "#'actions.user/get-domain"
+(fact "#'jiksnu.actions.user-actions/get-domain"
   (fact "when the domain already exists"
     (let [domain (mock/a-domain-exists {:discovered true})
           domain-name (:_id domain)]
@@ -110,7 +109,7 @@
                (partial instance? Domain)
                (contains {:_id (:_id domain)})))))))))
 
-(fact "#'actions.user/create"
+(fact "#'jiksnu.actions.user-actions/create"
   (fact "when the params are nil"
     (let [params nil]
       (actions.user/create params) => (throws RuntimeException)))
@@ -127,10 +126,10 @@
                   :links [{:href (fseq :uri) :rel "alternate"}]}]
       (actions.user/create params) => model/user?)))
 
-(fact "#'actions.user/index"
+(fact "#'jiksnu.actions.user-actions/index"
   (actions.user/index {}) => map?)
 
-(fact "#'actions.user/find-or-create"
+(fact "#'jiksnu.actions.user-actions/find-or-create"
   (let [username (fseq :username)
         domain-name (fseq :domain)
         source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)
@@ -197,7 +196,7 @@
           (provided
             (actions.user/create anything) => .user.))))))
 
-(fact "#'actions.user/register"
+(fact "#'jiksnu.actions.user-actions/register"
   (let [params {:username (fseq :username)
                 :email (fseq :email)
                 :name (fseq :name)

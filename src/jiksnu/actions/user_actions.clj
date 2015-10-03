@@ -34,11 +34,11 @@
 
 (defn prepare-delete
   ([item]
-     (prepare-delete item @delete-hooks))
+   (prepare-delete item @delete-hooks))
   ([item hooks]
-     (if (seq hooks)
-       (recur ((first hooks) item) (rest hooks))
-       item)))
+   (if (seq hooks)
+     (recur ((first hooks) item) (rest hooks))
+     item)))
 
 (defn prepare-create
   [user]
@@ -201,23 +201,24 @@
           params
           (let [params (discover-user-xrd params options)]
             (if (:username params)
-              (let [acct-id (format "acct:%s@%s" (:username params) (:domain params))]
-                (merge
-                 params
-                 {:url id
-                  :_id acct-id}))
-              (when-let [profile-link (:href (model.user/get-link params "self"))]
-                (let [response @(ops/update-resource profile-link {})
-                      body (:body response)
-                      profile (json/read-str body :key-fn keyword)
-                      username (:preferredUsername profile)
-                      params (merge params
-                                    (when profile
-                                      {:username username})
-                                    profile)]
-                  (if (:username params)
-                    params
-                    (throw+ "Could not determine username")))))))))))
+              (do
+                (timbre/debug "Swapping user id for url")
+                (let [acct-id (format "acct:%s@%s" (:username params) (:domain params))]
+                  (merge params {:url id :_id acct-id})))
+              (do
+                (timbre/debug "Does not have a username from xrd")
+                (when-let [profile-link (:href (model.user/get-link params "self"))]
+                  (let [response @(ops/update-resource profile-link {})
+                        body (:body response)
+                        profile (json/read-str body :key-fn keyword)
+                        username (:preferredUsername profile)
+                        params (merge params
+                                      (when profile
+                                        {:username username})
+                                      profile)]
+                    (if (:username params)
+                      params
+                      (throw+ "Could not determine username"))))))))))))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
