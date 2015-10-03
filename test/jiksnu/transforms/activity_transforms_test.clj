@@ -11,17 +11,13 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact "#'set-recipients"
+(fact "#'jiksnu.transforms.activity-transforms/set-recipients"
 
-  (fact "when there are no recipient uris"
-    (fact "should return that activity"
-      (let [activity (factory :activity)]
-        (set-recipients activity) => activity)))
+  (fact " when there are no recipient uris"
+    (let [activity (factory :activity)]
+      (set-recipients activity) => activity))
 
-  (future-fact "When the activity contains a recipient uri"
+  (fact "When the activity contains a recipient uri"
     (let [recipient (mock/a-user-exists)
           activity (factory :activity {:recipient-uris [(:_id recipient)]})]
-      (set-recipients activity) => (contains {:recipients (:_id recipient)})))
-  )
-
-
+      (set-recipients activity) => (contains {:recipients (contains (:_id recipient))}))))

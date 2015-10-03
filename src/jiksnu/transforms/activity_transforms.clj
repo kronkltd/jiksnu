@@ -142,7 +142,7 @@
 
 (defn set-recipients*
   [uri]
-  (let [user (actions.user/find-or-create {:id uri})]
+  (let [user (actions.user/find-or-create {:_id uri})]
     (:_id user)))
 
 (defn- set-mentioned*
@@ -151,7 +151,7 @@
         scheme (.getScheme uri-obj)]
     (if (#{"http" "https"} scheme)
       (let [actor (or (try
-                        (actions.user/find-or-create {:id url})
+                        (actions.user/find-or-create {:_id url})
                         (catch RuntimeException ex
                           ;; FIXME: Handle error
                           nil))
@@ -161,7 +161,7 @@
                           ;; FIXME: Handle error
                           nil)))]
         (:_id actor))
-      (:_id (actions.user/find-or-create (:_id url))))))
+      (:_id (actions.user/find-or-create {:_id url})))))
 
 ;; TODO: this type of job should be done via triggers
 (defn set-recipients
