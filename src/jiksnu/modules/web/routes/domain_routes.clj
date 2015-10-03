@@ -3,6 +3,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.service-actions :as actions.service]
+            [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.http.resources
              :refer [defresource defgroup]]
@@ -79,5 +80,8 @@
 (defresource well-known :host-meta
   :url "/host-meta"
   :summary "Webfinger Host Meta Document"
+  :allowed-methods [:get]
   :available-media-types ["application/json"]
-  :handle-ok actions.domain/host-meta)
+  :handle-ok (fn [ctx]
+               (log/info "host meta")
+               (actions.webfinger/host-meta (actions.domain/current-domain))))
