@@ -66,5 +66,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Donate
 
-If you would like to help support this project, send your bitcoin to
-1PKVaib8p7ypnmuovtRE8YN3yPkkY3JjPa
+http://duck1123.tip.me
