@@ -1,9 +1,12 @@
-(ns jiksnu.modules.command.routes.user-routes-test
-  (:require [clj-factory.core :refer [factory]]
+(ns jiksnu.modules.command.routes-test
+  (:require [ciste.commands :refer [parse-command]]
+            [ciste.core :refer [with-context]]
+            [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.mock :as mock]
+            [jiksnu.modules.command.routes]
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
             [midje.sweet :refer :all]))
@@ -11,6 +14,23 @@
 (namespace-state-changes
  [(before :facts (th/setup-testing))
   (after :facts (th/stop-testing))])
+
+(future-fact "command 'get-page streams'"
+  (let [name "get-page"
+        args '("streams")
+        ch (d/deferred)
+        request {:name name
+                 :channel ch
+                 :format :json
+                 :args args}
+        response (parse-command request)]
+
+    response => map?
+    (let [body (:body response)]
+      body => string?
+      (let [response-obj (json/read-str body)]
+        response-obj => map?))))
+
 
 (facts "command 'get-model user'"
   (let [command "get-model"
@@ -39,4 +59,22 @@
 
     ))
 
+
+(future-fact "parse command 'get-page clients'"
+  (let [name "get-page"
+        args '("clients")]
+
+    (fact "when there are clients"
+      (let [client (mock/a-client-exists)]
+        (let [ch (d/deferred)
+              request {:channel ch
+                       :name name
+                       :format :json
+                       :args args}]
+          (let [response (parse-command request)]
+            response => map?
+            (let [body (:body response)]
+              (let [json-obj (json/read-str body :key-fn keyword)]
+                json-obj => map?))))))
+    ))
 
