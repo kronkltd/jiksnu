@@ -28,41 +28,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.ssh.forward_agent = true
 
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/jiksnu-core.git"
-  #   rc.path = "checkouts/jiksnu-core"
-  #   rc.branch = "master"
-  #   rc.clone_in_host = true
-  # end
-
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/octohipster.git"
-  #   rc.path = "checkouts/octohipster"
-  #   rc.branch = "feature/swagger"
-  #   rc.clone_in_host = true
-  # end
-
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/ciste.git"
-  #   rc.path = "checkouts/ciste"
-  #   rc.branch = "develop"
-  #   rc.clone_in_host = true
-  # end
-
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/ciste-incubator.git"
-  #   rc.path = "checkouts/ciste-incubator"
-  #   rc.branch = "master"
-  #   rc.clone_in_host = true
-  # end
-
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/jiksnu-command.git"
-  #   rc.path = "checkouts/jiksnu-command"
-  #   rc.branch = "master"
-  #   rc.clone_in_host = true
-  # end
-
   # config.vm.provision "shell", name: "base", path: "vagrant/provision.sh"
 
   config.vm.provision :chef_solo do |chef|
