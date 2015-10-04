@@ -66,9 +66,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.provision "shell", name: "base", path: "vagrant/provision.sh"
 
   config.vm.provision :chef_solo do |chef|
-    chef.cookbooks_path = ["chef/site-cookbooks", "chef/cookbooks"]
-    chef.roles_path = "chef/roles"
-    chef.data_bags_path = "chef/data_bags"
+    chef.cookbooks_path = ["site-cookbooks", "cookbooks"]
+    chef.roles_path = "roles"
+    chef.data_bags_path = "data_bags"
 
     chef.add_recipe 'mongodb'
     chef.add_recipe 'java'
