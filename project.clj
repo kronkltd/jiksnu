@@ -47,6 +47,7 @@
                  [xerces/xercesImpl "2.11.0"]]
   :plugins [[lein-cljsbuild "1.0.6"]
             [codox          "0.8.12"]
+            [lein-bower "0.5.1"]
             [lein-checkouts "1.1.0"]
             [lein-less      "1.7.5"]
             [lein-midje     "3.1.3"]
@@ -81,6 +82,7 @@
                                        :optimizations :simple
                                        :pretty-print true}}}}
   :hooks [leiningen.cljsbuild leiningen.less]
+  :bower {:package-file "bower.json", :config-file ".bowerrc"}
   :aliases {"karma" ["shell" "./node_modules/karma-cli/bin/karma" "start"]
             "protractor" ["shell" "./node_modules/protractor/bin/protractor" "protractor-config.js"]
             "protractor-start" ["shell" "./node_modules/protractor/bin/webdriver-manager" "start"]
@@ -109,6 +111,12 @@
   :less {:source-paths ["less"]
          :target-path "target/resources/public/css"}
   :filespecs [{:type :path :path "ciste.clj"}]
+
+  :npm {:dependencies [[karma "*"]
+                       [karma-jasmine "*"]
+                       [karma-phantomjs-launcher "*"]
+                       ]}
+
   :resource-paths ["resources" "target/resources"]
   :source-paths ["src" "src-cljs"]
   :lis-opts {:name "jiksnu"
