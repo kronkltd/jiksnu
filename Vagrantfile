@@ -51,7 +51,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
               "location_config" => [
                 "proxy_http_version 1.1;",
                 "proxy_set_header Upgrade $http_upgrade;",
-                "proxy_set_header Connection $connection_upgrade;"
+                'proxy_set_header Connection "upgrade";'
               ]
             }
           }
