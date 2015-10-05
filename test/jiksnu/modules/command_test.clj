@@ -1,4 +1,4 @@
-(ns jiksnu.modules.command.routes-test
+(ns jiksnu.modules.command-test
   (:require [ciste.commands :refer [parse-command]]
             [ciste.core :refer [with-context]]
             [clj-factory.core :refer [factory fseq]]
@@ -6,7 +6,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.mock :as mock]
-            [jiksnu.modules.command.routes]
+            [jiksnu.modules.command]
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
             [midje.sweet :refer :all]))
