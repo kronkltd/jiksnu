@@ -121,7 +121,7 @@
   :source-paths ["src" "src-cljs"]
   :lis-opts {:name "jiksnu"
              :properties {
-                          :ciste.config "/vagrant/ciste2.clj"
+                          :ciste.properties "/vagrant/config/default.properties"
                           }
              :jvm-opts ["-server"]
              })

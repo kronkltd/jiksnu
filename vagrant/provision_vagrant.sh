@@ -14,8 +14,5 @@ cd /vagrant
 
 # npm install
 bower install
-lein uberjar
-# lein run
+lein init-script
 
-echo "cd /vagrant" >> ~/.bashrc
-byobu-launcher-install

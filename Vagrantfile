@@ -5,7 +5,7 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
-  config.vm.network "private_network", type: "dhcp"
+  config.vm.network "forwarded_port", guest: 27017, host: 27017
 
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
@@ -17,10 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  # config.vm.network "forwarded_port", guest: 8080, host: 8080
-  # config.vm.network "forwarded_port", guest: 27017, host: 27017
-  # config.vm.network "forwarded_port", guest: 7888, host: 7888
-  # config.vm.network "forwarded_port", guest: 9000, host: 9000
+  config.vm.synced_folder "~/.m2", "/home/vagrant/.m2", owner: 'vagrant', group: 'vagrant'
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "2048"
@@ -35,41 +32,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.roles_path = "roles"
     chef.data_bags_path = "data_bags"
 
-    chef.add_recipe 'mongodb'
-    chef.add_recipe 'java'
-    chef.add_recipe 'lein'
-    # chef.add_recipe 'nginx'
-    chef.add_recipe 'nodejs'
-    # chef.add_recipe 'bower'
-    # chef.add_recipe 'application'
-    # chef.add_recipe 'application_nginx'
     chef.add_recipe 'ack'
-    # chef.add_recipe 'application_java'
     chef.add_recipe 'emacs'
     chef.add_recipe 'git'
+    chef.add_recipe 'java'
+    chef.add_recipe 'lein'
+    chef.add_recipe 'mongodb'
     chef.add_recipe 'nginx-proxy'
-
-    # chef.application '/opt/jiksnu' do
-
-    #   owner 'root'
-    #   group 'root'
-
-    #   nginx_load_balancer do
-    #     only_if { node['roles'].include?('jiksnu_load_balancer') }
-    #   end
-    # end
-
-    # chef.nginx_site "jiksnu" do
-    #   host "jiksnu"
-    #   # custom_data {
-    #   #   :env => 'dev'
-    #   # }
-    # end
+    chef.add_recipe 'nodejs'
+    chef.add_recipe 'ssl_certificate'
 
     chef.json = {
       :nginx_proxy => {
         :proxies => {
-          'jiksnu-dev' => 8080
+          'jiksnu-dev' => {
+            :port => 8080,
+            :ssl_key => 'jiksnu-dev'
+          }
         }
       },
       :nginx => {
@@ -82,6 +61,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           }
         ]
       },
+      :ssl_certificate => {
+        'jiksnu-dev' => {
+          :common_name => 'jiksnu-dev'
+        }
+      },
       :java => {
         :jdk_version => '7'
       }
@@ -90,13 +74,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define :jiksnu, primary: true do |node|
     node.vm.hostname = 'jiksnu-dev'
+    node.vm.network "private_network", type: "dhcp"
 
-
-    node.vm.provision "shell", name: "jiksnu-local", path: "vagrant/provision_vagrant.sh", privileged: false
+    node.vm.provision "shell", path: "vagrant/provision_vagrant.sh", privileged: false
+    node.vm.provision "shell", path: "vagrant/start_server.sh"
   end
-
-  # config.vm.define :sentry do |node|
-  #   node.vm.hostname = 'sentry'
-  #   # node.vm.provision "shell", name: "sentry", path: "vagrant/provision_sentry.sh"
-  # end
 end

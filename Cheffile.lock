@@ -54,6 +54,7 @@ SITE
     rsyslog (2.1.0)
     runit (1.7.2)
       packagecloud (>= 0.0.0)
+    ssl_certificate (1.9.0)
     windows (1.38.2)
       chef_handler (>= 0.0.0)
     yum (3.7.1)
@@ -67,7 +68,7 @@ DEPENDENCIES
   java (>= 0)
   lein (>= 0)
   mongodb (>= 0)
-  nginx (>= 0)
   nginx-proxy (>= 0)
   nodejs (>= 0)
+  ssl_certificate (>= 0)
 
