@@ -35,15 +35,15 @@
     (format "http://%s/main/xrd?uri={uri}" (:_id domain))))
 
 ;; TODO: show domain, format :jrd
-(defaction host-meta
-  []
-  (let [domain (actions.domain/current-domain)
-        template (get-xrd-template)
-        links [{:template template
-                :rel "lrdd"
-                :title "Resource Descriptor"}]]
-    {:host (:_id domain)
-     :links links}))
+(defn host-meta
+  ([] (host-meta (actions.domain/current-domain)))
+  ([domain]
+   (let [template (get-xrd-template)
+         links [{:template template
+                 :rel "lrdd"
+                 :title "Resource Descriptor"}]]
+     {:host (:_id domain)
+      :links links})))
 
 ;; TODO: show user, format :jrd
 ;; TODO: should take a user
