@@ -146,16 +146,13 @@
   [r]
   (let [action-ns (:ns r)]
     (if-let [action (ns-resolve action-ns 'index)]
-      (let [r (merge {:method-allowed? (lib/request-method-in :get :post :delete)
-
-                      :exists? (fn exists? [ctx]
-                                 (if-let [f (var-get action)]
-                                   [true {:data (f)}]))
-                      ;; :handle-ok handle-ok
-                      :count (fn [_] 4)}
-                     r)]
-        (-> r
-            ciste-resource))
+      (merge {:method-allowed? (lib/request-method-in :get :post :delete)
+              :exists? (fn exists? [ctx]
+                         (log/debug (str "Page resource: " action-ns))
+                         (if-let [f (var-get action)]
+                           [true {:data (f)}]))
+              :count (fn [_] 4)}
+             (ciste-resource r))
       (throw+ "Could not resolve index action"))))
 
 (defn subpage-resource
