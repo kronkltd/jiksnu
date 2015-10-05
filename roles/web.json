@@ -1,0 +1,15 @@
+{
+  "name": "web",
+  "chef_type": "role",
+  "json_class": "Chef::Role",
+  "run_list": [
+    "recipe[nginx]",
+    "recipe[nginx-proxy]",
+    "recipe[ssl_certificate::attr_apply]"
+  ],
+  "default_attributes": {
+    "nginx": {
+      "default_site_enabled": false
+    }
+  }
+}

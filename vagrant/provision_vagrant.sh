@@ -11,8 +11,6 @@ cd /vagrant/checkouts/jiksnu-command
 lein install
 
 cd /vagrant
-
-# npm install
 bower install
 lein init-script
 

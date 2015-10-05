@@ -63,11 +63,13 @@ SITE
 
 DEPENDENCIES
   ack (>= 0)
+  apache2 (>= 0)
   emacs (>= 0)
   git (>= 0)
   java (>= 0)
   lein (>= 0)
   mongodb (>= 0)
+  nginx (>= 0)
   nginx-proxy (>= 0)
   nodejs (>= 0)
   ssl_certificate (>= 0)

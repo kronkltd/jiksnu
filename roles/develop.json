@@ -1,0 +1,22 @@
+{
+  "name": "develop",
+  "chef_type": "role",
+  "json_class": "Chef::Role",
+  "run_list": [
+    "recipe[git]",
+    "recipe[lein]",
+    "recipe[nodejs]"
+  ],
+  "default_attributes": {
+    "nodejs": {
+      "npm_packages": [
+        {
+          "name": "bower"
+        }
+      ]
+    },
+    "java": {
+      "jdk_version": "7"
+    }
+  }
+}
