@@ -56,26 +56,24 @@
               :repl-launch-commands {"my-launch" ["google-chrome"]}
               :builds
               {:main       {:source-paths ["src-cljs"]
-                            :foreign-libs [{:file "node_modules/angular/angular.min.js"
-                                            :provides ["angular.core"]}]
+                            ;; :notify-command ["notify-send"]
                             :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
                                        :optimizations :simple
                                        :pretty-print true}}
                :advanced   {:source-paths ["src-cljs"]
+                            ;; :notify-command ["notify-send"]
                             :compiler {:output-to "target/resources/public/cljs/jiksnu.min.js"
                                        :optimizations :advanced
                                        :pretty-print false}}
-               :karma      {:source-paths [
-                                           ;; "src-cljs"
-                                           "test-cljs"
-                                           ]
-                            :libs ["target/resources/public/cljs/jiksnu.js"]
+               :karma      {:source-paths ["src-cljs" "test-cljs"]
+                            ;; :notify-command ["notify-send"]
                             :foreign-libs [{:file "node_modules/angular/angular.min.js"
                                             :provides ["angular.core"]}]
                             :compiler {:output-to "target/karma-test.js"
                                        :optimizations :whitespace
                                        :pretty-print true}}
                :protractor {:source-paths ["specs"]
+                            ;; :notify-command ["notify-send"]
                             :compiler {:output-to "target/protractor-tests.js"
                                        :optimizations :simple
                                        :pretty-print true}}}}
@@ -106,14 +104,13 @@
                          [ring-mock     "0.1.5"]]}}
   :less {:source-paths ["less"]
          :target-path "target/resources/public/css"}
-  :npm {:dependencies [
-                       [karma-coverage "0.5.2"]
-                       [karma-growl "0.1.0"]
-                       [karma-jasmine "0.3.6"]
-                       [karma-junit-reporter "0.3.7"]
-                       [karma-phantomjs-launcher "0.2.1"]
-                       [wscat                      "1.0.1"]
-                       ]}
+  :npm {:dependencies [[angular                    "1.4.7"]
+                       [karma-coverage             "0.5.2"]
+                       [karma-jasmine              "0.3.6"]
+                       [karma-junit-reporter       "0.3.7"]
+                       [karma-notify-send-reporter "0.0.3"]
+                       [karma-phantomjs-launcher   "0.2.1"]
+                       [wscat                      "1.0.1"]]}
   :filespecs [{:type :path :path "ciste.clj"}]
   :lis-opts {:name "jiksnu"
              :properties {:ciste.properties "/vagrant/config/default.properties"}
