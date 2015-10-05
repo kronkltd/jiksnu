@@ -8,8 +8,9 @@
                     appProvider wsProvider
                     DSProvider]
 
+
   (if-let [location js/window.location]
-    (let [scheme (str "ws" (when (= (.-protocol location) "https") "s"))
+    (let [scheme (str "ws" (when (= (.-protocol location) "https:") "s"))
           host (.-host location)]
       (.setUrl wsProvider (str scheme "://" host "/")))
     (throw (js/Exception. "No location available")))
