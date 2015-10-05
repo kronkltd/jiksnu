@@ -37,9 +37,6 @@ SITE
       ohai (~> 2.0)
       runit (~> 1.2)
       yum-epel (~> 0.3)
-    nginx-proxy (0.2.1)
-      apache2 (>= 0.0.0)
-      nginx (>= 0.0.0)
     nodejs (2.4.2)
       apt (>= 0.0.0)
       ark (>= 0.0.0)
@@ -60,6 +57,15 @@ SITE
     yum (3.7.1)
     yum-epel (0.6.3)
       yum (~> 3.2)
+
+GIT
+  remote: https://github.com/duck1123/chef-cookbook-nginx-proxy.git
+  ref: feature/location-config
+  sha: 7eff8683e8af3a0c918ecabc1337c2703c08d00b
+  specs:
+    nginx-proxy (0.2.1)
+      apache2 (>= 0.0.0)
+      nginx (>= 0.0.0)
 
 DEPENDENCIES
   ack (>= 0)
