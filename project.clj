@@ -84,7 +84,8 @@
   :aliases {"karma"             ["shell" "./node_modules/.bin/karma"             "start"]
             "protractor"        ["shell" "./node_modules/.bin/protractor"        "protractor-config.js"]
             "protractor-start"  ["shell" "./node_modules/.bin/webdriver-manager" "start"]
-            "protractor-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]}
+            "protractor-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]
+            "wscat"             ["shell" "./node_modules/.bin/wscat" "-c" "ws://localhost:8080/"]}
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
@@ -111,7 +112,7 @@
                        [karma-jasmine "0.3.6"]
                        [karma-junit-reporter "0.3.7"]
                        [karma-phantomjs-launcher "0.2.1"]
-
+                       [wscat                      "1.0.1"]
                        ]}
   :filespecs [{:type :path :path "ciste.clj"}]
   :lis-opts {:name "jiksnu"
