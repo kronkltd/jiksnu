@@ -76,7 +76,10 @@
 
 (defn follow
   [app target]
-  (js/console.log "follow" target))
+  (js/console.log "follow" target)
+  (-> app
+      (.post #js {:verb "follow"
+                  :object #js {:id (.-_id target)}})))
 
 (defn unfollow
   [app target]

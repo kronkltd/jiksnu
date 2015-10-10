@@ -53,11 +53,8 @@
   (aset $scope "isActor"
      (fn []
        (when-let [user (.-user app)]
-         (let [item-id (.-_id (.-item $scope))
-               user-id (.-_id user)]
-           (js/console.log "item" item-id)
-           (js/console.log "user" user-id)
-           (= item-id user-id)))))
+         (= (.-_id (.-item $scope))
+            (.-_id user)))))
   (aset $scope "submit"
      (fn []
        (js/console.log "Submit button pressed" app)
