@@ -16,7 +16,6 @@
             [jiksnu.mock :refer [my-password]]
             [jiksnu.model :as model]
             [jiksnu.referrant :refer [this that set-this set-that]]
-            jiksnu.modules.web.routes
             [jiksnu.session :as session]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Domain
