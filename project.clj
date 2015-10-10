@@ -55,28 +55,11 @@
   :cljsbuild {:repl-listen-port 9001
               :repl-launch-commands {"my-launch" ["google-chrome"]}
               :builds
-              {:main       {:source-paths ["src-cljs"]
-                            ;; :notify-command ["notify-send"]
-                            :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
-                                       :optimizations :simple
-                                       :pretty-print true}}
-               :advanced   {:source-paths ["src-cljs"]
-                            ;; :notify-command ["notify-send"]
-                            :compiler {:output-to "target/resources/public/cljs/jiksnu.min.js"
-                                       :optimizations :advanced
-                                       :pretty-print false}}
-               :karma      {:source-paths ["src-cljs" "test-cljs"]
-                            ;; :notify-command ["notify-send"]
-                            :foreign-libs [{:file "node_modules/angular/angular.min.js"
-                                            :provides ["angular.core"]}]
-                            :compiler {:output-to "target/karma-test.js"
-                                       :optimizations :whitespace
-                                       :pretty-print true}}
-               :protractor {:source-paths ["specs"]
-                            ;; :notify-command ["notify-send"]
-                            :compiler {:output-to "target/protractor-tests.js"
-                                       :optimizations :simple
-                                       :pretty-print true}}}}
+              {:main {:source-paths ["src-cljs"]
+                      ;; :notify-command ["notify-send"]
+                      :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
+                                 :optimizations :simple
+                                 :pretty-print true}}}}
   :hooks [leiningen.cljsbuild leiningen.less]
   :bower {:package-file "bower.json", :config-file ".bowerrc"}
   :aliases {"karma"             ["shell" "./node_modules/.bin/karma"             "start"]
@@ -101,7 +84,29 @@
                          [clj-webdriver "0.6.1" :exclusions [xalan]]
                          [slamhound "1.5.5"]
                          [org.clojure/tools.nrepl "0.2.9"]
-                         [ring-mock     "0.1.5"]]}}
+                         [ring-mock     "0.1.5"]]}
+             :production {:aot :all
+                          :cljsbuild
+                          {:builds
+                           {:advanced {:source-paths ["src-cljs"]
+                                       ;; :notify-command ["notify-send"]
+                                       :compiler {:output-to "target/resources/public/cljs/jiksnu.min.js"
+                                                  :optimizations :advanced
+                                                  :pretty-print false}}}}}
+             :karma {:cljsbuild
+                     {:builds
+                      {:karma      {:source-paths ["src-cljs" "test-cljs"]
+                                    ;; :notify-command ["notify-send"]
+                                    :foreign-libs [{:file "node_modules/angular/angular.min.js"
+                                                    :provides ["angular.core"]}]
+                                    :compiler {:output-to "target/karma-test.js"
+                                               :optimizations :whitespace
+                                               :pretty-print true}}
+                       :protractor {:source-paths ["specs"]
+                                                       ;; :notify-command ["notify-send"]
+                                    :compiler {:output-to "target/protractor-tests.js"
+                                               :optimizations :simple
+                                               :pretty-print true}}}}}}
   :less {:source-paths ["less"]
          :target-path "target/resources/public/css"}
   :npm {:dependencies [[angular                    "1.4.7"]
