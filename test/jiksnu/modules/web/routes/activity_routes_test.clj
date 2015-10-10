@@ -11,7 +11,6 @@
             [jiksnu.mock :as mock]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            jiksnu.modules.web.routes.activity-routes
             jiksnu.modules.web.views.activity-views
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]

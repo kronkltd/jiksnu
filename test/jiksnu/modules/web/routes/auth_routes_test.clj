@@ -6,8 +6,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            jiksnu.modules.web.routes.auth-routes
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]

@@ -1,11 +1,12 @@
 (ns jiksnu.routes-helper
-  (:require [clj-factory.core :refer [factory fseq]]
+  (:require [ciste.config :refer [config]]
+            [clj-factory.core :refer [factory fseq]]
             [clj-http.cookies :as cookies]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.modules.web.routes :as r]
             [manifold.time :as time]
             [ring.mock.request :as req]
             [ring.util.codec :as codec]
@@ -16,10 +17,12 @@
   "Run a request against the main handler and wait for the response"
   ([request] (response-for request (time/seconds 5)))
   ([request timeout]
-   (try+
-    (r/app request)
-    (catch Object ex
-      (log/error "error in response-for" ex)))))
+   (let [handler (config :http :handler)]
+     (try+
+      (-> handler (string/split #"/") first symbol require)
+      ((resolve (symbol handler)) request)
+      (catch Throwable ex
+        (log/error ex "error in response-for" ))))))
 
 (defn get-auth-cookie
   [username password]

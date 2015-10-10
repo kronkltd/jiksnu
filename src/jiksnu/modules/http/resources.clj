@@ -16,7 +16,7 @@
 
 (defn add-group!
   [site-var group-var]
-  (log/infof "adding group %s %s" site-var group-var)
+  (log/debugf "adding group %s %s" site-var group-var)
   (dosync
    (alter (get-groups site-var) conj group-var)))
 
@@ -32,7 +32,7 @@
 
 (defn add-resource!
   [group-var resource-name resource]
-  (log/infof "adding resource %s(%s)" group-var resource-name)
+  (log/debugf "adding resource %s(%s)" group-var resource-name)
   (dosync
    (alter (get-resources group-var) assoc resource-name resource)))
 

@@ -1,3 +1,4 @@
 --ignore-dir=cookbooks
 --ignore-dir=logs
+--ignore-dir=target
 --ignore-dir=tmp

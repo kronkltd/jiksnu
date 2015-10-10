@@ -2,7 +2,6 @@
   (:require [clj-http.client :as client]
             [clj-webdriver.taxi :refer [to]]
             [clojure.tools.logging :as log]
-            jiksnu.modules.web.routes
             [manifold.stream :as s]
             [manifold.time :as time]
             [midje.sweet :refer :all]
