@@ -27,12 +27,15 @@
                    :response {"409" {:description "Username conflict"}}}}
   :mixins [angular-resource]
   :parameters {}
-  :available-media-types ["application/json"]
+  :available-media-types ["text/html"]
   :post! (fn [ctx]
            (let [params (:params (:request ctx))
                  data (try+
-                       (when (actions.user/register params)
-                         {:status "ok"})
+                       (when-let [{:keys [username]} (actions.user/register params)]
+                         (ring-response
+                          (friend/merge-authentication
+                           {:body "ok"}
+                           {:username username :identity username})))
                        (catch [:type :conflict] ex
                          (ring-response ex {:status 409}))
                        (catch [:type :missing-param] ex
