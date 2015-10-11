@@ -34,10 +34,10 @@
   [$scope Users]
   (! $scope.init
      (fn [id]
-       (js/console.debug "Displaying avatar for " id)
+       ;; (js/console.debug "Displaying avatar for " id)
        (when (and id (not= id ""))
          (! $scope.size 32)
-         (js/console.info "binding user" id)
+         ;; (js/console.info "binding user" id)
          (.bindOne Users id $scope "user")
          (.find Users id)))))
 
