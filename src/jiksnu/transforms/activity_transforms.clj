@@ -215,5 +215,5 @@
   (if (:content activity)
     activity
     (let [content (condp = (:verb activity)
-                    "follow" "Follow user")]
+                    "follow" (str "Follow user: " (:id (:object activity))))]
       (assoc activity :content content))))
