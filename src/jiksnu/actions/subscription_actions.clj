@@ -24,11 +24,11 @@
 
 (defn prepare-delete
   ([item]
-     (prepare-delete item @delete-hooks))
+   (prepare-delete item @delete-hooks))
   ([item hooks]
-     (if (seq hooks)
-       (recur ((first hooks) item) (rest hooks))
-       item)))
+   (if (seq hooks)
+     (recur ((first hooks) item) (rest hooks))
+     item)))
 
 (defn prepare-create
   [user]
@@ -146,6 +146,21 @@
    (alter actions.user/delete-hooks
           conj setup-delete-hooks*)))
 
+(defn handle-follow-activity
+  [activity]
+  (let [{:keys [verb]} activity]
+    (condp = verb
+      "follow"
+      (do (log/info "follow action")
+          (let [actor (model.user/fetch-by-id (:author activity))
+                target (model.user/fetch-by-id (:id (:object activity)))]
+            (subscribe actor target)))
+      "unfollow"
+      (do (log/info "follow action")
+          (let [actor (model.user/fetch-by-id (:author activity))
+                target (model.user/fetch-by-id (:id (:object activity)))]
+            (unsubscribe actor target))))))
+
 (definitializer
   (bus/publish! ch/events :activity-posted {:msg "activity posted"})
   (setup-delete-hooks)
@@ -159,4 +174,8 @@
            (let [actor (model.user/fetch-by-id (:author activity))
                  target (model.user/fetch-by-id (:id (:object activity)))]
              (subscribe actor target)))))
-     stream)))
+     stream))
+
+  (->> :activity-posted
+       (bus/subscribe ch/events)
+       (s/consume handle-follow-activity)))

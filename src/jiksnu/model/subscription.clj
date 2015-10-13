@@ -21,12 +21,11 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :from    String)
-   ;; (type-of :to      String)
-   ;; (type-of :created DateTime)
-   ;; (type-of :updated DateTime)
-   ;; (type-of :_id     ObjectId)
-))
+   (type-of :from    String)
+   (type-of :to      String)
+   (type-of :created DateTime)
+   (type-of :updated DateTime)
+   (type-of :_id     ObjectId)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
@@ -52,9 +51,9 @@
   (fetch-all {:from (:_id actor) :to (:_id target)}))
 
 (defn unsubscribe
-  [actor user]
-  (if-let [subscription (find-by-users actor user)]
-    (do (mc/remove @_db collection-name subscription)
+  [actor target]
+  (if-let [subscription (first (find-by-users actor target))]
+    (do (mc/remove @_db collection-name {:to (:_id target) :from (:_id actor)})
         subscription)))
 
 (defn subscribing?

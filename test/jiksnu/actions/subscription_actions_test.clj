@@ -70,3 +70,9 @@
          (every-checker
           (has every? (partial instance? Subscription))
           (has some (partial = subscription)))})))))
+
+(fact "#'jiksnu.actions.subscription-actions/unsubscribe"
+  (let [actor (mock/a-user-exists)
+        target (mock/a-user-exists)
+        subscription (mock/a-subscription-exists {:from actor :to target})]
+    (actions.subscription/unsubscribe actor target) => subscription))
