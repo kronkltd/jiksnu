@@ -42,46 +42,42 @@
          (.find Users id)))))
 
 (def.controller jiksnu.FollowButtonController
-  [$scope app Users]
-  (let [init (fn []
-               (set! (.-loaded $scope) false)
-               (-> (.isFollowing $scope)
-                   (.then (fn [following]
-                            (set! (.-following $scope) following)
-                            (set! (.-followLabel $scope) (if (.-following $scope) "Unfollow" "Follow"))
-                            (set! (.-loaded $scope) true)))))]
+  [$scope app Users $q]
+  (set! (.-app $scope) app)
+  (set! (.-loaded $scope) false)
 
-    (set! (.-app $scope) app)
-    (set! (.-loaded $scope) false)
-    (set! (.-isFollowing $scope)
-          (fn []
-            (.then
-             (.getUser app)
-             (fn [actor]
-                     (let [user (.-item $scope)
-                           user-id (.-_id user)
-                           actor-id (.-_id actor)]
-                       (when (not= actor-id user-id)
-                         (.then
-                          (.getFollowers user)
-                          (fn [fs]
-                            (some (fn [follow]
-                                   (js/console.log "Follow" follow)
-                                   (when (= (.-from follow) actor-id)
-                                     (js/console.log "is following" follow)
-                                     true))
-                                 (.-items fs))))))))))
-    (set! (.-isActor $scope) (fn []
-                               (when-let [user (.-user app)]
-                                 (= (.-_id (.-item $scope))
-                                    (.-_id user)))))
-    (set! (.-submit $scope)
-          (fn []
-            (let [item (.-item $scope)]
-              (if (.-following $scope)
-                (.unfollow app item)
-                (.follow app item)))))
-    (init)))
+  (set! (.-init $scope) (fn []
+                          (set! (.-loaded $scope) false)
+                          (when-let [d (.isFollowing $scope)]
+                              (.then d (fn [following]
+                                       (set! (.-following $scope) following)
+                                       (set! (.-followLabel $scope) (if (.-following $scope) "Unfollow" "Follow"))
+                                       (set! (.-loaded $scope) true))))))
+
+  (set! (.-isFollowing $scope)
+        (fn []
+          (let [actor-id (str "acct:" (.-user (.-data app)) "@" (.-domain (.-data app)))
+                user (.-item $scope)
+                user-id (.-_id user)
+                some-follower (fn [fs] (some #(= (.-from %) actor-id) (.-items fs)))]
+            (if (not= actor-id user-id)
+              (let [d (.getFollowers user)]
+                (.then d some-follower))
+              (.resolve (.defer $q) nil)))))
+
+  (set! (.-isActor $scope) (fn []
+                             (when-let [user (.-user app)]
+                               (= (.-_id (.-item $scope))
+                                  (.-_id user)))))
+  (set! (.-submit $scope)
+        (fn []
+          (let [item (.-item $scope)]
+            (-> (if (.-following $scope)
+                  (.unfollow app item)
+                  (.follow app item))
+                (.then #(.init $scope))))))
+
+  (.init $scope))
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
