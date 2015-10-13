@@ -99,6 +99,10 @@
                  (js/console.log "Response" data)
                  data)))))
 
+(defn get-user-id
+  [app]
+  (str "acct:" (.-user (.-data app)) "@" (.-domain (.-data app))))
+
 (defn go
   [app state]
   (.go (.-$state (.-di app)) state))
@@ -107,6 +111,7 @@
   {
    :connect       connect
    :getUser       get-user
+   :getUserId     get-user-id
    :go            go
    :register      register
    :fetchStatus   fetch-status

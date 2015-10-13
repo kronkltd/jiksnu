@@ -41,29 +41,31 @@
          (.bindOne Users id $scope "user")
          (.find Users id)))))
 
+(def refresh-followers "refresh-followers")
+
 (def.controller jiksnu.FollowButtonController
-  [$scope app Users $q]
+  [$scope app $q $rootScope]
   (set! (.-app $scope) app)
   (set! (.-loaded $scope) false)
 
   (set! (.-init $scope) (fn []
+                          (js/console.log "init")
                           (set! (.-loaded $scope) false)
                           (when-let [d (.isFollowing $scope)]
-                              (.then d (fn [following]
+                            (.then d (fn [following]
                                        (set! (.-following $scope) following)
                                        (set! (.-followLabel $scope) (if (.-following $scope) "Unfollow" "Follow"))
                                        (set! (.-loaded $scope) true))))))
 
-  (set! (.-isFollowing $scope)
-        (fn []
-          (let [actor-id (str "acct:" (.-user (.-data app)) "@" (.-domain (.-data app)))
-                user (.-item $scope)
-                user-id (.-_id user)
-                some-follower (fn [fs] (some #(= (.-from %) actor-id) (.-items fs)))]
-            (if (not= actor-id user-id)
-              (let [d (.getFollowers user)]
-                (.then d some-follower))
-              (.resolve (.defer $q) nil)))))
+  (set! (.-isFollowing $scope) (fn []
+                                 (let [actor-id (.getUserId app)
+                                       user (.-item $scope)
+                                       user-id (.-_id user)
+                                       some-follower (fn [fs] (some #(= (.-from %) actor-id) (.-items fs)))]
+                                   (if (not= actor-id user-id)
+                                     (let [d (.getFollowers user)]
+                                       (.then d some-follower))
+                                     (.resolve (.defer $q) nil)))))
 
   (set! (.-isActor $scope) (fn []
                              (when-let [user (.-user app)]
@@ -75,7 +77,11 @@
             (-> (if (.-following $scope)
                   (.unfollow app item)
                   (.follow app item))
-                (.then #(.init $scope))))))
+                (.then (fn []
+                         (.init $scope)
+                         (.$broadcast $rootScope refresh-followers)))))))
+
+  (.$on $rootScope refresh-followers (.-init $scope))
 
   (.init $scope))
 
@@ -84,15 +90,18 @@
   (aset $scope "groups" (clj->js helpers/nav-info)))
 
 (def.controller jiksnu.ListFollowersController
-  [$scope subpageService Users]
+  [$scope subpageService Users $rootScope]
   (aset $scope "formShown" false)
   (aset $scope "toggle" (fn [] (! $scope.formShown (not (? $scope.formShown)))))
+  (.$on $rootScope refresh-followers (.-init $scope))
   (helpers/init-subpage $scope subpageService Users "followers"))
 
 (def.controller jiksnu.ListFollowingController
-  [$scope subpageService Users]
+  [$scope subpageService Users $rootScope]
+  (js/console.log "list following controller")
   (aset $scope "formShown" false)
   (aset $scope "toggle" (fn [] (! $scope.formShown (not (? $scope.formShown)))))
+  (.$on $rootScope refresh-followers (.-init $scope))
   (helpers/init-subpage $scope subpageService Users "following"))
 
 (def.controller jiksnu.ListGroupsController

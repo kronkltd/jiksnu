@@ -53,28 +53,28 @@
      {:title "Groups"               :state "indexGroups"}
      {:title "Resources"            :state "indexResources"}
      {:title "Streams"              :state "indexStreams"}
-]}
+     ]}
    #_{:label "Settings"
-    :items
-    [{:title "Settings"           :state "settingsPage"}]}
+      :items
+      [{:title "Settings"           :state "settingsPage"}]}
    #_{:label "Admin"
-    :items
-    [{:title "Activities"         :state "adminActivities"}
-     ;; {:title "Auth"               :state "adminAuthentication"}
-     ;; {:title "Clients"            :state "adminClients"}
-     {:title "Conversations"      :state "adminConversations"}
-     ;; {:title "Feed Sources"       :state "adminSources"}
-     ;; {:title "Feed Subscriptions" :state "adminFeedSubscriptions"}
-     {:title "Groups"             :state "adminGroups"}
-     ;; {:title "Group Memberships"  :state "adminGroupMemberships"}
-     ;; {:title "Keys"               :state "adminKeys"}
-     ;; {:title "Likes"              :state "adminLikes"}
-     ;; {:title "Request Tokens"     :state "adminRequestTokens"}
-     ;; {:title "Streams"            :state "adminStreams"}
-     ;; {:title "Subscriptions"      :state "adminSubscriptions"}
-     {:title "Users"              :state "adminUsers"}
-     ;; {:title "Workers"            :state "adminWorkers"}
-     ]}])
+      :items
+      [{:title "Activities"         :state "adminActivities"}
+       ;; {:title "Auth"               :state "adminAuthentication"}
+       ;; {:title "Clients"            :state "adminClients"}
+       {:title "Conversations"      :state "adminConversations"}
+       ;; {:title "Feed Sources"       :state "adminSources"}
+       ;; {:title "Feed Subscriptions" :state "adminFeedSubscriptions"}
+       {:title "Groups"             :state "adminGroups"}
+       ;; {:title "Group Memberships"  :state "adminGroupMemberships"}
+       ;; {:title "Keys"               :state "adminKeys"}
+       ;; {:title "Likes"              :state "adminLikes"}
+       ;; {:title "Request Tokens"     :state "adminRequestTokens"}
+       ;; {:title "Streams"            :state "adminStreams"}
+       ;; {:title "Subscriptions"      :state "adminSubscriptions"}
+       {:title "Users"              :state "adminUsers"}
+       ;; {:title "Workers"            :state "adminWorkers"}
+       ]}])
 
 (def admin-data
   [["Activities"    "Activity"]
@@ -119,23 +119,25 @@
 
 (defn init-subpage
   [$scope subpageService collection subpage]
-  (! $scope.init
-     (fn [item subpage]
-       (js/console.debug "init subpage" subpage (type item))
-       (-> (.fetch subpageService item subpage)
-           (.then (fn [page] (aset item subpage page))))))
+  (set! (.-init $scope)
+        (fn [item]
+          (let [item (or item (.-item $scope))]
+            (js/console.debug "init subpage" subpage (type item))
+            (-> (.fetch subpageService item subpage)
+                (.then (fn [page] (aset item subpage page)))))))
+
   (if-let [item (.-item $scope)]
-    (.init $scope item subpage)
+    (.init $scope)
     (if-let [id (.-id $scope)]
       (-> (.find collection id)
-          (.fhen (fn [item] (.init $scope item subpage))))
+          (.then (fn [item] (.init $scope item subpage))))
       (js/console.error "Couldn't determine item id"))))
 
 (defn init-page
   [$scope $rootScope pageService subpageService page-type subpages]
   (.$on $rootScope "updateCollection"
-       (fn []
-         (.init $scope)))
+        (fn []
+          (.init $scope)))
   (! $scope.loaded false)
   (! $scope.init
      (fn []
@@ -146,10 +148,10 @@
                     (! $scope.page page)
                     (! $scope.loaded true)
                     (doall (map
-                      (fn [item]
-                        (doall (map (partial fetch-sub-page item subpageService)
-                                    subpages)))
-                      (? page.items)))))))))
+                            (fn [item]
+                              (doall (map (partial fetch-sub-page item subpageService)
+                                          subpages)))
+                            (? page.items)))))))))
 
 (defn add-stream
   [$scope $http]
