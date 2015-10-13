@@ -1,6 +1,5 @@
 [:div
  [:h3 "Followers"]
- [:a {:ng-click "init()"} "Refresh"]
  [:ul
   [:li {:ng-repeat "follow in item.followers.items"}
    [:display-avatar {:data-id "{{follow.from}}"}]

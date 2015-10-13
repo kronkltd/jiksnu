@@ -81,7 +81,7 @@
                          (.init $scope)
                          (.$broadcast $rootScope refresh-followers)))))))
 
-  (.$on $rootScope refresh-followers (.-init $scope))
+  (.$on $scope refresh-followers (.-init $scope))
 
   (.init $scope))
 
@@ -90,18 +90,17 @@
   (aset $scope "groups" (clj->js helpers/nav-info)))
 
 (def.controller jiksnu.ListFollowersController
-  [$scope subpageService Users $rootScope]
-  (aset $scope "formShown" false)
-  (aset $scope "toggle" (fn [] (! $scope.formShown (not (? $scope.formShown)))))
-  (.$on $rootScope refresh-followers (.-init $scope))
+  [$scope subpageService Users]
+  (set! (.-formShown $scope) false)
+  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (.$on $scope refresh-followers (fn [] (.init $scope)))
   (helpers/init-subpage $scope subpageService Users "followers"))
 
 (def.controller jiksnu.ListFollowingController
-  [$scope subpageService Users $rootScope]
-  (js/console.log "list following controller")
-  (aset $scope "formShown" false)
-  (aset $scope "toggle" (fn [] (! $scope.formShown (not (? $scope.formShown)))))
-  (.$on $rootScope refresh-followers (.-init $scope))
+  [$scope subpageService Users]
+  (set! (.-formShown $scope) false)
+  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (.$on $scope refresh-followers (fn [] (.init $scope)))
   (helpers/init-subpage $scope subpageService Users "following"))
 
 (def.controller jiksnu.ListGroupsController
