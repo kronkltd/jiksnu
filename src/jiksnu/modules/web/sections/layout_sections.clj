@@ -172,9 +172,7 @@
        [:add-post-form.center]
        [:h1 {:data-bind "text: title"}]
        [:div {:ui-view ""}]]
-      #_[:right-column.col-sm-2]
-
-      ]]
+      #_[:right-column.col-sm-2]]]
     [:footer.row.page-footer
      [:p "Copyright © 2011-2015 KRONK Ltd."]
      [:p "Powered by "

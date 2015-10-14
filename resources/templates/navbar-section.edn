@@ -4,17 +4,23 @@
   [:div.navbar-header
    [:button.navbar-toggle
     {:type "button"
+     :ng-click "navbarCollapsed = !navbarCollapsed"
      :data-toggle "collapse"
-     :data-target "#main-navbar-collapsw-1"}
+     :data-target "#navbar"
+     :aria-expanded "false"
+     :aria-controls "navbar"}
     [:span.sr-only "Toggle Navigation"]
     [:span.icon-bar]
     [:span.icon-bar]
     [:span.icon-bar]]
-   [:a.navbar-brand.home {:href "/" :rel "top"}
-    "{{app.name}}"]]
-  [:div#main-navbar-collapse-1.navbar-collapse.collapse
-   [:ul.nav.navbar-nav.navbar-right {:ng-if "app.user"}
-    [:li.dropdown {:dropdown ""}
+   [:a.navbar-brand.home {:href "/" :rel "top"} "{{app.name}}"]]
+  [:div#navbar.navbar-collapse.collapse.navbar-right
+   {:collapse "navbarCollapsed"}
+   [:ul.nav.navbar-nav
+    [:li [:a {:ui-sref "loginPage" :ng-if "!app.user"} "Login"]]
+    [:li.divider-vertical {:ng-if "!app.user"}]
+    [:li [:a {:ui-sref "registerPage" :ng-if "!app.user"} "Register"]]
+    [:li.dropdown {:dropdown ""  :ng-if "app.user"}
      [:a.dropdown-toggle
       {:dropdown-toggle ""}
       "{{app.user}}"
@@ -28,9 +34,6 @@
 
       [:li [:a {:ui-sref "settingsPage"} "Settings"]]
       [:li [:a {:ui-sref "profile"}  "Profile"]]
-      [:li [:a {:ng-click "logout()"}   "Log out"]]]]]
-   [:ul.nav.navbar-nav.navbar-right {:ng-if "!app.user"}
-    [:li [:a {:ui-sref "loginPage"} "Login"]]
-    [:li.divider-vertical]
-    [:li [:a {:ui-sref "registerPage"} "Register"]]]
-   [:display-avatar.navbar-right.navbar-btn  {:ng-if "app.user" :data-id "acct:{{app.user}}@{{app.domain}}"}]]]]
+      [:li [:a {:ng-click "logout()"}   "Log out"]]]]]]
+  [:display-avatar.navbar-right.navbar-btn
+   {:ng-if "app.user" :data-id "{{app.getUserId()}}"}]]]

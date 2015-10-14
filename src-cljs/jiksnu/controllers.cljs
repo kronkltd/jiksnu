@@ -139,6 +139,7 @@
   [$scope app hotkeys $state]
   ;; (js/console.log "Loading NavBarController")
   (aset $scope "loaded" false)
+  (set! (.-navbarCollapsed $scope) true)
   (helpers/setup-hotkeys hotkeys $state)
 
   (.$watch $scope
