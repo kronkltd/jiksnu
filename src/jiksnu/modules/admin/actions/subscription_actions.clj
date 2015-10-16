@@ -21,10 +21,6 @@
   [subscription]
   (actions.subscription/delete subscription))
 
-(defaction update-record
-  [subscription]
-  (actions.subscription/update-record subscription))
-
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.subscription))
 
