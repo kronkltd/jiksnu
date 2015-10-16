@@ -36,4 +36,4 @@
       [:li [:a {:ui-sref "profile"}  "Profile"]]
       [:li [:a {:ng-click "logout()"}   "Log out"]]]]]]
   [:display-avatar.navbar-right.navbar-btn
-   {:ng-if "app.user" :data-id "{{app.getUserId()}}"}]]]
+   {:ng-if "app.user" :data-id "{{app2.getUserId()}}"}]]]
