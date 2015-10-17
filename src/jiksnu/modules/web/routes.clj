@@ -1,6 +1,7 @@
 (ns jiksnu.modules.web.routes
   (:require [cemerick.friend :as friend]
             [cemerick.friend.workflows :as workflows]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [compojure.core :refer [GET routes]]
             [compojure.handler :as handler]
@@ -8,6 +9,7 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.db :refer [_db]]
+            [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.modules.web.core :as core]
             [jiksnu.modules.web.middleware :as jm]
             [jiksnu.modules.web.helpers :as helpers]
@@ -30,14 +32,7 @@
   [request]
   (when (:websocket? request)
     (server/with-channel request channel
-      (server/on-receive channel
-                         (fn [body]
-                           (when-let [resp (actions.stream/handle-command
-                                            request channel body)]
-                             (server/send! channel resp))))
-      (server/on-close channel
-                       (fn [status]
-                         (actions.stream/handle-closed request channel status))))))
+      (http.actions/connect request channel))))
 
 (def app
   (-> (routes

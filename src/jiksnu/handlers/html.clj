@@ -18,4 +18,3 @@
     (let [links (model.resource/get-links tree)]
       (doseq [link links]
         (actions.resource/add-link item (:attrs link))))))
-

@@ -6,6 +6,7 @@
             [clojure.core.incubator :refer [dissoc-in]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
+            [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.channels :as ch]
             [jiksnu.handlers :as handler]
             [jiksnu.predicates :as pred]
@@ -42,11 +43,13 @@
     (bus/publish! ch/events "conversations:pushed" response)
     (json/json-str response)))
 
-(defn connection-closed
-  [id connection-id]
-  ;; (log/debugf "closed connection: %s" connection-id)
-  (dosync
-   (alter connections #(dissoc-in % [id connection-id]))))
+(defn handle-closed
+  [channel status message]
+  (let [user-id (:_id (:user status))
+        connection-id (:connection status)]
+    (log/info "closed connection" user-id connection-id)
+    (dosync
+     (alter connections #(dissoc-in % [user-id connection-id])))))
 
 (defaction alert-all
   [message]
@@ -56,38 +59,40 @@
       (s/put! ch response))))
 
 (defn connect
-  [ch]
+  [request ch]
   ;; (trace/trace :websocket:connections:established 1)
   (let [user-id (:_id (session/current-user))
-        connection-id (util/new-id)]
+        connection-id (util/new-id)
+        status {:user user-id :connection connection-id}
+        response-channel (s/stream)]
 
+    (log/info "Websocket connection opened" (prn-str status))
 
-    (let [response-channel (s/stream
-                            ;; {
-                            ;;  ;; :description (format "Outgoing messages for %s" connection-id)
+    (dosync
+     (alter connections #(assoc-in % [user-id connection-id] response-channel)))
 
-                            ;;  }
+    (bus/publish! ch/events :connection-opened status)
 
-                            )]
+    (server/send! ch (str "{connection-id: " connection-id "}"))
 
-      (dosync
-       (alter connections #(assoc-in % [user-id connection-id] response-channel)))
+    ;; Executes commands for each input
+    (server/on-receive ch
+                       (fn [body]
+                         (when-let [resp (actions.stream/handle-command
+                                          response-channel body)]
+                           (server/send! ch resp))))
+    (server/on-close ch #(handle-closed response-channel status %))
 
-      (s/connect
-       (s/map (partial transform-activities connection-id)
-              ch/posted-activities)
-       response-channel)
+    (s/connect
+     (s/map #(transform-activities connection-id %) ch/posted-activities)
+     response-channel)
 
-      (s/connect
-       (s/map (partial transform-conversations connection-id)
-               ch/posted-conversations)
-       response-channel)
+    (s/connect
+     (s/map #(transform-conversations connection-id %) ch/posted-conversations)
+     response-channel)
 
-      (s/consume
-       (partial server/send! ch)
-       response-channel))
+    (s/consume #(server/send! ch %) response-channel)
 
     #_(s/on-closed ch (partial connection-closed user-id connection-id))
 
     connection-id))
-
