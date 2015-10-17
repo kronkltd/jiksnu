@@ -14,8 +14,8 @@
     [:span.icon-bar]
     [:span.icon-bar]]
    [:a.navbar-brand.home {:href "/" :rel "top"} "{{app.name}}"]]
-  [:div#navbar.navbar-collapse.collapse.navbar-right
-   {:collapse "navbarCollapsed"}
+  [:div#navbar.navbar-collapse.uib-collapse.navbar-right
+   {:uib-collapse "navbarCollapsed"}
    [:ul.nav.navbar-nav
     [:li [:a {:ui-sref "loginPage" :ng-if "!app.user"} "Login"]]
     [:li.divider-vertical {:ng-if "!app.user"}]

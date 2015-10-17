@@ -121,10 +121,8 @@
       "/vendor/angular-busy/dist/angular-busy.min.js"
       "/vendor/js-data/dist/js-data.min.js"
       "/vendor/js-data-angular/dist/js-data-angular.min.js"
-      "/vendor/angular-file-upload/angular-file-upload.min.js"
-      "/vendor/angular-google-maps/dist/angular-google-maps.min.js"
+      "/vendor/angular-file-upload/dist/angular-file-upload.min.js"
       "/vendor/angular-cfp-hotkeys/build/hotkeys.min.js"
-      "/vendor/angular-paginate-anything/src/paginate-anything.js"
       "/vendor/angular-markdown-directive/markdown.js"
       "/vendor/angular-moment/angular-moment.min.js"
       "/vendor/angular-notify/dist/angular-notify.min.js"
@@ -132,7 +130,7 @@
       "/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"
       "/vendor/angular-ui-router/release/angular-ui-router.min.js"
       "/vendor/angular-validator/dist/angular-validator.min.js"
-      "/vendor/angular-ws/angular-ws.min.js"
+      "/vendor/angular-websocket/angular-websocket.min.js"
       "/cljs/jiksnu.js")
      (doall (map (fn [hook]
                    (hook request response))

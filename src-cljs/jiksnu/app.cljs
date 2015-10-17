@@ -7,14 +7,12 @@
    angularMoment
    btford.markdown
    cgNotify
-   cgBusy
    geolocation
    datatables
    js-data
    ngSanitize
+   ngWebSocket
    cfp.hotkeys
    ui.bootstrap
    ui.router
-   uiGmapgoogle-maps
-   ws
    ])

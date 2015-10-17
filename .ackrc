@@ -1,4 +1,7 @@
+--ignore-dir=checkouts
 --ignore-dir=cookbooks
 --ignore-dir=logs
 --ignore-dir=target
 --ignore-dir=tmp
+--ignore-file=is:Cheffile.lock
+--ignore-file=is:TAGS

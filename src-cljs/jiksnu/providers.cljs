@@ -1,8 +1,7 @@
 (ns jiksnu.providers
   (:require jiksnu.app)
   (:use-macros [gyr.core :only [def.provider]]
-               [purnam.core :only [? ?> ! !> f.n def.n do.n
-                                   obj arr def* do*n def*n f*n]]))
+               [purnam.core :only [? ?> ! !> obj arr]]))
 
 (defn connect
   [app]
@@ -41,16 +40,19 @@
 
 (defn handle-message
   [app message]
-  (?> app.di.notify message.data))
+  (let [notify (.-notify (.-di app))]
+    (notify (.-data message))))
 
 (defn send
   [app command]
-  (?> app.di.ws.send command))
+  (let [connection (.-connection app)]
+    (.send connection command)))
 
 (defn post
   [app activity]
   (js/console.info "Posting Activity" activity)
-  (?> app.di.$http.post "/model/activities" activity))
+  (let [$http (.-$http (.-di app))]
+    (.post $http "/model/activities" activity)))
 
 (defn get-user
   [app]
@@ -127,26 +129,38 @@
    })
 
 (defn app-service
-  [$http $q $state notify Users ws]
-  (let [app (obj)]
-    (! app.di (obj :$http $http
-                   :$q $q
-                   :$state $state
-                   :notify notify
-                   :Users Users
-                   :ws ws))
-    (! app.data (obj))
+  [$http $q $state notify Users $websocket $window]
+  (let [app #js {}
+        data #js {}
+        websocket-url (if-let [location (.-location $window)]
+                        (str "ws"
+                             (when (= (.-protocol location) "https:") "s")
+                             "://"
+                             (.-host location) "/")
+                        (throw (js/Exception. "No location available")))
+        di #js {:$http $http
+                :$q $q
+                :$state $state
+                :notify notify
+                :Users Users
+                :ws $websocket}
+        connection ($websocket websocket-url)]
+
+    (set! (.-di app) di)
+    (set! (.-connection app) connection)
+    (set! (.-data app) data)
 
     (doseq [[n f] app-methods]
       (aset app (name n) (partial f app)))
 
-    (.on ws "message" #(.handleMessage app %))
+    (.onMessage connection (.-handleMessage app))
 
-    (aset js/window "app" app)
+    (set! (.-app js/window) app)
     ;; return the app
     app))
 
 (def.provider jiksnu.app
   []
   (obj
-   :$get (arr "$http" "$q" "$state" "notify" "Users" "ws" app-service)))
+   :$get (arr "$http" "$q" "$state" "notify" "Users" "$websocket" "$window"
+              app-service)))

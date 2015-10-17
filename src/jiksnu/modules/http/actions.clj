@@ -79,6 +79,7 @@
     (server/on-receive ch
                        (fn [body]
                          (when-let [resp (actions.stream/handle-command
+                                          request
                                           response-channel body)]
                            (server/send! ch resp))))
     (server/on-close ch #(handle-closed response-channel status %))

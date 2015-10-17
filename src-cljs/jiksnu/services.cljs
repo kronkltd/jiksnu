@@ -1,7 +1,6 @@
 (ns jiksnu.services
   (:require jiksnu.app)
-  (:use-macros [gyr.core :only [def.service]]
-               [purnam.core :only [? ?> ! !> obj arr]]))
+  (:use-macros [gyr.core :only [def.service]]))
 
 (def page-mappings
   {
@@ -24,34 +23,34 @@
 (def.service jiksnu.pageService
   [$q $http]
 
-  (let [service (obj)]
-    (! service.fetch
-       (fn [page-name]
-         (let [d (.defer $q)]
-           (if-let [url (get page-mappings page-name)]
-             (-> $http
-                 (.get url)
-                 (.success #(.resolve d %))
-                 (.error #(.reject d)))
-             (throw (str "page mapping not defined: " page-name)))
-           (.-promise d))))
+  (let [service #js {}]
+    (set! (.-fetch service)
+          (fn [page-name]
+            (let [d (.defer $q)]
+              (if-let [url (get page-mappings page-name)]
+                (-> $http
+                    (.get url)
+                    (.success #(.resolve d %))
+                    (.error #(.reject d)))
+                (throw (str "page mapping not defined: " page-name)))
+              (.-promise d))))
     service))
 
 (def.service jiksnu.subpageService
   [$q $http]
 
-  (let [service (obj)]
-    (! service.fetch
-       (fn [parent page-name]
-         (let [d (.defer $q)]
-           (if-let [mapping-fn (get subpage-mappings page-name)]
-             (let [url (mapping-fn parent)]
-               ;; (js/console.log "url" url parent)
-               (-> $http
-                   (.get url)
-                   (.success #(.resolve d %))
-                   (.error #(.reject d)))
-               (.-promise d))
-             (throw (str "Could not find subpage mapping for model "
-                         (type parent) " with label " page-name))))))
+  (let [service #js {}]
+    (set! (.-fetch service)
+          (fn [parent page-name]
+            (let [d (.defer $q)]
+              (if-let [mapping-fn (get subpage-mappings page-name)]
+                (let [url (mapping-fn parent)]
+                  ;; (js/console.log "url" url parent)
+                  (-> $http
+                      (.get url)
+                      (.success #(.resolve d %))
+                      (.error #(.reject d)))
+                  (.-promise d))
+                (throw (str "Could not find subpage mapping for model "
+                            (type parent) " with label " page-name))))))
     service))

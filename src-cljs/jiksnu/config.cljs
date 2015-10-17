@@ -5,15 +5,7 @@
   (:use-macros [gyr.core :only [def.config]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
-                    appProvider wsProvider
-                    DSProvider]
-
-
-  (if-let [location js/window.location]
-    (let [scheme (str "ws" (when (= (.-protocol location) "https:") "s"))
-          host (.-host location)]
-      (.setUrl wsProvider (str scheme "://" host "/")))
-    (throw (js/Exception. "No location available")))
+                    appProvider DSProvider]
 
   ;; (js/console.log (.-defaults DSProvider))
   (js/angular.extend (.-defaults DSProvider) (js-obj
