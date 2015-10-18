@@ -1,10 +1,10 @@
 [:div {:ng-show "app.user"}
  [:form  {:ng-submit "submit()" :name "activityForm"}
   [:input {:type "hidden" :ng-model "source"}]
-  [:div {:collapse "form.shown"}
+  [:div {:uib-collapse "form.shown"}
    [:input {:type "text" :placeholder "What are you doing?"
             :ng-click "toggle()"}]]
-  [:div.post-form {:collapse "!form.shown"}
+  [:div.post-form {:uib-collapse "!form.shown"}
    [:div.close.pull-right {:ng-click "toggle()"} "X"]
    [:fieldset
     [:legend "Post an activity"]
@@ -22,22 +22,22 @@
     [:fieldset.add-buttons
      [:legend "Add:"]
      [:div.button-group
-      [:label.btn {:ng-model "add.tags" :btn-checkbox ""}
+      [:label.btn {:ng-model "add.tags" :uib-btn-checkbox ""}
        [:i.icon-tag]        [:span.button-text "Tags"]]
-      [:label.btn {:ng-model "add.recipients" :btn-checkbox ""}
+      [:label.btn {:ng-model "add.recipients" :uib-btn-checkbox ""}
        [:i.icon-user]       [:span.button-text "Recipients"]]
-      [:label.btn {:ng-model "add.location" :btn-checkbox ""}
+      [:label.btn {:ng-model "add.location" :uib-btn-checkbox ""}
        [:i.icon-map-marker] [:span.button-text "Location"]]
-      [:label.btn {:ng-model "add.links" :btn-checkbox ""}
+      [:label.btn {:ng-model "add.links" :uib-btn-checkbox ""}
        [:i.icon-bookmark]   [:span.button-text "Links"]]
-      [:label.btn {:ng-model "add.pictures" :btn-checkbox ""}
+      [:label.btn {:ng-model "add.pictures" :uib-btn-checkbox ""}
        [:i.icon-picture]    [:span.button-text "Pictures"]]]]
 
-    [:div.control-group {:collapse "!add.pictures"}
+    [:div.control-group {:uib-collapse "!add.pictures"}
      [:label.control-label {:for "pictures"} "Pictures"]
      [:div.controls
       [:input {:type "file" :name "pictures"}]]]
-    [:div.control-group {:collapse "!add.location"}
+    [:div.control-group {:uib-collapse "!add.location"}
      [:label.control-label "Location"]
      [:div.controls
       [:label {:for "geo.latitude"} "Latitude"]
@@ -46,7 +46,7 @@
       [:label {:for "geo.longitude"} "Longitude"]
       [:div.input
        [:input {:type "text" :ng-model "activity.geo.longitude"}]]]]
-    [:div.control-group {:collapse "!add.tags"}
+    [:div.control-group {:uib-collapse "!add.tags"}
      [:label.control-label {:for "tags"} "Tags"]
      [:div.controls
       [:input {:type "text" :name "tags" :ng-model "tag"}]

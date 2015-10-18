@@ -155,6 +155,19 @@
 
     (.onMessage connection (.-handleMessage app))
 
+    (.onOpen connection
+             (fn []
+               (js/console.log "Connection Opened")))
+
+    (.onClose connection
+              (fn []
+                (js/console.log "connection closed")
+                (.reconnect connection)))
+
+    (.onError connection
+              (fn []
+                (js/console.log "connection errored")))
+
     (set! (.-app js/window) app)
     ;; return the app
     app))

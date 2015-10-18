@@ -4,8 +4,8 @@
   [:div.navbar-header
    [:button.navbar-toggle
     {:type "button"
-     :ng-click "navbarCollapsed = !navbarCollapsed"
-     :data-toggle "collapse"
+     :ng-init "navCollapsed = false"
+     :ng-click "navCollapsed = !navCollapsed"
      :data-target "#navbar"
      :aria-expanded "false"
      :aria-controls "navbar"}
@@ -14,26 +14,21 @@
     [:span.icon-bar]
     [:span.icon-bar]]
    [:a.navbar-brand.home {:href "/" :rel "top"} "{{app.name}}"]]
-  [:div#navbar.navbar-collapse.uib-collapse.navbar-right
-   {:uib-collapse "navbarCollapsed"}
-   [:ul.nav.navbar-nav
-    [:li [:a {:ui-sref "loginPage" :ng-if "!app.user"} "Login"]]
-    [:li.divider-vertical {:ng-if "!app.user"}]
-    [:li [:a {:ui-sref "registerPage" :ng-if "!app.user"} "Register"]]
-    [:li.dropdown {:dropdown ""  :ng-if "app.user"}
-     [:a.dropdown-toggle
-      {:dropdown-toggle ""}
-      "{{app.user}}"
-      [:b.caret]]
-     [:ul.dropdown-menu {:role "menu"}
-      [:li [:a {:ui-sref "home"} "Public Timeline"]]
-      [:li [:a {:ui-sref "indexDomains"} "Domains"]]
-      [:li [:a {:ui-sref "indexGroups"} "Groups"]]
-      [:li [:a {:ui-sref "indexStreams"} "Streams"]]
-      [:li [:a {:ui-sref "indexUsers"} "Users"]]
-
-      [:li [:a {:ui-sref "settingsPage"} "Settings"]]
-      [:li [:a {:ui-sref "profile"}  "Profile"]]
-      [:li [:a {:ng-click "logout()"}   "Log out"]]]]]]
-  [:display-avatar.navbar-right.navbar-btn
-   {:ng-if "app.user" :data-id "{{app2.getUserId()}}"}]]]
+  #_[:display-avatar.navbar-btn
+   {:ng-if "app.user" :data-id "{{app2.getUserId()}}"}]
+  [:div.collapse.navbar-collpase {:ng-class "{'in':!navCollapsed}"}
+   [:div {:ng-if "!app.user"}
+    [:ul.nav.navbar-nav.navbar-right
+     [:li [:a {:ui-sref "loginPage"} "Login"]]
+     [:li.divider-vertical]
+     [:li [:a {:ui-sref "registerPage"} "Register"]]]]
+   [:div {:ng-if "app.user"}
+    [:ul.nav.navbar-nav.navbar-right
+     [:li [:a {:ui-sref "home"} "Home"]]
+     [:li [:a {:ui-sref "indexDomains"} "Domains"]]
+     [:li [:a {:ui-sref "indexGroups"} "Groups"]]
+     [:li [:a {:ui-sref "indexStreams"} "Streams"]]
+     [:li [:a {:ui-sref "indexUsers"} "Users"]]
+     ;; [:li [:a {:ui-sref "settingsPage"} "Settings"]]
+     ;; [:li [:a {:ui-sref "profile"}  "Profile"]]
+     [:li [:a {:ng-click "logout()"}   "Log out"]]]]]]]

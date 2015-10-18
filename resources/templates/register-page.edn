@@ -36,6 +36,7 @@
    [:label.sr-only "Display Name"]
    [:input.form-control
     {:ng-model "reg.displayName"
+     :name "name"
      :type "text"
      :placeholder "Display Name"}]]
   [:div.form-group
