@@ -159,7 +159,8 @@
       (do (log/info "follow action")
           (let [actor (model.user/fetch-by-id (:author activity))
                 target (model.user/fetch-by-id (:id (:object activity)))]
-            (unsubscribe actor target))))))
+            (unsubscribe actor target)))
+      nil)))
 
 (definitializer
   (bus/publish! ch/events :activity-posted {:msg "activity posted"})
