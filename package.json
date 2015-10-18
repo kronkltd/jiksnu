@@ -1,0 +1,13 @@
+{
+    "dependencies": {
+        "angular": "1.4.7",
+        "angular-mocks": "1.4.7",
+        "karma-angular": "0.0.6",
+        "karma-coverage": "0.5.2",
+        "karma-jasmine": "0.3.6",
+        "karma-junit-reporter": "0.3.7",
+        "karma-notify-send-reporter": "0.0.3",
+        "karma-phantomjs-launcher": "0.2.1",
+        "wscat": "1.0.1"
+    }
+}

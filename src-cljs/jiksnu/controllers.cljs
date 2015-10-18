@@ -135,9 +135,10 @@
 (page-controller Streams       "streams"       [])
 (page-controller Users         "users"         [])
 
+(js/console.log "Loading NavBarController - outer")
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
-  ;; (js/console.log "Loading NavBarController")
+  (js/console.log "Loading NavBarController")
   (aset $scope "loaded" false)
   (set! (.-navbarCollapsed $scope) true)
   (helpers/setup-hotkeys hotkeys $state)
