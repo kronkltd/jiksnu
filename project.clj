@@ -60,7 +60,9 @@
                       ;; :notify-command ["notify-send"]
                       :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
                                  :optimizations :simple
-                                 :pretty-print true}}}}
+                                 :pretty-print true}}
+
+               }}
   :bower {:package-file "bower.json", :config-file ".bowerrc"}
   :aliases {"karma"             ["shell" "./node_modules/.bin/karma"             "start"]
             "protractor"        ["shell" "./node_modules/.bin/protractor"        "protractor-config.js"]
@@ -94,7 +96,7 @@
                                        :compiler {:output-to "target/resources/public/cljs/jiksnu.min.js"
                                                   :optimizations :advanced
                                                   :pretty-print false}}}}}
-             :karma {:cljsbuild
+             :test {:cljsbuild
                      {:builds
                       {:karma      {:source-paths ["src-cljs" "test-cljs"]
                                     ;; :notify-command ["notify-send"]

@@ -13,66 +13,65 @@
 
 (defn fetch-status
   [app]
-  (let [$http (.-$http (.-di app))]
-    (-> (.get $http "/status")
-        (.success #(aset app "data" %)))))
+  (-> (.get (.. app -di -$http) "/status")
+      (.success #(aset app "data" %))))
 
 (defn login
   [app username password]
   (js/console.info "Logging in user." username password)
-  (let [$http (.-$http (.-di app))
-        data (js/$.param (js-obj
-                          "username" username
-                          "password" password))]
-    (-> (.post $http "/main/login"
-               data
-               (obj
-                :headers {"Content-Type" "application/x-www-form-urlencoded"}))
-        (.success (fn [data]
-                    (.fetchStatus app)
-                    (.go app "home"))))))
+  (-> (.post (.. app -di -$http) "/main/login"
+             (js/$.param #js {:username username :password password})
+             #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
+      (.success (fn [data]
+                  (.fetchStatus app)
+                  (.go app "home")))))
 
 (defn logout
   [app]
-  (let [$http (.-$http (.-di app))]
-    (-> (.post $http "/main/logout")
-        (.success (fn [data] (.fetchStatus app))))))
+  (-> (.post (.. app -di -$http) "/main/logout")
+      (.success (fn [data]
+                  (.fetchStatus app)))))
+
+(defn update-page
+  [app message]
+  ((.. app -di -notify) "Adding to page"))
 
 (defn handle-message
   [app message]
-  (let [notify (.-notify (.-di app))]
-    (notify (.-data message))))
+  (let [notify (.. app -di -notify)
+        data (js/JSON.parse (.-data message))]
+    (js/console.log "Received Message: " data)
+    (cond
+      (.-connection data) (do #_(notify "connected"))
+      (.-action data) (condp = (.-action data)
+                        "page-add" (update-page app message)
+                        (notify "Unknown action type"))
+      :default (notify data))))
 
 (defn send
   [app command]
-  (let [connection (.-connection app)]
-    (.send connection command)))
+  (.send (.. app -connection) command))
 
 (defn post
   [app activity]
   (js/console.info "Posting Activity" activity)
-  (let [$http (.-$http (.-di app))]
-    (.post $http "/model/activities" activity)))
+  (.post (.. app -di -$http) "/model/activities" activity))
 
 (defn get-user
   [app]
-  (let [$q (.-$q (.-di app))
-        Users (? app.di.Users)
-        data (.-data app)]
-    (if-let [username (.-user data)]
-      (let [domain (.-domain data)
-            id (str "acct:" username "@" domain)]
-        (js/console.log "getting user: " id)
-        (.find Users id))
-      (let [d (.defer $q)]
-        (.resolve d nil)
-        (.-promise d)))))
+  (if-let [id (.getUserId app)]
+    (do (js/console.log "getting user: " id)
+        (.find (.. app -di -Users) id))
+    ;; TODO: Should reject in this case
+    (let [d (.defer (.. app -di $q))]
+      (.resolve d nil)
+      (.-promise d))))
 
 (defn following?
   [app target]
   (-> (.getUser app)
       (.then (fn [user]
-               (let [response (= (? user._id) (? target._id))]
+               (let [response (= (.-_id user) (.-_id target))]
                  (js/console.log "following?" response)
                  response)))))
 
@@ -103,11 +102,11 @@
 
 (defn get-user-id
   [app]
-  (str "acct:" (.-user (.-data app)) "@" (.-domain (.-data app))))
+  (str "acct:" (.. app -data -user) "@" (.. app -data -domain)))
 
 (defn go
   [app state]
-  (.go (.-$state (.-di app)) state))
+  (.go (.. app -di -$state) state))
 
 (def app-methods
   {
@@ -129,7 +128,8 @@
    })
 
 (defn app-service
-  [$http $q $state notify Users $websocket $window]
+  [$http $q $state notify Users $websocket $window DS
+   pageService subpageService]
   (let [app #js {}
         data #js {}
         websocket-url (if-let [location (.-location $window)]
@@ -140,10 +140,13 @@
                         (throw (js/Exception. "No location available")))
         di #js {:$http $http
                 :$q $q
+                :DS DS
                 :$state $state
                 :notify notify
                 :Users Users
-                :ws $websocket}
+                :ws $websocket
+                :pageService pageService
+                :subpageService subpageService}
         connection ($websocket websocket-url)]
 
     (set! (.-di app) di)
@@ -174,6 +177,6 @@
 
 (def.provider jiksnu.app
   []
-  (obj
-   :$get (arr "$http" "$q" "$state" "notify" "Users" "$websocket" "$window"
-              app-service)))
+  #js {:$get #js ["$http" "$q" "$state" "notify" "Users" "$websocket" "$window" "DS"
+                  "pageService" "subpageService"
+                  app-service]})

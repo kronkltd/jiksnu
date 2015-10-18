@@ -5,12 +5,16 @@
   (:use-macros [gyr.core :only [def.config]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
-                    appProvider DSProvider]
+                    appProvider DSProvider DSHttpAdapterProvider]
 
   ;; (js/console.log (.-defaults DSProvider))
-  (js/angular.extend (.-defaults DSProvider) (js-obj
-                                              "idAttribute" "_id"
-                                              "basePath" "/model"))
+
+  (js/angular.extend (.-defaults DSProvider)
+                     #js {:idAttribute "_id"
+                          :basePath    "/model"})
+
+  (js/angular.extend (.-defaults DSHttpAdapterProvider)
+                     #js {:log false})
 
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider

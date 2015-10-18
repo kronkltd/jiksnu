@@ -26,22 +26,19 @@
   (reduce concat (map vals (vals @connections))))
 
 (defn transform-activities
-  [connection-id e]
-  (let [response {:action "model-updated"
+  [connection-id activity]
+  (log/info "Transforming activity" activity)
+  (json/json-str {:action "model-updated"
                   :connection-id connection-id
                   :type "activity"
-                  :body (:records e)}]
-    (bus/publish! ch/events "activities:pushed" response)
-    (json/json-str response)))
+                  :id (:_id activity)}))
 
 (defn transform-conversations
-  [connection-id e]
-  (let [response {:action "page-add"
+  [connection-id item]
+  (json/json-str {:action "page-add"
                   :connection-id connection-id
                   :name "public-timeline"
-                  :body (:_id (:records e))}]
-    (bus/publish! ch/events "conversations:pushed" response)
-    (json/json-str response)))
+                  :body (:_id item)}))
 
 (defn handle-closed
   [channel status message]
@@ -73,7 +70,7 @@
 
     (bus/publish! ch/events :connection-opened status)
 
-    (server/send! ch (str "{connection-id: " connection-id "}"))
+    (server/send! ch (json/json-str {:connection connection-id}))
 
     ;; Executes commands for each input
     (server/on-receive ch
@@ -85,11 +82,13 @@
     (server/on-close ch #(handle-closed response-channel status %))
 
     (s/connect
-     (s/map #(transform-activities connection-id %) ch/posted-activities)
+     (s/map #(transform-activities connection-id %)
+            (bus/subscribe ch/events :activity-posted))
      response-channel)
 
     (s/connect
-     (s/map #(transform-conversations connection-id %) ch/posted-conversations)
+     (s/map #(transform-conversations connection-id %)
+            (bus/subscribe ch/events :conversation-created))
      response-channel)
 
     (s/consume #(server/send! ch %) response-channel)
