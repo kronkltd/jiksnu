@@ -5,6 +5,7 @@
         "karma-angular": "0.0.6",
         "karma-coverage": "0.5.2",
         "karma-jasmine": "0.3.6",
+        "karma-jasmine-html-reporter-livereload": "~1.0",
         "karma-junit-reporter": "0.3.7",
         "karma-notify-send-reporter": "0.0.3",
         "karma-phantomjs-launcher": "0.2.1",

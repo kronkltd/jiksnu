@@ -4,7 +4,7 @@
 (def.module jiksnu
   [
    angularFileUpload
-   angularMoment
+   ;; angularMoment
    btford.markdown
    cgNotify
    geolocation

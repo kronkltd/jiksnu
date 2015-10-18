@@ -19,7 +19,7 @@
   (! $scope.init (helpers/fetch-page $scope $http "/admin/conversations.json"))
   (.init $scope))
 
-(def.controller jiksnu.AdminGroupsController [])
+(def.controller jiksnu.AdminGroupsController [$scope])
 
 (def.controller jiksnu.AdminUsersController
   [$scope $http]

@@ -86,9 +86,10 @@
                         [[midje         "1.7.0" :exclusions [org.clojure/clojure]]
                          [clj-factory "0.2.2-SNAPSHOT"]
                          [clj-webdriver "0.6.1" :exclusions [xalan]]
-                         [slamhound "1.5.5"]
+                         [helpshift/hydrox "0.1.2"]
                          [org.clojure/tools.nrepl "0.2.9"]
-                         [ring-mock     "0.1.5"]]}
+                         [ring-mock     "0.1.5"]
+                         [slamhound "1.5.5"]]}
              :production {:aot :all
                           :hooks [leiningen.cljsbuild leiningen.less]
                           :cljsbuild
