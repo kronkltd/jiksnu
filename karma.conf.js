@@ -14,6 +14,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      "node_modules/es6-promise/dist/es6-promise.js",
       vendorBase + "/jquery/dist/jquery.min.js",
       vendorBase + "/angular-datatables/dist/angular-datatables.min.js",
       vendorBase + "/momentjs/min/moment.min.js",
