@@ -39,7 +39,9 @@
 (defaction create
   [params]
   (if-let [conversation (prepare-create params)]
-    (model.conversation/create conversation)
+    (let [conversation (model.conversation/create conversation)]
+      (bus/publish! ch/events :conversation-created conversation)
+      conversation)
     (throw+ "Could not prepare conversation")))
 
 (defaction delete
@@ -108,4 +110,3 @@
 (defaction create-new
   []
   (create {:local true}))
-
