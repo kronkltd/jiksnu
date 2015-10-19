@@ -7,37 +7,45 @@
                [gyr.test    :only [describe.ng describe.controller
                                    it-uses it-compiles]]))
 
-(def log (.-log js/console))
+(defn mock-fetch
+  []
+  #js
+  {:then (fn [f]
+           (js/console.log "status then")
+           #_(f))})
+
+(def mock-app
+  #js {:foo "bar"
+       :logout (fn [])
+       :fetchStatus mock-fetch}
+
+  )
 
 (describe.controller
  {:doc "NavBarController"
   :module jiksnu
   :controller NavBarController
-  :provides {app #js {:foo "bar"}}
-  ;; :inject [[app
-  ;;           ([app]
-  ;;            ;; (js/console.log "app" app)
+  :provides {app mock-app
+             app2 #js {:foo "baz"}}}
 
-  ;;            )
-  ;;           ]]
-  }
-
-
- (js/beforeEach (fn []
-                  (js/console.log "I'm before")
-
-                  ;; (js/module
-                  ;;  (fn [$provide]
-                  ;;    (js/console.log $provide)
-                  ;;    ))
-                  ))
+ (js/beforeEach
+  (fn []
+    (.log js/console "I'm before")
+    (set! mock-fetch
+          (fn []
+            #js
+            {:then (fn [f]
+                     (js/console.log "status then 2")
+                     (f))}))))
 
  (it "should bind the app service to app2"
-   ;; (js/console.log "app:" app)
-   ;; (js/console.log "$scope-app2:" (.-app2 $scope))
-   (is $scope.app2.foo "bar")
-   (is 1 1))
+   (js/console.log "inside it")
+   (is $scope.app2.foo "bar"))
 
- #_(it "should be unloaded by default"
+ (it "should be unloaded by default"
    ;; (js/console.log "$scope" (.-app $scope))
-   (is (.-loaded $scope) false)))
+   (is (.-loaded $scope) false))
+
+ #_(it "should call fetchStatus")
+
+ )
