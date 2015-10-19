@@ -48,29 +48,33 @@
   (set! (.-app $scope) app)
   (set! (.-loaded $scope) false)
 
-  (set! (.-init $scope) (fn []
-                          (js/console.log "init")
-                          (set! (.-loaded $scope) false)
-                          (when-let [d (.isFollowing $scope)]
-                            (.then d (fn [following]
-                                       (set! (.-following $scope) following)
-                                       (set! (.-followLabel $scope) (if (.-following $scope) "Unfollow" "Follow"))
-                                       (set! (.-loaded $scope) true))))))
+  (set! (.-init $scope)
+        (fn []
+          (js/console.log "init")
+          (set! (.-loaded $scope) false)
+          (when-let [d (.isFollowing $scope)]
+            (.then d (fn [following]
+                       (set! (.-following $scope) following)
+                       (set! (.-followLabel $scope) (if (.-following $scope) "Unfollow" "Follow"))
+                       (set! (.-loaded $scope) true))))))
 
-  (set! (.-isFollowing $scope) (fn []
-                                 (let [actor-id (.getUserId app)
-                                       user (.-item $scope)
-                                       user-id (.-_id user)
-                                       some-follower (fn [fs] (some #(= (.-from %) actor-id) (.-items fs)))]
-                                   (if (not= actor-id user-id)
-                                     (let [d (.getFollowers user)]
-                                       (.then d some-follower))
+  (set! (.-isFollowing $scope)
+        (fn []
+          (let [actor-id (.getUserId app)
+                user (.-item $scope)
+                user-id (.-_id user)
+                some-follower (fn [fs] (some #(= (.-from %) actor-id) (.-items fs)))]
+            (if (not= actor-id user-id)
+              (let [d (.getFollowers user)]
+                (.then d some-follower))
                                      (.resolve (.defer $q) nil)))))
 
-  (set! (.-isActor $scope) (fn []
-                             (when-let [user (.-user app)]
-                               (= (.-_id (.-item $scope))
-                                  (.-_id user)))))
+  (set! (.-isActor $scope)
+        (fn []
+          (when-let [user (.-user app)]
+            (= (.-_id (.-item $scope))
+               (.-_id user)))))
+
   (set! (.-submit $scope)
         (fn []
           (let [item (.-item $scope)]
@@ -135,12 +139,13 @@
 (page-controller Streams       "streams"       [])
 (page-controller Users         "users"         [])
 
-(js/console.log "Loading NavBarController - outer")
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
-  (js/console.log "Loading NavBarController")
-  (aset $scope "loaded" false)
+  (set! (.-app2 $scope) app)
+  (set! (.-loaded $scope) false)
+  (set! (.-logout $scope) (.-logout app))
   (set! (.-navbarCollapsed $scope) true)
+
   (helpers/setup-hotkeys hotkeys $state)
 
   (.$watch $scope
@@ -152,13 +157,8 @@
                (-> (.getUser app)
                    (.then (fn [user] (! app.user user)))))))
 
-  (aset $scope "app2" app)
-  (aset $scope "logout" (.-logout app))
-
   (-> (.fetchStatus app)
-      (.then (fn []
-               ;; (js/console.log "Status Loaded")
-               (aset $scope "loaded" true)))))
+      (.then (fn [] (set! (.-loaded $scope) true)))))
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService]
