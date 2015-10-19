@@ -18,6 +18,8 @@
 guard 'livereload' do
   # watch(%r{app/views/.+\.(erb|haml|slim)$})
   watch(%r{target/karma-test.js})
+  watch(%r{target/resources/css/.+\.css})
+  watch(%r{target/resources/cljs/.+\.js})
   # watch(%r{app/helpers/.+\.rb})
   # watch(%r{public/.+\.(css|js|html)})
   # watch(%r{config/locales/.+\.yml})
