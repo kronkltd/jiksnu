@@ -1,7 +1,7 @@
 (ns jiksnu.modules.as.sections.user-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri show-section]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.model.user :as model.user]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.User))
@@ -84,4 +84,3 @@
 
      )
     ))
-

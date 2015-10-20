@@ -4,7 +4,7 @@
             [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]

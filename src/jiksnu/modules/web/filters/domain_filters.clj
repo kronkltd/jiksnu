@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.domain-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]

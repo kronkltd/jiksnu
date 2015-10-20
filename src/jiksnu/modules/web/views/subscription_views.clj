@@ -4,7 +4,7 @@
         jiksnu.actions.subscription-actions
         [jiksnu.modules.web.sections :only [bind-to with-sub-page
                                             redirect pagination-links]])
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as log]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.modules.core.sections.subscription-sections :as sections.subscription])
   (:import jiksnu.model.Subscription))

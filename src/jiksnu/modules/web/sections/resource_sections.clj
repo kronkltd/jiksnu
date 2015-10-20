@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.sections.resource-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [link-to]]
-            [clojure.tools.logging :as log])
+            [taoensso.timbre :as log])
   (:import jiksnu.model.Resource))
 
 (defsection link-to [Resource :html]

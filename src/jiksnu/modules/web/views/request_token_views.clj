@@ -2,7 +2,7 @@
   (:require [ciste.sections.default :refer [link-to]]
             [ciste.views :refer [defview]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [ring.util.response :as response]))
 

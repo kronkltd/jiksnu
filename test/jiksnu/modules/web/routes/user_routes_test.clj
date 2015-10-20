@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.routes.user-routes-test
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             jiksnu.modules.web.views.user-views
             [jiksnu.routes-helper :refer [response-for]]
@@ -17,4 +17,3 @@
     (response-for (req/request :get url)) =>
     (contains {:status status/success?
                :body string?})))
-

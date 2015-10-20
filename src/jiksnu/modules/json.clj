@@ -1,6 +1,6 @@
 (ns jiksnu.modules.json
   (:require [ciste.loader :refer [defhandler defmodule]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.handlers :as handler]
             jiksnu.modules.json.views
             [jiksnu.registry :as registry]

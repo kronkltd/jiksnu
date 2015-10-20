@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.like-routes-test
   (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.model.like :as model.like]
             [jiksnu.routes-helper :refer [as-admin response-for]]

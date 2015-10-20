@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.filters.activity-filters
   (:require [ciste.filters :refer [deffilter]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.util :as util]
@@ -55,4 +55,3 @@
   [action request]
   (-> request :params :id
       model.activity/fetch-by-id action))
-

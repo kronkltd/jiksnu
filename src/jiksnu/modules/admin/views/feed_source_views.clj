@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.views.feed-source-views
   (:require [ciste.sections.default :refer [title show-section]]
             [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.modules.admin.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.modules.core.sections :refer [admin-index-section

@@ -2,7 +2,7 @@
   (:require [clj-http.client :as client]
             [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.action-helpers :refer [expand-url fetch-page-browser get-domain get-host]]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :refer [a-user-exists my-password]]

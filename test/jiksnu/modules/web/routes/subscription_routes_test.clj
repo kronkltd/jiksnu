@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.subscription-routes-test
   (:require [clj-factory.core :refer [fseq]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]

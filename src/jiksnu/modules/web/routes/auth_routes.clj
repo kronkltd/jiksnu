@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.auth-routes
   (:require [cemerick.friend :as friend]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.auth-actions :as auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]

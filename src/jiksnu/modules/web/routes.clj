@@ -2,7 +2,7 @@
   (:require [cemerick.friend :as friend]
             [cemerick.friend.workflows :as workflows]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [compojure.core :refer [GET routes]]
             [compojure.handler :as handler]
             [compojure.route :as route]

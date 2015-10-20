@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.actions.setting-actions
   (:require [ciste.config :refer [set-config! write-config!]]
             [ciste.core :refer [defaction]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.session :as session]))
 
 (defaction edit-page

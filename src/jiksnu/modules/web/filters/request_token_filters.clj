@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.filters.request-token-filters
   (:require [ciste.filters :refer [deffilter]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.session :as session]

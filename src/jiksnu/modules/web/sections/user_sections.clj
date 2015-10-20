@@ -2,7 +2,7 @@
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section title show-section edit-button link-to index-line
                                             show-section-minimal update-button index-block]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
@@ -91,4 +91,3 @@
 (defsection update-button [User :html]
   [item & _]
   (action-link "user" "update" (:_id item)))
-

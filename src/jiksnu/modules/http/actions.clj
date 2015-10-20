@@ -5,7 +5,7 @@
             [ciste.routes :refer [resolve-routes]]
             [clojure.core.incubator :refer [dissoc-in]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.channels :as ch]
             [jiksnu.handlers :as handler]

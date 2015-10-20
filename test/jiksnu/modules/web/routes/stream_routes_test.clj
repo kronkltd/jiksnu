@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.routes.stream-routes-test
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
@@ -53,4 +53,3 @@
         (:status response) => status/success?
         (:body response) => string?)))
   )
-

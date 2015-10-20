@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web
   (:require [ciste.loader :as loader
              :refer [defhandler defmodule]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.modules.http.resources :refer [init-site-reloading!]]
             jiksnu.modules.web.formats
             [jiksnu.modules.web.handlers :as handlers]

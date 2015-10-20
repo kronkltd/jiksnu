@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.auth-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.authentication-mechanism :as model.auth]
@@ -36,4 +36,3 @@
 (deffilter #'actions.auth/verify-credentials :http
   [action request]
   (action))
-

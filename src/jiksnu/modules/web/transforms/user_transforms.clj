@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.transforms.user-transforms
-  (:require [clojure.tools.logging :as log]))
+  (:require [taoensso.timbre :as log]))
 
 (defn salmon-link
   [user]
@@ -11,4 +11,3 @@
   (if (:url user)
     user
     (assoc user :url "")))
-

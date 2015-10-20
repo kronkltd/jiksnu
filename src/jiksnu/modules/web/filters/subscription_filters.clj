@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.subscription-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]

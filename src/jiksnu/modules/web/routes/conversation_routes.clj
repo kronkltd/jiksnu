@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.conversation-routes
   (:require [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation]
             jiksnu.modules.core.filters.activity-filters

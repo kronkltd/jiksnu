@@ -1,6 +1,6 @@
 (ns jiksnu.handlers.xrd
   (:require [ciste.model :as cm]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.webfinger :as model.webfinger]))
 
@@ -10,4 +10,3 @@
     (if-let [xrd (cm/string->document body)]
       (let [links (model.webfinger/get-links xrd)]
         links))))
-

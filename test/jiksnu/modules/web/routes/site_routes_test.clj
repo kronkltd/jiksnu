@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.site-routes-test
   (:require [ciste.formats :refer [format-as]]
             [ciste.model :as cm]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
@@ -29,4 +29,3 @@
           attr {"rsd" "http://archipelago.phrasewise.com/rsd"}
           nodes (cm/query root "//rsd:rsd" attr)]
       (count nodes) => 1)))
-

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.home-routes
   (:require [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.site-actions :as site]
             [jiksnu.modules.web.core :refer [jiksnu]]

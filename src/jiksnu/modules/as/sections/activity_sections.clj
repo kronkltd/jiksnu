@@ -2,7 +2,7 @@
   (:require [ciste.config :refer [config]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri index-section show-section]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.model.activity :as model.activity])
   (:import jiksnu.model.Activity))
 
@@ -127,4 +127,3 @@
            {:location {:type "place"
                        :latitude (:latitude geo)
                        :longitude (:longitude geo)}})))
-

@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.routes.request-token-routes-test
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
@@ -24,4 +24,3 @@
             (:status response) => status/success?)))
       ))
   )
-

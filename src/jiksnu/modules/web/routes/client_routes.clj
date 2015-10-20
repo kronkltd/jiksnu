@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.routes.client-routes
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as log]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.oauth-actions :as actions.oauth]
             [jiksnu.actions.request-token-actions :as actions.request-token]

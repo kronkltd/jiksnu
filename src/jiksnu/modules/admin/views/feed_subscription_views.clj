@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.views.feed-subscription-views
   (:require [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.modules.admin.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.modules.core.sections :refer [admin-index-section format-page-info]]))
 

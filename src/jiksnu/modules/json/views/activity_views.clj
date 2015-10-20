@@ -1,7 +1,7 @@
 (ns jiksnu.modules.json.views.activity-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity]))
 
 (defview #'actions.activity/oembed :json

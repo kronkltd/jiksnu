@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.feed-source-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
@@ -39,4 +39,3 @@
   [action request]
   (if-let [source (-> request :params :id model.feed-source/fetch-by-id)]
     (action source {:force true})))
-

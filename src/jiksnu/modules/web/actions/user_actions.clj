@@ -3,7 +3,7 @@
             [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions :refer [invoke-action]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -83,4 +83,3 @@
          :property [{:type "http://apinamespace.org/twitter/username"
                      :value (:username user)}]}]})
     (throw+ "Not authorative for this resource")))
-

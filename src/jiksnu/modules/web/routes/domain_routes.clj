@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.domain-routes
   (:require [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]

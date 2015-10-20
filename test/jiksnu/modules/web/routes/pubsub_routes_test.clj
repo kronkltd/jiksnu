@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.pubsub-routes-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
@@ -37,5 +37,3 @@
         (contains {:status 204})
         (provided
           (actions.pubsub/verify-subscribe-sync anything anything) => true)))
-
-

@@ -1,7 +1,7 @@
 (ns jiksnu.modules.as
   (:require [ciste.loader :as loader
              :refer [defhandler defmodule]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.registry :as registry]
             [jiksnu.util :as util]))
 

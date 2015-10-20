@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.views.client-views
   (:require [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.client-actions :as actions.client]))
 
 (defview #'actions.client/index :page

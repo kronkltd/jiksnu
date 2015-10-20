@@ -2,7 +2,7 @@
   (:require [ciste.core :refer [with-format]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [show-section]]
-            [clojure.tools.logging :as log])
+            [taoensso.timbre :as log])
   (:import jiksnu.model.Activity))
 
 (defsection show-section [Activity :json]

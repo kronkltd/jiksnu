@@ -1,6 +1,6 @@
 (ns jiksnu.modules.json.views
   (:require [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions :as actions]
             [jiksnu.modules.http.actions :as http.actions]
 ))
@@ -27,4 +27,3 @@
 (defview #'actions/invoke-action :json
   [request data]
   {:body data})
-

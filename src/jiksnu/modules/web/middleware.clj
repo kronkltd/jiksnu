@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.middleware
   (:require [ciste.config :refer [config]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
             [jiksnu.model.access-token :as model.access-token]
@@ -121,4 +121,3 @@
 (defn default-html-mode
   []
   (config :htmlOnly))
-

@@ -1,7 +1,7 @@
 (ns jiksnu.action-helpers
   (:require [clj-http.client :as client]
             [clj-webdriver.taxi :refer [to]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [manifold.stream :as s]
             [manifold.time :as time]
             [midje.sweet :refer :all]
@@ -84,4 +84,3 @@
   [page-name]
   (let [path (get page-names page-name)]
     (fetch-page-browser :get path)))
-

@@ -3,7 +3,7 @@
             [ciste.views :refer [defview]]
             [clj-time.coerce :as coerce]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.namespace :as ns]
             [jiksnu.model.webfinger :as model.webfinger]
@@ -29,4 +29,3 @@
             (when expires
               {:expires_at expires}
               ))}))
-

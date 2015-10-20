@@ -1,11 +1,17 @@
 (ns jiksnu.controllers-test
   (:require [purnam.test]
             jiksnu.app
-            jiksnu.controllers)
+            jiksnu.controllers
+            [taoensso.timbre :as timbre
+             :refer-macros (log  trace  debug  info  warn  error  fatal  report
+                                 logf tracef debugf infof warnf errorf fatalf reportf
+                                 spy get-env log-env)])
   (:use-macros [purnam.core :only [obj arr !]]
                [purnam.test :only [describe it is]]
                [gyr.test    :only [describe.ng describe.controller
                                    it-uses it-compiles]]))
+
+(timbre/set-level! :debug)
 
 (def app-atom (atom nil))
 
@@ -13,12 +19,12 @@
   []
   #js
   {:then (fn [f]
-           (js/console.log "running original mock fetch")
+           (debug "running original mock fetch")
            #_(f))})
 
 (defn mock-app
   []
-  (js/console.log "Getting mocked app")
+  (debug "Getting mocked app")
   #js {:foo "bar"
        :logout (fn [])
        :fetchStatus mock-fetch})
@@ -33,7 +39,7 @@
 
  (js/afterEach
   (fn []
-    (js/console.log "after each test")))
+    (debug "after each test")))
 
  (it "should bind the app service to app2"
    (is $scope.app2.foo "bar"))
@@ -41,23 +47,24 @@
  (it "should be unloaded by default"
    (is (.-loaded $scope) false))
 
- (js/console.log "outside it")
+ (debug "outside it")
 
  (describe {:doc "has a mocked fetch"}
    (js/beforeEach
     (fn []
-      (.log js/console "before each test")
+      (debug "before each test")
       (set! mock-fetch
             (fn []
               #js
               {:then (fn [f]
-                       (js/console.log "running replacement mock fetch")
+                       (debug "running replacement mock fetch")
                        (f))}))))
 
 
    (it "should call fetchStatus"
-    (js/console.log "inside it")
+     (debug "inside it")
+     (js/console.log "inside it")
 
-    (js/console.log "inside it - before is")
+    (debug "inside it - before is")
     (is (.-loaded $scope) true)
-    (js/console.log "inside it - after is"))))
+    (debug "inside it - after is"))))

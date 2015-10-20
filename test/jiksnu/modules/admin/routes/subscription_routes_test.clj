@@ -1,5 +1,5 @@
 (ns jiksnu.modules.admin.routes.subscription-routes-test
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.mock :as mock]
@@ -26,5 +26,3 @@
 
       (fact "returns a successful response"
         (:status response) => status/redirect?))))
-
-

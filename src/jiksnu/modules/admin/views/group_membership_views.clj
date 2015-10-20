@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.views.group-membership-views
   (:require [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.modules.admin.actions.group-membership-actions :refer [index]]
             [jiksnu.modules.core.sections :refer [admin-index-section
                                                   format-page-info]])

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.conversation-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]))
@@ -25,4 +25,3 @@
   (when-let [id (:id (:params request))]
     (when-let [item (model.conversation/fetch-by-id id)]
       (action item))))
-

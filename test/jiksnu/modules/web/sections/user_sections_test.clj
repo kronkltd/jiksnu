@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.sections.user-sections-test
   (:require [ciste.core :refer [with-context with-format with-serialization]]
             [ciste.sections.default :refer [uri show-section title]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]

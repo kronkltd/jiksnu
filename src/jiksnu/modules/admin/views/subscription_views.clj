@@ -6,7 +6,7 @@
                                              format-page-info
                                             ]]
         [jiksnu.modules.web.sections :only [pagination-links with-page]])
-  (:require [clojure.tools.logging :as log])
+  (:require [taoensso.timbre :as log])
   (:import jiksnu.model.Subscription))
 
 ;; (defview #'admin-index :html

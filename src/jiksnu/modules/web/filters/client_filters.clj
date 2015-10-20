@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.filters.client-filters
   (:require [ciste.filters :refer [deffilter]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.client-actions :as actions.client]
             [slingshot.slingshot :refer [throw+]]))
 

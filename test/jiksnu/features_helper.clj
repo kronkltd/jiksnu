@@ -6,7 +6,7 @@
             [clj-webdriver.core :as webdriver]
             [clj-webdriver.taxi :as taxi]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -58,4 +58,3 @@
      (catch Throwable ex
        (.printStackTrace ex)
        (System/exit 0)))))
-

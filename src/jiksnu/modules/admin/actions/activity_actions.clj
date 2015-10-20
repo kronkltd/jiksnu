@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.actions.activity-actions
   "This is the namespace for the admin pages for activities"
   (:require [ciste.core :refer [defaction]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.templates.actions :as templates.actions]))
 

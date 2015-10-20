@@ -1,6 +1,6 @@
 (ns jiksnu.handlers.html
   (:require [clj-time.core :as time]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.user-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]
@@ -88,4 +88,3 @@
 (deffilter #'actions.user/update-profile :http
   [action {params :params}]
   (action params))
-

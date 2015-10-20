@@ -2,7 +2,7 @@
   (:require [cemerick.friend :as friend]
             [clojure.data.json :as json]
             [clojure.java.io :as io]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [clojure.tools.reader.edn :as edn]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -215,4 +215,3 @@
   ([k required?]
    (merge (get-parameter k)
           {:in "path"})))
-

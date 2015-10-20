@@ -1,7 +1,7 @@
 (ns jiksnu.modules.as.views.user-list-views
   (:require [ciste.sections.default :refer [index-section]]
             [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.user-list-actions :as actions.user-list]
             )
   )

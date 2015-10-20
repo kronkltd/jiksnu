@@ -4,7 +4,7 @@
             [ciste.sections.default :refer [actions-section edit-button link-to uri title index-block
                                             index-line index-section update-button]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]

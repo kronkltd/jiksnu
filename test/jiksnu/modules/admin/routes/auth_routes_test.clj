@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.routes.auth-routes-test
   (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
@@ -32,5 +32,3 @@
           (:status response) => status/success?))))
 
   )
-
-

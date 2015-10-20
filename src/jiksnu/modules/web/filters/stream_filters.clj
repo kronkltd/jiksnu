@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.stream-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
@@ -77,4 +77,3 @@
                       (and id (model.user/fetch-by-id id))
                       (and username (model.user/get-user username)))]
       (action user))))
-

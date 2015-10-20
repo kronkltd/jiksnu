@@ -2,7 +2,7 @@
   (:require [ciste.sections.default :refer [index-section
                                             show-section]]
             [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.domain-actions :as actions.domain]))
 
 (defview #'actions.domain/index :json
@@ -13,4 +13,3 @@
 (defview #'actions.domain/show :json
   [request domain]
   {:body (show-section domain)})
-

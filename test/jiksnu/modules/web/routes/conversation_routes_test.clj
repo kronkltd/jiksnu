@@ -3,7 +3,7 @@
             [ciste.sections.default :refer [full-uri]]
             [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.auth-actions :as actions.auth]

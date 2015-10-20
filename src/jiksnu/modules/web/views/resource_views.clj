@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.views.resource-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [index-section show-section]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.modules.web.sections :refer [redirect]]))
 
@@ -24,4 +24,3 @@
   {:body
    [:div {:data-model "resource"}
     (show-section item)]})
-

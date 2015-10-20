@@ -2,7 +2,7 @@
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         [jiksnu.actions.pubsub-actions :only [hub-dispatch]])
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as log]
             [jiksnu.model.user :as model.user]))
 
 ;; (defview #'callback :html

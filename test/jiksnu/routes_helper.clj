@@ -3,7 +3,7 @@
             [clj-factory.core :refer [factory fseq]]
             [clj-http.cookies :as cookies]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]

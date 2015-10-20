@@ -2,7 +2,7 @@
   (:require [ciste.config :refer [config]]
             [ciste.sections.default :refer [title]]
             [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.stream-actions :as actions.stream]

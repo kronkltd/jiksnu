@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.handlers
   (:require [ciste.loader :refer [defhandler]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.handlers :as handler]
             ;; jiksnu.handlers.atom
             jiksnu.handlers.html
@@ -59,4 +59,3 @@
   ;;  #'handler/event)
 
   )
-

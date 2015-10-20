@@ -1,5 +1,5 @@
 (ns jiksnu.modules.http.resources
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as log]
             [octohipster.core :as octo]
             [octohipster.routes :as octo-routes]))
 

@@ -3,7 +3,7 @@
             [ciste.sections.default :refer [edit-button index-block
                                             index-block-type index-line uri]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [inflections.core :as inf]
             [ring.util.response :as response]))
 

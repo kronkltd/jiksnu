@@ -4,7 +4,7 @@
             [ciste.sections.default :refer [uri]]
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -51,5 +51,3 @@
           (:host body) => (:_id .domain.)
           (get-link body "lrdd") =not=> empty?
           (util/rel-filter "lrdd" (:links body)) =not=> empty?)))))
-
-

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.views.activity-views
   (:require [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.modules.admin.actions.activity-actions :refer [index]]
             [jiksnu.modules.core.sections :refer [admin-index-section

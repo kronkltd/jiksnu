@@ -2,7 +2,7 @@
   (:require [ciste.core :refer [with-format]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [uri index-section show-section]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
@@ -47,4 +47,3 @@
 (defview #'actions.user/update-profile :html
   [request user]
   (redirect "/main/profile" "Profile updated"))
-
