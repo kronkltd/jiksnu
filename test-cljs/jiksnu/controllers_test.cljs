@@ -29,6 +29,30 @@
        :logout (fn [])
        :fetchStatus mock-fetch})
 
+(def nav-bar-controller "NavBarController")
+
+(js/describe nav-bar-controller
+  (fn []
+    (let [controller (atom nil)]
+      (js/beforeEach (js/module "jiksnu"))
+
+      (js/beforeEach
+       (js/inject
+        #js ["$controller" (fn [_$controller_]
+                             (reset! controller _$controller_)
+                             (info "controller reset"))]))
+
+      (js/it "should call fetchStatus"
+        (fn []
+          (info "it")
+          (let [$scope #js {:$watch (fn [] (info "Watching"))}
+                c (@controller nav-bar-controller
+                   #js {:$scope $scope})]
+            (spy :info c)
+            (.toBe (js/expect (+ 2 2)) 4)
+            (.toBe (js/expect (.-loaded $scope)) false))))
+      nil)))
+
 
 (describe.controller
  {:doc "jiksnu.NavBarController"
@@ -49,7 +73,7 @@
 
  (debug "outside it")
 
- (describe {:doc "has a mocked fetch"}
+ #_(describe {:doc "has a mocked fetch"}
    (js/beforeEach
     (fn []
       (debug "before each test")

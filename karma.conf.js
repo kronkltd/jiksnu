@@ -61,6 +61,8 @@ module.exports = function(config) {
     //     dir: "target/coverage/"
     // },
 
+    autoWatchBatchDelay: 750,
+
     // web server port
     port: 9876,
 
