@@ -3,6 +3,7 @@
 [![Stack Share](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/duck1123/jiksnu)
 [![Build Status](http://build.jiksnu.org/job/jiksnu-core/branch/master/badge/icon)](http://build.jiksnu.org/job/jiksnu-core/branch/master/)
 [![Stories in Ready](https://badge.waffle.io/duck1123/jiksnu.png?label=ready&title=Ready)](http://waffle.io/duck1123/jiksnu)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/duck1123/jiksnu?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Jiksnu is a Lojban compound word (lujvo) for the words "Jikca
 Casnu". This translates roughly to "is a social type of interaction"
@@ -16,16 +17,8 @@ standards-based applications work to some extent. The OneSocialWeb
 protocol as well as other XEP-0277 XMPP-based servers are supported,
 however, that code is out of date.
 
-Buddycloud support is pending.
-
 Jiksnu is built on top of the Ciste framework, and makes extensive use
 of it's Action Routing framework and services.
-
-## Features
-
-* Realtime page updates
-* XMPP notifications
-* Federated user and domain discovery
 
 ## Developing
 
