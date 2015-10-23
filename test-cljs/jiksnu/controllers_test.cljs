@@ -42,15 +42,31 @@
                              (reset! controller _$controller_)
                              (info "controller reset"))]))
 
+      (js/beforeEach
+       (fn []
+         (debug "before each test")
+         (set! mock-fetch
+               (fn []
+                 #js
+                 {:then (fn [f]
+                          (debug "running replacement mock fetch")
+                          #_(f))}))))
+
+
       (js/it "should call fetchStatus"
         (fn []
+
+
+
+
           (info "it")
           (let [$scope #js {:$watch (fn [] (info "Watching"))}
                 c (@controller nav-bar-controller
-                   #js {:$scope $scope})]
-            (spy :info c)
-            (.toBe (js/expect (+ 2 2)) 4)
-            (.toBe (js/expect (.-loaded $scope)) false))))
+                   #js {:$scope $scope
+                        :app (mock-app)})]
+            (is (+ 2 2) 4)
+            (is (.-loaded $scope) false)
+            (js/console.log $scope))))
       nil)))
 
 
@@ -74,15 +90,7 @@
  (debug "outside it")
 
  #_(describe {:doc "has a mocked fetch"}
-   (js/beforeEach
-    (fn []
-      (debug "before each test")
-      (set! mock-fetch
-            (fn []
-              #js
-              {:then (fn [f]
-                       (debug "running replacement mock fetch")
-                       (f))}))))
+
 
 
    (it "should call fetchStatus"
