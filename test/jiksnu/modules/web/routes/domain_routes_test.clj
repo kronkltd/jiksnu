@@ -50,7 +50,6 @@
           (count (:links body)) => (partial >= 1)
           (:host body) => (:_id .domain.)
           (get-link body "lrdd") =not=> empty?
-          (util/rel-filter "lrdd" (:links body)) =not=> empty?)))
-    ))
+          (util/rel-filter "lrdd" (:links body)) =not=> empty?)))))
 
 

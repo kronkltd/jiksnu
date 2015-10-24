@@ -103,7 +103,7 @@
                                                :optimizations :whitespace
                                                :pretty-print true}}
                        :protractor {:source-paths ["specs"]
-                                                       ;; :notify-command ["notify-send"]
+                                    ;; :notify-command ["notify-send"]
                                     :compiler {:output-to "target/protractor-tests.js"
                                                :optimizations :simple
                                                :pretty-print true}}}}}}
