@@ -15,7 +15,3 @@
           :message "Could not authenticate you"
           :request (:uri request)}
    :template false})
-
-(defview #'actions.auth/whoami :json
-  [request user]
-  {:body user})

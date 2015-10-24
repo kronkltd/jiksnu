@@ -16,5 +16,3 @@
       (with-serialization :http
         (let [request {:action action}]
           (filter-action action request) => map?)))))
-
-

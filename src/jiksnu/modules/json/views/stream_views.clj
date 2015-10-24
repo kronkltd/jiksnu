@@ -9,24 +9,8 @@
             [jiksnu.modules.core.sections.activity-sections :as sections.activity])
   (:import jiksnu.model.Activity))
 
-(defview #'actions.stream/direct-message-timeline :json
-  [request data]
-  {:body data})
-
-(defview #'actions.stream/group-timeline :json
-  [request [group {:keys [items] :as page}]]
-  {:body group})
-
-(defview #'actions.stream/home-timeline :json
-  [request data]
-  {:body data})
-
 (defview #'actions.stream/public-timeline :json
   [request {:keys [items] :as page}]
   {:body (let [activity-page (actions.activity/fetch-by-conversations
                               (map :_id items))]
            (index-section (:items activity-page) activity-page))})
-
-(defview #'actions.stream/user-timeline :json
-  [request [user activities]]
-  {:body (map show-section activities)})
