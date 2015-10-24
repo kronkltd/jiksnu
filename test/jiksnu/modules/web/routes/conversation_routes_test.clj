@@ -25,6 +25,6 @@
   (let [conversation (mock/a-conversation-exists)
         url (str "/model/conversations/" (:_id conversation) "/activities")
         request (req/request :get url)]
-    (log/spy :info (response-for request)) =>
+    (response-for request) =>
     (contains
      {:status 200})))
