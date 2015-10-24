@@ -22,7 +22,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact "update"
+(fact "route: activity/update"
   (fact "when the user is authenticated"
     (let [author (mock/a-user-exists)
           content (fseq :content)
