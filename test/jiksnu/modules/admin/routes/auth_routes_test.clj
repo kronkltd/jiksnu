@@ -29,6 +29,4 @@
         (let [response (-> (req/request :get "/admin/auth")
                            response-for)]
           response => map?
-          (:status response) => status/success?))))
-
-  )
+          (:status response) => status/success?)))))

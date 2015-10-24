@@ -18,5 +18,3 @@
 
     ;; TODO: hardcoded configurable value
     (count (:items (index))) => 20))
-
-

@@ -13,7 +13,6 @@
   (fact "with a valid client"
     (let [client (mock/a-client-exists)]
 
-
       (fact "access token"
         (let [request-token (mock/a-request-token-exists {:client client})
               auth-map {"oauth_signature_method" "HMAC-SHA1"
@@ -28,11 +27,7 @@
           (let [response (m/authorization-header auth-map)]
 
             (fact "returns a string"
-              response => string?)
-            )
-          ))
-      ))
-  )
+              response => string?)))))))
 
 (fact "#'m/parse-authorization-header"
 
@@ -51,14 +46,10 @@
               response (m/parse-authorization-header header)]
 
           (fact "returns a map"
-            response => vector?
-            )
+            response => vector?)
 
           (fact "first value is OAuth"
             (nth response 0) => "OAuth")
 
           (fact "second value is its params"
-            (nth response 1) => auth-map)
-
-          ))
-      )))
+            (nth response 1) => auth-map))))))

@@ -12,5 +12,3 @@
     response => map?
     (:items response) => seq?
     (:totalItems response) => zero?))
-
-

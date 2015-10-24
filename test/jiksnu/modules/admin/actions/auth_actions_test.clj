@@ -9,5 +9,3 @@
 
 (fact "#'admin.actions.auth/index"
   (admin.actions.auth/index) => map?)
-
-

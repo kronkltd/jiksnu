@@ -41,7 +41,6 @@
         (:status response) => status/redirect?
         (:body response) => string?))))
 
-
 (fact "route: auth/register :post"
   (let [username (fseq :username)
         password (fseq :password)

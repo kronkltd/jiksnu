@@ -59,9 +59,6 @@
       ;; (:client_secret_expires_at body) => number?
       )
 
-
-
-
   (fact "route: oauth/access-token :get"
 
     (fact "when given valid params"
@@ -83,6 +80,4 @@
                          (assoc-in [:headers "authorization"] authorization-str))]
 
         (fact "should be successful"
-              (response-for request) => (contains {:status status/success?})))))
-
-  )
+              (response-for request) => (contains {:status status/success?}))))))

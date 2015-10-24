@@ -27,5 +27,3 @@
 
     (let [response (actions.feed-subscription/index)]
       (count (:items response)) => 20)))
-
-

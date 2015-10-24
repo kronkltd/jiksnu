@@ -20,4 +20,3 @@
   (let [like (model.like/create (factory :like))]
     (actions.like/delete like)
     (model.like/fetch-by-id (:_id like)) => falsey))
-

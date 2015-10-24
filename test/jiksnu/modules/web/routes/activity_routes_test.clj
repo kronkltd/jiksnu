@@ -43,5 +43,4 @@
           url (str "/main/oembed?format=xml&url=" (:url activity))]
       (response-for (req/request :get url)) =>
       (contains {:status status/success?
-                 :body string?})))
-  )
+                 :body string?}))))
