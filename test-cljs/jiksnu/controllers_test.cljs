@@ -7,7 +7,7 @@
                                  logf tracef debugf infof warnf errorf fatalf reportf
                                  spy get-env log-env)])
   (:use-macros [purnam.core :only [obj arr !]]
-               [purnam.test :only [describe it is]]
+               [purnam.test :only [describe it is fact]]
                [gyr.test    :only [describe.ng describe.controller
                                    it-uses it-compiles]]))
 
@@ -29,74 +29,57 @@
        :logout (fn [])
        :fetchStatus mock-fetch})
 
+(def jiksnu "jiksnu")
 (def nav-bar-controller "NavBarController")
 
-(js/describe nav-bar-controller
-  (fn []
-    (let [controller (atom nil)]
-      (js/beforeEach (js/module "jiksnu"))
+(declare $q)
+(declare $rootScope)
+(declare $scope)
+(declare c)
+(def $controller (atom nil))
 
-      (js/beforeEach
-       (js/inject
-        #js ["$controller" (fn [_$controller_]
-                             (reset! controller _$controller_)
-                             (info "controller reset"))]))
+(describe "jiksnu"
+  (js/beforeEach (js/module "jiksnu"))
 
-      (js/beforeEach
-       (fn []
-         (debug "before each test")
-         (set! mock-fetch
-               (fn []
-                 #js
-                 {:then (fn [f]
-                          (debug "running replacement mock fetch")
-                          #_(f))}))))
+  (js/beforeEach
+   (js/inject
+    #js ["$controller" "$rootScope" "$q"
+         (fn [_$controller_ _$rootScope_ _$q_]
+           (reset! $controller _$controller_)
+           (set! $rootScope _$rootScope_)
+           (set! $q _$q_))]))
 
+  (describe nav-bar-controller
+    (js/beforeEach
+     (fn []
+       (set! mock-fetch
+             (fn []
+               #js
+               {:then (fn [f] #_(f))}))
+       (set! $scope (.$new $rootScope))))
 
-      (js/it "should call fetchStatus"
-        (fn []
+    (it "should be unloaded by default"
+      (@$controller nav-bar-controller #js {:$scope $scope :app (mock-app)})
+      (is $scope.loaded false))
 
+    (it "should call fetchStatus"
+      (set! mock-fetch
+            (fn []
+              #js
+              {:then (fn [f]
+                       (info "replacement")
+                       (f))}))
 
+      (@$controller nav-bar-controller #js {:$scope $scope :app (mock-app)})
+      (is $scope.loaded true))
 
+    (it "should bind the app service to app2"
+      (@$controller "NavBarController" #js {:$scope $scope :app (mock-app)})
 
-          (info "it")
-          (let [$scope #js {:$watch (fn [] (info "Watching"))}
-                c (@controller nav-bar-controller
-                   #js {:$scope $scope
-                        :app (mock-app)})]
-            (is (+ 2 2) 4)
-            (is (.-loaded $scope) false)
-            (js/console.log $scope))))
-      nil)))
+      (is $scope.app2.foo "bar"))
 
+    (fact [[{:doc "a fact"}]]
+          (+ 1 1) => 2
+          (+ 2 2) => 4)
 
-(describe.controller
- {:doc "jiksnu.NavBarController"
-  :module jiksnu
-  :controller NavBarController
-  :provides {app (mock-app)
-             app2 #js {:foo "baz"}}}
-
- (js/afterEach
-  (fn []
-    (debug "after each test")))
-
- (it "should bind the app service to app2"
-   (is $scope.app2.foo "bar"))
-
- (it "should be unloaded by default"
-   (is (.-loaded $scope) false))
-
- (debug "outside it")
-
- #_(describe {:doc "has a mocked fetch"}
-
-
-
-   (it "should call fetchStatus"
-     (debug "inside it")
-     (js/console.log "inside it")
-
-    (debug "inside it - before is")
-    (is (.-loaded $scope) true)
-    (debug "inside it - after is"))))
+    nil))

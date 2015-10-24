@@ -49,7 +49,7 @@ module.exports = function(config) {
                 "junit", 'notify-send'],
 
     junitReporter: {
-      outputFile: "target/karma-test-results.xml"
+      outputDir: "target/karma"
     },
 
     // preprocessors: {
@@ -61,7 +61,7 @@ module.exports = function(config) {
     //     dir: "target/coverage/"
     // },
 
-    autoWatchBatchDelay: 750,
+    autoWatchBatchDelay: 2000,
 
     // web server port
     port: 9876,
