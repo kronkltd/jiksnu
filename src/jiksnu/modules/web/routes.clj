@@ -44,6 +44,7 @@
            ;;    (fn [request]
            ;;      (log/spy :info (handler (log/spy :info request))))))
            (wrap-trace :ui)
+           jm/wrap-authorization-header
            (friend/authenticate auth-config)
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info
