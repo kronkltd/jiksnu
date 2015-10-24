@@ -146,7 +146,7 @@
   [r]
   (let [action-ns (:ns r)]
     (if-let [action (ns-resolve action-ns 'index)]
-      (merge {:method-allowed? (lib/request-method-in :get :post :delete)
+      (merge {:allowed-methods [:get :post :delete]
               :exists? (fn exists? [ctx]
                          (log/debug (str "Page resource: " action-ns))
                          (if-let [f (var-get action)]
@@ -157,13 +157,12 @@
 
 (defn subpage-resource
   "route mixin for paths that operate on a subpage"
-  [{:keys [available-formats
-           subpage
+  [{:keys [available-formats subpage resource
            target target-model]
     :as resource}]
   (-> resource
       ciste-resource
-      (assoc :method-allowed? (lib/request-method-in :get :post :delete))
+      (assoc :allowed-methods [:get :post :delete])
       (assoc :exists?
              (fn [ctx]
                (when-let [item (if target

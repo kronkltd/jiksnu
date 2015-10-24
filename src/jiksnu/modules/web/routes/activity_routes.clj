@@ -44,11 +44,12 @@
 
 (defn activities-api-post
   [ctx]
+  (log/info "posting")
   (let [{{params :params
           :as request} :request} ctx
-          username (:current (friend/identity request))
-          id (str "acct:" username "@" (config :domain))
-          params (assoc params :author id)]
+        username (:current (friend/identity request))
+        id (str "acct:" username "@" (config :domain))
+        params (assoc params :author id)]
     (actions.activity/post params)))
 
 (defresource activities-api :collection
@@ -56,6 +57,7 @@
   :mixins [page-resource]
   :available-formats [:json]
   :allowed-methods [:get :post]
+  :available-media-types ["application/json"]
   :methods {:get {:summary "Index Activities"}
             :post {:summary "Create Activity"}}
   :post! activities-api-post

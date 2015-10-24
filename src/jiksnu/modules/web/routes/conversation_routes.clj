@@ -78,13 +78,14 @@
   :target get-conversation
   :target-model "conversation"
   :subpage "activities"
+  :allowed-methods [:get]
   :available-formats [:json]
   :available-media-types ["application/json"]
   :presenter (partial into {})
-  ;; :exists? (fn [ctx]
-  ;;            (let [id (-> ctx :request :route-params :_id)
-  ;;                  conversation (model.conversation/fetch-by-id id)]
-  ;;              (log/spy :info {:data conversation})))
+  :exists? (fn [ctx]
+             (let [id (-> ctx :request :route-params :_id)
+                   conversation (model.conversation/fetch-by-id id)]
+               {:data conversation}))
   ;; :delete! #'actions.conversation/delete
   ;; :put!    #'actions.conversation/update-record
   )
