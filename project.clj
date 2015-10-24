@@ -30,6 +30,7 @@
                   :exclusions [xalan com.cemerick/austin]]
                  [net.kronkltd/octohipster        "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
+                 [net.logstash.log4j/jsonevent-layout "1.7"]
                  [org.clojure/clojure             "1.7.0"]
                  [org.clojure/clojurescript       "1.7.28"]
                  [org.clojure/tools.logging       "0.3.1"]
