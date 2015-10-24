@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.client-routes
   (:require [taoensso.timbre :as log]
+            [jiksnu.actions.access-token-actions :as actions.access-token]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.oauth-actions :as actions.oauth]
             [jiksnu.actions.request-token-actions :as actions.request-token]
@@ -28,12 +29,7 @@
            (let [params (:params (:request ctx))]
              (when-let [client (actions.client/register params)]
                {:data "{status: 'ok'}"})))
-
-  ;; :data #_(fn [ctx]
-  ;;           true #_{:data (actions.client/register (:params (:request ctx)))})
-  :handle-created :data
-
-  )
+  :handle-created :data)
 
 (defgroup jiksnu oauth
   :name "OAuth API"
@@ -42,7 +38,14 @@
 (defresource oauth :access-token
   :name "Access Token"
   :url "/access_token"
-  :exists? (fn [ctx] (actions.oauth/access-token (:request ctx))))
+  :allowed-methods [:post]
+  :available-media-types ["application/json"]
+  :exists? (fn [ctx]
+             (let [params (:authorization-parts (:request ctx))
+                   {:keys [_id secret]} (actions.access-token/get-access-token params)]
+               {:body (format "oauth_token=%s&oauth_token_secret=%s" _id secret)}))
+  :post! (fn [ctx]
+           (log/info "posting")))
 
 (defresource oauth :authorize
   :name "Authorize"
