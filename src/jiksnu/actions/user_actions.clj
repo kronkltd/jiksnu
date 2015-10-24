@@ -4,7 +4,6 @@
             [ciste.initializer :refer [definitializer]]
             [ciste.model :as cm]
             [clojure.data.json :as json]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions :refer [invoke-action]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -24,7 +23,8 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+]])
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre])
   (:import java.net.URI
            jiksnu.model.User))
 

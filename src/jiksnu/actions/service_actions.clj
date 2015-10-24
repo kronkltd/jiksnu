@@ -5,7 +5,6 @@
             [ciste.model :as cm]
             [clj-time.core :as time]
             [clojure.data.json :as json]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model :as model]
@@ -18,7 +17,8 @@
             [jiksnu.util :as util]
             [manifold.deferred :as d]
             [manifold.time :as lt]
-            [slingshot.slingshot :refer [throw+ try+]])
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre])
   (:import java.net.URL
            jiksnu.model.Domain))
 

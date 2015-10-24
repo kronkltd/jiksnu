@@ -1,7 +1,6 @@
 (ns jiksnu.actions.conversation-actions
   (:require [ciste.core :refer [defaction]]
             [clj-time.core :as time]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
@@ -12,7 +11,8 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
             [manifold.bus :as bus]
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre]))
 
 (defonce delete-hooks (ref []))
 

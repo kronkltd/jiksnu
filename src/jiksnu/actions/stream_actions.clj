@@ -4,7 +4,6 @@
             [ciste.sections.default :refer [show-section]]
             [clojure.data.json :as json]
             [clojure.string :as string]
-            [taoensso.timbre :as timbre]
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
@@ -15,7 +14,8 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
             [manifold.stream :as s]
-            [slingshot.slingshot :refer [throw+ try+]])
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre])
   (:import jiksnu.model.User))
 
 ;; hooks

@@ -5,7 +5,6 @@
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions :refer [invoke-action]]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
@@ -17,7 +16,8 @@
             [manifold.deferred :as d]
             [manifold.time :as lt]
             [org.httpkit.client :as client]
-            [slingshot.slingshot :refer [throw+ try+]])
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre])
   (:import jiksnu.model.Resource))
 
 (defkey ::resource-realized

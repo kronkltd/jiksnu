@@ -2,7 +2,6 @@
   (:require [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
             [clojure.string :as string]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
@@ -13,7 +12,8 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+]])
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
