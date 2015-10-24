@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+#^syntax detection
+
+site 'https://supermarket.getchef.com/api/v1'
+
+cookbook 'ack'
+cookbook 'apache2'
+cookbook 'emacs'
+cookbook 'git'
+cookbook 'java'
+cookbook 'lein'
+cookbook 'mongodb'
+cookbook 'nginx'
+cookbook 'nginx-proxy',
+         :git => "https://github.com/duck1123/chef-cookbook-nginx-proxy.git",
+         :ref => "feature/location-config"
+cookbook 'nodejs'
+cookbook 'ssl_certificate'

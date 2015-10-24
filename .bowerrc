@@ -1,4 +1,4 @@
 {
-  "directory": "resources/public/vendor",
+  "directory": "target/resources/public/vendor",
   "scripts":{}
 }

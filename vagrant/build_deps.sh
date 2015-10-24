@@ -49,8 +49,7 @@ cd /vagrant/checkouts/ciste-incubator && lein install
 cd /vagrant/checkouts/jiksnu-core && lein install
 cd /vagrant/checkouts/jiksnu-command && lein install
 
-npm install bower
+cd /vagrant
 ./node_modules/.bin/bower install
 
-cd /vagrant
 lein run

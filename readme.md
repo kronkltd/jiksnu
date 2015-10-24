@@ -2,6 +2,7 @@
 
 [![Stack Share](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/duck1123/jiksnu)
 [![Build Status](http://build.jiksnu.org/job/jiksnu-core/branch/master/badge/icon)](http://build.jiksnu.org/job/jiksnu-core/branch/master/)
+[![Stories in Ready](https://badge.waffle.io/duck1123/jiksnu.png?label=ready&title=Ready)](http://waffle.io/duck1123/jiksnu)
 
 Jiksnu is a Lojban compound word (lujvo) for the words "Jikca
 Casnu". This translates roughly to "is a social type of interaction"
@@ -25,6 +26,19 @@ of it's Action Routing framework and services.
 * Realtime page updates
 * XMPP notifications
 * Federated user and domain discovery
+
+## Developing
+
+    sudo apt-get install -y vagrant
+    vagrant plugin install vagrant-git
+    vagrant plugin install vagrant-hostmanager
+
+    git clone https://github.com/duck1123/jiksnu.git
+    cd jiksnu/chef
+    librarian-chef update
+    cd ../
+    vagrant up
+
 
 ## Thanks
 
@@ -52,5 +66,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Donate
 
-If you would like to help support this project, send your bitcoin to
-1PKVaib8p7ypnmuovtRE8YN3yPkkY3JjPa
+http://duck1123.tip.me

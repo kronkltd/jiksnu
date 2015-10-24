@@ -5,8 +5,6 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
-  config.vm.network "private_network", type: "dhcp"
-
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   config.hostmanager.ignore_private_ip = false
@@ -16,110 +14,63 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
     end
   end
+  config.ssh.forward_agent = true
 
-  # config.vm.network "forwarded_port", guest: 8080, host: 8080
-  # config.vm.network "forwarded_port", guest: 27017, host: 27017
-  # config.vm.network "forwarded_port", guest: 7888, host: 7888
-  # config.vm.network "forwarded_port", guest: 9000, host: 9000
+  # Mount the user's maven cache to speed up boot
+  config.vm.synced_folder "~/.m2", "/home/vagrant/.m2", owner: 'vagrant', group: 'vagrant'
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "2048"
   end
 
-  config.ssh.forward_agent = true
+  config.vm.provision :shell,
+                      path: 'https://github.com/fgrehm/notify-send-http/raw/master/vagrant-installer.sh',
+                      args: ['12345']
 
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/jiksnu-core.git"
-  #   rc.path = "checkouts/jiksnu-core"
-  #   rc.branch = "master"
-  #   rc.clone_in_host = true
-  # end
+  config.vm.define "jiksnu.dev", primary: true do |node|
+    node.vm.hostname = 'jiksnu.dev'
 
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/octohipster.git"
-  #   rc.path = "checkouts/octohipster"
-  #   rc.branch = "feature/swagger"
-  #   rc.clone_in_host = true
-  # end
+    node.vm.network "private_network", type: "dhcp"
+    node.vm.network "forwarded_port", guest: 27017, host: 27017
 
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/ciste.git"
-  #   rc.path = "checkouts/ciste"
-  #   rc.branch = "develop"
-  #   rc.clone_in_host = true
-  # end
+    config.vm.provision :chef_solo do |chef|
+      chef.cookbooks_path = ["site-cookbooks", "cookbooks"]
+      chef.roles_path = "roles"
+      chef.data_bags_path = "data_bags"
 
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/ciste-incubator.git"
-  #   rc.path = "checkouts/ciste-incubator"
-  #   rc.branch = "master"
-  #   rc.clone_in_host = true
-  # end
+      chef.add_role "develop"
+      chef.add_role "web"
+      chef.add_role "db"
 
-  # config.git.add_repo do |rc|
-  #   rc.target = "git@github.com:duck1123/jiksnu-command.git"
-  #   rc.path = "checkouts/jiksnu-command"
-  #   rc.branch = "master"
-  #   rc.clone_in_host = true
-  # end
-
-  # config.vm.provision "shell", name: "base", path: "vagrant/provision.sh"
-
-  config.vm.provision :chef_solo do |chef|
-    chef.cookbooks_path = ["chef/site-cookbooks", "chef/cookbooks"]
-    chef.roles_path = "chef/roles"
-    chef.data_bags_path = "chef/data_bags"
-
-    chef.add_recipe 'mongodb'
-    chef.add_recipe 'java'
-    chef.add_recipe 'lein'
-    chef.add_recipe 'nginx'
-    chef.add_recipe 'nodejs'
-    # chef.add_recipe 'bower'
-    # chef.add_recipe 'application'
-    # chef.add_recipe 'application_nginx'
-    chef.add_recipe 'ack'
-    # chef.add_recipe 'application_java'
-    chef.add_recipe 'emacs'
-    chef.add_recipe 'git'
-
-    # chef.application '/opt/jiksnu' do
-
-    #   owner 'root'
-    #   group 'root'
-
-    #   nginx_load_balancer do
-    #     only_if { node['roles'].include?('jiksnu_load_balancer') }
-    #   end
-    # end
-
-    # chef.nginx_site "jiksnu" do
-    #   host "jiksnu"
-    #   # custom_data {
-    #   #   :env => 'dev'
-    #   # }
-    # end
-
-    chef.json = {
-      :nginx => {
-        :host => "jiksnu"
-      },
-      :java => {
-        :jdk_version => '7'
+      chef.json = {
+        "nginx_proxy" => {
+          "proxies" => {
+            node.vm.hostname => {
+              "port" => 8080,
+              "ssl_key" => node.vm.hostname,
+              "location_config" => [
+                "proxy_http_version 1.1;",
+                "proxy_set_header Upgrade $http_upgrade;",
+                'proxy_set_header Connection "upgrade";'
+              ]
+            }
+          }
+        },
+        "nginx" => {
+          "default_site_enabled" => false
+        },
+        "ssl_certificate" => {
+          "items" => [
+            {
+              'name' => node.vm.hostname,
+              "common_name" => node.vm.hostname,
+            }
+          ]
+        }
       }
-    }
+    end
+
+    node.vm.provision "shell", path: "vagrant/provision_vagrant.sh", privileged: false
+    # node.vm.provision "shell", path: "vagrant/start_server.sh"
   end
-
-  config.vm.define :jiksnu, primary: true do |node|
-    node.vm.hostname = 'jiksnu'
-
-
-    # node.vm.provision "shell", name: "jiksnu-root", path: "vagrant/provision_jiksnu.sh"
-    node.vm.provision "shell", name: "jiksnu-local", path: "vagrant/provision_vagrant.sh", privileged: false
-  end
-
-  # config.vm.define :sentry do |node|
-  #   node.vm.hostname = 'sentry'
-  #   # node.vm.provision "shell", name: "sentry", path: "vagrant/provision_sentry.sh"
-  # end
 end

@@ -1,19 +1,16 @@
 (ns jiksnu.app-test
   (:require jiksnu.app
             purnam.test)
-  (:use-macros [purnam.test :only [beforeEach describe fact it is is-not]]))
+  (:use-macros [purnam.test :only [beforeEach describe fact facts]]))
 
 (def a (atom 0))
 
-(beforeEach
- (.log js/console "before")
- (swap! a inc))
+(describe {:doc "simple test"}
+  ;; (js/console.log "a" @a)
+  (fact (+ 2 2)  => 4)
+  (describe {:doc "updating an atom"}
+    (beforeEach
+     ;; (js/console.log "before")
+     (swap! a inc))
+    (fact (+ @a 2) => 3)))
 
-(describe "foo"
-  (it "FIX THIS: One Plus One Equals... "
-    (is (+ @a 1) 2)
-    (is (+ 2 2) 4)))
-
-(fact
- (+ @a 2) => 4
-)
