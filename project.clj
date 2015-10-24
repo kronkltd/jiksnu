@@ -60,7 +60,6 @@
                       :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
                                  :optimizations :simple
                                  :pretty-print true}}}}
-  :hooks [leiningen.cljsbuild leiningen.less]
   :bower {:package-file "bower.json", :config-file ".bowerrc"}
   :aliases {"karma"             ["shell" "./node_modules/.bin/karma"             "start"]
             "protractor"        ["shell" "./node_modules/.bin/protractor"        "protractor-config.js"]
@@ -86,6 +85,7 @@
                          [org.clojure/tools.nrepl "0.2.9"]
                          [ring-mock     "0.1.5"]]}
              :production {:aot :all
+                          :hooks [leiningen.cljsbuild leiningen.less]
                           :cljsbuild
                           {:builds
                            {:advanced {:source-paths ["src-cljs"]
