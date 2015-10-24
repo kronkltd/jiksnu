@@ -67,7 +67,7 @@
   :repl-options {:init-ns ciste.runner
                  :host "0.0.0.0"
                  :port 7888}
-
+  :appenders {:jl (make-tools-logging-appender {})}
   :cljsbuild {:repl-listen-port 9001
               :repl-launch-commands {"my-launch" ["google-chrome"]}
               :builds
@@ -90,7 +90,8 @@
                          [helpshift/hydrox "0.1.2"]
                          [org.clojure/tools.nrepl "0.2.9"]
                          [ring-mock     "0.1.5"]
-                         [slamhound "1.5.5"]]}
+                         [slamhound "1.5.5"]
+                         [com.palletops/log-config "0.1.4"]]}
              :production {:aot :all
                           :hooks [leiningen.cljsbuild leiningen.less]
                           :cljsbuild
