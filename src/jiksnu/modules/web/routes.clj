@@ -17,6 +17,7 @@
             [jiksnu.session :as session]
             [liberator.dev :refer [wrap-trace]]
             [org.httpkit.server :as server]
+            [ring.logger.timbre :as logger.timbre]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.file-info :refer [wrap-file-info]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
@@ -49,7 +50,8 @@
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info
       wrap-content-type
-      wrap-not-modified))
+      wrap-not-modified
+      logger.timbre/wrap-with-logger))
 
 (helpers/load-pages! 'jiksnu.modules.web.routes.pages)
 (helpers/load-sub-pages! 'jiksnu.modules.web.routes.pages)

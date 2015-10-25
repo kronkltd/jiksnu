@@ -43,6 +43,7 @@
                  ;; [ring "1.2.2"]
                  [ring/ring-core                  "1.4.0"]
                  [ring-basic-authentication       "1.0.5"]
+                 [ring-logger-timbre              "0.7.4"]
                  [slingshot                       "0.12.2"]]
   :plugins [[cider/cider-nrepl "0.10.0-SNAPSHOT"]
             [codox             "0.8.12"]
