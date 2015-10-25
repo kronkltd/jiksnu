@@ -9,7 +9,8 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers
              :refer [angular-resource page-resource]]
-            [octohipster.mixins :as mixin]))
+            [octohipster.mixins :as mixin]
+            [slingshot.slingshot :refer [throw+ try+]]))
 
 (defgroup jiksnu client-api
   :name "Client API"
@@ -41,9 +42,13 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :exists? (fn [ctx]
-             (let [params (:authorization-parts (:params (:request ctx)))
-                   {:keys [_id secret]} (actions.access-token/get-access-token params)]
-               {:body (format "oauth_token=%s&oauth_token_secret=%s" _id secret)}))
+             (try+
+              (let [params (:authorization-parts (:params (:request ctx)))
+                    {:keys [_id secret]} (actions.access-token/get-access-token params)]
+                {:body (format "oauth_token=%s&oauth_token_secret=%s" _id secret)})
+              (catch Object ex
+                (log/error ex)
+                {:status 500})))
   :post! (fn [ctx]
            (log/info "posting")))
 

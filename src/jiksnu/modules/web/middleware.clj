@@ -83,10 +83,13 @@
                           consumer-key (get parts "oauth_consumer_key")
                           client (model.client/fetch-by-id consumer-key)
                           token (get parts "oauth_token")
-                          request (if-let  [access-token (when token
-                                                           (model.access-token/fetch-by-id token))]
+                          request (if-let [access-token
+                                           (some-> token
+                                                   model.access-token/fetch-by-id)]
                                     (assoc request :access-token access-token)
-                                    request)]
+                                    (do
+                                      (log/warn "no access token")
+                                      request))]
                       (assoc request :authorization-client client))
                     request)]
       (handler request))))

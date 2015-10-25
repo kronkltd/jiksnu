@@ -74,8 +74,8 @@
                        "oauth_signature" "LZITIZS2yXc5zLzL0Mdtjko2oCM%3D"}
 
           authorization-str (m/authorization-header auth-params)
-
           request (-> (req/request :post url)
                       (assoc-in [:headers "authorization"] authorization-str))]
 
-      (response-for request) => (contains {:status status/success?}))))
+      (response-for request) => (contains {:status status/success?
+                                           :body #(not= "null" %)}))))
