@@ -3,7 +3,6 @@
             [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation]
-            jiksnu.modules.core.filters.activity-filters
             jiksnu.modules.core.views.activity-views
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]

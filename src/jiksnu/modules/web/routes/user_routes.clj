@@ -10,7 +10,6 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as user]
             [jiksnu.model.user :as model.user]
-            jiksnu.modules.core.filters.stream-filters
             jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]

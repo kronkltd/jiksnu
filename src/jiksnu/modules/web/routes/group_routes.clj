@@ -4,7 +4,6 @@
             [jiksnu.actions.conversation-actions :as conversation]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.model.group :as model.group]
-            jiksnu.modules.core.filters.group-filters
             jiksnu.modules.core.views.group-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
