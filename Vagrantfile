@@ -5,6 +5,10 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
+  # config.user.defaults = {
+  #   ."host_name" => "jiksnu.dev"
+  # }
+
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   config.hostmanager.ignore_private_ip = false
@@ -27,11 +31,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                       path: 'https://github.com/fgrehm/notify-send-http/raw/master/vagrant-installer.sh',
                       args: ['12345']
 
-  config.vm.define "jiksnu.dev", primary: true do |node|
-    node.vm.hostname = 'jiksnu.dev'
+  config.vm.define config.user.host_name, primary: true do |node|
+    node.vm.hostname = config.user.host_name
 
     node.vm.network "private_network", type: "dhcp"
-    node.vm.network "forwarded_port", guest: 27017, host: 27017
+    # node.vm.network "forwarded_port", guest: 27017, host: 27017
 
     config.vm.provision :chef_solo do |chef|
       chef.cookbooks_path = ["site-cookbooks", "cookbooks"]
