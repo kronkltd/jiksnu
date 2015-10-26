@@ -50,7 +50,7 @@
            (f))))
 
 (defn update-groups
-  [groups resources]
+  [groups]
   (map
    (fn [gvar]
      (log/debug (str "Processing Group: " gvar))
@@ -62,8 +62,8 @@
 
 (defmacro defresource
   [group resource-name & {:as options}]
-  (log/debugf "defining resource: %s(%s)" group resource-name)
-  `(add-resource! (var ~group) ~resource-name (octo/resource ~options)))
+  (log/debugf "defining resource: %s(%s) => %s" group resource-name options)
+  `(add-resource! (var ~group) ~resource-name (octo/resource ~(assoc options :name resource-name))))
 
 (defmacro defgroup
   [site-sym group-sym & {:as opts}]
@@ -86,9 +86,8 @@
        (def ~site-name ~options)
        (declare ~route-sym)
        (defonce ~group-sym (ref []))
-       (defonce ~resource-sym (ref []))
        (def ~init-sym (fn []
-                        (let [groups# (update-groups @~group-sym @~resource-sym)
+                        (let [groups# (update-groups @~group-sym)
                               body# (assoc ~options :groups groups#)]
                           (log/debugf "Creating Site. Groups %s" (count groups#))
                           (let [routes# (octo-routes/routes body#)]

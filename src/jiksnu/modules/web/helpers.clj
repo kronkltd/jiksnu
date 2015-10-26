@@ -157,8 +157,7 @@
 
 (defn subpage-resource
   "route mixin for paths that operate on a subpage"
-  [{:keys [available-formats subpage resource
-           target target-model]
+  [{:keys [subpage target target-model]
     :as resource}]
   (-> resource
       ciste-resource
