@@ -82,4 +82,3 @@
                  :message "User not found"})))
     (throw+ {:type :authentication
              :message "Must be logged in"})))
-
