@@ -44,7 +44,6 @@
 
 (defn activities-api-post
   [ctx]
-  (log/info "posting")
   (let [{{params :params
           :as request} :request} ctx
         username (:current (friend/identity request))
