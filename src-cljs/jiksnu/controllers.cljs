@@ -43,25 +43,45 @@
 
 (def.controller jiksnu.FollowButtonController
   [$scope app Users]
-  (aset $scope "app" app)
-  (aset $scope "followLabel" "Follow")
-  (aset $scope "isFollowing"
-     (fn []
-       (and (not (.isActor $scope))
-            ;; TODO: write follow checking code
-            )))
-  (aset $scope "isActor"
-     (fn []
-       (when-let [user (.-user app)]
-         (= (.-_id (.-item $scope))
-            (.-_id user)))))
-  (aset $scope "submit"
-     (fn []
-       (js/console.log "Submit button pressed" app)
-       (let [item (.-item $scope)]
-         (if (.isFollowing $scope)
-           (.follow app item)
-           (.unfollow app item))))))
+  (let [init (fn []
+               (set! (.-loaded $scope) false)
+               (-> (.isFollowing $scope)
+                   (.then (fn [following]
+                            (set! (.-following $scope) following)
+                            (set! (.-followLabel $scope) (if (.-following $scope) "Unfollow" "Follow"))
+                            (set! (.-loaded $scope) true)))))]
+
+    (set! (.-app $scope) app)
+    (set! (.-loaded $scope) false)
+    (set! (.-isFollowing $scope)
+          (fn []
+            (.then
+             (.getUser app)
+             (fn [actor]
+                     (let [user (.-item $scope)
+                           user-id (.-_id user)
+                           actor-id (.-_id actor)]
+                       (when (not= actor-id user-id)
+                         (.then
+                          (.getFollowers user)
+                          (fn [fs]
+                            (some (fn [follow]
+                                   (js/console.log "Follow" follow)
+                                   (when (= (.-from follow) actor-id)
+                                     (js/console.log "is following" follow)
+                                     true))
+                                 (.-items fs))))))))))
+    (set! (.-isActor $scope) (fn []
+                               (when-let [user (.-user app)]
+                                 (= (.-_id (.-item $scope))
+                                    (.-_id user)))))
+    (set! (.-submit $scope)
+          (fn []
+            (let [item (.-item $scope)]
+              (if (.-following $scope)
+                (.unfollow app item)
+                (.follow app item)))))
+    (init)))
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]

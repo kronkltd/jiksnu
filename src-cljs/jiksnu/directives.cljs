@@ -80,6 +80,13 @@
    :scope (obj :id "@" :item "=")
    :controller "ShowStreamMinimalController"))
 
+(def.directive jiksnu.showUser
+  []
+  (obj
+   :controller "ShowUserController"
+   :scope (obj :id "@" :item "=")
+   :templateUrl "/templates/show-user"))
+
 (def.directive jiksnu.streamsWidget []
   (obj))
 

@@ -77,25 +77,27 @@
 (defn follow
   [app target]
   (js/console.log "follow" target)
-  (-> app
-      (.post #js {:verb "follow"
-                  :object #js {:id (.-_id target)}})))
+  (let [obj  #js {:id (.-_id target)}
+        activity #js {:verb "follow" :object obj}]
+    (.post app activity)))
 
 (defn unfollow
   [app target]
-  (js/console.log "unfollow" target))
+  (js/console.log "unfollow" target)
+  (let [obj #js {:id (.-_id target)}
+        activity #js {:verb "unfollow" :object obj}]
+    (.post app activity)))
 
 (defn register
   [app params]
   (js/console.log "Registering" (.-reg params))
-  (-> (.$http (.-di app)
-              (js-obj
-               "method" "post"
-               "url"    "/main/register"
-               "data"   (.-reg params)))
-      (.then (fn [data]
-               (js/console.log "Response" data)
-               data))))
+  (let [params #js {:method "post"
+                    :url    "/main/register"
+                    :data   (.-reg params)}]
+    (-> (.$http (.-di app) params)
+        (.then (fn [data]
+                 (js/console.log "Response" data)
+                 data)))))
 
 (defn go
   [app state]

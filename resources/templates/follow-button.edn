@@ -1,7 +1,7 @@
 [:form {:name "followButton" :ng-submit "submit()"}
- [:div {:ng-show "isActor()"}
-  [:p "This is you"]]
- [:div {:ng-hide "isActor()"}
-  [:button.btn.btn-default {:type "submit"}
-   "{{followLabel}}"
-   ]]]
+ [:div {:ng-if "loaded"}
+  [:div {:ng-show "isActor()"}
+   [:p "This is you"]]
+  [:div {:ng-hide "isActor()"}
+   [:button.btn.btn-default {:type "submit"}
+    "{{followLabel}}"]]]]
