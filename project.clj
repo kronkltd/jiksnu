@@ -16,7 +16,7 @@
                   :exclusions [org.clojure/clojure]]
                  [compojure                           "1.4.0"]
                  [clojurewerkz/support                "1.1.0"]
-                 [com.flybe/socket-rocket "0.1.9"]
+                 [com.flybe/socket-rocket             "0.1.9"]
                  [com.novemberain/monger              "3.0.0"]
                  [com.novemberain/validateur          "2.4.2"]
                  [com.taoensso/timbre                 "4.1.4"]
@@ -47,7 +47,7 @@
                  [ring-basic-authentication           "1.0.5"]
                  [ring-logger-timbre                  "0.7.4"]
                  [slingshot                           "0.12.2"]
-
+                 [timbre-logstash                     "0.2.0"]
                  ]
   :plugins [[cider/cider-nrepl "0.10.0-SNAPSHOT"]
             [codox             "0.8.12"]
