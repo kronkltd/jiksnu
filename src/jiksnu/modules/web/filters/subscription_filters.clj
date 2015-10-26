@@ -31,12 +31,6 @@
                       (when id (model.user/fetch-by-id id)))]
     (action item)))
 
-;; ostatus
-
-(deffilter #'actions.subscription/ostatus :http
-  [action request]
-  (action))
-
 ;; ostatussub
 
 (deffilter #'actions.subscription/ostatussub :http

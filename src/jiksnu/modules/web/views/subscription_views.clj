@@ -33,11 +33,6 @@
                (pagination-links page)
                (sections.subscription/subscriptions-section items page))])})
 
-(defview #'ostatus :html
-  [request arg]
-  {:body ""
-   :template false})
-
 (defview #'ostatussub-submit :html
   [request subscription]
   (redirect "/" "The request has been sent"))
