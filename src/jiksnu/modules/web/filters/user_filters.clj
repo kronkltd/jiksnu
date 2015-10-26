@@ -15,33 +15,6 @@
         user (model.user/fetch-by-id id)]
     (action user params)))
 
-(deffilter #'actions.user/create :http
-  [action request]
-  (let [{:keys [params]} request]
-    (action params)))
-
-(deffilter #'actions.user/delete :http
-  [action request]
-  (let [id (:id (:params request))]
-    (when-let [item (model.user/fetch-by-id id)]
-      (action item))))
-
-(deffilter #'actions.user/discover :http
-  [action request]
-  (let [{{id :id} :params} request]
-    (if-let [user (model.user/fetch-by-id id)]
-      (action user {:force true}))))
-
-(deffilter #'actions.user/index :http
-  [action request]
-  (action {} (merge {}
-                    (parse-page request)
-                    (parse-sorting request))))
-
-(deffilter #'actions.user/index :page
-  [action request]
-  (action))
-
 (deffilter #'actions.user/profile :http
   [action request]
   (if-let [user (session/current-user)]
