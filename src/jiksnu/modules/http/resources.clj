@@ -32,7 +32,7 @@
 
 (defn add-resource!
   [group-var resource-name resource]
-  (log/debugf "adding resource %s(%s)" group-var resource-name)
+  ;; (log/debugf "adding resource %s(%s)" group-var resource-name)
   (dosync
    (alter (get-resources group-var) assoc resource-name resource)))
 
