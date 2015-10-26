@@ -113,7 +113,7 @@
 
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
-  (js/console.log "Loading NavBarController")
+  ;; (js/console.log "Loading NavBarController")
   (aset $scope "loaded" false)
   (helpers/setup-hotkeys hotkeys $state)
 
@@ -121,7 +121,7 @@
            (fn []  (.-data app))
            (fn [d]
              (when (.-loaded $scope)
-               (js/console.log "Running navbarcontroller watcher")
+               ;; (js/console.log "Running navbarcontroller watcher")
                (aset $scope "app" d)
                (-> (.getUser app)
                    (.then (fn [user] (! app.user user)))))))
@@ -131,12 +131,12 @@
 
   (-> (.fetchStatus app)
       (.then (fn []
-               (js/console.log "Status Loaded")
+               ;; (js/console.log "Status Loaded")
                (aset $scope "loaded" true)))))
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService]
-  (js/console.log "Loading New Post Controller")
+  ;; (js/console.log "Loading New Post Controller")
   (let [default-form {:source "web"
                       :privacy "public"
                       :title ""
@@ -157,13 +157,13 @@
                                    (.push streams id)))))
     (aset $scope "fetchStreams" (fn [] (-> (.getUser app)
                                           (.then (fn [user]
-                                                   (js/console.log "Got User" user)
+                                                   ;; (js/console.log "Got User" user)
                                                    (-> (.getStreams user)
                                                        (.then (fn [streams]
-                                                                (js/console.log "Got Streams" streams)
+                                                                ;; (js/console.log "Got Streams" streams)
                                                                 (! $scope.streams streams)))))))))
     (aset $scope "toggle"       (fn []
-                                  (js/console.debug "Toggling New Post form")
+                                  ;; (js/console.debug "Toggling New Post form")
                                   (! $scope.form.shown (not $scope.form.shown))
                                   (when (? $scope.form.shown)
                                     (.fetchStreams $scope))))
@@ -220,7 +220,7 @@
 
 (def.controller jiksnu.ShowConversationController
   [$scope $stateParams Conversations app]
-  (js/console.log "loading ShowConversationController")
+  ;; (js/console.log "loading ShowConversationController")
 
   (aset $scope "loaded" false)
   (aset $scope "init" (fn [id]
@@ -230,10 +230,10 @@
                             (.then (fn [] (aset $scope "loaded" true))))))
 
   (aset $scope "fetchActivities" (fn [conversation]
-                                   (js/console.log "fetch activities")
+                                   ;; (js/console.log "fetch activities")
                                    (-> (.getActivities conversation)
                                        (.then  (fn [response]
-                                                 (js/console.log "Activities" response)
+                                                 ;; (js/console.log "Activities" response)
                                                  (aset $scope "activities" (.-body response)))))))
 
   (.init $scope (.-_id $stateParams)))
@@ -281,7 +281,7 @@
     (! $scope.init
        (fn [id]
          (! $scope.loaded false)
-         (js/console.info "binding user" id)
+         ;; (js/console.info "binding user" id)
          (.bindOne Users id $scope "user")
          (-> (.find Users id)
              (.then (fn [user] (! $scope.loaded true))))))
