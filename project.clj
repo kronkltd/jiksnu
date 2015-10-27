@@ -20,6 +20,7 @@
                  [com.novemberain/monger              "3.0.0"]
                  [com.novemberain/validateur          "2.4.2"]
                  [com.taoensso/timbre                 "4.1.4"]
+                 [fipp "0.6.3"]
                  [hiccup                              "1.0.5"]
                  [http-kit                            "2.1.19"]
                  [im.chit/gyr                         "0.3.1"]
@@ -27,6 +28,7 @@
                  [javax.servlet/javax.servlet-api     "3.1.0"]
                  [liberator                           "0.13"]
                  [manifold                            "0.1.0"]
+                 [mvxcvi/puget "0.9.2"]
                  [net.kronkltd/clj-gravatar           "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-command         "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core            "0.1.0-SNAPSHOT"

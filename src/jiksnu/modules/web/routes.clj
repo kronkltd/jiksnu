@@ -51,7 +51,8 @@
       wrap-file-info
       wrap-content-type
       wrap-not-modified
-      logger.timbre/wrap-with-logger))
+      ;; logger.timbre/wrap-with-logger
+      ))
 
 (helpers/load-pages! 'jiksnu.modules.web.routes.pages)
 (helpers/load-sub-pages! 'jiksnu.modules.web.routes.pages)
