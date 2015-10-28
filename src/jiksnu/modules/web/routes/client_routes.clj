@@ -41,7 +41,7 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :exists? (fn [ctx]
-             (let [params (:authorization-parts (:request ctx))
+             (let [params (:authorization-parts (:params (:request ctx)))
                    {:keys [_id secret]} (actions.access-token/get-access-token params)]
                {:body (format "oauth_token=%s&oauth_token_secret=%s" _id secret)}))
   :post! (fn [ctx]
