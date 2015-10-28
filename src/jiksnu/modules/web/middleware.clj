@@ -63,14 +63,14 @@
 
 (defn parse-authorization-header
   [header]
-  (let [[type & parts] (string/split header #" ")]
-    (let [parts (->> parts
-                     (map (fn [part]
-                            (let [[k v] (string/split part #"=")
-                                  v (string/replace v #"\"([^\"]+)\",?" "$1")]
-                              [k v])))
-                     (into {}))]
-      [type parts])))
+  (let [[type & parts] (string/split header #" ")
+        parts (->> parts
+                   (map (fn [part]
+                          (let [[k v] (string/split part #"=")
+                                v (string/replace v #"\"([^\"]+)\",?" "$1")]
+                            [k v])))
+                   (into {}))]
+    [type parts]))
 
 (defn wrap-authorization-header
   [handler]

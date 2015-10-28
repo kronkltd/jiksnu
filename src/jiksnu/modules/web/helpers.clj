@@ -57,7 +57,8 @@
 (defn load-group
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
-    (log/debug (str "Loading routes for: " route-sym))
+    (log/with-context {:sym route-sym}
+      (log/debug "Loading routes"))
 
     (try
       (require route-sym)
@@ -147,8 +148,9 @@
   (let [action-ns (:ns r)]
     (if-let [action (ns-resolve action-ns 'index)]
       (merge {:allowed-methods [:get :post :delete]
-              :exists? (fn exists? [ctx]
-                         (log/debug (str "Page resource: " action-ns))
+              :exists? (fn [ctx]
+                         (log/with-context {:ns action-ns}
+                           (log/debug "Page resource"))
                          (if-let [f (var-get action)]
                            [true {:data (f)}]))
               :count (fn [_] 4)}
