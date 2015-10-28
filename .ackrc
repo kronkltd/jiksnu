@@ -1,4 +1,5 @@
 --ignore-dir=checkouts
+--ignore-dir=config
 --ignore-dir=cookbooks
 --ignore-dir=features
 --ignore-dir=logs
@@ -9,8 +10,7 @@
 --ignore-dir=roles
 --ignore-dir=tmp
 --ignore-file=is:Cheffile.lock
+--ignore-file=is:pom.xml
 --ignore-file=is:TAGS
 --ignore-file=is:timbre-spit.log
---ignore-file=is:pom.xml
---ignore-dir=config
-
+--ignore-file=is:vagrant.log
