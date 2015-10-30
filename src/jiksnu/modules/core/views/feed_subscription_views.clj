@@ -13,7 +13,3 @@
                          :items (map :_id items)})]
     {:body {:action "page-updated"
             :body response}}))
-
-(defview #'actions.feed-subscription/show :model
-  [request activity]
-  {:body (show-section activity)})

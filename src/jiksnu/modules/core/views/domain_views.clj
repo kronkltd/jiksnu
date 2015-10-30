@@ -13,19 +13,3 @@
                          :items (map :_id items)})]
     {:body {:action "page-updated"
             :body response}}))
-
-(defview #'actions.domain/show :jrd
-  [request domain]
-  {:body (show-section domain)})
-
-(defview #'actions.domain/show :model
-  [request domain]
-  {:body (show-section domain)})
-
-(defview #'actions.domain/show :xml
-  [request domain]
-  {:body (show-section domain)})
-
-(defview #'actions.domain/show :xrd
-  [request domain]
-  {:body (show-section domain)})

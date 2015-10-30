@@ -197,6 +197,7 @@
                        (when-let [domain-name (util/get-domain-name (:_id params))]
                          (assoc params :domain domain-name))
                        (throw+ "Could not determine domain name"))]
+
         (if (:username params)
           params
           (let [params (discover-user-xrd params options)]

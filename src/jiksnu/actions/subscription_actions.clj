@@ -151,12 +151,12 @@
   (let [{:keys [verb]} activity]
     (condp = verb
       "follow"
-      (do (log/info "follow action")
+      (do (timbre/info "follow action")
           (let [actor (model.user/fetch-by-id (:author activity))
                 target (model.user/fetch-by-id (:id (:object activity)))]
             (subscribe actor target)))
       "unfollow"
-      (do (log/info "follow action")
+      (do (timbre/info "follow action")
           (let [actor (model.user/fetch-by-id (:author activity))
                 target (model.user/fetch-by-id (:id (:object activity)))]
             (unsubscribe actor target)))

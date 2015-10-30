@@ -3,10 +3,6 @@
             [ciste.sections.default :refer [index-section show-section]]
             [jiksnu.actions.activity-actions :as actions.activity]))
 
-(defview #'actions.activity/delete :model
-  [request activity]
-  {:body (show-section activity)})
-
 (defview #'actions.activity/fetch-by-conversation :page
   [request response]
   (let [items (:items response)
@@ -41,13 +37,3 @@
     [:author_url (:author_url m)]
     [:url (:url m)]
     [:html (:html m)]]})
-
-;; show
-
-(defview #'actions.activity/show :clj
-  [request activity]
-  {:body activity})
-
-(defview #'actions.activity/show :model
-  [request activity]
-  {:body (show-section activity)})
