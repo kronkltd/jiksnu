@@ -31,7 +31,7 @@
                    :hostname (force (:hostname_ data))}]
      ;; (println "")
      ;; (println "")
-     (->> (timbre/spy :info out-data)
+     (->> out-data
           (map (fn [[k v]] (when v [k v])))
           (into {})
           ;; puget/cprint
@@ -47,14 +47,16 @@
     :ns-blacklist []
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
-    :output-fn json-formatter
+    ;; :output-fn json-formatter
     :appenders
     {
      ;; :json json-appender
      ;; :logstash (timbre-json-appender "192.168.1.151" 4660)
      ;; :logstash sr/logstash-appender
-     :spit (spit-appender)
-     :println (println-appender {:stream :auto})
+     :spit (assoc (spit-appender) :output-fn json-formatter)
+     :println (assoc (println-appender {:stream :auto})
+                     :min-level :info
+                     )
      }
     :shared-appender-config {:logstash {:port 4660 :logstash "192.168.1.151"}}})
   (timbre/with-context {:foo "bar"}
