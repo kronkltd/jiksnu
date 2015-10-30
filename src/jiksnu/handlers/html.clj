@@ -1,6 +1,6 @@
 (ns jiksnu.handlers.html
   (:require [clj-time.core :as time]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
@@ -9,7 +9,7 @@
 
 (defmethod actions.resource/process-response-content "text/html"
   [content-type item response]
-  (log/debug "parsing html content")
+  (timbre/debug "parsing html content")
   (let [tree (model.resource/response->tree response)]
     (let [properties (model.resource/get-meta-properties tree)]
       (model.resource/set-field! item :properties properties))

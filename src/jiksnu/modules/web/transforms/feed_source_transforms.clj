@@ -1,5 +1,4 @@
-(ns jiksnu.modules.web.transforms.feed-source-transforms
-  (:require [taoensso.timbre :as log]))
+(ns jiksnu.modules.web.transforms.feed-source-transforms)
 
 (defn set-hub
   [item]

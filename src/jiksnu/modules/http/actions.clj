@@ -5,7 +5,7 @@
             [ciste.routes :refer [resolve-routes]]
             [clojure.core.incubator :refer [dissoc-in]]
             [clojure.data.json :as json]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.channels :as ch]
             [jiksnu.handlers :as handler]
@@ -27,7 +27,7 @@
 
 (defn transform-activities
   [connection-id activity]
-  (log/info "Transforming activity" activity)
+  (timbre/info "Transforming activity" activity)
   (json/json-str {:action "model-updated"
                   :connection-id connection-id
                   :type "activity"
@@ -44,7 +44,7 @@
   [channel status message]
   (let [user-id (:_id (:user status))
         connection-id (:connection status)]
-    (log/info "closed connection" user-id connection-id)
+    (timbre/info "closed connection" user-id connection-id)
     (dosync
      (alter connections #(dissoc-in % [user-id connection-id])))))
 
@@ -63,7 +63,7 @@
         status {:user user-id :connection connection-id}
         response-channel (s/stream)]
 
-    (log/info "Websocket connection opened" (prn-str status))
+    (timbre/info "Websocket connection opened" (prn-str status))
 
     (dosync
      (alter connections #(assoc-in % [user-id connection-id] response-channel)))

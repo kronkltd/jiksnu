@@ -17,7 +17,8 @@
   ([opts data]
    (let [{:keys [instant level ?err_ varargs_
                  output-fn config appender]} data
-         out-data {:err (force ?err_)
+         out-data {
+                   ;; :err (force ?err_)
                    :level level
                    :file (:?file data)
                    :instant instant
@@ -30,12 +31,11 @@
                    :hostname (force (:hostname_ data))}]
      ;; (println "")
      ;; (println "")
-     (->> out-data
+     (->> (timbre/spy :info out-data)
           (map (fn [[k v]] (when v [k v])))
           (into {})
           ;; puget/cprint
-          json/json-str
-          ))))
+          json/json-str))))
 
 (defn start
   []

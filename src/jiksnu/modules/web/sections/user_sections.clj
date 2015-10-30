@@ -2,7 +2,7 @@
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section title show-section edit-button link-to index-line
                                             show-section-minimal update-button index-block]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]

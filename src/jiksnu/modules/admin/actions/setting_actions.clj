@@ -1,14 +1,12 @@
 (ns jiksnu.modules.admin.actions.setting-actions
   (:require [ciste.config :refer [set-config! write-config!]]
-            [ciste.core :refer [defaction]]
-            [taoensso.timbre :as log]
             [jiksnu.session :as session]))
 
-(defaction edit-page
+(defn edit-page
   []
   (session/is-admin?))
 
-(defaction update-settings
+(defn update-settings
   [params]
   (let [site-name (get params "site.name")
         domain (:domain params)

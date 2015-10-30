@@ -2,7 +2,7 @@
   (:require [cemerick.friend :as friend]
             [clojure.data.json :as json]
             [clojure.java.io :as io]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [clojure.tools.reader.edn :as edn]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -28,7 +28,7 @@
   (try
     (ns-resolve route-sym fn-sym)
     (catch Exception ex
-      (log/error ex))))
+      (timbre/error ex))))
 
 (defn load-pages!
   [route-sym]
@@ -57,8 +57,8 @@
 (defn load-group
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
-    (log/with-context {:sym route-sym}
-      (log/debug "Loading routes"))
+    (timbre/with-context {:sym route-sym}
+      (timbre/debug "Loading routes"))
 
     (try
       (require route-sym)
@@ -67,7 +67,7 @@
       (trigger-on-loaded! route-sym)
       (load-routes! route-sym)
       (catch Exception ex
-        #_(log/error ex)
+        #_(timbre/error ex)
         #_(throw+ ex)))))
 
 (defn load-routes
@@ -77,7 +77,7 @@
 
 (defn make-matchers
   [handlers]
-  (log/debug "making matchers")
+  (timbre/debug "making matchers")
   (map
    (fn [[matcher action]]
      (let [o (merge
@@ -126,7 +126,7 @@
 
 (defn handle-ok
   [ctx]
-  (log/info "Handling ok")
+  (timbre/info "Handling ok")
   (condp = (get-in ctx [:representation :media-type])
     (types :html)
     (index (:request ctx))
@@ -149,8 +149,8 @@
     (if-let [action (ns-resolve action-ns 'index)]
       (merge {:allowed-methods [:get :post :delete]
               :exists? (fn [ctx]
-                         (log/with-context {:ns action-ns}
-                           (log/debug "Page resource"))
+                         (timbre/with-context {:ns action-ns}
+                           (timbre/debug "Page resource"))
                          (if-let [f (var-get action)]
                            [true {:data (f)}]))
               :count (fn [_] 4)}

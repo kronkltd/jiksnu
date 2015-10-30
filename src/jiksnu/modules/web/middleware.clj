@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.middleware
   (:require [ciste.config :refer [config]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
             [jiksnu.model.access-token :as model.access-token]
@@ -88,7 +88,7 @@
                                                    model.access-token/fetch-by-id)]
                                     (assoc request :access-token access-token)
                                     (do
-                                      (log/warn "no access token")
+                                      (timbre/warn "no access token")
                                       request))]
                       (assoc request :authorization-client client))
                     request)]
@@ -119,7 +119,7 @@
              :body st})
           (catch Throwable ex
             ;; FIXME: handle error
-            (log/fatalf ex "Error parsing exception: %s")))))))
+            (timbre/fatalf ex "Error parsing exception: %s")))))))
 
 (defn default-html-mode
   []

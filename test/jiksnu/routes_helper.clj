@@ -3,7 +3,7 @@
             [clj-factory.core :refer [factory fseq]]
             [clj-http.cookies :as cookies]
             [clojure.string :as string]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
@@ -22,7 +22,7 @@
       (-> handler (string/split #"/") first symbol require)
       ((resolve (symbol handler)) request)
       (catch Throwable ex
-        (log/error ex "error in response-for" ))))))
+        (timbre/error ex "error in response-for" ))))))
 
 (defn get-auth-cookie
   [username password]

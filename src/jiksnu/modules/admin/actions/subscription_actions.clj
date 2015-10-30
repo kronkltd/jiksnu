@@ -1,23 +1,19 @@
 (ns jiksnu.modules.admin.actions.subscription-actions
-  (:require [ciste.core :refer [defaction]]
-            [ciste.model :as cm]
-            [taoensso.timbre :as log]
+  (:require [ciste.model :as cm]
             [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions])
   (:import javax.security.sasl.AuthenticationException))
 
-(defaction create
+(defn create
   [params & options]
   (cm/implement))
 
-(defaction show
+(defn show
   [subscription]
   subscription)
 
-(defaction delete
+(defn delete
   [subscription]
   (actions.subscription/delete subscription))
 
@@ -25,6 +21,6 @@
   (templates.actions/make-indexer 'jiksnu.model.subscription))
 
 ;; requires admin
-(defaction index
+(defn index
   [& options]
   (apply index* options))

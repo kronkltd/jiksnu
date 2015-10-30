@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.views.feed-source-views
   (:require [ciste.views :refer [defview]]
-            [taoensso.timbre :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.modules.web.sections :refer [redirect]]))
 

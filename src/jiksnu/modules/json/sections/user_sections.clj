@@ -6,7 +6,6 @@
                                             update-button index-block
                                             index-section]]
             [clojure.string :as string]
-            [taoensso.timbre :as log]
             [hiccup.core :as h]
             [hiccup.form :as f]
             [inflections.core :as inf]

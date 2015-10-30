@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.routes.client-routes
-  (:require [taoensso.timbre :as log]
+  (:require [taoensso.timbre :as timbre]
             [jiksnu.actions.access-token-actions :as actions.access-token]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.oauth-actions :as actions.oauth]
@@ -47,10 +47,10 @@
                     {:keys [_id secret]} (actions.access-token/get-access-token params)]
                 {:body (format "oauth_token=%s&oauth_token_secret=%s" _id secret)})
               (catch Object ex
-                (log/error ex)
+                (timbre/error ex)
                 {:status 500})))
   :post! (fn [ctx]
-           (log/info "posting")))
+           (timbre/info "posting")))
 
 (defresource oauth :authorize
   :name "Authorize"

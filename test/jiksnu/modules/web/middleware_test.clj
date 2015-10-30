@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.middleware-test
-  (:require [taoensso.timbre :as log]
-            [jiksnu.modules.web.middleware :as m]
+  (:require [jiksnu.modules.web.middleware :as m]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))

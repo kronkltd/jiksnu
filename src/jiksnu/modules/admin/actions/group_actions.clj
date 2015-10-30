@@ -1,20 +1,18 @@
 (ns jiksnu.modules.admin.actions.group-actions
-  (:require [ciste.core :refer [defaction]]
-            [taoensso.timbre :as log]
-            [jiksnu.actions.group-actions :as actions.group]))
+  (:require [jiksnu.actions.group-actions :as actions.group]))
 
-(defaction index
+(defn index
   [& options]
   (apply actions.group/index options))
 
-(defaction create
+(defn create
   [params]
   (actions.group/create params))
 
-(defaction delete
+(defn delete
   [group]
   (actions.group/delete group))
 
-(defaction show
+(defn show
   [group]
   (actions.group/show group))

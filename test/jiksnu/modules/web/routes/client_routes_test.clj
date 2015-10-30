@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.routes.client-routes-test
   (:require [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
-            [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]

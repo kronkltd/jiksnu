@@ -1,5 +1,5 @@
 (ns jiksnu.modules.http.resources
-  (:require [taoensso.timbre :as log]
+  (:require [taoensso.timbre :as timbre]
             [octohipster.core :as octo]
             [octohipster.routes :as octo-routes]))
 
@@ -16,7 +16,7 @@
 
 (defn add-group!
   [site-var group-var]
-  (log/debugf "adding group %s %s" site-var group-var)
+  (timbre/debugf "adding group %s %s" site-var group-var)
   (dosync
    (alter (get-groups site-var) conj group-var)))
 
@@ -32,7 +32,7 @@
 
 (defn add-resource!
   [group-var resource-name resource]
-  ;; (log/debugf "adding resource %s(%s)" group-var resource-name)
+  ;; (timbre/debugf "adding resource %s(%s)" group-var resource-name)
   (dosync
    (alter (get-resources group-var) assoc resource-name resource)))
 
@@ -46,14 +46,14 @@
   (add-watch
    resources
    :site (fn [k r os ns]
-           (log/debug "refreshing site")
+           (timbre/debug "refreshing site")
            (f))))
 
 (defn update-groups
   [groups]
   (map
    (fn [gvar]
-     (log/debug (str "Processing Group: " gvar))
+     (timbre/debug (str "Processing Group: " gvar))
      (let [options (var-get gvar)
            group-resources (map val @(get-resources gvar))
            options (assoc options :resources group-resources)]
@@ -62,7 +62,7 @@
 
 (defmacro defresource
   [group resource-name & {:as options}]
-  (log/debugf "defining resource: %s(%s) => %s" group resource-name options)
+  (timbre/debugf "defining resource: %s(%s) => %s" group resource-name options)
   `(add-resource! (var ~group) ~resource-name (octo/resource ~(assoc options :name resource-name))))
 
 (defmacro defgroup
@@ -89,7 +89,7 @@
        (def ~init-sym (fn []
                         (let [groups# (update-groups @~group-sym)
                               body# (assoc ~options :groups groups#)]
-                          (log/debugf "Creating Site. Groups %s" (count groups#))
+                          (timbre/debugf "Creating Site. Groups %s" (count groups#))
                           (let [routes# (octo-routes/routes body#)]
                             (alter-var-root (var ~route-sym) (fn [_#] routes#))))))
        (~init-sym))))

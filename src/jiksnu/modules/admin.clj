@@ -1,7 +1,6 @@
 (ns jiksnu.modules.admin
   (:require [ciste.loader :as loader
              :refer [defhandler defmodule]]
-            [taoensso.timbre :as log]
             [jiksnu.registry :as registry]
             [jiksnu.util :as util]))
 

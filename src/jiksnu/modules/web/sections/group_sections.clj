@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.sections.group-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [link-to]]
-            [taoensso.timbre :as log])
+            [taoensso.timbre :as timbre])
   (:import jiksnu.model.Group))
 
 (defsection link-to [Group :html]

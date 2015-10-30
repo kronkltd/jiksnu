@@ -2,14 +2,12 @@
   (:require [ciste.config :refer [config]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri index-section show-section]]
-            [taoensso.timbre :as log]
             [jiksnu.model.activity :as model.activity])
   (:import jiksnu.model.Activity))
 
 (defn proxy-url
   [url]
-  "https://%s/api/proxy/PROXYID"
-  )
+  "https://%s/api/proxy/PROXYID")
 
 (defsection index-section [Activity :as]
   [activities page]
@@ -65,34 +63,22 @@
             (:tags activity))
      ;; "published" (:published object)
      ;; "updated" (:updated object)
-     }
-
-    )
-
-  )
+     }))
 
 (defn format-to
   [activity]
-  [{
-     :id "http://activityschema.org/collection/public"
-     }]
-  )
+  [{ :id "http://activityschema.org/collection/public"}])
 
 (defn format-cc
   [activity]
-  [
-
-     ]
-  )
+  [])
 
 (defn format-generator
   [activity]
-  {
-   :displayName "Jiksnu" ;; TODO: name of site
+  {:displayName "Jiksnu" ;; TODO: name of site
    :objectType "service"
    ;; TODO: service stuff
-   }
-  )
+   })
 
 (defn format-links
   [activity]
@@ -101,8 +87,7 @@
 
 (defsection show-section [Activity :as]
   [activity & _]
-  (merge {
-          :verb (:verb activity)
+  (merge {:verb (:verb activity)
           :object (parse-object activity)
           :to (format-to activity)
           :cc (format-cc activity)
@@ -116,8 +101,6 @@
           :content (:content activity)
           ;; NB: Id is a uri
           :id (:id activity)
-
-
           :text (:content activity)
           :localId (:_id activity)
           :source (:source activity)}

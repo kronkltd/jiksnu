@@ -3,7 +3,6 @@
             [ciste.model :as cm]
             [ciste.sections.default :refer [uri]]
             [clj-webdriver.taxi :as webdriver]
-            [taoensso.timbre :as log]
             [jiksnu.action-helpers :refer [fetch-page fetch-page-browser page-names]]
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that]]))

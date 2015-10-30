@@ -1,5 +1,4 @@
-(ns jiksnu.modules.web.transforms.user-transforms
-  (:require [taoensso.timbre :as log]))
+(ns jiksnu.modules.web.transforms.user-transforms)
 
 (defn salmon-link
   [user]

@@ -1,7 +1,5 @@
 (ns jiksnu.modules.as
-  (:require [ciste.loader :as loader
-             :refer [defhandler defmodule]]
-            [taoensso.timbre :as log]
+  (:require [ciste.loader :as loader]
             [jiksnu.registry :as registry]
             [jiksnu.util :as util]))
 
@@ -14,6 +12,6 @@
   []
   (require-components))
 
-(defmodule "as"
+(loader/defmodule "as"
   :start start
   :deps ["jiksnu.modules.json"])

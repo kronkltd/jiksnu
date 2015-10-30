@@ -1,6 +1,6 @@
 (ns jiksnu.modules.json.views.auth-views
   (:require [ciste.views :refer [defview]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.modules.web.sections.auth-sections :as sections.auth]))
 

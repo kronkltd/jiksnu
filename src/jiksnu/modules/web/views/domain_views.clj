@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.views.domain-views
   (:require [ciste.views :refer [defview]]
-            [taoensso.timbre :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.modules.web.sections :refer [redirect]]))
 

@@ -2,7 +2,7 @@
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section title index-line index-block
                                             index-line link-to update-button]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]

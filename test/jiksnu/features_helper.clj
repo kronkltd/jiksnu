@@ -6,7 +6,7 @@
             [clj-webdriver.core :as webdriver]
             [clj-webdriver.taxi :as taxi]
             [clojure.data.json :as json]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -27,11 +27,11 @@
 (defn after-hook
   []
   (try+
-   (log/info "after")
+   (timbre/info "after")
    (ciste.runner/stop-application!)
    (taxi/close)
    (catch Throwable ex
-     (log/error ex))))
+     (timbre/error ex))))
 
 (defn before-hook
   []

@@ -10,8 +10,6 @@
 (use 'midje.sweet)
 (use 'jiksnu.referrant)
 (require '[jiksnu.model.activity :as model.activity])
-(require '[taoensso.timbre :as log])
-
 (alter-var-root #'cucumber.runtime.clj/-buildWorld
                 (fn [_]
                   (fn [_]

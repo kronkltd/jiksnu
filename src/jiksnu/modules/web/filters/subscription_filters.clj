@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.subscription-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
@@ -44,7 +44,7 @@
   [action request]
   (if-let [id (-> request :params :profile)]
     (action id)
-    (log/warn "profile param not found")))
+    (timbre/warn "profile param not found")))
 
 ;; show
 

@@ -3,7 +3,7 @@
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section add-form index-block index-line
                                             link-to uri]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.web.sections :refer [action-link control-line
                                                  dropdown-menu]]

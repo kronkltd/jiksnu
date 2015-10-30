@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.conversation-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]))

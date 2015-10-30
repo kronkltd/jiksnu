@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.stream-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]

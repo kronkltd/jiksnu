@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.feed-source-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]

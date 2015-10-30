@@ -1,7 +1,6 @@
 (ns jiksnu.modules.json.sections.group-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [uri index-block index-section]]
-            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity])
   (:import jiksnu.model.Group))
 

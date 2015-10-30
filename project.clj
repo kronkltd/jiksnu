@@ -27,7 +27,6 @@
                  [im.chit/purnam                      "0.5.2"]
                  [javax.servlet/javax.servlet-api     "3.1.0"]
                  [liberator                           "0.13"]
-                 [manifold                            "0.1.0"]
                  [mvxcvi/puget "0.9.2"]
                  [net.kronkltd/clj-gravatar           "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-command         "0.1.0-SNAPSHOT"]

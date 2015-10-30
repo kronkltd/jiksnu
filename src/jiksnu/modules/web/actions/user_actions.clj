@@ -3,7 +3,6 @@
             [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
             [clojure.data.json :as json]
-            [taoensso.timbre :as log]
             [jiksnu.actions :refer [invoke-action]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.conversation-routes
   (:require [clojure.data.json :as json]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation]
             jiksnu.modules.core.views.activity-views
@@ -83,7 +83,7 @@
   :presenter (partial into {})
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)
-                   conversation (model.conversation/fetch-by-id id)]
+                   conversation (timbre/spy :info (model.conversation/fetch-by-id (timbre/spy :info id)))]
                {:data conversation}))
   ;; :delete! #'actions.conversation/delete
   ;; :put!    #'actions.conversation/update-record

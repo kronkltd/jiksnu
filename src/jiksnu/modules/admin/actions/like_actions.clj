@@ -1,12 +1,10 @@
 (ns jiksnu.modules.admin.actions.like-actions
-  (:require [ciste.core :refer [defaction]]
-            [taoensso.timbre :as log]
-            [jiksnu.actions.like-actions :as actions.like]))
+  (:require [jiksnu.actions.like-actions :as actions.like]))
 
-(defaction index
+(defn index
   [& options]
   (apply actions.like/index options))
 
-(defaction delete
+(defn delete
   [& options]
   (apply actions.like/delete options))

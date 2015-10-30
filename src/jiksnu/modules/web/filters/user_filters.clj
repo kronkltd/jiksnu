@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.user-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]
@@ -18,7 +18,7 @@
 (deffilter #'actions.user/profile :http
   [action request]
   (if-let [user (session/current-user)]
-    user (log/error "no user")))
+    user (timbre/error "no user")))
 
 (deffilter #'actions.user/register :http
   [action {{:keys [username password confirm-password] :as params} :params}]

@@ -1,8 +1,7 @@
 (ns jiksnu.modules.web.views.pubsub-views
-  (:use [ciste.config :only [config]]
-        [ciste.views :only [defview]]
-        [jiksnu.actions.pubsub-actions :only [hub-dispatch]])
-  (:require [taoensso.timbre :as log]
+  (:require [ciste.config :refer [config]]
+            [ciste.views :refer [defview]]
+            [jiksnu.actions.pubsub-actions :refer [hub-dispatch]]
             [jiksnu.model.user :as model.user]))
 
 ;; (defview #'callback :html

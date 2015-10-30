@@ -2,7 +2,7 @@
   (:require [cemerick.friend :as friend]
             [cemerick.friend.workflows :as workflows]
             [clojure.data.json :as json]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [compojure.core :refer [GET routes]]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -43,7 +43,7 @@
        (-> #'core/jiksnu-routes
            ;; ((fn [handler]
            ;;    (fn [request]
-           ;;      (log/spy :info (handler (log/spy :info request))))))
+           ;;      (timbre/spy :info (handler (timbre/spy :info request))))))
            (wrap-trace :ui)
            jm/wrap-authorization-header
            (friend/authenticate auth-config)

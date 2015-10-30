@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.handlers
   (:require [ciste.loader :refer [defhandler]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.handlers :as handler]
             ;; jiksnu.handlers.atom
             jiksnu.handlers.html
@@ -23,7 +23,7 @@
 
 (defn init-handlers
   []
-  ;; (log/info "initializing handlers")
+  ;; (timbre/info "initializing handlers")
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handler/event)
   ;; (l/receive-all (trace/select-probes "*:created")   #'handler/created)
   ;; (l/receive-all (trace/select-probes "*:field:set")  #'handler/field-set)

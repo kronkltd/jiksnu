@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.sections.activity-sections-test
   (:require [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [show-section uri]]
-            [taoensso.timbre :as log]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             jiksnu.modules.web.sections.activity-sections

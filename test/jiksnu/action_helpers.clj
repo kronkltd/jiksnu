@@ -1,7 +1,7 @@
 (ns jiksnu.action-helpers
   (:require [clj-http.client :as client]
             [clj-webdriver.taxi :refer [to]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [manifold.stream :as s]
             [manifold.time :as time]
             [midje.sweet :refer :all]
@@ -78,7 +78,7 @@
 
 (defn log-response
   []
-  (log/info (get-body)))
+  (timbre/info (get-body)))
 
 (defn be-at-the-page
   [page-name]

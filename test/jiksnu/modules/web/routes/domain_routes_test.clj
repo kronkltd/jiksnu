@@ -4,7 +4,6 @@
             [ciste.sections.default :refer [uri]]
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
-            [taoensso.timbre :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]

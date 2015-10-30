@@ -2,7 +2,7 @@
   (:require [ciste.core :refer [apply-template]]
             [ciste.config :refer [config environment]]
             [clojure.string :as string]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [hiccup.core :as h]
             [hiccup.page :as p]
             [jiksnu.actions.site-actions :as actions.site]

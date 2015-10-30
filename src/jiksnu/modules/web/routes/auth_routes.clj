@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.auth-routes
   (:require [cemerick.friend :as friend]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.auth-actions :as auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
@@ -75,7 +75,7 @@
   :available-media-types ["application/json"]
   :methods {:post {:summary "Do Logout"}}
   :post! (fn [ctx]
-           (log/info "logout handler")
+           (timbre/info "logout handler")
            true)
   :handle-created (fn [ctx]
                     (ring-response

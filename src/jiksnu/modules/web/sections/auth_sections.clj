@@ -2,7 +2,7 @@
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section add-form index-block
                                            index-line link-to]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]]
             [jiksnu.modules.web.sections :refer [bind-to control-line]]

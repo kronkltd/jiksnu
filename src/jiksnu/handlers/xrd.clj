@@ -1,6 +1,5 @@
 (ns jiksnu.handlers.xrd
   (:require [ciste.model :as cm]
-            [taoensso.timbre :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.webfinger :as model.webfinger]))
 

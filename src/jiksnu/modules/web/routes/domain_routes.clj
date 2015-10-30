@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.domain-routes
   (:require [clojure.data.json :as json]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
@@ -83,5 +83,5 @@
   :allowed-methods [:get]
   :available-media-types ["application/json"]
   :handle-ok (fn [ctx]
-               (log/info "host meta")
+               (timbre/info "host meta")
                (actions.webfinger/host-meta (actions.domain/current-domain))))

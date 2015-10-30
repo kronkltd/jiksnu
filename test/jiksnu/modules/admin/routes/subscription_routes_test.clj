@@ -1,6 +1,5 @@
 (ns jiksnu.modules.admin.routes.subscription-routes-test
-  (:require [taoensso.timbre :as log]
-            [clojurewerkz.support.http.statuses :as status]
+  (:require [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-admin response-for]]

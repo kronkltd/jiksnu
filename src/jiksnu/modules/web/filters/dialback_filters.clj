@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.dialback-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.dialback-actions :as actions.dialback]
             [jiksnu.model.dialback :as model.dialback]))
 

@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.group-routes
   (:require [clojure.data.json :as json]
-            [taoensso.timbre :as log]
             [jiksnu.actions.conversation-actions :as conversation]
             [jiksnu.actions.group-actions :as group]
             [jiksnu.model.group :as model.group]

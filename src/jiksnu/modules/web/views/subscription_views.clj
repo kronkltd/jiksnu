@@ -1,12 +1,11 @@
 (ns jiksnu.modules.web.views.subscription-views
-  (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [uri]]
-        jiksnu.actions.subscription-actions
-        [jiksnu.modules.web.sections :only [bind-to with-sub-page
-                                            redirect pagination-links]])
-  (:require [taoensso.timbre :as log]
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [uri]]
+            jiksnu.actions.subscription-actions
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.modules.core.sections.subscription-sections :as sections.subscription])
+            [jiksnu.modules.core.sections.subscription-sections :as sections.subscription]
+            [jiksnu.modules.web.sections :refer [bind-to with-sub-page
+                                                 redirect pagination-links]])
   (:import jiksnu.model.Subscription))
 
 (defview #'delete :html

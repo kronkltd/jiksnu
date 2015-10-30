@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.views.activity-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [uri]]
-            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.session :as session]
             [jiksnu.modules.web.sections :refer [redirect]]))

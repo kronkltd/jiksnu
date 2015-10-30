@@ -1,15 +1,12 @@
 (ns jiksnu.modules.admin.actions.feed-source-actions
-  (:require [ciste.core :refer [defaction]]
-            [taoensso.timbre :as log]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.model :as model]
+  (:require [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.templates.actions :as templates.actions]))
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.feed-source))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
@@ -17,22 +14,22 @@
   [source]
   (actions.feed-source/delete source))
 
-(defaction unsubscribe
+(defn unsubscribe
   [& options]
   (apply actions.feed-source/unsubscribe options))
 
-(defaction fetch-updates
+(defn fetch-updates
   [& args]
   (apply actions.feed-source/update-record args))
 
-(defaction add-watcher
+(defn add-watcher
   [& options]
   (apply actions.feed-source/add-watcher options))
 
-(defaction remove-watcher
+(defn remove-watcher
   [& options]
   (apply actions.feed-source/remove-watcher options))
 
-(defaction show
+(defn show
   [source]
   source)

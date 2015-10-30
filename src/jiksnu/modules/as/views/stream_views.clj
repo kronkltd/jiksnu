@@ -1,7 +1,6 @@
 (ns jiksnu.modules.as.views.stream-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section index-section]]
-            [taoensso.timbre :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]))
 

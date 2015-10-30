@@ -1,8 +1,7 @@
 (ns jiksnu.modules.admin.views.feed-subscription-views
   (:require [ciste.views :refer [defview]]
-            [taoensso.timbre :as log]
             [jiksnu.modules.admin.actions.feed-subscription-actions :as actions.feed-subscription]
-            [jiksnu.modules.core.sections :refer [admin-index-section format-page-info]]))
+            [jiksnu.modules.core.sections :refer [admin-index-section]]))
 
 (defview #'actions.feed-subscription/index :html
   [request {:keys [items] :as page}]

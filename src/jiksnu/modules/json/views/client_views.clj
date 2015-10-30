@@ -3,7 +3,7 @@
             [ciste.views :refer [defview]]
             [clj-time.coerce :as coerce]
             [clojure.string :as string]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.namespace :as ns]
             [jiksnu.model.webfinger :as model.webfinger]

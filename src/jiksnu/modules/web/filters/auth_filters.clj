@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.auth-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.authentication-mechanism :as model.auth]

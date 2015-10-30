@@ -1,12 +1,9 @@
 (ns jiksnu.modules.as.sections.user-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri show-section]]
-            [taoensso.timbre :as log]
             [jiksnu.model.user :as model.user]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.User))
-
-(log/info "loading AS user sections")
 
 ;; show-section
 
@@ -31,34 +28,23 @@
         followers-url (format followers-pattern domain username)
         following-url (format following-pattern domain username)
         favorites-url (format favorites-pattern domain username)
-        list-url      (format lists-pattern     domain username)
-        ]
+        list-url      (format lists-pattern     domain username)]
     (array-map
      :preferredUsername username
      :url url
      :displayName (:name user)
-     :links {
-             :self            {:href profile-url}
+     :links {:self            {:href profile-url}
              :activity-inbox  {:href inbox-url}
-             :activity-outbox {:href outbox-url}
-             }
+             :activity-outbox {:href outbox-url}}
      :objectType "person"
-     :followers {
-                 :url followers-url
-                 :totalItems 0
-                 }
-     :following {
-                 :url following-url
-                 :totalItems 0
-                 }
-     :favorites {
-                 :url favorites-url
-                 :totalItems 0
-                 }
-     :lists {
-             :url list-url
-             :totalItems 0
-             }
+     :followers {:url followers-url
+                 :totalItems 0}
+     :following {:url following-url
+                 :totalItems 0}
+     :favorites {:url favorites-url
+                 :totalItems 0}
+     :lists {:url list-url
+             :totalItems 0}
      ;; :image [{:url avatar-url
      ;;          :rel "avatar"
      ;;          :type "image/jpeg"
@@ -70,17 +56,8 @@
      ;;          }]
      :updated (:updated user)
      :id (:_id user)
-
-
      ;; TODO: How are these determined?
      :liked false
-     :pump_io {
-               :shared false
-               :followed false
-               }
-
-
-     :type "person"
-
-     )
-    ))
+     :pump_io {:shared false
+               :followed false}
+     :type "person")))

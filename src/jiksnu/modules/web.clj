@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web
   (:require [ciste.loader :as loader
              :refer [defhandler defmodule]]
-            [taoensso.timbre :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.modules.http.resources :refer [init-site-reloading!]]
             jiksnu.modules.web.formats
             [jiksnu.modules.web.handlers :as handlers]
@@ -19,7 +19,7 @@
 
 (defn start
   []
-  ;; (log/info "starting web")
+  ;; (timbre/info "starting web")
   (handlers/init-handlers)
   (require-components)
   (init-site-reloading! jiksnu-init)

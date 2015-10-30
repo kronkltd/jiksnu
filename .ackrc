@@ -5,3 +5,4 @@
 --ignore-dir=tmp
 --ignore-file=is:Cheffile.lock
 --ignore-file=is:TAGS
+--ignore-file=is:timbre-spit.log
