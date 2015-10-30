@@ -1,8 +1,16 @@
 --ignore-dir=checkouts
 --ignore-dir=cookbooks
+--ignore-dir=features
 --ignore-dir=logs
+--ignore-dir=node_modules
+--ignore-dir=site-ccokbooks
 --ignore-dir=target
+--ignore-dir=resources/templates
+--ignore-dir=roles
 --ignore-dir=tmp
 --ignore-file=is:Cheffile.lock
 --ignore-file=is:TAGS
 --ignore-file=is:timbre-spit.log
+--ignore-file=is:pom.xml
+--ignore-dir=config
+
