@@ -40,7 +40,11 @@
   (timbre/set-config!
    {:level :debug
     :ns-whitelist []
-    :ns-blacklist []
+    :ns-blacklist [
+                   "ciste.loader"
+                   "ring.timbre.logger"
+                   "jiksnu.modules.http.actions"
+                   ]
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
     ;; :output-fn json-formatter
