@@ -16,7 +16,8 @@
             [jiksnu.util :as util]
             [manifold.bus :as bus]
             [manifold.stream :as stream]
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre]))
 
 (defn can-delete?
   [item]
@@ -211,7 +212,7 @@
              {:author_name (:name author)
               :author_url (:uri author)}))))
 
-(defaction fetch-by-conversation
+(defn fetch-by-conversation
   [conversation & [options]]
   (index {:conversation (:_id conversation)} options))
 
