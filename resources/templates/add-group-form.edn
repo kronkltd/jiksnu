@@ -1,14 +1,25 @@
 [:form.well.form-horizontal {:method "post" :action "/main/groups"}
  [:fieldset
   [:legend "Add a Group"]
-  (control-line "Nickname" "nickname" "text")
-  (control-line "Full Name" "fullname" "text")
-  (control-line "Homepage" "homepage" "text")
+  [:div.control-group
+   [:label {:for "nickname"} "Nickname"]
+   [:div.controls
+    [:input {:type "text" :ng-model "nickname"}]]]
+  [:div.control-group
+   [:label {:for "fullname"} "Full Name"]
+   [:div.controls
+    [:input {:type "text" :ng-model "fullname"}]]]
+  [:div.control-group
+   [:label {:for "homepage"} "Homepage"]
+   [:div.controls
+    [:input {:type "text" :ng-model "homepage"}]]]
   [:div.control-group
    [:label {:for "description"} "Description"]
    [:div.controls
     [:textarea {:name "description"}]]]
-  (control-line "Location" "location" "text")
-  (control-line "Aliases" "aliases" "text")
+  [:div.control-group
+   [:label {:for "location"} "Location"]
+   [:div.controls
+    [:input {:type "text" :ng-model "location"}]]]
   [:div.controls
    [:input.btn.btn-primary {:type "submit" :value "Add"}]]]]

@@ -57,7 +57,7 @@
 (defn load-group
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
-    (timbre/with-context {:sym route-sym}
+    (timbre/with-context {:sym (str route-sym)}
       (timbre/debug "Loading routes"))
 
     (try
@@ -149,7 +149,7 @@
     (if-let [action (ns-resolve action-ns 'index)]
       (merge {:allowed-methods [:get :post :delete]
               :exists? (fn [ctx]
-                         (timbre/with-context {:ns action-ns}
+                         (timbre/with-context {:ns (str action-ns)}
                            (timbre/debug "Page resource"))
                          (if-let [f (var-get action)]
                            [true {:data (f)}]))
@@ -157,21 +157,23 @@
              (ciste-resource r))
       (throw+ "Could not resolve index action"))))
 
+(defn subpage-exists?
+  [{:keys [subpage target target-model]} ctx]
+  (timbre/debug "fetching subpage")
+  (when-let [item (if target
+                    (target ctx)
+                    (actions/get-model
+                     target-model
+                     (:_id (:route-params (:request ctx)))))]
+    {:data (actions/get-sub-page item subpage)}))
+
 (defn subpage-resource
   "route mixin for paths that operate on a subpage"
-  [{:keys [subpage target target-model]
-    :as resource}]
+  [resource]
   (-> resource
       ciste-resource
       (assoc :allowed-methods [:get :post :delete])
-      (assoc :exists?
-             (fn [ctx]
-               (when-let [item (if target
-                                 (target ctx)
-                                 (actions/get-model
-                                  target-model
-                                  (:_id (:route-params (:request ctx)))))]
-                 {:data (actions/get-sub-page item subpage)})))))
+      (assoc :exists? #(subpage-exists? resource %))))
 
 (defn angular-resource
   [r]

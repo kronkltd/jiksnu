@@ -45,14 +45,13 @@
            ;;    (fn [request]
            ;;      (timbre/spy :info (handler (timbre/spy :info request))))))
            (wrap-trace :ui)
-           jm/wrap-authorization-header
+           ;; jm/wrap-authorization-header
            (friend/authenticate auth-config)
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info
       wrap-content-type
       wrap-not-modified
-      ;; logger.timbre/wrap-with-logger
-      ))
+      logger.timbre/wrap-with-logger))
 
 (helpers/load-pages! 'jiksnu.modules.web.routes.pages)
 (helpers/load-sub-pages! 'jiksnu.modules.web.routes.pages)

@@ -5,49 +5,59 @@
                [jiksnu.macros :only [list-directive]]
                [purnam.core :only [! ? arr obj]]))
 
+(def.directive jiksnu.addGroupForm
+  []
+  #js
+  {:controller "NewGroupController"
+   :scope true
+   :templateUrl "/templates/add-group-form"})
+
 (def.directive jiksnu.addPostForm
   []
-  (obj
-   :controller "NewPostController"
+  #js
+  {:controller "NewPostController"
    :scope true
-   :templateUrl "/templates/add-post-form"))
+   :templateUrl "/templates/add-post-form"})
 
 (def.directive jiksnu.addStreamForm []
-  (obj))
+  #js
+  {:controller "NewStreamController"
+   :scope true
+   :templateUrl "/templates/add-stream-form"})
 
 (def.directive jiksnu.addWatcherForm []
   (obj))
 
 (def.directive jiksnu.displayAvatar
   []
-  (obj
-   :controller "DisplayAvatarController"
+  #js
+  {:controller "DisplayAvatarController"
    :link (fn [$scope element attrs]
            (.init $scope (.-id attrs))
            (.$watch $scope
                     #(.-id attrs)
                     #(.init $scope %)))
    :scope true
-   :templateUrl "/templates/display-avatar"))
+   :templateUrl "/templates/display-avatar"})
 
 (def.directive jiksnu.followButton
   []
-  (obj
-   :controller "FollowButtonController"
+  #js
+  {:controller "FollowButtonController"
    :scope (obj :item "=")
-   :templateUrl "/templates/follow-button"))
+   :templateUrl "/templates/follow-button"})
 
 (def.directive jiksnu.groupsWidget
   []
-  (obj
-   :scope true
-   :templateUrl "/templates/groups-widget"))
+  #js
+  {:scope true
+   :templateUrl "/templates/groups-widget"})
 
 (def.directive jiksnu.leftColumn []
-  (obj
-   :controller "LeftColumnController"
+  #js
+  {:controller "LeftColumnController"
    :scope true
-   :templateUrl "/templates/left-column-section"))
+   :templateUrl "/templates/left-column-section"})
 
 (list-directive "Followers" "followers")
 (list-directive "Following" "following")
@@ -55,23 +65,23 @@
 (list-directive "Streams" "streams")
 
 (def.directive jiksnu.navBar []
-  (obj
-   :controller "NavBarController"
+  #js
+  {:controller "NavBarController"
    :scope true
-   :templateUrl "/templates/navbar-section"))
+   :templateUrl "/templates/navbar-section"})
 
 (def.directive jiksnu.rightColumn []
-  (obj
-   :controller "RightColumnController"
+  #js
+  {:controller "RightColumnController"
    :scope true
-   :templateUrl "/templates/right-column-section"))
+   :templateUrl "/templates/right-column-section"})
 
 (def.directive jiksnu.showActivity
   []
-  (obj
-   :controller "ShowActivityController"
+  #js
+  {:controller "ShowActivityController"
    :scope (obj :id "@" :item "=")
-   :templateUrl "/templates/show-activity"))
+   :templateUrl "/templates/show-activity"})
 
 (def.directive jiksnu.showStreamMinimal
   []

@@ -81,10 +81,10 @@
   :available-formats [:json]
   :available-media-types ["application/json"]
   :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)
-                   conversation (timbre/spy :info (model.conversation/fetch-by-id (timbre/spy :info id)))]
-               {:data conversation}))
+  ;; :exists? (fn [ctx]
+  ;;            (let [id (-> ctx :request :route-params :_id)
+  ;;                  conversation (model.conversation/fetch-by-id id)]
+  ;;              {:data conversation}))
   ;; :delete! #'actions.conversation/delete
   ;; :put!    #'actions.conversation/update-record
   )

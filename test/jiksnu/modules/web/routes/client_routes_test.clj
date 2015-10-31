@@ -58,7 +58,7 @@
           ;; (:client_secret_expires_at body) => number?
           ))
 
-(fact "route: oauth/access-token :get"
+(future-fact "route: oauth/access-token :get"
   (fact "when given valid params"
     (let [client (mock/a-client-exists)
           request-token (mock/a-request-token-exists {:client client})

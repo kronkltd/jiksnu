@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.domain-routes-test
-  (:require [ciste.core :refer [with-context]]
-            [ciste.model :as cm]
+  (:require [ciste.model :as cm]
             [ciste.sections.default :refer [uri]]
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
