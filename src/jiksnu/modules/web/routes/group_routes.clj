@@ -40,6 +40,8 @@
 
 (defresource groups-api :collection
   :mixins [page-resource]
+  :schema {:type "object"
+           :properties {:nick {:type "string"}}}
   :available-formats [:json]
   :ns 'jiksnu.actions.group-actions)
 
