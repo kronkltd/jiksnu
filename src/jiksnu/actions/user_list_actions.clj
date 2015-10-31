@@ -1,6 +1,5 @@
 (ns jiksnu.actions.user-list-actions
-  (:require [ciste.core :refer [defaction]]
-            [jiksnu.model :as model]
+  (:require [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :refer [set-_id set-created-time
@@ -8,6 +7,6 @@
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.UserList))
 
-(defaction user-list
+(defn user-list
   [user]
   [user {:items []}])

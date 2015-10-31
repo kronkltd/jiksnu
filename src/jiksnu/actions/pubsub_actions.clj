@@ -1,6 +1,5 @@
 (ns jiksnu.actions.pubsub-actions
-  (:require [ciste.core :refer [defaction]]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+  (:require [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -31,12 +30,12 @@
       (throw+ "feed subscription is not valid"))
     (throw+ "Could not determine callback url")))
 
-(defaction verify-subscription-async
+(defn verify-subscription-async
   "asynchronous verification of hub subscription"
   [subscription params]
   (verify-subscribe-sync subscription params))
 
-(defaction subscribe
+(defn subscribe
   "Set up a remote subscription to a local source"
   [params]
   (let [subscription (actions.feed-subscription/subscription-request params)
@@ -45,7 +44,7 @@
                       verify-subscribe-sync)]
     (dispatch-fn subscription params)))
 
-(defaction unsubscribe
+(defn unsubscribe
   "Remove a remote subscription to a local source"
   [params]
   ;; TODO: This should be doing a fsub removal
@@ -54,7 +53,7 @@
     (actions.feed-source/unsubscribe subscription)
     (throw+ "subscription not found")))
 
-(defaction hub-dispatch
+(defn hub-dispatch
   "Handle pubsub requests against hub endpoint"
   [params]
   (condp = (:mode params)

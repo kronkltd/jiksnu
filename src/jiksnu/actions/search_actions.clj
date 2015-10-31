@@ -1,15 +1,14 @@
 (ns jiksnu.actions.search-actions
-  (:require [ciste.core :refer [defaction]]
-            [jiksnu.model :as model]))
+  (:require [jiksnu.model :as model]))
 
-(defaction perform-search
+(defn perform-search
   [options]
   [options []])
 
-(defaction os-people
+(defn os-people
   []
   nil)
 
-(defaction os-notice
+(defn os-notice
   []
   nil)

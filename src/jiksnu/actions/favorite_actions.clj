@@ -1,8 +1,6 @@
-(ns jiksnu.actions.favorite-actions
-  (:require [ciste.core :refer [defaction]]))
+(ns jiksnu.actions.favorite-actions)
 
-(defaction user-list
+(defn user-list
   [user]
   ;; TODO: implement
   [user {:items []}])
-

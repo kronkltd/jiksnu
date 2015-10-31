@@ -1,6 +1,5 @@
 (ns jiksnu.actions.like-actions
-  (:require [ciste.core :refer [defaction]]
-            [clj-time.core :as time]
+  (:require [clj-time.core :as time]
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
             [jiksnu.templates.actions :as templates.actions]
@@ -14,7 +13,7 @@
       transforms/set-created-time
       transforms/set-updated-time))
 
-(defaction create
+(defn create
   "create an activity"
   [params]
   (let [item (prepare-create params)]
@@ -24,7 +23,7 @@
   [request]
   (model.like/fetch-all {} {:limit 20}))
 
-(defaction delete
+(defn delete
   [like]
   (model.like/delete like))
 
@@ -32,7 +31,7 @@
   [activity]
   (model.like/fetch-all {:activity (:_id activity)}))
 
-(defaction like-activity
+(defn like-activity
   [activity user]
   (create
    {:user (:_id user)
@@ -43,10 +42,10 @@
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.like))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
-(defaction show
+(defn show
   [like]
   like)

@@ -1,10 +1,9 @@
-(ns jiksnu.actions.message-actions
-  (:require [ciste.core :refer [defaction]]))
+(ns jiksnu.actions.message-actions)
 
-(defaction inbox-page
+(defn inbox-page
   [user]
   [user []])
 
-(defaction outbox-page
+(defn outbox-page
   [user]
   [user []])

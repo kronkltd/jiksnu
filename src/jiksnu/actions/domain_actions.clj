@@ -1,6 +1,5 @@
 (ns jiksnu.actions.domain-actions
   (:require [ciste.config :refer [config]]
-            [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
             [clj-time.core :as time]
             [clojure.data.json :as json]
@@ -46,16 +45,16 @@
     item
     (add-link* item link)))
 
-(defaction delete
+(defn delete
   [domain]
   (let [domain (prepare-delete domain)]
     (model.domain/delete domain)))
 
-(defaction edit-page
+(defn edit-page
   [domain]
   domain)
 
-(defaction show
+(defn show
   [domain]
   domain)
 
@@ -68,21 +67,21 @@
   (templates.actions/make-indexer 'jiksnu.model.domain
                                   :sort-clause {:username 1}))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
-(defaction ping
+(defn ping
   [domain]
   true)
 
 ;; Occurs if the ping request caused an error
-(defaction ping-error
+(defn ping-error
   [domain]
   (model.domain/set-field! domain :xmpp false)
   false)
 
-(defaction set-xmpp
+(defn set-xmpp
   [domain value]
   (model.domain/set-field! domain :xmpp false))
 
@@ -96,7 +95,7 @@
 ;;   1
 ;;   )
 
-(defaction create
+(defn create
   [params]
   (let [item (prepare-create params)]
     (model.domain/create item)))

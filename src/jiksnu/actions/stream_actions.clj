@@ -1,6 +1,6 @@
 (ns jiksnu.actions.stream-actions
   (:require [ciste.commands :refer [parse-command]]
-            [ciste.core :refer [defaction with-context]]
+            [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [show-section]]
             [clojure.data.json :as json]
             [clojure.string :as string]
@@ -40,7 +40,7 @@
 
 ;; actions
 
-(defaction create
+(defn create
   "Create a new stream feed source record"
   [params options]
   (let [params (prepare-create params)]
@@ -50,12 +50,11 @@
   (templates.actions/make-indexer 'jiksnu.model.stream
                                   :sort-clause {:modified 1}))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
-
-(defaction fetch-by-user
+(defn fetch-by-user
   [user & [options]]
   (index {:user (:_id user)}))
 
@@ -66,7 +65,7 @@
 (def public-timeline*
   (templates.actions/make-indexer 'jiksnu.model.conversation))
 
-(defaction public-timeline
+(defn public-timeline
   [& [params & [options & _]]]
   (public-timeline* params (merge
                             {:sort-clause {:updated -1}}
@@ -79,20 +78,20 @@
    (create {:user (:_id user)
             :name stream-name})))
 
-(defaction inbox-major
+(defn inbox-major
   [user & [options]]
   [user
    (actions.activity/index {} options)])
 
-(defaction inbox-minor
+(defn inbox-minor
   [& _]
   [])
 
-(defaction direct-inbox-major
+(defn direct-inbox-major
   [& _]
   [])
 
-(defaction direct-inbox-minor
+(defn direct-inbox-minor
   [& _]
   [])
 
@@ -112,7 +111,7 @@
            show-section
            h/html))))
 
-(defaction user-timeline
+(defn user-timeline
   [user]
   [user (actions.activity/find-by-user user)])
 
@@ -121,16 +120,16 @@
   (user-timeline user))
 
 
-(defaction group-timeline
+(defn group-timeline
   [group]
   ;; TODO: implement
   [group (actions.conversation/fetch-by-group group)])
 
-(defaction home-timeline
+(defn home-timeline
   []
   nil)
 
-(defaction mentions-timeline
+(defn mentions-timeline
   []
   nil)
 

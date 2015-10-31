@@ -1,7 +1,5 @@
 (ns jiksnu.actions.feed-subscription-actions
-  (:require [ciste.initializer :refer [definitializer]]
-            [ciste.core :refer [defaction]]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+  (:require [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.templates.actions :as templates.actions]
@@ -17,11 +15,11 @@
       transforms/set-local
       transforms/set-domain))
 
-(defaction delete
+(defn delete
   [subscription]
   (model.feed-subscription/delete subscription))
 
-(defaction create
+(defn create
   "Create a new feed subscription record"
   [params options]
   (let [params (prepare-create params)]
@@ -39,11 +37,11 @@
   (templates.actions/make-indexer 'jiksnu.model.feed-subscription
                           :sort-clause {:_id 1}))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
-(defaction show
+(defn show
   [item]
   item)
 
@@ -51,7 +49,7 @@
   [item]
   (model.feed-subscription/fetch-by-id (:_id item)))
 
-(defaction subscription-request
+(defn subscription-request
   "Handle a request for a new subscription to a local source"
   [params]
   (let [source (actions.feed-source/find-or-create {:topic (:topic params)})]

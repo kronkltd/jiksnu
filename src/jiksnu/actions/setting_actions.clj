@@ -1,12 +1,10 @@
 (ns jiksnu.actions.setting-actions
   (:require [ciste.config :refer [config describe-config set-config!
-                                  write-config!]]
-            [ciste.core :refer [defaction]]))
+                                  write-config!]]))
 
-(defaction oauth-apps
+(defn oauth-apps
   []
-
-  )
+  nil)
 
 (describe-config [:site :broughtBy :name]
   String
@@ -50,7 +48,7 @@
   "Can unauthenticated users view this site?")
 
 
-(defaction config-output
+(defn config-output
   []
   {:site
    {

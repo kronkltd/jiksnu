@@ -1,6 +1,5 @@
 (ns jiksnu.actions.group-actions
-  (:require [ciste.core :refer [defaction]]
-            [jiksnu.model :as model]
+  (:require [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
@@ -19,42 +18,42 @@
       transforms/set-created-time
       transforms/set-updated-time))
 
-(defaction add-admin
+(defn add-admin
   [group user]
   (model.group/push-value! group :admins user))
 
-(defaction add-user!
+(defn add-user!
   [group user]
   (model.group/push-value! group :members (:_id user))
   (model.group/fetch-by-id (:_id group)))
 
-(defaction remove-user!
+(defn remove-user!
   [group user]
   (model.group/pop-value! group :members (:_id user))
   (model.group/fetch-by-id (:_id group)))
 
-(defaction join
+(defn join
   [group]
   (if-let [user (session/current-user)]
     (add-user! group user)
     (throw+ "No user")))
 
-(defaction leave
+(defn leave
   [group]
   (if-let [user (session/current-user)]
     (remove-user! group user)
     (throw+ "No user")))
 
-(defaction create
+(defn create
   [params]
   (let [group (prepare-create params)]
     (model.group/create group)))
 
-(defaction delete
+(defn delete
   [group]
   (model.group/delete group))
 
-(defaction edit-page
+(defn edit-page
   [group]
   group)
 
@@ -62,15 +61,15 @@
   (templates.actions/make-indexer 'jiksnu.model.group
                                   :sort-clause {:username 1}))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
-(defaction new-page
+(defn new-page
   []
   (Group.))
 
-(defaction fetch-admins
+(defn fetch-admins
   [group]
   (index {:_id (:admins group)}))
 
@@ -78,11 +77,11 @@
   [user]
   (index {:members (:_id user)}))
 
-(defaction show
+(defn show
   [group]
   group)
 
-(defaction add
+(defn add
   [params]
   (if-let [user (session/current-user)]
     (let [params (assoc params :admins [(:_id user)])]

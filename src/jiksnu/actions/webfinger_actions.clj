@@ -1,6 +1,5 @@
 (ns jiksnu.actions.webfinger-actions
-  (:require [ciste.core :refer [defaction]]
-            [ciste.model :as cm]
+  (:require [ciste.model :as cm]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.user :as model.user]
@@ -47,7 +46,7 @@
 
 ;; TODO: show user, format :jrd
 ;; TODO: should take a user
-(defaction user-meta
+(defn user-meta
   [uri]
   (->> uri
        util/split-uri

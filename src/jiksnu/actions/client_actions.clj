@@ -1,6 +1,5 @@
 (ns jiksnu.actions.client-actions
-  (:require [ciste.core :refer [defaction]]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.templates.actions :as templates.actions]
@@ -36,23 +35,23 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
-(defaction delete
+(defn delete
   [item]
   (let [item (prepare-delete item)]
     (delete-fn item)))
 
-(defaction show
+(defn show
   [item]
   item)
 
 (def index*
   (templates.actions/make-indexer model-sym :sort-clause {:created 1}))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
-(defaction create
+(defn create
   [params]
   (let [item (prepare-create params)]
     (create-fn item)))
@@ -63,9 +62,7 @@
 
 (defn handle-client-update
   [params]
-
-
-  )
+  nil)
 
 (defn handle-client-associate
   [params]
@@ -94,7 +91,7 @@
         (throw+ "Only set client_secret for update"))
       (throw+ "access_token not needed for registration"))))
 
-(defaction register
+(defn register
   [params]
   (let [type (:type params)]
     (condp = type

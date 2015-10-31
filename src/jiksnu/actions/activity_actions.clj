@@ -1,6 +1,5 @@
 (ns jiksnu.actions.activity-actions
   (:require [ciste.config :refer [config]]
-            [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
             [clojure.set :as set]
             [clojure.string :as string]
@@ -38,7 +37,7 @@
     item
     (add-link* item link)))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
@@ -80,7 +79,7 @@
       transforms.activity/set-published-time
       transforms.activity/set-content))
 
-(defaction create
+(defn create
   "create an activity"
   [params]
   (let [links (:links params)
@@ -91,7 +90,7 @@
       (add-link item link))
     (model.activity/fetch-by-id (:_id item))))
 
-(defaction edit-page
+(defn edit-page
   "Edit page for an activity"
   [id]
   ;; TODO: must be owner or admin
@@ -107,7 +106,7 @@
 (defonce latest-entry (ref nil))
 
 ;; TODO: rename to publish
-(defaction post
+(defn post
   "Post a new activity"
   [activity]
   ;; TODO: validate user
@@ -122,7 +121,7 @@
     (throw+ "error preparing")))
 
 ;; TODO: use stream update
-(defaction remote-create
+(defn remote-create
   "Create all the activities. (multi-create)"
   [activities]
   (doseq [activity activities]
@@ -146,7 +145,7 @@
          ;; TODO: Group membership and acl
          )))
 
-(defaction show
+(defn show
   "Show an activity"
   [activity]
   (if (viewable? activity)
@@ -154,7 +153,7 @@
     (throw+ {:type :permission
              :message "You are not authorized to view this activity"})))
 
-(defaction edit
+(defn edit
   "Update the current activity with this one"
   [params]
   ;; TODO: implement
@@ -198,7 +197,7 @@
     (create params)))
 
 ;; TODO: show action with :oembed format
-(defaction oembed
+(defn oembed
   [activity & [options]]
   (when activity
     (merge {:version "1.0"
@@ -216,14 +215,14 @@
   [conversation & [options]]
   (index {:conversation (:_id conversation)} options))
 
-(defaction fetch-by-conversations
+(defn fetch-by-conversations
   [ids & [options]]
   (index {:conversation {:$in ids}}
          (merge
           {:sort-clause {:updated 1}}
           options)))
 
-(defaction fetch-by-feed-source
+(defn fetch-by-feed-source
   [source & [options]]
   (index {:update-source (:_id source)} options))
 

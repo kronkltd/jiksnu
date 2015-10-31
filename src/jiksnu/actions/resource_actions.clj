@@ -1,6 +1,5 @@
 (ns jiksnu.actions.resource-actions
   (:require [ciste.config :refer [config]]
-            [ciste.core :refer [defaction]]
             [ciste.event :refer [defkey notify]]
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
@@ -54,14 +53,14 @@
 
 (def add-link* (templates.actions/make-add-link* model.resource/collection-name))
 
-(defaction create
+(defn create
   [params]
   (let [params (prepare-create params)]
     (if-let [item (model.resource/create params)]
       item
       (throw+ "Could not create record"))))
 
-(defaction find-or-create
+(defn find-or-create
   [params & [{tries :tries :or {tries 1} :as options}]]
   (if-let [item (or (model.resource/fetch-by-url (:_id params))
                     (try
@@ -74,7 +73,7 @@
         (find-or-create params (assoc options :tries (inc tries))))
       (throw+ "Could not create resource"))))
 
-(defaction delete
+(defn delete
   "Delete the resource"
   [item]
   (if-let [item (prepare-delete item)]
@@ -86,7 +85,7 @@
   (templates.actions/make-indexer 'jiksnu.model.resource
                                   :sort-clause {:updated -1}))
 
-(defaction index
+(defn index
   [& args]
   (apply index* args))
 
@@ -178,18 +177,18 @@
             res)))
       (timbre/warn "Resource does not need to be updated at this time."))))
 
-(defaction update-record
+(defn update-record
   [item]
   (update* item)
   item)
 
-(defaction discover
+(defn discover
   [item]
   (timbre/debugf "discovering resource: %s" (prn-str item))
   (let [response (update* item)]
     (model.resource/fetch-by-id (:_id item))))
 
-(defaction show
+(defn show
   [item]
   item)
 

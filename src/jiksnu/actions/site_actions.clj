@@ -1,7 +1,6 @@
 (ns jiksnu.actions.site-actions
   (:require [cemerick.friend :as friend]
             [ciste.config :refer [config]]
-            [ciste.core :refer [defaction]]
             [clojure.string :as string]
             [inflections.core :as inf]
             [jiksnu.actions.domain-actions :as actions.domain]))
@@ -12,7 +11,7 @@
        (map keyword)
        (apply ciste.config/config)))
 
-(defaction get-environment
+(defn get-environment
   []
   (ciste.config/environment))
 
@@ -20,7 +19,7 @@
 ;;   []
 ;;   (str (core.host/get-load-average)))
 
-(defaction get-stats
+(defn get-stats
   []
   (->> [:activities :conversations :domains
         :groups :feed-sources :feed-subscriptions
@@ -36,16 +35,16 @@
   []
   "pong")
 
-(defaction rsd
+(defn rsd
   []
   (actions.domain/current-domain))
 
-(defaction service
+(defn service
   [id]
   ;; get user
   true)
 
-(defaction status
+(defn status
   [request]
   {:name "Jiksnu"
    :user (:current (friend/identity request))

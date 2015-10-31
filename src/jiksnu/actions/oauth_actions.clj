@@ -1,8 +1,7 @@
 (ns jiksnu.actions.oauth-actions
-  (:require [ciste.core :refer [defaction]]
-            [crypto.random :as random]))
+  (:require [crypto.random :as random]))
 
-(defaction request-token
+(defn request-token
   []
   (random/base32 20))
 

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.auth-actions
   (:require [cemerick.friend.credentials :as creds]
-            [ciste.core :refer [defaction]]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
@@ -16,11 +15,11 @@
       transforms/set-updated-time))
 
 ;; TODO: doesn't work yet
-(defaction guest-login
+(defn guest-login
   [user]
   user)
 
-(defaction login
+(defn login
   "Update the current session with this user, if authenticated"
   [username password]
   ;; TODO: Is this an acceptable use of fetch-all?
@@ -52,11 +51,11 @@
   [mech]
   mech)
 
-(defaction whoami
+(defn whoami
   []
   (session/current-user))
 
-(defaction create
+(defn create
   "create an activity"
   [params]
   (let [item (prepare-create params)]

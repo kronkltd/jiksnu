@@ -1,6 +1,5 @@
 (ns jiksnu.actions.access-token-actions
-  (:require [ciste.core :refer [defaction]]
-            [jiksnu.model.client :as model.client]
+  (:require [jiksnu.model.client :as model.client]
             [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.templates.actions :as templates.actions]
@@ -37,23 +36,23 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
-(defaction delete
+(defn delete
   [item]
   (let [item (prepare-delete item)]
     (delete-fn item)))
 
-(defaction show
+(defn show
   [item]
   item)
 
 (def index*
   (templates.actions/make-indexer model-sym :sort-clause {:created 1}))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
-(defaction create
+(defn create
   [params]
   (let [params (prepare-create params)]
     (create-fn params)))

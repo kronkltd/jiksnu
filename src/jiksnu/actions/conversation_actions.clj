@@ -1,6 +1,5 @@
 (ns jiksnu.actions.conversation-actions
-  (:require [ciste.core :refer [defaction]]
-            [clj-time.core :as time]
+  (:require [clj-time.core :as time]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
@@ -36,7 +35,7 @@
      (recur ((first hooks) item) (rest hooks))
      item)))
 
-(defaction create
+(defn create
   [params]
   (if-let [conversation (prepare-create params)]
     (let [conversation (model.conversation/create conversation)]
@@ -44,18 +43,18 @@
       conversation)
     (throw+ "Could not prepare conversation")))
 
-(defaction delete
+(defn delete
   [item]
   (let [item (prepare-delete item)]
     (model.conversation/delete item)))
 
 (def index* (templates.actions/make-indexer 'jiksnu.model.conversation))
 
-(defaction index
+(defn index
   [& [params & [options]]]
   (index* params options))
 
-(defaction fetch-by-group
+(defn fetch-by-group
   [group & [options]]
   (index {:group (:_id group)}))
 
@@ -64,7 +63,7 @@
   (when-let [id (:update-source item)]
     (model.feed-source/fetch-by-id id)))
 
-(defaction update-record
+(defn update-record
   [conversation & [options]]
   (if-let [source (get-update-source conversation)]
     (do
@@ -72,13 +71,13 @@
       (actions.feed-source/update-record source options))
     (timbre/error "Could not find update source")))
 
-(defaction discover
+(defn discover
   [conversation & [options]]
   (timbre/debugf "Discovering conversation: %s" conversation)
   (model.conversation/set-field! conversation :lastDiscovered (time/now))
   conversation)
 
-(defaction find-or-create
+(defn find-or-create
   [params & [{tries :tries :or {tries 1} :as options}]]
   (if-let [conversation (or (if-let [id (:_id params)]
                               (first (model.conversation/fetch-by-id id)))
@@ -92,11 +91,11 @@
         (find-or-create params (assoc options :tries (inc tries))))
       (throw+ "Could not create conversation"))))
 
-(defaction show
+(defn show
   [record]
   record)
 
-(defaction add-activity
+(defn add-activity
   [conversation activity]
   (when-not (:parent activity)
     (bus/publish! ch/events ":conversations:parent:set" [conversation activity])
@@ -107,6 +106,6 @@
         (timbre/debug "Checking for updated comments")
         (update-record conversation))))
 
-(defaction create-new
+(defn create-new
   []
   (create {:local true}))

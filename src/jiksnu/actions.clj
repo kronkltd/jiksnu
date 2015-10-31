@@ -1,6 +1,6 @@
 (ns jiksnu.actions
   (:require [ciste.commands :refer [add-command!]]
-            [ciste.core :refer [defaction with-format with-serialization]]
+            [ciste.core :refer [with-format with-serialization]]
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
             [clojure.core.incubator :refer [dissoc-in]]
@@ -23,7 +23,7 @@
       ;; (timbre/debugf "getting model %s(%s)" model-name id)
       (fetcher id))))
 
-(defaction get-page-ids
+(defn get-page-ids
   [page-name & args]
   ;; (timbre/debugf "Getting page: %s" page-name)
   (let [request {:format :page-ids
@@ -39,7 +39,7 @@
          ))
      (throw+ "page not found"))))
 
-(defaction get-page
+(defn get-page
   [page-name & args]
   ;; (timbre/debugf "Getting page: %s" page-name)
   (let [request {:format :page
@@ -55,7 +55,7 @@
          ))
      (throw+ "page not found"))))
 
-(defaction get-sub-page-ids
+(defn get-sub-page-ids
   [item page-name & args]
   ;; (timbre/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
   (let [request {:format :page-ids
@@ -72,7 +72,7 @@
                  :args args
                  :message "sub page not found"}))))
 
-(defaction get-sub-page
+(defn get-sub-page
   [item page-name & args]
   ;; (timbre/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
   (let [request {:format :page
@@ -89,7 +89,7 @@
                  :args args
                  :message "sub page not found"}))))
 
-(defaction invoke-action
+(defn invoke-action
   [model-name action-name id & [options]]
   (try+
    (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
@@ -116,7 +116,7 @@
      {:message (str ex)
       :action "error"})))
 
-(defaction confirm
+(defn confirm
   [action model id]
   (when-let [item (get-model model id)]
     {:item item

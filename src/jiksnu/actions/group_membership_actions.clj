@@ -1,6 +1,5 @@
 (ns jiksnu.actions.group-membership-actions
-  (:require [ciste.core :refer [defaction]]
-            [clj-time.core :as time]
+  (:require [clj-time.core :as time]
             [jiksnu.model :as model]
             [jiksnu.model.group-membership :as model.group-membership]
             [jiksnu.templates.actions :as templates.actions]
@@ -16,7 +15,7 @@
       transforms/set-created-time
       transforms/set-updated-time))
 
-(defaction create
+(defn create
   "create an record"
   [params]
   (let [item (prepare-create params)]
@@ -30,10 +29,10 @@
 (def index* (templates.actions/make-indexer model-ns))
 (def delete (templates.actions/make-delete model.group-membership/delete can-delete?))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
-(defaction show
+(defn show
   [item]
   item)

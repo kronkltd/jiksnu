@@ -1,6 +1,5 @@
 (ns jiksnu.actions.subscription-actions
-  (:require [ciste.core :refer [defaction]]
-            [ciste.initializer :refer [definitializer]]
+  (:require [ciste.initializer :refer [definitializer]]
             [clojure.string :as string]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
@@ -40,12 +39,12 @@
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.subscription))
 
-(defaction create
+(defn create
   [params]
   (let [params (prepare-create params)]
     (model.subscription/create params)))
 
-(defaction delete
+(defn delete
   "Deletes a subscription.
 
    This action is primarily for the admin console.
@@ -53,11 +52,11 @@
   [subscription]
   (model.subscription/delete subscription))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
-(defaction ostatussub
+(defn ostatussub
   [profile]
   ;; TODO: Allow for http uri's
   (if profile
@@ -65,11 +64,11 @@
       (model.user/get-user username domain))
     (model/map->User {})))
 
-(defaction show
+(defn show
   [item]
   item)
 
-(defaction subscribe
+(defn subscribe
   [actor user]
   ;; Set up a feed source to that user's public feed
   (when-not (:local user)
@@ -88,7 +87,7 @@
            :local true
            :pending true}))
 
-(defaction unsubscribed
+(defn unsubscribed
   [actor user]
   (let [subscription (model.subscription/find-record
                       {:from (:_id actor)
@@ -96,7 +95,7 @@
     (model.subscription/delete subscription)
     subscription))
 
-(defaction ostatussub-submit
+(defn ostatussub-submit
   "User requests a subscription to a uri"
   [uri]
   (if-let [actor (session/current-user)]
@@ -105,29 +104,29 @@
       (throw+ {:type :validation :message "Could not determine user"}))
     (throw+ {:type :authentication :message "must be logged in"})))
 
-(defaction subscribed
+(defn subscribed
   [actor user]
   (create
    {:from (:_id actor)
     :to (:_id user)
     :local false}))
 
-(defaction get-subscribers
+(defn get-subscribers
   [user]
   [user (index {:to (:_id user)})])
 
-(defaction get-subscriptions
+(defn get-subscriptions
   [user]
   [user (index {:from (:_id user)})])
 
-(defaction unsubscribe
+(defn unsubscribe
   "User unsubscribes from another user"
   [actor target]
   (if-let [subscription (model.subscription/find-by-users actor target)]
     (model.subscription/unsubscribe actor target)
     (throw+ "Subscription not found")))
 
-(defaction confirm
+(defn confirm
   [subscription]
   (model.subscription/confirm subscription))
 

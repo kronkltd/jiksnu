@@ -1,6 +1,5 @@
 (ns jiksnu.actions.user-actions
   (:require [ciste.config :refer [config]]
-            [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
             [ciste.model :as cm]
             [clojure.data.json :as json]
@@ -99,7 +98,7 @@
 
 ;; actions
 
-(defaction add-link*
+(defn add-link*
   [item link]
   ((templates.actions/make-add-link* model.user/collection-name)
    item link))
@@ -112,7 +111,7 @@
     user
     (add-link* user link)))
 
-(defaction create
+(defn create
   "create an activity"
   [params]
   (let [links (:links params)
@@ -123,7 +122,7 @@
       (add-link item link))
     (model.user/fetch-by-id (:_id item))))
 
-(defaction delete
+(defn delete
   "Delete the user"
   [^User user]
   ;; {:pre [(instance? User user)]}
@@ -132,7 +131,7 @@
         user)
     (throw+ "prepare delete failed")))
 
-(defaction exists?
+(defn exists?
   [user]
   ;; {:pre [(instance? User user)]}
   ;; TODO: No need to actually fetch the record
@@ -142,7 +141,7 @@
   (templates.actions/make-indexer 'jiksnu.model.user
                                   :sort-clause {:username 1}))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
@@ -197,7 +196,6 @@
                        (when-let [domain-name (util/get-domain-name (:_id params))]
                          (assoc params :domain domain-name))
                        (throw+ "Could not determine domain name"))]
-
         (if (:username params)
           params
           (let [params (discover-user-xrd params options)]
@@ -236,7 +234,7 @@
 
       (get-username-from-http-uri params options))))
 
-(defaction find-or-create
+(defn find-or-create
   [{id :_id
     :keys [username domain]
     :as params} & [options]]
@@ -259,7 +257,7 @@
                   (model.user/get-user username domain))
                 (create params)))))))
 
-(defaction update-record
+(defn update-record
   "Update the user's activities and information."
   [^User user params]
   (if-let [source-id (:update-source user)]
@@ -283,12 +281,12 @@
     (discover-user-meta user options))
   (model.user/fetch-by-id (:_id user)))
 
-(defaction discover
+(defn discover
   "perform a discovery on the user"
   [^User user & [options]]
   (discover* user options))
 
-(defaction register
+(defn register
   "Register a new user"
   [{:keys [username password email name location bio] :as options}]
   ;; TODO: should we check reg-enabled here?
@@ -314,17 +312,17 @@
     (throw+ {:type :missing-param
              :msg "Missing required params"})))
 
-(defaction show
+(defn show
   "This action just returns the passed user.
    The user needs to be retreived in the filter."
   [user]
   user)
 
-(defaction show-basic
+(defn show-basic
   [user]
   (show user))
 
-(defaction update-profile
+(defn update-profile
   [options]
   (let [user (session/current-user)]
     ;; TODO: mass assign vulnerability here
@@ -340,7 +338,7 @@
     (throw+ {:type :auth
              :msg "Must be authenticated"})))
 
-(defaction add-stream
+(defn add-stream
   [user params]
   (let [params (assoc params :user (:_id user))]
     [user @(ops/create-new-stream params)]))

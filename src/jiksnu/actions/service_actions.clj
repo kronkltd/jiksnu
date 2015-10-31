@@ -1,6 +1,5 @@
 (ns jiksnu.actions.service-actions
   (:require [ciste.config :refer [config]]
-            [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
             [ciste.model :as cm]
             [clj-time.core :as time]
@@ -122,7 +121,7 @@
        ;; (util/safe-task (discover-statusnet-config domain url))
        ))))
 
-(defaction discover
+(defn discover
   [^Domain domain url]
   (if-not (:local domain)
     (do (timbre/debugf "discovering domain - %s" (:_id domain))

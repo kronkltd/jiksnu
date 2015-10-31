@@ -1,6 +1,5 @@
 (ns jiksnu.actions.key-actions
-  (:require [ciste.core :refer [defaction]]
-            [jiksnu.model :as model]
+  (:require [jiksnu.model :as model]
             [jiksnu.model.key :as model.key]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms])
@@ -23,23 +22,23 @@
       ;; transforms/set-no-links
       ))
 
-(defaction create
+(defn create
   "Create a new key record"
   [params options]
   (let [params (prepare-create params)]
     (model.key/create params)))
 
-(defaction delete
+(defn delete
   [record]
   (model.key/delete record))
 
-(defaction show
+(defn show
   [item] item)
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.key))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
@@ -47,5 +46,5 @@
   "Generate key for the user and store the result."
   [^User user]
   (let [params (assoc (model.key/pair-hash (model.key/generate-key))
-                 :userid (:_id user))]
+                      :userid (:_id user))]
     (create params {})))

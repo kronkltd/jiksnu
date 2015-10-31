@@ -1,6 +1,5 @@
 (ns jiksnu.actions.dialback-actions
-  (:require [ciste.core :refer [defaction]]
-            [jiksnu.model :as model]
+  (:require [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.dialback :as model.dialback]
             [jiksnu.model.user :as model.user]
@@ -12,7 +11,7 @@
 
 (def index*    (templates.actions/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
@@ -20,12 +19,12 @@
   [activity]
   (transforms/set-_id activity))
 
-(defaction create
+(defn create
   [params]
   (let [item (model.dialback/create params)]
     (model.dialback/fetch-by-id (:_id item))))
 
-;; (defaction delete
+;; (defn delete
 ;;   [activity]
 ;;   (let [actor-id (session/current-user-id)
 ;;         author (:author activity)]

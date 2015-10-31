@@ -1,7 +1,6 @@
 (ns jiksnu.actions.feed-source-actions
   (:require [ciste.config :refer [config]]
             [ciste.initializer :refer [definitializer]]
-            [ciste.core :refer [defaction]]
             [clj-http.client :as client]
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
@@ -45,7 +44,7 @@
   (templates.actions/make-indexer 'jiksnu.model.feed-source
                                   :sort-clause {:created -1}))
 
-(defaction add-watcher
+(defn add-watcher
   [^FeedSource source ^User user]
   ;; {:pre [(instance? FeedSource source)
   ;;        (instance? User user)]
@@ -53,41 +52,41 @@
   (model.feed-source/push-value! source :watchers (:_id user))
   (model.feed-source/fetch-by-id (:_id source)))
 
-(defaction watch
+(defn watch
   [source]
   ;; {:pre [(instance? FeedSource source)]}
   (add-watcher source (session/current-user)))
 
-(defaction delete
+(defn delete
   [source]
   (model.feed-source/delete source))
 
-(defaction confirm-subscribe
+(defn confirm-subscribe
   "Callback for when a remote subscription has been confirmed"
   [source]
   (model.feed-source/set-field! source :status "confirmed"))
 
-(defaction confirm-unsubscribe
+(defn confirm-unsubscribe
   [source]
   (timbre/info "confirming subscription removal")
   (model.feed-source/set-field! source :status "none")
   #_(model.feed-source/delete source))
 
-(defaction process-updates
+(defn process-updates
   "Handler for PuSh subscription"
   [params]
   (let [{challenge "hub.challenge"
          mode "hub.mode"
          topic "hub.topic"} params
-         source (model.feed-source/fetch-by-topic topic)
-         dispatch-fn (condp = mode
-                       "subscribe"   #'confirm-subscribe
-                       "unsubscribe" #'confirm-unsubscribe
-                       (throw+ "Unknown mode"))]
+        source (model.feed-source/fetch-by-topic topic)
+        dispatch-fn (condp = mode
+                      "subscribe"   #'confirm-subscribe
+                      "unsubscribe" #'confirm-unsubscribe
+                      (throw+ "Unknown mode"))]
     (dispatch-fn source)
     challenge))
 
-(defaction create
+(defn create
   "Create a new feed source record"
   [params options]
   (let [params (prepare-create params)]
@@ -105,7 +104,7 @@
   [resource]
   (model.feed-source/fetch-all {:topic (:url resource)}))
 
-(defaction index
+(defn index
   [& options]
   (apply index* options))
 
@@ -121,7 +120,7 @@
   [source]
   (seq (:watchers source)))
 
-(defaction unsubscribe
+(defn unsubscribe
   "Action if user makes action to unsubscribe from remote source"
   [source]
   (send-unsubscribe
@@ -132,18 +131,18 @@
 (defn send-unsubscribe
   "Send an unsubscription request to the source's hub"
   ([hub topic]
-     (send-unsubscribe hub topic "" #_(named-url "push callback")))
+   (send-unsubscribe hub topic "" #_(named-url "push callback")))
   ([hub topic callback]
-     (timbre/debugf "Sending unsubscribe to %s" topic)
-     (when (seq hub)
-       (client/post
-        hub
-        {:throw-exceptions false
-         :form-params
-         {"hub.callback" callback
-          "hub.mode" "unsubscribe"
-          "hub.topic" topic
-          "hub.verify" "async"}}))))
+   (timbre/debugf "Sending unsubscribe to %s" topic)
+   (when (seq hub)
+     (client/post
+      hub
+      {:throw-exceptions false
+       :form-params
+       {"hub.callback" callback
+        "hub.mode" "unsubscribe"
+        "hub.topic" topic
+        "hub.verify" "async"}}))))
 
 (defn send-subscribe
   [source]
@@ -158,25 +157,25 @@
        "hub.verify" "async"}})
     (throw+ "could not find hub")))
 
-(defaction show
+(defn show
   [item]
   item)
 
-(defaction remove-watcher
+(defn remove-watcher
   [source user]
   ;; TODO: implement in terms of a push field or just make a new collection
   #_(model.feed-source/update-record
-   (select-keys source [:_id])
-   {:$pull {:watchers (:_id user)}})
+     (select-keys source [:_id])
+     {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
-(defaction update-record
+(defn update-record
   "Fetch updates for the source"
   [source & [options]]
   #_(util/safe-task (update* source options))
   source)
 
-(defaction subscribe
+(defn subscribe
   "Send a subscription request to the feed"
   [source]
   (when-not (:local source)
@@ -194,7 +193,7 @@
         (find-or-create {:topic link})
         (throw+ (format "Could not determine topic url from resource: %s" url))))))
 
-(defaction discover
+(defn discover
   [item]
   (update-record item))
 
