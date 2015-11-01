@@ -7,7 +7,9 @@
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
-            [octohipster.mixins :as mixin])
+            [octohipster.mixins :as mixin]
+            [puget.printer :as puget]
+            [taoensso.timbre :as timbre])
   (:import jiksnu.model.Group))
 
 (defparameter :model.group/id
@@ -40,8 +42,17 @@
 
 (defresource groups-api :collection
   :mixins [page-resource]
+  :allowed-methods [:get :post]
+  :new? true
   :schema {:type "object"
-           :properties {:nick {:type "string"}}}
+           :properties {:name {:type "string"}}
+           :required [:name]
+           }
+  :post! (fn [ctx]
+           (timbre/info "Post to group")
+           {:data "true"}
+           (let [params (:params (:request ctx))]
+             (puget/pprint params)))
   :available-formats [:json]
   :ns 'jiksnu.actions.group-actions)
 

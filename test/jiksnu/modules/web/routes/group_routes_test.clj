@@ -10,6 +10,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
+            jiksnu.modules.web.routes.group-routes
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
@@ -21,7 +22,7 @@
   (after :contents (th/stop-testing))])
 
 (facts "route: group-api/collection :get"
-  (let [url (str "/model/conversations")
+  (let [url (str "/model/groups")
         request (req/request :get url)]
     (response-for request) =>
     (contains
@@ -29,19 +30,19 @@
 
 (facts "route: group-api/collection :post"
   (let [params (factory :group)
-        url (str "/model/conversations")
+        url (str "/model/groups")
         request (assoc (req/request :post url)
                        :non-query-params params)]
     (prn params)
-
     (response-for request) =>
     (contains
-     {:status 201})))
-
+     {:status 201
+      :body (contains {:name (:name params)})
+      })))
 
 (facts "route: group-api/item :get"
   (let [group (mock/a-group-exists)
-        url (str "/model/conversations/" (:_id group))
+        url (str "/model/groups/" (:_id group))
         request (req/request :get url)]
     (response-for request) =>
     (contains
