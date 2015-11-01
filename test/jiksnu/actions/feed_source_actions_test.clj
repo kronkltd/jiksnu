@@ -34,12 +34,10 @@
     (provided
       (actions.service/get-discovered domain nil nil) => domain)))
 
-(future-fact "#'actions.feed-source/update-record"
+(fact "#'actions.feed-source/update-record"
   (let [domain (mock/a-domain-exists)
         source (mock/a-feed-source-exists)]
-    (actions.feed-source/update-record source) => (partial instance? FeedSource))
-  (provided
-    (actions.service/get-discovered anything) => .domain.))
+    (actions.feed-source/update-record source) => (partial instance? FeedSource)))
 
 (fact "#'actions.feed-source/discover-source"
   (let [url (factory/make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))

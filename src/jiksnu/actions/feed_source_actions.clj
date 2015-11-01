@@ -88,9 +88,11 @@
 
 (defn create
   "Create a new feed source record"
-  [params options]
-  (let [params (prepare-create params)]
-    (model.feed-source/create params)))
+  ([params]
+   (create params nil))
+  ([params options]
+   (let [params (prepare-create params)]
+     (model.feed-source/create params))))
 
 (defn find-or-create
   [params & [options]]
