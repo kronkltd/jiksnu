@@ -15,20 +15,6 @@
 
 (def app-atom (atom nil))
 
-(defn mock-fetch
-  []
-  #js
-  {:then (fn [f]
-           (debug "running original mock fetch")
-           #_(f))})
-
-(defn mock-app
-  []
-  (debug "Getting mocked app")
-  #js {:foo "bar"
-       :logout (fn [])
-       :fetchStatus mock-fetch})
-
 (def jiksnu "jiksnu")
 (def nav-bar-controller "NavBarController")
 
@@ -36,6 +22,8 @@
 (declare $rootScope)
 (declare $scope)
 (declare c)
+(declare app)
+(declare injections)
 (def $controller (atom nil))
 
 (describe "jiksnu"
@@ -44,42 +32,57 @@
   (js/beforeEach
    (js/inject
     #js ["$controller" "$rootScope" "$q"
-         (fn [_$controller_ _$rootScope_ _$q_]
+         "app"
+         (fn [_$controller_ _$rootScope_ _$q_ _app_]
            (reset! $controller _$controller_)
+           (set! app _app_)
            (set! $rootScope _$rootScope_)
-           (set! $q _$q_))]))
+           (set! $scope (.$new $rootScope))
+           (set! $q _$q_)
+           (set! injections #js {:$scope $scope :app app})
+           )]))
 
   (describe nav-bar-controller
     (js/beforeEach
      (fn []
-       (set! mock-fetch
-             (fn []
-               #js
-               {:then (fn [f] #_(f))}))
-       (set! $scope (.$new $rootScope))))
+       (let [mock-then (fn [f] #_(f))
+             mock-response #js {:then mock-then}]
+         (set! (.-fetchStatus app) (constantly mock-response)))))
 
     (it "should be unloaded by default"
-      (@$controller nav-bar-controller #js {:$scope $scope :app (mock-app)})
+      (@$controller nav-bar-controller injections)
       (is $scope.loaded false))
 
     (it "should call fetchStatus"
-      (set! mock-fetch
-            (fn []
-              #js
-              {:then (fn [f]
-                       (info "replacement")
-                       (f))}))
-
-      (@$controller nav-bar-controller #js {:$scope $scope :app (mock-app)})
-      (is $scope.loaded true))
+      (let [mock-then (fn [f]
+                        (info "replacement")
+                        (f))
+            mock-response #js {:then mock-then}]
+        (set! (.-fetchStatus app) (constantly mock-response))
+        (@$controller nav-bar-controller injections)
+        (is $scope.loaded true)))
 
     (it "should bind the app service to app2"
-      (@$controller "NavBarController" #js {:$scope $scope :app (mock-app)})
+      (set! (.-foo app) "bar")
+      (@$controller "NavBarController" injections)
 
       (is $scope.app2.foo "bar"))
 
     (fact [[{:doc "a fact"}]]
           (+ 1 1) => 2
-          (+ 2 2) => 4)
+          (+ 2 2) => 4))
 
-    nil))
+  (describe "ListStreamsController"
+    (js/beforeEach
+     (fn []
+       (let [user #js {:_id "foo"}]
+         (set! (.-user $scope) user))))
+
+    (describe "addStream"
+      (it "sends an add-stream notice to the server"
+        (let [stream-name "bar"
+              params #js {:name stream-name}]
+          (@$controller "ListStreamsController" injections)
+          (set! (.-stream $scope) params)
+          (let [response (.addStream $scope)]
+            (is response nil)))))))

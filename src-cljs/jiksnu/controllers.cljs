@@ -3,7 +3,8 @@
             jiksnu.models
             [jiksnu.helpers :as helpers]
             jiksnu.services
-            [jiksnu.templates :as templates])
+            [jiksnu.templates :as templates]
+            [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.controller]]
                [jiksnu.macros :only [page-controller]]
                [purnam.core :only [? ?> ! !> f.n def.n do.n
@@ -114,10 +115,18 @@
   (helpers/init-subpage $scope subpageService Users "groups"))
 
 (def.controller jiksnu.ListStreamsController
-  [$scope subpageService Users]
-  (! $scope.formShown false)
-  (! $scope.toggle (fn [] (! $scope.formShown (not (? $scope.formShown)))))
-  (! $scope.addStream (partial helpers/add-stream $scope))
+  [$scope app subpageService Users]
+  (timbre/info "running liststreamscontroller")
+  (set! (.-formShown $scope) false)
+  (set! (.-toggle $scope)
+        (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! (.-addStream $scope)
+        (fn []
+          (if-let [user (.-user $scope)]
+            (if-let [stream-name (? $scope.stream.name)]
+              (.addStream app stream-name)
+              (throw (js/Error. "Could not determine stream name")))
+            (throw (js/Error. "No authenticated user")))))
   (helpers/init-subpage $scope subpageService Users "streams"))
 
 (def.controller jiksnu.LoginPageController
