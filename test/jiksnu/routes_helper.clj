@@ -22,7 +22,7 @@
       (-> handler (string/split #"/") first symbol require)
       ((resolve (symbol handler)) request)
       (catch Throwable ex
-        (timbre/error ex "error in response-for" ))))))
+        (timbre/error ex))))))
 
 (defn get-auth-cookie
   [username password]

@@ -20,7 +20,6 @@
                  [com.novemberain/monger              "3.0.0"]
                  [com.novemberain/validateur          "2.4.2"]
                  [com.taoensso/timbre                 "4.1.4"]
-                 [fipp "0.6.3"]
                  [hiccup                              "1.0.5"]
                  [http-kit                            "2.1.19"]
                  [im.chit/gyr                         "0.3.1"]

@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.group-routes
   (:require [clojure.data.json :as json]
             [jiksnu.actions.conversation-actions :as conversation]
-            [jiksnu.actions.group-actions :as group]
+            [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model.group :as model.group]
             jiksnu.modules.core.views.group-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
@@ -43,16 +43,16 @@
 (defresource groups-api :collection
   :mixins [page-resource]
   :allowed-methods [:get :post]
-  :new? true
+  :new? :data
+  :post-redirect? (fn [ctx] {:location (format "/model/groups/%s" (:data ctx))})
   :schema {:type "object"
            :properties {:name {:type "string"}}
-           :required [:name]
-           }
+           :required [:name]}
   :post! (fn [ctx]
            (timbre/info "Post to group")
-           {:data "true"}
-           (let [params (:params (:request ctx))]
-             (puget/pprint params)))
+           (let [params (:params (:request ctx))
+                 group (actions.group/create params)]
+             {:data (:_id group)}))
   :available-formats [:json]
   :ns 'jiksnu.actions.group-actions)
 
