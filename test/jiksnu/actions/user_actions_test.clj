@@ -49,7 +49,8 @@
           domain-name (fseq :domain)
           uri (factory/make-uri domain-name "/users/1")
           params {:_id uri}]
-      (actions.user/get-username-from-http-uri params) => (contains {:username username}))))
+      (actions.user/get-username-from-http-uri params) =>
+      (contains {:username username}))))
 
 (fact "#'jiksnu.actions.user-actions/get-username"
   (let [username (fseq :username)
