@@ -116,18 +116,20 @@
 
 (def.controller jiksnu.ListStreamsController
   [$scope app subpageService Users]
-  (timbre/info "running liststreamscontroller")
   (set! (.-formShown $scope) false)
   (set! (.-toggle $scope)
-        (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+        (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))
+          (.updateLabel $scope)))
   (set! (.-addStream $scope)
         (fn []
-          (if-let [user (.-user $scope)]
-            (if-let [stream-name (? $scope.stream.name)]
-              (.addStream app stream-name)
-              (throw (js/Error. "Could not determine stream name")))
-            (throw (js/Error. "No authenticated user")))))
-  (helpers/init-subpage $scope subpageService Users "streams"))
+          (if-let [stream-name (? $scope.stream.name)]
+            (.addStream app stream-name)
+            (throw (js/Error. "Could not determine stream name")))))
+  (set! (.-updateLabel $scope) (fn []
+                                 (set! (.-btnLabel $scope)
+                                       (if (.-formShown $scope) "-" "+"))))
+  (helpers/init-subpage $scope subpageService Users "streams")
+  (.updateLabel $scope))
 
 (def.controller jiksnu.LoginPageController
   [$scope app]

@@ -115,7 +115,7 @@
     (timbre/info "Creating Stream"))
   (let [$http (.. app -di -$http)
         params #js {:name stream-name}]
-    (-> (.post $http "/model/stream" params)
+    (-> (.post $http "/model/streams" params)
         (.then #(.-data %)))))
 
 (def app-methods
