@@ -26,7 +26,7 @@
 (declare injections)
 (def $controller (atom nil))
 
-(describe "jiksnu"
+(describe {:doc "jiksnu"}
   (js/beforeEach (js/module "jiksnu"))
 
   (js/beforeEach
@@ -39,10 +39,9 @@
            (set! $rootScope _$rootScope_)
            (set! $scope (.$new $rootScope))
            (set! $q _$q_)
-           (set! injections #js {:$scope $scope :app app})
-           )]))
+           (set! injections #js {:$scope $scope :app app}))]))
 
-  (describe nav-bar-controller
+  (describe {:doc nav-bar-controller}
     (js/beforeEach
      (fn []
        (let [mock-then (fn [f] #_(f))
@@ -72,17 +71,19 @@
           (+ 1 1) => 2
           (+ 2 2) => 4))
 
-  (describe "ListStreamsController"
+  (describe {:doc "ListStreamsController"}
     (js/beforeEach
      (fn []
        (let [user #js {:_id "foo"}]
          (set! (.-user $scope) user))))
 
-    (describe "addStream"
+    (describe {:doc "addStream"}
       (it "sends an add-stream notice to the server"
         (let [stream-name "bar"
               params #js {:name stream-name}]
           (@$controller "ListStreamsController" injections)
           (set! (.-stream $scope) params)
-          (let [response (.addStream $scope)]
-            (is response nil)))))))
+
+          (-> (.addStream $scope)
+              (.then (fn [response]
+                       (is response nil)))))))))

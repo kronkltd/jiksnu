@@ -1,5 +1,6 @@
 (ns jiksnu.providers
-  (:require jiksnu.app)
+  (:require jiksnu.app
+            [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.provider]]
                [purnam.core :only [? ?> ! !> obj arr]]))
 
@@ -108,8 +109,18 @@
   [app state]
   (.go (.. app -di -$state) state))
 
+(defn add-stream
+  [app stream-name]
+  (timbre/with-context {:name stream-name}
+    (timbre/info "Creating Stream"))
+  (let [$http (.. app -di -$http)
+        params #js {:name stream-name}]
+    (-> (.post $http "/model/stream" params)
+        (.then #(.-data %)))))
+
 (def app-methods
   {
+   :addStream     add-stream
    :connect       connect
    :getUser       get-user
    :getUserId     get-user-id
@@ -137,7 +148,7 @@
                              (when (= (.-protocol location) "https:") "s")
                              "://"
                              (.-host location) "/")
-                        (throw (js/Exception. "No location available")))
+                        (throw (js/Error. "No location available")))
         di #js {:$http $http
                 :$q $q
                 :DS DS
@@ -160,16 +171,16 @@
 
     (.onOpen connection
              (fn []
-               (js/console.log "Connection Opened")))
+               (timbre/debug "Connection Opened")))
 
     (.onClose connection
               (fn []
-                (js/console.log "connection closed")
+                (timbre/debug "connection closed")
                 (.reconnect connection)))
 
     (.onError connection
               (fn []
-                (js/console.log "connection errored")))
+                (timbre/warn "connection errored")))
 
     (set! (.-app js/window) app)
     ;; return the app

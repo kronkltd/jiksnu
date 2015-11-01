@@ -153,23 +153,6 @@
                                           subpages)))
                             (? page.items)))))))))
 
-(defn add-stream
-  "Creates a new stream for the authenticated user.
-
-  returns a promise"
-  [$scope $http]
-  (if-let [user (.-user $scope)]
-    (if-let [stream-name (? $scope.stream.name)]
-      (do
-        (js/console.log "Adding Stream: " user stream-name)
-        (-> (.post $http "/model/stream"
-                   #js {:actor (.-_id user)
-                        :name stream-name})
-            (.then (fn [res]
-                     (js/console.info "got response" res)))))
-      (throw (js/Exception. "Could not determine stream name")))
-    (throw (js/Exception. "No authenticated user"))))
-
 (defn setup-hotkeys
   [hotkeys $state]
   (state-hotkey "g d" "indexDomains" "Go to Domains")
