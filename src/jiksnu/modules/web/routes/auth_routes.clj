@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.auth-routes
   (:require [cemerick.friend :as friend]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.auth-actions :as auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
@@ -8,8 +7,9 @@
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
+            [puget.printer :as puget]
             [slingshot.slingshot :refer [try+]]
-            ))
+            [taoensso.timbre :as timbre]))
 
 (defgroup jiksnu auth
   :name "Authentication"
@@ -61,13 +61,16 @@
                    :responses {"200" {:description "Login Response"}}}}
   :available-media-types ["text/html" "application/json"]
   :post! (fn [{:as ctx
-              {{:keys [username password]} :params} :request}]
+               {{:keys [username password]} :params} :request}]
+           (timbre/debug "handling login post")
            true)
   :post-redirect? false
-  :handle-created (fn [ctx]
-                    (friend/authenticate-response
-                     (:request ctx)
-                     {:body "ok"})))
+  :handle-created (fn [{:keys [request]}]
+                    (let [resp (friend/authenticate-response
+                                request
+                                {:body "ok"})]
+                      (puget/cprint resp)
+                      resp)))
 
 (defresource auth :logout
   :url                   "/main/logout"

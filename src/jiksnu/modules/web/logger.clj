@@ -56,6 +56,4 @@
      :spit (assoc (spit-appender) :output-fn json-formatter)
      :println (assoc (println-appender {:stream :auto})
                      :min-level :info)}
-    :shared-appender-config {:logstash {:port 4660 :logstash "192.168.1.151"}}})
-  (timbre/with-context {:foo "bar"}
-    (timbre/info "after set")))
+    :shared-appender-config {:logstash {:port 4660 :logstash "192.168.1.151"}}}))

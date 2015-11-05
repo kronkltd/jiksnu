@@ -26,7 +26,8 @@
     (puget/cprint request)
     (let [response (response-for request)]
       response => (contains {:status 303})
-      (let [location (get-in response [:headers "Location"])
+      (puget/cprint response)
+      #_(let [location (get-in response [:headers "Location"])
             request2 (req/request :get location)]
         (some-> request2 response-for :body json/read-str) =>
         (contains {"name" (:name params)

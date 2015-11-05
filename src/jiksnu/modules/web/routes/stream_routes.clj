@@ -7,9 +7,11 @@
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
             [puget.printer :as puget]
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre]))
 
 (defparameter :model.stream/id
   :in :path
@@ -39,16 +41,21 @@
      :as request} :request}]
   (puget/cprint request)
   (puget/cprint (friend/identity request))
-  (if-let [owner (:current (friend/identity request))]
-    (let [params (assoc params :owner owner)]
-      (if-let [stream (actions.stream/create params {})]
-        (do (puget/cprint stream)
-            {:data (:_id stream)})
-        (do
-          (throw+ {:message "Failed to create stream"
-                   :type :failure}))))
-    (throw+ {:message "not authenticated"
-             :type :authentication})))
+  (try+
+   (if-let [owner (:current (friend/identity request))]
+     (let [params (assoc params :owner owner)]
+       (if-let [stream (actions.stream/create params {})]
+         (do (puget/cprint stream)
+             {:data (:_id stream)})
+         (do
+           (throw+ {:message "Failed to create stream"
+                    :type :failure}))))
+     (throw+ {:message "not authenticated"
+              :type :authentication}))
+   (catch [] ex
+     (timbre/error ex)
+     (ring-response ex {:status 500})
+     )))
 
 (defresource streams-api :collection
   :desc "Collection route for streams"
@@ -56,7 +63,9 @@
   :available-formats [:json]
   :allowed-methods [:get :post]
   :post! post-stream
-  :post-redirect? (fn [ctx] {:location (format "/model/streams/%s" (:data ctx))})
+  :post-redirect? (fn [ctx]
+                    (puget/cprint ctx)
+                    {:location (format "/model/streams/%s" (:data ctx))})
   :schema {:type "object"
            :properties {:name {:type "string"}}
            :required [:name]}
