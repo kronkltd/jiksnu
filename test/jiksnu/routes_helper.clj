@@ -8,6 +8,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [manifold.time :as time]
+            [puget.printer :as puget]
             [ring.mock.request :as req]
             [ring.util.codec :as codec]
             [slingshot.slingshot :refer [try+]])
@@ -26,16 +27,18 @@
 
 (defn get-auth-cookie
   [username password]
-  (some-> (req/request :post "/main/login")
-      (assoc :params {:username username
-                      :password password})
-       response-for
-       :headers
-       (get "Set-Cookie")
-       cookies/decode-cookies
-       (->> (map (fn [[k v]] [k (:value v)]))
-            (into {}))
-       codec/form-encode))
+  (let [request (-> (req/request :post "/main/login")
+                    (req/body {:username username
+                               :password password}))
+        response (response-for request)]
+    (puget/cprint response)
+    (some-> response
+            :headers
+            (get "Set-Cookie")
+            cookies/decode-cookies
+            (->> (map (fn [[k v]] [k (:value v)]))
+                 (into {}))
+            codec/form-encode)))
 
 (defn as-user
   ([m]
@@ -47,7 +50,7 @@
        (as-user m user password)))
   ([m user password]
      (let [cookie-str (get-auth-cookie (:username user) password)]
-       (assoc-in m [:headers "cookie"] cookie-str))))
+       (assoc-in m [:headers "Cookie"] cookie-str))))
 
 (defn as-admin
   [m]

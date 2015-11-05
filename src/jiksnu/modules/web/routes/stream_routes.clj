@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.stream-routes
-  (:require [ciste.commands :refer [add-command!]]
+  (:require [cemerick.friend :as friend]
+            [ciste.commands :refer [add-command!]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.stream :as model.stream]
@@ -7,7 +8,8 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]
-))
+            [puget.printer :as puget]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defparameter :model.stream/id
   :in :path
@@ -32,19 +34,32 @@
   :name "Streams API"
   :url "/model/streams")
 
+(defn post-stream
+  [{{:keys [params]
+     :as request} :request}]
+  (puget/cprint request)
+  (puget/cprint (friend/identity request))
+  (if-let [owner (:current (friend/identity request))]
+    (let [params (assoc params :owner owner)]
+      (if-let [stream (actions.stream/create params {})]
+        (do (puget/cprint stream)
+            {:data (:_id stream)})
+        (do
+          (throw+ {:message "Failed to create stream"
+                   :type :failure}))))
+    (throw+ {:message "not authenticated"
+             :type :authentication})))
+
 (defresource streams-api :collection
   :desc "Collection route for streams"
   :mixins [page-resource]
   :available-formats [:json]
   :allowed-methods [:get :post]
-  :post! (fn [ctx]
-           #_(let [{{params :params
-                   :as request} :request} ctx
-                   username (:current (friend/identity request))
-                   id (str "acct:" username "@" (config :domain))
-                   params (assoc params :author id)]
-             (actions.stream/post params)))
-  ;; :schema stream-schema
+  :post! post-stream
+  :post-redirect? (fn [ctx] {:location (format "/model/streams/%s" (:data ctx))})
+  :schema {:type "object"
+           :properties {:name {:type "string"}}
+           :required [:name]}
   :ns 'jiksnu.actions.stream-actions)
 
 (defresource streams-api :item
