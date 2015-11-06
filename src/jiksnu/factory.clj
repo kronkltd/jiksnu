@@ -62,7 +62,7 @@
 
 (defseq :password
   [n]
-  (str "hunter" n))
+  "hunter2")
 
 (defseq :domain
   [n]
