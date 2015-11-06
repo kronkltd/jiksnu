@@ -10,8 +10,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(future-fact "index page"
-  (routes/set-site)
+(fact "index page"
   (let [url "/main/users"]
     (response-for (req/request :get url)) =>
     (contains {:status status/success?

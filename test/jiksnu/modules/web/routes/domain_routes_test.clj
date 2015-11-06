@@ -25,27 +25,19 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(future-facts "Requesting the host meta"
-  (against-background
-    [(actions.domain/current-domain) => .domain.
-     (actions.domain/show .domain.) => .domain.]
-
-    (fact "returns the host meta as xml"
-      (let [url "/.well-known/host-meta"]
-        (response-for (req/request :get url)) =>
-        (contains {:status status/success?
-                   :headers (contains {"Content-Type" "application/xrds+xml"})
-                   :body #(seq (get-link (cm/string->document %) "lrdd"))})))
-
-    (fact "host meta json"
-      (let [url "/.well-known/host-meta.json"
-            response (response-for (req/request :get url))]
-        response => map?
-        (:status response) => status/success?
-        (:body response) => string?
-        (get-in response [:headers "Content-Type"]) => "application/json"
-        (let [body (json/read-str (:body response) :key-fn keyword)]
-          (count (:links body)) => (partial >= 1)
-          (:host body) => (:_id .domain.)
-          (get-link body "lrdd") =not=> empty?
-          (util/rel-filter "lrdd" (:links body)) =not=> empty?)))))
+(facts "Requesting the host meta"
+  (fact "host meta json"
+    (let [domain (actions.domain/current-domain)
+          url "/.well-known/host-meta"
+          request (req/request :get url)
+          response (response-for request)
+          body (json/read-str (:body response) :key-fn keyword)]
+      response =>
+      (contains {:status status/success?
+                 :body string?
+                 :headers
+                 (contains {"Content-Type" "application/json;charset=UTF-8"})})
+      body => (contains {:links #(>= (count %) 1)
+                         :host (:_id domain)})
+      (get-link body "lrdd") =not=> empty?
+      (util/rel-filter "lrdd" (:links body)) =not=> empty?)))
