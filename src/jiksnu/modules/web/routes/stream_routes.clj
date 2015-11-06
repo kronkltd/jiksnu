@@ -39,23 +39,18 @@
 (defn post-stream
   [{{:keys [params]
      :as request} :request}]
-  (puget/cprint request)
-  (puget/cprint (friend/identity request))
   (try+
    (if-let [owner (:current (friend/identity request))]
      (let [params (assoc params :owner owner)]
        (if-let [stream (actions.stream/create params {})]
-         (do (puget/cprint stream)
-             {:data (:_id stream)})
-         (do
-           (throw+ {:message "Failed to create stream"
-                    :type :failure}))))
+         {:data (:_id stream)}
+         (throw+ {:message "Failed to create stream"
+                  :type :failure})))
      (throw+ {:message "not authenticated"
               :type :authentication}))
    (catch [] ex
      (timbre/error ex)
-     (ring-response ex {:status 500})
-     )))
+     (ring-response ex {:status 500}))))
 
 (defresource streams-api :collection
   :desc "Collection route for streams"

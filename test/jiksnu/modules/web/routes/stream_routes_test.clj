@@ -22,18 +22,18 @@
         request (-> (req/request :post "/model/streams")
                     (req/body (json/json-str params))
                     (req/content-type "application/json")
-                    (as-user actor))]
-    (puget/cprint request)
-    (let [response (response-for request)]
-      response => (contains {:status 303
-                             :headers (contains {"Location" string?})
-                             })
-      (puget/cprint response)
-      #_(let [location (get-in response [:headers "Location"])
-            request2 (req/request :get location)]
-        (some-> request2 response-for :body json/read-str) =>
-        (contains {"name" (:name params)
-                   "owner" (:_id actor)})))))
+                    (as-user actor))
+        response (response-for request)
+        location (get-in response [:headers "Location"])
+        request2 (req/request :get location)]
+
+    response =>
+    (contains {:status 303
+               :headers (contains {"Location" #"/model/streams/[\d\w]+"})})
+
+    (some-> request2 response-for :body json/read-str) =>
+    (contains {"name" (:name params)
+               "owner" (:_id actor)})))
 
 
 (future-fact "public-timeline-http-route"

@@ -66,6 +66,7 @@
            true)
   :post-redirect? false
   :handle-created (fn [{:keys [request]}]
+                    (timbre/info "auth created")
                     (let [resp (friend/authenticate-response
                                 request
                                 {:body "ok"})]

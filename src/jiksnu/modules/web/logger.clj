@@ -7,7 +7,6 @@
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]
             [taoensso.timbre.profiling :as profiling]
             [socket-rocket.logstash :as sr]
-            [fipp.edn :refer (pprint)]
             [puget.printer :as puget]))
 
 (defn json-formatter
@@ -27,12 +26,9 @@
                    :ns (:?ns-str data)
                    :context (:context data)
                    :hostname (force (:hostname_ data))}]
-     ;; (println "")
-     ;; (println "")
      (->> out-data
           (map (fn [[k v]] (when v [k v])))
           (into {})
-          ;; puget/cprint
           json/json-str))))
 
 (defn set-logger
@@ -43,14 +39,13 @@
     :ns-blacklist [
                    "ciste.loader"
                    "ring.timbre.logger"
-                   "jiksnu.modules.http.actions"
+                   ;; "jiksnu.modules.http.actions"
                    ]
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
     ;; :output-fn json-formatter
     :appenders
     {
-     ;; :json json-appender
      ;; :logstash timbre-json-appender "192.168.1.151" 4660)
      ;; :logstash sr/logstash-appender
      :spit (assoc (spit-appender) :output-fn json-formatter)

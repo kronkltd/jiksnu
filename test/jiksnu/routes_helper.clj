@@ -25,20 +25,23 @@
       (catch Throwable ex
         (timbre/error ex))))))
 
+(defn parse-cookie
+  [response]
+  (some-> response
+          :headers
+          (get "Set-Cookie")
+          cookies/decode-cookies
+          (->> (map (fn [[k v]] [k (:value v)]))
+               (into {}))
+          codec/form-encode))
+
 (defn get-auth-cookie
   [username password]
   (let [request (-> (req/request :post "/main/login")
                     (req/body {:username username
                                :password password}))
         response (response-for request)]
-    (puget/cprint response)
-    (some-> response
-            :headers
-            (get "Set-Cookie")
-            cookies/decode-cookies
-            (->> (map (fn [[k v]] [k (:value v)]))
-                 (into {}))
-            codec/form-encode)))
+    (parse-cookie response)))
 
 (defn as-user
   ([m]
@@ -50,7 +53,7 @@
        (as-user m user password)))
   ([m user password]
      (let [cookie-str (get-auth-cookie (:username user) password)]
-       (assoc-in m [:headers "Cookie"] cookie-str))))
+       (assoc-in m [:headers "cookie"] cookie-str))))
 
 (defn as-admin
   [m]
