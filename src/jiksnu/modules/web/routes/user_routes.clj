@@ -178,14 +178,12 @@
   :parameters {:_id (path :model.user/id)}
   :subpage "streams"
   :target-model "user"
+  :available-media-types ["application/json"]
   :description "Streams of {{username}}"
   :available-formats [:json]
-  :presenter (fn [rsp]
-               (with-context [:http :json]
-                 (let [page (:body rsp)
-                       items (:items page)]
-                   #_(-> (if (seq items)
-                           (index-section items page)
-                           {})
-                       (assoc :displayName "Streams"))
-                   page))))
+  :exists? (fn [ctx]
+               (when-let [user (some-> ctx :request :route-params
+                                   :_id model.user/fetch-by-id)]
+                 (let [page (stream/fetch-by-user user)
+                       page (update page :items #(map :_id %))]
+                   {:data page}))))

@@ -8,4 +8,4 @@
   [:tbody
    [:tr {:ng-repeat "item in page.items"}
     [:td "{{item.name}}"]
-    [:td "{{item.user}}"]]]]]
+    [:td "{{item.owner}}"]]]]]

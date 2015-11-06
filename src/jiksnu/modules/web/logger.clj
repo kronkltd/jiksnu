@@ -38,7 +38,7 @@
     :ns-whitelist []
     :ns-blacklist [
                    "ciste.loader"
-                   "ring.timbre.logger"
+                   "ring.logger.timbre"
                    ;; "jiksnu.modules.http.actions"
                    ]
     :middleware []
