@@ -57,7 +57,7 @@
 
 (defn fetch-by-user
   [user & [options]]
-  (index {:user (:_id user)}))
+  (index {:owner (:_id user)}))
 
 (defaction direct-message-timeline
   [& _]
