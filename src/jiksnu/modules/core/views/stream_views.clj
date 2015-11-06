@@ -19,14 +19,13 @@
 
 (defview #'actions.stream/fetch-by-user :page
   [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:body {:action "sub-page-updated"
-            :model "user"
-            :id (:_id (:item request))
-            :body response}}))
+  (let [items (:items response)]
+    {:body
+     (merge response
+            {:id (:name request)
+             :target-model "user"
+             :target (:_id (:item request))
+             :items (map :_id items)})}))
 
 (defview #'actions.stream/home-timeline :xml
   [request activities]

@@ -57,7 +57,7 @@
 
 (defn get-sub-page-ids
   [item page-name & args]
-  ;; (timbre/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
+  (timbre/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
   (let [request {:format :page-ids
                  :serialization :page-ids
                  :name page-name
@@ -74,7 +74,7 @@
 
 (defn get-sub-page
   [item page-name & args]
-  ;; (timbre/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
+  (timbre/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
   (let [request {:format :page
                  :serialization :page
                  :name page-name
