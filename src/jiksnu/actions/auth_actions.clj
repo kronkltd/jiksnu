@@ -72,13 +72,18 @@
 (defn check-credentials
   [auth-map]
   (let [username (:username auth-map)]
-    (when-let [user (model.user/get-user username)]
-      (when-let [mechanisms (seq (model.authentication-mechanism/fetch-all
-                                  {:user (:_id user)}))]
-        (->> mechanisms
-             (map :value)
-             (some (fn [password]
-                     (creds/bcrypt-credential-fn
-                      {username {:username username
-                                 :password password}}
-                      auth-map))))))))
+    (or (when-let [user (model.user/get-user username)]
+          (when-let [mechanisms (seq (model.authentication-mechanism/fetch-all
+                                      {:user (:_id user)}))]
+            (when-let [resp (->> mechanisms
+                                 (map :value)
+                                 (some (fn [password]
+                                         (creds/bcrypt-credential-fn
+                                          {username {:username username
+                                                     :password password}}
+                                          auth-map))))]
+              (do (timbre/debug "Authenticated")
+                  resp))))
+        (do
+          (timbre/debug "failed")
+          nil))))
