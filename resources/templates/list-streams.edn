@@ -5,6 +5,13 @@
   [:input {:ng-model "stream.userId" :name "user" :type "hidden"}]
   [:input {:ng-model "stream.name" :name "name" :type "text"}]
   [:input.btn.btn-default {:type "submit"}]]
- [:ul
-  [:li {:ng-repeat "id in item.streams.items"}
-   [:show-stream-minimal {:data-id "{{id}}"}]]]]
+ [:table
+  [:tr {:ng-repeat "id in item.streams.items"}
+   [:td
+    [:show-stream-minimal {:data-id "{{id}}"}]]
+   [:td
+    [:button.btn.btn-default
+     [:i.glyphicon.glyphicon-trash]
+     ]
+    ]
+   ]]]

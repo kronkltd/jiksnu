@@ -7,5 +7,7 @@
     [:th "Owner"]]]
   [:tbody
    [:tr {:ng-repeat "item in page.items"}
-    [:td "{{item.name}}"]
+    [:td
+     [:a {:ui-sref "showStream(item)"}
+      "{{item.name}}"]]
     [:td "{{item.owner}}"]]]]]

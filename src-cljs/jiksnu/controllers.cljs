@@ -288,8 +288,23 @@
               (.then (fn [data]
                        (aset $scope "group" data)
                        (aset $scope "loaded" true))))))
-
   (.init $scope (.-_id $stateParams)))
+
+(def.controller jiksnu.ShowStreamController
+  [$scope $http $stateParams Streams]
+  (js/console.log "loading ShowStreamController")
+  (let [model Streams
+        label "stream"]
+    (set! (.-loaded $scope) false)
+    (set! (.-init $scope)
+          (fn [id]
+            (.bindOne model id $scope label)
+            (-> (.find model id)
+                (.then (fn [data]
+                         (aset $scope label data)
+                         (set! (.-loaded $scope) true))))))
+
+    (.init $scope (.-_id $stateParams))))
 
 (def.controller jiksnu.ShowStreamMinimalController
   [$scope Streams]

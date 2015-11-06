@@ -1,1 +1,3 @@
-[:p "{{stream.name}}"]
+[:p
+ [:a {:ui-sref "showStream(stream)"}
+  "{{stream.name}}"]]
