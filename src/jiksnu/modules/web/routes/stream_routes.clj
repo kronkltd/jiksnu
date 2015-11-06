@@ -64,7 +64,6 @@
   :allowed-methods [:get :post]
   :post! post-stream
   :post-redirect? (fn [ctx]
-                    (puget/cprint ctx)
                     {:location (format "/model/streams/%s" (:data ctx))})
   :schema {:type "object"
            :properties {:name {:type "string"}}

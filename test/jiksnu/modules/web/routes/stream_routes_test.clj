@@ -25,13 +25,16 @@
                     (as-user actor))]
     (puget/cprint request)
     (let [response (response-for request)]
-      response => (contains {:status 303})
+      response => (contains {:status 303
+                             :headers (contains {"Location" string?})
+                             })
       (puget/cprint response)
       #_(let [location (get-in response [:headers "Location"])
             request2 (req/request :get location)]
         (some-> request2 response-for :body json/read-str) =>
         (contains {"name" (:name params)
                    "owner" (:_id actor)})))))
+
 
 (future-fact "public-timeline-http-route"
   (fact "when there are no activities"
