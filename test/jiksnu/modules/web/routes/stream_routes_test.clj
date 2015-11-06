@@ -35,7 +35,6 @@
     (contains {"name" (:name params)
                "owner" (:_id actor)})))
 
-
 (future-fact "public-timeline-http-route"
   (fact "when there are no activities"
     (db/drop-all!)

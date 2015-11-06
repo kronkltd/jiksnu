@@ -66,12 +66,9 @@
            true)
   :post-redirect? false
   :handle-created (fn [{:keys [request]}]
-                    (timbre/info "auth created")
-                    (let [resp (friend/authenticate-response
-                                request
-                                {:body "ok"})]
-                      (puget/cprint resp)
-                      resp)))
+                    (friend/authenticate-response
+                     request
+                     {:body "ok"})))
 
 (defresource auth :logout
   :url                   "/main/logout"

@@ -4,6 +4,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.stream :as model.stream]
+            [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
@@ -40,8 +41,8 @@
   [{{:keys [params]
      :as request} :request}]
   (try+
-   (if-let [owner (:current (friend/identity request))]
-     (let [params (assoc params :owner owner)]
+   (if-let [owner (model.user/get-user (:current (friend/identity request)))]
+     (let [params (assoc params :owner (:_id owner))]
        (if-let [stream (actions.stream/create params {})]
          {:data (:_id stream)}
          (throw+ {:message "Failed to create stream"
