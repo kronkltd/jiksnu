@@ -11,6 +11,7 @@
    datatables
    hljs
    js-data
+   ngCookies
    ngSanitize
    ngWebSocket
    cfp.hotkeys

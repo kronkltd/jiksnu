@@ -1,6 +1,7 @@
 (ns jiksnu.directives
   (:require jiksnu.app
-            [jiksnu.controllers :as controller])
+            [jiksnu.controllers :as controller]
+            [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.directive]]
                [jiksnu.macros :only [list-directive]]
                [purnam.core :only [! ? arr obj]]))
@@ -28,17 +29,21 @@
 (def.directive jiksnu.addWatcherForm []
   (obj))
 
-(def.directive jiksnu.displayAvatar
-  []
-  #js
-  {:controller "DisplayAvatarController"
-   :link (fn [$scope element attrs]
-           (.init $scope (.-id attrs))
-           (.$watch $scope
-                    #(.-id attrs)
-                    #(.init $scope %)))
-   :scope true
-   :templateUrl "/templates/display-avatar"})
+(def.directive jiksnu.debug []
+  #js {:controller "DebugController"
+       :scope #js {:expr "=expr"
+                   :exprText "@expr"}
+       :templateUrl "/templates/debug"})
+
+(def.directive jiksnu.displayAvatar []
+  #js {:controller "DisplayAvatarController"
+       :link (fn [$scope element attrs]
+               (.init $scope (.-id attrs))
+               (.$watch $scope
+                        #(.-id attrs)
+                        #(.init $scope %)))
+       :scope true
+       :templateUrl "/templates/display-avatar"})
 
 (def.directive jiksnu.followButton
   []

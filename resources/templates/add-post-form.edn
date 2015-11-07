@@ -5,8 +5,8 @@
    [:input {:type "text" :placeholder "What are you doing?"
             :ng-click "toggle()"}]]
   [:div.post-form {:uib-collapse "!form.shown"}
-   [:div {:hljs "" :hljs-source "debug(activity)"}]
-   [:div {:hljs "" :hljs-source "debug(form)"}]
+   [:debug {:expr "activity"}]
+   [:debug {:expr "form"}]
    [:div.close.pull-right {:ng-click "toggle()"} "X"]
    [:fieldset
     [:legend "Post an activity"]
@@ -55,18 +55,18 @@
       [:a.btn {:ng-click "addTag()"}
        "Add Tags"]]]
     [:div.actions
-     [:code [:pre "{{addedStreams | json}}"]]
+     [:debug {:expr "addedStreams"}]
      [:div
       [:p "Streams"]
       [:ul
        [:li {:ng-repeat "id in activity.streams"}
-        [:code [:pre "{{id | json}}"]]
+        [:debug {:expr "id"}]
         [:show-stream-minimal {:data-id "{{id}}"}]]]
       [:ul
        [:li {:ng-repeat "id in streams.items"}
         [:a {:ng-click "addStream(id)"}
          [:show-stream-minimal {:data-id "{{id}}"}]]]]
-      [:code [:pre "{{streams | json}}"]]]
+      [:debug {:expr "streams"}]]
      [:select {:name "privacy" :ng-model "activity.privacy"}
       [:option {:value "public"} "Public"]
       [:option {:value "group"} "Group"]

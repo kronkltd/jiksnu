@@ -12,9 +12,7 @@
     [:link-to {:data-id "{{user.id}}"}]]]
   [:ul
    [:li {:ng-repeat "id in activity.streams"}
-    [:show-stream-minimal {:data-id "{{id}}"}]
-    ]
-   ]
+    [:show-stream-minimal {:data-id "{{id}}"}]]]
 
   [:div.entry-content
    [:div {:btf-markdown "activity.content"}]]
@@ -48,4 +46,4 @@
      " "]
     #_[:a {:href "/main/conversations/{{activity.conversation}}"}
        "in context"]]]]
- #_[:code [:pre "{{activity | json}}"]]]
+ [:debug {:expr "activity"}]]

@@ -31,6 +31,11 @@
 
 (def.controller jiksnu.AvatarPageController [])
 
+(def.controller jiksnu.DebugController [$scope $filter app]
+  (set! (.-visible $scope) (fn [] (.-debug app)))
+  (set! (.-formattedCode $scope)
+        #(($filter "json") (.-expr $scope))))
+
 (def.controller jiksnu.DisplayAvatarController
   [$scope Users]
   (! $scope.init

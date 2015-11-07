@@ -1,0 +1,3 @@
+[:div.debug-section {:ng-if "visible()"}
+ [:p.debug-label "{{exprText}}"]
+ [:div {:hljs "" :hljs-source "formattedCode()"}]]
