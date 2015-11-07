@@ -1,17 +1,12 @@
 [:div {:ng-show "enabled()"}
- [:code [:pre "{{form | json}}"]]
  [:form  {:ng-submit "submit()" :name "activityForm"}
   [:input {:type "hidden" :ng-model "source"}]
   [:div {:uib-collapse "form.shown"}
    [:input {:type "text" :placeholder "What are you doing?"
             :ng-click "toggle()"}]]
   [:div.post-form {:uib-collapse "!form.shown"}
-   [:div {:hljs ""
-          ;; :hljs-source "'{foo: true}'"
-          ;; :language "JSON"
-          ;; :interpolate "true"
-          :source "form"}]
-   [:code [:pre "{{toPrettyJSON(form, 2)}}"]]
+   [:div {:hljs "" :hljs-source "debug(activity)"}]
+   [:div {:hljs "" :hljs-source "debug(form)"}]
    [:div.close.pull-right {:ng-click "toggle()"} "X"]
    [:fieldset
     [:legend "Post an activity"]

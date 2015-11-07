@@ -171,8 +171,13 @@
   (-> (.fetchStatus app)
       (.then (fn [] (set! (.-loaded $scope) true)))))
 
+(def.controller jiksnu.NewGroupController
+  [$scope]
+
+  )
+
 (def.controller jiksnu.NewPostController
-  [$scope $rootScope geolocation app pageService]
+  [$scope $rootScope geolocation app pageService $filter]
   (timbre/debug "Loading New Post Controller")
   (let [default-form #js {:source "web"
                           :privacy "public"
@@ -180,6 +185,8 @@
                           :geo #js {:latitude nil
                                 :longitude nil}
                           :content ""}]
+
+
 
     ;; (.$watch $scope #(? app.data)          #(set! (.-app $scope) %))
     (let [get-location (fn []
@@ -192,6 +199,10 @@
       (.$watch $scope #(? $scope.form.shown) #(when % (get-location)))
 
       (set! (.. $scope -form) #js {:shown true})
+
+      (set! (.-debug $scope) (fn [o]
+                               (($filter "json") o
+                                #_(.-form $scope))))
 
       (set! (.-enabled $scope)
             (fn []
