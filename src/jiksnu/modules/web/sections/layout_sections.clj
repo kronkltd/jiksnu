@@ -93,6 +93,7 @@
   []
   (p/include-css
    "/vendor/bootstrap/dist/css/bootstrap.min.css"
+   "/vendor/highlightjs/styles/github.css"
    "/vendor/datatables/media/css/jquery.dataTables.min.css"
    "/vendor/angular-busy/dist/angular-busy.min.css"
    "/vendor/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css"
@@ -113,6 +114,7 @@
       "/vendor/jquery/dist/jquery.min.js"
       "/vendor/angular/angular.min.js"
       "/vendor/angular-datatables/dist/angular-datatables.min.js"
+      "/vendor/highlightjs/highlight.pack.js"
       "/vendor/momentjs/min/moment.min.js"
       "/vendor/underscore/underscore-min.js"
       "/vendor/showdown/src/showdown.js"
@@ -123,6 +125,7 @@
       "/vendor/js-data-angular/dist/js-data-angular.min.js"
       "/vendor/angular-file-upload/dist/angular-file-upload.min.js"
       "/vendor/angular-cfp-hotkeys/build/hotkeys.min.js"
+      "/vendor/angular-highlightjs/angular-highlightjs.js"
       "/vendor/angular-markdown-directive/markdown.js"
       "/vendor/angular-moment/angular-moment.min.js"
       "/vendor/angular-notify/dist/angular-notify.min.js"

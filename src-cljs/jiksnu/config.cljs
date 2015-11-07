@@ -5,9 +5,12 @@
   (:use-macros [gyr.core :only [def.config]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
-                    appProvider DSProvider DSHttpAdapterProvider]
+                    appProvider DSProvider DSHttpAdapterProvider
+                    hljsServiceProvider]
 
   ;; (js/console.log (.-defaults DSProvider))
+
+  (.setOptions hljsServiceProvider #js {:tabReplace "  "})
 
   (js/angular.extend (.-defaults DSProvider)
                      #js {:idAttribute "_id"

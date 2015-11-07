@@ -173,46 +173,69 @@
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService]
-  ;; (js/console.log "Loading New Post Controller")
-  (let [default-form {:source "web"
-                      :privacy "public"
-                      :title ""
-                      :geo {:latitude nil
-                            :longitude nil}
-                      :content ""}]
-    (.$watch $scope #(? app.data)          (fn [data] (aset $scope "app" data)))
-    (.$watch $scope #(? $scope.form.shown) (fn [shown?] (when shown? (.getLocation $scope))))
-    (aset $scope "getLocation"  (fn [] (-> (.getLocation geolocation)
-                                          (.then (fn [data]
-                                                   (let [geo (? $scope.activity.geo)
-                                                         coords (.-coords data)]
-                                                     (aset geo "latitude" (.-latitude coords))
-                                                     (aset geo "longitude" (.-longitude coords))))))))
-    (aset $scope "addStream" (fn [id]
-                               (let [streams (.-streams (.-activity $scope))]
-                                 (if (not-any? (partial = id) streams)
-                                   (.push streams id)))))
-    (aset $scope "fetchStreams" (fn [] (-> (.getUser app)
-                                          (.then (fn [user]
-                                                   ;; (js/console.log "Got User" user)
-                                                   (-> (.getStreams user)
-                                                       (.then (fn [streams]
-                                                                ;; (js/console.log "Got Streams" streams)
-                                                                (! $scope.streams streams)))))))))
-    (aset $scope "toggle"       (fn []
-                                  ;; (js/console.debug "Toggling New Post form")
-                                  (! $scope.form.shown (not $scope.form.shown))
-                                  (when (? $scope.form.shown)
-                                    (.fetchStreams $scope))))
-    (aset $scope "reset"        (fn []
-                                  (! $scope.activity (clj->js default-form))
-                                  (aset (.-activity $scope) "streams" (arr))))
-    (aset $scope "submit"       (fn [] (-> (.post app $scope.activity)
-                                          (.then (fn []
-                                                   (.reset $scope)
-                                                   (.toggle $scope)
-                                                   (.$broadcast $rootScope "updateCollection"))))))
-    (.reset $scope)))
+  (timbre/debug "Loading New Post Controller")
+  (let [default-form #js {:source "web"
+                          :privacy "public"
+                          :title ""
+                          :geo #js {:latitude nil
+                                :longitude nil}
+                          :content ""}]
+
+    ;; (.$watch $scope #(? app.data)          #(set! (.-app $scope) %))
+    (let [get-location (fn []
+                         (-> (.getLocation geolocation)
+                             (.then (fn [data]
+                                      (let [geo (.. $scope -activity -geo)
+                                            coords (.-coords data)]
+                                        (set! (.-latitude geo) (.-latitude coords))
+                                        (set! (.-longitude geo) (.-longitude coords)))))))]
+      (.$watch $scope #(? $scope.form.shown) #(when % (get-location)))
+
+      (set! (.. $scope -form) #js {:shown true})
+
+      (set! (.-enabled $scope)
+            (fn []
+              (.-data app)))
+
+      (set! (.-addStream $scope)
+            (fn [id]
+              (timbre/debug "adding stream" id)
+              (let [streams (.. $scope -activity -streams)]
+                (if (not-any? (partial = id) streams)
+                  (.push streams id)))))
+
+      (aset $scope "fetchStreams"
+            (fn []
+              (timbre/debug "fetching streams")
+              (-> (.getUser app)
+                  (.then (fn [user]
+                           (timbre/debug "Got User" user)
+                           (-> (.getStreams user)
+                               (.then (fn [streams]
+                                        (timbre/debug "Got Streams" streams)
+                                        (set! (.-streams $scope) streams)))))))))
+
+      (aset $scope "toggle"
+            (fn []
+              (timbre/debug "Toggling New Post form")
+              (set! (.. $scope -form -shown)
+                    (not (.. $scope -form -shown)))
+              (when (.. $scope -form -shown)
+                (.fetchStreams $scope))))
+
+      (aset $scope "reset"
+            (fn []
+              (set! (.-activity $scope) default-form)
+              (aset (.-activity $scope) "streams" (arr))))
+
+      (aset $scope "submit"
+            (fn [] (-> (.post app (.-activity $scope))
+                       (.then (fn []
+                                (.reset $scope)
+                                (.toggle $scope)
+                                (.$broadcast $rootScope "updateCollection"))))))
+
+      (.reset $scope))))
 
 (def.controller jiksnu.RegisterPageController
   [app $scope]

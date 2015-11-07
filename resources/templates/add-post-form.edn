@@ -1,10 +1,17 @@
-[:div {:ng-show "app.user"}
+[:div {:ng-show "enabled()"}
+ [:code [:pre "{{form | json}}"]]
  [:form  {:ng-submit "submit()" :name "activityForm"}
   [:input {:type "hidden" :ng-model "source"}]
   [:div {:uib-collapse "form.shown"}
    [:input {:type "text" :placeholder "What are you doing?"
             :ng-click "toggle()"}]]
   [:div.post-form {:uib-collapse "!form.shown"}
+   [:div {:hljs ""
+          ;; :hljs-source "'{foo: true}'"
+          ;; :language "JSON"
+          ;; :interpolate "true"
+          :source "form"}]
+   [:code [:pre "{{toPrettyJSON(form, 2)}}"]]
    [:div.close.pull-right {:ng-click "toggle()"} "X"]
    [:fieldset
     [:legend "Post an activity"]
@@ -22,22 +29,22 @@
     [:fieldset.add-buttons
      [:legend "Add:"]
      [:div.button-group
-      [:label.btn {:ng-model "add.tags" :uib-btn-checkbox ""}
+      [:label.btn {:ng-model "form.add.tags" :uib-btn-checkbox ""}
        [:i.icon-tag]        [:span.button-text "Tags"]]
-      [:label.btn {:ng-model "add.recipients" :uib-btn-checkbox ""}
+      [:label.btn {:ng-model "form.add.recipients" :uib-btn-checkbox ""}
        [:i.icon-user]       [:span.button-text "Recipients"]]
-      [:label.btn {:ng-model "add.location" :uib-btn-checkbox ""}
+      [:label.btn {:ng-model "form.add.location" :uib-btn-checkbox ""}
        [:i.icon-map-marker] [:span.button-text "Location"]]
-      [:label.btn {:ng-model "add.links" :uib-btn-checkbox ""}
+      [:label.btn {:ng-model "form.add.links" :uib-btn-checkbox ""}
        [:i.icon-bookmark]   [:span.button-text "Links"]]
-      [:label.btn {:ng-model "add.pictures" :uib-btn-checkbox ""}
+      [:label.btn {:ng-model "form.add.pictures" :uib-btn-checkbox ""}
        [:i.icon-picture]    [:span.button-text "Pictures"]]]]
 
-    [:div.control-group {:uib-collapse "!add.pictures"}
+    [:div.control-group {:uib-collapse "!form.add.pictures"}
      [:label.control-label {:for "pictures"} "Pictures"]
      [:div.controls
       [:input {:type "file" :name "pictures"}]]]
-    [:div.control-group {:uib-collapse "!add.location"}
+    [:div.control-group {:uib-collapse "!form.add.location"}
      [:label.control-label "Location"]
      [:div.controls
       [:label {:for "geo.latitude"} "Latitude"]
@@ -46,25 +53,25 @@
       [:label {:for "geo.longitude"} "Longitude"]
       [:div.input
        [:input {:type "text" :ng-model "activity.geo.longitude"}]]]]
-    [:div.control-group {:uib-collapse "!add.tags"}
+    [:div.control-group {:uib-collapse "!form.add.tags"}
      [:label.control-label {:for "tags"} "Tags"]
      [:div.controls
       [:input {:type "text" :name "tags" :ng-model "tag"}]
-      [:a.btn {:ng-click "addTag"}
+      [:a.btn {:ng-click "addTag()"}
        "Add Tags"]]]
     [:div.actions
-     #_[:code [:pre "{{addedStreams | json}}"]]
+     [:code [:pre "{{addedStreams | json}}"]]
      [:div
       [:p "Streams"]
       [:ul
        [:li {:ng-repeat "id in activity.streams"}
-        #_[:code [:pre "{{id | json}}"]]
+        [:code [:pre "{{id | json}}"]]
         [:show-stream-minimal {:data-id "{{id}}"}]]]
       [:ul
        [:li {:ng-repeat "id in streams.items"}
         [:a {:ng-click "addStream(id)"}
          [:show-stream-minimal {:data-id "{{id}}"}]]]]
-      #_[:code [:pre "{{streams | json}}"]]]
+      [:code [:pre "{{streams | json}}"]]]
      [:select {:name "privacy" :ng-model "activity.privacy"}
       [:option {:value "public"} "Public"]
       [:option {:value "group"} "Group"]
@@ -72,5 +79,4 @@
       [:option {:value "private"} "Private"]]
      ;; TODO: Group dropdown
      [:group-select]]
-    [:button.btn.btn-primary.pull-right {:type "submit"} "Post"]
-    #_[:code [:pre "{{activity | json}}"]]]]]]
+    [:button.btn.btn-primary.pull-right {:type "submit"} "Post"]]]]]

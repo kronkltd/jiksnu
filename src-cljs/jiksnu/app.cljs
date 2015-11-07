@@ -9,6 +9,7 @@
    cgNotify
    geolocation
    datatables
+   hljs
    js-data
    ngSanitize
    ngWebSocket
