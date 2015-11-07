@@ -140,7 +140,7 @@
 
 (defn app-service
   [$http $q $state notify Users $websocket $window DS
-   pageService subpageService $cookies]
+   pageService subpageService]
   (let [app #js {}
         data #js {}
         websocket-url (if-let [location (.-location $window)]
@@ -163,9 +163,6 @@
     (set! (.-di app) di)
     (set! (.-connection app) connection)
     (set! (.-data app) data)
-
-    (let [debug (.get $cookies "XDEBUG_SESSION")]
-      (set! (.-debug app) (not-empty debug)))
 
     (doseq [[n f] app-methods]
       (aset app (name n) (partial f app)))
@@ -192,5 +189,5 @@
 (def.provider jiksnu.app
   []
   #js {:$get #js ["$http" "$q" "$state" "notify" "Users" "$websocket" "$window" "DS"
-                  "pageService" "subpageService" "$cookies"
+                  "pageService" "subpageService"
                   app-service]})

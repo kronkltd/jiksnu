@@ -32,7 +32,14 @@
 (def.controller jiksnu.AvatarPageController [])
 
 (def.controller jiksnu.DebugController [$scope $filter app]
-  (set! (.-visible $scope) (fn [] (.-debug app)))
+  ;; (.$watch $scope
+  ;;          (.-isCollapsed $scope)
+  ;;          (fn [v]
+  ;;            (if v "")
+  ;;            ))
+
+  (set! (.-visible $scope) #(.. app -data -debug))
+
   (set! (.-formattedCode $scope)
         #(($filter "json") (.-expr $scope))))
 
@@ -40,7 +47,7 @@
   [$scope Users]
   (! $scope.init
      (fn [id]
-       ;; (js/console.debug "Displaying avatar for " id)
+       (timbre/debug "Displaying avatar for " id)
        (when (and id (not= id ""))
          (! $scope.size 32)
          ;; (js/console.info "binding user" id)
@@ -189,69 +196,62 @@
                           :title ""
                           :geo #js {:latitude nil
                                 :longitude nil}
-                          :content ""}]
+                          :content ""}
+        get-location (fn []
+                       (-> (.getLocation geolocation)
+                           (.then (fn [data]
+                                    (let [geo (.. $scope -activity -geo)
+                                          coords (.-coords data)]
+                                      (set! (.-latitude geo) (.-latitude coords))
+                                      (set! (.-longitude geo) (.-longitude coords)))))))]
+    (.$watch $scope #(? $scope.form.shown) #(when % (get-location)))
 
+    (set! (.-form $scope) #js {:shown true})
 
+    (set! (.-enabled $scope)
+          (fn []
+            (.-data app)))
 
-    ;; (.$watch $scope #(? app.data)          #(set! (.-app $scope) %))
-    (let [get-location (fn []
-                         (-> (.getLocation geolocation)
-                             (.then (fn [data]
-                                      (let [geo (.. $scope -activity -geo)
-                                            coords (.-coords data)]
-                                        (set! (.-latitude geo) (.-latitude coords))
-                                        (set! (.-longitude geo) (.-longitude coords)))))))]
-      (.$watch $scope #(? $scope.form.shown) #(when % (get-location)))
+    (set! (.-addStream $scope)
+          (fn [id]
+            (timbre/debug "adding stream" id)
+            (let [streams (.. $scope -activity -streams)]
+              (if (not-any? (partial = id) streams)
+                (.push streams id)))))
 
-      (set! (.. $scope -form) #js {:shown true})
+    (set! (.-fetchStreams $scope)
+          (fn []
+            (timbre/debug "fetching streams")
+            (-> (.getUser app)
+                (.then (fn [user]
+                         (timbre/debug "Got User" user)
+                         (-> (.getStreams user)
+                             (.then (fn [streams]
+                                      (timbre/debug "Got Streams" streams)
+                                      (set! (.-streams $scope) streams)))))))))
 
-      (set! (.-debug $scope) (fn [o]
-                               (($filter "json") o
-                                #_(.-form $scope))))
+    (set! (.-toggle $scope)
+          (fn []
+            (timbre/debug "Toggling New Post form")
+            (set! (.. $scope -form -shown)
+                  (not (.. $scope -form -shown)))
+            (when (.. $scope -form -shown)
+              (.fetchStreams $scope))))
 
-      (set! (.-enabled $scope)
-            (fn []
-              (.-data app)))
+    (set! (.-reset $scope)
+          (fn []
+            (set! (.-activity $scope) default-form)
+            (set! (.. $scope -activity -streams) #js [])))
 
-      (set! (.-addStream $scope)
-            (fn [id]
-              (timbre/debug "adding stream" id)
-              (let [streams (.. $scope -activity -streams)]
-                (if (not-any? (partial = id) streams)
-                  (.push streams id)))))
+    (set! (.-submit $scope)
+          (fn []
+            (-> (.post app (.-activity $scope))
+                (.then (fn []
+                         (.reset $scope)
+                         (.toggle $scope)
+                         (.$broadcast $rootScope "updateCollection"))))))
 
-      (aset $scope "fetchStreams"
-            (fn []
-              (timbre/debug "fetching streams")
-              (-> (.getUser app)
-                  (.then (fn [user]
-                           (timbre/debug "Got User" user)
-                           (-> (.getStreams user)
-                               (.then (fn [streams]
-                                        (timbre/debug "Got Streams" streams)
-                                        (set! (.-streams $scope) streams)))))))))
-
-      (aset $scope "toggle"
-            (fn []
-              (timbre/debug "Toggling New Post form")
-              (set! (.. $scope -form -shown)
-                    (not (.. $scope -form -shown)))
-              (when (.. $scope -form -shown)
-                (.fetchStreams $scope))))
-
-      (aset $scope "reset"
-            (fn []
-              (set! (.-activity $scope) default-form)
-              (aset (.-activity $scope) "streams" (arr))))
-
-      (aset $scope "submit"
-            (fn [] (-> (.post app (.-activity $scope))
-                       (.then (fn []
-                                (.reset $scope)
-                                (.toggle $scope)
-                                (.$broadcast $rootScope "updateCollection"))))))
-
-      (.reset $scope))))
+    (.reset $scope)))
 
 (def.controller jiksnu.RegisterPageController
   [app $scope]

@@ -1,3 +1,6 @@
 [:div.debug-section {:ng-if "visible()"}
- [:p.debug-label "{{exprText}}"]
- [:div {:hljs "" :hljs-source "formattedCode()"}]]
+ [:p.debug-label {:ng-click "isCollapsed = !isCollapsed"}
+  ;; [:i {:ng-class "{isCollapsed: "}]
+  "{{state}} {{exprText}}"]
+ [:div {:hljs "" :hljs-source "formattedCode()"
+        :uib-collapse "isCollapsed"}]]
