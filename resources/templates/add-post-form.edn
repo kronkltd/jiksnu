@@ -26,7 +26,7 @@
      [:div.button-group
       [:label.btn {:ng-model "form.add.tags" :uib-btn-checkbox ""}
        [:i.icon-tag]        [:span.button-text "Tags"]]
-      [:label.btn {:ng-model "form.add.recipients" :uib-btn-checkbox ""}
+      #_[:label.btn {:ng-model "form.add.recipients" :uib-btn-checkbox ""}
        [:i.icon-user]       [:span.button-text "Recipients"]]
       [:label.btn {:ng-model "form.add.location" :uib-btn-checkbox ""}
        [:i.icon-map-marker] [:span.button-text "Location"]]
@@ -55,18 +55,21 @@
       [:a.btn {:ng-click "addTag()"}
        "Add Tags"]]]
     [:div.actions
-     [:debug {:expr "addedStreams"}]
+     [:debug {:expr "activity.streams"}]
      [:div
-      [:p "Streams"]
-      [:ul
-       [:li {:ng-repeat "id in activity.streams"}
-        [:debug {:expr "id"}]
-        [:show-stream-minimal {:data-id "{{id}}"}]]]
-      [:ul
-       [:li {:ng-repeat "id in streams.items"}
-        [:a {:ng-click "addStream(id)"}
+      [:h3 "Streams"]
+      [:debug {:expr "streams"}]
+      [:div
+       [:h4 "Added"]
+       [:ul
+        [:li {:ng-repeat "id in activity.streams"}
          [:show-stream-minimal {:data-id "{{id}}"}]]]]
-      [:debug {:expr "streams"}]]
+      [:div
+       [:h4 "Available"]
+       [:ul
+        [:li {:ng-repeat "id in streams.items"}
+         [:a {:ng-click "addStream(id)"}
+          [:show-stream-minimal {:data-id "{{id}}"}]]]]]]
      [:select {:name "privacy" :ng-model "activity.privacy"}
       [:option {:value "public"} "Public"]
       [:option {:value "group"} "Group"]
