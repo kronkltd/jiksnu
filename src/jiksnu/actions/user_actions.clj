@@ -161,63 +161,64 @@
   [params & [options]]
   (timbre/info "fetching xrd")
   (if-let [domain (get-domain params)]
-    (if-let [url (model.domain/get-xrd-url domain (:_id params))]
-      (when-let [xrd (:body @(ops/update-resource url options))]
-        (let [doc (cm/string->document xrd)
-              username (model.webfinger/get-username-from-xrd doc)]
-          (merge params
-                 (parse-xrd doc)
-                 {:username username})))
-      (timbre/warn "could not determine xrd url"))
+    (do (util/inspect params)
+        (if-let [url (model.domain/get-xrd-url domain (:_id params))]
+          (when-let [xrd (:body @(ops/update-resource url options))]
+            (let [doc (cm/string->document xrd)
+                  username (model.webfinger/get-username-from-xrd doc)]
+              (merge params
+                     (parse-xrd doc)
+                     {:username username})))
+          (timbre/warn "could not determine xrd url")))
     (throw+ "could not determine domain name")))
 
 ;; TODO: Collect all changes and update the user once.
 (defn discover-user-xrd
-  "Retreive user information from webfinger"
+  "Attempt to retreive User information from webfinger
+
+  If information can not be found, return params"
   [params & [options]]
-  (timbre/info "Discovering user via xrd")
+  (timbre/info "Discovering User via XRD")
   (if-let [xrd (fetch-xrd params options)]
     (let [params (process-xrd params xrd options)]
       (merge xrd params))
-    (do (timbre/warn "Could not fetch xrd")
+    (do (timbre/warn "Could not fetch XRD")
         params)))
 
 (defn get-username-from-http-uri
-  [params & [options]]
-  ;; HTTP(S) URI
-  (timbre/info "http url")
-  (let [id (:_id params)
-        uri  (URI. id)]
-    (if-let [username (.getUserInfo uri)]
-      (do
-        (timbre/debugf "username: %s" username)
-        (assoc params :username username))
-      (let [params (or (and (:domain params) params)
-                       (when-let [domain-name (util/get-domain-name (:_id params))]
-                         (assoc params :domain domain-name))
-                       (throw+ "Could not determine domain name"))]
-        (if (:username params)
-          params
-          (let [params (discover-user-xrd params options)]
-            (if (:username params)
-              (do
-                (timbre/debug "Swapping user id for url")
-                (let [acct-id (format "acct:%s@%s" (:username params) (:domain params))]
-                  (merge params {:url id :_id acct-id})))
-              (do
-                (timbre/debug "Does not have a username from xrd")
-                (when-let [profile-link (:href (model.user/get-link params "self"))]
-                  (let [response @(ops/update-resource profile-link {})
-                        body (:body response)
-                        profile (json/read-str body :key-fn keyword)
-                        username (:preferredUsername profile)
-                        params (merge params
-                                      (when profile
-                                        {:username username})
-                                      profile)]
-                    (if (:username params)
-                      params
-                      (throw+ "Could not determine username"))))))))))))
+  [{id :_id username :username :as params} & [options]]
+  (timbre/info "HTTP(S) URI")
+  (util/inspect id)
+  (if-let [username (some-> id URI. .getUserInfo)]
+    (do
+      (timbre/debugf "Username from uri: %s" username)
+      (assoc params :username username))
+    (do
+      (timbre/debug "Could not determine username from uri")
+      (if-let [domain (or (:domain params) (util/get-domain-name id))]
+        (let [params (assoc params :domain params)]
+          (if (:username params)
+            params
+            (let [params (discover-user-xrd params options)]
+              (if (:username params)
+                (do
+                  (timbre/debug "Swapping user id for url")
+                  (let [acct-id (format "acct:%s@%s" (:username params) (:domain params))]
+                    (merge params {:url id :_id acct-id})))
+                (do
+                  (timbre/debug "Does not have a username from xrd")
+                  (when-let [profile-link (:href (model.user/get-link params "self"))]
+                    (let [response @(ops/update-resource profile-link {})
+                          body (:body response)
+                          profile (json/read-str body :key-fn keyword)
+                          username (:preferredUsername profile)
+                          params (merge params
+                                        (when profile
+                                          {:username username})
+                                        profile)]
+                      (if (:username params)
+                        params
+                        (throw+ "Could not determine username")))))))))))))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"

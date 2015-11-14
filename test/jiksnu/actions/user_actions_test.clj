@@ -21,6 +21,12 @@
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
+;; (use-test-environment!
+;;  {
+;;   :modules ["jiksnu.core"]
+;;   }
+;;  )
+
 (defn mock-user-meta
   [username domain-name uri source-link]
   (h/html
@@ -49,6 +55,7 @@
           domain-name (fseq :domain)
           uri (factory/make-uri domain-name "/users/1")
           params {:_id uri}]
+      (util/inspect params)
       (actions.user/get-username-from-http-uri params) =>
       (contains {:username username}))))
 
@@ -168,19 +175,26 @@
 
         (fact "when the domain has an xrd endpoint"
           (db/drop-all!)
+          (util/inspect params)
           (let [domain (actions.domain/find-or-create
                         (factory :domain
                                  {:_id domain-name
                                   :xrdTemplate xrd-template
                                   :discovered true}))]
+            (util/inspect domain)
 
             (model.domain/set-field! domain :xrdTemplate xrd-template)
             (actions.domain/add-link domain {:rel "xrd" :template xrd-template})
 
+
             (fact "when the username can be determined"
+              (util/inspect params)
               (actions.user/find-or-create params) => (partial instance? User)
-              (provided
-               (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd})))))))
+
+              #_(provided
+                 (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd}))
+
+              )))))
 
     (fact "when given an acct uri uri"
       (db/drop-all!)
@@ -193,7 +207,9 @@
           (actions.user/find-or-create {:_id uri}) => .user.
 
           (provided
-            (actions.user/create anything) => .user.))))))
+           (actions.user/create anything) => .user.))))
+
+    ))
 
 (fact "#'jiksnu.actions.user-actions/register"
   (let [params {:username (fseq :username)
