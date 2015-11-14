@@ -32,7 +32,8 @@
                  [org.clojure/data.json "0.2.6"]
                  [org.jsoup/jsoup "1.8.3"]
                  [slingshot "0.12.2"]]
-  :profiles {:dev
+  :profiles {:dev [:dev-core :user-dev]
+             :dev-core
              {:resource-paths ["test-resources"]
               :dependencies
               [[midje         "1.7.0"]
@@ -44,4 +45,5 @@
             [lein-midje     "3.1.3"]
             [lein-ancient "0.6.7"]
             [lein-bikeshed "0.2.0"]
+            [lein-checkall "0.1.1"]
             ])

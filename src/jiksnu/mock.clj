@@ -97,10 +97,12 @@
     user))
 
 (defn a-stream-exists
-  [& [options]]
-  (let [user (a-user-exists options)
+  [& [{user :user
+       stream-name :name
+       :as options}]]
+  (let [user (or user (a-user-exists options))
         params {:user (:_id user)
-                :name (fseq :word)}
+                :name (or stream-name (fseq :word))}
         stream (actions.stream/create params {})]
     (set-that :stream stream)
     stream))

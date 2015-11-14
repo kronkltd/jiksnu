@@ -65,4 +65,3 @@
 (defn user?
   "Is the provided object a user?"
   [user] (instance? User user))
-

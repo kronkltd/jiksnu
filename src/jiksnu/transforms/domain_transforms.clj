@@ -12,4 +12,3 @@
   (if (contains? item :local)
     item
     (assoc item :local (= (:_id item) (config :domain)))))
-

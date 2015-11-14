@@ -20,10 +20,9 @@
 (defn op-error
   [ex]
   (if-not (keyword? ex)
-    (do
-      (timbre/errorf "op error: %s" ex)
-      ;; FIXME: Handle error
-      )
+    (timbre/errorf "op error: %s" ex)
+    ;; FIXME: Handle error
+
     (timbre/error ex)))
 
 (defn op-success

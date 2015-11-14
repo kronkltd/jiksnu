@@ -47,7 +47,6 @@
   Boolean
   "Can unauthenticated users view this site?")
 
-
 (defn config-output
   []
   {:site

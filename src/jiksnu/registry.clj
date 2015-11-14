@@ -77,6 +77,4 @@
    "sections"
    "triggers"
    "views"
-   "routes"]
-  )
-
+   "routes"])
