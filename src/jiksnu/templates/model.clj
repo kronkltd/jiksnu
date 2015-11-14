@@ -63,9 +63,11 @@
   [collection-name]
   (fn [item]
     (let [response (mc/remove-by-id @_db collection-name (:_id item))]
+      (util/inspect response)
       (when (< 0 (.getN response))
         (notify ::item-deleted {:item item
                                 :collection collection-name})
+        (util/inspect item)
         item))))
 
 (defn make-dropper

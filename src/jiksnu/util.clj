@@ -2,6 +2,8 @@
   (:require [ciste.loader :refer [require-namespaces]]
             [ciste.model :as cm]
             [clj-factory.core :refer [factory]]
+            [clj-time.core :as t]
+            [clj-time.format :as f]
             [clojure.string :as string]
             [clojure.data.json :as json]
             [crypto.random :as random]
@@ -13,6 +15,7 @@
             monger.joda-time
             monger.json
             [org.bovinegenius.exploding-fish :as uri]
+            [puget.printer :as puget]
             [ring.util.codec :as codec]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre])
@@ -252,3 +255,18 @@
        )
 
    ))
+
+(def time-handlers
+  {org.bson.types.ObjectId
+   (puget/tagged-handler
+    'ObjectId
+    (partial str))
+   org.joda.time.DateTime
+   (puget/tagged-handler
+    'inst
+    (partial f/unparse (f/formatters :date-time)))})
+
+(defn inspect
+  "Prints a display of the passed value"
+  [v]
+  (puget/cprint v {:print-handlers time-handlers}))
