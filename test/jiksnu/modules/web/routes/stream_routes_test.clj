@@ -35,6 +35,17 @@
     (contains {"name" (:name params)
                "owner" (:_id actor)})))
 
+(fact "route: streams-api/collection :delete"
+  (let [stream (mock/a-stream-exists)
+        url (str "/model/streams/" (:_id stream))
+        request (-> (req/request :delete url))
+        ;; response
+        ]
+    (response-for request) => (contains {:status 200})
+
+    )
+  )
+
 (future-fact "public-timeline-http-route"
   (fact "when there are no activities"
     (db/drop-all!)

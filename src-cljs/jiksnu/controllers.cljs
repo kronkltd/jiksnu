@@ -131,6 +131,9 @@
   (set! (.-toggle $scope)
         (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))
           (.updateLabel $scope)))
+
+  (set! (.-deleteStream $scope) #(.deleteStream app %))
+
   (set! (.-addStream $scope)
         (fn []
           (if-let [stream-name (.. $scope -stream -name)]

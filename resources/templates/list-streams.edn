@@ -11,5 +11,5 @@
     [:td
      [:show-stream-minimal {:data-id "{{id}}"}]]
     [:td
-     [:button.btn.btn-default
+     [:button.btn.btn-default {:ng-click "deleteStream(id)"}
       [:i.glyphicon.glyphicon-trash]]]]]]]

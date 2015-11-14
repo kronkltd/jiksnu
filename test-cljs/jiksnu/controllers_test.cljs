@@ -86,4 +86,9 @@
 
           (-> (.addStream $scope)
               (.then (fn [response]
-                       (is response nil)))))))))
+                       (is response nil)))))))
+
+    (describe {:doc "delete"}
+
+              )
+    ))
