@@ -1,8 +1,6 @@
 (ns jiksnu.actions.subscription-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [defaction]]
+            [ciste.initializer :refer [definitializer]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -14,9 +12,9 @@
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
-            [jiksnu.util :as util])
-  (:import javax.security.sasl.AuthenticationException
-           jiksnu.model.Subscription
+            [jiksnu.util :as util]
+            [slingshot.slingshot :refer [throw+]])
+  (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
 (defonce delete-hooks (ref []))
@@ -56,10 +54,6 @@
   [& options]
   (apply index* options))
 
-(defaction ostatus
-  [& _]
-  (cm/implement))
-
 (defaction ostatussub
   [profile]
   ;; TODO: Allow for http uri's
@@ -68,21 +62,9 @@
       (model.user/get-user username domain))
     (model/map->User {})))
 
-(defaction remote-subscribe
-  [& _]
-  (cm/implement))
-
-(defaction remote-subscribe-confirm
-  [& _]
-  (cm/implement))
-
 (defaction show
   [item]
   item)
-
-(defaction update-record
-  [subscription]
-  (cm/implement))
 
 (defaction subscribe
   [actor user]
@@ -141,11 +123,6 @@
   (if-let [subscription (model.subscription/find-by-users actor target)]
     (model.subscription/unsubscribe actor target)
     (throw+ "Subscription not found")))
-
-(defaction subscribe-confirm
-  [user]
-  ;; TODO: unmark pending flag
-  (cm/implement))
 
 (defaction confirm
   [subscription]

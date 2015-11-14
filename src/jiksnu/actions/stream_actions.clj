@@ -1,7 +1,6 @@
 (ns jiksnu.actions.stream-actions
   (:require [ciste.commands :refer [parse-command]]
             [ciste.core :refer [defaction with-context]]
-            [ciste.model :as cm]
             [ciste.sections.default :refer [show-section]]
             [clojure.data.json :as json]
             [clojure.string :as string]
@@ -60,19 +59,9 @@
   [user & [options]]
   (index {:user (:_id user)}))
 
-
-
 (defaction direct-message-timeline
   [& _]
-  (cm/implement))
-
-(defaction friends-timeline
-  [& _]
-  (cm/implement))
-
-(defaction inbox
-  [& _]
-  (cm/implement))
+  nil)
 
 (def public-timeline*
   (templates.actions/make-indexer 'jiksnu.model.conversation))
@@ -105,12 +94,7 @@
 
 (defaction direct-inbox-minor
   [& _]
-  []
-  )
-
-(defaction stream
-  []
-  (cm/implement))
+  [])
 
 (defn format-message
   [message]
@@ -142,35 +126,16 @@
   ;; TODO: implement
   [group (actions.conversation/fetch-by-group group)])
 
-(defaction user-list
-  []
-  (cm/implement))
-
 (defaction home-timeline
   []
-  (cm/implement))
+  nil)
 
 (defaction mentions-timeline
   []
-  (cm/implement))
-
-(defaction add
-  [options]
-  (cm/implement))
-
-(defaction add-stream-page
-  []
-  (cm/implement))
-
-(defaction user-microsummary
-  [user]
-  [user
-   ;; TODO: get most recent activity
-   (cm/implement nil)])
+  nil)
 
 (defn stream-handler
   [request]
-  (cm/implement)
   #_(let [stream (s/stream)]
     (s/connect
      (->> ciste.core/*actions*
@@ -212,6 +177,4 @@
 (defn handle-closed
   [request channel status]
   (log/info "connection closed")
-  #_(connection-closed user-id connection-id)
-
-)
+  #_(connection-closed user-id connection-id))

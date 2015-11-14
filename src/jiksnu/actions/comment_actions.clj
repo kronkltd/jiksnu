@@ -1,6 +1,5 @@
 (ns jiksnu.actions.comment-actions
   (:require [ciste.core :refer [defaction]]
-            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
@@ -11,10 +10,6 @@
 (defn comment-node-uri
   [{id :id}]
   (str ns/microblog ":replies:item=" id))
-
-(defaction new-comment
-  [& _]
-  (cm/implement))
 
 (defaction add-comment
   [params]
@@ -34,4 +29,3 @@
   (let [comments (map model.activity/fetch-by-id
                       (:comments activity))]
     [activity comments]))
-

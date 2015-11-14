@@ -1,6 +1,5 @@
 (ns jiksnu.actions.user-list-actions
   (:require [ciste.core :refer [defaction]]
-            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
@@ -12,5 +11,4 @@
 
 (defaction user-list
   [user]
-  [user {:items []}]
-  )
+  [user {:items []}])

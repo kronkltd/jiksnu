@@ -2,7 +2,6 @@
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [ciste.event :refer [defkey notify]]
-            [ciste.model :as cm]
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]

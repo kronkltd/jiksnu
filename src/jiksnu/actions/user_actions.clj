@@ -146,10 +146,6 @@
   [& options]
   (apply index* options))
 
-(defaction profile
-  [& _]
-  (cm/implement))
-
 (defn parse-xrd
   [body]
   (log/info (.toXML body))

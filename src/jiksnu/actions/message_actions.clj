@@ -1,13 +1,10 @@
 (ns jiksnu.actions.message-actions
-  (:use [ciste.core :only [defaction]])
-  (:require [ciste.model :as cm]))
+  (:require [ciste.core :refer [defaction]]))
 
 (defaction inbox-page
   [user]
-  (cm/implement
-      [user []]))
+  [user []])
 
 (defaction outbox-page
   [user]
-  (cm/implement
-      [user []]))
+  [user []])

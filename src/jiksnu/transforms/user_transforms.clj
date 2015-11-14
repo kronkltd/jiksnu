@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.user-transforms
   (:require [ciste.config :refer [config]]
-            [ciste.model :as cm]
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -100,4 +99,3 @@
       (if-let [url (model.domain/get-xrd-url domain id)]
         (assoc item :user-meta-link url)
         (throw+ "Could not determine use meta link")))))
-

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.group-actions
   (:require [ciste.core :refer [defaction]]
-            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
@@ -84,10 +83,6 @@
   [group]
   group)
 
-(defaction user-list
-  [user]
-  (cm/implement))
-
 (defaction add
   [params]
   (if-let [user (session/current-user)]
@@ -107,4 +102,3 @@
                       (model.group/fetch-by-id id)))]
     item
     (create params)))
-

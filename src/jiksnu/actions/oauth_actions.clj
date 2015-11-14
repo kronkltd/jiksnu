@@ -1,12 +1,6 @@
 (ns jiksnu.actions.oauth-actions
-  (:use [ciste.core :only [defaction]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [defaction]]
             [crypto.random :as random]))
-
-(defaction oauthapps
-  "List registered applications"
-  []
-  (cm/implement))
 
 (defaction request-token
   []
@@ -14,13 +8,8 @@
 
 (defn authorize
   []
-
-  true
-  )
+  true)
 
 (defn access-token
   []
-
-  true
-  )
-
+  true)

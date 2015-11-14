@@ -2,7 +2,6 @@
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
-            [ciste.model :as cm]
             [clojure.set :as set]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
