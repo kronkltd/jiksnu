@@ -101,7 +101,7 @@
        stream-name :name
        :as options}]]
   (let [user (or user (a-user-exists options))
-        params {:user (:_id user)
+        params {:owner (:_id user)
                 :name (or stream-name (fseq :word))}
         stream (actions.stream/create params {})]
     (set-that :stream stream)
