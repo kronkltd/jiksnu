@@ -125,11 +125,6 @@
     (create activity))
   true)
 
-
-;; (defn count
-;;   [request]
-;;   (model.activity/count-records))
-
 (defn editable?
   [activity user]
   (and user
