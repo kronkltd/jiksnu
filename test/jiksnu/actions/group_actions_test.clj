@@ -1,6 +1,5 @@
 (ns jiksnu.actions.group-actions-test
-  (:require [ciste.model :as cm]
-            [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.factory :as factory]

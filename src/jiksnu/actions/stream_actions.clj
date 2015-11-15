@@ -59,7 +59,7 @@
   [user & [options]]
   (index {:owner (:_id user)}))
 
-(defaction direct-message-timeline
+(defn direct-message-timeline
   [& _]
   nil)
 

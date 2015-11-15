@@ -9,10 +9,6 @@
   [{id :id}]
   (str ns/microblog ":replies:item=" id))
 
-(defn new-comment
-  [& _]
-  (cm/implement))
-
 (defn add-comment
   [params]
   (if-let [parent (model.activity/fetch-by-id (:id params))]
