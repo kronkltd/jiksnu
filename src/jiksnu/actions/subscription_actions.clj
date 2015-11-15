@@ -147,7 +147,7 @@
           conj setup-delete-hooks*)))
 
 (definitializer
-  ;; (bus/publish! ch/events :activity-posted {:msg "activity posted"})
+  (bus/publish! ch/events :activity-posted {:msg "activity posted"})
   (setup-delete-hooks)
 
   (let [stream (bus/subscribe ch/events :activity-posted)]
