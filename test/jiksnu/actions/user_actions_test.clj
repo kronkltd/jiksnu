@@ -142,7 +142,7 @@
         xrd-template (format "http://%s/xrd?uri={uri}" domain-name)
         jrd-template (format "http://%s/lrdd?uri={uri}" domain-name)]
 
-    (fact "when given a http uri"
+    (future-fact "when given a http uri"
       (let [uri (str "http://" domain-name "/user/1")
             params {:_id uri}
             profile-url (format "https://%s/api/user/%s/profile" domain-name username)
@@ -163,11 +163,8 @@
 
             (actions.domain/add-link domain {:rel "jrd" :template jrd-template})
 
-
             (fact "when the username can be determined"
-
               (actions.user/find-or-create params) => (partial instance? User)
-
               (provided
                 (actions.user/get-username params) => {:domain domain-name
                                                        :_id uri
@@ -193,7 +190,6 @@
 
               #_(provided
                  (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd}))
-
               )))))
 
     (fact "when given an acct uri uri"
@@ -207,9 +203,7 @@
           (actions.user/find-or-create {:_id uri}) => .user.
 
           (provided
-           (actions.user/create anything) => .user.))))
-
-    ))
+           (actions.user/create anything) => .user.))))))
 
 (fact "#'jiksnu.actions.user-actions/register"
   (let [params {:username (fseq :username)
