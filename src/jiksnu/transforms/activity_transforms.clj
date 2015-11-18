@@ -209,3 +209,11 @@
         (assoc :resources ids)
         (dissoc :enclosures))
     activity))
+
+(defn set-content
+  [activity]
+  (if (:content activity)
+    activity
+    (let [content (condp = (:verb activity)
+                    "follow" "Follow user")]
+      (assoc activity :content content))))
