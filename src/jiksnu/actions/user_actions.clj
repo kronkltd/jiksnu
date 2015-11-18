@@ -196,7 +196,7 @@
     (do
       (timbre/debug "Could not determine username from uri")
       (if-let [domain (or (:domain params) (util/get-domain-name id))]
-        (let [params (assoc params :domain params)]
+        (let [params (assoc params :domain domain)]
           (if (:username params)
             params
             (let [params (discover-user-xrd params options)]
@@ -218,7 +218,8 @@
                                         profile)]
                       (if (:username params)
                         params
-                        (throw+ "Could not determine username")))))))))))))
+                        (throw+ "Could not determine username")))))))))
+        (timbre/warn "Could not determine domain")))))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"

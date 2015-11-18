@@ -54,10 +54,14 @@
     (let [username (fseq :username)
           domain-name (fseq :domain)
           uri (factory/make-uri domain-name "/users/1")
-          params {:_id uri}]
+          params {:_id uri}
+          params2 (assoc params :domain domain-name)]
       (util/inspect params)
+
       (actions.user/get-username-from-http-uri params) =>
-      (contains {:username username}))))
+      (contains {:username username})
+      (provided
+       (actions.user/discover-user-xrd params2 nil) => {:username username}))))
 
 (fact "#'jiksnu.actions.user-actions/get-username"
   (let [username (fseq :username)
