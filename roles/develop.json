@@ -5,7 +5,8 @@
   "run_list": [
     "recipe[git]",
     "recipe[lein]",
-    "recipe[nodejs]"
+    "recipe[nodejs]",
+    "recipe[bundler:install]"
   ],
   "default_attributes": {
     "nodejs": {
