@@ -15,10 +15,10 @@
         user (model.user/fetch-by-id id)]
     (action user params)))
 
-(deffilter #'actions.user/profile :http
-  [action request]
-  (if-let [user (session/current-user)]
-    user (timbre/error "no user")))
+;; (deffilter #'actions.user/profile :http
+;;   [action request]
+;;   (if-let [user (session/current-user)]
+;;     user (timbre/error "no user")))
 
 (deffilter #'actions.user/register :http
   [action {{:keys [username password confirm-password] :as params} :params}]

@@ -11,7 +11,6 @@
   [action request]
   (-> request :params :id model.activity/fetch-by-id action))
 
-(deffilter #'actions.comment/new-comment :http
-  [action request]
-  (-> request :params :id model.activity/fetch-by-id))
-
+;; (deffilter #'actions.comment/new-comment :http
+;;   [action request]
+;;   (-> request :params :id model.activity/fetch-by-id))

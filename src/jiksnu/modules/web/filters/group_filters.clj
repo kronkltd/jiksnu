@@ -61,7 +61,7 @@
                         (when name (model.group/fetch-by-name name)))]
       (action item))))
 
-(deffilter #'actions.group/user-list :http
-  [action request]
-  (-> request :params :id
-      model.user/fetch-by-id action))
+;; (deffilter #'actions.group/user-list :http
+;;   [action request]
+;;   (-> request :params :id
+;;       model.user/fetch-by-id action))

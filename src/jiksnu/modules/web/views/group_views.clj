@@ -90,6 +90,6 @@
 
 ;; show
 
-(defview #'actions.group/user-list :html
-  [request user]
-  {:body "user list"})
+;; (defview #'actions.group/user-list :html
+;;   [request user]
+;;   {:body "user list"})

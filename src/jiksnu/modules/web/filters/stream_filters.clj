@@ -17,9 +17,9 @@
   (let [params (:params request)]
     (action params)))
 
-(deffilter #'actions.stream/friends-timeline :http
-  [action request]
-  (-> request :params :id model.user/get-user action))
+;; (deffilter #'actions.stream/friends-timeline :http
+;;   [action request]
+;;   (-> request :params :id model.user/get-user action))
 
 (deffilter #'actions.stream/group-timeline :http
   [action {{:keys [name]} :params}]
@@ -30,10 +30,10 @@
   ;; TODO: fetch user
   (action))
 
-(deffilter #'actions.stream/inbox :http
-  [action request]
-  ;; TODO: fetch user
-  (action))
+;; (deffilter #'actions.stream/inbox :http
+;;   [action request]
+;;   ;; TODO: fetch user
+;;   (action))
 
 (deffilter #'actions.stream/inbox-major :http
   [action request]
