@@ -189,7 +189,7 @@
   )
 
 (def.controller jiksnu.NewPostController
-  [$scope $rootScope geolocation app pageService $filter]
+  [$scope $rootScope geolocation app pageService subpageService $filter Users]
   (timbre/debug "Loading New Post Controller")
   (let [default-form #js {:source "web"
                           :privacy "public"
@@ -251,6 +251,7 @@
                          (.toggle $scope)
                          (.$broadcast $rootScope "updateCollection"))))))
 
+    (helpers/init-subpage $scope subpageService Users "streams")
     (.reset $scope)))
 
 (def.controller jiksnu.RegisterPageController
