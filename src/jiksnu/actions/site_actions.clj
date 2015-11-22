@@ -49,6 +49,5 @@
   [request]
   {:name "Jiksnu"
    :user (:current (friend/identity request))
-   :domain (config :domain)
-   }
-  )
+   :debug (boolean (get-in request [:cookies "XDEBUG_SESSION"]))
+   :domain (config :domain)})
