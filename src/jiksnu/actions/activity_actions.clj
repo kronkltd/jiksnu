@@ -5,6 +5,7 @@
             [clojure.set :as set]
             [clojure.string :as string]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.namespace :as ns]
@@ -13,6 +14,8 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
+            [manifold.bus :as bus]
+            [manifold.stream :as stream]
             [slingshot.slingshot :refer [throw+]]))
 
 (defn can-delete?
@@ -112,7 +115,9 @@
                              (dissoc :pictures))]
 
     (do (-> activity :pictures model.activity/parse-pictures)
-        (create prepared-post))
+        (let [created-activity (create prepared-post)]
+          (bus/publish! ch/events :activity-posted created-activity)
+          created-activity))
     (throw+ "error preparing")))
 
 ;; TODO: use stream update
@@ -227,10 +232,9 @@
     (delete activity))
   user)
 
-;; (definitializer
-;;   (model.activity/ensure-indexes)
+(definitializer
+  ;; (model.activity/ensure-indexes)
 
-;;   ;; cascade delete on domain deletion
-;;   (dosync
-;;    (alter actions.user/delete-hooks
-;;           conj #'handle-delete-hook)))
+  ;; cascade delete on domain deletion
+  (dosync
+   (alter actions.user/delete-hooks conj #'handle-delete-hook)))

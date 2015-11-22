@@ -4,6 +4,7 @@
             [clojure.string :as string]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
@@ -12,6 +13,8 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
+            [manifold.bus :as bus]
+            [manifold.stream :as s]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
   (:import jiksnu.model.Subscription
@@ -143,5 +146,17 @@
    (alter actions.user/delete-hooks
           conj setup-delete-hooks*)))
 
-;; (definitializer
-;;   (setup-delete-hooks))
+(definitializer
+  ;; (bus/publish! ch/events :activity-posted {:msg "activity posted"})
+  (setup-delete-hooks)
+
+  (let [stream (bus/subscribe ch/events :activity-posted)]
+    (s/consume
+     (fn [activity]
+       (let [{:keys [verb]} activity]
+         (when (= verb "follow")
+           (timbre/info "follow action")
+           (let [actor (model.user/fetch-by-id (:author activity))
+                 target (model.user/fetch-by-id (:id (:object activity)))]
+             (subscribe actor target)))))
+     stream)))
