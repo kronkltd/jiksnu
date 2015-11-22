@@ -38,7 +38,7 @@
       '("/" "/status/" "/status/users/")))
   )
 
-(future-fact "#'util/rel-filter"
+(fact "#'util/rel-filter"
   (let [links [{:rel "alternate"}
                {:rel "contains"}]]
     (fact "when the link exists"
