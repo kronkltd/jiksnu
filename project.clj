@@ -24,6 +24,7 @@
                  [hiccup "1.0.5"]
                  [http-kit "2.1.19"]
                  [manifold "0.1.1-alpha4"]
+                 [mvxcvi/puget "0.9.2"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
                  [org.clojure/clojure "1.7.0"]
