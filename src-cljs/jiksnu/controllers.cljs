@@ -133,7 +133,7 @@
           (.updateLabel $scope)))
   (set! (.-addStream $scope)
         (fn []
-          (if-let [stream-name (? $scope.stream.name)]
+          (if-let [stream-name (.. $scope -stream -name)]
             (.addStream app stream-name)
             (throw (js/Error. "Could not determine stream name")))))
   (set! (.-updateLabel $scope) (fn []
