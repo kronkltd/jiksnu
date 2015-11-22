@@ -112,7 +112,7 @@
       "var CLOSURE_NO_DEPS = true;"]
      (p/include-js
       "/vendor/jquery/dist/jquery.min.js"
-      "/vendor/angular/angular.min.js"
+      "/vendor/angular/angular.js"
       "/vendor/angular-datatables/dist/angular-datatables.min.js"
       "/vendor/highlightjs/highlight.pack.js"
       "/vendor/momentjs/min/moment.min.js"
