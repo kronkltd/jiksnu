@@ -1,5 +1,6 @@
 (ns jiksnu.services
-  (:require jiksnu.app)
+  (:require jiksnu.app
+            [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.service]]))
 
 (def page-mappings
@@ -45,7 +46,7 @@
             (let [d (.defer $q)]
               (if-let [mapping-fn (get subpage-mappings page-name)]
                 (let [url (mapping-fn parent)]
-                  ;; (js/console.log "url" url parent)
+                  (timbre/debug "url" url parent)
                   (-> $http
                       (.get url)
                       (.success #(.resolve d %))
