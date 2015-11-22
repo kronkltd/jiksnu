@@ -12,17 +12,16 @@
   (:import jiksnu.model.Like))
 
 (def collection-name "likes")
-(def maker #'model/map->Conversation)
+(def maker #'model/map->Like)
 (def default-page-size 20)
 
 (def create-validators
   (validation-set
-   ;; (presence-of :_id)
-   ;; (presence-of :created)
-   ;; (presence-of :updated)
-   ;; (type-of :user String)
-   ;; (presence-of :activity)
-))
+   (presence-of :_id)
+   (presence-of :created)
+   (presence-of :updated)
+   (type-of :user String)
+   (presence-of :activity)))
 
 (defn prepare
   [record]

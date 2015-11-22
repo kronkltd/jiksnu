@@ -9,6 +9,7 @@
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
+            [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -265,15 +266,21 @@
         params (factory :activity {:author (:_id user)})]
     (actions.activity/post params)
     #_(there-is-an-activity {:modifier "public"
-                           :user user})))
+                             :user user})))
 
 (defn user-has-a-stream
   [& options]
   (let [stream (actions.stream/create
                 (factory :stream {:owner (or (:user options)
-                                             (:_id (get-this :user)))})
-                )]
+                                             (:_id (get-this :user)))}))]
     (set-this :stream stream)
-    stream
-    )
-  )
+    stream))
+
+(defn that-user-likes-this-activity
+  ([] (that-user-likes-this-activity {}))
+  ([options]
+   (let [user (:user options (or (get-that :user) (a-user-exists)))
+         activity (:activity options (or (get-this :activity) (there-is-an-activity)))
+         params {:activity (:_id activity)
+                 :user (:_id user)}]
+     (actions.like/create params))))
