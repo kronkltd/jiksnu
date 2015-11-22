@@ -73,7 +73,7 @@
   (-> (.getUser app)
       (.then (fn [user]
                (let [response (= (.-_id user) (.-_id target))]
-                 (js/console.log "following?" response)
+                 (timbre/debug "following?" response)
                  response)))))
 
 (defn follow
