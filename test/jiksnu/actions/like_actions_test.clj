@@ -10,9 +10,9 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(future-fact "#'jiksnu.actions.actions.like-actions/show"
+(fact "#'jiksnu.actions.actions.like-actions/show"
   (let [tag-name (fseq :word)]
-    (actions.like/show tag-name) => seq?))
+    (actions.like/show tag-name) => tag-name))
 
 (fact "#'jiksnu.actions.like-actions/delete"
   (let [user (mock/a-user-exists)
