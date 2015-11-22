@@ -13,6 +13,9 @@
       "npm_packages": [
         {
           "name": "bower"
+        },
+        {
+          "name": "karma-cli"
         }
       ]
     },
