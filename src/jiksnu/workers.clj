@@ -1,11 +1,11 @@
 (ns jiksnu.workers
   (:require [ciste.workers :refer [defworker stopping?]]
-            [clojure.tools.logging :as log]))
+            [taoensso.timbre :as timbre]))
 
 (defworker :gndn
   []
   (loop []
-    (log/info "goes nowhere, does nothing")
+    (timbre/info "goes nowhere, does nothing")
     (Thread/sleep 10000)
     (if (not (stopping?))
       (recur))))

@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.filters.stream-filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.stream-actions :as actions.stream]))
 
 (deffilter #'actions.stream/fetch-by-user :page
@@ -26,4 +25,3 @@
   [action request]
   (let [item (:item request)]
     (action item)))
-

@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.views.activity-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [index-section show-section]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]))
 
 (defview #'actions.activity/delete :model

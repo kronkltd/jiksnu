@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.triggers.resource-triggers
   (:use [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as timbre]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
@@ -31,7 +31,7 @@
   (when-let [resource (actions.resource/find-or-create {:_id url})]
     (try @(actions.resource/update* resource options)
          (catch Exception ex
-           (log/error "update resource error")))))
+           (timbre/error "update resource error")))))
 
 (def handle-pending-get-resource     (ops/op-handler handle-pending-get-resource*))
 (def handle-pending-update-resources (ops/op-handler handle-pending-update-resources*))

@@ -5,7 +5,6 @@
                                             show-section uri title index-block
                                             index-line index-section update-button]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.namespace :as ns]

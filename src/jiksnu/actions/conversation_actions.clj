@@ -1,7 +1,7 @@
 (ns jiksnu.actions.conversation-actions
   (:require [ciste.core :refer [defaction]]
             [clj-time.core :as time]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
@@ -68,11 +68,11 @@
     (do
       (model.conversation/set-field! conversation :lastUpdated (time/now))
       (actions.feed-source/update-record source options))
-    (log/error "Could not find update source")))
+    (timbre/error "Could not find update source")))
 
 (defaction discover
   [conversation & [options]]
-  (log/debugf "Discovering conversation: %s" conversation)
+  (timbre/debugf "Discovering conversation: %s" conversation)
   (model.conversation/set-field! conversation :lastDiscovered (time/now))
   conversation)
 
@@ -86,7 +86,7 @@
     conversation
     (if (< tries 3)
       (do
-        (log/info "recurring")
+        (timbre/info "recurring")
         (find-or-create params (assoc options :tries (inc tries))))
       (throw+ "Could not create conversation"))))
 
@@ -102,7 +102,7 @@
   #_(let [lu (:lastUpdated conversation)
           c (:published activity)]
       (when (or (not lu) (time/before? lu c))
-        (log/debug "Checking for updated comments")
+        (timbre/debug "Checking for updated comments")
         (update-record conversation))))
 
 (defaction create-new

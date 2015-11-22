@@ -1,6 +1,5 @@
 (ns jiksnu.actions.user-list-actions
   (:require [ciste.core :refer [defaction]]
-            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
             [jiksnu.templates.actions :as templates.actions]

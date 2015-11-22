@@ -5,7 +5,7 @@
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions :refer [invoke-action]]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
@@ -70,7 +70,7 @@
     item
     (if (< tries 3)
       (do
-        (log/info "recurring")
+        (timbre/info "recurring")
         (find-or-create params (assoc options :tries (inc tries))))
       (throw+ "Could not create resource"))))
 
@@ -102,7 +102,7 @@
 
 (defmethod process-response-content :default
   [content-type item response]
-  (log/infof "unknown content type: %s" content-type))
+  (timbre/infof "unknown content type: %s" content-type))
 
 (declare update-record)
 
@@ -163,7 +163,7 @@
                                    "date" (util/date->rfc1123 (.toDate date))
                                    "authorization" auth-string}}]
             (notify ::resource-updated {:item item})
-            (log/infof "Fetching %s" url)
+            (timbre/infof "Fetching %s" url)
             (client/get url options
                         (fn [response]
                           (notify ::resource-realized
@@ -174,9 +174,9 @@
                           (condp = (:status response)
                             200 response
                             401 (handle-unauthorized item response)
-                            (log/warn "Unknown status type"))))
+                            (timbre/warn "Unknown status type"))))
             res)))
-      (log/warn "Resource does not need to be updated at this time."))))
+      (timbre/warn "Resource does not need to be updated at this time."))))
 
 (defaction update-record
   [item]
@@ -185,7 +185,7 @@
 
 (defaction discover
   [item]
-  (log/debugf "discovering resource: %s" (prn-str item))
+  (timbre/debugf "discovering resource: %s" (prn-str item))
   (let [response (update* item)]
     (model.resource/fetch-by-id (:_id item))))
 

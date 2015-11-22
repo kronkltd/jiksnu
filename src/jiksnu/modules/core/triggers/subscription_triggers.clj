@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.triggers.subscription-triggers
   (:require [ciste.core :refer [with-context]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.channels :as ch]
             [jiksnu.model.user :as model.user]

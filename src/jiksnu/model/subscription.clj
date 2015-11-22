@@ -1,6 +1,5 @@
 (ns jiksnu.model.subscription
   (:require [clj-time.core :as time]
-            [clojure.tools.logging :as log]
             [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
@@ -97,4 +96,3 @@
 (defn pending?
   [subscription]
   (true? (:pending subscription)))
-

@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.feed-source-transforms-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.user-actions :as actions.user]
@@ -28,5 +27,3 @@
 
       (provided
         (actions.service/get-discovered anything nil nil) => {:_id (:_id domain)}))))
-
-

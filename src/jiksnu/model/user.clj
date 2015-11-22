@@ -2,7 +2,7 @@
   (:require [ciste.config :refer [config]]
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -120,7 +120,7 @@
 
 (defn update-record
   [^User new-user]
-  (log/infof "updating user: %s" new-user)
+  (timbre/infof "updating user: %s" new-user)
   (let [old-user (get-user (:username new-user) (:domain new-user))
         merged-user (merge {:admin false}
                            old-user new-user)

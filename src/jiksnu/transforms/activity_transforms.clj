@@ -1,7 +1,6 @@
 (ns jiksnu.transforms.activity-transforms
   (:require [ciste.config :refer [config]]
             [clj-time.core :as time]
-            [clojure.tools.logging :as log]
             [clojure.string :as string]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.user-actions :as actions.user]

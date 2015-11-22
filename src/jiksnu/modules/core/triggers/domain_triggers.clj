@@ -1,13 +1,11 @@
 (ns jiksnu.modules.core.triggers.domain-triggers
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.actions.domain-actions :as actions.domain]
+  (:require [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.channels :as ch]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.ops :as ops]
             [manifold.bus :as bus]
-            [manifold.stream :as s]
-            ))
+            [manifold.stream :as s]))
 
 (defn- handle-pending-get-domain*
   [domain-name]

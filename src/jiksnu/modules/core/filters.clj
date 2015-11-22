@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
             [slingshot.slingshot :refer [throw+]]))
 

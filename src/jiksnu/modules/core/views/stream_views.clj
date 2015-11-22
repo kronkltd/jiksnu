@@ -4,7 +4,6 @@
             [ciste.sections.default :refer [index-block index-line
                                             index-section show-section
                                            title]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
             [jiksnu.modules.core.sections :refer [format-page-info]]

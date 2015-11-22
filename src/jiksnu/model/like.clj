@@ -1,14 +1,13 @@
 (ns jiksnu.model.like
-  (:use [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
-        [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model :as model]
+  (:require [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.templates.model :as templates.model]
-            [monger.result :as result])
+            [jiksnu.transforms :refer [set-_id set-created-time set-updated-time]]
+            [jiksnu.validators :refer [type-of]]
+            [monger.result :as result]
+            [slingshot.slingshot :refer [throw+]]
+            [validateur.validation :refer [validation-set presence-of]])
   (:import jiksnu.model.Like))
 
 (def collection-name "likes")

@@ -2,7 +2,6 @@
   (:require [ciste.core :refer [with-format]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.modules.core.sections :refer [format-page-info]]
             [jiksnu.namespace :as ns])

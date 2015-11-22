@@ -1,8 +1,6 @@
 (ns jiksnu.templates.model
-  (:use [slingshot.slingshot :only [throw+]])
   (:require [ciste.event :refer [defkey notify]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.db :refer [_db]]
             [jiksnu.namespace :as ns]
@@ -10,7 +8,8 @@
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
-            monger.json)
+            monger.json
+            [slingshot.slingshot :refer [throw+]])
   (:import java.io.FileNotFoundException
            java.text.SimpleDateFormat
            java.util.Date

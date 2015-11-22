@@ -1,6 +1,5 @@
 (ns jiksnu.model.resource
   (:require [ciste.initializer :refer [definitializer]]
-            [clojure.tools.logging :as log]
             [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]

@@ -1,7 +1,6 @@
 (ns jiksnu.actions.webfinger-actions-test
   (:require [ciste.config :refer [config]]
             [clj-factory.core :refer [fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             jiksnu.factory
             [jiksnu.mock :as mock]

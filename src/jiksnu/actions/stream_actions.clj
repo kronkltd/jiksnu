@@ -4,7 +4,7 @@
             [ciste.sections.default :refer [show-section]]
             [clojure.data.json :as json]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as timbre]
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
@@ -176,5 +176,5 @@
 
 (defn handle-closed
   [request channel status]
-  (log/info "connection closed")
+  (timbre/info "connection closed")
   #_(connection-closed user-id connection-id))

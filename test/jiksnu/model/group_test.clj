@@ -1,6 +1,5 @@
 (ns jiksnu.model.group-test
   (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
@@ -48,5 +47,3 @@
     (let [response (model.group/fetch-all)]
       response => seq?
       (count response) => 20)))
-
-

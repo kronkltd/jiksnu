@@ -1,6 +1,5 @@
 (ns jiksnu.model.stream
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model :as model]
+  (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
@@ -37,4 +36,3 @@
 (def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker))
 (def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
-

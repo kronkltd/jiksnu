@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.activity-transforms-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.transforms.activity-transforms :refer [set-recipients]]

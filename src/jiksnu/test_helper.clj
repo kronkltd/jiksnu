@@ -1,7 +1,6 @@
 (ns jiksnu.test-helper
   (:require [ciste.config :refer [load-site-config set-environment!]]
             [ciste.runner :refer [start-application! stop-application!]]
-            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
@@ -9,7 +8,8 @@
             [jiksnu.referrant :as r]
             [midje.sweet :refer [=> =not=> fact future-fact throws]]
             [net.cgrand.enlive-html :as enlive]
-            [slingshot.slingshot :refer [try+ throw+]])
+            [slingshot.slingshot :refer [try+ throw+]]
+            [taoensso.timbre :as timbre])
   (:import java.io.StringReader))
 
 (defn hiccup->doc
@@ -62,7 +62,7 @@
    (stop-application!)
    (catch Object ex
      (println "error")
-     (log/error ex)
+     (timbre/error ex)
      #_(throw+ ex#))))
 
 (defmacro test-environment-fixture

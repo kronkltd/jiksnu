@@ -1,6 +1,5 @@
 (ns jiksnu.model.group
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]

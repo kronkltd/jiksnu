@@ -2,7 +2,6 @@
   (:require [ciste.sections :refer [declare-section defsection]]
             [ciste.sections.default :refer [index-block index-line index-section
                                             show-section uri]]
-            [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]])
   (:import jiksnu.model.Subscription))

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.pubsub-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
             [jiksnu.actions.user-actions :as actions.user]
@@ -26,5 +25,3 @@
     (actions.pubsub/hub-dispatch params) => .response.
     (provided
       (actions.pubsub/subscribe params) => .response.)))
-
-

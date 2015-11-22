@@ -1,6 +1,5 @@
 (ns jiksnu.model.stream-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.factory :as factory]

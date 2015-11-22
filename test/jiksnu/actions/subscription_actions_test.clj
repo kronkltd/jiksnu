@@ -1,6 +1,5 @@
 (ns jiksnu.actions.subscription-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]

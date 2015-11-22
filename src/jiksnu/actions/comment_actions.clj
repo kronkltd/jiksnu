@@ -1,6 +1,5 @@
 (ns jiksnu.actions.comment-actions
   (:require [ciste.core :refer [defaction]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]

@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.resource-transforms
   (:require [ciste.config :refer [config]]
-            [clojure.tools.logging :as log]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))

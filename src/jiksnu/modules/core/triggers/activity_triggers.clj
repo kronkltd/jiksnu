@@ -1,5 +1,5 @@
 (ns jiksnu.modules.core.triggers.activity-triggers
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as timbre]
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
@@ -33,7 +33,7 @@
 
 (defn init-receivers
   []
-  (log/info "init receivers")
+  (timbre/info "init receivers")
   (s/consume create-trigger ch/posted-activities)
 
   ;; Create events for each created activity

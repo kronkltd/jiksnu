@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.views.user-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.core.sections :refer [format-page-info]]))
 

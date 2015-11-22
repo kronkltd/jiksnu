@@ -1,13 +1,13 @@
 (ns jiksnu.actions.access-token-actions
   (:require [ciste.core :refer [defaction]]
-            [clojure.tools.logging :as log]
             [jiksnu.model.client :as model.client]
             [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.access-token-transforms :as transforms.access-token]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre]))
 
 (def model-sym 'jiksnu.model.access-token)
 
@@ -64,7 +64,7 @@
 
 (defn get-access-token
   [params]
-  (log/info "getting access token")
+  (timbre/info "getting access token")
   (let [version (get params "oauth_version")]
     (if (= version "1.0")
       (let [signature-method (get params "oauth_signature_method")]

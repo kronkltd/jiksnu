@@ -1,6 +1,5 @@
 (ns jiksnu.model.subscription-test
   (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
@@ -105,4 +104,3 @@
     (let [actor (mock/a-user-exists)
           target (mock/a-user-exists)]
       (model.subscription/subscribed? actor target) => false)))
-

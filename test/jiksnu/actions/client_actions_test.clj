@@ -1,6 +1,5 @@
 (ns jiksnu.actions.client-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
@@ -16,5 +15,3 @@
         response (actions.client/create params)]
     (fact "should return a client"
       response => (partial instance? Client))))
-
-

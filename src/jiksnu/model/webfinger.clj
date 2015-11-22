@@ -1,6 +1,5 @@
 (ns jiksnu.model.webfinger
   (:require [ciste.model :as cm]
-            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.model.key :as model.key]
@@ -121,4 +120,3 @@
         [(get-username-from-identifiers xrd)])
        (filter identity)
        first))
-

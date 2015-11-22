@@ -1,6 +1,5 @@
 (ns jiksnu.actions.domain-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.factory :as factory]

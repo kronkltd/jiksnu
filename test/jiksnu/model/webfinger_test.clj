@@ -1,7 +1,6 @@
 (ns jiksnu.model.webfinger-test
   (:require [clj-factory.core :refer [factory fseq]]
             [ciste.model :as cm]
-            [clojure.tools.logging :as log]
             [hiccup.core :as hiccup]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]

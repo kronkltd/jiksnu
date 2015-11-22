@@ -2,7 +2,6 @@
   (:require [ciste.model :as cm]
             [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.factory :as factory]
@@ -174,4 +173,3 @@
 (fact "#'actions.service/get-discovered"
   (let [domain (mock/a-domain-exists {:discovered false})]
     (actions.service/get-discovered domain) => (contains {:discovered true})))
-

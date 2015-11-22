@@ -1,10 +1,10 @@
 (ns jiksnu.ops
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.channels :as ch]
+  (:require [jiksnu.channels :as ch]
             [manifold.deferred :as d]
             [manifold.stream :as s]
             [manifold.time :as time]
-            [slingshot.slingshot :refer [throw+ try+]])
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre])
   (:import jiksnu.model.Domain))
 
 ;; TODO: Config option
@@ -21,14 +21,14 @@
   [ex]
   (if-not (keyword? ex)
     (do
-      (log/errorf "op error: %s" ex)
+      (timbre/errorf "op error: %s" ex)
       ;; FIXME: Handle error
       )
-    (log/error ex)))
+    (timbre/error ex)))
 
 (defn op-success
   [ex]
-  #_(log/debugf "result realized: %s" (pr-str ex)))
+  #_(timbre/debugf "result realized: %s" (pr-str ex)))
 
 (defn op-handler
   [f]
@@ -37,8 +37,8 @@
       (let [val (apply f args)]
         (d/success! d val))
       (catch Throwable ex
-        (log/error "op handler error")
-        (log/error ex)
+        (timbre/error "op handler error")
+        (timbre/error ex)
         (d/error! d ex)))))
 
 (defn async-op
@@ -46,9 +46,9 @@
   [s args]
   (let [d (d/deferred)]
     (d/timeout! d default-timeout)
-    (log/debugf "enqueuing #<Channel \"%s\"> << %s"
-                (channel-description d)
-                (pr-str args))
+    ;; (timbre/debugf "enqueuing #<Channel \"%s\"> << %s"
+    ;;             (channel-description d)
+    ;;             (pr-str args))
     (s/put! s [d args])
     (d/on-realized d op-success op-error)
     d))
@@ -77,7 +77,7 @@
 
 (defn update-resource
   [url & [options]]
-  (log/debug "ops/update-resource")
+  (timbre/debug "ops/update-resource")
   (if url
     (async-op ch/pending-update-resources [url options])
     (throw+ "url must not be nil")))
@@ -88,7 +88,7 @@
 
 (defn create-new-conversation
   []
-  (log/info "creating new conversation")
+  (timbre/info "creating new conversation")
   (let [d (d/deferred)]
     (d/timeout! d default-timeout)
     (s/put! ch/pending-create-conversations d)

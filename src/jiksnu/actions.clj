@@ -5,7 +5,6 @@
             [ciste.routes :refer [resolve-routes]]
             [clojure.core.incubator :refer [dissoc-in]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             [jiksnu.channels :as ch]
             [jiksnu.handlers :as handler]
             [jiksnu.predicates :as pred]
@@ -13,19 +12,20 @@
             [jiksnu.util :as util]
             [manifold.bus :as bus]
             [manifold.time :as lt]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre]))
 
 (defn get-model
   [model-name id]
   (let [model-ns (symbol (str "jiksnu.model." model-name))]
     (require model-ns)
     (let [fetcher (ns-resolve model-ns 'fetch-by-id)]
-      ;; (log/debugf "getting model %s(%s)" model-name id)
+      ;; (timbre/debugf "getting model %s(%s)" model-name id)
       (fetcher id))))
 
 (defaction get-page-ids
   [page-name & args]
-  ;; (log/debugf "Getting page: %s" page-name)
+  ;; (timbre/debugf "Getting page: %s" page-name)
   (let [request {:format :page-ids
                  :serialization :page-ids
                  :name page-name
@@ -41,7 +41,7 @@
 
 (defaction get-page
   [page-name & args]
-  ;; (log/debugf "Getting page: %s" page-name)
+  ;; (timbre/debugf "Getting page: %s" page-name)
   (let [request {:format :page
                  :serialization :page
                  :name page-name
@@ -57,7 +57,7 @@
 
 (defaction get-sub-page-ids
   [item page-name & args]
-  ;; (log/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
+  ;; (timbre/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
   (let [request {:format :page-ids
                  :serialization :page-ids
                  :name page-name
@@ -74,7 +74,7 @@
 
 (defaction get-sub-page
   [item page-name & args]
-  ;; (log/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
+  ;; (timbre/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
   (let [request {:format :page
                  :serialization :page
                  :name page-name
@@ -107,12 +107,12 @@
          (bus/publish! ch/events ":actions:invoked" response)
          response)
        (do
-         (log/warnf "could not find action for: %s(%s) => %s"
+         (timbre/warnf "could not find action for: %s(%s) => %s"
                     model-name id action-name)
          {:message (format "action not found: %s" action-name)
           :action "error"})))
    (catch RuntimeException ex
-     (log/error ex "Actions error")
+     (timbre/error ex "Actions error")
      {:message (str ex)
       :action "error"})))
 

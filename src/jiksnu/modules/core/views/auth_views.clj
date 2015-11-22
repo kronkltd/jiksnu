@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.views.auth-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as actions.auth]))
 
 (defview #'actions.auth/login :text
@@ -16,4 +15,3 @@
 (defview #'actions.auth/whoami :text
   [request user]
   {:body user})
-

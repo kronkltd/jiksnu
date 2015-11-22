@@ -4,7 +4,7 @@
             [ciste.initializer :refer [definitializer]]
             [ciste.model :as cm]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions :refer [invoke-action]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -148,19 +148,19 @@
 
 (defn parse-xrd
   [body]
-  (log/info (.toXML body))
+  (timbre/info (.toXML body))
   (let [doc body #_(cm/string->document body)]
     {:links (model.webfinger/get-links doc)}))
 
 (defn process-xrd
   [user xrd & [options]]
-  (log/info "processing xrd")
+  (timbre/info "processing xrd")
   (let [links (concat (:links user) (:links xrd))]
     (assoc user :links links)))
 
 (defn fetch-xrd
   [params & [options]]
-  (log/info "fetching xrd")
+  (timbre/info "fetching xrd")
   (if-let [domain (get-domain params)]
     (if-let [url (model.domain/get-xrd-url domain (:_id params))]
       (when-let [xrd (:body @(ops/update-resource url options))]
@@ -169,29 +169,29 @@
           (merge params
                  (parse-xrd doc)
                  {:username username})))
-      (log/warn "could not determine xrd url"))
+      (timbre/warn "could not determine xrd url"))
     (throw+ "could not determine domain name")))
 
 ;; TODO: Collect all changes and update the user once.
 (defn discover-user-xrd
   "Retreive user information from webfinger"
   [params & [options]]
-  (log/info "Discovering user via xrd")
+  (timbre/info "Discovering user via xrd")
   (if-let [xrd (fetch-xrd params options)]
     (let [params (process-xrd params xrd options)]
       (merge xrd params))
-    (do (log/warn "Could not fetch xrd")
+    (do (timbre/warn "Could not fetch xrd")
         params)))
 
 (defn get-username-from-http-uri
   [params & [options]]
   ;; HTTP(S) URI
-  (log/info "http url")
+  (timbre/info "http url")
   (let [id (:_id params)
         uri  (URI. id)]
     (if-let [username (.getUserInfo uri)]
       (do
-        (log/debugf "username: %s" username)
+        (timbre/debugf "username: %s" username)
         (assoc params :username username))
       (let [params (or (and (:domain params) params)
                        (when-let [domain-name (util/get-domain-name (:_id params))]
@@ -222,14 +222,14 @@
 (defn get-username
   "Given a url, try to determine the username of the owning user"
   [params & [options]]
-  (log/info "getting username")
+  (timbre/info "getting username")
   (let [id (or (:_id params) (:url params))
         uri (URI. id)
         params (assoc params :_id id)]
     (condp = (.getScheme uri)
 
       "acct"  (do
-                (log/debug "acct uri")
+                (timbre/debug "acct uri")
                 (assoc params :username (first (util/split-uri id))))
 
       (get-username-from-http-uri params options))))
@@ -242,14 +242,14 @@
     (or (when id
           (or (model.user/fetch-by-id id)
               (do
-                (log/debug "user not found by id")
+                (timbre/debug "user not found by id")
                 (or (let [[uid did] (util/split-uri id)]
                       (model.user/get-user uid did))
                     (do
-                      (log/debug "user not found by acct id")
+                      (timbre/debug "user not found by acct id")
                       (first (model.user/fetch-all {:url id})))))))
         (do
-          (log/debug "user not found by url")
+          (timbre/debug "user not found by url")
           (let [params (if id
                          (get-username params)
                          params)]
@@ -262,7 +262,7 @@
   [^User user params]
   (if-let [source-id (:update-source user)]
     (invoke-action "feed-source" "update" (str source-id))
-    (log/warn "user does not have an update source"))
+    (timbre/warn "user does not have an update source"))
   user)
 
 (defn discover-user-meta
@@ -277,7 +277,7 @@
 (defn discover*
   [^User user & [options]]
   (if (:local user)
-    (log/info "Local users do not need to be discovered")
+    (timbre/info "Local users do not need to be discovered")
     (discover-user-meta user options))
   (model.user/fetch-by-id (:_id user)))
 
@@ -332,7 +332,7 @@
   [user]
   (if-let [actor-id (session/current-user-id)]
     (do
-      (log/infof "Subscribing to %s" (:_id user))
+      (timbre/infof "Subscribing to %s" (:_id user))
       (ops/create-new-subscription actor-id (:_id user))
       true)
     (throw+ {:type :auth

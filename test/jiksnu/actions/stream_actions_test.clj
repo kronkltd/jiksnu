@@ -1,7 +1,6 @@
 (ns jiksnu.actions.stream-actions-test
   (:require [ciste.sections.default :refer [index-section]]
             [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]

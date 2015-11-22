@@ -4,7 +4,6 @@
             [ciste.sections.default :refer [edit-button full-uri index-block index-line index-section link-to
                                             show-section title uri]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
             [inflections.core :as inf]))
 
 (declare-section admin-actions-section)
@@ -66,4 +65,3 @@
        (assoc page :items )
        (map (fn [[k v]] [(inf/camel-case (name k) :lower) v]))
        (into {})))
-

@@ -1,12 +1,12 @@
 (ns jiksnu.actions.auth-actions
   (:require [cemerick.friend.credentials :as creds]
             [ciste.core :refer [defaction]]
-            [clojure.tools.logging :as log]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre]))
 
 (defn prepare-create
   [activity]
@@ -31,7 +31,7 @@
                (map :value)
                (some (partial creds/bcrypt-verify password)))
         (do
-          (log/debug "logging in")
+          (timbre/debug "logging in")
           (session/set-authenticated-user! user)
           user)
         (throw+ {:type :authentication :message "passwords do not match"}))

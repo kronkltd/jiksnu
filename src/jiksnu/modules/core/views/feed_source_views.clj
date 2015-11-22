@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.views.feed-source-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]

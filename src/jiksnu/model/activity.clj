@@ -1,6 +1,5 @@
 (ns jiksnu.model.activity
   (:require [clojure.java.io :as io]
-            [clojure.tools.logging :as log]
             [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]

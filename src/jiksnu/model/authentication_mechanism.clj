@@ -1,6 +1,5 @@
 (ns jiksnu.model.authentication-mechanism
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
@@ -50,4 +49,3 @@
 (def drop!         (templates.model/make-dropper       collection-name))
 (def count-records (templates.model/make-counter       collection-name))
 (def remove-field! (templates.model/make-remove-field! collection-name))
-

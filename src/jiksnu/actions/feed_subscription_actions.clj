@@ -1,7 +1,6 @@
 (ns jiksnu.actions.feed-subscription-actions
   (:require [ciste.initializer :refer [definitializer]]
             [ciste.core :refer [defaction]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]

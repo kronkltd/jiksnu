@@ -4,7 +4,6 @@
             [ciste.initializer :refer [definitializer]]
             [clojure.set :as set]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -14,8 +13,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+]])
-  )
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn can-delete?
   [item]

@@ -2,7 +2,7 @@
   (:require [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
@@ -79,7 +79,7 @@
       (if-let [source-id (:update-source user)]
         (when-let [source (model.feed-source/fetch-by-id source-id)]
           (actions.feed-source/add-watcher source actor))
-        (log/warn "Could not find source"))))
+        (timbre/warn "Could not find source"))))
   (create {:from (:_id actor)
            :to (:_id user)
            :local true

@@ -3,7 +3,6 @@
             [ciste.sections.default :refer [show-section]]
             [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
@@ -210,4 +209,3 @@
      (partial instance? User)
      (fn [response]
        (seq (model.auth-mechanism/fetch-by-user response))))))
-

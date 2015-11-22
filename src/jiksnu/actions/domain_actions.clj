@@ -4,7 +4,6 @@
             [ciste.initializer :refer [definitializer]]
             [clj-time.core :as time]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]

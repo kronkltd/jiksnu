@@ -6,7 +6,6 @@
                                             update-button index-block
                                             index-section]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [inflections.core :as inf]
             [jiksnu.actions.subscription-actions :as actions.subscription]

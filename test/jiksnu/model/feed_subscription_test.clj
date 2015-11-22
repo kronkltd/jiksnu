@@ -1,6 +1,5 @@
 (ns jiksnu.model.feed-subscription-test
   (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]

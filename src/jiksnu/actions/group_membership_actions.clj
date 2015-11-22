@@ -1,7 +1,6 @@
 (ns jiksnu.actions.group-membership-actions
   (:require [ciste.core :refer [defaction]]
             [clj-time.core :as time]
-            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group-membership :as model.group-membership]
             [jiksnu.templates.actions :as templates.actions]

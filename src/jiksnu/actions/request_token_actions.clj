@@ -1,12 +1,12 @@
 (ns jiksnu.actions.request-token-actions
   (:require [ciste.core :refer [defaction]]
-            [clojure.tools.logging :as log]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.request-token-transforms :as transforms.request-token]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre]))
 
 (def model-sym 'jiksnu.model.request-token)
 
@@ -72,7 +72,7 @@
 
 (defn authorize
   [params]
-  (log/info "authorizing")
+  (timbre/info "authorizing")
   (let [id (:oauth_token params)
         token (model.request-token/fetch-by-id id)]
     (if (= (:verifier params) (:verifier token))

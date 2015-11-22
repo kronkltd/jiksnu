@@ -1,6 +1,5 @@
 (ns jiksnu.actions.conversation-actions-test
   (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :refer [create delete index show]]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]

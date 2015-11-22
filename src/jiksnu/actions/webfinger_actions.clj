@@ -1,14 +1,14 @@
 (ns jiksnu.actions.webfinger-actions
   (:require [ciste.core :refer [defaction]]
             [ciste.model :as cm]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+]])
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre])
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain
@@ -19,10 +19,10 @@
   [url]
   {:pre [(string? url)]
    :post [(instance? Document %)]}
-  (log/infof "fetching host meta: %s" url)
+  (timbre/infof "fetching host meta: %s" url)
   (or (try
         (let [response @(ops/update-resource url)]
-          (when (= 200 (:status (log/spy :info response)))
+          (when (= 200 (:status response))
             (cm/string->document (:body response))))
         (catch RuntimeException ex))
       (throw+ {:msg "Could not fetch host meta"

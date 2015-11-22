@@ -1,6 +1,5 @@
 (ns jiksnu.model.dialback
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model :as model]
+  (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [validateur.validation :refer [validation-set presence-of]])

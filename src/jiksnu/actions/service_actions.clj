@@ -5,7 +5,7 @@
             [ciste.model :as cm]
             [clj-time.core :as time]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as timbre]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model :as model]
@@ -30,8 +30,8 @@
   (try+
    (let [res (ops/update-resource url {:force true})]
      (d/on-realized res
-                    (fn [_] (log/info "Finished fetching xrd"))
-                    (fn [_] (log/error "Fetching xrd caused error")))
+                    (fn [_] (timbre/info "Finished fetching xrd"))
+                    (fn [_] (timbre/error "Fetching xrd caused error")))
 
      (let [response @res]
        (when (= 200 (:status response))
@@ -39,9 +39,9 @@
            (if-let [body (:body response)]
              (cm/string->document body))
            (catch RuntimeException ex
-             (log/error "Fetching host meta failed" ex))))))
+             (timbre/error "Fetching host meta failed" ex))))))
    (catch Object ex
-     (log/error ex))))
+     (timbre/error ex))))
 
 (defn fetch-xrd
   "Given a domain and an optional context uri. Attempts to find the xrd document"
@@ -56,7 +56,7 @@
              (map fetch-xrd*)
              (filter identity)
              first)
-    (log/warn "Domain does not have http(s) interface")))
+    (timbre/warn "Domain does not have http(s) interface")))
 
 (defn discover-statusnet-config
   "Fetch service's statusnet config. blocks"
@@ -101,12 +101,12 @@
    {:pre [(instance? Domain domain)
           (or (nil? url)
               (string? url))]}
-   (log/info "discover webfinger")
+   (timbre/info "discover webfinger")
    (if-let [xrd (fetch-xrd domain url)]
      (do (set-links-from-xrd domain xrd)
          (set-discovered! domain)
          domain)
-     (log/warnf "Could not get webfinger for domain: %s" (:_id domain)))))
+     (timbre/warnf "Could not get webfinger for domain: %s" (:_id domain)))))
 
 (defn discover*
   [domain url]
@@ -125,31 +125,30 @@
 (defaction discover
   [^Domain domain url]
   (if-not (:local domain)
-    (do (log/debugf "discovering domain - %s" (:_id domain))
+    (do (timbre/debugf "discovering domain - %s" (:_id domain))
         (let [res (discover* domain url)]
           [(model.domain/fetch-by-id (:_id domain)) res]))
-    (log/warn "local domains do not need to be discovered")))
+    (timbre/warn "local domains do not need to be discovered")))
 
 (defn get-discovered
   [domain & [url options]]
-  ;; (log/debugf "Getting discovered domain for: %s" (:_id domain))
+  ;; (timbre/debugf "Getting discovered domain for: %s" (:_id domain))
   (if (:discovered domain)
     domain
     (let [id (:_id domain)
           p (dosync
              (when-not (get @pending-discovers id)
                (let [p (promise)]
-                 (log/debug "Queuing discover")
+                 (timbre/debug "Queuing discover")
                  (alter pending-discovers #(assoc % id p))
                  p)))
           p (if p
               (do
-                (log/debug "discovering")
+                (timbre/debug "discovering")
                 @(second (discover domain url))
                 p)
               (do
-                (log/debug "using queued promise")
+                (timbre/debug "using queued promise")
                 (get @pending-discovers id)))]
       (or (deref p (lt/seconds 300) nil)
           (throw+ "Could not discover domain")))))
-

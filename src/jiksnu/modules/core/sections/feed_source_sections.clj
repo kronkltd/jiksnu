@@ -4,7 +4,6 @@
                                             index-section link-to title
                                             update-button]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-show-section
                                                   admin-index-block admin-index-line
@@ -31,4 +30,3 @@
 (defsection title [FeedSource]
   [item & _]
   (:title item))
-

@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.views.conversation-views
   (:require [ciste.views :refer [defview]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation])
   (:import jiksnu.model.Conversation))
 

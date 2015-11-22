@@ -1,6 +1,5 @@
 (ns jiksnu.model.activity-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
@@ -53,5 +52,3 @@
           activity (mock/there-is-an-activity {:user user})]
       (model.activity/get-author activity) => user))
   )
-
-

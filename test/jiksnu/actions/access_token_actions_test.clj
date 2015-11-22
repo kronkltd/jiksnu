@@ -1,6 +1,5 @@
 (ns jiksnu.actions.access-token-actions-test
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.actions.access-token-actions :as actions.access-token]
+  (:require [jiksnu.actions.access-token-actions :as actions.access-token]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
@@ -19,5 +18,3 @@
                   "oauth_signature_method" "HMAC-SHA1"}]
       (actions.access-token/get-access-token params) =>
       (partial instance? AccessToken))))
-
-

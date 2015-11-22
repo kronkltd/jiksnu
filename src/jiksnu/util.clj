@@ -4,7 +4,6 @@
             [clj-factory.core :refer [factory]]
             [clojure.string :as string]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             [crypto.random :as random]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
@@ -15,7 +14,8 @@
             monger.json
             [org.bovinegenius.exploding-fish :as uri]
             [ring.util.codec :as codec]
-            [slingshot.slingshot :refer [throw+ try+]])
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre])
   (:import com.mongodb.WriteConcern
            java.io.FileNotFoundException
            java.io.PrintWriter
@@ -222,7 +222,7 @@
      (require-module prefix module-name model-name)))
   ([prefix module-name model-name]
    (doseq [part-name registry/part-names]
-     #_(log/infof "Loading vector: [%s %s %s]" module-name model-name part-name)
+     #_(timbre/infof "Loading vector: [%s %s %s]" module-name model-name part-name)
      (let [namespaces (vector-namespaces prefix module-name model-name part-name)]
        (require-namespaces namespaces)))))
 
@@ -252,5 +252,3 @@
        )
 
    ))
-
-

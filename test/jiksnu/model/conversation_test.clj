@@ -1,6 +1,5 @@
 (ns jiksnu.model.conversation-test
   (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]

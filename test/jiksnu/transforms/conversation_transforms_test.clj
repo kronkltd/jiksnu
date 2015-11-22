@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.conversation-transforms-test
   (:require [clj-factory.core :refer [factory]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
@@ -31,6 +30,4 @@
               url (:url conversation)]
           (set-update-source conversation) => (contains {:update-source .id.})
           (provided
-            (actions.feed-source/discover-source anything) => {:_id .id.}))))
-    ))
-
+            (actions.feed-source/discover-source anything) => {:_id .id.}))))))

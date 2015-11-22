@@ -1,6 +1,5 @@
 (ns jiksnu.actions.dialback-actions
   (:require [ciste.core :refer [defaction]]
-            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.dialback :as model.dialback]

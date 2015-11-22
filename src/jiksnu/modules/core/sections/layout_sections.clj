@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.sections.layout-sections
-  (:use [ciste.core :only [apply-template]])
-  (:require [clojure.tools.logging :as log]))
+  (:require [ciste.core :refer [apply-template]]))
 
 (defmethod apply-template :command
   [request response]

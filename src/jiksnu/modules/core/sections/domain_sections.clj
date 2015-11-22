@@ -3,7 +3,6 @@
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section index-block index-line
                                             show-section uri]]
-            [clojure.tools.logging :as log]
             [jiksnu.session :refer [current-user is-admin?]]
             [jiksnu.modules.core.sections :refer [admin-index-block
                                                   admin-index-line]]

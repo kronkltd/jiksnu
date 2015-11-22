@@ -1,15 +1,14 @@
 (ns jiksnu.model.group-membership
-  (:use [jiksnu.transforms :only [set-_id set-created-time
-                                  set-updated-time]]
-        [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model :as model]
+  (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
+            [jiksnu.transforms :refer [set-_id set-created-time
+                                       set-updated-time]]
+            [jiksnu.validators :refer [type-of]]
             [monger.core :as mg]
             [monger.query :as mq]
-            [monger.result :as result])
+            [monger.result :as result]
+            [slingshot.slingshot :refer [throw+]]
+            [validateur.validation :refer [validation-set presence-of]])
   (:import jiksnu.model.Group
            org.bson.types.ObjectId
            org.joda.time.DateTime))
@@ -23,7 +22,7 @@
    ;; (type-of :_id     ObjectId)
    ;; (type-of :created DateTime)
    ;; (type-of :updated DateTime)
-))
+   ))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

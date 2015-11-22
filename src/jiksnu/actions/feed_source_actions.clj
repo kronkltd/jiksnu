@@ -5,7 +5,6 @@
             [clj-http.client :as client]
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
@@ -19,7 +18,8 @@
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [jiksnu.util :as util]
             [manifold.time :as lt]
-            [slingshot.slingshot :refer [throw+ try+]])
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))
 
@@ -69,7 +69,7 @@
 
 (defaction confirm-unsubscribe
   [source]
-  (log/info "confirming subscription removal")
+  (timbre/info "confirming subscription removal")
   (model.feed-source/set-field! source :status "none")
   #_(model.feed-source/delete source))
 
@@ -134,7 +134,7 @@
   ([hub topic]
      (send-unsubscribe hub topic "" #_(named-url "push callback")))
   ([hub topic callback]
-     (log/debugf "Sending unsubscribe to %s" topic)
+     (timbre/debugf "Sending unsubscribe to %s" topic)
      (when (seq hub)
        (client/post
         hub

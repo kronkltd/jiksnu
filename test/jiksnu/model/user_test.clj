@@ -1,6 +1,5 @@
 (ns jiksnu.model.user-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
@@ -130,5 +129,3 @@
 
       (let [user (mock/a-remote-user-exists {:domain domain})]
         (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
-
-

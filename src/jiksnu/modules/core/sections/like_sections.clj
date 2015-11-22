@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.sections.like-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section index-line index-block index-section link-to]]
-            [clojure.tools.logging :as log]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block]])

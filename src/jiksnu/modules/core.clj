@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core
   (:require [ciste.initializer :refer [definitializer]]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as timbre]
             jiksnu.modules.core.formats
             jiksnu.modules.core.views
             [jiksnu.db :as db]
@@ -13,7 +13,7 @@
 
 (defn start
   []
-  (log/info "starting core")
+  (timbre/info "starting core")
   (db/set-database!)
 
   (doseq [model-name registry/action-group-names]

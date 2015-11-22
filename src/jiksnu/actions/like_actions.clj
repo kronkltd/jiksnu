@@ -1,7 +1,6 @@
 (ns jiksnu.actions.like-actions
   (:require [ciste.core :refer [defaction]]
             [clj-time.core :as time]
-            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
             [jiksnu.templates.actions :as templates.actions]

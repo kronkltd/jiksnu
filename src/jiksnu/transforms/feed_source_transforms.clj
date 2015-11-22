@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.feed-source-transforms
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.actions.domain-actions :as actions.domain]
+  (:require [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))

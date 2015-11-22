@@ -5,7 +5,6 @@
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [link-to index-line edit-button]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
             [jiksnu.model :as model]))
 

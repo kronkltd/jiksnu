@@ -1,7 +1,6 @@
 (ns jiksnu.model.domain
   (:require [ciste.config :refer [config]]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
             [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]

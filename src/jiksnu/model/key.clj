@@ -1,12 +1,12 @@
 (ns jiksnu.model.key
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre]
             [validateur.validation :refer [acceptance-of presence-of
                                            validation-set]])
   (:import java.net.URI
@@ -168,7 +168,7 @@
   [^ObjectId id]
   (if-let [key (mc/find-one-as-map @_db collection-name {:userid id})]
     (model/map->Key key)
-    (log/warnf "Could not find key with id: %s" id)))
+    (timbre/warnf "Could not find key with id: %s" id)))
 
 (defn get-key-for-user
   [^User user]

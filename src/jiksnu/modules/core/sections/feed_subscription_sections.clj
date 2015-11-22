@@ -1,8 +1,7 @@
 (ns jiksnu.modules.core.sections.feed-subscription-sections
-  (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [show-section]]
-        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]])
-  (:require [clojure.tools.logging :as log])
+  (:require [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [show-section]]
+            [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]])
   (:import jiksnu.model.FeedSubscription))
 
 ; admin-index-block

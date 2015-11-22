@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.client-transforms
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.util :as util]
+  (:require [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))
 
 (defn set-_id

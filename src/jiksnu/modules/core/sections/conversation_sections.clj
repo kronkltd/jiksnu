@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.sections.conversation-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [uri index-block index-section]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity])
   (:import jiksnu.model.Conversation))
 

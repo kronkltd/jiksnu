@@ -1,7 +1,6 @@
 (ns jiksnu.actions.auth-actions-test
   (:require [cemerick.friend.credentials :as creds]
             [clj-factory.core :refer [factory fseq]]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :refer [add-password login]]
             [jiksnu.mock :as mock]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]

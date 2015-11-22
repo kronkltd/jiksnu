@@ -2,7 +2,6 @@
   (:require [ciste.sections.default :refer [show-section]]
             [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
-            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]

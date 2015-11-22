@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.triggers.user-triggers
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.namespace :as ns]
+  (:require [jiksnu.namespace :as ns]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
@@ -10,7 +9,8 @@
             [jiksnu.util :as util]
             [manifold.bus :as bus]
             [manifold.stream :as s]
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre]))
 
 ;; (defn fetch-updates-trigger
 ;;   [action _ user]
@@ -25,7 +25,7 @@
 
 (defn parse-updates-from
   [user link]
-  (log/debug "Setting update source")
+  (timbre/debug "Setting update source")
   (if-let [href (:href link)]
     (let [source (actions.feed-source/find-or-create {:topic href})]
       (model.user/set-field! user :update-source (:_id source)))
@@ -33,7 +33,7 @@
 
 (defn parse-activity-outbox
   [user link]
-  (log/debug "Setting update source")
+  (timbre/debug "Setting update source")
   (if-let [href (:href link)]
     (let [source (actions.feed-source/find-or-create {:topic href})]
       (model.user/set-field! user :update-source (:_id source)))
