@@ -62,8 +62,6 @@
                    (actions.domain/add-link {:rel "lrdd" :template template}))]
 
     (fact "when given a http uri"
-      (future-fact "and it has user info")
-
       (fact "and it does not have user info"
         (fact "and the xrd request returns info"
           (let [uri (factory/make-uri domain-name "/users/1")

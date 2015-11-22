@@ -8,8 +8,7 @@
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
-            [midje.sweet :refer [=> after before fact future-fact
-                                 namespace-state-changes truthy throws]])
+            [midje.sweet :refer :all])
   (:import nu.xom.Document))
 
 (namespace-state-changes
