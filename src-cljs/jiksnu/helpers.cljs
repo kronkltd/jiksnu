@@ -141,19 +141,19 @@
         (fn []
           (.init $scope)))
   (! $scope.loaded false)
-  (! $scope.init
-     (fn []
-       (js/console.debug "Loading page: " page-type)
-       (-> pageService
-           (.fetch page-type)
-           (.then (fn [page]
-                    (! $scope.page page)
-                    (! $scope.loaded true)
-                    (doall (map
-                            (fn [item]
-                              (doall (map (partial fetch-sub-page item subpageService)
-                                          subpages)))
-                            (? page.items)))))))))
+  (set! (.-init $scope)
+        (fn []
+          (timbre/debug "Loading page: " page-type)
+          (-> pageService
+              (.fetch page-type)
+              (.then (fn [page]
+                       (set! (.-page $scope) page)
+                       (set! (.-loaded $scope) true)
+                       (doall (map
+                               (fn [item]
+                                 (doall (map (partial fetch-sub-page item subpageService)
+                                             subpages)))
+                               (.-items page)))))))))
 
 (defn setup-hotkeys
   [hotkeys $state]

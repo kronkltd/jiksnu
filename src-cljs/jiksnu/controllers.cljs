@@ -7,24 +7,23 @@
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.controller]]
                [jiksnu.macros :only [page-controller]]
-               [purnam.core :only [? ?> ! !> f.n def.n do.n
-                                   obj arr def* do*n def*n f*n]]))
+               [purnam.core :only [? !]]))
 
 (def.controller jiksnu.AdminActivitiesController
   [$scope $http]
-  (! $scope.init (helpers/fetch-page $scope $http "/model/activities.json"))
+  (set! (.-init $scope) (helpers/fetch-page $scope $http "/model/activities.json"))
   (.init $scope))
 
 (def.controller jiksnu.AdminConversationsController
   [$scope $http]
-  (! $scope.init (helpers/fetch-page $scope $http "/admin/conversations.json"))
+  (set! (.-init $scope) (helpers/fetch-page $scope $http "/admin/conversations.json"))
   (.init $scope))
 
 (def.controller jiksnu.AdminGroupsController [$scope])
 
 (def.controller jiksnu.AdminUsersController
   [$scope $http]
-  (! $scope.init (helpers/fetch-page $scope $http "/admin/users.json"))
+  (set! (.-init $scope) (helpers/fetch-page $scope $http "/admin/users.json"))
   (.init $scope))
 
 (def.controller jiksnu.AppController [])
@@ -45,14 +44,14 @@
 
 (def.controller jiksnu.DisplayAvatarController
   [$scope Users]
-  (! $scope.init
-     (fn [id]
-       (timbre/debug "Displaying avatar for " id)
-       (when (and id (not= id ""))
-         (! $scope.size 32)
-         ;; (js/console.info "binding user" id)
-         (.bindOne Users id $scope "user")
-         (.find Users id)))))
+  (set! (.-init $scope)
+        (fn [id]
+          (timbre/debug "Displaying avatar for " id)
+          (when (and id (not= id ""))
+            (set! (.-size $scope) 32)
+            ;; (js/console.info "binding user" id)
+            (.bindOne Users id $scope "user")
+            (.find Users id)))))
 
 (def refresh-followers "refresh-followers")
 
@@ -175,10 +174,10 @@
            (fn []  (.-data app))
            (fn [d]
              (when (.-loaded $scope)
-               ;; (js/console.log "Running navbarcontroller watcher")
-               (aset $scope "app" d)
-               (-> (.getUser app)
-                   (.then (fn [user] (! app.user user)))))))
+               (timbre/debug "Running navbarcontroller watcher")
+               (set! (.-app $scope) d)
+               (let [p (.getUser app)]
+                 (-> p (.then (fn [user] (set! (.-user app) user))))))))
 
   (-> (.fetchStatus app)
       (.then (fn [] (set! (.-loaded $scope) true)))))
@@ -265,8 +264,8 @@
 
 (def.controller jiksnu.RightColumnController
   [$scope app]
-  (.$watch $scope #(? app.data) (fn [d] (! $scope.app d)))
-  (! $scope.foo "bar"))
+  (.$watch $scope #(.-data app) #(set! (.-app $scope) %))
+  (set! (.-foo $scope) "bar"))
 
 (def.controller jiksnu.SettingsPageController [])
 
@@ -275,9 +274,9 @@
 
 (def.controller jiksnu.ShowActivityController
   [$scope $stateParams Activities]
-  (! $scope.loaded false)
+  (set! (.-loaded $scope) false)
 
-  (! $scope.init
+  (set! (.-init $scope)
      (fn [id]
        (when (and id (not= id ""))
          (.bindOne Activities id $scope "activity")
@@ -288,30 +287,33 @@
 
 (def.controller jiksnu.ShowDomainController
   [$scope $stateParams Domains]
-  (! $scope.loaded false)
-  (! $scope.init (fn [id]
-                   (.bindOne Domains id $scope "domain")
-                   (-> (.find Domains id)
-                       (.then (fn [] (! $scope.loaded true))))))
+  (set! (.-loaded $scope) false)
+  (set! (.-init $scope)
+        (fn [id]
+          (.bindOne Domains id $scope "domain")
+          (-> (.find Domains id)
+              (.then (fn [] (set! (.-loaded $scope) true))))))
   (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowConversationController
   [$scope $stateParams Conversations app]
-  ;; (js/console.log "loading ShowConversationController")
+  (timbre/debug "loading ShowConversationController")
+  (set! (.-loaded $scope) false)
 
-  (aset $scope "loaded" false)
-  (aset $scope "init" (fn [id]
-                        (.bindOne Conversations id $scope "conversation")
-                        (-> (.find Conversations id)
-                            (.then (.-fetchActivities app))
-                            (.then (fn [] (aset $scope "loaded" true))))))
+  (set! (.-init $scope)
+        (fn [id]
+          (.bindOne Conversations id $scope "conversation")
+          (-> (.find Conversations id)
+              (.then (.-fetchActivities app))
+              (.then (fn [] (set! (.-loaded $scope) true))))))
 
-  (aset $scope "fetchActivities" (fn [conversation]
-                                   ;; (js/console.log "fetch activities")
-                                   (-> (.getActivities conversation)
-                                       (.then  (fn [response]
-                                                 ;; (js/console.log "Activities" response)
-                                                 (aset $scope "activities" (.-body response)))))))
+  (set! (.-fetchActivities $scope)
+        (fn [conversation]
+          (timbre/debug "fetch activities")
+          (-> (.getActivities conversation)
+              (.then  (fn [response]
+                        (timbre/debug "Activities" response)
+                        (aset $scope "activities" (.-body response)))))))
 
   (.init $scope (.-_id $stateParams)))
 
