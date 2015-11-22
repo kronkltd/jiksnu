@@ -20,15 +20,13 @@
   {:pre [(string? url)]
    :post [(instance? Document %)]}
   (log/infof "fetching host meta: %s" url)
-  (or
-   (try
-     (let [response @(ops/update-resource url)]
-       (when (= 200 (:status response))
-         (cm/string->document (:body response))))
-     (catch RuntimeException ex
-       ;; FIXME: Handle errors
-       ))
-   (throw+ "Could not fetch host meta")))
+  (or (try
+        (let [response @(ops/update-resource url)]
+          (when (= 200 (:status (log/spy :info response)))
+            (cm/string->document (:body response))))
+        (catch RuntimeException ex))
+      (throw+ {:msg "Could not fetch host meta"
+               :type :fetch-error})))
 
 (defn get-xrd-template
   []

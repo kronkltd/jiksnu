@@ -33,28 +33,34 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(facts "#'get-username-from-atom-property"
+(facts "#'jiksnu.model.webfinger/get-username-from-atom-property"
   (fact "when the property has an identifier"
     (let [username (fseq :username)
           user-meta (mock-xrd-with-username username)]
       (get-username-from-atom-property user-meta) => username)))
 
-(future-facts "#'get-links"
+(facts "#'jiksnu.model.webfinger/get-links"
   (fact "When it has links"
-    (let [xrd nil]
-      (get-links xrd)) => seq?))
+    (let [xrd (cm/string->document
+               (hiccup/html
+                [:XRD
+                 [:Link {:ref ns/updates-from
+                         :xmlns ns/xrd
+                         :type "application/atom+xml"
+                         :href ""}]]))]
+      (get-links xrd) => (contains [(contains {:type "application/atom+xml"})]))))
 
-(facts "#'get-identifiers"
+(facts "#'jiksnu.model.webfinger/get-identifiers"
   (let [subject "acct:foo@bar.baz"
         xrd (mock-xrd-with-subject subject)]
     (get-identifiers xrd) => (contains subject)))
 
-(facts "#'get-username-from-identifiers"
+(facts "#'jiksnu.model.webfinger/get-username-from-identifiers"
   (let [subject "acct:foo@bar.baz"
         xrd (mock-xrd-with-subject subject)]
     (get-username-from-identifiers xrd) => "foo"))
 
-(facts "#'get-username-from-xrd"
+(facts "#'jiksnu.model.webfinger/get-username-from-xrd"
   (let [username (fseq :username)
         domain (fseq :domain)
         subject (format "acct:%s@%s" username domain)
