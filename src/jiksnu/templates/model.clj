@@ -62,10 +62,11 @@
 (defn make-deleter
   [collection-name]
   (fn [item]
-    (mc/remove-by-id @_db collection-name (:_id item))
-    (notify ::item-deleted {:item item
-                            :collection collection-name})
-    item))
+    (let [response (mc/remove-by-id @_db collection-name (:_id item))]
+      (when (< 0 (.getN response))
+        (notify ::item-deleted {:item item
+                                :collection collection-name})
+        item))))
 
 (defn make-dropper
   [collection-name]

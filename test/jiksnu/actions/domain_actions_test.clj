@@ -30,15 +30,17 @@
 (fact "#'actions.domain/delete"
 
   ;; There is no reason this shouldn't be a success
-  (future-fact "when the domain does not exist"
+  (fact "when the domain does not exist"
     (model.domain/drop!)
     (let [domain (factory :domain {:_id (fseq :domain)})]
       (actions.domain/delete domain) => nil?))
 
   (fact "when the domain exists"
     (let [domain (mock/a-domain-exists)]
-      (actions.domain/delete domain) => domain
-      (model.domain/fetch-by-id (:_id domain)) => nil?)))
+      (fact "should return the domain"
+        (actions.domain/delete domain) => domain)
+      (fact "should be deleted"
+        (model.domain/fetch-by-id (:_id domain)) => nil?))))
 
 (fact "#'actions.domain/show"
   (actions.domain/show .domain.) => .domain.)
