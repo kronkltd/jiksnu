@@ -65,13 +65,12 @@
 
 (defn get-user
   [app]
-  ((.. app -di $q)
+  ((.. app -di -$q)
    (fn [resolve reject]
-     (let [Users (.. app -di -Users)]
-       (if-let [id (.getUserId app)]
-         (do (timbre/debug "getting user: " id)
-             (resolve (.find Users id)))
-         (reject))))))
+     (if-let [id (.getUserId app)]
+       (do (timbre/debug "getting user: " id)
+           (resolve (.find (.. app -di -Users) id)))
+       (reject nil)))))
 
 (defn following?
   [app target]
