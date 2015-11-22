@@ -1,4 +1,5 @@
 [:div {:ng-if "loaded"}
+ [:debug {:expr "user"}]
  [:div.vcard.user-full
   [:div
    [:display-avatar {:data-id "{{user._id}}"  :data-size "96"}]]
