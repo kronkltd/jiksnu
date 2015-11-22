@@ -105,6 +105,13 @@
 (def.directive jiksnu.streamsWidget []
   (obj))
 
+(def.directive jiksnu.subpage []
+  #js
+  {:scope #js {:subpage "@name" :item "=item"}
+   :template "<div ng-transclude></div>"
+   :transclude true
+   :controller "SubpageController"})
+
 (def.directive jiksnu.subscribersWidget []
   (obj
    :templateUrl "/templates/subscribers-widget"

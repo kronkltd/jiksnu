@@ -268,6 +268,17 @@
 
 (def.controller jiksnu.SettingsPageController [])
 
+(def.controller jiksnu.SubpageController
+  [$scope subpageService]
+  (js/console.log $scope)
+  (if-let [item (.-item $scope)]
+    (let [subpage (.-subpage $scope)]
+      (timbre/debug "subpage controller" (.-_id item) subpage)
+      (-> (.fetch subpageService item subpage)
+          (.then #(set! (.-page $scope) %))))
+    (timbre/warn "No item bound")))
+
+
 (def.controller jiksnu.SubscribersWidgetController
   [$scope])
 

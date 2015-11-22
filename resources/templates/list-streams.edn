@@ -5,13 +5,11 @@
   [:input {:ng-model "stream.userId" :name "user" :type "hidden"}]
   [:input {:ng-model "stream.name" :name "name" :type "text"}]
   [:input.btn.btn-default {:type "submit"}]]
- [:table
-  [:tr {:ng-repeat "id in item.streams.items"}
-   [:td
-    [:show-stream-minimal {:data-id "{{id}}"}]]
-   [:td
-    [:button.btn.btn-default
-     [:i.glyphicon.glyphicon-trash]
-     ]
-    ]
-   ]]]
+ [:subpage {:name "streams" :item "item"}
+  [:table
+   [:tr {:ng-repeat "id in $parent.page.items"}
+    [:td
+     [:show-stream-minimal {:data-id "{{id}}"}]]
+    [:td
+     [:button.btn.btn-default
+      [:i.glyphicon.glyphicon-trash]]]]]]]

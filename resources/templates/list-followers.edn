@@ -1,7 +1,8 @@
 [:div
  [:h3 "Followers"]
- [:ul
-  [:li {:ng-repeat "follow in item.followers.items"}
-   [:display-avatar {:data-id "{{follow.from}}"}]
-   [:a {:ui-sref "showUser({_id: follow.from})"}
-    "{{follow.from}}"]]]]
+ [:subpage {:name "followers" :item "item"}
+  [:ul
+   [:li {:ng-repeat "follow in $parent.page.items"}
+    [:display-avatar {:data-id "{{follow.from}}"}]
+    [:a {:ui-sref "showUser({_id: follow.from})"}
+     "{{follow.from}}"]]]]]
