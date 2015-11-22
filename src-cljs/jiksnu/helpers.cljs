@@ -121,19 +121,28 @@
 
 (defn init-subpage
   [$scope subpageService collection subpage]
+
+  (.$watch $scope
+           #(.-item $scope)
+           #(fn [item old-item]
+              (when (not= item old-item)
+                (.init $scope % subpage))))
+
   (set! (.-init $scope)
         (fn [item]
-          (let [item (or item (.-item $scope))]
-            (timbre/debug "init subpage" subpage item)
-            (-> (.fetch subpageService item subpage)
-                (.then (fn [page] (aset item subpage page)))))))
+          (timbre/debug "init subpage" (.-name collection) subpage item)
+          (-> (.fetch subpageService item subpage)
+              (.then (fn [page] (aset item subpage page))))))
 
-  (if-let [item (.-item $scope)]
-    (.init $scope)
-    (if-let [id (.-id $scope)]
-      (-> (.find collection id)
-          (.then (fn [item] (.init $scope item subpage))))
-      (js/console.error "Couldn't determine item id"))))
+  #_(if-let [item (.-item $scope)]
+      (.init $scope)
+      (do
+        (timbre/warn "No item bound to scope" (.-name collection) subpage)
+        (js/console.log collection)
+        (if-let [id (.-id $scope)]
+          (-> (.find collection id)
+              (.then (fn [item] )))
+          (timbre/error "Couldn't determine item id")))))
 
 (defn init-page
   [$scope $rootScope pageService subpageService page-type subpages]

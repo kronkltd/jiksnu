@@ -14,8 +14,13 @@
 
 (defn fetch-status
   [app]
-  (-> (.get (.. app -di -$http) "/status")
-      (.success #(aset app "data" %))))
+  (timbre/debug "fetching app status")
+  (let [$http (.. app -di -$http)
+        path "/status"]
+   (-> (.get $http path)
+       (.then (fn [data]
+                (timbre/debug "setting app status")
+                (set! (.-data app) data))))))
 
 (defn login
   [app username password]
@@ -60,13 +65,13 @@
 
 (defn get-user
   [app]
-  (if-let [id (.getUserId app)]
-    (do (js/console.log "getting user: " id)
-        (.find (.. app -di -Users) id))
-    ;; TODO: Should reject in this case
-    (let [d (.defer (.. app -di $q))]
-      (.resolve d nil)
-      (.-promise d))))
+  ((.. app -di $q)
+   (fn [resolve reject]
+     (let [Users (.. app -di -Users)]
+       (if-let [id (.getUserId app)]
+         (do (timbre/debug "getting user: " id)
+             (resolve (.find Users id)))
+         (reject))))))
 
 (defn following?
   [app target]
