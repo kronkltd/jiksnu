@@ -117,16 +117,18 @@
   (js/console.log item)
   (-> subpageService
       (.fetch item subpage)
-      (.then (fn [response] (aset item subpage (? response.body))))))
+      (.then #(aset item subpage (.-body %)))))
 
 (defn init-subpage
   [$scope subpageService collection subpage]
 
   (.$watch $scope
            #(.-item $scope)
-           #(fn [item old-item]
-              (when (not= item old-item)
-                (.init $scope % subpage))))
+           (fn [item old-item]
+             (when (not= item old-item)
+               (if item
+                 (.init $scope item subpage)
+                 (timbre/warn "item is nil")))))
 
   (set! (.-init $scope)
         (fn [item]

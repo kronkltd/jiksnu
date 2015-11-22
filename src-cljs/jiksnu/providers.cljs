@@ -18,9 +18,9 @@
   (let [$http (.. app -di -$http)
         path "/status"]
    (-> (.get $http path)
-       (.then (fn [data]
+       (.then (fn [response]
                 (timbre/debug "setting app status")
-                (set! (.-data app) data))))))
+                (set! (.-data app) (.-data response)))))))
 
 (defn login
   [app username password]
