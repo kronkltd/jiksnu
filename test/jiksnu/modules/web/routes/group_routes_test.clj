@@ -12,7 +12,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.group :as model.group]
             jiksnu.modules.web.routes.group-routes
-            [jiksnu.routes-helper :refer [response-for]]
+            [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]
@@ -45,13 +45,24 @@
       response2 => (contains {:status 200})
       body => (contains {"name" (:name params)}))))
 
-(facts "route: group-api/item :delete"
-  (let [group (mock/a-group-exists)
-        url (str "/model/groups/" (:_id group))
-        request (-> (req/request :delete url))
-        response (response-for request)]
-    response => (contains {:status 200})
-    (model.group/fetch-by-id (:_id group)) => nil))
+(future-facts "route: group-api/item :delete"
+  (fact "when not authenticated"
+    (let [group (mock/a-group-exists)
+          url (str "/model/groups/" (:_id group))
+          request (-> (req/request :delete url))
+          response (response-for request)]
+      response => (contains {:status 401})
+      (model.group/fetch-by-id (:_id group)) => group))
+  (fact "when authenticated as the owner"
+    (let [user (mock/a-user-exists)
+          group (mock/a-group-exists {:user user})
+          url (str "/model/groups/" (:_id group))
+          request (-> (req/request :delete url)
+                      (as-user user))
+          response (response-for request)]
+      (util/inspect group)
+      response => (contains {:status 401})
+      (model.group/fetch-by-id (:_id group)) => nil)))
 
 (facts "route: group-api/item :get"
   (let [group (mock/a-group-exists)
