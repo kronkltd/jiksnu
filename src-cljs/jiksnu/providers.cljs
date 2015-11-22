@@ -19,7 +19,7 @@
 
 (defn login
   [app username password]
-  (js/console.info "Logging in user." username password)
+  (timbre/info "Logging in user." username password)
   (-> (.post (.. app -di -$http) "/main/login"
              (js/$.param #js {:username username :password password})
              #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
@@ -41,7 +41,7 @@
   [app message]
   (let [notify (.. app -di -notify)
         data (js/JSON.parse (.-data message))]
-    (js/console.log "Received Message: " data)
+    (timbre/debug "Received Message: " data)
     (cond
       (.-connection data) (do #_(notify "connected"))
       (.-action data) (condp = (.-action data)
@@ -55,7 +55,7 @@
 
 (defn post
   [app activity]
-  (js/console.info "Posting Activity" activity)
+  (timbre/info "Posting Activity" activity)
   (.post (.. app -di -$http) "/model/activities" activity))
 
 (defn get-user
@@ -78,27 +78,27 @@
 
 (defn follow
   [app target]
-  (js/console.log "follow" target)
+  (timbre/debug "follow" target)
   (let [obj  #js {:id (.-_id target)}
         activity #js {:verb "follow" :object obj}]
     (.post app activity)))
 
 (defn unfollow
   [app target]
-  (js/console.log "unfollow" target)
+  (timbre/debug "unfollow" target)
   (let [obj #js {:id (.-_id target)}
         activity #js {:verb "unfollow" :object obj}]
     (.post app activity)))
 
 (defn register
   [app params]
-  (js/console.log "Registering" (.-reg params))
+  (timbre/debug "Registering" (.-reg params))
   (let [params #js {:method "post"
                     :url    "/main/register"
                     :data   (.-reg params)}]
     (-> (.$http (.-di app) params)
         (.then (fn [data]
-                 (js/console.log "Response" data)
+                 (timbre/debug "Response" data)
                  data)))))
 
 (defn get-user-id
@@ -141,6 +141,7 @@
 (defn app-service
   [$http $q $state notify Users $websocket $window DS
    pageService subpageService]
+  (timbre/debug "creating app service")
   (let [app #js {}
         data #js {}
         websocket-url (if-let [location (.-location $window)]
@@ -188,6 +189,7 @@
 
 (def.provider jiksnu.app
   []
+  (timbre/debug "initializing app service")
   #js {:$get #js ["$http" "$q" "$state" "notify" "Users" "$websocket" "$window" "DS"
                   "pageService" "subpageService"
                   app-service]})

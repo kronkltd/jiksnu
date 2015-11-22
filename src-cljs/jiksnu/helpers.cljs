@@ -113,7 +113,8 @@
 
 (defn fetch-sub-page
   [item subpageService subpage]
-  ;; (js/console.log "Fetching subpage:" item subpage)
+  (timbre/debug "Fetching subpage:" (.-_id item) subpage)
+  (js/console.log item)
   (-> subpageService
       (.fetch item subpage)
       (.then (fn [response] (aset item subpage (? response.body))))))
