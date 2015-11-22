@@ -205,7 +205,7 @@
                                       (set! (.-longitude geo) (.-longitude coords)))))))]
     (.$watch $scope #(? $scope.form.shown) #(when % (get-location)))
 
-    (set! (.-form $scope) #js {:shown true})
+    (set! (.-form $scope) #js {:shown false})
 
     (set! (.-enabled $scope)
           (fn []
