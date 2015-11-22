@@ -169,15 +169,14 @@
   (set! (.-navbarCollapsed $scope) true)
 
   (helpers/setup-hotkeys hotkeys $state)
-
-  (.$watch $scope
-           (fn []  (.-data app))
-           (fn [d]
-             (when (.-loaded $scope)
-               (timbre/debug "Running navbarcontroller watcher")
-               (set! (.-app $scope) d)
-               (let [p (.getUser app)]
-                 (-> p (.then (fn [user] (set! (.-user app) user))))))))
+  (let [on-data-changed
+        (fn [d]
+          (when (.-loaded $scope)
+            (timbre/debug "Running navbarcontroller watcher")
+            (set! (.-app $scope) d)
+            (let [p (.getUser app)]
+              (-> p (.then (fn [user] (set! (.-user app) user)))))))]
+    (.$watch $scope #(.-data app) on-data-changed))
 
   (-> (.fetchStatus app)
       (.then (fn [] (set! (.-loaded $scope) true)))))
