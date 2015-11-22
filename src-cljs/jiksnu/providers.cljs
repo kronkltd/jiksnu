@@ -102,8 +102,12 @@
                  data)))))
 
 (defn get-user-id
+  "Returns the authenticated user id from app data"
   [app]
-  (str "acct:" (.. app -data -user) "@" (.. app -data -domain)))
+  (let [data (.-data app)]
+    (when-let [username (.-user data)]
+      (let [domain (.-domain data)]
+        (str "acct:" username "@" domain)))))
 
 (defn go
   [app state]
