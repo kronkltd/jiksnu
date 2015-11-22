@@ -180,18 +180,20 @@
 
     (.onOpen connection
              (fn []
-               (timbre/debug "Connection Opened")))
+               (timbre/debug "Websocket connection opened")))
 
     (.onClose connection
               (fn []
-                (timbre/debug "connection closed")
+                (timbre/debug "Websocket connection closed")
                 (.reconnect connection)))
 
     (.onError connection
               (fn []
-                (timbre/warn "connection errored")))
+                (timbre/warn "Websocket connection errored")))
 
+    ;; Bind to window for easy debugging
     (set! (.-app js/window) app)
+
     ;; return the app
     app))
 
