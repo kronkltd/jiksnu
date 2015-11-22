@@ -319,7 +319,7 @@
 
 (def.controller jiksnu.ShowGroupController
   [$scope $http $stateParams Groups]
-  (js/console.log "loading ShowGroupController")
+  (timbre/debug "loading ShowGroupController")
   (aset $scope "loaded" false)
   (aset $scope "addAdmin" (fn [& opts] (js/console.log opts)))
   (aset $scope "addMember" (fn [& opts] (js/console.log opts)))
