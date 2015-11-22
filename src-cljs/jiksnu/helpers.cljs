@@ -1,5 +1,6 @@
 (ns jiksnu.helpers
-  (:require [clojure.string :as string])
+  (:require [clojure.string :as string]
+            [taoensso.timbre :as timbre])
   (:use-macros [purnam.core :only [! ? obj]]
                [jiksnu.macros :only [state-hotkey]]))
 
@@ -122,7 +123,7 @@
   (set! (.-init $scope)
         (fn [item]
           (let [item (or item (.-item $scope))]
-            (js/console.debug "init subpage" subpage (type item))
+            (timbre/debug "init subpage" subpage item)
             (-> (.fetch subpageService item subpage)
                 (.then (fn [page] (aset item subpage page)))))))
 
