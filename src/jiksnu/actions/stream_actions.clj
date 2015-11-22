@@ -12,6 +12,7 @@
             [jiksnu.model.stream :as model.stream]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.stream-transforms :as transforms.stream]
             [jiksnu.util :as util]
             [manifold.stream :as s]
             [slingshot.slingshot :refer [throw+ try+]]
@@ -27,7 +28,7 @@
       transforms/set-updated-time
       transforms/set-created-time
       ;; transforms.stream/set-local
-      ))
+      transforms.stream/set-owner))
 
 ;; utils
 
@@ -43,7 +44,7 @@
 (defn create
   "Create a new stream feed source record"
   [params options]
-  (let [params (prepare-create params)]
+  (when-let [params (prepare-create params)]
     (model.stream/create params)))
 
 (def index*
