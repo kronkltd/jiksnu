@@ -7,6 +7,7 @@
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.util :as util]
             [octohipster.mixins :as mixin]
             [puget.printer :as puget]
             [taoensso.timbre :as timbre])
@@ -63,6 +64,9 @@
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :presenter (partial into {})
+  :delete! (fn [ctx]
+             (timbre/info "Delete group")
+             (actions.group/delete (:data ctx)))
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)]
                {:data (model.group/fetch-by-id id)})))

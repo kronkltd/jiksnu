@@ -10,6 +10,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.group :as model.group]
             jiksnu.modules.web.routes.group-routes
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
@@ -43,6 +44,14 @@
           body (json/read-str (:body response2))]
       response2 => (contains {:status 200})
       body => (contains {"name" (:name params)}))))
+
+(facts "route: group-api/item :delete"
+  (let [group (mock/a-group-exists)
+        url (str "/model/groups/" (:_id group))
+        request (-> (req/request :delete url))
+        response (response-for request)]
+    response => (contains {:status 200})
+    (model.group/fetch-by-id (:_id group)) => nil))
 
 (facts "route: group-api/item :get"
   (let [group (mock/a-group-exists)
