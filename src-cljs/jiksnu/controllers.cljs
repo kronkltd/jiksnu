@@ -193,7 +193,7 @@
                           :privacy "public"
                           :title ""
                           :geo #js {:latitude nil
-                                :longitude nil}
+                                    :longitude nil}
                           :content ""}
         get-location (fn []
                        (-> (.getLocation geolocation)
