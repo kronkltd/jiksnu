@@ -13,9 +13,8 @@
 
 (defn start
   []
-  ;; (log/info "starting core")
+  (log/info "starting core")
   (db/set-database!)
 
   (doseq [model-name registry/action-group-names]
     (util/require-module "jiksnu.modules" "core" model-name)))
-

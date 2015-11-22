@@ -33,6 +33,7 @@
 
 (defn init-receivers
   []
+  (log/info "init receivers")
   (s/consume create-trigger ch/posted-activities)
 
   ;; Create events for each created activity
