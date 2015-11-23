@@ -1,4 +1,5 @@
 [:div.conversations
+ [:debug {:expr "page"}]
  [:div.conversation-section {:ng-repeat "conversation in page.items"}
   #_[:p [:a {:ui-sref "showConversation(conversation)"} "{{conversation._id}}"]]
   [:div

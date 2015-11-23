@@ -46,7 +46,8 @@
   [app message]
   (let [notify (.. app -di -notify)
         data (js/JSON.parse (.-data message))]
-    (timbre/debug "Received Message: " data)
+    (timbre/debug "Received Message")
+    (js/console.debug data)
     (cond
       (.-connection data) (do #_(notify "connected"))
       (.-action data) (condp = (.-action data)
@@ -126,10 +127,21 @@
     (-> (.post $http "/model/streams" params)
         (.then #(.-data %)))))
 
+(defn delete-stream
+  [app stream]
+  (timbre/info "Deleting stream")
+  (.post app #js {:action "delete"
+                  :object
+                  #js {:id (:_id stream)}
+
+                  })
+  )
+
 (def app-methods
   {
    :addStream     add-stream
    :connect       connect
+   :deleteStream  delete-stream
    :getUser       get-user
    :getUserId     get-user-id
    :go            go

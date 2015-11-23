@@ -6,10 +6,12 @@
   [:input {:ng-model "stream.name" :name "name" :type "text"}]
   [:input.btn.btn-default {:type "submit"}]]
  [:subpage {:name "streams" :item "item"}
-  [:table
+  [:table.table
    [:tr {:ng-repeat "id in $parent.page.items"}
     [:td
-     [:show-stream-minimal {:data-id "{{id}}"}]]
+     [:show-stream-minimal {:data-id "{{id}}"}]
+     [:debug {:expr "id"}]
+     ]
     [:td
      [:button.btn.btn-default {:ng-click "deleteStream(id)"}
       [:i.glyphicon.glyphicon-trash]]]]]]]
