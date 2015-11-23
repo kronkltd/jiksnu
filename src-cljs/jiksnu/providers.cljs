@@ -15,12 +15,11 @@
 (defn fetch-status
   [app]
   (timbre/debug "fetching app status")
-  (let [$http (.. app -di -$http)
-        path "/status"]
-   (-> (.get $http path)
-       (.then (fn [response]
-                (timbre/debug "setting app status")
-                (set! (.-data app) (.-data response)))))))
+  (let [$http (.inject app "$http")]
+    (-> (.get $http "/status")
+        (.then (fn [response]
+                 (timbre/debug "setting app status")
+                 (set! (.-data app) (.-data response)))))))
 
 (defn login
   [app username password]
@@ -34,17 +33,19 @@
 
 (defn logout
   [app]
-  (-> (.post (.. app -di -$http) "/main/logout")
-      (.success (fn [data]
-                  (.fetchStatus app)))))
+  (let [$http (.inject app "$http")]
+    (-> (.post $http "/main/logout")
+        (.success (fn [data]
+                    (.fetchStatus app))))))
 
 (defn update-page
   [app message]
-  ((.. app -di -notify) "Adding to page"))
+  (let [notify (.inject app "notify")]
+    (notify "Adding to page")))
 
 (defn handle-message
   [app message]
-  (let [notify (.. app -di -notify)
+  (let [notify (.inject app "notify")
         data (js/JSON.parse (.-data message))]
     (timbre/debug "Received Message")
     (js/console.debug data)
@@ -61,17 +62,19 @@
 
 (defn post
   [app activity]
-  (timbre/info "Posting Activity" activity)
-  (.post (.. app -di -$http) "/model/activities" activity))
+  (let [$http (.inject app "$http")]
+    (timbre/info "Posting Activity" activity)
+    (.post $http "/model/activities" activity)))
 
 (defn get-user
   [app]
-  ((.. app -di -$q)
-   (fn [resolve reject]
-     (if-let [id (.getUserId app)]
-       (do (timbre/debug "getting user: " id)
-           (resolve (.find (.. app -di -Users) id)))
-       (reject nil)))))
+  (let [$q (.inject app "$q")
+        Users (.inject app "Users")]
+    ($q (fn [resolve reject]
+          (if-let [id (.getUserId app)]
+            (do (timbre/debug "getting user: " id)
+                (resolve (.find Users id)))
+            (reject nil))))))
 
 (defn following?
   [app target]
@@ -98,10 +101,11 @@
 (defn register
   [app params]
   (timbre/debug "Registering" (.-reg params))
-  (let [params #js {:method "post"
+  (let [$http (.inject app "$http")
+        params #js {:method "post"
                     :url    "/main/register"
                     :data   (.-reg params)}]
-    (-> (.$http (.-di app) params)
+    (-> ($http params)
         (.then (fn [data]
                  (timbre/debug "Response" data)
                  data)))))
@@ -116,13 +120,14 @@
 
 (defn go
   [app state]
-  (.go (.. app -di -$state) state))
+  (let [$state (.inject app "$state")]
+    (.go $state state)))
 
 (defn add-stream
   [app stream-name]
   (timbre/with-context {:name stream-name}
     (timbre/info "Creating Stream"))
-  (let [$http (.. app -di -$http)
+  (let [$http (.inject app "$http")
         params #js {:name stream-name}]
     (-> (.post $http "/model/streams" params)
         (.then #(.-data %)))))
@@ -160,9 +165,9 @@
 
 (defn app-service
   [$http $q $state notify Users $websocket $window DS
-   pageService subpageService]
+   pageService subpageService $injector]
   (timbre/debug "creating app service")
-  (let [app #js {}
+  (let [app #js {:inject (.-get $injector)}
         data #js {}
         websocket-url (if-let [location (.-location $window)]
                         (str "ws"
@@ -213,5 +218,5 @@
   []
   (timbre/debug "initializing app service")
   #js {:$get #js ["$http" "$q" "$state" "notify" "Users" "$websocket" "$window" "DS"
-                  "pageService" "subpageService"
+                  "pageService" "subpageService" "$injector"
                   app-service]})
