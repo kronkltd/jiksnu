@@ -23,13 +23,15 @@
 
 (defn login
   [app username password]
-  (timbre/info "Logging in user." username password)
-  (-> (.post (.. app -di -$http) "/main/login"
-             (js/$.param #js {:username username :password password})
-             #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
-      (.success (fn [data]
-                  (.fetchStatus app)
-                  (.go app "home")))))
+  (let [$http (.inject app "$http")]
+    (timbre/info "Logging in user." username password)
+    (-> (.post $http
+               "/main/login"
+               (js/$.param #js {:username username :password password})
+               #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
+        (.success (fn [data]
+                    (.fetchStatus app)
+                    (.go app "home"))))))
 
 (defn logout
   [app]
@@ -175,18 +177,8 @@
                              "://"
                              (.-host location) "/")
                         (throw (js/Error. "No location available")))
-        di #js {:$http $http
-                :$q $q
-                :DS DS
-                :$state $state
-                :notify notify
-                :Users Users
-                :ws $websocket
-                :pageService pageService
-                :subpageService subpageService}
         connection ($websocket websocket-url)]
 
-    (set! (.-di app) di)
     (set! (.-connection app) connection)
     (set! (.-data app) data)
 
