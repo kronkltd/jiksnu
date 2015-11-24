@@ -7,7 +7,9 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter
+                                                page-resource path
+                                                subpage-resource]]
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
             [puget.printer :as puget]
@@ -79,4 +81,23 @@
                {:data item}))
   ;; :delete! #'actions.stream/delete
   ;; :put!    #'actions.stream/update-record
+  )
+
+(defresource streams-api :activities
+  :url "/{_id}/activities"
+  :name "stream activities"
+  :mixins [subpage-resource]
+  ;; :parameters  {:_id  (path :model.stream/id)}
+  :subpage "activities"
+  :target-model "stream"
+  :description "Activities of {{name}}"
+  :available-formats [:json]
+  ;; :presenter (fn [rsp]
+  ;;              (with-context [:http :json]
+  ;;                (let [page (:body rsp)
+  ;;                      items (:items page)]
+  ;;                  (-> (if (seq items)
+  ;;                        (-> (index-section items page))
+  ;;                        {})
+  ;;                      (assoc :displayName "Groups")))))
   )

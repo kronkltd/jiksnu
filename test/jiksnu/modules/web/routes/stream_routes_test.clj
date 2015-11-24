@@ -41,8 +41,14 @@
         request (-> (req/request :delete url))
         ;; response
         ]
-    (response-for request) => (contains {:status 200})
+    (response-for request) => (contains {:status 200})))
 
+(fact "route: streams-api/activities :get"
+  (let [stream (mock/a-stream-exists)
+        url (str "/model/streams/" (:_id stream) "/actvities")
+        request (-> (req/request :get url))
+        response (response-for request)]
+    response => (contains {:status 200})
     )
   )
 
