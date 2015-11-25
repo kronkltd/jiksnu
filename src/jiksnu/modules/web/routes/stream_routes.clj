@@ -1,6 +1,8 @@
 (ns jiksnu.modules.web.routes.stream-routes
   (:require [cemerick.friend :as friend]
             [ciste.commands :refer [add-command!]]
+            [ciste.core :refer [with-context]]
+            [ciste.sections.default :refer [index-section show-section]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.stream :as model.stream]
@@ -15,6 +17,7 @@
             [puget.printer :as puget]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
+
 
 (defparameter :model.stream/id
   :in :path
@@ -84,20 +87,21 @@
   )
 
 (defresource streams-api :activities
+  :desc "activities in stream"
   :url "/{_id}/activities"
   :name "stream activities"
   :mixins [subpage-resource]
-  ;; :parameters  {:_id  (path :model.stream/id)}
+  :parameters  {:_id  (path :model.stream/id)}
   :subpage "activities"
   :target-model "stream"
   :description "Activities of {{name}}"
   :available-formats [:json]
-  ;; :presenter (fn [rsp]
-  ;;              (with-context [:http :json]
-  ;;                (let [page (:body rsp)
-  ;;                      items (:items page)]
-  ;;                  (-> (if (seq items)
-  ;;                        (-> (index-section items page))
-  ;;                        {})
-  ;;                      (assoc :displayName "Groups")))))
+  :presenter (fn [rsp]
+               (with-context [:http :json]
+                 (let [page (:body rsp)
+                       items (:items page)]
+                   (-> (if (seq items)
+                         (-> (index-section items page))
+                         {})
+                       (assoc :displayName "Groups")))))
   )
