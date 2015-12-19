@@ -1,5 +1,7 @@
 [:div
  [:p "{{stream.name}}"]
+ [:p "{{stream.owner}}"]
+ [:debug {:expr "stream"}]
  [:subpage {:name "activities" :item "stream"}
   [:debug {:expr "$parent.page"}]
   ]

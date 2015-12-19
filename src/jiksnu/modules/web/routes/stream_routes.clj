@@ -103,5 +103,5 @@
                    (-> (if (seq items)
                          (-> (index-section items page))
                          {})
-                       (assoc :displayName "Groups")))))
+                       (assoc :displayName "Activities")))))
   )

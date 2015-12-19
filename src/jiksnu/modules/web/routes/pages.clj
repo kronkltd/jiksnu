@@ -15,6 +15,7 @@
             [jiksnu.actions.user-actions :as user])
   (:import jiksnu.model.Conversation
            jiksnu.model.Group
+           jiksnu.model.Stream
            jiksnu.model.User))
 
 (defn pages
@@ -48,4 +49,5 @@
    [{:type Conversation :name "activities"} {:action #'activity/fetch-by-conversation}]
    [{:type Group :name "admins"}            {:action #'group/fetch-admins}]
    [{:type Group :name "conversations"}     {:action #'conversation/fetch-by-group}]
+   [{:type Stream :name "activities"}       {:action #'activity/fetch-by-stream}]
    ])
