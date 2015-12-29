@@ -180,6 +180,9 @@
         source (or (:feed-source options)
                    (get-this :feed-source)
                    (a-feed-source-exists {:domain domain}))
+        stream (or (:stream options)
+                   (get-that :stream)
+                   (a-stream-exists {:user user}))
         conversation (or (:conversation options)
                          (a-conversation-exists {:domain domain
                                                  :source source}))
@@ -192,6 +195,7 @@
                               :update-source (:_id source)
                               :verb "post"
                               :conversation (:_id conversation)
+                              :streams [(:_id stream)]
                               :published (time/now)
                               ;; :local true
                               :public (= modifier "public")})))]

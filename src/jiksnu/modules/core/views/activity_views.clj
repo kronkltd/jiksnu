@@ -23,6 +23,15 @@
     {:body {:action "page-updated"
             :body response}}))
 
+(defview #'actions.activity/fetch-by-stream :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
+
 (defview #'actions.activity/oembed :xml
   [request m]
   {:status 200

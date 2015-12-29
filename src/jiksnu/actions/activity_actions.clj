@@ -226,6 +226,12 @@
   [source & [options]]
   (index {:update-source (:_id source)} options))
 
+(defn fetch-by-stream
+  ([stream]
+   (fetch-by-stream stream nil))
+  ([{id :_id :as stream} options]
+   (index {:stream id} options)))
+
 (defn handle-delete-hook
   [user]
   (doseq [activity (:items (find-by-user user))]
