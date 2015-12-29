@@ -1,0 +1,13 @@
+<body xmlns='http://jabber.org/protocol/httpbind'>
+  <iq type="result" id="osw_159"
+      from="daniel@social.openliven.com"
+      to="duck@mycyclopedia.net/1287624157761">
+    <pubsub xmlns="http://jabber.org/protocol/pubsub">
+      <subscription node="urn:xmpp:microblog:0"
+                    jid="daniel@social.openliven.com"
+                    subscription="subscribed"/>
+    </pubsub>
+  </iq>
+</body>
+
+

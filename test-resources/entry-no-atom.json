@@ -1,0 +1,17 @@
+{:_id #<ObjectId 4cb245f985f1e04ce5f53497>,
+ :extensions [{:children ["http://activitystrea.ms/schema/1.0/post"],
+               :attributes {:xmlns:activity "http://activitystrea.ms/spec/1.0/"},
+               :name "activity:verb"}
+              {}
+              {:children ["\n    "
+                          {:children ["http://onesocialweb.org/spec/1.0/acl/action/view"],
+                           :attributes {:permission "http://onesocialweb.org/spec/1.0/acl/permission/grant"},
+                           :name "osw:acl-action"}
+                          "\n    "
+                          {:children [],
+                           :attributes {:type "http://onesocialweb.org/spec/1.0/acl/subject/everyone"},
+                           :name "osw:acl-subject"}
+                          "\n  "],
+               :attributes {:xmlns:osw "http://onesocialweb.org/spec/1.0/"},
+               :name "osw:acl-rule"}],
+ :title "to be or not to be ?"}

@@ -19,7 +19,7 @@ init-script
 lib
 logs
 node_modules
-pom.xml
+pom.xml*
 target
 tmp
 repl

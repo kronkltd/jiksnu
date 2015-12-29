@@ -1,0 +1,48 @@
+<entry xmlns="http://www.w3.org/2005/Atom"
+       xmlns:gd="http://schemas.google.com/g/2005"
+       gd:kind="buzz#activity">
+  <title type="text">Apparently, I'm supposed to give my wife wood today. We've been married 5 years now.</title>
+  <published>2011-04-01T06:12:37.000Z</published>
+  <updated>2011-04-01T06:12:37.918Z</updated>
+  <id>tag:google.com,2010:buzz:z12pvptyklegy1q0y22qxpmijznfvphek</id>
+  <link rel="alternate" type="text/html"
+        href="https://profiles.google.com/duck112358/posts/68mKbqoS14v" />
+  <link rel="self" type="application/atom+xml"
+        href="https://www.googleapis.com/buzz/v1/activities/107567995094921970894/@self/B:z12pvptyklegy1q0y22qxpmijznfvphek?alt=atom" />
+  <link xmlns:thr="http://purl.org/syndication/thread/1.0"
+        rel="replies" type="application/atom+xml"
+        href="https://www.googleapis.com/buzz/v1/activities/107567995094921970894/@self/B:z12pvptyklegy1q0y22qxpmijznfvphek/@comments?alt=atom"
+        thr:count="0" thr:updated="2011-04-01T06:12:37.918Z" />
+  <author>
+    <poco:id xmlns:poco="http://portablecontacts.net/ns/1.0">107567995094921970894</poco:id>
+    <poco:photoUrl xmlns:poco="http://portablecontacts.net/ns/1.0">http://www.google.com/s2/photos/public/AIbEiAIAAABDCM6J5PWR7rqDaSILdmNhcmRfcGhvdG8qKDdiNGRhMWNjOGJjMDdhZWE0ZjcyMTA2M2NiYmQzZDYzNjlhNTRlNTMwAYSyxOb0YlkBkZhEWnvoGTdYx1Le</poco:photoUrl>
+    <name>Daniel Renfer</name>
+    <uri>https://profiles.google.com/duck112358</uri>
+    <link rel="photo" type="image/jpeg" href="http://www.google.com/s2/photos/public/AIbEiAIAAABDCM6J5PWR7rqDaSILdmNhcmRfcGhvdG8qKDdiNGRhMWNjOGJjMDdhZWE0ZjcyMTA2M2NiYmQzZDYzNjlhNTRlNTMwAYSyxOb0YlkBkZhEWnvoGTdYx1Le" />
+    <activity:object-type xmlns:activity="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/person</activity:object-type>
+  </author>
+  <content type="html">Apparently, I&amp;#39;m supposed to give my wife wood today. We&amp;#39;ve been married 5 years now.</content>
+  <activity:verb xmlns:activity="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</activity:verb>
+  <activity:object xmlns:activity="http://activitystrea.ms/spec/1.0/">
+    <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>
+    <content type="html">Apparently, I&amp;#39;m supposed to give my wife wood today. We&amp;#39;ve been married 5 years now.</content>
+    <buzz:original-content xmlns:buzz="http://schemas.google.com/buzz/2010" type="text" />
+    <link rel="alternate" type="text/html" href="https://profiles.google.com/duck112358/posts/68mKbqoS14v" />
+  </activity:object>
+  <source>
+    <activity:service xmlns:activity="http://activitystrea.ms/spec/1.0/">
+      <title type="text">Posted from the Labs</title>
+    </activity:service>
+  </source>
+  <buzz:visibility xmlns:buzz="http://schemas.google.com/buzz/2010">
+    <buzz:aclentry type="group">
+      <poco:id xmlns:poco="http://portablecontacts.net/ns/1.0">G:@me:@public</poco:id>
+      <poco:name xmlns:poco="http://portablecontacts.net/ns/1.0">Public</poco:name>
+    </buzz:aclentry>
+  </buzz:visibility>
+  <link xmlns:buzz="http://schemas.google.com/buzz/2010"
+        rel="http://schemas.google.com/buzz/2010#liked"
+        type="application/poco+xml"
+        href="https://www.googleapis.com/buzz/v1/activities/107567995094921970894/@self/B:z12pvptyklegy1q0y22qxpmijznfvphek/@liked?alt=atom"
+        buzz:count="1" />
+</entry>

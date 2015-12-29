@@ -3,42 +3,53 @@
   :url "https://github.com/duck1123/jiksnu"
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
+  :license {:name "Eclipse Public License"
+            :url "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths   ["src"       "src-cljs"]
   :resource-paths ["resources" "target/resources"]
-  :dependencies [[ciste                               "0.6.0-SNAPSHOT"]
+  :dependencies [[ciste                               "0.6.0-SNAPSHOT"
+                  :exclusions [ring/ring-core
+                               org.clojure/tools.reader
+                               org.clojure/clojurescript
+                               ;; xom
+                               ]]
                  [ciste/ciste-incubator               "0.1.0-SNAPSHOT"
                   :exclusions [ciste ciste/ciste-core]]
                  [clauth                              "1.0.0-rc17"]
-                 [clj-time                            "0.10.0"]
+                 [clj-factory                         "0.2.2-SNAPSHOT"]
+                 [clj-time                            "0.11.0"]
                  [clj-http                            "2.0.0"]
                  [clojurewerkz/mailer                 "1.2.0"]
                  [cheshire                            "5.5.0"
                   :exclusions [org.clojure/clojure]]
                  [compojure                           "1.4.0"]
                  [clojurewerkz/support                "1.1.0"]
+                 [com.cemerick/friend                 "0.2.1"]
                  [com.flybe/socket-rocket             "0.1.9"]
-                 [com.novemberain/monger              "3.0.0"]
+                 [com.novemberain/monger              "3.0.1"]
                  [com.novemberain/validateur          "2.4.2"]
                  [com.taoensso/timbre                 "4.1.4"]
+                 [crypto-random                       "1.2.0"]
                  [hiccup                              "1.0.5"]
                  [http-kit                            "2.1.19"]
                  [im.chit/gyr                         "0.3.1"]
                  [im.chit/purnam                      "0.5.2"]
                  [javax.servlet/javax.servlet-api     "3.1.0"]
                  [liberator                           "0.13"]
-                 [mvxcvi/puget "0.9.2"]
+                 [manifold                            "0.1.1-alpha4"]
+                 [mvxcvi/puget                        "0.9.2"]
                  [net.kronkltd/clj-gravatar           "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-command         "0.1.0-SNAPSHOT"]
-                 [net.kronkltd/jiksnu-core            "0.1.0-SNAPSHOT"
-                  :exclusions [xalan com.cemerick/austin]]
                  [net.kronkltd/octohipster            "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
                  [net.logstash.log4j/jsonevent-layout "1.7"]
+                 [org.bovinegenius/exploding-fish     "0.3.4"]
                  [org.clojure/clojure                 "1.7.0"]
                  [org.clojure/clojurescript           "1.7.28"]
                  [org.clojure/tools.logging           "0.3.1"]
                  [org.clojure/tools.reader            "0.9.2"]
                  [org.clojure/data.json               "0.2.6"]
+                 [org.jsoup/jsoup                     "1.8.3"]
                  [org.slf4j/slf4j-api                 "1.7.12"]
                  [cider/cider-nrepl                   "0.10.0-SNAPSHOT"]
                  [org.slf4j/slf4j-log4j12             "1.7.12"]
@@ -50,7 +61,10 @@
                  [timbre-logstash                     "0.2.0"]
                  ]
   :plugins [[cider/cider-nrepl "0.10.0-SNAPSHOT"]
-            [codox             "0.8.12"]
+            [codox             "0.8.13"]
+            [lein-ancient      "0.6.7"]
+            [lein-bikeshed     "0.2.0"]
+            [lein-checkall     "0.1.1"]
             [lein-checkouts    "1.1.0"]
             [lein-cljsbuild    "1.0.6"]
             [lein-cloverage    "1.0.2"]
