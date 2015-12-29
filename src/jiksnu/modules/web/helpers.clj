@@ -2,7 +2,6 @@
   (:require [cemerick.friend :as friend]
             [clojure.data.json :as json]
             [clojure.java.io :as io]
-            [taoensso.timbre :as timbre]
             [clojure.tools.reader.edn :as edn]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -16,7 +15,9 @@
             [jiksnu.util :as util]
             [liberator.core :as lib]
             [octohipster.mixins :as mixin]
-            [slingshot.slingshot :refer [throw+]])
+            [puget.printer :as puget]
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre])
   (:import java.io.PushbackReader))
 
 (defn not-found-msg
@@ -165,6 +166,7 @@
                     (actions/get-model
                      target-model
                      (:_id (:route-params (:request ctx)))))]
+    (puget/cprint item)
     {:data (actions/get-sub-page item subpage)}))
 
 (defn subpage-resource
