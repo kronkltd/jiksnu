@@ -53,7 +53,7 @@
   [groups]
   (map
    (fn [gvar]
-     (timbre/debug (str "Processing Group: " gvar))
+     #_(timbre/debug (str "Processing Group: " gvar))
      (let [options (var-get gvar)
            group-resources (map val @(get-resources gvar))
            options (assoc options :resources group-resources)]

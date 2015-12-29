@@ -58,7 +58,7 @@
 (defn load-group
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
-    (timbre/with-context {:sym (str route-sym)}
+    #_(timbre/with-context {:sym (str route-sym)}
       (timbre/debug "Loading routes"))
 
     (try
