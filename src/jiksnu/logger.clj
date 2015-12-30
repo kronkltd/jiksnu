@@ -1,12 +1,10 @@
 (ns jiksnu.logger
-  (:require [active.timbre-logstash :refer [timbre-json-appender]]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             jiksnu.util
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]
             [taoensso.timbre.profiling :as profiling]
-            [socket-rocket.logstash :as sr]
             [puget.printer :as puget]))
 
 (defn json-formatter
@@ -37,20 +35,18 @@
    {:level :debug
     :ns-whitelist []
     :ns-blacklist [
+                   "ciste.commands"
                    "ciste.loader"
-                   ;; "ring.logger.timbre"
-                   ;; "jiksnu.modules.http.actions"
+                   "ciste.initializer"
+                   "ring.logger.timbre"
+                   "jiksnu.modules.http.actions"
                    ]
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
-    ;; :output-fn json-formatter
     :appenders
     {
-     ;; :logstash timbre-json-appender "192.168.1.151" 4660)
-     ;; :logstash sr/logstash-appender
      :spit (assoc (spit-appender) :output-fn json-formatter)
      :println (-> (println-appender {:stream :auto})
                   ;; (assoc :min-level :info)
-
                   )}
     :shared-appender-config {:logstash {:port 4660 :logstash "192.168.1.151"}}}))
