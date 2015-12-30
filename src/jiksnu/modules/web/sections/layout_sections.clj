@@ -178,7 +178,13 @@
      [:p "Copyright © 2011-2015 KRONK Ltd."]
      [:p "Powered by "
       [:a {:href "https://github.com/duck1123/jiksnu"}
-       "Jiksnu"]]]]))
+       "Jiksnu"]]
+     [:p
+      [:a {:href (str "/vendor/swagger-ui/dist/index.html?url=https://"
+                      (config :domain)
+                      "/api-docs.json")
+           :target "_top"}
+       "API"]]]]))
 
 (defmethod apply-template :html
   [request response]
