@@ -59,7 +59,7 @@
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
     #_(timbre/with-context {:sym (str route-sym)}
-      (timbre/debug "Loading routes"))
+        (timbre/debug "Loading routes"))
 
     (try
       (require route-sym)
@@ -120,10 +120,8 @@
 
 (defn exists?
   [action ctx]
-  (if (= (get-in ctx [:representation :media-type])
-         (types :html))
-    true
-    ))
+  (= (get-in ctx [:representation :media-type])
+     (types :html)))
 
 (defn handle-ok
   [ctx]
@@ -137,26 +135,26 @@
 
 (defn ciste-resource
   "route mixin for paths that use ciste"
-  [{:keys [available-formats]
-    :as resource}]
-  (-> resource
-      mixin/item-resource
-      (assoc :available-media-types (mapv types available-formats))))
+  [{:keys [available-formats] :as resource}]
+  (let [media-types (mapv types available-formats)]
+    (-> resource mixin/item-resource
+        (assoc :available-media-types media-types))))
 
 (defn page-resource
   "route mixin for paths that operate on a page"
-  [r]
-  (let [action-ns (:ns r)]
-    (if-let [action (ns-resolve action-ns 'index)]
-      (merge {:allowed-methods [:get :post :delete]
-              :exists? (fn [ctx]
-                         (timbre/with-context {:ns (str action-ns)}
-                           (timbre/debug "Page resource"))
-                         (if-let [f (var-get action)]
-                           [true {:data (f)}]))
-              :count (fn [_] 4)}
-             (ciste-resource r))
-      (throw+ "Could not resolve index action"))))
+  [{action-ns :ns :as r}]
+  (if-let [action (ns-resolve action-ns 'index)]
+    (merge {:allowed-methods [:get :post :delete]
+            :exists? (fn [ctx]
+                       (util/inspect r)
+                       (timbre/with-context {:ns (str action-ns)}
+                         (timbre/debug "Page resource"))
+                       (if-let [f (var-get action)]
+                         [true {:data (f)}]))
+            ;; FIXME: Return actual count
+            :count (constantly 4)}
+           (ciste-resource r))
+    (throw+ "Could not resolve index action")))
 
 (defn subpage-exists?
   [{:keys [subpage target target-model]} ctx]
@@ -178,9 +176,9 @@
       (assoc :exists? #(subpage-exists? resource %))))
 
 (defn angular-resource
-  [r]
-  (let [methods (:methods r)
-        get-method (:get methods)]
+  [{:keys [methods]
+    :as r}]
+  (let [get-method (:get methods)]
     (-> {:exists? true
          :handle-ok index
          :available-media-types (mapv types [:html])}
@@ -195,8 +193,7 @@
                                                (:description r)
                                                "Angular Template")
                               :headers {"Content-Type" {:description "The Content Type"}}}}}
-          get-method
-          )))))
+          get-method)))))
 
 (defn make-page-handler
   [& {:as opts}]
