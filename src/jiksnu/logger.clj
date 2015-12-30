@@ -7,6 +7,10 @@
             [taoensso.timbre.profiling :as profiling]
             [puget.printer :as puget]))
 
+(defn simple-console-formatter
+  [data]
+  (str (force (:msg_ data))))
+
 (defn json-formatter
   ([data] (json-formatter nil data))
   ([opts data]
@@ -40,6 +44,7 @@
                    "ciste.initializer"
                    "ring.logger.timbre"
                    "jiksnu.modules.http.actions"
+                   "jiksnu.modues.web.helpers"
                    ]
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
@@ -48,5 +53,6 @@
      :spit (assoc (spit-appender) :output-fn json-formatter)
      :println (-> (println-appender {:stream :auto})
                   ;; (assoc :min-level :info)
+                  (assoc :output-fn simple-console-formatter)
                   )}
     :shared-appender-config {:logstash {:port 4660 :logstash "192.168.1.151"}}}))

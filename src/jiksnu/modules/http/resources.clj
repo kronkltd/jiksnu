@@ -1,7 +1,8 @@
 (ns jiksnu.modules.http.resources
-  (:require [taoensso.timbre :as timbre]
+  (:require [jiksnu.util :as util]
             [octohipster.core :as octo]
-            [octohipster.routes :as octo-routes]))
+            [octohipster.routes :as octo-routes]
+            [taoensso.timbre :as timbre]))
 
 (defonce groups
   ;; "Ref holding each api group"
@@ -62,7 +63,8 @@
 
 (defmacro defresource
   [group resource-name & {:as options}]
-  (timbre/debugf "defining resource: %s(%s) => %s" group resource-name options)
+  (timbre/debugf "defining resource: %s(%s) =>" group resource-name)
+  #_(util/inspect options)
   `(add-resource! (var ~group) ~resource-name (octo/resource ~(assoc options :name resource-name))))
 
 (defmacro defgroup

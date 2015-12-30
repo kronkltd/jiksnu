@@ -40,7 +40,7 @@
 
 (defn load-sub-pages!
   [route-sym]
-  (when-let [page-fn (try-resolve route-sym 'sub-pages) ]
+  (when-let [page-fn (try-resolve route-sym 'sub-pages)]
     (when-let [matchers (page-fn)]
       (dosync
        (alter predicates/*sub-page-matchers* concat matchers)))))
@@ -58,11 +58,10 @@
 (defn load-group
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
-    #_(timbre/with-context {:sym (str route-sym)}
-        (timbre/debug "Loading routes"))
-
     (try
       (require route-sym)
+      (timbre/with-context {:sym (str route-sym)}
+        (timbre/debugf "Loading route group - %s" route-sym))
       (load-pages! route-sym)
       (load-sub-pages! route-sym)
       (trigger-on-loaded! route-sym)
@@ -95,9 +94,8 @@
    handlers))
 
 (defn serve-template
-  [request]
-  (let [template-name (:* (:params request))
-        path (str "templates/" template-name ".edn")
+  [{{template-name :*} :params}]
+  (let [path (str "templates/" template-name ".edn")
         url (io/resource path)
         reader (PushbackReader. (io/reader url))
         data (edn/read reader)]
@@ -117,11 +115,6 @@
 (def types
   {:json "application/json"
    :html "text/html"})
-
-(defn exists?
-  [action ctx]
-  (= (get-in ctx [:representation :media-type])
-     (types :html)))
 
 (defn handle-ok
   [ctx]
@@ -143,27 +136,25 @@
 (defn page-resource
   "route mixin for paths that operate on a page"
   [{action-ns :ns :as r}]
-  (if-let [action (ns-resolve action-ns 'index)]
+  (if-let [action-sym (ns-resolve action-ns 'index)]
     (merge {:allowed-methods [:get :post :delete]
             :exists? (fn [ctx]
-                       (util/inspect r)
                        (timbre/with-context {:ns (str action-ns)}
-                         (timbre/debug "Page resource"))
-                       (if-let [f (var-get action)]
-                         [true {:data (f)}]))
+                         (timbre/debugf "Fetching Page - %s" (:name r)))
+                       (when-let [action-var (var-get action-sym)]
+                         [true {:data (action-var)}]))
             ;; FIXME: Return actual count
             :count (constantly 4)}
            (ciste-resource r))
     (throw+ "Could not resolve index action")))
 
 (defn subpage-exists?
-  [{:keys [subpage target target-model]} ctx]
-  (timbre/debug "fetching subpage")
+  [{:keys [subpage target target-model]}
+   {{{id :_id} :route-params} :request :as ctx}]
+  (timbre/debugf "fetching subpage - %s(%s)" target-model subpage)
   (when-let [item (if target
                     (target ctx)
-                    (actions/get-model
-                     target-model
-                     (:_id (:route-params (:request ctx)))))]
+                    (actions/get-model target-model id))]
     (puget/cprint item)
     {:data (actions/get-sub-page item subpage)}))
 
