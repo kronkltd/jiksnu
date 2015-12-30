@@ -60,8 +60,8 @@
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
     (try
       (require route-sym)
-      (timbre/with-context {:sym (str route-sym)}
-        (timbre/debugf "Loading route group - %s" route-sym))
+      #_(timbre/with-context {:sym (str route-sym)}
+          (timbre/debugf "Loading route group - %s" route-sym))
       (load-pages! route-sym)
       (load-sub-pages! route-sym)
       (trigger-on-loaded! route-sym)

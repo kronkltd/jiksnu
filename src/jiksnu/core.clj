@@ -9,5 +9,5 @@
 
 (defn start
   []
-  (timbre/info "starting core")
+  #_(timbre/info "starting core")
   (db/set-database!))

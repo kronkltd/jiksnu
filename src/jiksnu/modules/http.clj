@@ -6,7 +6,7 @@
 
 (defn start
   []
-  (timbre/info "starting http"))
+  #_(timbre/info "starting http"))
 
 (defmodule "http"
   :start start

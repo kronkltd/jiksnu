@@ -17,7 +17,7 @@
 
 (defn add-group!
   [site-var group-var]
-  (timbre/debugf "adding group %s %s" site-var group-var)
+  #_(timbre/debugf "adding group %s %s" site-var group-var)
   (dosync
    (alter (get-groups site-var) conj group-var)))
 
@@ -63,7 +63,7 @@
 
 (defmacro defresource
   [group resource-name & {:as options}]
-  (timbre/debugf "defining resource: %s(%s) =>" group resource-name)
+  #_(timbre/debugf "defining resource: %s(%s) =>" group resource-name)
   #_(util/inspect options)
   `(add-resource! (var ~group) ~resource-name (octo/resource ~(assoc options :name resource-name))))
 
