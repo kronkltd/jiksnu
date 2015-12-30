@@ -230,7 +230,8 @@
   ([stream]
    (fetch-by-stream stream nil))
   ([{id :_id :as stream} options]
-   (index {:stream id} options)))
+   (timbre/infof "Fetching activities by stream: %s" id)
+   (index {:streams (str id)} options)))
 
 (defn handle-delete-hook
   [user]

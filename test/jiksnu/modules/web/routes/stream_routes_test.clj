@@ -46,7 +46,6 @@
   (let [stream (mock/a-stream-exists)
         url (str "/model/streams/" (:_id stream) "/actvities")
         request (-> (req/request :get url))]
-
     (mock/there-is-an-activity {:stream stream})
 
     (util/inspect request)

@@ -97,13 +97,5 @@
   :description "Activities of {{name}}"
   :available-formats [:json]
   :presenter (fn [rsp]
-               (timbre/info "presenting activities")
-               (puget/cprint rsp)
-               (with-context [:http :json]
-                 (let [page (:body rsp)
-                       items (:items page)]
-                   (-> (if (seq items)
-                         (-> (index-section items page))
-                         {})
-                       (assoc :displayName "Activities")))))
-  )
+               (merge (:body rsp)
+                      {:displayName "Activities in Stream"})))
