@@ -99,42 +99,35 @@
 
 (defn scripts-section
   [request response]
-  (let [websocket-path (str "wss://" (config :domain) "/")]
-    (list
-     [:script {:type "text/javascript"}
-      ;; "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"
-      (format "WEBSOCKET_PATH = '%s';" websocket-path)
-      "var CLOSURE_NO_DEPS = true;"]
-     (p/include-js
-      "/vendor/jquery/dist/jquery.min.js"
-      "/vendor/angular/angular.js"
-      "/vendor/angular-datatables/dist/angular-datatables.min.js"
-      "/vendor/highlightjs/highlight.pack.js"
-      "/vendor/momentjs/min/moment.min.js"
-      "/vendor/underscore/underscore-min.js"
-      "/vendor/showdown/src/showdown.js"
-      "/vendor/datatables/media/js/jquery.dataTables.min.js"
-      "/vendor/angularjs-geolocation/dist/angularjs-geolocation.min.js"
-      "/vendor/angular-busy/dist/angular-busy.min.js"
-      "/vendor/js-data/dist/js-data.min.js"
-      "/vendor/js-data-angular/dist/js-data-angular.min.js"
-      "/vendor/angular-file-upload/dist/angular-file-upload.min.js"
-      "/vendor/angular-cfp-hotkeys/build/hotkeys.min.js"
-      "/vendor/angular-highlightjs/angular-highlightjs.js"
-      "/vendor/angular-markdown-directive/markdown.js"
-      "/vendor/angular-moment/angular-moment.min.js"
-      "/vendor/angular-notify/dist/angular-notify.min.js"
-      "/vendor/angular-sanitize/angular-sanitize.min.js"
-      "/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"
-      "/vendor/angular-ui-router/release/angular-ui-router.min.js"
-      "/vendor/angular-validator/dist/angular-validator.min.js"
-      "/vendor/angular-websocket/angular-websocket.min.js"
-      "/cljs/jiksnu.js")
-     (doall (map (fn [hook]
-                   (hook request response))
-                 @scripts-section-hook))
-     [:script {:type "text/javascript"}
-      "goog.require('jiksnu.core');"])))
+  (list
+   [:script {:type "text/javascript"} "var CLOSURE_NO_DEPS = true;"]
+   (p/include-js
+    "/vendor/jquery/dist/jquery.min.js"
+    "/vendor/angular/angular.js"
+    "/vendor/angular-datatables/dist/angular-datatables.min.js"
+    "/vendor/highlightjs/highlight.pack.js"
+    "/vendor/momentjs/min/moment.min.js"
+    "/vendor/underscore/underscore-min.js"
+    "/vendor/showdown/src/showdown.js"
+    "/vendor/datatables/media/js/jquery.dataTables.min.js"
+    "/vendor/angularjs-geolocation/dist/angularjs-geolocation.min.js"
+    "/vendor/angular-busy/dist/angular-busy.min.js"
+    "/vendor/js-data/dist/js-data.min.js"
+    "/vendor/js-data-angular/dist/js-data-angular.min.js"
+    "/vendor/angular-file-upload/dist/angular-file-upload.min.js"
+    "/vendor/angular-cfp-hotkeys/build/hotkeys.min.js"
+    "/vendor/angular-highlightjs/angular-highlightjs.js"
+    "/vendor/angular-markdown-directive/markdown.js"
+    "/vendor/angular-moment/angular-moment.min.js"
+    "/vendor/angular-notify/dist/angular-notify.min.js"
+    "/vendor/angular-sanitize/angular-sanitize.min.js"
+    "/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"
+    "/vendor/angular-ui-router/release/angular-ui-router.min.js"
+    "/vendor/angular-validator/dist/angular-validator.min.js"
+    "/vendor/angular-websocket/angular-websocket.min.js"
+    "/cljs/jiksnu.js")
+   (map #(% request response) @scripts-section-hook)
+   [:script {:type "text/javascript"} "goog.require('jiksnu.core');"]))
 
 (defn page-template-content
   [request response]
