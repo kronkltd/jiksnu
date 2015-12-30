@@ -1,27 +1,17 @@
 (ns jiksnu.modules.web
-  (:require [ciste.loader :as loader
-             :refer [defhandler defmodule]]
-            [taoensso.timbre :as timbre]
+  (:require [ciste.loader :refer [defmodule]]
             [jiksnu.modules.http.resources :refer [init-site-reloading!]]
             jiksnu.modules.web.formats
             [jiksnu.modules.web.handlers :as handlers]
             [jiksnu.modules.web.helpers :as helpers]
             [jiksnu.modules.web.core :refer [jiksnu-init]]
-            jiksnu.plugins.google-analytics
-            [jiksnu.registry :as registry]
-            [jiksnu.util :as util]))
-
-(defn require-components
-  []
-  (doseq [group-name registry/action-group-names]
-    (util/require-module "jiksnu.modules" "web" group-name))
-  (helpers/load-routes))
+            [taoensso.timbre :as timbre]))
 
 (defn start
   []
   ;; (timbre/info "starting web")
   (handlers/init-handlers)
-  (require-components)
+  (helpers/load-routes)
   (init-site-reloading! jiksnu-init)
   (jiksnu-init))
 
