@@ -1,4 +1,4 @@
-(ns jiksnu.modules.web.logger
+(ns jiksnu.logger
   (:require [active.timbre-logstash :refer [timbre-json-appender]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]

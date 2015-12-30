@@ -1,5 +1,5 @@
 {:environment :development
- :logger "jiksnu.modules.web.logger"
+ :logger "jiksnu.logger"
  :modules [
            "jiksnu.core"
            "jiksnu.modules.command"
