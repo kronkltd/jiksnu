@@ -17,11 +17,6 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(defn user-info-section
-  [user]
-  (list
-   ))
-
 (defn navigation-group
   [group]
   (concat [[:li.nav-header (:title group)]]
@@ -140,15 +135,6 @@
                  @scripts-section-hook))
      [:script {:type "text/javascript"}
       "goog.require('jiksnu.core');"])))
-
-(defn right-column-section
-  []
-  (let [user (User.)]
-    [:h3 "Right column"]
-    #_(list
-       (bind-to "$root.targetUser() || $root.currentUser()"
-                (user-info-section user))
-       (:aside response))))
 
 (defn page-template-content
   [request response]
