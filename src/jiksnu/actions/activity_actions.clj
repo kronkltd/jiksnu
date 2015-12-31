@@ -1,5 +1,6 @@
 (ns jiksnu.actions.activity-actions
-  (:require [ciste.config :refer [config]]
+  (:require [cemerick.friend :as friend]
+            [ciste.config :refer [config]]
             [ciste.initializer :refer [definitializer]]
             [clojure.set :as set]
             [clojure.string :as string]

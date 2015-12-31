@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.helpers
-  (:require [cemerick.friend :as friend]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
             [clojure.tools.reader.edn :as edn]
             [compojure.handler :as handler]

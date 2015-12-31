@@ -289,7 +289,7 @@
   [$scope])
 
 (def.controller jiksnu.ShowActivityController
-  [$scope $stateParams Activities]
+  [$scope $stateParams Activities app]
   (set! (.-loaded $scope) false)
 
   (set! (.-init $scope)
@@ -298,6 +298,13 @@
          (.bindOne Activities id $scope "activity")
          (-> (.find Activities id)
              (.then (fn [] (! $scope.loaded true)))))))
+
+  (set! (.-deleteRecord $scope)
+        (fn [activity]
+          (let [msg (str "invoke-action \"activity\", \"delete\", \""
+                         (.-id $scope)
+                         "\"")]
+            (.send app msg))))
 
   (.init $scope (.-id $scope)))
 

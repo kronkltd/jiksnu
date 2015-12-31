@@ -1,7 +1,5 @@
 (ns jiksnu.modules.web.routes.user-routes
-  (:require [cemerick.friend :as friend]
-            [ciste.config :refer [config]]
-            [ciste.core :refer [with-context]]
+  (:require [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section]]
             [clojure.data.json :as json]
             [jiksnu.actions.group-actions :as group]
