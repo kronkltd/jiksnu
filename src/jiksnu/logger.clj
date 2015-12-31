@@ -8,8 +8,8 @@
             [puget.printer :as puget]))
 
 (defn simple-console-formatter
-  [data]
-  (str (force (:msg_ data))))
+  [{:keys [level ?err_ vargs_ msg_ ?ns-str hostname_ timestamp_] :as data}]
+  (str "[" (or ?ns-str "?ns") "] - " (force msg_)))
 
 (defn json-formatter
   ([data] (json-formatter nil data))

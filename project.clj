@@ -101,7 +101,8 @@
                                        :optimizations :whitespace
                                        :pretty-print true}}}}
   :profiles {:dev [:dev-core :user-dev]
-             :dev-core {:resource-paths ["test-resources"]
+             :dev-core {
+                        ;; :resource-paths ["test-resources"]
                         :dependencies
                         [[midje         "1.7.0" :exclusions [org.clojure/clojure]]
                          [clj-factory "0.2.2-SNAPSHOT"]

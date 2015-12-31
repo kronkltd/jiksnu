@@ -139,8 +139,8 @@
   (if-let [action-sym (ns-resolve action-ns 'index)]
     (merge {:allowed-methods [:get :post :delete]
             :exists? (fn [ctx]
-                       (timbre/with-context {:ns (str action-ns)}
-                         (timbre/debugf "Fetching Page - %s" (:name r)))
+                       #_(timbre/with-context {:ns (str action-ns)}
+                           (timbre/debugf "Fetching Page - %s" (:name r)))
                        (when-let [action-var (var-get action-sym)]
                          [true {:data (action-var)}]))
             ;; FIXME: Return actual count
@@ -151,11 +151,10 @@
 (defn subpage-exists?
   [{:keys [subpage target target-model]}
    {{{id :_id} :route-params} :request :as ctx}]
-  (timbre/debugf "fetching subpage - %s(%s)" target-model subpage)
+  #_(timbre/debugf "fetching subpage - %s(%s)" target-model subpage)
   (when-let [item (if target
                     (target ctx)
                     (actions/get-model target-model id))]
-    (puget/cprint item)
     {:data (actions/get-sub-page item subpage)}))
 
 (defn subpage-resource
