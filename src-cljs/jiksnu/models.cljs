@@ -43,6 +43,15 @@
     :endpoint "domains"
     :deserialize deserializer)))
 
+(def.factory jiksnu.Followings
+  [DS subpageService]
+  (.defineResource
+   DS
+   #js
+   {:name "followings"
+    :endpoint "followings"
+    :deserialize deserializer}))
+
 (def.factory jiksnu.Groups
   [DS subpageService]
   (.defineResource

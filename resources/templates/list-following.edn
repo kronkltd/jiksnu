@@ -3,8 +3,6 @@
  [:subpage {:name "following" :item "item"}
   [:debug {:expr "$parent.page"}]
   [:ul
-   [:li {:ng-repeat "follow in $parent.page.items"}
-    [:debug {:expr "follow"}]
-    [:display-avatar {:data-id "{{follow.to}}"}]
-    [:a {:ui-sref "showUser({_id: follow.to})"}
-     "{{follow.to}}"]]]]]
+   [:li {:ng-repeat "id in $parent.page.items"}
+    [:debug {:expr "id"}]
+    [:show-following-minimal {:data-id "{{id}}"}]]]]]

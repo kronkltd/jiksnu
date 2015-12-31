@@ -79,7 +79,7 @@
             (if (not= actor-id user-id)
               (let [d (.getFollowers user)]
                 (.then d some-follower))
-                                     (.resolve (.defer $q) nil)))))
+              (.resolve (.defer $q) nil)))))
 
   (set! (.-isActor $scope)
         (fn []
@@ -294,11 +294,11 @@
   (set! (.-loaded $scope) false)
 
   (set! (.-init $scope)
-     (fn [id]
-       (when (and id (not= id ""))
-         (.bindOne Activities id $scope "activity")
-         (-> (.find Activities id)
-             (.then (fn [] (! $scope.loaded true)))))))
+        (fn [id]
+          (when (and id (not= id ""))
+            (.bindOne Activities id $scope "activity")
+            (-> (.find Activities id)
+                (.then (fn [] (! $scope.loaded true)))))))
 
   (set! (.-deleteRecord $scope)
         (fn [activity]
@@ -351,20 +351,33 @@
   (let [id (or (.-id $scope) (.-_id $stateParams))]
     (.init $scope id)))
 
+(def.controller jiksnu.ShowFollowingMinimalController
+  [$scope $stateParams Followings]
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne Followings id $scope "following")
+          (-> (.find Followings id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
+
+  (let [id (or (.-_id $stateParams) (.-id $scope))]
+    (.init $scope id)))
+
 (def.controller jiksnu.ShowGroupController
   [$scope $http $stateParams Groups]
   (timbre/debug "loading ShowGroupController")
-  (aset $scope "loaded" false)
-  (aset $scope "addAdmin" (fn [& opts] (js/console.log opts)))
-  (aset $scope "addMember" (fn [& opts] (js/console.log opts)))
-  (aset $scope "init"
+  (set! (.-loaded $scope) false)
+  (set! (.-addAdmin $scope)  (fn [& opts] (js/console.log opts)))
+  (set! (.-addMember $scope) (fn [& opts] (js/console.log opts)))
+  (set! (.-init $scope)
         (fn [id]
           (.bindOne Groups id $scope "group")
           (-> (.find Groups id)
               (.then (fn [data]
-                       (aset $scope "group" data)
-                       (aset $scope "loaded" true))))))
-  (.init $scope (.-_id $stateParams)))
+                       (set! (.-group $scope) data)
+                       (set! (.-loaded $scope) true))))))
+  (let [id (.-_id $stateParams)]
+    (.init $scope id)))
 
 (def.controller jiksnu.ShowStreamController
   [$scope $http $stateParams Streams]
@@ -402,15 +415,31 @@
 
 (def.controller jiksnu.ShowUserController
   [$scope $stateParams Users]
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne Users id $scope "user")
+          (-> (.find Users id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
   (let [username (.-username $stateParams)
         domain (.-domain $stateParams)
         id (or (.-_id $stateParams)
+               (.-id $scope)
                (str "acct:" username "@" domain))]
-    (! $scope.init
-       (fn [id]
-         (! $scope.loaded false)
-         ;; (js/console.info "binding user" id)
-         (.bindOne Users id $scope "user")
-         (-> (.find Users id)
-             (.then (fn [user] (! $scope.loaded true))))))
+    (.init $scope id)))
+
+(def.controller jiksnu.ShowUserMinimalController
+  [$scope $stateParams Users]
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne Users id $scope "user")
+          (-> (.find Users id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
+
+  (let [username (.-username $stateParams)
+        domain (.-domain $stateParams)
+        id (or (.-_id $stateParams)
+               (.-id $scope)
+               (str "acct:" username "@" domain))]
     (.init $scope id)))

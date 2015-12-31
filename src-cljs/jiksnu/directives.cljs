@@ -95,6 +95,13 @@
    :scope (obj :id "@" :item "=")
    :templateUrl "/templates/show-conversation"})
 
+(def.directive jiksnu.showFollowingMinimal
+  []
+  #js
+  {:controller "ShowFollowingMinimalController"
+   :scope #js {:id "@" :item "="}
+   :templateUrl "/templates/show-following-minimal"})
+
 (def.directive jiksnu.showStreamMinimal
   []
   (obj
@@ -104,10 +111,17 @@
 
 (def.directive jiksnu.showUser
   []
-  (obj
-   :controller "ShowUserController"
-   :scope (obj :id "@" :item "=")
-   :templateUrl "/templates/show-user"))
+  #js
+  {:controller "ShowUserController"
+   :scope #js {:id "@" :item "="}
+   :templateUrl "/templates/show-user"})
+
+(def.directive jiksnu.showUserMinimal
+  []
+  #js
+  {:controller "ShowUserMinimalController"
+   :scope #js {:id "@" :item "="}
+   :templateUrl "/templates/show-user-minimal"})
 
 (def.directive jiksnu.streamsWidget []
   (obj))

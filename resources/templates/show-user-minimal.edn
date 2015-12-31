@@ -1,4 +1,10 @@
-[:div.vcard {:data-model "user"}
- ;; TODO: merge into the same link
- (display-avatar user)
- [:span.fn.n (link-to user)]]
+[:div
+ [:display-avatar {:data-id "{{id}}"}]
+ [:p
+  [:link-to {:data-id "{{id}}" :data-model "User"}]]
+ [:p "{{user.username}}@{{user.domain}}"]
+ [:p "{{user._id}}"]
+ [:p "{{user.name}}"]
+ [:p "{{user.uri}}"]
+ [:p "{{user.bio}}"]
+ [:debug {:expr "user"}]]

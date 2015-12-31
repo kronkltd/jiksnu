@@ -1,18 +1,8 @@
 [:div
  [:h2 "Index Users"]
- [:div {:ng-if "!loaded"}
-  [:p "Loading"]]
  [:div {:ng-if "loaded"}
-  [:table.table.users
-   [:thead]
-   [:tbody
-    [:tr {:ng-repeat "user in page.items"}
-     [:td
-      [:display-avatar {:data-id "{{user._id}}"}]
-      [:p
-       [:link-to {:data-id "{{user._id}}" :data-model "User"}]]
-      [:p "{{user.username}}@{{user.domain}}"]
-      [:p "{{user._id}}"]
-      [:p "{{user.name}}"]
-      [:p "{{user.uri}}"]
-      [:p "{{user.bio}}"]]]]]]]
+  [:debug {:expr "page"}]
+  [:div.users
+   [:div {:ng-repeat "id in page.items"}
+    [:show-user-minimal {:data-id "{{id}}"}]
+    [:debug {:expr "id"}]]]]]

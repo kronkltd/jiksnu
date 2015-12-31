@@ -5,6 +5,7 @@
 
 (def page-mappings
   {
+   "activities"    "/model/activities"
    "conversations" "/model/conversations"
    "domains"       "/model/domains"
    "feed-sources"  "/model/feed-sources"
