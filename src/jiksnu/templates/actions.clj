@@ -29,7 +29,7 @@
                     :limit page-size}
           record-count (count-fn params)
           records (fetch-fn params criteria)]
-      {:items records
+      {:items (map :_id records)
        :page page
        :page-size page-size
        :totalItems record-count
@@ -58,7 +58,6 @@
       (select-keys item #{:_id})
       {:$addToSet {:links link}})
     item))
-
 
 (defn make-delete
   [delete-fn access-fn]

@@ -14,7 +14,7 @@
 
 (defn fetch-status
   [app]
-  (timbre/debug "fetching app status")
+  #_(timbre/debug "fetching app status")
   (let [$http (.inject app "$http")]
     (-> (.get $http "/status")
         (.then (fn [response]
@@ -139,10 +139,7 @@
   (timbre/info "Deleting stream")
   (.post app #js {:action "delete"
                   :object
-                  #js {:id (:_id stream)}
-
-                  })
-  )
+                  #js {:id (:_id stream)}}))
 
 (def app-methods
   {
@@ -168,7 +165,7 @@
 (defn app-service
   [$http $q $state notify Users $websocket $window DS
    pageService subpageService $injector]
-  (timbre/debug "creating app service")
+  #_(timbre/debug "creating app service")
   (let [app #js {:inject (.-get $injector)}
         data #js {}
         websocket-url (if-let [location (.-location $window)]
@@ -187,13 +184,13 @@
 
     (.onMessage connection (.-handleMessage app))
 
-    (.onOpen connection
+    #_(.onOpen connection
              (fn []
                (timbre/debug "Websocket connection opened")))
 
     (.onClose connection
               (fn []
-                (timbre/debug "Websocket connection closed")
+                #_(timbre/debug "Websocket connection closed")
                 (.reconnect connection)))
 
     (.onError connection
@@ -208,7 +205,7 @@
 
 (def.provider jiksnu.app
   []
-  (timbre/debug "initializing app service")
+  #_(timbre/debug "initializing app service")
   #js {:$get #js ["$http" "$q" "$state" "notify" "Users" "$websocket" "$window" "DS"
                   "pageService" "subpageService" "$injector"
                   app-service]})

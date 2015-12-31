@@ -113,8 +113,8 @@
 
 (defn fetch-sub-page
   [item subpageService subpage]
-  (timbre/debug "Fetching subpage:" (.-_id item) subpage)
-  (js/console.log item)
+  (timbre/debugf "Fetching subpage: %s -> %s" (.-_id item) subpage)
+  ;; (js/console.log item)
   (-> subpageService
       (.fetch item subpage)
       (.then #(aset item subpage (.-body %)))))
@@ -150,7 +150,7 @@
               (.then (fn [page]
                        (set! (.-page $scope) page)
                        (set! (.-loaded $scope) true)
-                       (doall (map
+                       #_(doall (map
                                (fn [item]
                                  (doall (map (partial fetch-sub-page item subpageService)
                                              subpages)))

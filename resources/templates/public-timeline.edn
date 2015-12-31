@@ -1,5 +1,5 @@
 [:div.conversations
- [:debug {:expr "page"}]
- [:div.conversation-section {:ng-repeat "conversation in page.items"}
-  [:div {:ng-repeat "activity in conversation.activities.items"}
-   [:show-activity {:data-id "{{activity}}"}]]]]
+ #_[:debug {:expr "page"}]
+ [:div.conversation-section {:ng-repeat "id in page.items"}
+  [:debug {:expr "id"}]
+  [:show-conversation {:data-id "{{id}}"}]]]

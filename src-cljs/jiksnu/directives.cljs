@@ -88,6 +88,13 @@
    :scope (obj :id "@" :item "=")
    :templateUrl "/templates/show-activity"})
 
+(def.directive jiksnu.showConversation
+  []
+  #js
+  {:controller "ShowConversationController"
+   :scope (obj :id "@" :item "=")
+   :templateUrl "/templates/show-conversation"})
+
 (def.directive jiksnu.showStreamMinimal
   []
   (obj

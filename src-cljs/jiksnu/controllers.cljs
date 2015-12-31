@@ -320,17 +320,17 @@
 
 (def.controller jiksnu.ShowConversationController
   [$scope $stateParams Conversations app]
-  (timbre/debug "loading ShowConversationController")
   (set! (.-loaded $scope) false)
 
   (set! (.-init $scope)
         (fn [id]
+          (timbre/debugf "loading ShowConversationController - %s" id)
           (.bindOne Conversations id $scope "conversation")
           (-> (.find Conversations id)
               (.then (fn [conversation]
-                       (set! (.-item $scope) conversation)
-                       (.fetchActivities app conversation)))
-              (.then (fn [] (set! (.-loaded $scope) true))))))
+                       (when conversation
+                         (set! (.-item $scope) conversation)
+                         (set! (.-loaded $scope) true)))))))
 
   (set! (.-fetchActivities $scope)
         (fn [conversation]
@@ -340,7 +340,8 @@
                         (timbre/debug "Activities" response)
                         (aset $scope "activities" (.-body response)))))))
 
-  (.init $scope (.-_id $stateParams)))
+  (let [id (or (.-id $scope) (.-_id $stateParams))]
+    (.init $scope id)))
 
 (def.controller jiksnu.ShowGroupController
   [$scope $http $stateParams Groups]
