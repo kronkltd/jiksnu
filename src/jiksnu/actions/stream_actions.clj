@@ -1,5 +1,6 @@
 (ns jiksnu.actions.stream-actions
-  (:require [ciste.commands :refer [parse-command]]
+  (:require [cemerick.friend :as friend]
+            [ciste.commands :refer [parse-command]]
             [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [show-section]]
             [clojure.data.json :as json]
@@ -10,6 +11,8 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.model.stream :as model.stream]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.stream-transforms :as transforms.stream]
@@ -35,9 +38,9 @@
 (defn process-args
   [args]
   (some->> args
-        (filter identity)
-        seq
-        (map #(json/read-str % :key-fn keyword))))
+           (filter identity)
+           seq
+           (map #(json/read-str % :key-fn keyword))))
 
 ;; actions
 
@@ -137,15 +140,15 @@
 (defn stream-handler
   [request]
   #_(let [stream (s/stream)]
-    (s/connect
-     (->> ciste.core/*actions*
-          (s/filter (fn [m] (#{#'actions.activity/create} (:action m))))
-          (s/map format-message)
-          (s/map (fn [m] (str m "\r\n"))))
-     stream)
-    {:status 200
-     :headers {"content-type" "application/json"}
-     :body stream}))
+      (s/connect
+       (->> ciste.core/*actions*
+            (s/filter (fn [m] (#{#'actions.activity/create} (:action m))))
+            (s/map format-message)
+            (s/map (fn [m] (str m "\r\n"))))
+       stream)
+      {:status 200
+       :headers {"content-type" "application/json"}
+       :body stream}))
 
 (defn format-event
   [m]
@@ -158,21 +161,24 @@
 
 (defn handle-command
   [request channel body]
-  (let [[name & args] (string/split body #" ")
+  (let [[command-name & args] (string/split body #" ")
+        username (get-in request [:session :cemerick.friend/identity :current])
         request {:format :json
                  :channel channel
-                 :name name
+                 :name command-name
+                 :auth (model.user/get-user username)
                  :args (process-args args)}]
-    (try+
-     (or (:body (parse-command request))
-         (throw+ "no command found"))
-     (catch Object ex
-       ;; FIXME: handle error
-       (json/json-str
-        {:action "error"
-         :name (:name request)
-         :args (:args request)
-         :message (str ex)})))))
+    (session/with-user (:auth request)
+      (try+
+       (or (:body (parse-command request))
+           (throw+ "no command found"))
+       (catch Object ex
+         ;; FIXME: handle error
+         (json/json-str
+          {:action "error"
+           :name (:name request)
+           :args (:args request)
+           :message (str ex)}))))))
 
 (defn handle-closed
   [request channel status]

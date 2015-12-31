@@ -327,7 +327,9 @@
         (fn [id]
           (.bindOne Conversations id $scope "conversation")
           (-> (.find Conversations id)
-              (.then (.-fetchActivities app))
+              (.then (fn [conversation]
+                       (set! (.-item $scope) conversation)
+                       (.fetchActivities app conversation)))
               (.then (fn [] (set! (.-loaded $scope) true))))))
 
   (set! (.-fetchActivities $scope)

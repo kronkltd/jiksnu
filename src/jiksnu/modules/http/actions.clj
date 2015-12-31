@@ -1,5 +1,6 @@
 (ns jiksnu.modules.http.actions
-  (:require [ciste.commands :refer [add-command!]]
+  (:require [cemerick.friend :as friend]
+            [ciste.commands :refer [add-command!]]
             [ciste.core :refer [defaction with-format with-serialization]]
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
@@ -60,13 +61,12 @@
 (defn connect
   [request ch]
   ;; (trace/trace :websocket:connections:established 1)
-  (let [user-id (:_id (session/current-user))
+  (let [user-id (:current friend/*identity*)
         connection-id (util/new-id)
         status {:user user-id :connection connection-id}
         response-channel (s/stream)]
-
     (timbre/with-context {:status (prn-str status)}
-      (timbre/info "Websocket connection opened"))
+      (timbre/infof "Websocket connection opened - %s" user-id))
 
     (dosync
      (alter connections #(assoc-in % [user-id connection-id] response-channel)))

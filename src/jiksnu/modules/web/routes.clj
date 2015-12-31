@@ -37,10 +37,11 @@
 
 (def app
   (-> (routes
-       async-handler
        (route/resources "/")
        (GET "/templates/*" [] #'helpers/serve-template)
-       (-> #'core/jiksnu-routes
+       (-> (routes
+            async-handler
+            #'core/jiksnu-routes)
            logger.timbre/wrap-with-logger
            (wrap-trace :ui)
            (friend/authenticate auth-config)

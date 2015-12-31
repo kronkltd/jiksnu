@@ -1,3 +1,5 @@
 [:div {:ng-if "loaded"}
  [:div {:ng-repeat "activity in activities.items"}
-  [:show-activity {:data-id "{{activity}}"}]]]
+  [:show-activity {:data-id "{{activity}}"}]]
+ [:debug {:expr "item"}]
+ [:button.btn {:ng-click "deleteRecord(item)"}]]
