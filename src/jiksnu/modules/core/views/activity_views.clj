@@ -5,32 +5,22 @@
 
 (defview #'actions.activity/fetch-by-conversation :page
   [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:body {:action "sub-page-updated"
-            :model "conversation"
-            :id (:_id (:item request))
-            :body response}}))
+  {:body (merge
+          response
+          {:model "conversation"
+           :name (:name request)
+           :id (:_id (:item request))})})
 
 (defview #'actions.activity/index :page
   [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :body response}}))
+  {:body (merge
+          response
+          {:name (:name request)})})
 
 (defview #'actions.activity/fetch-by-stream :page
   [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :body response}}))
+  {:body (merge response
+                {:name (:name request)})})
 
 (defview #'actions.activity/oembed :xml
   [request m]

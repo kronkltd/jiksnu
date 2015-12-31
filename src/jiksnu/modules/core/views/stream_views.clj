@@ -25,7 +25,7 @@
             {:id (:name request)
              :target-model "user"
              :target (:_id (:item request))
-             :items (map :_id items)})}))
+             :items items})}))
 
 (defview #'actions.stream/home-timeline :xml
   [request activities]
@@ -33,12 +33,9 @@
 
 (defview #'actions.stream/index :page
   [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :body response}}))
+  {:body (merge
+          response
+          {:name (:name request)})})
 
 ;; mentions-timeline
 

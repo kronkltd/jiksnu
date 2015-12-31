@@ -46,7 +46,7 @@
   [$scope Users]
   (set! (.-init $scope)
         (fn [id]
-          (timbre/debug "Displaying avatar for " id)
+          #_(timbre/debug "Displaying avatar for " id)
           (when (and id (not= id ""))
             (set! (.-size $scope) 32)
             ;; (js/console.info "binding user" id)
@@ -273,13 +273,14 @@
 
 (def.controller jiksnu.SubpageController
   [$scope subpageService]
-  (js/console.log $scope)
   (if-let [item (.-item $scope)]
     (let [subpage (.-subpage $scope)]
       (timbre/debug "subpage controller" (.-_id item) subpage)
+      ;; (js/console.log $scope)
+      ;; (js/console.log item)
       (set! (.-refresh $scope)
             (fn []
-              (timbre/info "Refreshing subpage")
+              #_(timbre/info "Refreshing subpage")
               (-> (.fetch subpageService item subpage)
                   (.then #(set! (.-page $scope) %)))))
       (.refresh $scope))
@@ -324,13 +325,20 @@
 
   (set! (.-init $scope)
         (fn [id]
-          (timbre/debugf "loading ShowConversationController - %s" id)
+          #_(timbre/debugf "loading ShowConversationController - %s" id)
           (.bindOne Conversations id $scope "conversation")
           (-> (.find Conversations id)
               (.then (fn [conversation]
                        (when conversation
                          (set! (.-item $scope) conversation)
                          (set! (.-loaded $scope) true)))))))
+
+  (set! (.-deleteRecord $scope)
+        (fn [item]
+          (let [msg (str "invoke-action \"conversation\", \"delete\", \""
+                         (.-id $scope)
+                         "\"")]
+            (.send app msg))))
 
   (set! (.-fetchActivities $scope)
         (fn [conversation]

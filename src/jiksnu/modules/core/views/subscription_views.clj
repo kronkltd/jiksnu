@@ -21,16 +21,13 @@
 
 (defview #'actions.subscription/get-subscribers :page
   [request [user page]]
-  (let [items (:items page)
-        response (merge page
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:body {:action "sub-page-updated"
-            :title (str "Subscribers of " (:name user))
-            :model "user"
-            :target (:_id user)
-            :id (:_id (:item request))
-            :body response}}))
+  {:body (merge
+          page
+          {:name (:name request)
+           :title (str "Subscribers of " (:name user))
+           :model "user"
+           :target (:_id user)
+           :id (:_id (:item request))})})
 
 (defview #'actions.subscription/get-subscriptions :page
   [request [user page]]

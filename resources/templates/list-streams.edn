@@ -6,6 +6,7 @@
   [:input {:ng-model "stream.name" :name "name" :type "text"}]
   [:input.btn.btn-default {:type "submit"}]]
  [:subpage {:name "streams" :item "item"}
+  [:debug {:expr "$parent.page"}]
   [:table.table
    [:tr {:ng-repeat "id in $parent.page.items"}
     [:td
