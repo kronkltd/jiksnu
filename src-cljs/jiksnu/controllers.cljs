@@ -277,10 +277,13 @@
   (if-let [item (.-item $scope)]
     (let [subpage (.-subpage $scope)]
       (timbre/debug "subpage controller" (.-_id item) subpage)
-      (-> (.fetch subpageService item subpage)
-          (.then #(set! (.-page $scope) %))))
+      (set! (.-refresh $scope)
+            (fn []
+              (timbre/info "Refreshing subpage")
+              (-> (.fetch subpageService item subpage)
+                  (.then #(set! (.-page $scope) %)))))
+      (.refresh $scope))
     (timbre/warn "No item bound")))
-
 
 (def.controller jiksnu.SubscribersWidgetController
   [$scope])

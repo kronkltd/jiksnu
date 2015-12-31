@@ -10,6 +10,7 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
+            [jiksnu.util :as util]
             [manifold.stream :as s])
   (:import java.net.URI
            jiksnu.model.User))
@@ -20,7 +21,8 @@
 
 (defn create-trigger
   [m]
-  (if-let [activity (:records m)]
+  (when-let [activity (:records m)]
+    (util/inspect activity)
     (let [author (model.activity/get-author activity)]
 
       ;; Add item to author's stream

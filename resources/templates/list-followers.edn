@@ -1,6 +1,7 @@
 [:div
  [:h3 "Followers"]
  [:subpage {:name "followers" :item "item"}
+  [:button.btn {:ng-click "$parent.refresh()"} "Refresh"]
   [:debug {:expr "$parent.page"}]
   [:ul
    [:li {:ng-repeat "follow in $parent.page.items"}

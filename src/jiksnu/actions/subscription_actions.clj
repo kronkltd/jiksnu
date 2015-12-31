@@ -147,6 +147,7 @@
 
 (defn handle-follow-activity
   [activity]
+  (util/inspect activity)
   (let [{:keys [verb]} activity]
     (condp = verb
       "follow"
@@ -162,20 +163,10 @@
       nil)))
 
 (definitializer
-  (bus/publish! ch/events :activity-posted {:msg "activity posted"})
+
+  #_(bus/publish! ch/events :activity-posted {:msg "activity posted"})
+
   (setup-delete-hooks)
 
-  (let [stream (bus/subscribe ch/events :activity-posted)]
-    (s/consume
-     (fn [activity]
-       (let [{:keys [verb]} activity]
-         (when (= verb "follow")
-           (timbre/info "follow action")
-           (let [actor (model.user/fetch-by-id (:author activity))
-                 target (model.user/fetch-by-id (:id (:object activity)))]
-             (subscribe actor target)))))
-     stream))
-
-  (->> :activity-posted
-       (bus/subscribe ch/events)
+  (->> (bus/subscribe ch/events :activity-posted)
        (s/consume handle-follow-activity)))
