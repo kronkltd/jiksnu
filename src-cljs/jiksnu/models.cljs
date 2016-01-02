@@ -1,7 +1,6 @@
 (ns jiksnu.models
   (:require jiksnu.app)
-  (:use-macros [gyr.core :only [def.factory]]
-               [purnam.core :only [? ?> ! !> obj arr]]))
+  (:use-macros [gyr.core :only [def.factory]]))
 
 (defn deserializer
   [resource-name data]
@@ -18,8 +17,8 @@
   [DS]
   (.defineResource
    DS
-   (obj
-    :name "activities")))
+   #js
+   {:name "activities"}))
 
 (def.factory jiksnu.Conversations
   [DS subpageService]
@@ -38,10 +37,10 @@
   [DS subpageService]
   (.defineResource
    DS
-   (obj
-    :name "domains"
+   #js
+   {:name "domains"
     :endpoint "domains"
-    :deserialize deserializer)))
+    :deserialize deserializer}))
 
 (def.factory jiksnu.Followings
   [DS subpageService]
@@ -56,24 +55,24 @@
   [DS subpageService]
   (.defineResource
    DS
-   (obj
-    :name "groups"
+   #js
+   {:name "groups"
     :endpoint "groups"
-    :deserialize deserializer)))
+    :deserialize deserializer}))
 
 (def.factory jiksnu.Streams
   [DS]
   (.defineResource
    DS
-   (obj
-    :name "streams")))
+   #js
+   {:name "streams"}))
 
 (def.factory jiksnu.Subscriptions
   [DS]
   (.defineResource
    DS
-   (obj
-    :name "subscriptions")))
+   #js
+   {:name "subscriptions"}))
 
 (def.factory jiksnu.Users
   [DS subpageService]

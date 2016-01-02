@@ -1,18 +1,17 @@
 (ns jiksnu.helpers
   (:require [clojure.string :as string]
-            [taoensso.timbre :as timbre])
-  (:use-macros [purnam.core :only [! ? obj]]
-               [jiksnu.macros :only [state-hotkey]]))
+            [jiksnu.macros :refer-macros [state-hotkey]]
+            [taoensso.timbre :as timbre]))
 
 (defn add-states
   [$stateProvider data]
   (doseq [[state uri controller template] data]
     (.state $stateProvider
-            (obj
-             :name state
+            #js
+            {:name state
              :url uri
              :controller (str controller "Controller")
-             :templateUrl (str "/templates/" (name template))))))
+             :templateUrl (str "/templates/" (name template))})))
 
 (defn fetch-page
   [$scope $http url]
@@ -21,7 +20,7 @@
         (.get url)
         (.success
          (fn [data]
-           (! $scope.page data))))))
+           (set! (.-page $scope) data))))))
 
 ;; TODO: surely this already exists
 (defn hyphen-case
@@ -142,7 +141,7 @@
   (.$on $rootScope "updateCollection"
         (fn []
           (.init $scope)))
-  (! $scope.loaded false)
+  (set! (.-loaded $scope) false)
   (set! (.-init $scope)
         (fn []
           (timbre/debug "Loading page: " page-type)

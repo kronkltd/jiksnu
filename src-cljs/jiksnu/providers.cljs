@@ -1,8 +1,7 @@
 (ns jiksnu.providers
-  (:require jiksnu.app
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.provider]]
-               [purnam.core :only [? ?> ! !> obj arr]]))
+  (:require [gyr.core :refer-macros [def.provider]]
+            jiksnu.app
+            [taoensso.timbre :as timbre]))
 
 (defn connect
   [app]
@@ -89,15 +88,15 @@
 (defn follow
   [app target]
   (timbre/debug "follow" target)
-  (let [obj  #js {:id (.-_id target)}
-        activity #js {:verb "follow" :object obj}]
+  (let [object  #js {:id (.-_id target)}
+        activity #js {:verb "follow" :object object}]
     (.post app activity)))
 
 (defn unfollow
   [app target]
   (timbre/debug "unfollow" target)
-  (let [obj #js {:id (.-_id target)}
-        activity #js {:verb "unfollow" :object obj}]
+  (let [object #js {:id (.-_id target)}
+        activity #js {:verb "unfollow" :object object}]
     (.post app activity)))
 
 (defn register

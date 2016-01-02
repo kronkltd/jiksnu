@@ -103,7 +103,7 @@
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
-  (aset $scope "groups" (clj->js helpers/nav-info)))
+  (set! (.-groups $scope) (clj->js helpers/nav-info)))
 
 (def.controller jiksnu.ListFollowersController
   [$scope subpageService Users]
@@ -121,8 +121,8 @@
 
 (def.controller jiksnu.ListGroupsController
   [$scope subpageService Users]
-  (aset $scope "formShown" false)
-  (aset $scope "toggle" (fn [] (! $scope.formShown (not (? $scope.formShown)))))
+  (set! (.-formShown $scope) false)
+  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
   (helpers/init-subpage $scope subpageService Users "groups"))
 
 (def.controller jiksnu.ListStreamsController
@@ -147,10 +147,11 @@
 
 (def.controller jiksnu.LoginPageController
   [$scope app]
-  (! $scope.login (fn []
-                    (let [username (.-username $scope)
-                          password (.-password $scope)]
-                      (.login app username password)))))
+  (set! (.-login $scope)
+        (fn []
+          (let [username (.-username $scope)
+                password (.-password $scope)]
+            (.login app username password)))))
 
 (def.controller jiksnu.LogoutController [])
 
@@ -206,7 +207,6 @@
                                           coords (.-coords data)]
                                       (set! (.-latitude geo) (.-latitude coords))
                                       (set! (.-longitude geo) (.-longitude coords)))))))]
-    (.$watch $scope #(? $scope.form.shown) #(when % (get-location)))
 
     (set! (.-form $scope) #js {:shown false})
 
@@ -238,6 +238,7 @@
             (set! (.. $scope -form -shown)
                   (not (.. $scope -form -shown)))
             (when (.. $scope -form -shown)
+              (get-location)
               (.fetchStreams $scope))))
 
     (set! (.-reset $scope)
@@ -258,12 +259,14 @@
 
 (def.controller jiksnu.RegisterPageController
   [app $scope]
-  (aset $scope "register" (fn []
-                            (-> (.register app $scope)
-                                (.then (fn [data]
-                                         (aset (.-data app) "user" (.-user (.-data data)))
-                                         (-> (.fetchStatus app)
-                                             (.then (fn [] (.go app "home"))))))))))
+  (set! (.-register $scope)
+        (fn []
+          (-> (.register app $scope)
+              (.then (fn [data]
+                       ;; Should we copy the whole data object?
+                       (set! (.. app -data -user) (.. data -data -user))
+                       (-> (.fetchStatus app)
+                           (.then #(.go app "home")))))))))
 
 (def.controller jiksnu.RightColumnController
   [$scope app]
@@ -299,7 +302,7 @@
           (when (and id (not= id ""))
             (.bindOne Activities id $scope "activity")
             (-> (.find Activities id)
-                (.then (fn [] (! $scope.loaded true)))))))
+                (.then (fn [] (set! (.-loaded $scope) true)))))))
 
   (set! (.-deleteRecord $scope)
         (fn [activity]
@@ -347,7 +350,7 @@
           (-> (.getActivities conversation)
               (.then  (fn [response]
                         (timbre/debug "Activities" response)
-                        (aset $scope "activities" (.-body response)))))))
+                        (set! (.-activities $scope) (.-body response)))))))
 
   (let [id (or (.-id $scope) (.-_id $stateParams))]
     (.init $scope id)))
@@ -391,25 +394,27 @@
             (.bindOne model id $scope label)
             (-> (.find model id)
                 (.then (fn [data]
-                         (aset $scope label data)
+                         (set! (.-stream $scope) data)
                          (set! (.-loaded $scope) true))))))
 
     (.init $scope (.-_id $stateParams))))
 
 (def.controller jiksnu.ShowStreamMinimalController
   [$scope Streams]
-  (aset $scope "loaded" false)
-  (aset $scope "init" (fn [id]
-                        (.bindOne Streams id $scope "stream")
-                        (-> (.find Streams id)
-                            (.then (fn [stream]
-                                     (aset $scope "stream" stream)
-                                     (aset $scope "loaded" true))))))
+  (set! (.-loaded $scope) false)
+  (set! (.-init $scope)
+        (fn [id]
+          (.bindOne Streams id $scope "stream")
+          (-> (.find Streams id)
+              (.then (fn [stream]
+                       (set! (.-stream $scope) stream)
+                       (set! (.-loaded $scope) true))))))
 
-  (aset $scope "toggle" (fn []
-                          (let [shown? (not (.-formShown $scope))]
-                            (aset $scope "formShown" shown?)
-                            (aset $scope "btnLabel" (if shown? "-" "+")))))
+  (set! (.-toggle $scope)
+        (fn []
+          (let [shown? (not (.-formShown $scope))]
+            (set! (.-formShown $scope) shown?)
+            (set! (.-btnLabel $scope) (if shown? "-" "+")))))
 
   (let [id (.-id $scope)]
     (.init $scope id)))
@@ -446,7 +451,7 @@
   (set! (.-init $scope)
         (fn [id]
           (set! (.-loaded $scope) false)
-          (.bindOne Users id $scope "user")
+          (.bindOne Users id $scope "item")
           (-> (.find Users id)
               (.then (fn [_] (set! (.-loaded $scope) true))))))
 

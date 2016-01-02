@@ -1,10 +1,9 @@
 (ns jiksnu.directives
-  (:require jiksnu.app
+  (:require [gyr.core :refer-macros [def.directive]]
+            jiksnu.app
             [jiksnu.controllers :as controller]
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.directive]]
-               [jiksnu.macros :only [list-directive]]
-               [purnam.core :only [! ? arr obj]]))
+            [jiksnu.macros :refer-macros [list-directive]]
+            [taoensso.timbre :as timbre]))
 
 (def.directive jiksnu.addGroupForm
   []
@@ -27,29 +26,31 @@
    :templateUrl "/templates/add-stream-form"})
 
 (def.directive jiksnu.addWatcherForm []
-  (obj))
+  #js {})
 
 (def.directive jiksnu.debug []
-  #js {:controller "DebugController"
-       :scope #js {:expr "=expr"
-                   :exprText "@expr"}
-       :templateUrl "/templates/debug"})
+  #js
+  {:controller "DebugController"
+   :scope #js {:expr "=expr"
+               :exprText "@expr"}
+   :templateUrl "/templates/debug"})
 
 (def.directive jiksnu.displayAvatar []
-  #js {:controller "DisplayAvatarController"
-       :link (fn [$scope element attrs]
-               (.init $scope (.-id attrs))
-               (.$watch $scope
-                        #(.-id attrs)
-                        #(.init $scope %)))
-       :scope true
-       :templateUrl "/templates/display-avatar"})
+  #js
+  {:controller "DisplayAvatarController"
+   :link (fn [$scope element attrs]
+           (.init $scope (.-id attrs))
+           (.$watch $scope
+                    #(.-id attrs)
+                    #(.init $scope %)))
+   :scope true
+   :templateUrl "/templates/display-avatar"})
 
 (def.directive jiksnu.followButton
   []
   #js
   {:controller "FollowButtonController"
-   :scope (obj :item "=")
+   :scope #js {:item "="}
    :templateUrl "/templates/follow-button"})
 
 (def.directive jiksnu.groupsWidget
@@ -85,14 +86,14 @@
   []
   #js
   {:controller "ShowActivityController"
-   :scope (obj :id "@" :item "=")
+   :scope #js {:id "@" :item "="}
    :templateUrl "/templates/show-activity"})
 
 (def.directive jiksnu.showConversation
   []
   #js
   {:controller "ShowConversationController"
-   :scope (obj :id "@" :item "=")
+   :scope #js {:id "@" :item "="}
    :templateUrl "/templates/show-conversation"})
 
 (def.directive jiksnu.showFollowingMinimal
@@ -104,17 +105,17 @@
 
 (def.directive jiksnu.showStreamMinimal
   []
-  (obj
-   :templateUrl "/templates/show-stream-minimal"
-   :scope (obj :id "@" :item "=")
-   :controller "ShowStreamMinimalController"))
+  #js
+  {:templateUrl "/templates/show-stream-minimal"
+   :scope #js {:id "@" :item "="}
+   :controller "ShowStreamMinimalController"})
 
 (def.directive jiksnu.showSubscription
   []
-  (obj
-   :templateUrl "/templates/show-subscription"
-   :scope (obj :id "@" :item "=")
-   :controller "ShowSubscriptionController"))
+  #js
+  {:templateUrl "/templates/show-subscription"
+   :scope #js {:id "@" :item "="}
+   :controller "ShowSubscriptionController"})
 
 (def.directive jiksnu.showUser
   []
@@ -131,7 +132,8 @@
    :templateUrl "/templates/show-user-minimal"})
 
 (def.directive jiksnu.streamsWidget []
-  (obj))
+  #js
+  {})
 
 (def.directive jiksnu.subpage []
   #js
@@ -141,13 +143,13 @@
    :controller "SubpageController"})
 
 (def.directive jiksnu.subscribersWidget []
-  (obj
-   :templateUrl "/templates/subscribers-widget"
+  #js
+  {:templateUrl "/templates/subscribers-widget"
    :scope true
-   :controller "SubscribersWidgetController"))
+   :controller "SubscribersWidgetController"})
 
 (def.directive jiksnu.subscriptionsWidget
   []
-  (obj
-   :templateUrl "/templates/subscriptions-widget"
-   :scope true))
+  #js
+  {:templateUrl "/templates/subscriptions-widget"
+   :scope true})

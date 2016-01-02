@@ -1,6 +1,5 @@
 (ns jiksnu.macros
-  (:use [gyr.core :only [def.controller]])
-)
+  (:use [gyr.core :only [def.controller]]))
 
 (defmacro page-controller
   [klass-name collection-name subpages]
@@ -15,14 +14,15 @@
   (let [Controller-sym (symbol (str "jiksnu.list" klass-name))]
     (list 'def.directive Controller-sym
           []
-          (list 'obj
-                :templateUrl (str "/templates/list-" subpage)
-                :restrict "E"
-                :scope (list 'obj :id "@" :item "=")
-                :controller (str "List" klass-name "Controller")))))
+          (list
+           'js-obj
+           "templateUrl" (str "/templates/list-" subpage)
+           "restrict" "E"
+           "scope" #js {:id "@" :item "="}
+           "controller" (str "List" klass-name "Controller")))))
 
 (defmacro state-hotkey
   [combo state description]
   (list '.add 'hotkeys
-   (list 'js-obj "combo" combo "description" description
-    "callback" (list 'fn [] (list '.go '$state state)))))
+        (list 'js-obj "combo" combo "description" description
+              "callback" (list 'fn [] (list '.go '$state state)))))

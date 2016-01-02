@@ -1,15 +1,12 @@
 (ns jiksnu.controllers-test
-  (:require [purnam.test]
+  (:require [gyr.test :refer-macros [describe.ng describe.controller it-uses it-compiles]]
+            [purnam.test :refer-macros [describe it is fact]]
             jiksnu.app
             jiksnu.controllers
             [taoensso.timbre :as timbre
-             :refer-macros (log  trace  debug  info  warn  error  fatal  report
-                                 logf tracef debugf infof warnf errorf fatalf reportf
-                                 spy get-env log-env)])
-  (:use-macros [purnam.core :only [obj arr !]]
-               [purnam.test :only [describe it is fact]]
-               [gyr.test    :only [describe.ng describe.controller
-                                   it-uses it-compiles]]))
+             :refer-macros [log  trace  debug  info  warn  error  fatal  report
+                            logf tracef debugf infof warnf errorf fatalf reportf
+                            spy get-env log-env]]))
 
 (timbre/set-level! :debug)
 

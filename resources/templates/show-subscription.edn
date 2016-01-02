@@ -1,6 +1,14 @@
-[:div
+[:div.well
  [:debug {:expr "item"}]
- [:p "Subscription"]
- [:p "From: {{item.from}}"]
- [:p "To: {{item.to}}"]
- ]
+ [:p "From: "
+  [:show-user-minimal {:data-id "{{item.from}}"}]
+  #_[:display-avatar {:data-id "{{item.from}}"}]
+
+  ;; "{{item.from}}"
+  ]
+ [:p "To: "
+  [:display-avatar {:data-id "{{item.to}}"}]
+
+  "{{item.to}}"
+  ]
+ [:button.btn {:ng-click "deleteRecord(item)"} "Delete"]]
