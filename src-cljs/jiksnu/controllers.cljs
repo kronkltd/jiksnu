@@ -172,14 +172,14 @@
   (set! (.-navbarCollapsed $scope) true)
 
   (helpers/setup-hotkeys hotkeys $state)
-  (let [on-data-changed
-        (fn [d]
-          (when (.-loaded $scope)
-            (timbre/debug "Running navbarcontroller watcher")
-            (set! (.-app $scope) d)
-            (let [p (.getUser app)]
-              (-> p (.then (fn [user] (set! (.-user app) user)))))))]
-    (.$watch $scope #(.-data app) on-data-changed))
+  (.$watch $scope
+           #(.-data app)
+           (fn [d]
+             (when (.-loaded $scope)
+               #_(timbre/debug "Running navbarcontroller watcher")
+               (set! (.-app $scope) d)
+               (let [p (.getUser app)]
+                 (-> p (.then (fn [user] (set! (.-user app) user))))))))
 
   (-> (.fetchStatus app)
       (.then (fn [] (set! (.-loaded $scope) true)))))
@@ -273,22 +273,6 @@
 
 (def.controller jiksnu.SettingsPageController [])
 
-(def.controller jiksnu.SubpageController
-  [$scope subpageService]
-  (if-let [item (.-item $scope)]
-    (let [subpage (.-subpage $scope)]
-      (timbre/debug "subpage controller" (.-_id item) subpage)
-      (set! (.-refresh $scope)
-            (fn []
-              #_(timbre/info "Refreshing subpage")
-              (-> (.fetch subpageService item subpage)
-                  (.then #(set! (.-page $scope) %)))))
-      (.refresh $scope))
-    (timbre/warn "No item bound")))
-
-(def.controller jiksnu.SubscribersWidgetController
-  [$scope])
-
 (def.controller jiksnu.ShowActivityController
   [$scope $stateParams Activities app]
   (set! (.-loaded $scope) false)
@@ -351,16 +335,28 @@
   (let [id (or (.-id $scope) (.-_id $stateParams))]
     (.init $scope id)))
 
-(def.controller jiksnu.ShowFollowingMinimalController
-  [$scope $stateParams Followings]
+(def.controller jiksnu.ShowFollowersMinimalController
+  [$scope $stateParams Subscriptions]
   (set! (.-init $scope)
         (fn [id]
           (set! (.-loaded $scope) false)
-          (.bindOne Followings id $scope "following")
-          (-> (.find Followings id)
+          (.bindOne Subscriptions id $scope "item")
+          (-> (.find Subscriptions id)
               (.then (fn [_] (set! (.-loaded $scope) true))))))
 
-  (let [id (or (.-_id $stateParams) (.-id $scope))]
+  (let [id (or (.-id $scope) (.-_id $stateParams))]
+    (.init $scope id)))
+
+(def.controller jiksnu.ShowFollowingMinimalController
+  [$scope $stateParams Subscriptions]
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne Subscriptions id $scope "item")
+          (-> (.find Subscriptions id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
+
+  (let [id (or (.-id $scope) (.-_id $stateParams))]
     (.init $scope id)))
 
 (def.controller jiksnu.ShowGroupController
@@ -435,25 +431,44 @@
           (.bindOne Users id $scope "user")
           (-> (.find Users id)
               (.then (fn [_] (set! (.-loaded $scope) true))))))
-  (let [username (.-username $stateParams)
-        domain (.-domain $stateParams)
-        id (or (.-_id $stateParams)
-               (.-id $scope)
-               (str "acct:" username "@" domain))]
+
+  (let [id (or (.-id $scope)
+               (.-_id $stateParams)
+               (when-let [username (.-username $stateParams)]
+                 (when-let [domain (.-domain $stateParams)]
+                   (str "acct:" username "@" domain))))]
     (.init $scope id)))
 
 (def.controller jiksnu.ShowUserMinimalController
   [$scope $stateParams Users]
   (set! (.-init $scope)
         (fn [id]
-          (set! (.-loaded $scope) false)
-          (.bindOne Users id $scope "item")
-          (-> (.find Users id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
+          (timbre/infof "init minimal user - %s" id)
+          (when id
+            (set! (.-loaded $scope) false)
+            (.bindOne Users id $scope "item")
+            (-> (.find Users id)
+                (.then (fn [_] (set! (.-loaded $scope) true)))))))
 
-  (let [username (.-username $stateParams)
-        domain (.-domain $stateParams)
-        id (or (.-_id $stateParams)
-               (.-id $scope)
-               (str "acct:" username "@" domain))]
+  (let [id (or (.-id $scope)
+               (.-_id $stateParams)
+               (when-let [username (.-username $stateParams)]
+                 (when-let [domain (.-domain $stateParams)]
+                   (str "acct:" username "@" domain))))]
     (.init $scope id)))
+
+(def.controller jiksnu.SubpageController
+  [$scope subpageService]
+  (if-let [item (.-item $scope)]
+    (let [subpage (.-subpage $scope)]
+      (timbre/debug "subpage controller" (.-_id item) subpage)
+      (set! (.-refresh $scope)
+            (fn []
+              #_(timbre/info "Refreshing subpage")
+              (-> (.fetch subpageService item subpage)
+                  (.then #(set! (.-page $scope) %)))))
+      (.refresh $scope))
+    (timbre/warn "No item bound")))
+
+(def.controller jiksnu.SubscribersWidgetController
+  [$scope])

@@ -1,13 +1,6 @@
 [:div
  [:h1 "Streams"]
- [:table.table
-  [:thead
-   [:tr
-    [:th "Name"]
-    [:th "Owner"]]]
-  [:tbody
-   [:tr {:ng-repeat "item in page.items"}
-    [:td
-     [:a {:ui-sref "showStream(item)"}
-      "{{item.name}}"]]
-    [:td "{{item.owner}}"]]]]]
+ [:debug {:expr "page"}]
+ [:div {:ng-repeat "id in page.items"}
+  [:show-stream-minimal {:data-id "{{id}}"}]
+  [:debug {:expr "id"}]]]

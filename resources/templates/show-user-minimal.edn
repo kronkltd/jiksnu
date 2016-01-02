@@ -1,10 +1,13 @@
-[:div
- [:display-avatar {:data-id "{{id}}"}]
- [:p
-  [:link-to {:data-id "{{id}}" :data-model "User"}]]
- [:p "{{user.username}}@{{user.domain}}"]
- [:p "{{user._id}}"]
- [:p "{{user.name}}"]
- [:p "{{user.uri}}"]
- [:p "{{user.bio}}"]
- [:debug {:expr "user"}]]
+[:span
+ [:display-avatar {:data-id "{{item._id}}"}]
+ [:a {:ui-sref "showUser(item)"}
+  "{{item._id}}"]
+ ;; [:p
+ ;;  [:link-to {:data-id "{{id}}" :data-model "User"}]]
+ ;; [:p "{{item.username}}@{{item.domain}}"]
+ ;; [:p "{{item._id}}"]
+ ;; [:p "{{item.name}}"]
+ ;; [:p "{{item.uri}}"]
+ ;; [:p "{{item.bio}}"]
+ [:debug {:expr "item"}]
+ ]

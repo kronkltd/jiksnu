@@ -1,4 +1,3 @@
-[:div "Following"
+[:div
  [:debug {:expr "item"}]
- #_[:a {:ui-sref "showStream(stream)"}
-  "{{stream.name}}"]]
+ [:show-user-minimal {:data-id "{{item.to}}"}]]

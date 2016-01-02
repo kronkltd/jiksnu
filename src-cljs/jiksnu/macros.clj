@@ -21,6 +21,17 @@
            "scope" (list 'js-obj "id" "@" "item" "=")
            "controller" (str "List" klass-name "Controller")))))
 
+(defmacro item-directive
+  [klass-name template-stub]
+  (let [controller-sym (symbol (str "jiksnu.show" klass-name))]
+    (list 'def.directive controller-sym
+          []
+          (list
+           'js-obj
+           "templateUrl" (str "/templates/show-" template-stub)
+           "scope" (list 'js-obj "id" "@" "item" "=")
+           "controller" (str "Show" klass-name "Controller")))))
+
 (defmacro state-hotkey
   [combo state description]
   (list '.add 'hotkeys

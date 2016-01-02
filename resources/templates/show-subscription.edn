@@ -1,14 +1,15 @@
 [:div.well
  [:debug {:expr "item"}]
- [:p "From: "
-  [:show-user-minimal {:data-id "{{item.from}}"}]
-  #_[:display-avatar {:data-id "{{item.from}}"}]
+ [:div {:ng-if "loaded"}
+  [:p "From: "
+   [:show-user-minimal {:data-id "{{item.from}}"}]
+   #_[:display-avatar {:data-id "{{item.from}}"}]
 
-  ;; "{{item.from}}"
-  ]
- [:p "To: "
-  [:display-avatar {:data-id "{{item.to}}"}]
+   ;; "{{item.from}}"
+   ]
+  [:p "To: "
+   [:display-avatar {:data-id "{{item.to}}"}]
 
-  "{{item.to}}"
-  ]
- [:button.btn {:ng-click "deleteRecord(item)"} "Delete"]]
+   "{{item.to}}"
+   ]
+  [:button.btn {:ng-click "deleteRecord(item)"} "Delete"]]]

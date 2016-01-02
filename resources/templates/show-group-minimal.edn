@@ -1,0 +1,4 @@
+[:span
+ [:a {:ui-sref "showGroup(item)"}
+  "{{item.description}}"]
+ [:debug {:expr "item"}]]

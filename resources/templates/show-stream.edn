@@ -4,5 +4,6 @@
  [:debug {:expr "stream"}]
  [:subpage {:name "activities" :item "stream"}
   [:debug {:expr "$parent.page"}]
+
   ]
  ]

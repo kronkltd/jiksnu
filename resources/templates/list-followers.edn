@@ -1,12 +1,8 @@
 [:div
- [:h3 "Followers"]
+ [:h3 "Followers" [:button.btn {:ng-click "refresh()"} "Refresh"]]
  [:subpage {:name "followers" :item "item"}
-  [:button.btn {:ng-click "$parent.refresh()"} "Refresh"]
-  [:debug {:expr "$parent.page"}]
+  #_[:debug {:expr "$parent.page"}]
   [:ul
-   [:li {:ng-repeat "follow in $parent.page.items"}
-    [:p
-     [:display-avatar {:data-id "{{follow.from}}"}]
-     [:a {:ui-sref "showUser({_id: follow.from})"}
-      "{{follow.from}}"]]
-    [:debug {:expr "follow"}]]]]]
+   [:li {:ng-repeat "id in $parent.page.items"}
+    [:debug {:expr "id"}]
+    [:show-followers-minimal {:data-id "{{id}}"}]]]]]

@@ -1,7 +1,7 @@
 (ns jiksnu.directives
   (:require jiksnu.app
             [jiksnu.controllers :as controller]
-            [jiksnu.macros :refer-macros [list-directive]]
+            [jiksnu.macros :refer-macros [list-directive item-directive]]
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.directive]]))
 
@@ -82,54 +82,14 @@
    :scope true
    :templateUrl "/templates/right-column-section"})
 
-(def.directive jiksnu.showActivity
-  []
-  #js
-  {:controller "ShowActivityController"
-   :scope #js {:id "@" :item "="}
-   :templateUrl "/templates/show-activity"})
-
-(def.directive jiksnu.showConversation
-  []
-  #js
-  {:controller "ShowConversationController"
-   :scope #js {:id "@" :item "="}
-   :templateUrl "/templates/show-conversation"})
-
-(def.directive jiksnu.showFollowingMinimal
-  []
-  #js
-  {:controller "ShowFollowingMinimalController"
-   :scope #js {:id "@" :item "="}
-   :templateUrl "/templates/show-following-minimal"})
-
-(def.directive jiksnu.showStreamMinimal
-  []
-  #js
-  {:templateUrl "/templates/show-stream-minimal"
-   :scope #js {:id "@" :item "="}
-   :controller "ShowStreamMinimalController"})
-
-(def.directive jiksnu.showSubscription
-  []
-  #js
-  {:templateUrl "/templates/show-subscription"
-   :scope #js {:id "@" :item "="}
-   :controller "ShowSubscriptionController"})
-
-(def.directive jiksnu.showUser
-  []
-  #js
-  {:controller "ShowUserController"
-   :scope #js {:id "@" :item "="}
-   :templateUrl "/templates/show-user"})
-
-(def.directive jiksnu.showUserMinimal
-  []
-  #js
-  {:controller "ShowUserMinimalController"
-   :scope #js {:id "@" :item "="}
-   :templateUrl "/templates/show-user-minimal"})
+(item-directive "Activity"         "activity")
+(item-directive "Conversation"     "conversation")
+(item-directive "FollowersMinimal" "followers-minimal")
+(item-directive "FollowingMinimal" "following-minimal")
+(item-directive "StreamMinimal"    "stream-minimal")
+(item-directive "Subscription"     "subscription")
+(item-directive "User"             "user")
+(item-directive "UserMinimal"      "user-minimal")
 
 (def.directive jiksnu.streamsWidget []
   #js
