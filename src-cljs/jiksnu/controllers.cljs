@@ -49,7 +49,6 @@
           #_(timbre/debug "Displaying avatar for " id)
           (when (and id (not= id ""))
             (set! (.-size $scope) 32)
-            ;; (js/console.info "binding user" id)
             (.bindOne Users id $scope "user")
             (.find Users id)))))
 
@@ -62,7 +61,6 @@
 
   (set! (.-init $scope)
         (fn []
-          (js/console.log "init")
           (set! (.-loaded $scope) false)
           (when-let [d (.isFollowing $scope)]
             (.then d (fn [following]
@@ -280,8 +278,6 @@
   (if-let [item (.-item $scope)]
     (let [subpage (.-subpage $scope)]
       (timbre/debug "subpage controller" (.-_id item) subpage)
-      ;; (js/console.log $scope)
-      ;; (js/console.log item)
       (set! (.-refresh $scope)
             (fn []
               #_(timbre/info "Refreshing subpage")
@@ -385,7 +381,7 @@
 
 (def.controller jiksnu.ShowStreamController
   [$scope $http $stateParams Streams]
-  (js/console.log "loading ShowStreamController")
+  (timbre/info "loading ShowStreamController")
   (let [model Streams
         label "stream"]
     (set! (.-loaded $scope) false)

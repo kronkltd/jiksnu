@@ -1,12 +1,9 @@
 (ns jiksnu.controllers-test
-  (:require [gyr.test :refer-macros [describe.ng describe.controller it-uses it-compiles]]
-            [purnam.test :refer-macros [describe it is fact]]
+  (:require [purnam.test :refer-macros [describe it is fact]]
             jiksnu.app
             jiksnu.controllers
-            [taoensso.timbre :as timbre
-             :refer-macros [log  trace  debug  info  warn  error  fatal  report
-                            logf tracef debugf infof warnf errorf fatalf reportf
-                            spy get-env log-env]]))
+            [taoensso.timbre :as timbre])
+  (:use-macros [gyr.test :only [describe.ng describe.controller it-uses it-compiles]]))
 
 (timbre/set-level! :debug)
 
@@ -51,7 +48,7 @@
 
     (it "should call fetchStatus"
       (let [mock-then (fn [f]
-                        (info "replacement")
+                        (timbre/info "replacement")
                         (f))
             mock-response #js {:then mock-then}]
         (set! (.-fetchStatus app) (constantly mock-response))
@@ -85,7 +82,4 @@
               (.then (fn [response]
                        (is response nil)))))))
 
-    (describe {:doc "delete"}
-
-              )
-    ))
+    (describe {:doc "delete"})))

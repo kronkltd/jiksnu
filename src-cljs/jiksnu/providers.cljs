@@ -1,7 +1,7 @@
 (ns jiksnu.providers
-  (:require [gyr.core :refer-macros [def.provider]]
-            jiksnu.app
-            [taoensso.timbre :as timbre]))
+  (:require jiksnu.app
+            [taoensso.timbre :as timbre])
+  (:use-macros [gyr.core :only [def.provider]]))
 
 (defn connect
   [app]

@@ -18,7 +18,7 @@
            'js-obj
            "templateUrl" (str "/templates/list-" subpage)
            "restrict" "E"
-           "scope" #js {:id "@" :item "="}
+           "scope" (list 'js-obj "id" "@" "item" "=")
            "controller" (str "List" klass-name "Controller")))))
 
 (defmacro state-hotkey

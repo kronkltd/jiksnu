@@ -1,9 +1,9 @@
 (ns jiksnu.directives
-  (:require [gyr.core :refer-macros [def.directive]]
-            jiksnu.app
+  (:require jiksnu.app
             [jiksnu.controllers :as controller]
             [jiksnu.macros :refer-macros [list-directive]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:use-macros [gyr.core :only [def.directive]]))
 
 (def.directive jiksnu.addGroupForm
   []

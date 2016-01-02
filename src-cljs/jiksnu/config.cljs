@@ -8,8 +8,6 @@
                     appProvider DSProvider DSHttpAdapterProvider
                     hljsServiceProvider]
 
-  ;; (js/console.log (.-defaults DSProvider))
-
   (.setOptions hljsServiceProvider #js {:tabReplace "  "})
 
   (js/angular.extend (.-defaults DSProvider)
