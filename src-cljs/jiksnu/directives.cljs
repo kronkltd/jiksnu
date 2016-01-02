@@ -109,6 +109,13 @@
    :scope (obj :id "@" :item "=")
    :controller "ShowStreamMinimalController"))
 
+(def.directive jiksnu.showSubscription
+  []
+  (obj
+   :templateUrl "/templates/show-subscription"
+   :scope (obj :id "@" :item "=")
+   :controller "ShowSubscriptionController"))
+
 (def.directive jiksnu.showUser
   []
   #js

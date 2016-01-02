@@ -30,6 +30,7 @@
      [:li [:a {:ui-sref "indexGroups"} "Groups"]]
      [:li [:a {:ui-sref "indexStreams"} "Streams"]]
      [:li [:a {:ui-sref "indexUsers"} "Users"]]
+     [:li [:a {:ui-sref "indexSubscriptions"} "Subscriptions"]]
      ;; [:li [:a {:ui-sref "settingsPage"} "Settings"]]
      ;; [:li [:a {:ui-sref "profile"}  "Profile"]]
      [:li [:a {:ng-click "logout()"}   "Log out"]]]]]]]

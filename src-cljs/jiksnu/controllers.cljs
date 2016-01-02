@@ -162,6 +162,7 @@
 (page-controller Groups        "groups"        [])
 (page-controller Resources     "resources"     [])
 (page-controller Streams       "streams"       [])
+(page-controller Subscriptions "subscriptions" [])
 (page-controller Users         "users"         [])
 
 (def.controller jiksnu.NavBarController
@@ -411,6 +412,18 @@
                             (aset $scope "btnLabel" (if shown? "-" "+")))))
 
   (let [id (.-id $scope)]
+    (.init $scope id)))
+
+(def.controller jiksnu.ShowSubscriptionController
+  [$scope $stateParams Subscriptions]
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne Subscriptions id $scope "item")
+          (-> (.find Subscriptions id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
+
+  (let [id (or (.-_id $stateParams) (.-id $scope))]
     (.init $scope id)))
 
 (def.controller jiksnu.ShowUserController

@@ -1,0 +1,4 @@
+[:div "Following"
+ [:debug {:expr "item"}]
+ #_[:a {:ui-sref "showStream(stream)"}
+  "{{stream.name}}"]]

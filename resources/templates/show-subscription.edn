@@ -1,0 +1,6 @@
+[:div
+ [:debug {:expr "item"}]
+ [:p "Subscription"]
+ [:p "From: {{item.from}}"]
+ [:p "To: {{item.to}}"]
+ ]

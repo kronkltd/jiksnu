@@ -1,0 +1,8 @@
+[:div
+ [:p "Index Subscriptions"]
+ [:debug {:expr "page"}]
+ [:div {:ng-repeat "id in page.items"}
+  [:debug {:expr "id"}]
+  [:show-subscription {:data-id "{{id}}"}]
+  ]
+ ]

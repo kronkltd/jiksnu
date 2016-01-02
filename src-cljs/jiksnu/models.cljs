@@ -68,6 +68,13 @@
    (obj
     :name "streams")))
 
+(def.factory jiksnu.Subscriptions
+  [DS]
+  (.defineResource
+   DS
+   (obj
+    :name "subscriptions")))
+
 (def.factory jiksnu.Users
   [DS subpageService]
   (.defineResource

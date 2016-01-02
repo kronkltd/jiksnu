@@ -12,6 +12,7 @@
    "groups"        "/model/groups"
    "resources"     "/model/resources"
    "streams"       "/model/streams"
+   "subscriptions" "/model/subscriptions"
    "users"         "/model/users"
    })
 

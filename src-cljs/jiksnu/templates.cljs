@@ -12,4 +12,3 @@
                 {:value value})
               (when checked
                 {:checked "checked"}))]]]))
-
