@@ -6,7 +6,6 @@
 --ignore-dir=node_modules
 --ignore-dir=site-ccokbooks
 --ignore-dir=target
---ignore-dir=resources/templates
 --ignore-dir=roles
 --ignore-dir=tmp
 --ignore-file=is:Cheffile.lock

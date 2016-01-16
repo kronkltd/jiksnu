@@ -121,7 +121,12 @@
                                        :compiler {:output-to "target/resources/public/cljs/jiksnu.min.js"
                                                   :optimizations :advanced
                                                   :pretty-print false}}}}}
-             :test {:cljsbuild
+             :test {:resource-paths ["target/resources"
+
+                                     "resources"
+                                     "test-resources"]
+
+                    :cljsbuild
                      {:builds
                       {
                        :protractor {:source-paths ["specs"]
