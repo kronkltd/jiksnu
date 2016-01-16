@@ -61,7 +61,7 @@
   (or (fetch-fn (:_id params)) (create params)))
 
 (defn handle-client-update
-  [params]
+  [_]
   nil)
 
 (defn handle-client-associate

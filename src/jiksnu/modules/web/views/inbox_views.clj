@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.views.inbox-views
-  (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-block]]
-        jiksnu.actions.inbox-actions))
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-block]]
+            [jiksnu.actions.inbox-actions :as actions.inbox]))
 
-(defview #'index :html
+(defview #'actions.inbox/index :html
   [request activities]
   {:body (index-block activities)})

@@ -1,10 +1,10 @@
 (ns jiksnu.modules.admin.views.worker-views
-  (:use [ciste.views :only [defview]]
-        jiksnu.modules.admin.actions.worker-actions)
-  (:require [ciste.workers :as workers]
+  (:require [ciste.views :refer [defview]]
+            [ciste.workers :as workers]
+            [jiksnu.modules.admin.actions.worker-actions :as actions.worker]
             [jiksnu.modules.web.sections.worker-sections :as sections.worker]))
 
-(defview #'index :html
+(defview #'actions.worker/index :html
   [request workers]
   {:title "Workers"
    :body
@@ -13,21 +13,21 @@
     (sections.worker/start-worker-form)
     #_(sections.worker/available-worker-section workers))})
 
-(defview #'start-worker :html
+(defview #'actions.worker/start-worker :html
   [request _]
   {:status 303
    :template false
    :flash "worker started"
    :headers {"Location" "/admin/workers"}})
 
-(defview #'stop-all-workers :html
+(defview #'actions.worker/stop-all-workers :html
   [request _]
   {:status 303
    :template false
    :flash "all workers stopped"
    :headers {"Location" "/admin/workers"}})
 
-(defview #'stop-worker :html
+(defview #'actions.worker/stop-worker :html
   [request _]
   {:status 303
    :template false
