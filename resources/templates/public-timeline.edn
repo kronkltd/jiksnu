@@ -1,5 +1,8 @@
 [:div.conversations
  #_[:debug {:expr "page"}]
- [:div.conversation-section {:ng-repeat "id in page.items"}
-  [:debug {:expr "id"}]
-  [:show-conversation {:data-id "{{id}}"}]]]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:button.btn {:ng-click "refresh()"} "Refresh"]
+  [:div.conversation-section {:ng-repeat "id in page.items"}
+   [:debug {:expr "id"}]
+   [:show-conversation {:data-id "{{id}}"}]]]]

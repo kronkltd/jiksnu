@@ -1,52 +1,54 @@
-[:article.hentry.media {:ng-if "loaded"}
- [:div.media-left
-  [:display-avatar {:data-id "{{activity.author}}"}]]
- [:div.media-body
-  [:p
-   [:a {:ui-sref "showUser({_id: activity.author})"}
-    "{{activity.author}}"]]
-  [:h3.media-heading "{{activity.title}}"]
-  [:ul.unstyled {:ng-if "activity.mentioned"}
-   [:li {:ng-repeat "user in activity.mentioned"}
-    [:i.icon-chevron-right]
-    [:link-to {:data-id "{{user.id}}"}]]]
-  [:ul
-   [:li {:ng-repeat "id in activity.streams"}
-    [:show-stream-minimal {:data-id "{{id}}"}]]]
+[:div
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:article.hentry.media {:ng-if "loaded"}
+  [:div.media-left
+   [:display-avatar {:data-id "{{activity.author}}"}]]
+  [:div.media-body
+   [:p
+    [:a {:ui-sref "showUser({_id: activity.author})"}
+     "{{activity.author}}"]]
+   [:h3.media-heading "{{activity.title}}"]
+   [:ul.unstyled {:ng-if "activity.mentioned"}
+    [:li {:ng-repeat "user in activity.mentioned"}
+     [:i.icon-chevron-right]
+     [:link-to {:data-id "{{user.id}}"}]]]
+   [:ul
+    [:li {:ng-repeat "id in activity.streams"}
+     [:show-stream-minimal {:data-id "{{id}}"}]]]
 
-  [:div.entry-content
-   [:div {:btf-markdown "activity.content"}]]
-  [:div
-   [:span.posted
-    "{{activity.verb}}ed a {{activity.object.type}} "
-    [:span {:ng-if "!activity.public"}
-     "privately "]
-    [:time {:datetime "{{activity.published}}"
-            :title "{{activity.published}}"
-            :property "dc:published"}
-     [:a {:href "{{activity.uri}}"}
-      [:span {:am-time-ago "activity.published"
-              :am-preprocess "utc"}]]]
-    " "
-    [:span {:ng-if "activity.source"}
-     "using {{activity.source}}"
-     " "]
-    [:span {:ng-if "activity.geo.latitude && activity.geo.longitude"}
-     "near ("
-     [:abbr {:title "{{activity.geo.latitude}}"}
-      "{{activity.geo.latitude | number:2}}"]
-     ", "
-     [:arrr {:title "{{activity.geo.longitude}}"}
-      "{{activity.geo.longitude | number:2}}"]
-     ") "]
-    [:span {:ng-if "!activity.local"}
-     "via a "
-     [:a {:href "{{activity.service}}"}
-      "foreign service"]
-     " "]
-    #_[:a {:href "/main/conversations/{{activity.conversation}}"}
-       "in context"]]]]
- [:ul
-  [:li
-   [:button.btn {:ng-click "deleteRecord(activity)"} "Delete"]]]
- [:debug {:expr "activity"}]]
+   [:div.entry-content
+    [:div {:btf-markdown "activity.content"}]]
+   [:div
+    [:span.posted
+     "{{activity.verb}}ed a {{activity.object.type}} "
+     [:span {:ng-if "!activity.public"}
+      "privately "]
+     [:time {:datetime "{{activity.published}}"
+             :title "{{activity.published}}"
+             :property "dc:published"}
+      [:a {:href "{{activity.uri}}"}
+       [:span {:am-time-ago "activity.published"
+               :am-preprocess "utc"}]]]
+     " "
+     [:span {:ng-if "activity.source"}
+      "using {{activity.source}}"
+      " "]
+     [:span {:ng-if "activity.geo.latitude && activity.geo.longitude"}
+      "near ("
+      [:abbr {:title "{{activity.geo.latitude}}"}
+       "{{activity.geo.latitude | number:2}}"]
+      ", "
+      [:arrr {:title "{{activity.geo.longitude}}"}
+       "{{activity.geo.longitude | number:2}}"]
+      ") "]
+     [:span {:ng-if "!activity.local"}
+      "via a "
+      [:a {:href "{{activity.service}}"}
+       "foreign service"]
+      " "]
+     #_[:a {:href "/main/conversations/{{activity.conversation}}"}
+        "in context"]]]]
+  [:ul
+   [:li
+    [:button.btn {:ng-click "deleteRecord(activity)"} "Delete"]]]
+  [:debug {:expr "activity"}]]]

@@ -91,6 +91,10 @@
 (item-directive "User"             "user")
 (item-directive "UserMinimal"      "user-minimal")
 
+(def.directive jiksnu.spinner []
+  #js
+  {:templateUrl "/templates/spinner"})
+
 (def.directive jiksnu.streamsWidget []
   #js
   {})

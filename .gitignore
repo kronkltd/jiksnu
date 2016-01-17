@@ -12,6 +12,7 @@
 certs
 checkouts*
 cookbooks
+config
 data
 doc
 dump

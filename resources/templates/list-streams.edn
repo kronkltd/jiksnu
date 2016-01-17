@@ -7,12 +7,14 @@
   [:input.btn.btn-default {:type "submit"}]]
  [:subpage {:name "streams" :item "item"}
   [:debug {:expr "$parent.page"}]
-  [:table.table
-   [:tr {:ng-repeat "id in $parent.page.items"}
-    [:td
-     [:show-stream-minimal {:data-id "{{id}}"}]
-     [:debug {:expr "id"}]
-     ]
-    [:td
-     [:button.btn.btn-default {:ng-click "deleteStream(id)"}
-      [:i.glyphicon.glyphicon-trash]]]]]]]
+  [:button.btn {:ng-click "$parent.refresh()"} "Refresh"]
+  [:div {:ng-if "!$parent.loaded"} [:spinner]]
+  [:div {:ng-if "$parent.loaded"}
+   [:table.table
+    [:tr {:ng-repeat "id in $parent.$parent.page.items"}
+     [:td
+      [:show-stream-minimal {:data-id "{{id}}"}]
+      [:debug {:expr "id"}]]
+     [:td
+      [:button.btn.btn-default {:ng-click "deleteStream(id)"}
+       [:i.glyphicon.glyphicon-trash]]]]]]]]

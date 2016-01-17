@@ -1,4 +1,12 @@
-[:form {:method "post"
-        :action "/users/{{user.id}}/streams"}
- [:input {:type "text" :name "name"}]
- [:input {:type "submit"}]]
+[:div
+ [:p "Add Stream"]
+ [:div {:ng-if "app.user"}
+  ;; [:debug {:expr "app.user"}]
+  [:debug {:expr "stream"}]
+  [:form {:method "post"
+          :ng-submit "submit()"}
+   ;; [:debug {:expr "streamForm"}]
+   [:input {:type "text"
+            :name "name"
+            :ng-model "stream.name"}]
+   [:input {:type "submit"}]]]]

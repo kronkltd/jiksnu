@@ -75,7 +75,9 @@
           (if-let [id (.getUserId app)]
             (do (timbre/debug "getting user: " id)
                 (resolve (.find Users id)))
-            (reject nil))))))
+            (do
+              (timbre/warn "No id")
+              (reject nil)))))))
 
 (defn following?
   [app target]
@@ -114,10 +116,17 @@
 (defn get-user-id
   "Returns the authenticated user id from app data"
   [app]
-  (let [data (.-data app)]
-    (when-let [username (.-user data)]
+  (if-let [data (.-data app)]
+    (if-let [username (.-user data)]
       (let [domain (.-domain data)]
-        (str "acct:" username "@" domain)))))
+        (str "acct:" username "@" domain))
+      (do
+        (timbre/warn "could not get authenticated user id")
+        nil))
+    (do
+      (timbre/warn "Attempted to get user id, but data not loaded")
+      nil)))
+
 
 (defn go
   [app state]
@@ -134,11 +143,11 @@
         (.then #(.-data %)))))
 
 (defn delete-stream
-  [app stream]
-  (timbre/info "Deleting stream")
+  [app id]
+  (timbre/info "Deleting stream" id)
   (.post app #js {:action "delete"
                   :object
-                  #js {:id (:_id stream)}}))
+                  #js {:id id}}))
 
 (def app-methods
   {

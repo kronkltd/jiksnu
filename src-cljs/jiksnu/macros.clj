@@ -7,6 +7,10 @@
     (list 'def.controller controller-sym
           ['$scope '$rootScope 'pageService 'subpageService]
           (list 'helpers/init-page '$scope '$rootScope 'pageService 'subpageService collection-name subpages)
+          (list 'set!
+                (list '.-refresh '$scope)
+                (list 'fn []
+                      (list '.init '$scope)))
           (list '.init '$scope))))
 
 (defmacro list-directive

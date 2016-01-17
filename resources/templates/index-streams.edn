@@ -1,6 +1,10 @@
 [:div
  [:h1 "Streams"]
- [:debug {:expr "page"}]
- [:div {:ng-repeat "id in page.items"}
-  [:show-stream-minimal {:data-id "{{id}}"}]
-  [:debug {:expr "id"}]]]
+ [:button.btn {:ng-click "refresh()"} "Refresh"]
+ #_[:debug {:expr "page"}]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:div {:ng-repeat "id in page.items"}
+   [:show-stream-minimal {:data-id "{{id}}"}]
+   #_[:debug {:expr "id"}]]]
+ [:add-stream-form]]

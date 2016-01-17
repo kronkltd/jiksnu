@@ -31,12 +31,6 @@
 (def.controller jiksnu.AvatarPageController [])
 
 (def.controller jiksnu.DebugController [$scope $filter app]
-  ;; (.$watch $scope
-  ;;          (.-isCollapsed $scope)
-  ;;          (fn [v]
-  ;;            (if v "")
-  ;;            ))
-
   (set! (.-visible $scope) #(.. app -data -debug))
 
   (set! (.-formattedCode $scope)
@@ -176,10 +170,12 @@
            #(.-data app)
            (fn [d]
              (when (.-loaded $scope)
-               #_(timbre/debug "Running navbarcontroller watcher")
+               (timbre/debug "Running navbarcontroller watcher")
                (set! (.-app $scope) d)
-               (let [p (.getUser app)]
-                 (-> p (.then (fn [user] (set! (.-user app) user))))))))
+               (-> (.getUser app)
+                   (.then (fn [user]
+                            (timbre/debug "setting app user")
+                            (set! (.-user app) user)))))))
 
   (-> (.fetchStatus app)
       (.then (fn [] (set! (.-loaded $scope) true)))))
@@ -191,7 +187,7 @@
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Users]
-  (timbre/debug "Loading New Post Controller")
+  #_(timbre/debug "Loading New Post Controller")
   (let [default-form #js {:source "web"
                           :privacy "public"
                           :title ""
@@ -254,6 +250,19 @@
 
     (helpers/init-subpage $scope subpageService Users "streams")
     (.reset $scope)))
+
+(def.controller jiksnu.NewStreamController
+  [$scope $rootScope app]
+  (set! (.-app $scope) app)
+  (set! (.-stream $scope) #js {})
+  (set! (.-submit $scope)
+        (fn [args]
+          (let [stream-name (.-name (.-stream $scope))]
+            (set! (.-name $scope) "")
+            (-> (.addStream app stream-name)
+                (.then (fn [stream]
+                         (timbre/info "Added Stream" stream)
+                         (.$broadcast $rootScope "updateCollection"))))))))
 
 (def.controller jiksnu.RegisterPageController
   [app $scope]
@@ -459,14 +468,18 @@
 
 (def.controller jiksnu.SubpageController
   [$scope subpageService]
+  (set! (.-loaded $scope) false)
   (if-let [item (.-item $scope)]
     (let [subpage (.-subpage $scope)]
       (timbre/debug "subpage controller" (.-_id item) subpage)
       (set! (.-refresh $scope)
             (fn []
-              #_(timbre/info "Refreshing subpage")
+              (set! (.-loaded $scope) false)
+              (timbre/info "Refreshing subpage" (.-_id item) subpage)
               (-> (.fetch subpageService item subpage)
-                  (.then #(set! (.-page $scope) %)))))
+                  (.then (fn [page]
+                           (set! (.-loaded $scope) true)
+                           (set! (.-page $scope) page))))))
       (.refresh $scope))
     (timbre/warn "No item bound")))
 

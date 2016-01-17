@@ -121,6 +121,7 @@
 
 (defn init-subpage
   [$scope subpageService collection subpage]
+  (set! (.-loaded $scope) false)
 
   (.$watch $scope
            #(.-item $scope)
@@ -133,28 +134,27 @@
   (set! (.-init $scope)
         (fn [item]
           (timbre/debug "init subpage" (.-name collection) subpage item)
+          (set! (.-loaded $scope) false)
           (-> (.fetch subpageService item subpage)
-              (.then (fn [page] (aset item subpage page)))))))
+              (.then (fn [page]
+                       (set! (.-loaded $scope) true)
+                       (aset item subpage page)))))))
 
 (defn init-page
   [$scope $rootScope pageService subpageService page-type subpages]
-  (.$on $rootScope "updateCollection"
-        (fn []
-          (.init $scope)))
+  (.$on $rootScope "updateCollection" (fn [] (.init $scope)))
   (set! (.-loaded $scope) false)
   (set! (.-init $scope)
         (fn []
           (timbre/debug "Loading page: " page-type)
+          (set! (.-loaded $scope) false)
+
           (-> pageService
               (.fetch page-type)
               (.then (fn [page]
+                       (timbre/debug "Page loaded: " page-type)
                        (set! (.-page $scope) page)
-                       (set! (.-loaded $scope) true)
-                       #_(doall (map
-                               (fn [item]
-                                 (doall (map (partial fetch-sub-page item subpageService)
-                                             subpages)))
-                               (.-items page)))))))))
+                       (set! (.-loaded $scope) true)))))))
 
 (defn setup-hotkeys
   [hotkeys $state]
