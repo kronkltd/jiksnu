@@ -1,5 +1,4 @@
 [:span {:title "show-user-minimal"}
- [:debug {:expr "loaded"}]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:debug {:expr "item"}]

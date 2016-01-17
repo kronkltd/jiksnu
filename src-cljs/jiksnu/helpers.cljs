@@ -166,5 +166,5 @@
   (state-hotkey "g d" "indexDomains" "Go to Domains")
   (state-hotkey "g g" "indexGroups"  "Go to Groups")
   (state-hotkey "g h" "home"         "Go to Home")
-  (state-hotkey "g s" "settingsPage" "Go to Settings")
+  (state-hotkey "g s" "indexStreams" "Go to Streams")
   (state-hotkey "g u" "indexUsers"   "Go to Users"))

@@ -101,19 +101,13 @@
   [$scope subpageService Users]
   (set! (.-formShown $scope) false)
   (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
-  (.$on $scope refresh-followers (fn [] (.init $scope)))
-  (set! (.-refresh $scope) (fn []
-                             (timbre/debug "emitting refresh")
-                             (.$emit $scope "refresh")))
-  #_(helpers/init-subpage $scope subpageService Users "followers"))
+  (set! (.-refresh $scope) (fn [] (.$broadcast $scope refresh-followers))))
 
 (def.controller jiksnu.ListFollowingController
   [$scope subpageService Users]
   (set! (.-formShown $scope) false)
   (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
-  (.$on $scope refresh-followers (fn [] (.init $scope)))
-  (set! (.-refresh $scope) (fn [] (.$emit $scope "refresh")))
-  #_(helpers/init-subpage $scope subpageService Users "following"))
+  (set! (.-refresh $scope) (fn [] (.$broadcast $scope refresh-followers))))
 
 (def.controller jiksnu.ListGroupsController
   [$scope subpageService Users]
@@ -471,16 +465,25 @@
     (.init $scope id)))
 
 (def.controller jiksnu.SubpageController
-  [$scope subpageService]
+  [$scope subpageService $rootScope]
   (set! (.-loaded $scope) false)
   (if-let [subpage (.-subpage $scope)]
     (do
       (timbre/debug "initialize subpage controller" subpage)
       (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
 
-      (.$on $scope "refresh" (fn []
-                               (timbre/debug "received refresh event")
-                               (.refresh $scope)))
+      (.$on $scope refresh-followers
+            (fn []
+              (timbre/debug "received refresh event")
+              (.refresh $scope)))
+
+      (.$on $rootScope refresh-followers
+            (fn []
+              (timbre/debug "received refresh event on root")
+              (.refresh $scope)))
+
+
+
       (set! (.-init $scope)
             (fn [item]
               (if item
