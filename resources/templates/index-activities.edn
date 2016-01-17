@@ -1,6 +1,7 @@
 [:div {:title "index-activities"}
- [:h1 "Activities"]
- [:button.btn {:ng-click "refresh()"} "Refresh"]
+ [:h1
+  [:span "Activities"]
+  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
  [:debug {:expr "page"}]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}

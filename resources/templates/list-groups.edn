@@ -1,4 +1,4 @@
-[:div
+[:div {:title "list-groups"}
  [:h3 "Groups"]
  [:subpage {:name "groups" :item "item"}
   [:debug {:expr "$parent.page"}]

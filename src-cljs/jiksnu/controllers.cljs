@@ -97,6 +97,12 @@
   [$scope $http]
   (set! (.-groups $scope) (clj->js helpers/nav-info)))
 
+(def.controller jiksnu.ListActivitiesController
+  [$scope subpageService Users]
+  (set! (.-formShown $scope) false)
+  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! (.-refresh $scope) (fn [] (.$broadcast $scope refresh-followers))))
+
 (def.controller jiksnu.ListFollowersController
   [$scope subpageService Users]
   (set! (.-formShown $scope) false)

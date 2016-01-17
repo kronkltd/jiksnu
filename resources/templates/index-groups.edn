@@ -1,6 +1,7 @@
 [:div {:title "index-groups"}
- [:h2 "Groups"]
- [:button.btn {:ng-click "refresh()"} "Refresh"]
+ [:h1
+  [:span "Groups"]
+  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:debug {:expr "page"}]

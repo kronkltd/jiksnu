@@ -164,7 +164,7 @@
 
 (defn setup-hotkeys
   [hotkeys $state]
-  (state-hotkey "g a" "indexActivity" "Go to Activities")
+  (state-hotkey "g a" "indexActivities" "Go to Activities")
   (state-hotkey "g d" "indexDomains"  "Go to Domains")
   (state-hotkey "g g" "indexGroups"   "Go to Groups")
   (state-hotkey "g h" "home"          "Go to Home")

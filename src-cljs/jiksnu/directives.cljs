@@ -65,6 +65,7 @@
    :scope true
    :templateUrl "/templates/left-column-section"})
 
+(list-directive "Activities" "activities")
 (list-directive "Followers" "followers")
 (list-directive "Following" "following")
 (list-directive "Groups" "groups")
