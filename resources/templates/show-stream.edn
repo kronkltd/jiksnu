@@ -1,12 +1,17 @@
-[:div
+[:div {:title "show-stream"}
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
+  [:debug {:expr "stream"}]
   [:p "{{stream.name}}"]
   #_[:p "{{stream.owner}}"]
   [:show-user-minimal {:data-id "{{stream.owner}}"}]
-  [:debug {:expr "stream"}]
-  [:subpage {:name "activities" :item "stream"}
-   [:debug {:expr "$parent.page"}]
-
-   ]]
+  [:div
+   [:h2 "Activities"]
+   [:subpage {:name "activities" :item "stream" :title "show-stream activities-subpage"}
+    [:div {:ng-if "!loaded"} [:spinner]]
+    [:div {:ng-if "loaded"}
+     [:debug {:expr "$parent.page"}]
+     [:div {:ng-repeat "id in  $parent.$parent.page.items"}
+      [:debug {:expr "id"}]
+      [:show-activity {:data-id "{{id}}"}]]]]]]
  ]

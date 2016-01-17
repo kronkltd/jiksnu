@@ -6,6 +6,7 @@
    [:div {:ng-if "!loaded"} [:spinner]]
    [:div {:ng-if "loaded"}
     [:debug {:expr "$parent.$parent.page"}]
-    [:div {:ng-repeat "activity-id in $parent.$parent.page.items"}
-     [:show-activity {:data-id "{{activity-id}}"}]]]]
+    [:div {:ng-repeat "id in $parent.$parent.page.items"}
+     [:debug {:expr "id"}]
+     [:show-activity {:data-id "{{id}}"}]]]]
   #_[:button.btn {:ng-click "deleteRecord(item)"} "Delete Conversation"]]]

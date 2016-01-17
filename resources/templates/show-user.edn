@@ -1,20 +1,21 @@
-[:div {:ng-if "loaded"}
- [:debug {:expr "user"}]
- [:div.vcard.user-full
-  [:div
-   [:display-avatar {:data-id "{{user._id}}"  :data-size "96"}]]
-  [:p
-   [:span.nickname.fn.n "{{user.name}}"]
-   " ({{user.username}}@{{user.domain}})"]
-  [:div.adr
-   [:p.locality "{{user.location}}"]]
-  [:p.note "{{user.bio}}"]
-  [:follow-button {:item "user"}]
-  [:link-to {:data-id "{{user.updateSource}}" :data-model "FeedSource"}]
-  [:p [:a {:href "{{user.id}}"} "{{user.id}}"]]
-  [:p [:a.url {:rel "me" :href "{{user.url}}"} "{{user.url}}"]]]
- #_[:list-streams   {:item "user"}]
- [:list-followers {:item "user"}]
- [:list-following {:item "user"}]
- #_[:list-groups    {:item "user"}]
- ]
+[:div {:title "show-user"}
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:debug {:expr "user"}]
+  [:div.vcard.user-full
+   [:div
+    [:display-avatar {:data-id "{{user._id}}"  :data-size "96"}]]
+   [:p
+    [:span.nickname.fn.n "{{user.name}}"]
+    " ({{user.username}}@{{user.domain}})"]
+   [:div.adr
+    [:p.locality "{{user.location}}"]]
+   [:p.note "{{user.bio}}"]
+   [:follow-button {:item "user"}]
+   [:link-to {:data-id "{{user.updateSource}}" :data-model "FeedSource"}]
+   [:p [:a {:href "{{user.id}}"} "{{user.id}}"]]
+   [:p [:a.url {:rel "me" :href "{{user.url}}"} "{{user.url}}"]]]
+  [:list-streams   {:item "user"}]
+  [:list-followers {:item "user"}]
+  [:list-following {:item "user"}]
+  [:list-groups    {:item "user"}]]]

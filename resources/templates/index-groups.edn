@@ -1,14 +1,19 @@
-[:div
+[:div {:title "index-groups"}
  [:h2 "Groups"]
- [:ul.profiles
-  [:li {:ng-repeat "group in page.items"}
-   [:section.profile.hentry.vcard
-    [:p
-     [:a.url.entry-title {:ui-sref "showGroup(group)"}
-      [:img {:ng-src "{{group.avatarUrl}}"}]
-      [:span.nickname
-       "{{group.name}} ({{group.nickname}})"]]]
-    [:a.url {:href "{{group.homepage}}"}
-     "{{group.homepage}}"]
-    [:p.note "{{group.description}}"]]]]
- [:add-group-form]]
+ [:button.btn {:ng-click "refresh()"} "Refresh"]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:debug {:expr "page"}]
+  [:ul.profiles
+   [:li {:ng-repeat "group in page.items"}
+    [:debug {:expr "group"}]
+    [:section.profile.hentry.vcard
+     [:p
+      [:a.url.entry-title {:ui-sref "showGroup(group)"}
+       [:img {:ng-src "{{group.avatarUrl}}"}]
+       [:span.nickname
+        "{{group.name}} ({{group.nickname}})"]]]
+     [:a.url {:href "{{group.homepage}}"}
+      "{{group.homepage}}"]
+     [:p.note "{{group.description}}"]]]]
+  [:add-group-form]]]

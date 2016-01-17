@@ -1,8 +1,9 @@
-[:div
- [:h2 "Index Users"]
+[:div {:title "index-users"}
+ [:h1 "Index Users"]
+ [:button.btn {:ng-click "refresh()"} "Refresh"]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:debug {:expr "page"}]
-  [:div {:ng-repeat "id in page.items"}
+  [:div {:ng-repeat "id in page.items" :title "index-users repeat"}
    [:debug {:expr "id"}]
    [:show-user-minimal {:data-id "{{id}}"}]]]]
