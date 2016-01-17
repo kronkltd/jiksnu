@@ -88,6 +88,7 @@
   [
    ["avatarPage"         "/main/avatar"             "AvatarPage"         :avatar-page]
    ["home"               "/"                        "IndexConversations" :public-timeline]
+   ["indexActivities"    "/main/activities"         "IndexActivities"    :index-activities]
    ["indexDomains"       "/main/domains"            "IndexDomains"       :index-domains]
    ["indexFeedSources"   "/main/feed-sources"       "IndexFeedSources"   :index-feed-sources]
    ["indexGroups"        "/main/groups"             "IndexGroups"        :index-groups]
@@ -163,8 +164,9 @@
 
 (defn setup-hotkeys
   [hotkeys $state]
-  (state-hotkey "g d" "indexDomains" "Go to Domains")
-  (state-hotkey "g g" "indexGroups"  "Go to Groups")
-  (state-hotkey "g h" "home"         "Go to Home")
-  (state-hotkey "g s" "indexStreams" "Go to Streams")
-  (state-hotkey "g u" "indexUsers"   "Go to Users"))
+  (state-hotkey "g a" "indexActivity" "Go to Activities")
+  (state-hotkey "g d" "indexDomains"  "Go to Domains")
+  (state-hotkey "g g" "indexGroups"   "Go to Groups")
+  (state-hotkey "g h" "home"          "Go to Home")
+  (state-hotkey "g s" "indexStreams"  "Go to Streams")
+  (state-hotkey "g u" "indexUsers"    "Go to Users"))

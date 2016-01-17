@@ -23,7 +23,7 @@
 
 (defgroup jiksnu activities
   :name "Activities"
-  :url "/activities")
+  :url "/main/activities")
 
 (defresource activities :collection
   :methods {:get {:summary "Index Activities Page"}}

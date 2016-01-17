@@ -26,6 +26,7 @@
    [:div {:ng-if "app.user"}
     [:ul.nav.navbar-nav.navbar-right
      [:li [:a {:ui-sref "home"} "Home"]]
+     [:li [:a {:ui-sref "indexActivities"} "Activities"]]
      [:li [:a {:ui-sref "indexDomains"} "Domains"]]
      [:li [:a {:ui-sref "indexGroups"} "Groups"]]
      [:li [:a {:ui-sref "indexStreams"} "Streams"]]
