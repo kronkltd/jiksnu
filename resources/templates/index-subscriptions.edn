@@ -1,8 +1,9 @@
-[:div
- [:p "Index Subscriptions"]
+[:div {:title "index-subscriptions"}
+ [:h1 "Index Subscriptions"]
+ [:button.btn {:ng-click "refresh()"} "Refresh"]
  [:debug {:expr "page"}]
- [:div {:ng-repeat "id in page.items"}
-  [:debug {:expr "id"}]
-  [:show-subscription {:data-id "{{id}}"}]
-  ]
- ]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:div {:ng-repeat "id in page.items" :title "index-subscriptions repeat"}
+   [:debug {:expr "id"}]
+   [:show-subscription {:data-id "{{id}}"}]]]]

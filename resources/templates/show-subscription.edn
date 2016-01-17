@@ -1,15 +1,7 @@
-[:div.well
- [:debug {:expr "item"}]
+[:div.well {:title "show-subscription"}
+ [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
-  [:p "From: "
-   [:show-user-minimal {:data-id "{{item.from}}"}]
-   #_[:display-avatar {:data-id "{{item.from}}"}]
-
-   ;; "{{item.from}}"
-   ]
-  [:p "To: "
-   [:display-avatar {:data-id "{{item.to}}"}]
-
-   "{{item.to}}"
-   ]
+  [:debug {:expr "item"}]
+  [:p "From: " [:show-user-minimal {:data-id "{{item.from}}"}]]
+  [:p "To: " [:show-user-minimal {:data-id "{{item.to}}"}]]
   [:button.btn {:ng-click "deleteRecord(item)"} "Delete"]]]
