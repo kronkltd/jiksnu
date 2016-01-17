@@ -1,8 +1,10 @@
 [:div
- [:h3 "Following"]
+ [:h3 "Following" [:button.btn {:ng-click "refresh()"} "Refresh"]]
  [:subpage {:name "following" :item "item"}
   [:debug {:expr "$parent.page"}]
-  [:ul
-   [:li {:ng-repeat "id in $parent.page.items"}
-    [:debug {:expr "id"}]
-    [:show-following-minimal {:data-id "{{id}}"}]]]]]
+  [:div {:ng-if "!$parent.loaded"} [:spinner]]
+  [:div {:ng-if "$parent.loaded"}
+   [:ul
+    [:li {:ng-repeat "id in $parent.$parent.page.items"}
+     [:debug {:expr "id"}]
+     [:show-following-minimal {:data-id "{{id}}"}]]]]]]

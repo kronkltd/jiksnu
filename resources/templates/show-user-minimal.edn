@@ -1,13 +1,17 @@
-[:span
- [:display-avatar {:data-id "{{item._id}}"}]
- [:a {:ui-sref "showUser(item)"}
-  "{{item._id}}"]
- ;; [:p
- ;;  [:link-to {:data-id "{{id}}" :data-model "User"}]]
- ;; [:p "{{item.username}}@{{item.domain}}"]
- ;; [:p "{{item._id}}"]
- ;; [:p "{{item.name}}"]
- ;; [:p "{{item.uri}}"]
- ;; [:p "{{item.bio}}"]
- [:debug {:expr "item"}]
+[:span {:title "show-user-minimal"}
+ [:debug {:expr "loaded"}]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:debug {:expr "item"}]
+  [:display-avatar {:data-id "{{item._id}}"}]
+  [:a {:ui-sref "showUser(item)"}
+   "{{item._id}}"]
+  ;; [:p
+  ;;  [:link-to {:data-id "{{id}}" :data-model "User"}]]
+  ;; [:p "{{item.username}}@{{item.domain}}"]
+  ;; [:p "{{item._id}}"]
+  ;; [:p "{{item.name}}"]
+  ;; [:p "{{item.uri}}"]
+  ;; [:p "{{item.bio}}"]
+  ]
  ]

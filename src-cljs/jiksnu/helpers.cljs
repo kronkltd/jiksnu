@@ -131,9 +131,14 @@
                  (.init $scope item subpage)
                  (timbre/warn "item is nil")))))
 
+  (set! (.-refresh $scope)
+        (fn []
+          (.init $scope (.-item $scope))))
+
   (set! (.-init $scope)
         (fn [item]
           (timbre/debug "init subpage" (.-name collection) subpage item)
+          (set! (.-item $scope) item)
           (set! (.-loaded $scope) false)
           (-> (.fetch subpageService item subpage)
               (.then (fn [page]

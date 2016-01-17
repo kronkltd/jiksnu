@@ -17,7 +17,7 @@
   (let [$http (.inject app "$http")]
     (-> (.get $http "/status")
         (.then (fn [response]
-                 (timbre/debug "setting app status")
+                 #_(timbre/debug "setting app status")
                  (set! (.-data app) (.-data response)))))))
 
 (defn login
@@ -48,7 +48,7 @@
   [app message]
   (let [notify (.inject app "notify")
         data (js/JSON.parse (.-data message))]
-    (timbre/debug "Received Message")
+    #_(timbre/debug "Received Message")
     (js/console.debug data)
     (cond
       (.-connection data) (do #_(notify "connected"))

@@ -1,3 +1,5 @@
 [:div
  [:debug {:expr "item"}]
- [:show-user-minimal {:data-id "{{item.from}}"}]]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:show-user-minimal {:data-id "{{item.from}}"}]]]

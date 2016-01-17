@@ -102,14 +102,18 @@
   (set! (.-formShown $scope) false)
   (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
   (.$on $scope refresh-followers (fn [] (.init $scope)))
-  (helpers/init-subpage $scope subpageService Users "followers"))
+  (set! (.-refresh $scope) (fn []
+                             (timbre/debug "emitting refresh")
+                             (.$emit $scope "refresh")))
+  #_(helpers/init-subpage $scope subpageService Users "followers"))
 
 (def.controller jiksnu.ListFollowingController
   [$scope subpageService Users]
   (set! (.-formShown $scope) false)
   (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
   (.$on $scope refresh-followers (fn [] (.init $scope)))
-  (helpers/init-subpage $scope subpageService Users "following"))
+  (set! (.-refresh $scope) (fn [] (.$emit $scope "refresh")))
+  #_(helpers/init-subpage $scope subpageService Users "following"))
 
 (def.controller jiksnu.ListGroupsController
   [$scope subpageService Users]
@@ -170,11 +174,11 @@
            #(.-data app)
            (fn [d]
              (when (.-loaded $scope)
-               (timbre/debug "Running navbarcontroller watcher")
+               #_(timbre/debug "Running navbarcontroller watcher")
                (set! (.-app $scope) d)
                (-> (.getUser app)
                    (.then (fn [user]
-                            (timbre/debug "setting app user")
+                            #_(timbre/debug "setting app user")
                             (set! (.-user app) user)))))))
 
   (-> (.fetchStatus app)
@@ -469,19 +473,28 @@
 (def.controller jiksnu.SubpageController
   [$scope subpageService]
   (set! (.-loaded $scope) false)
-  (if-let [item (.-item $scope)]
-    (let [subpage (.-subpage $scope)]
-      (timbre/debug "subpage controller" (.-_id item) subpage)
-      (set! (.-refresh $scope)
-            (fn []
-              (set! (.-loaded $scope) false)
-              (timbre/info "Refreshing subpage" (.-_id item) subpage)
-              (-> (.fetch subpageService item subpage)
-                  (.then (fn [page]
-                           (set! (.-loaded $scope) true)
-                           (set! (.-page $scope) page))))))
+  (if-let [subpage (.-subpage $scope)]
+    (do
+      (timbre/debug "initialize subpage controller" subpage)
+      (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
+
+      (.$on $scope "refresh" (fn []
+                               (timbre/debug "received refresh event")
+                               (.refresh $scope)))
+      (set! (.-init $scope)
+            (fn [item]
+              (if item
+                (do
+                  (set! (.-item $scope) item)
+                  (set! (.-loaded $scope) false)
+                  (timbre/info "Refreshing subpage" (.-_id item) subpage)
+                  (-> (.fetch subpageService item subpage)
+                      (.then (fn [page]
+                               (set! (.-loaded $scope) true)
+                               (set! (.-page $scope) page)))))
+                (timbre/warn "Id not bound for subpage" subpage))))
       (.refresh $scope))
-    (timbre/warn "No item bound")))
+    (throw "Subpage not specified")))
 
 (def.controller jiksnu.SubscribersWidgetController
   [$scope])

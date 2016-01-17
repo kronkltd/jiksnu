@@ -1,7 +1,8 @@
 [:div
  [:h2 "Index Users"]
+ [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:debug {:expr "page"}]
   [:div {:ng-repeat "id in page.items"}
-   [:show-user-minimal {:data-id "{{id}}"}]
-   [:debug {:expr "id"}]]]]
+   [:debug {:expr "id"}]
+   [:show-user-minimal {:data-id "{{id}}"}]]]]

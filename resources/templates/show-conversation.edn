@@ -1,8 +1,13 @@
-[:div
+[:div {:title "show-conversation"}
+ [:debug {:expr "loaded"}]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
-  [:subpage {:name "activities" :item "item"}
-   [:div {:ng-repeat "activity in $parent.page.items"}
-    [:show-activity {:data-id "{{activity}}"}]]]
   [:debug {:expr "item"}]
-  [:button.btn {:ng-click "deleteRecord(item)"} "Delete Conversation"]]]
+  [:subpage {:name "activities" :item "item" :title "show-conversation activity-subpage"}
+   [:debug {:expr "loaded"}]
+   [:div {:ng-if "!loaded"} [:spinner]]
+   [:div {:ng-if "loaded"}
+    [:debug {:expr "$parent.$parent.page"}]
+    [:div {:ng-repeat "activity-id in $parent.$parent.page.items"}
+     [:show-activity {:data-id "{{activity-id}}"}]]]]
+  #_[:button.btn {:ng-click "deleteRecord(item)"} "Delete Conversation"]]]

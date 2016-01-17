@@ -1,8 +1,10 @@
-[:div
+[:div {:title "list-followers"}
  [:h3 "Followers" [:button.btn {:ng-click "refresh()"} "Refresh"]]
- [:subpage {:name "followers" :item "item"}
-  #_[:debug {:expr "$parent.page"}]
-  [:ul
-   [:li {:ng-repeat "id in $parent.page.items"}
-    [:debug {:expr "id"}]
-    [:show-followers-minimal {:data-id "{{id}}"}]]]]]
+ [:subpage {:name "followers" :item "item" :title "list-followers followers-subpage"}
+  [:debug {:expr "$parent.page"}]
+  [:div {:ng-if "!$parent.loaded"} [:spinner]]
+  [:div {:ng-if "$parent.loaded"}
+   [:ul
+    [:li {:ng-repeat "id in $parent.$parent.page.items"}
+     [:debug {:expr "id"}]
+     [:show-followers-minimal {:data-id "{{id}}"}]]]]]]
