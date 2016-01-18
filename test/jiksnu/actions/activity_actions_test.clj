@@ -57,7 +57,7 @@
           activity (mock/there-is-an-activity {:user user})]
       (actions.activity/find-by-user user) =>
       (contains {:totalItems 1
-                 :items (has every? #(instance? Activity %))}))))
+                 :items (has every? #(instance? ObjectId %))}))))
 
 (facts "#'actions.activity/index"
   (fact "when there are no activities"
