@@ -46,11 +46,9 @@
 (fact "route: streams-api/activities :get"
   (db/drop-all!)
   (let [stream (mock/a-stream-exists)
-        url (str "/model/streams/" (:_id stream) "/actvities")
+        url (str "/model/streams/" (:_id stream) "/activities")
         request (-> (req/request :get url))]
     (mock/there-is-an-activity {:stream stream})
-
-    (util/inspect request)
 
     (response-for request) => (contains {:status 200})))
 
