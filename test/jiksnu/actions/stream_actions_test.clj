@@ -12,7 +12,8 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Activity
-           jiksnu.model.Conversation))
+           jiksnu.model.Conversation
+           org.bson.types.ObjectId))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))
@@ -20,19 +21,18 @@
 
 (facts "#'actions.stream/public-timeline"
   (fact "when there are no activities"
-    (model.activity/drop!)
+    (db/drop-all!)
     (actions.stream/public-timeline) =>
     (contains
      {:totalItems 0
-      :items empty?})
-
-(comp empty? :items))
+      :items empty?}))
   (fact "when there are activities"
+    (db/drop-all!)
     (let [activity (mock/there-is-an-activity)]
       (actions.stream/public-timeline) =>
       (contains
        {:totalItems 1
-        :items (has every? #(instance? Conversation %))}))))
+        :items (has every? #(instance? ObjectId %))}))))
 
 (fact "#'actions.stream/user-timeline"
   (fact "when the user has activities"
@@ -43,4 +43,4 @@
        user
        (contains
         {:totalItems 1
-         :items (has every? #(instance? Activity %))})))))
+         :items (has every? #(instance? ObjectId %))})))))
