@@ -1,6 +1,7 @@
 (ns jiksnu.actions.subscription-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
@@ -10,7 +11,8 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Subscription
-           jiksnu.model.User))
+           jiksnu.model.User
+           org.bson.types.ObjectId))
 
 
 (namespace-state-changes
@@ -19,7 +21,7 @@
 
 (fact "#'actions.subscription/subscribe"
   (fact "when the user is not already subscribed"
-    (model.subscription/drop!)
+    (db/drop-all!)
     (let [user (mock/a-user-exists)
           subscribee (mock/a-user-exists)]
       (session/with-user user
@@ -53,9 +55,7 @@
        (partial instance? User)
        (contains
         {:totalItems pos?
-         :items (every-checker
-                 (has every? (partial instance? Subscription))
-                 (has some (partial = subscription)))})))))
+         :items (has every? (partial instance? ObjectId))})))))
 
 (fact "#'actions.subscription/get-subscriptions"
   (fact "when there are subscriptions"
@@ -68,7 +68,7 @@
         {:totalItems pos?
          :items
          (every-checker
-          (has every? (partial instance? Subscription))
+          (has every? (partial instance? ObjectId))
           (has some (partial = subscription)))})))))
 
 (fact "#'jiksnu.actions.subscription-actions/unsubscribe"
