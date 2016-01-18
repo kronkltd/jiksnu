@@ -17,32 +17,34 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-;; (fact "route: streams-api/collection :post"
-;;   (let [params {:name (fseq :word)}
-;;         actor (mock/a-user-exists)
-;;         request (-> (req/request :post "/model/streams")
-;;                     (req/body (json/json-str params))
-;;                     (req/content-type "application/json")
-;;                     (as-user actor))
-;;         response (response-for request)
-;;         location (get-in response [:headers "Location"])
-;;         request2 (req/request :get location)]
+(fact "route: streams-api/collection :post"
+  (db/drop-all!)
+  (let [params {:name (fseq :word)}
+        actor (mock/a-user-exists)
+        request (-> (req/request :post "/model/streams")
+                    (req/body (json/json-str params))
+                    (req/content-type "application/json")
+                    (as-user actor))
+        response (response-for request)
+        location (get-in response [:headers "Location"])
+        request2 (req/request :get location)]
 
-;;     response =>
-;;     (contains {:status 303
-;;                :headers (contains {"Location" #"/model/streams/[\d\w]+"})})
+    response =>
+    (contains {:status 303
+               :headers (contains {"Location" #"/model/streams/[\d\w]+"})})
 
-;;     (some-> request2 response-for :body json/read-str) =>
-;;     (contains {"name" (:name params)
-;;                "owner" (:_id actor)})))
+    (some-> request2 response-for :body json/read-str) =>
+    (contains {"name" (:name params)
+               "owner" (:_id actor)})))
 
-;; (fact "route: streams-api/collection :delete"
-;;   (let [stream (mock/a-stream-exists)
-;;         url (str "/model/streams/" (:_id stream))
-;;         request (-> (req/request :delete url))]
-;;     (response-for request) => (contains {:status 200})))
+(fact "route: streams-api/collection :delete"
+  (let [stream (mock/a-stream-exists)
+        url (str "/model/streams/" (:_id stream))
+        request (-> (req/request :delete url))]
+    (response-for request) => (contains {:status 200})))
 
 (fact "route: streams-api/activities :get"
+  (db/drop-all!)
   (let [stream (mock/a-stream-exists)
         url (str "/model/streams/" (:_id stream) "/actvities")
         request (-> (req/request :get url))]
@@ -60,7 +62,7 @@
 
     (-> (req/request :get "/")
         response-for) =>
-        (contains {:status status/success?}))
+    (contains {:status status/success?}))
 
   (fact "when there are activities"
     (let [user (mock/a-user-exists)]
@@ -70,14 +72,14 @@
       (fact "when the user is not authenticated"
         (-> (req/request :get "/")
             response-for) =>
-            (contains {:status status/success?
-                       :body string?}))
+        (contains {:status status/success?
+                   :body string?}))
 
       (fact "when the user is authenticated"
         (-> (req/request :get "/")
             as-user response-for) =>
-            (contains {:status status/success?
-                       :body string?})))))
+        (contains {:status status/success?
+                   :body string?})))))
 
 (future-fact "user timeline"
   (fact "html"

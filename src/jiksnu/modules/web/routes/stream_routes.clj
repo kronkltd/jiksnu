@@ -18,6 +18,11 @@
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
 
+(defn get-stream
+  "Gets the item from context by id"
+  [ctx]
+  (let [id (-> ctx :request :route-params :_id)]
+    (model.stream/fetch-by-id id)))
 
 (defparameter :model.stream/id
   :in :path
@@ -88,14 +93,19 @@
 
 (defresource streams-api :activities
   :desc "activities in stream"
+  :description "Activities of {{name}}"
   :url "/{_id}/activities"
   :name "stream activities"
-  :mixins [subpage-resource]
   :parameters  {:_id  (path :model.stream/id)}
-  :subpage "activities"
+  :mixins [subpage-resource]
+  :target get-stream
   :target-model "stream"
-  :description "Activities of {{name}}"
+  :subpage "activities"
+  :allowed-methods [:get]
   :available-formats [:json]
-  :presenter (fn [rsp]
-               (merge (:body rsp)
-                      {:displayName "Activities in Stream"})))
+  :available-media-types ["application/json"]
+  :presenter (partial into {})
+  ;; :presenter (fn [rsp]
+  ;;              (merge (:body rsp)
+  ;;                     {:displayName "Activities in Stream"}))
+  )
