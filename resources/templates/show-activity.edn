@@ -50,6 +50,7 @@
        " "]
       #_[:a {:href "/main/conversations/{{activity.conversation}}"}
          "in context"]]]]
-   [:ul
-    [:li
-     [:button.btn {:ng-click "deleteRecord(activity)"} "Delete"]]]]]]
+   [:div {:ng-if "app.user"}
+    [:ul
+     [:li
+      [:button.btn {:ng-click "deleteRecord(activity)"} "Delete"]]]]]]]
