@@ -9,6 +9,7 @@
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
+            [jiksnu.util :as util]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Subscription
            jiksnu.model.User
@@ -61,15 +62,15 @@
   (fact "when there are subscriptions"
     (let [subscription (mock/a-subscription-exists)
           actor (model.subscription/get-actor subscription)]
-      (actions.subscription/get-subscriptions actor) =>
-      (just
-       (partial = actor)
-       (contains
-        {:totalItems pos?
-         :items
-         (every-checker
-          (has every? (partial instance? ObjectId))
-          (has some (partial = subscription)))})))))
+      (let [response (actions.subscription/get-subscriptions actor)]
+        (util/inspect response)
+        (first response) => actor
+        (first (next response)) => (contains
+                              {:totalItems pos?
+                               :items
+                               (every-checker
+                                (has every? (partial instance? ObjectId))
+                                (contains (:_id subscription)))})))))
 
 (fact "#'jiksnu.actions.subscription-actions/unsubscribe"
   (let [actor (mock/a-user-exists)
