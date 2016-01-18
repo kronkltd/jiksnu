@@ -1,5 +1,5 @@
 [:div {:title "list-followers"}
- [:h3 "Followers" [:button.btn {:ng-click "refresh()"} "Refresh"]]
+ [:h3 "Followers" [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
  [:subpage {:name "followers" :item "item" :title "list-followers followers-subpage"}
   [:debug {:expr "$parent.page"}]
   [:div {:ng-if "!$parent.loaded"} [:spinner]]

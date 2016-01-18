@@ -1,8 +1,10 @@
 [:div {:title "list-groups"}
- [:h3 "Groups"]
+ [:h3 "Groups"  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
  [:subpage {:name "groups" :item "item"}
   [:debug {:expr "$parent.page"}]
-  [:ul
-   [:li {:ng-repeat "id in $parent.page.items"}
-    [:debug {:expr "id"}]
-    [:show-group-minimal {:data-id "{{id}}"}]]]]]
+  [:div {:ng-if "!$parent.loaded"} [:spinner]]
+  [:div {:ng-if "$parent.loaded"}
+   [:ul
+    [:li {:ng-repeat "id in $parent.$parent.page.items"}
+     [:debug {:expr "id"}]
+     [:show-group-minimal {:data-id "{{id}}"}]]]]]]
