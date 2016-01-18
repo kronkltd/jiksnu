@@ -45,7 +45,7 @@
            logger.timbre/wrap-with-logger
            (wrap-trace :ui)
            (friend/authenticate auth-config)
-           (handler/site {:session {:store (ms/session-store @_db "session")}})))
+           (handler/site {:session {:store (ms/session-store (timbre/spy :info @_db) "session")}})))
       wrap-file-info
       wrap-content-type
       wrap-not-modified))

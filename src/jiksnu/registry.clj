@@ -20,7 +20,6 @@
    "resource"
    "subscription"
    "user"
-   "user-list"
    ]
   )
 
@@ -56,7 +55,6 @@
    "tag"
    ;; "template"
    "user"
-   "user-list"
    ])
 
 (def module-names
