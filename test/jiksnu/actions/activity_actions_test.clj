@@ -82,12 +82,7 @@
        (partial instance? Activity)
        (contains {:_id (partial instance? ObjectId)})
        (contains {:created (partial instance? DateTime)})
-       (contains {:author string?})
-       )
-      )
-    )
-
-  )
+       (contains {:author string?})))))
 
 (fact "#'actions.activity/show"
   (fact "when the record exists"
@@ -190,4 +185,4 @@
           ids [(:_id conversation1) (:_id conversation2)]]
       (actions.activity/fetch-by-conversations ids) =>
       (contains {:totalItems 2
-                 :items (contains activity1 activity2)}))))
+                 :items (has every? #(instance? ObjectId %))}))))
