@@ -1,10 +1,10 @@
 {:environment :test
  :logger "jiksnu.logger"
  :modules [
-           "jiksnu.core"
-           "jiksnu.modules.command"
-           "jiksnu.modules.http"
-           "jiksnu.modules.web"
+           ;; "jiksnu.core"
+           ;; "jiksnu.modules.command"
+           ;; "jiksnu.modules.http"
+           ;; "jiksnu.modules.web"
            ]
  :services [
             ;; "ciste.services.http-kit"

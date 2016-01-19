@@ -81,7 +81,11 @@
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
-             "-Dfile.encoding=UTF-8"]
+             "-Dfile.encoding=UTF-8"
+             "-Dcom.sun.management.jmxremote"
+             "-Dcom.sun.management.jmxremote.ssl=false"
+             "-Dcom.sun.management.jmxremote.authenticate=false"
+             "-Dcom.sun.management.jmxremote.port=43210"]
   :warn-on-reflection false
   :repl-options {:init-ns ciste.runner
                  :host "0.0.0.0"

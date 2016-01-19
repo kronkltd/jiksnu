@@ -15,7 +15,7 @@
   (init-site-reloading! jiksnu-init)
   (jiksnu-init))
 
-(defmodule "web"
+(defmodule "jiksnu.modules.web"
   :start start
   :deps ["jiksnu.modules.core"
          "jiksnu.modules.json"])
