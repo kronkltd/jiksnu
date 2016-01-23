@@ -38,13 +38,13 @@
     :ns-blacklist [
                    ;; "ciste.commands"
                    ;; "ciste.config"
-                   ;; "ciste.loader"
+                   "ciste.loader"
                    ;; "ciste.initializer"
                    ;; "ciste.runner"
                    "ring.logger.timbre"
                    ;; "jiksnu.db"
                    ;; "jiksnu.modules.http.actions"
-                   ;; "jiksnu.modues.web.helpers"
+                   "jiksnu.modues.web.helpers"
                    ]
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
