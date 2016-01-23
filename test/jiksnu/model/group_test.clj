@@ -33,16 +33,14 @@
 
   (fact "when there are less than a page"
     (db/drop-all!)
-    (dotimes [n 19]
-      (actions.group/create (factory :group)))
+    (dotimes [n 19] (mock/a-group-exists))
     (let [response (model.group/fetch-all)]
       response => seq?
       (count response) => 19))
 
   (fact "when there is more than a page"
     (db/drop-all!)
-    (dotimes [n 21]
-      (actions.group/create (factory :group)))
+    (dotimes [n 21] (mock/a-group-exists))
     (let [response (model.group/fetch-all)]
       response => seq?
       (count response) => 20)))
