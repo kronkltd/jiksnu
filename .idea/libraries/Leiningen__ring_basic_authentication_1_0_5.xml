@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: ring-basic-authentication:1.0.5">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/ring-basic-authentication/ring-basic-authentication/1.0.5/ring-basic-authentication-1.0.5.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

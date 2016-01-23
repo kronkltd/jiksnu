@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: helpshift/hydrox:0.1.2">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/helpshift/hydrox/0.1.2/hydrox-0.1.2.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

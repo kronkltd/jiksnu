@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: net.logstash.log4j/jsonevent-layout:1.7">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/net/logstash/log4j/jsonevent-layout/1.7/jsonevent-layout-1.7.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

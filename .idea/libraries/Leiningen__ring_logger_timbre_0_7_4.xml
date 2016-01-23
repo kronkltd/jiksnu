@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: ring-logger-timbre:0.7.4">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/ring-logger-timbre/ring-logger-timbre/0.7.4/ring-logger-timbre-0.7.4.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

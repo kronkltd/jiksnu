@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: liberator:0.13">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/liberator/liberator/0.13/liberator-0.13.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: com.flybe/socket-rocket:0.1.9">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/flybe/socket-rocket/0.1.9/socket-rocket-0.1.9.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

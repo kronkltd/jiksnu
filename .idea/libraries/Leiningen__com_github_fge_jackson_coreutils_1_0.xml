@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: com.github.fge/jackson-coreutils:1.0">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/github/fge/jackson-coreutils/1.0/jackson-coreutils-1.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

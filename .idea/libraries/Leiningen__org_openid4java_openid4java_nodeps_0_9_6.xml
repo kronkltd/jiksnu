@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: org.openid4java/openid4java-nodeps:0.9.6">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/openid4java/openid4java-nodeps/0.9.6/openid4java-nodeps-0.9.6.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: net.sourceforge.htmlunit/htmlunit-core-js:2.13">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.13/htmlunit-core-js-2.13.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

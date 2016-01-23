@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: net.kronkltd/clj-gravatar:0.1.0-SNAPSHOT">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/net/kronkltd/clj-gravatar/0.1.0-SNAPSHOT/clj-gravatar-0.1.0-SNAPSHOT.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: org.seleniumhq.selenium/selenium-remote-driver:2.39.0">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/2.39.0/selenium-remote-driver-2.39.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
