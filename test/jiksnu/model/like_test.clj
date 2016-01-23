@@ -1,6 +1,5 @@
 (ns jiksnu.model.like-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.mock :as mock]
             [jiksnu.model.like :as model.like]
             [jiksnu.test-helper :as th]

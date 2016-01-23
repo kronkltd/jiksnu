@@ -1,6 +1,5 @@
 (ns jiksnu.modules.admin
-  (:require [ciste.loader :as loader
-             :refer [defhandler defmodule]]
+  (:require [ciste.loader :refer [defhandler defmodule]]
             [jiksnu.registry :as registry]
             [jiksnu.util :as util]))
 

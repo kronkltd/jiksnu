@@ -1,5 +1,4 @@
-(ns jiksnu.referrant
-  (:require [taoensso.timbre :as timbre]))
+(ns jiksnu.referrant)
 
 (defonce this (ref {}))
 (defonce that (ref {}))

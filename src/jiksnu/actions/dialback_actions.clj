@@ -1,10 +1,5 @@
 (ns jiksnu.actions.dialback-actions
-  (:require [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.dialback :as model.dialback]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as ns]
-            [jiksnu.session :as session]
+  (:require [jiksnu.model.dialback :as model.dialback]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))

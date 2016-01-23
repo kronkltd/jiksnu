@@ -1,13 +1,9 @@
 (ns jiksnu.modules.web.routes.home-routes
-  (:require [clojure.data.json :as json]
-            [jiksnu.actions.activity-actions :as activity]
-            [jiksnu.actions.site-actions :as site]
+  (:require [jiksnu.actions.site-actions :as site]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup resources]]
-            [jiksnu.modules.web.helpers :as helpers
-             :refer [angular-resource]]
-            [octohipster.mixins :as mixin
-             :refer [item-resource]]))
+            [jiksnu.modules.web.helpers :refer [angular-resource]]
+            [octohipster.mixins :refer [item-resource]]))
 
 (defgroup jiksnu root
   :name "Root"

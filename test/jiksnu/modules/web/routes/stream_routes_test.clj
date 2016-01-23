@@ -50,7 +50,11 @@
         request (-> (req/request :get url))]
     (mock/there-is-an-activity {:stream stream})
 
-    (response-for request) => (contains {:status 200})))
+    (let [response (response-for request)]
+      (util/inspect response)
+
+      ;; (json/read-string (:body response)) => {}
+      response  => (contains {:status 200}))))
 
 
 (future-fact "public-timeline-http-route"

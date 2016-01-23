@@ -1,20 +1,10 @@
 (ns jiksnu.templates.actions
-  (:require [clojure.data.json :as json]
-            [inflections.core :as inf]
-            [jiksnu.channels :as ch]
+  (:require [jiksnu.channels :as ch]
             [jiksnu.db :refer [_db]]
-            [jiksnu.namespace :as ns]
             [manifold.bus :as bus]
             [monger.collection :as mc]
-            [monger.core :as mg]
-            [monger.query :as mq]
             monger.json
-            [slingshot.slingshot :refer [throw+]])
-  (:import java.io.FileNotFoundException
-           java.text.SimpleDateFormat
-           java.util.Date
-           java.net.URL
-           org.bson.types.ObjectId))
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn make-indexer*
   [{:keys [page-size sort-clause count-fn fetch-fn]}]

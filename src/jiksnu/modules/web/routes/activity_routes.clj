@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.routes.activity-routes
   (:require [cemerick.friend :as friend]
             [ciste.config :refer [config]]
-            [clojure.data.json :as json]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]

@@ -1,6 +1,5 @@
 (ns jiksnu.modules.json
   (:require [ciste.loader :refer [defhandler defmodule]]
-            [jiksnu.handlers :as handler]
             jiksnu.modules.json.views
             [jiksnu.registry :as registry]
             [jiksnu.util :as util]))

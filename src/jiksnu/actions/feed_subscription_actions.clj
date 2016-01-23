@@ -1,6 +1,5 @@
 (ns jiksnu.actions.feed-subscription-actions
   (:require [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]

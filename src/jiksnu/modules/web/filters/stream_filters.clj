@@ -1,10 +1,8 @@
 (ns jiksnu.modules.web.filters.stream-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (deffilter #'actions.stream/direct-message-timeline :http

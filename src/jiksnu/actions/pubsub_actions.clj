@@ -1,9 +1,7 @@
 (ns jiksnu.actions.pubsub-actions
   (:require [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
-            [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]
             [org.httpkit.client :as client]
             [slingshot.slingshot :refer [throw+]]))

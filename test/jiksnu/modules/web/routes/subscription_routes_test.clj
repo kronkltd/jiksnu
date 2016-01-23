@@ -1,12 +1,8 @@
 (ns jiksnu.modules.web.routes.subscription-routes-test
   (:require [clj-factory.core :refer [fseq]]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]

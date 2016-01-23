@@ -1,10 +1,8 @@
 (ns jiksnu.actions.like-actions
   (:require [clj-time.core :as time]
-            [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
             [jiksnu.templates.actions :as templates.actions]
-            [jiksnu.transforms :as transforms])
-  (:import jiksnu.model.Like))
+            [jiksnu.transforms :as transforms]))
 
 (defn prepare-create
   [activity]

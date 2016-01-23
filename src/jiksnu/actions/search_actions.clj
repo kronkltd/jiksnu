@@ -1,5 +1,4 @@
-(ns jiksnu.actions.search-actions
-  (:require [jiksnu.model :as model]))
+(ns jiksnu.actions.search-actions)
 
 (defn perform-search
   [options]

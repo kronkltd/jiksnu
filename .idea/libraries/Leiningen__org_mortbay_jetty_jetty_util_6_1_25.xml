@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.mortbay.jetty/jetty-util:6.1.25">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty-util/6.1.25/jetty-util-6.1.25.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

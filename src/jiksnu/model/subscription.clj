@@ -1,18 +1,14 @@
 (ns jiksnu.model.subscription
-  (:require [clj-time.core :as time]
-            [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as ns]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-_id set-updated-time set-created-time]]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [monger.query :as mq]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [validation-set presence-of]])
-  (:import jiksnu.model.Subscription
-           org.bson.types.ObjectId
+  (:import org.bson.types.ObjectId
            org.joda.time.DateTime))
 
 (def collection-name "subscriptions")

@@ -1,10 +1,8 @@
 (ns jiksnu.modules.web.filters.activity-filters
   (:require [ciste.filters :refer [deffilter]]
             [clojure.data.json :as json]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+]]))
 
 ;; delete

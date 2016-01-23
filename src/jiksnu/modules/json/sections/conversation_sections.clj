@@ -1,7 +1,6 @@
 (ns jiksnu.modules.json.sections.conversation-sections
   (:require [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [uri index-block index-section]]
-            [jiksnu.actions.activity-actions :as actions.activity])
+            [ciste.sections.default :refer [uri index-block index-section]])
   (:import jiksnu.model.Conversation))
 
 (defsection index-block [Conversation :json]

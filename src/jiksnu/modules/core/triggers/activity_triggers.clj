@@ -1,19 +1,13 @@
 (ns jiksnu.modules.core.triggers.activity-triggers
   (:require [taoensso.timbre :as timbre]
-            [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.channels :as ch]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.item :as model.item]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [manifold.stream :as s])
-  (:import java.net.URI
-           jiksnu.model.User))
+            [manifold.stream :as s]))
 
 (defn filter-activity-create
   [item]

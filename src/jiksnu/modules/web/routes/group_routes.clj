@@ -1,17 +1,12 @@
 (ns jiksnu.modules.web.routes.group-routes
-  (:require [clojure.data.json :as json]
-            [jiksnu.actions.conversation-actions :as conversation]
-            [jiksnu.actions.group-actions :as actions.group]
+  (:require [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model.group :as model.group]
             jiksnu.modules.core.views.group-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
-            [jiksnu.util :as util]
             [octohipster.mixins :as mixin]
-            [puget.printer :as puget]
-            [taoensso.timbre :as timbre])
-  (:import jiksnu.model.Group))
+            [taoensso.timbre :as timbre]))
 
 (defparameter :model.group/id
   :description "The Id of a conversation"

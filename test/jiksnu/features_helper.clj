@@ -1,25 +1,11 @@
 (ns jiksnu.features-helper
-  (:require [ciste.config :as c]
-            [ciste.core :as core]
-            [ciste.runner :as runner]
-            [ciste.sections.default :as sections]
-            [clj-webdriver.core :as webdriver]
-            [clj-webdriver.taxi :as taxi]
-            [clojure.data.json :as json]
+  (:require [clj-webdriver.taxi :as taxi]
             [taoensso.timbre :as timbre]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             jiksnu.factory
             [jiksnu.mock :refer [my-password]]
-            [jiksnu.model :as model]
             [jiksnu.referrant :refer [this that set-this set-that]]
-            [jiksnu.session :as session]
-            [slingshot.slingshot :refer [throw+ try+]])
-  (:import jiksnu.model.Domain
-           jiksnu.model.User))
+            [slingshot.slingshot :refer [throw+ try+]]))
 
 (def server (atom nil))
 (defonce loaded (atom false))

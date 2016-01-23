@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.webbitserver/webbit:0.4.14">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webbitserver/webbit/0.4.14/webbit-0.4.14.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

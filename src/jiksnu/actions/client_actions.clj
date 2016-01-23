@@ -1,11 +1,8 @@
 (ns jiksnu.actions.client-actions
   (:require [clojure.string :as string]
-            [jiksnu.actions.request-token-actions :as actions.request-token]
-            [jiksnu.model.client :as model.client]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.client-transforms :as transforms.client]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (def model-sym 'jiksnu.model.client)

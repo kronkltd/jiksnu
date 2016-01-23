@@ -1,13 +1,10 @@
 (ns jiksnu.modules.web.filters.auth-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.authentication-mechanism :as model.auth]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+]]
-            ))
+            [slingshot.slingshot :refer [throw+]]))
 
 (deffilter #'actions.auth/guest-login :http
   [action request]

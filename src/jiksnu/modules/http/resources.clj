@@ -1,6 +1,5 @@
 (ns jiksnu.modules.http.resources
-  (:require [jiksnu.util :as util]
-            [octohipster.core :as octo]
+  (:require [octohipster.core :as octo]
             [octohipster.routes :as octo-routes]
             [taoensso.timbre :as timbre]))
 

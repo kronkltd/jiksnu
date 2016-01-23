@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: scout:0.1.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/scout/scout/0.1.0/scout-0.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

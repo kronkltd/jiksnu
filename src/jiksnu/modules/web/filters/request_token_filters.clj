@@ -1,11 +1,9 @@
 (ns jiksnu.modules.web.filters.request-token-filters
   (:require [ciste.filters :refer [deffilter]]
             [clojure.data.json :as json]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.session :as session]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (deffilter #'actions.request-token/authorize :http

@@ -1,16 +1,10 @@
 (ns jiksnu.model.stream-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.factory :as factory]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.stream :as model.stream]
-            [jiksnu.model.user :as model.user]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [validateur.validation :refer [valid?]])
-  (:import jiksnu.model.User))
+            [validateur.validation :refer [valid?]]))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

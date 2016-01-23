@@ -1,6 +1,5 @@
 (ns jiksnu.actions.access-token-actions
   (:require [jiksnu.model.client :as model.client]
-            [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]

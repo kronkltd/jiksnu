@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: net.minidev/json-smart:1.1.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/minidev/json-smart/1.1.1/json-smart-1.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

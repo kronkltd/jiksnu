@@ -1,11 +1,8 @@
 (ns jiksnu.logger
   (:require [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             jiksnu.util
             [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]
-            [taoensso.timbre.profiling :as profiling]
-            [puget.printer :as puget]))
+            [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]))
 
 (defn simple-console-formatter
   [{:keys [level ?err_ vargs_ msg_ ?ns-str hostname_ timestamp_] :as data}]

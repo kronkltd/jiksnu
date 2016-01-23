@@ -1,22 +1,15 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section]]
-            [clojure.data.json :as json]
-            [jiksnu.actions.group-actions :as group]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.actions.user-actions :as user]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
                                                 path subpage-resource]]
-            [liberator.core :as lib]
-            [octohipster.mixins :as mixin])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Group
-           jiksnu.model.User))
+            [octohipster.mixins :as mixin]))
 
 (defparameter :model.user/id
   :description "The account Id of a user"

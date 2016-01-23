@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: clojurewerkz/support:0.20.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/clojurewerkz/support/0.20.0/support-0.20.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

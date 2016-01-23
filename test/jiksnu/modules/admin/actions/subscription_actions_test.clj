@@ -1,6 +1,5 @@
 (ns jiksnu.modules.admin.actions.subscription-actions-test
   (:require [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.modules.admin.actions.subscription-actions :refer [delete]]
             [jiksnu.test-helper :as th]

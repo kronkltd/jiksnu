@@ -1,18 +1,13 @@
 (ns jiksnu.model.feed-subscription
-  (:require [clj-time.core :as time]
-            [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
-            [monger.result :as result]
             [slingshot.slingshot :refer [throw+]]
-            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]])
-  (:import jiksnu.model.FeedSubscription
-           org.bson.types.ObjectId
-           org.joda.time.DateTime))
+            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]]))
 
 (def collection-name "feed_subscriptions")
 (def maker           #'model/map->FeedSubscription)

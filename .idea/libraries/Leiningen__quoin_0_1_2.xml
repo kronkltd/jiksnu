@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: quoin:0.1.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/quoin/quoin/0.1.2/quoin-0.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

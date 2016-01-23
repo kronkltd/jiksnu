@@ -1,8 +1,6 @@
 (ns jiksnu.modules.core.formats
   (:require [ciste.core :refer [with-format]]
-            [ciste.formats :refer [format-as]]
-            [clojure.data.json :as json]
-            [hiccup.core :as h]))
+            [ciste.formats :refer [format-as]]))
 
 (defmethod format-as :as
   [format request response]

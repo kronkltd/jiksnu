@@ -1,7 +1,5 @@
 (ns jiksnu.actions.group-actions
-  (:require [jiksnu.model :as model]
-            [jiksnu.model.group :as model.group]
-            [jiksnu.model.user :as model.user]
+  (:require [jiksnu.model.group :as model.group]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.group-transforms :as transforms.group]

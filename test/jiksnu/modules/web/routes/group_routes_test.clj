@@ -1,22 +1,15 @@
 (ns jiksnu.modules.web.routes.group-routes-test
-  (:require [ciste.model :as cm]
-            [ciste.sections.default :refer [uri]]
+  (:require [ciste.sections.default :refer [uri]]
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
-            [clojurewerkz.support.http.statuses :as status]
-            [hiccup.core :as h]
-            [jiksnu.actions.domain-actions :as actions.domain]
+            [clojure.tools.logging :as log]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.group :as model.group]
             jiksnu.modules.web.routes.group-routes
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]
-            [puget.printer :as puget]
             [ring.mock.request :as req]))
 
 (namespace-state-changes
@@ -34,7 +27,7 @@
   (let [params (factory :group)
         url (str "/model/groups")
         request (-> (req/request :post url)
-                    (req/body (json/json-str params))
+                    (req/body (log/spy :info (json/json-str params)))
                     (req/content-type "application/json"))
         response (response-for request)
         location (get-in response [:headers "Location"])]

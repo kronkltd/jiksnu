@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: mx4j/mx4j-tools:3.0.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/mx4j/mx4j-tools/3.0.1/mx4j-tools-3.0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

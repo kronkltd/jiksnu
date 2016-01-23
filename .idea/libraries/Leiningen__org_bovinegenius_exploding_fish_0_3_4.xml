@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.bovinegenius/exploding-fish:0.3.4">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bovinegenius/exploding-fish/0.3.4/exploding-fish-0.3.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

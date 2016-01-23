@@ -1,6 +1,5 @@
 (ns jiksnu.actions.stream-actions
-  (:require [cemerick.friend :as friend]
-            [ciste.commands :refer [parse-command]]
+  (:require [ciste.commands :refer [parse-command]]
             [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [show-section]]
             [clojure.data.json :as json]
@@ -8,19 +7,14 @@
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.channels :as ch]
             [jiksnu.model.stream :as model.stream]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.stream-transforms :as transforms.stream]
-            [jiksnu.util :as util]
-            [manifold.stream :as s]
             [slingshot.slingshot :refer [throw+ try+]]
-            [taoensso.timbre :as timbre])
-  (:import jiksnu.model.User))
+            [taoensso.timbre :as timbre]))
 
 ;; hooks
 

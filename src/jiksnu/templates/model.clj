@@ -1,20 +1,11 @@
 (ns jiksnu.templates.model
   (:require [ciste.event :refer [defkey notify]]
-            [clojure.data.json :as json]
-            [inflections.core :as inf]
             [jiksnu.db :refer [_db]]
-            [jiksnu.namespace :as ns]
             [jiksnu.util :as util]
             [monger.collection :as mc]
-            [monger.core :as mg]
             [monger.query :as mq]
             monger.json
-            [slingshot.slingshot :refer [throw+]])
-  (:import java.io.FileNotFoundException
-           java.text.SimpleDateFormat
-           java.util.Date
-           java.net.URL
-           org.bson.types.ObjectId))
+            [slingshot.slingshot :refer [throw+]]))
 
 (defkey ::collection-counted
   "when a collection is counted")

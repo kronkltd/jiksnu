@@ -1,6 +1,5 @@
 (ns jiksnu.modules.admin.views.worker-views
   (:require [ciste.views :refer [defview]]
-            [ciste.workers :as workers]
             [jiksnu.modules.admin.actions.worker-actions :as actions.worker]
             [jiksnu.modules.web.sections.worker-sections :as sections.worker]))
 

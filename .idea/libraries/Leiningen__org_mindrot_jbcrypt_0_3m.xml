@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.mindrot/jbcrypt:0.3m">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/mindrot/jbcrypt/0.3m/jbcrypt-0.3m.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

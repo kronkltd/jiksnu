@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: net.java.dev.jna/jna:3.4.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/java/dev/jna/jna/3.4.0/jna-3.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,8 +1,6 @@
 (ns jiksnu.modules.web.filters.domain-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]))
 

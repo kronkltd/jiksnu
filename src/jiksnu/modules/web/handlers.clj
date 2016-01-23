@@ -1,16 +1,11 @@
 (ns jiksnu.modules.web.handlers
   (:require [ciste.loader :refer [defhandler]]
-            [taoensso.timbre :as timbre]
             [jiksnu.handlers :as handler]
             ;; jiksnu.handlers.atom
             jiksnu.handlers.html
             jiksnu.handlers.xrd
             jiksnu.modules.web.formats
-            [jiksnu.modules.web.helpers :as helpers]
-            jiksnu.plugins.google-analytics
-            [jiksnu.registry :as registry]
-            [jiksnu.util :as util]
-            [manifold.time :as lt]))
+            jiksnu.plugins.google-analytics))
 
 
 (defhandler :print-actions

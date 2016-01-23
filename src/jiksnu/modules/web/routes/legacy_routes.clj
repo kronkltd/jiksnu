@@ -1,27 +1,7 @@
 (ns jiksnu.modules.web.routes.legacy-routes
-  (:require [jiksnu.actions.access-token-actions :as actions.access-token]
-            [ciste.commands :refer [add-command!]]
+  (:require [ciste.commands :refer [add-command!]]
             ;; [ciste.routes :refer [make-matchers]]
-            [jiksnu.modules.admin.actions.activity-actions :as admin.activity]
-            [jiksnu.modules.admin.actions.auth-actions :as admin.auth]
-            [jiksnu.modules.admin.actions.client-actions :as admin.client]
-            [jiksnu.modules.admin.actions.conversation-actions :as admin.conversation]
-            [jiksnu.modules.admin.actions.group-actions :as admin.group]
-            [jiksnu.modules.admin.actions.group-membership-actions :as admin.group-membership]
-            [jiksnu.modules.admin.actions.feed-source-actions :as admin.feed-source]
-            [jiksnu.modules.admin.actions.feed-subscription-actions :as admin.feed-subscription]
-            [jiksnu.modules.admin.actions.like-actions :as admin.like]
-            [jiksnu.modules.admin.actions.key-actions :as admin.key]
-            [jiksnu.modules.admin.actions.request-token-actions :as admin.request-token]
-            [jiksnu.modules.admin.actions.setting-actions :as admin.setting]
-            [jiksnu.modules.admin.actions.stream-actions :as admin.stream]
-            [jiksnu.modules.admin.actions.subscription-actions :as admin.sub]
-            [jiksnu.modules.admin.actions.user-actions :as admin.user]
-            [jiksnu.modules.admin.actions.worker-actions :as admin.worker]
-            [jiksnu.actions.comment-actions :as comment]
-            [jiksnu.actions :as actions]
-            [jiksnu.modules.web.actions.core-actions :as actions.web.core]
-            [jiksnu.actions.dialback-actions :as dialback]))
+            ))
 
 (defn routes
   []

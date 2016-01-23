@@ -1,19 +1,13 @@
 (ns jiksnu.actions.domain-actions
   (:require [ciste.config :refer [config]]
             [ciste.initializer :refer [definitializer]]
-            [clj-time.core :as time]
-            [clojure.data.json :as json]
-            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
-            [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]])
-  (:import java.net.URL
-           jiksnu.model.Domain))
+  (:import jiksnu.model.Domain))
 
 (defonce delete-hooks (ref []))
 

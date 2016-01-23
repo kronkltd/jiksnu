@@ -1,10 +1,7 @@
 (ns jiksnu.actions.group-membership-actions
-  (:require [clj-time.core :as time]
-            [jiksnu.model :as model]
-            [jiksnu.model.group-membership :as model.group-membership]
+  (:require [jiksnu.model.group-membership :as model.group-membership]
             [jiksnu.templates.actions :as templates.actions]
-            [jiksnu.transforms :as transforms])
-  (:import jiksnu.model.GroupMembership))
+            [jiksnu.transforms :as transforms]))
 
 (def model-ns 'jiksnu.model.group-membership)
 

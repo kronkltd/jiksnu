@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.mortbay.jetty/servlet-api-2.5:6.1.9">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.9/servlet-api-2.5-6.1.9.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.feed-subscription-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]

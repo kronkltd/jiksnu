@@ -1,21 +1,16 @@
 (ns jiksnu.actions.activity-actions
-  (:require [cemerick.friend :as friend]
-            [ciste.config :refer [config]]
+  (:require [ciste.config :refer [config]]
             [ciste.initializer :refer [definitializer]]
             [clojure.set :as set]
-            [clojure.string :as string]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
-            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
-            [jiksnu.util :as util]
             [manifold.bus :as bus]
-            [manifold.stream :as stream]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 

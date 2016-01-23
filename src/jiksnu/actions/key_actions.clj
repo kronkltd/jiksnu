@@ -1,6 +1,5 @@
 (ns jiksnu.actions.key-actions
-  (:require [jiksnu.model :as model]
-            [jiksnu.model.key :as model.key]
+  (:require [jiksnu.model.key :as model.key]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms])
   (:import jiksnu.model.User))

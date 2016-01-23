@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: enlive:1.1.6">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/enlive/enlive/1.1.6/enlive-1.1.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

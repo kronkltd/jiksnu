@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.sections.feed-source-sections
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [link-to]]
-            [taoensso.timbre :as timbre]
             [jiksnu.modules.web.sections :refer [action-link bind-to]]))
 
 (defn index-watchers

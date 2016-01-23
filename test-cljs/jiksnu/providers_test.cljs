@@ -1,7 +1,6 @@
 (ns jiksnu.providers-test
   (:require jiksnu.providers
-            [purnam.test :refer-macros [describe is it fact facts]]
-            [taoensso.timbre :as timbre]))
+            [purnam.test :refer-macros [describe is it fact facts]]))
 
 (declare $httpBackend)
 (declare app)

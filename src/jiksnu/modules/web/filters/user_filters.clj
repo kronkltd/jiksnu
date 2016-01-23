@@ -1,10 +1,8 @@
 (ns jiksnu.modules.web.filters.user-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]
-            [jiksnu.session :as session]
             [slingshot.slingshot :refer [throw+]]))
 
 (deffilter #'actions.user/add-stream :http

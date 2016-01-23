@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: clauth:1.0.0-rc17">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/clauth/clauth/1.0.0-rc17/clauth-1.0.0-rc17.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,15 +1,10 @@
 (ns jiksnu.modules.web.sections.user-sections-test
   (:require [ciste.core :refer [with-context with-format with-serialization]]
             [ciste.sections.default :refer [uri show-section title]]
-            [hiccup.core :as h]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.user :as model.user]
             [jiksnu.test-helper :as th]
             jiksnu.session
-            [midje.sweet :refer :all])
-  (:import jiksnu.model.User))
+            [midje.sweet :refer :all]))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

@@ -1,13 +1,9 @@
 (ns jiksnu.modules.web.routes.pubsub-routes-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]

@@ -1,5 +1,4 @@
-(ns jiksnu.actions.inbox-actions
-  (:require [jiksnu.model.item :as model.item]))
+(ns jiksnu.actions.inbox-actions)
 
 (defn index
   [user]

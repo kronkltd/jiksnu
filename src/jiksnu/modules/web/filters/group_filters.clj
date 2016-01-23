@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.filters.group-filters
   (:require [ciste.filters :refer [deffilter]]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]))

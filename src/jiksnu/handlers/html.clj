@@ -1,11 +1,8 @@
 (ns jiksnu.handlers.html
-  (:require [clj-time.core :as time]
-            [taoensso.timbre :as timbre]
+  (:require [taoensso.timbre :as timbre]
             [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
-            [net.cgrand.enlive-html :as enlive])
-  (:import jiksnu.model.Resource))
+            [net.cgrand.enlive-html :as enlive]))
 
 (defmethod actions.resource/process-response-content "text/html"
   [content-type item response]

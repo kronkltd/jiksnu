@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: inflections:0.9.14">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/inflections/inflections/0.9.14/inflections-0.9.14.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,7 +1,6 @@
 (ns jiksnu.actions.webfinger-actions
   (:require [ciste.model :as cm]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]

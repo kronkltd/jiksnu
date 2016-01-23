@@ -1,6 +1,5 @@
 (ns jiksnu.model.domain
   (:require [ciste.config :refer [config]]
-            [clojure.string :as string]
             [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
@@ -10,10 +9,7 @@
             [monger.collection :as mc]
             [monger.core :as mg]
             [slingshot.slingshot :refer [throw+]]
-            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]])
-  (:import jiksnu.model.Domain
-           org.bson.types.ObjectId
-           org.joda.time.DateTime))
+            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]]))
 
 (def collection-name "domains")
 (def maker           #'model/map->Domain)

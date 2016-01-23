@@ -1,8 +1,7 @@
 (ns jiksnu.modules.admin.actions.conversation-actions
-  (:use [ciste.core :only [defaction]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
             [jiksnu.actions.conversation-actions :as actions.conversation]
-            [jiksnu.model :as model]
             [jiksnu.templates.actions :as templates.actions]))
 
 (defaction create

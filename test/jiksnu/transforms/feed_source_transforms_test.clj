@@ -1,11 +1,8 @@
 (ns jiksnu.transforms.feed-source-transforms-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.service-actions :as actions.service]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.test-helper :as th]
             [jiksnu.transforms.feed-source-transforms :refer [set-domain]]
             [midje.sweet :refer :all]))

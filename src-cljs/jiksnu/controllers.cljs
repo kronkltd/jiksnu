@@ -3,7 +3,6 @@
             jiksnu.models
             [jiksnu.helpers :as helpers]
             jiksnu.services
-            [jiksnu.templates :as templates]
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.controller]]
                [jiksnu.macros :only [page-controller]]

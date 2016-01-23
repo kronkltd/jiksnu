@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/checkouts/ciste/ciste.iml" filepath="$PROJECT_DIR$/checkouts/ciste/ciste.iml" />
+      <module fileurl="file://$PROJECT_DIR$/checkouts/ciste-incubator/ciste-incubator.iml" filepath="$PROJECT_DIR$/checkouts/ciste-incubator/ciste-incubator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/checkouts/gyr/gyr.iml" filepath="$PROJECT_DIR$/checkouts/gyr/gyr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jiksnu.iml" filepath="$PROJECT_DIR$/jiksnu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/checkouts/jiksnu-command/jiksnu-command.iml" filepath="$PROJECT_DIR$/checkouts/jiksnu-command/jiksnu-command.iml" />
+      <module fileurl="file://$PROJECT_DIR$/checkouts/jiksnu-core/jiksnu-core.iml" filepath="$PROJECT_DIR$/checkouts/jiksnu-core/jiksnu-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/checkouts/octohipster/octohipster.iml" filepath="$PROJECT_DIR$/checkouts/octohipster/octohipster.iml" />
+      <module fileurl="file://$PROJECT_DIR$/checkouts/purnam/purnam.iml" filepath="$PROJECT_DIR$/checkouts/purnam/purnam.iml" />
+      <module fileurl="file://$PROJECT_DIR$/checkouts/timbre-logstash/timbre-logstash.iml" filepath="$PROJECT_DIR$/checkouts/timbre-logstash/timbre-logstash.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,13 +1,10 @@
 (ns jiksnu.modules.web.views.stream-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [index-section show-section]]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.model :as model]
             [jiksnu.modules.web.sections :refer [bind-to redirect with-sub-page]]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Conversation))
+  (:import jiksnu.model.Conversation))
 
 (defview #'actions.stream/create :html
   [request item]

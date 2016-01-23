@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.actions.core-actions
-  (:require [ciste.core :refer [defaction]]
-            [jiksnu.session :as session]))
+  (:require [ciste.core :refer [defaction]]))
 
 (defaction nav-info
   []

@@ -1,8 +1,7 @@
 (ns jiksnu.modules.http
   (:require [ciste.loader :refer [defmodule]]
             jiksnu.modules.core.formats
-            jiksnu.modules.core.views
-            [taoensso.timbre :as timbre]))
+            jiksnu.modules.core.views))
 
 (defn start
   []

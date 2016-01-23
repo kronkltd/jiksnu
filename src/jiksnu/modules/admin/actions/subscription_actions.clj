@@ -1,9 +1,7 @@
 (ns jiksnu.modules.admin.actions.subscription-actions
   (:require [ciste.model :as cm]
             [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.templates.actions :as templates.actions])
-  (:import javax.security.sasl.AuthenticationException))
+            [jiksnu.templates.actions :as templates.actions]))
 
 (defn create
   [params & options]

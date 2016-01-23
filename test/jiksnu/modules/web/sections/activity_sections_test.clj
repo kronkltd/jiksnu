@@ -1,8 +1,6 @@
 (ns jiksnu.modules.web.sections.activity-sections-test
   (:require [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [show-section uri]]
-            [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             jiksnu.modules.web.sections.activity-sections
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])

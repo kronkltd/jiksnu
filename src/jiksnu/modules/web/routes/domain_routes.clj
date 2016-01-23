@@ -1,15 +1,11 @@
 (ns jiksnu.modules.web.routes.domain-routes
-  (:require [clojure.data.json :as json]
-            [taoensso.timbre :as timbre]
+  (:require [taoensso.timbre :as timbre]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.modules.http.resources
-             :refer [defresource defgroup]]
+            [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers
-             :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
 
 

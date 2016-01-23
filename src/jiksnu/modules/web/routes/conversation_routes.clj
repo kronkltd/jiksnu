@@ -1,15 +1,10 @@
 (ns jiksnu.modules.web.routes.conversation-routes
-  (:require [clojure.data.json :as json]
-            [taoensso.timbre :as timbre]
-            [jiksnu.actions.activity-actions :as activity]
-            [jiksnu.actions.conversation-actions :as conversation]
-            jiksnu.modules.core.views.activity-views
+  (:require jiksnu.modules.core.views.activity-views
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path subpage-resource]]
-            [octohipster.mixins :as mixin])
-  (:import jiksnu.model.Conversation))
+            [octohipster.mixins :as mixin]))
 
 (defn get-conversation
   "Gets the item from context by id"
