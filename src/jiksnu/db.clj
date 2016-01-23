@@ -19,7 +19,7 @@
 (defn drop-all!
   "Drop all collections"
   []
-  ;(timbre/info "dropping all collections")
+  (timbre/info "dropping all collections")
   (db/drop-db @_db))
 
 (describe-config [:database :name]

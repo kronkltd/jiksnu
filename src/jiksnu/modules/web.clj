@@ -4,11 +4,12 @@
             jiksnu.modules.web.formats
             [jiksnu.modules.web.handlers :as handlers]
             [jiksnu.modules.web.helpers :as helpers]
-            [jiksnu.modules.web.core :refer [jiksnu-init]]))
+            [jiksnu.modules.web.core :refer [jiksnu-init]]
+            [taoensso.timbre :as timbre]))
 
 (defn start
   []
-  ;; (timbre/info "starting web")
+  (timbre/info "starting web")
   (handlers/init-handlers)
   (helpers/load-routes)
   (init-site-reloading! jiksnu-init)

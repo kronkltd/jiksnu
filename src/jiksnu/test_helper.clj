@@ -3,6 +3,7 @@
             [ciste.runner :refer [start-application! stop-application!]]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.db :as db]
             [jiksnu.referrant :as r]
             [midje.sweet :refer [=> =not=> fact future-fact throws]]
             [net.cgrand.enlive-html :as enlive]
@@ -45,7 +46,7 @@
    ;; (load-site-config)
    (set-environment! :test)
    (start-application! :test)
-   ;; (db/drop-all! )
+   (db/drop-all! )
    (dosync
     (ref-set r/this {})
     (ref-set r/that {}))
