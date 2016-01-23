@@ -1,6 +1,7 @@
 *.log
 .classpath
 .gems
+.idea
 .lein*
 .kitchen
 .project
