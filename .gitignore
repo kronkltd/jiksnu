@@ -28,3 +28,5 @@ repl
 deps.txt
 /TAGS
 /.vagrantuser
+/jiksnu.iml
+/.nrepl-port

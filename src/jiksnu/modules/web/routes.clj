@@ -44,6 +44,3 @@
       wrap-file-info
       wrap-content-type
       wrap-not-modified))
-
-(helpers/load-pages! 'jiksnu.modules.web.routes.pages)
-(helpers/load-sub-pages! 'jiksnu.modules.web.routes.pages)

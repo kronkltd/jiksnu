@@ -33,10 +33,12 @@
 
 (defn load-sub-pages!
   [route-sym]
-  (when-let [page-fn (try-resolve route-sym 'sub-pages)]
-    (when-let [matchers (page-fn)]
+  (if-let [page-fn (try-resolve route-sym 'sub-pages)]
+    (if-let [matchers (page-fn)]
       (dosync
-       (alter predicates/*sub-page-matchers* concat matchers)))))
+       (alter predicates/*sub-page-matchers* concat matchers))
+      (timbre/warn "No matchers returned"))
+    (timbre/warn "Could not load subpage function")))
 
 (defn load-routes!
   [route-sym]
