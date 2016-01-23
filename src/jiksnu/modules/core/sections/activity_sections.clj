@@ -12,31 +12,6 @@
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Activity))
 
-(defsection admin-index-block [Activity]
-  [items & [page]]
-  (map #(admin-index-line % page) items))
-
-(defsection admin-index-section [Activity]
-  [items & [page]]
-  (admin-index-block items page))
-
-(defsection index-block [Activity]
-  [items & [page]]
-  (doall (map #(index-line % page) items)))
-
-(defsection index-block [Activity :xml]
-  [activities & _]
-  [:statuses {:type "array"}
-   (map index-line activities)])
-
-(defsection index-line [Activity]
-  [activity & [page]]
-  (show-section activity page))
-
-(defsection index-section [Activity]
-  [items & [page]]
-  (index-block items page))
-
 (defsection show-section [Activity :twitter]
   [activity & _]
   (merge
@@ -59,12 +34,6 @@
      {:in_reply_to_status_id irt})
    (when-let [attachments (:attachments activity)]
      {:attachments attachments})))
-
-(defsection show-section [Activity :model]
-  [activity & [page]]
-
-  ;; (dissoc activity :links)
-  activity)
 
 (defsection show-section [Activity :xml]
   [activity & _]
@@ -95,11 +64,3 @@
     [:hashtags
      ;; TODO: list hashtags
      ]]])
-
-(defsection title [Activity]
-  [activity & options]
-  (:title activity))
-
-(defsection uri [Activity]
-  [activity & options]
-  (str "/notice/" (:_id activity)))

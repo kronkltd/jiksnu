@@ -5,7 +5,6 @@
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             jiksnu.modules.web.routes.stream-routes
-            jiksnu.modules.web.views.stream-views
             [jiksnu.test-helper :as th]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.util :as util]
@@ -16,7 +15,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact "route: streams-api/collection :post"
+(future-fact "route: streams-api/collection :post"
   (db/drop-all!)
   (let [params {:name (fseq :word)}
         actor (mock/a-user-exists)

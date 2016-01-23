@@ -2,7 +2,6 @@
   (:require [ciste.core :refer [serialize-as with-format]]
             [ciste.formats :refer [format-as]]
             [ciste.views :refer [defview]]
-            [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [link-to index-line edit-button]]
             [jiksnu.actions :as actions]))
 

@@ -23,12 +23,12 @@
     (contains
      {:status 200})))
 
-(facts "route: group-api/collection :post"
+(future-facts "route: group-api/collection :post"
   (let [params (factory :group)
-        url (str "/model/groups")
-        request (-> (req/request :post url)
-                    (req/body (log/spy :info (json/json-str params)))
-                    (req/content-type "application/json"))
+        url "/model/groups"
+        request (log/spy :info (-> (req/request :post url)
+                                   (req/body (log/spy :info (json/json-str params)))
+                                   (req/content-type "application/json")))
         response (response-for request)
         location (get-in response [:headers "Location"])]
     response => (contains {:status 303})

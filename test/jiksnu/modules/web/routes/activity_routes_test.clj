@@ -4,7 +4,6 @@
             [clojure.data.json :as json]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
-            jiksnu.modules.web.views.activity-views
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]

@@ -20,10 +20,6 @@
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
 
-(defsection show-section [Domain :model]
-  [item & [page]]
-  item)
-
 (defsection show-section [Domain :xrd]
   [item & [page]]
   (let [id (:_id item)]
@@ -40,9 +36,3 @@
                       (when template {:template template}))
          (when title [:Title title])])
       (:links item))]))
-
-;; uri
-
-(defsection uri [Domain]
-  [domain & _]
-  (str "/main/domains/" (:_id domain)))
