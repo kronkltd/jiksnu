@@ -59,9 +59,9 @@
   (try+
    (stop-application!)
    (catch Object ex
-     (println "error")
+     ;(println "error")
      (timbre/error ex)
-     #_(throw+ ex#))))
+     (throw+ ex))))
 
 (defmacro test-environment-fixture
   [& body]

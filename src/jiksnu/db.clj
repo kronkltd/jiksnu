@@ -19,7 +19,7 @@
 (defn drop-all!
   "Drop all collections"
   []
-  (timbre/info "dropping all collections")
+  ;(timbre/info "dropping all collections")
   (db/drop-db @_db))
 
 (describe-config [:database :name]
@@ -29,7 +29,7 @@
 (defn set-database!
   "Set the connection for mongo"
   []
-  (timbre/info (str "setting database for " (environment)))
+  ;(timbre/info (str "setting database for " (environment)))
   (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
   ;; TODO: pass connection options
   (let [conn (mg/connect)

@@ -6,7 +6,6 @@
             [jiksnu.modules.core.sections :refer [admin-index-line
                                                   admin-index-block
                                                   admin-index-section]]
-            [jiksnu.modules.core.sections.user-sections :as sections.core.user]
             [jiksnu.modules.web.sections :refer [action-link bind-to
                                                  control-line dropdown-menu
                                                  format-links]]
@@ -29,26 +28,6 @@
     [:rdf       "/api/statuses/public_timeline.rdf"]
     [:xml       "/api/statuses/public_timeline.xml"]]))
 
-(defn timeline-formats
-  [user]
-  (map
-   (fn [[f h]]
-     (let [def (format-links f)]
-       (merge def
-              {:href h})))
-   [[:json (sections.core.user/user-timeline-link user "json")]
-    [:atom (sections.core.user/user-timeline-link user "atom")]
-    [:as   (sections.core.user/user-timeline-link user "as")]
-    [:n3   (sections.core.user/user-timeline-link user "n3")]
-    [:rdf  (sections.core.user/user-timeline-link user "rdf")]
-    [:xml  (sections.core.user/user-timeline-link user "xml")]]))
-
-(defn like-button
-  [activity]
-  (action-link "activity" "like" (:_id activity)
-               {:title "Like"
-                :icon "heart"}))
-
 (declare posted-link-section)
 
 (defn show-comment
@@ -66,20 +45,10 @@
 
 ;; move to model
 
-(defn comment-button
-  [activity]
-  [:a {:href "#"}
-   [:i.icon-comment]
-   [:span.button-text "Comment"]])
-
 (defn model-button
   [activity]
   [:a {:href "/model/activities/{{activity.id}}.model" }
    "Model"])
-
-(defn links-section
-  [activity]
-  [:h3 "Links"])
 
 (defn maps-section
   [activity]

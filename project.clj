@@ -39,7 +39,7 @@
                  [manifold "0.1.1-alpha4"]
                  [mvxcvi/puget "0.9.2"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
-                 [net.kronkltd/jiksnu-command "0.1.0-SNAPSHOT"]
+                 #_[net.kronkltd/jiksnu-command "0.1.0-SNAPSHOT"]
                  [net.kronkltd/octohipster "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
                  [net.logstash.log4j/jsonevent-layout "1.7"]

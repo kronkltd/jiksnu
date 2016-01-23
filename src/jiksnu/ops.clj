@@ -1,5 +1,6 @@
 (ns jiksnu.ops
   (:require [jiksnu.channels :as ch]
+            jiksnu.model
             [manifold.deferred :as d]
             [manifold.stream :as s]
             [manifold.time :as time]
