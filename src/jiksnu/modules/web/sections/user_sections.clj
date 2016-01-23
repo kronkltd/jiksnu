@@ -2,11 +2,7 @@
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section title show-section edit-button link-to index-line
                                             show-section-minimal update-button index-block]]
-            [taoensso.timbre :as timbre]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
+             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.modules.core.sections :refer [admin-actions-section
                                                   admin-index-block
                                                   admin-index-line
@@ -16,10 +12,7 @@
                                                  control-line dropdown-menu]]
             [jiksnu.session :as session]
             [slingshot.slingshot :refer [try+]])
-  (:import jiksnu.model.Domain
-           jiksnu.model.FeedSource
-           jiksnu.model.Key
-           jiksnu.model.User))
+  (:import jiksnu.model.User))
 
 (defn discover-button
   [item]

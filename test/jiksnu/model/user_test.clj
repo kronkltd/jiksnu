@@ -3,14 +3,11 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :refer :all]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Domain
-           jiksnu.model.User))
+  (:import jiksnu.model.User))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

@@ -5,15 +5,10 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [monger.core :as mg]
-            [monger.query :as mq]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [acceptance-of
                                            presence-of
-                                           validation-set]])
-  (:import jiksnu.model.Conversation
-           org.bson.types.ObjectId
-           org.joda.time.DateTime))
+                                           validation-set]]))
 
 (def collection-name "conversations")
 (def maker #'model/map->Conversation)

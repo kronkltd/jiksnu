@@ -2,8 +2,6 @@
   (:require [ciste.filters :refer [deffilter]]
             [clojure.data.json :as json]
             [jiksnu.actions.request-token-actions :as actions.request-token]
-            [jiksnu.model.request-token :as model.request-token]
-            [jiksnu.session :as session]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (deffilter #'actions.request-token/get-request-token :http

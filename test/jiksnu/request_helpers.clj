@@ -5,8 +5,7 @@
                                            that-stream]]
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that]]
-            [manifold.stream :as s]
-            [ring.mock.request :as req]))
+            [manifold.stream :as s]))
 
 (defn request-oembed-resource
   []

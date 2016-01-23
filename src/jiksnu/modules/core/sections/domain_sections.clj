@@ -6,8 +6,7 @@
             [jiksnu.session :refer [current-user is-admin?]]
             [jiksnu.modules.core.sections :refer [admin-index-block
                                                   admin-index-line]]
-            [jiksnu.namespace :as ns]
-            [jiksnu.session :as session])
+            [jiksnu.namespace :as ns])
   (:import jiksnu.model.Domain))
 
 ;; admin-index-block

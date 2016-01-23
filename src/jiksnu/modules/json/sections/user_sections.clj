@@ -5,24 +5,11 @@
                                             index-line show-section-minimal
                                             update-button index-block
                                             index-section]]
-            [clojure.string :as string]
-            [hiccup.core :as h]
-            [hiccup.form :as f]
-            [inflections.core :as inf]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.key :as model.key]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-index-block
                                                   admin-index-line
                                                   admin-index-section
                                                   admin-show-section]]
             [jiksnu.modules.web.sections :refer [dropdown-menu]]
-            [jiksnu.namespace :as ns]
             [jiksnu.session :refer [current-user is-admin?]]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.User))

@@ -2,14 +2,10 @@
   (:require [ciste.model :as cm]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
-            [jiksnu.model.key :as model.key]
-            [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+ try+]])
-  (:import java.net.URI
-           jiksnu.model.FeedSource
-           jiksnu.model.User
+  (:import jiksnu.model.FeedSource
            nu.xom.Document))
 
 (def mappings {"xrd" ns/xrd})

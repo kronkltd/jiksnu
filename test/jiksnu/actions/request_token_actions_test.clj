@@ -1,13 +1,10 @@
 (ns jiksnu.actions.request-token-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.request-token-actions :as actions.request-token]
-            [jiksnu.factory :as factory]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.RequestToken
-           org.bson.types.ObjectId
-           ))
+  (:import jiksnu.model.RequestToken))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

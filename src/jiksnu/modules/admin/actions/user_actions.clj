@@ -2,8 +2,6 @@
   "This is the namespace for the admin pages for users"
   (:require [ciste.core :refer [defaction]]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]
-            [jiksnu.model.user :as model.user]
             [jiksnu.templates.actions :as templates.actions]))
 
 (defaction create

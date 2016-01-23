@@ -9,7 +9,6 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers
              :refer [angular-resource page-resource]]
-            [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (defgroup jiksnu client-api

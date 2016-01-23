@@ -2,7 +2,6 @@
   (:require [ciste.config :refer [config]]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.routes.helpers :as rh]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])

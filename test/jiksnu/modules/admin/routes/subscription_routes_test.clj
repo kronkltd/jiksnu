@@ -3,7 +3,6 @@
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-admin response-for]]
             [jiksnu.test-helper :as th]
-            [hiccup.core :as h]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 

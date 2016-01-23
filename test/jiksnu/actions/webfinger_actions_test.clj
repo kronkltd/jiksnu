@@ -4,8 +4,6 @@
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             jiksnu.factory
             [jiksnu.mock :as mock]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])

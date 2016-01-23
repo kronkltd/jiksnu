@@ -1,7 +1,6 @@
 (ns jiksnu.actions.client-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.client-actions :as actions.client]
-            [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Client))

@@ -16,7 +16,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.stream :as model.stream]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that set-this set-that this that]]

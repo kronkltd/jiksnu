@@ -2,12 +2,8 @@
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.mock :as mock]
-            [jiksnu.factory :as factory]
             [jiksnu.test-helper :as th]
-            [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [midje.sweet :refer :all]))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

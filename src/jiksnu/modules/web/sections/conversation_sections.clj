@@ -2,21 +2,10 @@
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section title index-line index-block
                                             index-line link-to update-button]]
-            [taoensso.timbre :as timbre]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.namespace :as ns]
             [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line]]
-            [jiksnu.modules.web.sections :refer [action-link bind-to dropdown-menu]]
-            [jiksnu.modules.web.sections.user-sections :as sections.user]
-            [jiksnu.session :as session])
-  (:import jiksnu.model.Conversation
-           jiksnu.model.Domain
-           jiksnu.model.FeedSource
-           jiksnu.model.User))
+            [jiksnu.modules.web.sections :refer [action-link bind-to dropdown-menu]])
+  (:import jiksnu.model.Domain
+           jiksnu.model.FeedSource))
 
 (defn show-details
   [item & [page]]

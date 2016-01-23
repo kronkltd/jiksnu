@@ -12,12 +12,9 @@
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [monger.query :as mq]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [acceptance-of validation-set presence-of]])
-  (:import java.net.URI
-           jiksnu.model.Domain
-           jiksnu.model.User))
+  (:import jiksnu.model.User))
 
 (def collection-name "users")
 (def default-page-size 20)

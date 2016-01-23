@@ -1,9 +1,7 @@
 (ns jiksnu.model.feed-source-test
   (:require [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.test-helper :as th]

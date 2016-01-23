@@ -3,16 +3,13 @@
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             jiksnu.modules.web.routes.auth-routes
             [jiksnu.routes-helper :refer [parse-cookie response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [puget.printer :as puget]
-            [ring.mock.request :as req])
-  (:import java.io.ByteArrayInputStream))
+            [ring.mock.request :as req]))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

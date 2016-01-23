@@ -4,14 +4,11 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
-            [monger.core :as mg]
             [monger.collection :as mc]
             [validateur.validation :refer [acceptance-of
                                            presence-of
                                            valid?
-                                           validation-set]])
-  (:import jiksnu.model.AuthenticationMechanism
-           org.bson.types.ObjectId))
+                                           validation-set]]))
 
 (def collection-name "authentication_mechanisms")
 

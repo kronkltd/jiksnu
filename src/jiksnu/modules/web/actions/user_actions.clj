@@ -2,28 +2,10 @@
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [ciste.initializer :refer [definitializer]]
-            [clojure.data.json :as json]
-            [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.key-actions :as actions.key]
-            [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.actions.webfinger-actions :as actions.webfinger]
-            [jiksnu.channels :as ch]
-            [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.namespace :as ns]
-            [jiksnu.ops :as ops]
-            [jiksnu.session :as session]
-            [jiksnu.templates.actions :as templates.actions]
-            [jiksnu.transforms :as transforms]
-            [jiksnu.transforms.user-transforms :as transforms.user]
-            [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+]])
-  (:import java.net.URI
-           jiksnu.model.User))
+            [slingshot.slingshot :refer [throw+]]))
 
 (defaction user-meta
   "returns a user matching the uri"

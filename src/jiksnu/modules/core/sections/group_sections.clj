@@ -2,7 +2,6 @@
   (:require [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section edit-button index-block index-line
                                             index-section show-section update-button]]
-            [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-show-section
                                                   admin-index-block
                                                   admin-index-line

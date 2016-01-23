@@ -3,8 +3,6 @@
             [ciste.runner :refer [start-application! stop-application!]]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.db :as db]
-            [jiksnu.model :as model]
             [jiksnu.referrant :as r]
             [midje.sweet :refer [=> =not=> fact future-fact throws]]
             [net.cgrand.enlive-html :as enlive]

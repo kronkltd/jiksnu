@@ -4,14 +4,9 @@
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
             [clojure.core.incubator :refer [dissoc-in]]
-            [clojure.data.json :as json]
             [jiksnu.channels :as ch]
-            [jiksnu.handlers :as handler]
             [jiksnu.predicates :as pred]
-            [jiksnu.templates.actions :as templates.actions]
-            [jiksnu.util :as util]
             [manifold.bus :as bus]
-            [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
 

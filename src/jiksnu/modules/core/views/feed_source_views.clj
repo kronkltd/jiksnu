@@ -2,11 +2,7 @@
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.modules.core.sections :refer [format-page-info]]
-            [ring.util.response :as response])
-  (:import jiksnu.model.FeedSource))
+            [jiksnu.modules.core.sections :refer [format-page-info]]))
 
 (defview #'actions.feed-source/index :page
   [request response]

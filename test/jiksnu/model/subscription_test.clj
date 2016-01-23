@@ -2,15 +2,12 @@
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer [=> after before fact facts
                                  namespace-state-changes throws]])
-  (:import jiksnu.model.User
-           jiksnu.model.Subscription))
+  (:import jiksnu.model.Subscription))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

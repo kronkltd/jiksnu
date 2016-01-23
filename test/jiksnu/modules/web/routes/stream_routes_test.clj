@@ -10,7 +10,6 @@
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]
-            [puget.printer :as puget]
             [ring.mock.request :as req]))
 
 (namespace-state-changes

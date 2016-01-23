@@ -2,7 +2,6 @@
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section]]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.core.sections :refer [format-page-info]]))
 
 (defview #'actions.domain/index :page

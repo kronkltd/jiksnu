@@ -4,9 +4,7 @@
             [ciste.views :refer [defview]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [link-to index-line edit-button]]
-            [clojure.data.json :as json]
-            [jiksnu.actions :as actions]
-            [jiksnu.model :as model]))
+            [jiksnu.actions :as actions]))
 
 (defn command-not-found
   []

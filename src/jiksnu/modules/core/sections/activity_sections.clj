@@ -4,13 +4,10 @@
                                             show-section-minimal
                                             show-section uri title index-block
                                             index-line index-section update-button]]
-            [clojure.string :as string]
             [hiccup.core :as h]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.namespace :as ns]
             [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block
                                                   admin-index-section ]]
-            [jiksnu.modules.core.sections.user-sections :as sections.user]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Activity))

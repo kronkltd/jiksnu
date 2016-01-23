@@ -6,13 +6,10 @@
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [monger.query :as mq]
             [net.cgrand.enlive-html :as enlive]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [validation-set presence-of acceptance-of]])
-  (:import java.io.StringReader
-           org.bson.types.ObjectId
-           org.joda.time.DateTime))
+  (:import java.io.StringReader))
 
 (def collection-name "resources")
 (def maker           #'model/map->Resource)

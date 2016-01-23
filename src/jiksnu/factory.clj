@@ -9,11 +9,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model :as model]))
 
 (defn domain-id
   []

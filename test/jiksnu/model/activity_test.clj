@@ -3,13 +3,11 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [validateur.validation :refer [valid?]])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+  (:import jiksnu.model.Activity))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

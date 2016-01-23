@@ -3,16 +3,6 @@
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section edit-button link-to uri title index-block
                                             index-line index-section update-button]]
-            [clojure.string :as string]
-            [taoensso.timbre :as timbre]
-            [hiccup.core :as h]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.comment-actions :as actions.comment]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.like :as model.like]
-            [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-index-line
                                                   admin-index-block
                                                   admin-index-section]]
@@ -21,9 +11,6 @@
                                                  control-line dropdown-menu
                                                  format-links]]
             [jiksnu.modules.web.sections.user-sections :as sections.web.user]
-            [jiksnu.namespace :as ns]
-            [jiksnu.session :as session]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Activity
            jiksnu.model.User))

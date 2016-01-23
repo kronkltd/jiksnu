@@ -2,15 +2,10 @@
   (:require [clj-factory.core :refer [factory fseq]]
             [ciste.model :as cm]
             [hiccup.core :as hiccup]
-            [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.webfinger :refer :all]
             [jiksnu.namespace :as ns]
-            [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
-            [midje.sweet :refer :all])
-  (:import jiksnu.model.User
-           nu.xom.Document))
+            [midje.sweet :refer :all]))
 
 (defn mock-xrd-with-username
   [username]

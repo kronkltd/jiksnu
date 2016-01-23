@@ -2,31 +2,22 @@
   (:require [ciste.loader :refer [require-namespaces]]
             [ciste.model :as cm]
             [clj-factory.core :refer [factory]]
-            [clj-time.core :as t]
             [clj-time.format :as f]
             [clojure.string :as string]
             [clojure.data.json :as json]
             [crypto.random :as random]
-            [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.registry :as registry]
             [manifold.deferred :as d]
-            [manifold.time :as time]
             monger.joda-time
             monger.json
             [org.bovinegenius.exploding-fish :as uri]
             [puget.printer :as puget]
             [ring.util.codec :as codec]
-            [slingshot.slingshot :refer [throw+ try+]]
-            [taoensso.timbre :as timbre])
-  (:import com.mongodb.WriteConcern
-           java.io.FileNotFoundException
-           java.io.PrintWriter
-           java.io.StringReader
+            [slingshot.slingshot :refer [throw+ try+]])
+  (:import java.io.PrintWriter
            java.net.InetAddress
-           java.net.InetSocketAddress
            java.net.Socket
-           java.net.URI
            java.net.URL
            java.text.SimpleDateFormat
            java.util.Date

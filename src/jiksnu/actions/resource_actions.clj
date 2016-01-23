@@ -4,7 +4,6 @@
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
-            [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]

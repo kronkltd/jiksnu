@@ -3,7 +3,6 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.test-helper :as th]
             [jiksnu.transforms.conversation-transforms :refer [set-update-source]]
             [jiksnu.util :as util]

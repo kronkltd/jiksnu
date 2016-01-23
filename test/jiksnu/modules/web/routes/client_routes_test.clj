@@ -2,21 +2,14 @@
   (:require [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.web.middleware :as m]
             jiksnu.modules.web.routes.client-routes
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]
-            [ring.util.codec :as codec])
-  (:import java.io.ByteArrayInputStream))
+            [ring.mock.request :as req]))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

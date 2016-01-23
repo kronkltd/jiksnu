@@ -2,20 +2,9 @@
   (:require [ciste.core :refer [apply-template]]
             [ciste.config :refer [config environment]]
             [clojure.string :as string]
-            [taoensso.timbre :as timbre]
-            [hiccup.core :as h]
             [hiccup.page :as p]
-            [jiksnu.actions.site-actions :as actions.site]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.modules.web.actions.core-actions :as actions.web.core]
             [jiksnu.modules.web.sections :refer [bind-to]]
-            [jiksnu.modules.web.sections.activity-sections :as sections.activity]
-            [jiksnu.modules.web.sections.auth-sections :as sections.auth]
-            [jiksnu.modules.web.sections.user-sections :as sections.user]
-            [jiksnu.namespace :as ns]
-            [jiksnu.session :as session])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+            [jiksnu.namespace :as ns]))
 
 (defn navigation-group
   [group]

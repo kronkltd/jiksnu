@@ -4,8 +4,6 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [monger.core :as mg]
-            [monger.query :as mq]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [acceptance-of presence-of valid? validation-set]]))
 

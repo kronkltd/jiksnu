@@ -5,21 +5,14 @@
                                             index-line show-section-minimal
                                             update-button index-block
                                             index-section]]
-            [clojure.string :as string]
             [hiccup.core :as h]
-            [inflections.core :as inf]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as ns]
             [jiksnu.modules.core.sections :refer [admin-index-block
                                                   admin-index-line
                                                   admin-index-section
                                                   admin-show-section]]
             [slingshot.slingshot :refer [try+]])
-  (:import jiksnu.model.Domain
-           jiksnu.model.FeedSource
-           jiksnu.model.Key
-           jiksnu.model.User))
+  (:import jiksnu.model.User))
 
 (defn user-timeline-link
   [user format]

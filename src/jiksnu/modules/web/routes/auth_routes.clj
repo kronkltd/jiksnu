@@ -6,8 +6,6 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
             [liberator.representation :refer [as-response ring-response]]
-            [octohipster.mixins :as mixin]
-            [puget.printer :as puget]
             [slingshot.slingshot :refer [try+]]
             [taoensso.timbre :as timbre]))
 

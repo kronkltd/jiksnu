@@ -3,7 +3,6 @@
             [ciste.commands :refer [add-command!]]
             [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section]]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.stream :as model.stream]
             [jiksnu.model.user :as model.user]
@@ -14,7 +13,6 @@
                                                 subpage-resource]]
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
-            [puget.printer :as puget]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
 

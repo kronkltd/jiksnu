@@ -6,9 +6,7 @@
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.factory :as factory]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
             [midje.sweet :refer :all])

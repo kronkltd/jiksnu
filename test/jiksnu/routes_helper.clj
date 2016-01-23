@@ -8,11 +8,9 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [manifold.time :as time]
-            [puget.printer :as puget]
             [ring.mock.request :as req]
             [ring.util.codec :as codec]
-            [slingshot.slingshot :refer [try+]])
-  (:import java.io.StringReader))
+            [slingshot.slingshot :refer [try+]]))
 
 (defn response-for
   "Run a request against the main handler and wait for the response"

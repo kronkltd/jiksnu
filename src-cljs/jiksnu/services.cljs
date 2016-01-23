@@ -1,6 +1,5 @@
 (ns jiksnu.services
-  (:require jiksnu.app
-            [taoensso.timbre :as timbre])
+  (:require jiksnu.app)
   (:use-macros [gyr.core :only [def.service]]))
 
 (def page-mappings

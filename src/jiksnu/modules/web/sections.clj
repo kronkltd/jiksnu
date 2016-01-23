@@ -3,8 +3,6 @@
             [ciste.sections.default :refer [edit-button index-block
                                             index-block-type index-line uri]]
             [clojure.string :as string]
-            [taoensso.timbre :as timbre]
-            [inflections.core :as inf]
             [ring.util.response :as response]))
 
 (def action-icons

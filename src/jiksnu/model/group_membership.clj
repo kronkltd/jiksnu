@@ -4,14 +4,8 @@
             [jiksnu.transforms :refer [set-_id set-created-time
                                        set-updated-time]]
             [jiksnu.validators :refer [type-of]]
-            [monger.core :as mg]
-            [monger.query :as mq]
-            [monger.result :as result]
             [slingshot.slingshot :refer [throw+]]
-            [validateur.validation :refer [validation-set presence-of]])
-  (:import jiksnu.model.Group
-           org.bson.types.ObjectId
-           org.joda.time.DateTime))
+            [validateur.validation :refer [validation-set presence-of]]))
 
 (def collection-name "group_memberships")
 (def maker           #'model/map->GroupMembership)

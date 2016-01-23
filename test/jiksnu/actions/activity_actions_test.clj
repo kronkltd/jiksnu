@@ -5,7 +5,6 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th]

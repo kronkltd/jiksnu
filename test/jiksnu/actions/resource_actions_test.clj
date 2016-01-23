@@ -2,10 +2,7 @@
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.db :as db]
-            [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [org.httpkit.client :as client])
   (:import jiksnu.model.Resource

@@ -1,11 +1,7 @@
 (ns jiksnu.modules.admin.routes.like-routes-test
   (:require [clj-factory.core :refer [factory]]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
-            [jiksnu.model.user :as model.user]
             [jiksnu.routes-helper :refer [as-admin response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]

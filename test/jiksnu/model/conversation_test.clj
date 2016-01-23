@@ -2,7 +2,6 @@
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.conversation :refer [count-records create delete drop!
                                                fetch-all fetch-by-id]]
             [jiksnu.test-helper :as th]

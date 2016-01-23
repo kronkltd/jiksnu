@@ -5,9 +5,7 @@
                                             index-section show-section
                                            title]]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.model :as model]
-            [jiksnu.modules.core.sections :refer [format-page-info]]
-            [jiksnu.namespace :as ns]))
+            [jiksnu.modules.core.sections :refer [format-page-info]]))
 
 ;; direct-message-timeline
 

@@ -13,10 +13,8 @@
             [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
-            [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
-            [manifold.deferred :as d]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Domain
            jiksnu.model.User))

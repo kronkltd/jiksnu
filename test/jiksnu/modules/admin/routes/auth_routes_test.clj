@@ -2,8 +2,6 @@
   (:require [clj-factory.core :refer [factory]]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]
-            [jiksnu.model.user :as model.user]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th]

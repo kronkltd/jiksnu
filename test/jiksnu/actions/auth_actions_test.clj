@@ -3,7 +3,6 @@
             [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.auth-actions :refer [add-password login]]
             [jiksnu.mock :as mock]
-            [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 

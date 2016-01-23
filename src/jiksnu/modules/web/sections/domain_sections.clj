@@ -3,12 +3,8 @@
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [actions-section add-form index-block index-line
                                             link-to uri]]
-            [taoensso.timbre :as timbre]
-            [jiksnu.namespace :as ns]
             [jiksnu.modules.web.sections :refer [action-link control-line
-                                                 dropdown-menu]]
-            [jiksnu.modules.web.sections.link-sections :as sections.link]
-            [jiksnu.session :as session])
+                                                 dropdown-menu]])
   (:import jiksnu.model.Domain))
 
 (defn favicon-link

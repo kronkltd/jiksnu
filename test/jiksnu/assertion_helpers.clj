@@ -7,7 +7,6 @@
                                            expand-url get-body
                                            page-names that-stream]]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-that get-this]]

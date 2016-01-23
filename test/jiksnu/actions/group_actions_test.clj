@@ -1,16 +1,10 @@
 (ns jiksnu.actions.group-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.group-actions :as actions.group]
-            [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.factory :as factory]
-            [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Domain
-           jiksnu.model.Group
-           nu.xom.Document))
+  (:import jiksnu.model.Group))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

@@ -5,10 +5,8 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-_id set-created-time set-updated-time]]
             [jiksnu.validators :refer [type-of]]
-            [monger.result :as result]
             [slingshot.slingshot :refer [throw+]]
-            [validateur.validation :refer [validation-set presence-of]])
-  (:import jiksnu.model.Like))
+            [validateur.validation :refer [validation-set presence-of]]))
 
 (def collection-name "likes")
 (def maker #'model/map->Like)

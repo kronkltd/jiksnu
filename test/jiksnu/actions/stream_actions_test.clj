@@ -1,19 +1,12 @@
 (ns jiksnu.actions.stream-actions-test
   (:require [ciste.sections.default :refer [index-section]]
             [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Conversation
-           org.bson.types.ObjectId))
+  (:import org.bson.types.ObjectId))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

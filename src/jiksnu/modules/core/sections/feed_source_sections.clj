@@ -3,13 +3,10 @@
             [ciste.sections.default :refer [actions-section show-section index-line index-block
                                             index-section link-to title
                                             update-button]]
-            [clojure.string :as string]
-            [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.sections :refer [admin-show-section
                                                   admin-index-block admin-index-line
                                                   admin-index-section]])
-  (:import jiksnu.model.FeedSource
-           jiksnu.model.User))
+  (:import jiksnu.model.FeedSource))
 
 (defsection admin-index-block [FeedSource]
   [items & [page]]

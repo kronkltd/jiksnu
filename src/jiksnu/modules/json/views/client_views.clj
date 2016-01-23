@@ -2,13 +2,7 @@
   (:require [ciste.config :refer [config]]
             [ciste.views :refer [defview]]
             [clj-time.coerce :as coerce]
-            [clojure.string :as string]
-            [taoensso.timbre :as timbre]
-            [jiksnu.actions.client-actions :as actions.client]
-            [jiksnu.namespace :as ns]
-            [jiksnu.model.webfinger :as model.webfinger]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.modules.web.sections.user-sections :as sections.user]))
+            [jiksnu.actions.client-actions :as actions.client]))
 
 (defview #'actions.client/register :json
   [request item]

@@ -3,7 +3,6 @@
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]

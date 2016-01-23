@@ -6,20 +6,15 @@
             [clojure.data.json :as json]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
-            [jiksnu.templates.actions :as templates.actions]
-            [jiksnu.transforms :as transforms]
-            [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
             [manifold.deferred :as d]
             [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre])
-  (:import java.net.URL
-           jiksnu.model.Domain))
+  (:import jiksnu.model.Domain))
 
 (defonce pending-discovers (ref {}))
 

@@ -9,7 +9,6 @@
 (use 'clj-webdriver.taxi)
 (use 'midje.sweet)
 (use 'jiksnu.referrant)
-(require '[jiksnu.model.activity :as model.activity])
 (alter-var-root #'cucumber.runtime.clj/-buildWorld
                 (fn [_]
                   (fn [_]

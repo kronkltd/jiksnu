@@ -5,7 +5,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]

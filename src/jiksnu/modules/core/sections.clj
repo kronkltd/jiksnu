@@ -3,7 +3,6 @@
             [ciste.sections :refer [declare-section defsection]]
             [ciste.sections.default :refer [edit-button full-uri index-block index-line index-section link-to
                                             show-section title uri]]
-            [clojure.string :as string]
             [inflections.core :as inf]))
 
 (declare-section admin-actions-section)

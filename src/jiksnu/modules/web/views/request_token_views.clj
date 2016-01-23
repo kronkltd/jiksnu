@@ -2,8 +2,7 @@
   (:require [ciste.sections.default :refer [link-to]]
             [ciste.views :refer [defview]]
             [clojure.string :as string]
-            [jiksnu.actions.request-token-actions :as actions.request-token]
-            [ring.util.response :as response]))
+            [jiksnu.actions.request-token-actions :as actions.request-token]))
 
 (defview #'actions.request-token/authorize :html
   [request token]
