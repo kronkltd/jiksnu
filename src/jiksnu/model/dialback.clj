@@ -2,9 +2,7 @@
   (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set presence-of]])
-  (:import org.bson.types.ObjectId
-           org.joda.time.DateTime))
+            [validateur.validation :refer [validation-set presence-of]]))
 
 (defonce page-size 20)
 (def collection-name "dialbacks")

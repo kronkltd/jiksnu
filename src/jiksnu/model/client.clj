@@ -2,8 +2,7 @@
   (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set]])
-  (:import org.joda.time.DateTime))
+            [validateur.validation :refer [validation-set]]))
 
 (def collection-name "clients")
 (def maker           #'model/map->Client)

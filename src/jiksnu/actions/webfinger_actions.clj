@@ -7,11 +7,7 @@
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
-  (:import java.net.URI
-           java.net.URL
-           jiksnu.model.Domain
-           jiksnu.model.User
-           nu.xom.Document))
+  (:import nu.xom.Document))
 
 (defn fetch-host-meta
   [url]

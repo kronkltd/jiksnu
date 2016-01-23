@@ -9,10 +9,7 @@
             [taoensso.timbre :as timbre]
             [validateur.validation :refer [acceptance-of presence-of
                                            validation-set]])
-  (:import java.net.URI
-           java.io.ByteArrayInputStream
-           java.io.InputStream
-           java.math.BigInteger
+  (:import java.math.BigInteger
            java.security.KeyFactory
            java.security.KeyPair
            java.security.KeyPairGenerator
@@ -25,8 +22,6 @@
            jiksnu.model.Key
            jiksnu.model.User
            org.apache.commons.codec.binary.Base64
-           org.apache.commons.io.output.ByteArrayOutputStream
-           org.apache.http.impl.client.DefaultHttpClient
            org.bson.types.ObjectId))
 
 (def collection-name "keys")
@@ -149,18 +144,15 @@
 (defn pair-hash
   "Convert keypair to a Key"
   [^KeyPair keypair]
-  (let [public-key (public-key keypair)
-        private-key (private-key keypair)]
-    {
-     :crt-coefficient  (encode (get-bytes (.getCrtCoefficient private-key)))
+  (let [private-key (private-key keypair)]
+    {:crt-coefficient  (encode (get-bytes (.getCrtCoefficient private-key)))
      :prime-exponent-p (encode (get-bytes (.getPrimeExponentP private-key)))
      :prime-exponent-q (encode (get-bytes (.getPrimeExponentQ private-key)))
      :prime-p          (encode (get-bytes (.getPrimeP private-key)))
      :prime-q          (encode (get-bytes (.getPrimeQ private-key)))
      :private-exponent (encode (get-bytes (.getPrivateExponent private-key)))
      :n                (encode (get-bytes (.getModulus private-key)))
-     :e                (encode (get-bytes (.getPublicExponent private-key)))
-     }))
+     :e                (encode (get-bytes (.getPublicExponent private-key)))}))
 
 ;; Make this an action
 (defn get-key-for-user-id
@@ -174,10 +166,7 @@
   [^User user]
   (if (:discovered user)
     (get-key-for-user-id (:_id user))
-    (try+
-     (throw+ {:message "user is not discovered"})
-     (catch Object ex
-             (throw+)))))
+    (throw+ {:message "user is not discovered"})))
 
 ;; TODO: this should accept a keypair hash
 (defn set-armored-key

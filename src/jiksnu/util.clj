@@ -22,10 +22,14 @@
            java.text.SimpleDateFormat
            java.util.Date
            java.util.UUID
-           org.bson.types.ObjectId
-           org.joda.time.DateTime
+           ObjectId
+           DateTime
            org.jsoup.Jsoup
-           org.jsoup.safety.Whitelist))
+           org.jsoup.safety.Whitelist
+           (java.util TimeZone)
+           (java.net InetSocketAddress)
+           (org.bson.types ObjectId)
+           (org.joda.time DateTime)))
 
 (defn new-id
   []
@@ -41,8 +45,8 @@
     String (DateTime/parse date)
     DateTime date
     Date (let [formatter (SimpleDateFormat. "yyyy-MM-dd'T'hh:mm:ss'Z'")]
-           (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
-           (.format formatter  date))
+           (.setTimeZone formatter (TimeZone/getTimeZone "UTC"))
+           (.format formatter date))
     date))
 
 (defn strip-namespaces
@@ -78,10 +82,10 @@
   [url options]
   (str url "?"
        (string/join
-        "&"
-        (map
-         (fn [[k v]] (str (name k) "=" v))
-         options))))
+         "&"
+         (map
+           (fn [[k v]] (str (name k) "=" v))
+           options))))
 
 (defn force-coll
   [x]
@@ -123,20 +127,20 @@
 (defn add-hook!
   [r f]
   (dosync
-   (alter r conj f)))
+    (alter r conj f)))
 
 ;; serializers
 
 (defn date->twitter
   [date]
   (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
-    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+    (.setTimeZone formatter (TimeZone/getTimeZone "UTC"))
     (.format formatter date)))
 
 (defn date->rfc1123
   [date]
   (let [formatter (SimpleDateFormat. "EEE, dd MMM yyyy HH:mm:ss 'GMT'")]
-    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+    (.setTimeZone formatter (TimeZone/getTimeZone "UTC"))
     (.format formatter date)))
 
 (defn write-json-date
@@ -168,10 +172,10 @@
   (let [{:keys [path scheme] :as uri} (uri/uri id)]
     (condp = scheme
       "acct" (second (split-uri id))
-      "urn"  (let [parts (string/split path #":")
-                   nid (nth parts 0)]
-               (condp = nid
-                 "X-dfrn" (nth parts 1)))
+      "urn" (let [parts (string/split path #":")
+                  nid (nth parts 0)]
+              (condp = nid
+                "X-dfrn" (nth parts 1)))
       (:host uri))))
 
 (defn parse-link
@@ -183,12 +187,12 @@
         lang (.getAttributeValue link "lang")
         title (if-let [title-element (.getFirstChildElement link "Title" ns/xrd)]
                 (.getValue title-element))]
-    (merge (when rel      {:rel rel})
+    (merge (when rel {:rel rel})
            (when template {:template template})
-           (when href     {:href href})
-           (when type     {:type type})
+           (when href {:href href})
+           (when type {:type type})
            (when title {:title title})
-           (when lang     {:lang lang}))))
+           (when lang {:lang lang}))))
 
 (defn sanitize
   [input]
@@ -228,13 +232,13 @@
   [host port]
   (let [socket (Socket.)]
     (try+
-     (let [address (InetAddress/getByName host)
-           socket-address (InetSocketAddress. address port)]
-       (.connect socket socket-address))
-     true
-     (catch Object ex false)
-     (finally
-       (.close socket)))))
+      (let [address (InetAddress/getByName host)
+            socket-address (InetSocketAddress. address port)]
+        (.connect socket socket-address))
+      true
+      (catch Object ex false)
+      (finally
+        (.close socket)))))
 
 (defn generate-token
   ([] (generate-token 16))
@@ -242,20 +246,17 @@
    (-> (random/base32 length)
        (string/replace #"\+" "-")
        (string/replace #"/" "_")
-       (string/replace #"=" "")
-       )
-
-   ))
+       (string/replace #"=" ""))))
 
 (def time-handlers
-  {org.bson.types.ObjectId
+  {ObjectId
    (puget/tagged-handler
-    'ObjectId
-    (partial str))
-   org.joda.time.DateTime
+     'ObjectId
+     (partial str))
+   DateTime
    (puget/tagged-handler
-    'inst
-    (partial f/unparse (f/formatters :date-time)))})
+     'inst
+     (partial f/unparse (f/formatters :date-time)))})
 
 (defn inspect
   "Prints a display of the passed value"

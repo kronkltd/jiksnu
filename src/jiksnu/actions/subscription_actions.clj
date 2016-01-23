@@ -15,9 +15,7 @@
             [manifold.bus :as bus]
             [manifold.stream :as s]
             [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre])
-  (:import jiksnu.model.Subscription
-           jiksnu.model.User))
+            [taoensso.timbre :as timbre]))
 
 (defonce delete-hooks (ref []))
 

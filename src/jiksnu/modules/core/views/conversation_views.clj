@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.views.conversation-views
   (:require [ciste.views :refer [defview]]
-            [jiksnu.actions.conversation-actions :as actions.conversation])
-  (:import jiksnu.model.Conversation))
+            [jiksnu.actions.conversation-actions :as actions.conversation]))
 
 (defview #'actions.conversation/fetch-by-group :page
   [request {:keys [items] :as page}]

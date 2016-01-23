@@ -2,9 +2,7 @@
   (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set]])
-  (:import org.joda.time.DateTime
-           org.bson.types.ObjectId))
+            [validateur.validation :refer [validation-set]]))
 
 (def collection-name "request-tokens")
 (def maker           #'model/map->RequestToken)

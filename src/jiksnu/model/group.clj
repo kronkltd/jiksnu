@@ -4,9 +4,7 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [validateur.validation :refer [validation-set presence-of]])
-  (:import org.bson.types.ObjectId
-           org.joda.time.DateTime))
+            [validateur.validation :refer [validation-set presence-of]]))
 
 (def collection-name "groups")
 (def maker           #'model/map->Group)

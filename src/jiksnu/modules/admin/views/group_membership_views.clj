@@ -1,8 +1,7 @@
 (ns jiksnu.modules.admin.views.group-membership-views
   (:require [ciste.views :refer [defview]]
             [jiksnu.modules.admin.actions.group-membership-actions :refer [index]]
-            [jiksnu.modules.core.sections :refer [admin-index-section]])
-  (:import jiksnu.model.GroupMembership))
+            [jiksnu.modules.core.sections :refer [admin-index-section]]))
 
 (defview #'index :html
   [request {:keys [items] :as page}]
