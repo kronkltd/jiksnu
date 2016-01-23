@@ -3,14 +3,14 @@
             [clj-factory.core :refer [factory fseq]]
             [clj-http.cookies :as cookies]
             [clojure.string :as string]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [manifold.time :as time]
             [ring.mock.request :as req]
             [ring.util.codec :as codec]
-            [slingshot.slingshot :refer [try+]]))
+            [slingshot.slingshot :refer [try+]]
+            [taoensso.timbre :as timbre]))
 
 (defn response-for
   "Run a request against the main handler and wait for the response"

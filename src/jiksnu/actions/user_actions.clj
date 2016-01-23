@@ -256,7 +256,7 @@
 
 (defn update-record
   "Update the user's activities and information."
-  [^User user params]
+  [^User user _]
   (if-let [source-id (:update-source user)]
     (invoke-action "feed-source" "update" (str source-id))
     (timbre/warn "user does not have an update source"))

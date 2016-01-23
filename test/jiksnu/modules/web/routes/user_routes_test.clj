@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.user-routes-test
   (:require [clojurewerkz.support.http.statuses :as status]
-            jiksnu.modules.web.views.user-views
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]

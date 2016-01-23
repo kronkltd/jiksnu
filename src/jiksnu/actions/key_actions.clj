@@ -23,7 +23,7 @@
 
 (defn create
   "Create a new key record"
-  [params options]
+  [params _]
   (let [params (prepare-create params)]
     (model.key/create params)))
 

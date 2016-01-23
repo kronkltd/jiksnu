@@ -34,7 +34,7 @@
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
 
 (defn find-record
-  [options & args]
+  [options & _]
   (if-let [item (mc/find-one-as-map @_db collection-name options)]
     (maker item)))
 

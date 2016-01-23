@@ -22,8 +22,6 @@
            java.text.SimpleDateFormat
            java.util.Date
            java.util.UUID
-           ObjectId
-           DateTime
            org.jsoup.Jsoup
            org.jsoup.safety.Whitelist
            (java.util TimeZone)

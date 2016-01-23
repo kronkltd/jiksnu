@@ -102,7 +102,7 @@
          get-identifiers
          (keep (comp first util/split-uri))
          first)
-    (catch Throwable ex
+    (catch Throwable _
       ;; FIXME: Handle errors
       )))
 

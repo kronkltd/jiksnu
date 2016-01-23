@@ -18,7 +18,7 @@
     (model.like/create item)))
 
 (defn admin-index
-  [request]
+  [_]
   (model.like/fetch-all {} {:limit 20}))
 
 (defn delete
