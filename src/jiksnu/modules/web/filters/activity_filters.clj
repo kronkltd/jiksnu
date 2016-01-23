@@ -5,8 +5,6 @@
             [jiksnu.model.activity :as model.activity]
             [slingshot.slingshot :refer [try+]]))
 
-;; delete
-
 (deffilter #'actions.activity/delete :http
   [action request]
   (if-let [id (try+ (-> request :params :id)
@@ -15,22 +13,6 @@
                       ))]
     (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
-
-;; edit
-
-(deffilter #'actions.activity/edit :http
-  [action request]
-  (-> request :params action))
-
-;; oembed
-
-(deffilter #'actions.activity/oembed :http
-  [action request]
-  (let [url (get-in request [:params :url])]
-    (if-let [activity (model.activity/fetch-by-remote-id url)]
-      (action activity))))
-
-;; post
 
 (deffilter #'actions.activity/post :http
   [action request]
@@ -46,10 +28,3 @@
                            ))
                     (into {}))]
     (action params)))
-
-;; show
-
-(deffilter #'actions.activity/show :http
-  [action request]
-  (-> request :params :id
-      model.activity/fetch-by-id action))
