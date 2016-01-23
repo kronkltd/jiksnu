@@ -276,7 +276,8 @@
   [& options]
   (let [stream (actions.stream/create
                 (factory :stream {:owner (or (:user options)
-                                             (:_id (get-this :user)))}))]
+                                             (:_id (get-this :user)))})
+                {})]
     (set-this :stream stream)
     stream))
 

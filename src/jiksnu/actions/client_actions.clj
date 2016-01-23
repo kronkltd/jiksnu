@@ -1,5 +1,6 @@
 (ns jiksnu.actions.client-actions
   (:require [clojure.string :as string]
+            jiksnu.model.client
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.client-transforms :as transforms.client]
@@ -21,8 +22,7 @@
       transforms.client/set-secret
       transforms.client/set-expiry
       transforms/set-created-time
-      transforms/set-updated-time
-      ))
+      transforms/set-updated-time))
 
 (defn prepare-delete
   ([item]
@@ -67,7 +67,6 @@
                    (string/split contacts #" "))
         type (:application_type params)
         title (:application_name params)
-        logo_url (:logo_url params)
         redirect_uris (when-let [redirect-uris (:redirect_uris params)]
                         (string/split redirect-uris #" "))]
     ;; TODO: validate contacts
