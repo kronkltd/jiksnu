@@ -49,8 +49,6 @@
     (mock/there-is-an-activity {:stream stream})
 
     (let [response (response-for request)]
-      (util/inspect response)
-
       ;; (json/read-string (:body response)) => {}
       response  => (contains {:status 200}))))
 
@@ -80,15 +78,3 @@
             as-user response-for) =>
         (contains {:status status/success?
                    :body string?})))))
-
-(future-fact "user timeline"
-  (fact "html"
-    (let [user (mock/a-user-exists)]
-      (dotimes [n 10]
-        (mock/there-is-an-activity {:user user}))
-
-      (let [response (-> (req/request :get (format "/%s" (:username user)))
-                         as-user response-for)]
-        response => map?
-        (:status response) => status/success?
-        (:body response) => string?))))

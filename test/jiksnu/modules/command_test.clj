@@ -36,27 +36,26 @@
         ch (d/deferred)
         type "user"]
 
-    (fact "when the record is not found"
+    (future-fact "when the record is not found"
       (let [request {:format :json
                      :channel ch
                      :name command
                      :args [type "acct:foo@bar.baz"]}]
-        (+ 2 2) => 4
-        #_(let [response (actions.stream/handle-message request)]
-            (let [m (json/read-str response)]
-              (get m "action") => "error"))))
+        (let [response (parse-command request)]
+          (let [m (json/read-str response)]
+            (get m "action") => "error"))))
 
     (fact "when the record is found"
       (let [user (mock/a-user-exists)
             request {:channel ch
                      :name command
                      :format :json
-                     :args [type (:_id user)]}]
-        #_(let [response (actions.stream/handle-message request)]
-            (let [m (json/read-str response)]
-              (get m "action") => "model-updated"))))))
+                     :args (list "user" (:_id user))}
+            response (parse-command request)
+            m (json/read-str (:body response))]
+        (get m "action") => "model-updated"))))
 
-(future-fact "command 'get-page clients'"
+(fact "command 'get-page clients'"
   (let [name "get-page"
         args '("clients")]
     (fact "when there are clients"

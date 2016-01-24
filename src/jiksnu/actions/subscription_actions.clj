@@ -145,7 +145,6 @@
 
 (defn handle-follow-activity
   [activity]
-  (util/inspect activity)
   (let [{:keys [verb]} activity]
     (condp = verb
       "follow"

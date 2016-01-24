@@ -54,8 +54,6 @@
           uri (factory/make-uri domain-name "/users/1")
           params {:_id uri}
           params2 (assoc params :domain domain-name)]
-      (util/inspect params)
-
       (actions.user/get-username-from-http-uri params) =>
       (contains {:username username})
       (provided
@@ -174,20 +172,16 @@
 
         (fact "when the domain has an xrd endpoint"
           (db/drop-all!)
-          (util/inspect params)
           (let [domain (actions.domain/find-or-create
                         (factory :domain
                                  {:_id domain-name
                                   :xrdTemplate xrd-template
                                   :discovered true}))]
-            (util/inspect domain)
-
             (model.domain/set-field! domain :xrdTemplate xrd-template)
             (actions.domain/add-link domain {:rel "xrd" :template xrd-template})
 
 
             (fact "when the username can be determined"
-              (util/inspect params)
               (actions.user/find-or-create params) => (partial instance? User)
 
               #_(provided

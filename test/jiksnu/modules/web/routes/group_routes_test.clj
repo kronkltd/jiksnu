@@ -35,7 +35,6 @@
     (let [request2 (req/request :get location)
           response2 (response-for request2)]
       response2 => (contains {:status 200})
-      (util/inspect (:body response2))
       (let [body (json/read-str (:body response2))]
         body => (contains {"name" (:name params)})))))
 
@@ -54,7 +53,6 @@
           request (-> (req/request :delete url)
                       (as-user user))
           response (response-for request)]
-      (util/inspect group)
       response => (contains {:status 200})
       (model.group/fetch-by-id (:_id group)) => nil)))
 

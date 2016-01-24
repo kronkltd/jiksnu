@@ -36,10 +36,6 @@
   [& options]
   (apply index* options))
 
-(defn find-by-user
-  [user]
-  (index {:author (:_id user)}))
-
 (defn prepare-create
   [activity]
   (-> activity
@@ -228,9 +224,15 @@
    (timbre/infof "Fetching activities by stream: %s" id)
    (index {:streams (str id)} options)))
 
+(defn fetch-by-user
+  ([user]
+    (fetch-by-user user nil))
+  ([user options]
+   (index {:author (:_id user)} options)))
+
 (defn handle-delete-hook
   [user]
-  (doseq [activity (:items (find-by-user user))]
+  (doseq [activity (:items (fetch-by-user user))]
     (delete activity))
   user)
 

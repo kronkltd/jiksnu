@@ -61,7 +61,6 @@
     (let [subscription (mock/a-subscription-exists)
           actor (model.subscription/get-actor subscription)]
       (let [response (actions.subscription/get-subscriptions actor)]
-        (util/inspect response)
         (first response) => actor
         (first (next response)) => (contains
                               {:totalItems pos?

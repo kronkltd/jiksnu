@@ -156,15 +156,14 @@
   [params & [options]]
   (timbre/info "fetching xrd")
   (if-let [domain (get-domain params)]
-    (do (util/inspect params)
-        (if-let [url (model.domain/get-xrd-url domain (:_id params))]
-          (when-let [xrd (:body @(ops/update-resource url options))]
-            (let [doc (cm/string->document xrd)
-                  username (model.webfinger/get-username-from-xrd doc)]
-              (merge params
-                     (parse-xrd doc)
-                     {:username username})))
-          (timbre/warn "could not determine xrd url")))
+    (if-let [url (model.domain/get-xrd-url domain (:_id params))]
+      (when-let [xrd (:body @(ops/update-resource url options))]
+        (let [doc (cm/string->document xrd)
+              username (model.webfinger/get-username-from-xrd doc)]
+          (merge params
+                 (parse-xrd doc)
+                 {:username username})))
+      (timbre/warn "could not determine xrd url"))
     (throw+ "could not determine domain name")))
 
 ;; TODO: Collect all changes and update the user once.
@@ -182,8 +181,6 @@
 
 (defn get-username-from-http-uri
   [{id :_id username :username :as params} & [options]]
-  (timbre/info "HTTP(S) URI")
-  (util/inspect id)
   (if-let [username (some-> id URI. .getUserInfo)]
     (do
       (timbre/debugf "Username from uri: %s" username)

@@ -40,7 +40,7 @@
 (defn sub-pages
   []
   [
-   [{:type User :name "activities"}         {:action #'stream/user-timeline}]
+   [{:type User :name "activities"}         {:action #'activity/fetch-by-user}]
    [{:type User :name "subscriptions"}      {:action #'subscription/get-subscriptions}]
    [{:type User :name "subscribers"}        {:action #'subscription/get-subscribers}]
    [{:type User :name "streams"}            {:action #'stream/fetch-by-user}]

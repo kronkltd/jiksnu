@@ -6,7 +6,6 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.item :as model.item]
-            [jiksnu.util :as util]
             [manifold.stream :as s]))
 
 (defn filter-activity-create
@@ -16,7 +15,6 @@
 (defn create-trigger
   [m]
   (when-let [activity (:records m)]
-    (util/inspect activity)
     (let [author (model.activity/get-author activity)]
 
       ;; Add item to author's stream
@@ -24,8 +22,7 @@
 
       (when-let [id (:conversation activity)]
         (when-let [conversation (model.conversation/fetch-by-id id)]
-          (actions.conversation/add-activity conversation activity)))
-      )))
+          (actions.conversation/add-activity conversation activity))))))
 
 (defn init-receivers
   []

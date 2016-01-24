@@ -15,7 +15,7 @@
   (let [model-ns (symbol (str "jiksnu.model." model-name))]
     (require model-ns)
     (let [fetcher (ns-resolve model-ns 'fetch-by-id)]
-      ;; (timbre/debugf "getting model %s(%s)" model-name id)
+      (timbre/debugf "getting model %s(%s)" model-name id)
       (fetcher id))))
 
 (defn get-page-ids

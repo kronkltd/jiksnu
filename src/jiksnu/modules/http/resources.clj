@@ -63,7 +63,6 @@
 (defmacro defresource
   [group resource-name & {:as options}]
   #_(timbre/debugf "defining resource: %s(%s) =>" group resource-name)
-  #_(util/inspect options)
   `(add-resource! (var ~group) ~resource-name (octo/resource ~(assoc options :name resource-name))))
 
 (defmacro defgroup

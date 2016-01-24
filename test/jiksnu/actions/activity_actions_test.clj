@@ -54,7 +54,7 @@
     (db/drop-all!)
     (let [user (mock/a-user-exists)
           activity (mock/there-is-an-activity {:user user})]
-      (actions.activity/find-by-user user) =>
+      (actions.activity/fetch-by-user user) =>
       (contains {:totalItems 1
                  :items (has every? #(instance? ObjectId %))}))))
 

@@ -30,7 +30,8 @@
   [action request]
   (let [[model-name id] (:args request)]
     (or (action model-name id)
-        (throw+ "Model not found"))))
+        {:error "model not found"}
+        #_(throw+ "Model not found"))))
 
 (deffilter #'actions/get-page :command
   [action request]

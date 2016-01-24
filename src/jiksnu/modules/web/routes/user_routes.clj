@@ -9,7 +9,8 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
                                                 path subpage-resource]]
-            [octohipster.mixins :as mixin]))
+            [octohipster.mixins :as mixin]
+            [jiksnu.util :as util]))
 
 (defparameter :model.user/id
   :description "The account Id of a user"
@@ -111,9 +112,9 @@
   :ns 'jiksnu.actions.user-actions)
 
 (defresource users-api :item
-  :desc "Resource routes for single User"
   :url "/{_id}"
   :name "user routes"
+  :description "Resource routes for single User"
   :mixins [mixin/item-resource]
   :parameters {:_id (path :model.user/id)}
   :available-media-types ["application/json"]
@@ -123,23 +124,27 @@
                (when-let [user (model.user/fetch-by-id id)]
                  {:data user}))))
 
+(defresource users-api :activities
+  :url "/{_id}/activities"
+  :name "user activities"
+  :description "Activities of {{username}}"
+  :mixins [subpage-resource]
+  :target-model "user"
+  :subpage "activities"
+  :parameters  {:_id  (path :model.user/id)}
+  :available-formats [:json]
+  :presenter (fn [rsp]  rsp))
+
 (defresource users-api :groups
   :url "/{_id}/groups"
   :name "user groups"
-  :mixins [subpage-resource]
-  :parameters  {:_id  (path :model.user/id)}
-  :subpage "groups"
-  :target-model "user"
   :description "Groups of {{username}}"
+  :mixins [subpage-resource]
+  :target-model "user"
+  :subpage "groups"
+  :parameters  {:_id  (path :model.user/id)}
   :available-formats [:json]
-  :presenter (fn [rsp]
-               (with-context [:http :json]
-                 (let [page (:body rsp)
-                       items (:items page)]
-                   (-> (if (seq items)
-                         (-> (index-section items page))
-                         {})
-                       (assoc :displayName "Groups"))))))
+  :presenter :body)
 
 (defresource users-api :followers
   :url "/{_id}/followers"
@@ -165,12 +170,13 @@
 
 (defresource users-api :streams
   :url "/{_id}/streams"
-  :mixins [subpage-resource]
-  :parameters {:_id (path :model.user/id)}
-  :subpage "streams"
-  :target-model "user"
-  :available-media-types ["application/json"]
+  :name "User Streams"
   :description "Streams of {{username}}"
+  :mixins [subpage-resource]
+  :target-model "user"
+  :subpage "streams"
+  :parameters {:_id (path :model.user/id)}
+  :available-media-types ["application/json"]
   :available-formats [:json]
   :exists? (fn [ctx]
                (when-let [user (some-> ctx :request :route-params

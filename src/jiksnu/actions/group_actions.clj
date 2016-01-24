@@ -52,9 +52,7 @@
 
 (defn delete
   [group]
-  ;(timbre/info "Deleting group")
-  ;(util/inspect group)
-  (log/spy :info (model.group/delete group)))
+  (model.group/delete group))
 
 (defn edit-page
   [group]

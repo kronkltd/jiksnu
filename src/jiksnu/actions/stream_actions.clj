@@ -74,7 +74,7 @@
    (add-stream user name {}))
   ([user stream-name options]
    (create {:user (:_id user)
-            :name stream-name})))
+            :name stream-name} nil)))
 
 (defn inbox-major
   [user & [options]]
@@ -111,7 +111,7 @@
 
 (defn user-timeline
   [user]
-  [user (actions.activity/find-by-user user)])
+  [user (actions.activity/fetch-by-user user)])
 
 (defn outbox
   [user]

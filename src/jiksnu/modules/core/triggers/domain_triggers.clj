@@ -5,7 +5,8 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.ops :as ops]
             [manifold.bus :as bus]
-            [manifold.stream :as s]))
+            [manifold.stream :as s]
+            [taoensso.timbre :as timbre]))
 
 (defn- handle-pending-get-domain*
   [domain-name]
@@ -16,7 +17,7 @@
   (try
     (actions.service/get-discovered domain id options)
     (catch Exception ex
-      (println "can't discover"))))
+      (timbre/error "Can't discover" ex))))
 
 (def handle-pending-get-domain     (ops/op-handler handle-pending-get-domain*))
 (def handle-pending-get-discovered (ops/op-handler handle-pending-get-discovered*))

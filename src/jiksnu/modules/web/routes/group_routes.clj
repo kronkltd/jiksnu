@@ -70,7 +70,6 @@
   :available-media-types ["application/json"]
   :presenter (partial into {})
   :delete! (fn [ctx]
-             #_(util/inspect ctx)
              (when-let [user (some-> ctx :username model.user/get-user)]
                (if-let [item (:data ctx)]
                  (actions.group/delete item)
