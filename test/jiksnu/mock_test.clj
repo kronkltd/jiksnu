@@ -1,6 +1,5 @@
 (ns jiksnu.mock-test
-  (:require [clj-factory.core :refer [fseq]]
-            [jiksnu.mock :as mock]
+  (:require [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer [=> after before fact
                                  namespace-state-changes]])

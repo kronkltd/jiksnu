@@ -1,5 +1,5 @@
 (ns jiksnu.transforms.activity-transforms-test
-  (:require [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory]]
             [jiksnu.mock :as mock]
             [jiksnu.transforms.activity-transforms :refer [set-recipients]]
             [jiksnu.test-helper :as th]

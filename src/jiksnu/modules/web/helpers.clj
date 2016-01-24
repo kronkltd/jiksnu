@@ -11,7 +11,8 @@
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
-  (:import java.io.PushbackReader))
+  (:import java.io.PushbackReader
+           (java.io FileNotFoundException)))
 
 (defn not-found-msg
   []
@@ -38,7 +39,7 @@
       (dosync
        (alter predicates/*sub-page-matchers* concat matchers))
       (timbre/warn "No matchers returned"))
-    (timbre/warn "Could not load subpage function")))
+    #_(timbre/warn "Could not load subpage function")))
 
 (defn load-routes!
   [route-sym]
@@ -53,17 +54,19 @@
 (defn load-group
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
-    (try
-      (require route-sym)
-      (timbre/with-context {:sym (str route-sym)}
-        (timbre/debugf "Loading route group - %s" route-sym))
-      (load-pages! route-sym)
-      (load-sub-pages! route-sym)
-      (trigger-on-loaded! route-sym)
-      (load-routes! route-sym)
-      (catch Exception ex
-        #_(timbre/error ex)
-        #_(throw+ ex)))))
+    (if (try (require route-sym) true (catch FileNotFoundException _ nil))
+      (do
+        (timbre/with-context {:sym (str route-sym)}
+                             (timbre/debugf "Loading route group - %s" route-sym))
+        (try
+          (load-pages! route-sym)
+          (load-sub-pages! route-sym)
+          (trigger-on-loaded! route-sym)
+          (load-routes! route-sym)
+          (catch Exception ex
+            (timbre/error "Failed to load routes" ex)
+            (throw+ ex))))
+      (timbre/warnf "Could not require group - %s" group))))
 
 (defn load-routes
   []

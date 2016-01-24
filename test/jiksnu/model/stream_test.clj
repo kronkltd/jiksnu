@@ -1,5 +1,5 @@
 (ns jiksnu.model.stream-test
-  (:require [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory]]
             [jiksnu.mock :as mock]
             [jiksnu.model.stream :as model.stream]
             [jiksnu.test-helper :as th]

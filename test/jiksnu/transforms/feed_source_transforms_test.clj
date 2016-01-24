@@ -1,5 +1,5 @@
 (ns jiksnu.transforms.feed-source-transforms-test
-  (:require [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory]]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]

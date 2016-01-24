@@ -1,6 +1,5 @@
 (ns jiksnu.actions.key-actions-test
-  (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.key-actions :as actions.key]
+  (:require [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 

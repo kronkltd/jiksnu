@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.conversation-routes-test
   (:require [ciste.sections.default :refer [full-uri]]
-            [clj-factory.core :refer [fseq]]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]

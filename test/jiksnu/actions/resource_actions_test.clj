@@ -1,5 +1,5 @@
 (ns jiksnu.actions.resource-actions-test
-  (:require [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory]]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.db :as db]
             [jiksnu.test-helper :as th]

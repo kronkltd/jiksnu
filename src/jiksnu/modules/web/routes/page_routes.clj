@@ -1,6 +1,7 @@
 (ns jiksnu.modules.web.routes.page-routes
   (:require [jiksnu.modules.http.resources :refer [defresource defgroup]]
             jiksnu.modules.web.actions.page-actions
+            [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             ))
 

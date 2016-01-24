@@ -1,7 +1,7 @@
 (ns jiksnu.modules.command-test
   (:require [ciste.commands :refer [parse-command]]
             [ciste.core :refer [with-context]]
-            [clj-factory.core :refer [factory fseq]]
+            [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.stream-actions :as actions.stream]

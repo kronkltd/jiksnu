@@ -1,6 +1,5 @@
 (ns jiksnu.ops-test
-  (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.mock :as mock]
+  (:require [jiksnu.mock :as mock]
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])

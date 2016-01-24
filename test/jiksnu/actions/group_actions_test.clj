@@ -1,5 +1,5 @@
 (ns jiksnu.actions.group-actions-test
-  (:require [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory]]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model.group :as model.group]
             [jiksnu.test-helper :as th]
