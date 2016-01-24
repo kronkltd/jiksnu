@@ -6,7 +6,7 @@
   #_[:p "{{stream.owner}}"]
   [:show-user-minimal {:data-id "{{stream.owner}}"}]
   [:div
-   [:h2 "Activities"]
+   [:h2 "Activities" [:button.btn.pull-right {:ng-click "$parent.refresh()"} "Refresh"]]
    [:subpage {:name "activities" :item "stream" :title "show-stream activities-subpage"}
     [:div {:ng-if "!loaded"} [:spinner]]
     [:div {:ng-if "loaded"}

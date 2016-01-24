@@ -17,6 +17,7 @@
 
 (def subpage-mappings
   {"Conversation" {"activities" (fn [parent] (str "/model/conversations/" (.-_id parent) "/activities"))}
+   "Stream" {"activities" (fn [parent] (str "/model/streams/" (.-_id parent) "/activities"))}
    "User" {"activities" (fn [parent] (str "/model/users/" (.-_id parent) "/activities"))
            "following"  (fn [parent] (str "/model/users/" (.-_id parent) "/following"))
            "followers"  (fn [parent] (str "/model/users/" (.-_id parent) "/followers"))
