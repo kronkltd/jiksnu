@@ -19,4 +19,4 @@
   [:list-followers {:item "user"}]
   [:list-following {:item "user"}]
   [:list-groups    {:item "user"}]
-  #_[:list-activities {:item "user"}]]]
+  [:list-activities {:item "user"}]]]

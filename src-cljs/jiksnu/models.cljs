@@ -18,7 +18,8 @@
   (.defineResource
    DS
    #js
-   {:name "activities"}))
+   {:name "activities"
+    :methods #js {:getType (constantly "Activity")}}))
 
 (def.factory jiksnu.Conversations
   [DS subpageService]
@@ -30,7 +31,8 @@
     :deserialize deserializer
     :methods
     #js
-    {:getActivities (fn [] (this-as item (.fetch subpageService item "activities")))}}))
+    {:getActivities (fn [] (this-as item (.fetch subpageService item "activities")))
+     :getType (constantly "Conversation")}}))
 
 
 (def.factory jiksnu.Domains
@@ -40,7 +42,8 @@
    #js
    {:name "domains"
     :endpoint "domains"
-    :deserialize deserializer}))
+    :deserialize deserializer
+    :methods #js {:getType (constantly "Domain")}}))
 
 (def.factory jiksnu.Followings
   [DS subpageService]
@@ -49,7 +52,8 @@
    #js
    {:name "followings"
     :endpoint "followings"
-    :deserialize deserializer}))
+    :deserialize deserializer
+    :methods #js {:getType (constantly "Following")}}))
 
 (def.factory jiksnu.Groups
   [DS subpageService]
@@ -58,21 +62,24 @@
    #js
    {:name "groups"
     :endpoint "groups"
-    :deserialize deserializer}))
+    :deserialize deserializer
+    :methods #js {:getType (constantly "Group")}}))
 
 (def.factory jiksnu.Streams
   [DS]
   (.defineResource
    DS
    #js
-   {:name "streams"}))
+   {:name "streams"
+    :methods #js {:getType (constantly "Stream")}}))
 
 (def.factory jiksnu.Subscriptions
   [DS]
   (.defineResource
    DS
    #js
-   {:name "subscriptions"}))
+   {:name "subscriptions"
+    :methods #js {:getType (constantly "Subscription")}}))
 
 (def.factory jiksnu.Users
   [DS subpageService]
@@ -84,7 +91,8 @@
     :deserialize deserializer
     :methods
     #js
-    {:getSubpage   (fn [page-name] (this-as item (.fetch subpageService item page-name)))
+    {:getType      (constantly "User")
+     :getSubpage   (fn [page-name] (this-as item (.fetch subpageService item page-name)))
      :getFollowers (fn [] (this-as item (.fetch subpageService item "followers")))
      :getFollowing (fn [] (this-as item (.fetch subpageService item "following")))
      :getGroups    (fn [] (this-as item (.fetch subpageService item "groups")))

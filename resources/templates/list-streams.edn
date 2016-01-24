@@ -1,5 +1,7 @@
 [:div {:title "list-streams"}
- [:h3 "Streams" [:button.btn.pull-right {:ng-click "toggle()"} "{{btnLabel}}"]]
+ [:h3 "Streams"
+  [:button.btn {:ng-click "toggle()"} "{{btnLabel}}"]
+  [:button.btn.pull-right {:ng-click "$parent.refresh()"} "Refresh"]]
  [:form {:ng-submit "addStream()" :name "addStreamForm" :ng-show "formShown"}
   [:debug {:expr "stream"}]
   [:input {:ng-model "stream.userId" :name "user" :type "hidden"}]
@@ -7,7 +9,6 @@
   [:input.btn.btn-default {:type "submit"}]]
  [:subpage {:name "streams" :item "item"}
   [:debug {:expr "$parent.page"}]
-  [:button.btn {:ng-click "$parent.refresh()"} "Refresh"]
   [:div {:ng-if "!$parent.loaded"} [:spinner]]
   [:div {:ng-if "$parent.loaded"}
    [:table.table

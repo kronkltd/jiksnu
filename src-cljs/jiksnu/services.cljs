@@ -16,11 +16,12 @@
    })
 
 (def subpage-mappings
-  {"activities" (fn [parent] (str "/model/conversations/" (.-_id parent) "/activities"))
-   "following"  (fn [parent] (str "/model/users/" (.-_id parent) "/following"))
-   "followers"  (fn [parent] (str "/model/users/" (.-_id parent) "/followers"))
-   "groups"     (fn [parent] (str "/model/users/" (.-_id parent) "/groups"))
-   "streams"    (fn [parent] (str "/model/users/" (.-_id parent) "/streams"))})
+  {"Conversation" {"activities" (fn [parent] (str "/model/conversations/" (.-_id parent) "/activities"))}
+   "User" {"activities" (fn [parent] (str "/model/users/" (.-_id parent) "/activities"))
+           "following"  (fn [parent] (str "/model/users/" (.-_id parent) "/following"))
+           "followers"  (fn [parent] (str "/model/users/" (.-_id parent) "/followers"))
+           "groups"     (fn [parent] (str "/model/users/" (.-_id parent) "/groups"))
+           "streams"    (fn [parent] (str "/model/users/" (.-_id parent) "/streams"))}})
 
 (def.service jiksnu.pageService
   [$q $http]
@@ -44,8 +45,9 @@
   (let [service #js {}]
     (set! (.-fetch service)
           (fn [parent page-name]
-            (let [d (.defer $q)]
-              (if-let [mapping-fn (get subpage-mappings page-name)]
+            (let [type (.getType parent)
+                  d (.defer $q)]
+              (if-let [mapping-fn (get-in subpage-mappings [type page-name])]
                 (let [url (mapping-fn parent)]
                   #_(timbre/debug "url" url parent)
                   (-> $http

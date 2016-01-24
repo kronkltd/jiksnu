@@ -1,5 +1,5 @@
 [:div {:title "list-activities"}
- [:h3 "Activities" [:button.btn {:ng-click "refresh()"} "Refresh"]]
+ [:h3 "Activities" [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
  [:subpage {:name "activities" :item "item" :title "list-activities activities-subpage"}
   [:debug {:expr "$parent.page"}]
   [:div {:ng-if "!$parent.loaded"} [:spinner]]
