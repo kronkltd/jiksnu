@@ -36,7 +36,7 @@
 
 (defn get-page
   [page-name & args]
-  ;; (timbre/debugf "Getting page: %s" page-name)
+  (timbre/debugf "Getting page: %s" page-name)
   (let [request {:format :page
                  :serialization :page
                  :name page-name

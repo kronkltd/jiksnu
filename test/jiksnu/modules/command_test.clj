@@ -15,7 +15,7 @@
  [(before :facts (th/setup-testing))
   (after :facts (th/stop-testing))])
 
-(future-fact "command 'get-page streams'"
+(fact "command 'get-page streams'"
   (let [name "get-page"
         args '("streams")
         ch (d/deferred)
@@ -30,7 +30,6 @@
       body => string?
       (let [response-obj (json/read-str body)]
         response-obj => map?))))
-
 
 (facts "command 'get-model user'"
   (let [command "get-model"
@@ -55,15 +54,11 @@
                      :args [type (:_id user)]}]
         #_(let [response (actions.stream/handle-message request)]
           (let [m (json/read-str response)]
-            (get m "action") => "model-updated"))))
+            (get m "action") => "model-updated"))))))
 
-    ))
-
-
-(future-fact "parse command 'get-page clients'"
+(future-fact "command 'get-page clients'"
   (let [name "get-page"
         args '("clients")]
-
     (fact "when there are clients"
       (let [client (mock/a-client-exists)]
         (let [ch (d/deferred)
@@ -75,6 +70,5 @@
             response => map?
             (let [body (:body response)]
               (let [json-obj (json/read-str body :key-fn keyword)]
-                json-obj => map?))))))
-    ))
+                json-obj => map?))))))))
 

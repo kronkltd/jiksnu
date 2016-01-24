@@ -42,7 +42,7 @@
    "stream"
    "subscription"
    "user"
-
+   "page"
    "access-token"
    "comment"
    "confirm"
