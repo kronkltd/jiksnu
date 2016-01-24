@@ -62,36 +62,19 @@
   :url "/{_id}"
   :parameters {:_id (path :model.group/id)}
   :authorized? (fn [ctx]
-                 (let [method (get-in ctx [:request :request-method])]
-                   (if (#{:delete} method)
-                     (if-let [username (get-in ctx [:request :session :cemerick.friend/identity :current])]
-                       (do
-                         (util/inspect username)
-                         {:username username})
-                       (do
-                         (timbre/warn "not authorized")
-                         false))
-                     (do
-                       (timbre/debug "unauthenticated method")
-                       true))))
+                 (if (#{:delete} (get-in ctx [:request :request-method]))
+                   (when-let [username (get-in ctx [:request :session :cemerick.friend/identity :current])]
+                     {:username username})
+                   {:username nil}))
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :presenter (partial into {})
   :delete! (fn [ctx]
              #_(util/inspect ctx)
-             (if-let [user (some-> ctx :username model.user/get-user)]
-               (do
-                 (if-let [item (:data ctx)]
-                   (actions.group/delete item)
-                   (throw+ "No data")))
-               (do
-                 (timbre/warn "No auth")
-                 (ring-response (as-response {:data "No auth"} ctx) {:status 401})
-                 nil)))
-
-             ;#'actions.group/delete
+             (when-let [user (some-> ctx :username model.user/get-user)]
+               (if-let [item (:data ctx)]
+                 (actions.group/delete item)
+                 (throw+ "No data"))))
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)]
-               {:data (model.group/fetch-by-id id)}))
-
-             )
+               {:data (model.group/fetch-by-id id)})))
