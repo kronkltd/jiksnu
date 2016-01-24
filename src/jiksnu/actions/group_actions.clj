@@ -4,7 +4,10 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.group-transforms :as transforms.group]
             [jiksnu.templates.actions :as templates.actions]
-            [slingshot.slingshot :refer [throw+]])
+            [slingshot.slingshot :refer [throw+]]
+            [jiksnu.util :as util]
+            [clojure.tools.logging :as log]
+            [taoensso.timbre :as timbre])
   (:import jiksnu.model.Group))
 
 (defn prepare-create
@@ -49,7 +52,9 @@
 
 (defn delete
   [group]
-  (model.group/delete group))
+  ;(timbre/info "Deleting group")
+  ;(util/inspect group)
+  (log/spy :info (model.group/delete group)))
 
 (defn edit-page
   [group]

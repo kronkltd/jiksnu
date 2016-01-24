@@ -23,22 +23,23 @@
     (contains
      {:status 200})))
 
-(future-facts "route: group-api/collection :post"
+(facts "route: group-api/collection :post"
   (let [params (factory :group)
         url "/model/groups"
-        request (log/spy :info (-> (req/request :post url)
-                                   (req/body (log/spy :info (json/json-str params)))
-                                   (req/content-type "application/json")))
+        request (-> (req/request :post url)
+                    (req/body (json/json-str params))
+                    (req/content-type "application/json"))
         response (response-for request)
         location (get-in response [:headers "Location"])]
     response => (contains {:status 303})
     (let [request2 (req/request :get location)
-          response2 (response-for request2)
-          body (json/read-str (:body response2))]
+          response2 (response-for request2)]
       response2 => (contains {:status 200})
-      body => (contains {"name" (:name params)}))))
+      (util/inspect (:body response2))
+      (let [body (json/read-str (:body response2))]
+        body => (contains {"name" (:name params)})))))
 
-(future-facts "route: group-api/item :delete"
+(facts "route: group-api/item :delete"
   (fact "when not authenticated"
     (let [group (mock/a-group-exists)
           url (str "/model/groups/" (:_id group))
@@ -54,7 +55,7 @@
                       (as-user user))
           response (response-for request)]
       (util/inspect group)
-      response => (contains {:status 401})
+      response => (contains {:status 200})
       (model.group/fetch-by-id (:_id group)) => nil)))
 
 (facts "route: group-api/item :get"
