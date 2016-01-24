@@ -43,8 +43,8 @@
                      :args [type "acct:foo@bar.baz"]}]
         (+ 2 2) => 4
         #_(let [response (actions.stream/handle-message request)]
-          (let [m (json/read-str response)]
-            (get m "action") => "error"))))
+            (let [m (json/read-str response)]
+              (get m "action") => "error"))))
 
     (fact "when the record is found"
       (let [user (mock/a-user-exists)
@@ -53,8 +53,8 @@
                      :format :json
                      :args [type (:_id user)]}]
         #_(let [response (actions.stream/handle-message request)]
-          (let [m (json/read-str response)]
-            (get m "action") => "model-updated"))))))
+            (let [m (json/read-str response)]
+              (get m "action") => "model-updated"))))))
 
 (future-fact "command 'get-page clients'"
   (let [name "get-page"
@@ -71,4 +71,3 @@
             (let [body (:body response)]
               (let [json-obj (json/read-str body :key-fn keyword)]
                 json-obj => map?))))))))
-
