@@ -82,21 +82,22 @@
           (let [d (.defer $q)]
             (if-let [user (.-item $scope)]
               (-> (.getUser app)
-                  (.then (fn [actor]
-                           (-> (.getFollowing actor)
-                               (.then (fn [page]
-                                        (js/console.log "page" page)
-                                        (-> (->> (.-items page)
-                                                 (map #(.find Subscriptions %))
-                                                 clj->js
-                                                 (.all $q))
-                                            (.then (fn [subscriptions]
-                                                     (let [s (some (fn [subscription]
-                                                                     (= (.-to subscription)
-                                                                        (.-_id user)))
-                                                                   subscriptions)]
-                                                       (js/console.log "s" s)
-                                                       (.resolve d s)))))))))))
+                  (.then
+                    (fn [actor]
+                      (-> (.getFollowing actor)
+                          (.then
+                            (fn [page]
+                              (js/console.log "page" page)
+                              (-> (->> (.-items page)
+                                       (map #(.find Subscriptions %))
+                                       clj->js
+                                       (.all $q))
+                                  (.then
+                                    (fn [subscriptions]
+                                      (let [s (some #(= (.-to %) (.-_id user))
+                                                    subscriptions)]
+                                        (js/console.log "s" s)
+                                        (.resolve d s)))))))))))
               (do
                 (timbre/warn "No item bound to scope")
                 (.resolve d nil)))
