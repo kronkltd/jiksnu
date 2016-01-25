@@ -35,6 +35,31 @@
            (set! $q _$q_)
            (set! injections #js {:$scope $scope :app app}))]))
 
+  (describe {:doc "FollowButtonController"}
+    (let [item-id "acct:foo@example.com"
+          controller-name "FollowButtonController"]
+      (describe {:doc "isActor"}
+        (describe {:doc "When not authenticated"}
+          (it "should return false"
+            (@$controller controller-name injections)
+            (set! (.-item $scope) #js {:_id item-id})
+            (is (.isActor $scope) false)))
+        (describe {:doc "When authenticated"}
+          (describe {:doc "As another user"}
+            (it "should return false"
+              (@$controller controller-name injections)
+              (set! (.-domain (.-data app)) "example.com")
+              (set! (.-user (.-data app)) "bar")
+              (set! (.-item $scope) #js {:_id item-id})
+              (is (.isActor $scope) false)))
+          (describe {:doc "As the actor"}
+            (it "should return true"
+              (@$controller controller-name injections)
+              (set! (.-domain (.-data app)) "example.com")
+              (set! (.-user (.-data app)) "foo")
+              (set! (.-item $scope) #js {:_id item-id})
+              (is (.isActor $scope) true)))))))
+
   (describe {:doc nav-bar-controller}
     (js/beforeEach
      (fn []

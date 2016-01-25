@@ -48,35 +48,58 @@
 (def refresh-followers "refresh-followers")
 
 (def.controller jiksnu.FollowButtonController
-  [$scope app $q $rootScope]
+  [$scope app $q $rootScope Subscriptions]
   (set! (.-app $scope) app)
   (set! (.-loaded $scope) false)
 
+  (set! (.-isActor $scope)
+        (fn []
+          (if-let [item-id (.-_id (.-item $scope))]
+            (if-let [user-id (.getUserId app)]
+              (do
+                (set! (.-authenticated $scope) true)
+                (= item-id user-id))
+              (do
+                (set! (.-authenticated $scope) false)
+                false))
+            (throw "No item bound to scope"))))
+
   (set! (.-init $scope)
         (fn []
-          (set! (.-loaded $scope) false)
-          (when-let [d (.isFollowing $scope)]
-            (.then d (fn [following]
-                       (set! (.-following $scope) following)
-                       (set! (.-followLabel $scope) (if (.-following $scope) "Unfollow" "Follow"))
-                       (set! (.-loaded $scope) true))))))
+          (let [actor (.isActor $scope)]
+            (set! (.-actor $scope) actor)
+            (when-not actor
+              (-> (.isFollowing $scope)
+                  (.then (fn [following]
+                           (set! (.-following $scope) following)
+                           (set! (.-followLabel $scope)
+                                 (if (.-following $scope) "Unfollow" "Follow"))
+                           (set! (.-loaded $scope) true))))))))
 
   (set! (.-isFollowing $scope)
         (fn []
-          (let [actor-id (.getUserId app)
-                user (.-item $scope)
-                user-id (.-_id user)
-                some-follower (fn [fs] (some #(= (.-from %) actor-id) (.-items fs)))]
-            (if (not= actor-id user-id)
-              (let [d (.getFollowers user)]
-                (.then d some-follower))
-              (.resolve (.defer $q) nil)))))
-
-  (set! (.-isActor $scope)
-        (fn []
-          (when-let [user (.-user app)]
-            (= (.-_id (.-item $scope))
-               (.-_id user)))))
+          (let [d (.defer $q)]
+            (if-let [user (.-item $scope)]
+              (-> (.getUser app)
+                  (.then (fn [actor]
+                           (-> (.getFollowing actor)
+                               (.then (fn [page]
+                                        (js/console.log "page" page)
+                                        (-> (->> (.-items page)
+                                                 (map #(.find Subscriptions %))
+                                                 clj->js
+                                                 (.all $q))
+                                            (.then (fn [subscriptions]
+                                                     (let [s (some (fn [subscription]
+                                                                     (= (.-to subscription)
+                                                                        (.-_id user)))
+                                                                   subscriptions)]
+                                                       (js/console.log "s" s)
+                                                       (.resolve d s)))))))))))
+              (do
+                (timbre/warn "No item bound to scope")
+                (.resolve d nil)))
+            (.-promise d))))
 
   (set! (.-submit $scope)
         (fn []
@@ -88,9 +111,10 @@
                          (.init $scope)
                          (.$broadcast $rootScope refresh-followers)))))))
 
-  (.$on $scope refresh-followers (.-init $scope))
-
-  (.init $scope))
+  (.$watch $scope
+           (fn [] (.-data app))
+           (fn [data old-data] (.init $scope)))
+  (.$on $scope refresh-followers (.-init $scope)))
 
 (def.controller jiksnu.LeftColumnController
   [$scope $http]
@@ -474,7 +498,7 @@
   (set! (.-loaded $scope) false)
   (if-let [subpage (.-subpage $scope)]
     (do
-      (timbre/debug "initialize subpage controller" subpage)
+      #_(timbre/debug "initialize subpage controller" subpage)
       (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
 
       (.$on $scope refresh-followers
