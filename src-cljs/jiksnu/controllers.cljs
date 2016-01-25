@@ -38,12 +38,13 @@
 (def.controller jiksnu.DisplayAvatarController
   [$scope Users]
   (set! (.-init $scope)
-        (fn [id]
+        (fn []
           #_(timbre/debug "Displaying avatar for " id)
-          (when (and id (not= id ""))
-            (set! (.-size $scope) 32)
+          (when-let [id (.-id $scope)]
+            (set! (.-size $scope) (or (.-size $scope) 32))
             (.bindOne Users id $scope "user")
-            (.find Users id)))))
+            (.find Users id))))
+  (.init $scope))
 
 (def refresh-followers "refresh-followers")
 

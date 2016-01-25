@@ -36,12 +36,7 @@
 (def.directive jiksnu.displayAvatar []
   #js
   {:controller "DisplayAvatarController"
-   :link (fn [$scope element attrs]
-           (.init $scope (.-id attrs))
-           (.$watch $scope
-                    #(.-id attrs)
-                    #(.init $scope %)))
-   :scope true
+   :scope #js {:id "@" :size "@"}
    :templateUrl "/templates/display-avatar"})
 
 (def.directive jiksnu.followButton

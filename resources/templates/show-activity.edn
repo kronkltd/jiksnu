@@ -4,7 +4,7 @@
   [:debug {:expr "activity"}]
   [:article.hentry.media
    [:div.media-left
-    [:display-avatar {:data-id "{{activity.author}}"}]]
+    [:display-avatar {:data-id "{{activity.author}}" :size "80"}]]
    [:div.media-body
     [:p
      [:a {:ui-sref "showUser({_id: activity.author})"}
