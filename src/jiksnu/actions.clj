@@ -87,6 +87,7 @@
 (defn invoke-action
   [model-name action-name id & [options]]
   (try+
+    (timbre/infof "Invoking Action. %s(%s) => %s" model-name id action-name)
    (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
      (require action-ns)
 

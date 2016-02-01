@@ -87,7 +87,6 @@
                       (-> (.getFollowing actor)
                           (.then
                             (fn [page]
-                              (js/console.log "page" page)
                               (-> (->> (.-items page)
                                        (map #(.find Subscriptions %))
                                        clj->js
@@ -314,6 +313,7 @@
 (def.controller jiksnu.ShowActivityController
   [$scope $stateParams Activities app]
   (set! (.-loaded $scope) false)
+  (set! (.-app $scope) app)
 
   (set! (.-init $scope)
         (fn [id]
@@ -325,6 +325,13 @@
   (set! (.-deleteRecord $scope)
         (fn [activity]
           (let [msg (str "invoke-action \"activity\", \"delete\", \""
+                         (.-id $scope)
+                         "\"")]
+            (.send app msg))))
+
+  (set! (.-likeActivity $scope)
+        (fn [activity]
+          (let [msg (str "invoke-action \"activity\", \"like\", \""
                          (.-id $scope)
                          "\"")]
             (.send app msg))))

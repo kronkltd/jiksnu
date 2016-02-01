@@ -53,4 +53,6 @@
    [:div {:ng-if "app.user"}
     [:ul
      [:li
+      [:button.btn {:ng-click "likeActivity(activity)"} "Like"]]
+     [:li
       [:button.btn {:ng-click "deleteRecord(activity)"} "Delete"]]]]]]]

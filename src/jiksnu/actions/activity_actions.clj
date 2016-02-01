@@ -111,6 +111,10 @@
           created-activity))
     (throw+ "error preparing")))
 
+(defn like
+  [activity]
+  (post {:action "like"}))
+
 ;; TODO: use stream update
 (defn remote-create
   "Create all the activities. (multi-create)"
