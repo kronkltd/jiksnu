@@ -22,7 +22,7 @@
     "jquery": "2.1.4",
     "js-data-angular": "3.0.0",
     "highlightjs": "8.9.1",
-    "momentjs": "2.10.6",
+    "moment": "2.11.1",
     "swagger-ui": "2.1.8-M1",
     "underscore": "1.8.3"
   },

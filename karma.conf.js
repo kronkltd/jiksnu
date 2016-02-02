@@ -10,15 +10,19 @@ module.exports = function(config) {
     basePath: '',
 
     // frameworks to use
-    frameworks: ['angular', 'jasmine'],
+    frameworks: [
+//    'angular',
+    'jasmine'
+    ],
 
     // list of files / patterns to load in the browser
     files: [
       "node_modules/es6-promise/dist/es6-promise.js",
       vendorBase + "/jquery/dist/jquery.min.js",
+      vendorBase + "/angular/angular.min.js",
       vendorBase + "/angular-datatables/dist/angular-datatables.min.js",
       vendorBase + "/highlightjs/highlight.pack.js",
-      vendorBase + "/momentjs/min/moment.min.js",
+      vendorBase + "/moment/min/moment.min.js",
       vendorBase + "/underscore/underscore-min.js",
       vendorBase + "/showdown/src/showdown.js",
       vendorBase + "/datatables/media/js/jquery.dataTables.min.js",
@@ -27,17 +31,17 @@ module.exports = function(config) {
       vendorBase + "/js-data/dist/js-data.min.js",
       vendorBase + "/js-data-angular/dist/js-data-angular.min.js",
       vendorBase + "/angular-file-upload/dist/angular-file-upload.min.js",
+      vendorBase + "/angular-moment/angular-moment.js",
       vendorBase + "/angular-cfp-hotkeys/build/hotkeys.min.js",
       vendorBase + "/angular-highlightjs/angular-highlightjs.js",
       vendorBase + "/angular-markdown-directive/markdown.js",
-      // vendorBase + "/angular-moment/angular-moment.js",
       vendorBase + "/angular-notify/dist/angular-notify.min.js",
       vendorBase + "/angular-sanitize/angular-sanitize.min.js",
       vendorBase + "/angular-bootstrap/ui-bootstrap-tpls.min.js",
       vendorBase + "/angular-ui-router/release/angular-ui-router.min.js",
       vendorBase + "/angular-validator/dist/angular-validator.min.js",
       vendorBase + "/angular-websocket/angular-websocket.min.js",
-
+      vendorBase + "/angular-mocks/angular-mocks.js",
       "target/karma-test.js"
     ],
 
@@ -86,7 +90,9 @@ module.exports = function(config) {
     // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
     // - PhantomJS
     // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-    browsers: ['PhantomJS'],
+    browsers: [
+    // 'PhantomJS'
+    ],
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,

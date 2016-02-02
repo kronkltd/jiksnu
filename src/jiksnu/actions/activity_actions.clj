@@ -11,7 +11,8 @@
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [jiksnu.util :as util]))
 
 (defn can-delete?
   [item]
@@ -113,7 +114,9 @@
 
 (defn like
   [activity]
-  (post {:action "like"}))
+  (post {:verb "like"
+         :object {:_id activity}
+         :author nil}))
 
 ;; TODO: use stream update
 (defn remote-create

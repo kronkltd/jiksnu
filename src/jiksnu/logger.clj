@@ -54,6 +54,6 @@
      :spit (assoc (spit-appender) :output-fn json-formatter)
      :println (-> (println-appender {:stream :auto})
                   ;; (assoc :min-level :info)
-                  (assoc :output-fn simple-console-formatter)
+                  ;(assoc :output-fn simple-console-formatter)
                   )}
     :shared-appender-config {:logstash {:port 4660 :logstash "192.168.1.151"}}}))

@@ -108,7 +108,7 @@
          {:message (format "action not found: %s" action-name)
           :action "error"})))
    (catch RuntimeException ex
-     (timbre/error ex "Actions error")
+     (timbre/error "Actions error" ex)
      {:message (str ex)
       :action "error"})))
 

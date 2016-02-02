@@ -10,6 +10,7 @@
         "karma-junit-reporter": "0.3.7",
         "karma-notify-send-reporter": "0.0.3",
         "karma-phantomjs-launcher": "0.2.1",
+        "moment" : "2.11.1",
         "wscat": "1.0.1"
     }
 }
