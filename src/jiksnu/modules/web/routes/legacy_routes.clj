@@ -164,7 +164,6 @@
    ;; [[:get    "/model/resources/:id"]                    #'show]
    ;; [[:get    "/model/feed-sources/:id"]                 #'feed-source/show]
    ;; [[:post   "/notice/:id/like"]                        #'like/like-activity]
-   ;; [[:get    "/nav.js"]                                 {:action #'actions.web.core/nav-info :format :json}]
    ;; [[:get    "/notice/:id/comment"]                     #'comment/new-comment]
    ;; [[:post   "/notice/:id/comments"]                    #'comment/add-comment]
    ;; [[:post   "/notice/:id/comments/update"]             #'comment/fetch-comments]
