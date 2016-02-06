@@ -13,7 +13,3 @@
                          :items (map :_id items)})]
     {:body {:action "page-updated"
             :body response}}))
-
-(defview #'actions.resource/show :model
-  [request item]
-  {:body item})

@@ -38,16 +38,3 @@
             :id (:_id (:item request))
             :body response}}))
 
-(defview #'actions.subscription/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :title "Subscribe"
-            :body response}}))
-
-(defview #'actions.subscription/show :model
-  [request item]
-  {:body (show-section item)})

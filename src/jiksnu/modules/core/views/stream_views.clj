@@ -55,14 +55,6 @@
             :title "Public Timeline"
             :body response}}))
 
-(defview #'actions.stream/public-timeline :xml
-  [request {:keys [items] :as page}]
-  {:body (index-section items page)})
-
-(defview #'actions.stream/user-timeline :model
-  [request [user page]]
-  {:body (show-section user)})
-
 (defview #'actions.stream/user-timeline :page
   [request [user page]]
   (let [items (:items page)

@@ -34,10 +34,3 @@
     {:body {:action "page-updated"
             :title "Groups"
             :body response}}))
-
-;; show
-
-(defview #'actions.group/show :model
-  [request item]
-  {:title (:nickname item)
-   :body (doall (show-section item))})
