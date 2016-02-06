@@ -29,13 +29,6 @@
 
 ;; confirm
 
-(defview #'actions/confirm :html
-  [request response]
-  {:body
-   [:div
-    [:p "Confirm"]
-    (link-to (:item response))]})
-
 (defview #'actions/get-model :clj
   [request response]
   {:body {:action "model-updated"

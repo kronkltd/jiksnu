@@ -1,0 +1,21 @@
+[:service {:xmlns          ns/app
+           :xmlns:atom     ns/atom
+           :xmlns:activity ns/as}
+ [:workspace
+  [:atom:title "Main"]
+  [:collection {:href "http://{{domain}}/api/statuses/user_timeline/{{user._id}}.atom"}
+   [:atom:title "{{user.username}} timeline"]
+   [:accept "application/atom+xml;type=entry"]
+   [:activity:verb ns/post]]
+  [:collection {:href "http://{{domain}}/api/statusnet/app/subscriptions/{{user._id}}.atom"}
+   [:atom:title "{{user.username}} subscriptions"]
+   [:accept "application/atom+xml;type=entry"]
+   [:activity:verb "http://activitystrea.ms/schema/1.0/follow"]]
+  [:collection {:href "http://{{domain}}/api/statusnet/app/favorites/{{user._id}}.atom"}
+   [:atom:title "{{user.username}} favorites"]
+   [:accept "application/atom+xml;type=entry"]
+   [:activity:verb "http://activitystrea.ms/schema/1.0/favorite"]]
+  [:collection {:href "http://{{domain}}/api/statusnet/app/memberships/{{user._id}}.atom"}
+   [:atom:title "{{user.username}} memberships"]
+   [:accept "application/atom+xml;type=entry"]
+   [:activity:verb "http://activitystrea.ms/schema/1.0/join"]]]]

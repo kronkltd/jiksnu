@@ -1,0 +1,19 @@
+[:rsd {:version "1.0"
+       :xmlns ns/rsd}
+ [:service
+  [:engineName "Jiksnu"]
+  [:engineLink "http://jiksnu.org/"]
+  [:apis
+   [:api {:name "Twitter"
+          :preferred "true"
+          :apiLink "http://{{domain}}/api/"
+          :blogId ""}
+    [:settings
+     [:docs "http://status.net/wiki/TwitterCompatibleAPI"]
+     [:setting {:name "OAuth"}
+      ;; TODO: Make this true
+      "false"]]]
+   [:api {:name "Atom"
+          :preferred "false"
+          :apiLink (str "http://{{domain}}/api/statusnet/app/service.xml")
+          :blogId ""}]]]]

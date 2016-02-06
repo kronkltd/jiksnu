@@ -6,7 +6,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.core.triggers.activity-triggers
             jiksnu.modules.core.triggers.conversation-triggers
@@ -21,8 +20,6 @@
 
   (db/set-database!)
   (actions.subscription/setup-delete-hooks)
-
-  #_(bus/publish! ch/events :activity-posted {:msg "activity posted"})
 
   (->> (bus/subscribe ch/events :activity-posted)
        (s/consume actions.subscription/handle-follow-activity))

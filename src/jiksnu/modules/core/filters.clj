@@ -1,7 +1,4 @@
-(ns jiksnu.modules.core.filters
-  (:require [ciste.filters :refer [deffilter]]
-            [jiksnu.actions :as actions]
-            [slingshot.slingshot :refer [throw+]]))
+(ns jiksnu.modules.core.filters)
 
 (defn parse-page
   [request]
@@ -14,8 +11,3 @@
     (when (and order-by direction)
       {:sort-clause {(keyword order-by) direction}})))
 
-
-(deffilter #'actions/confirm :http
-  [action request]
-  (let [{:keys [action model id]} (:params request)]
-    (action action model id)))
