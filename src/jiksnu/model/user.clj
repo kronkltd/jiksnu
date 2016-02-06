@@ -144,8 +144,6 @@
 
 (defn ensure-indexes
   []
-  (doto collection-name
-    (mc/ensure-index @_db {:username 1 :domain 1} {:unique true})
-    ;; (mc/ensure-index @_db {:id 1} {:unique true})
-
-    ))
+  (mc/ensure-index @_db collection-name {:username 1 :domain 1} {:unique true})
+  ;; (mc/ensure-index @_db collection-name {:id 1} {:unique true})
+  )

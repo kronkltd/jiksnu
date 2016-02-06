@@ -43,8 +43,7 @@
 
 (defn ensure-indexes
   []
-  (doto collection-name
-    (mc/ensure-index @_db {:url 1} {:unique true})))
+  (mc/ensure-index @_db collection-name {:url 1} {:unique true}))
 
 (defn response->tree
   [response]

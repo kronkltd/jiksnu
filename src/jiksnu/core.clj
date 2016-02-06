@@ -19,7 +19,7 @@
   #_(timbre/info "starting core")
 
   (db/set-database!)
-  (actions.subscriptions/setup-delete-hooks)
+  (actions.subscription/setup-delete-hooks)
 
   #_(bus/publish! ch/events :activity-posted {:msg "activity posted"})
 

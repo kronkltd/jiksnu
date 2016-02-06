@@ -51,5 +51,4 @@
 
 (defn ensure-indexes
   []
-  (doto collection-name
-   (mc/ensure-index @_db {:topic 1} {:unique true})))
+  (mc/ensure-index @_db collection-name {:topic 1} {:unique true}))

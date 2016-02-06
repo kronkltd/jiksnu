@@ -29,7 +29,7 @@
 (defn set-database!
   "Set the connection for mongo"
   []
-  ;(timbre/info (str "setting database for " (environment)))
+  (timbre/info (str "setting database for " (environment)))
   (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
   ;; TODO: pass connection options
   (let [conn (mg/connect)
