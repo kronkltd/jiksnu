@@ -5,11 +5,10 @@
 
 (defview #'actions.activity/fetch-by-conversation :page
   [request response]
-  {:body (merge
-          response
-          {:model "conversation"
-           :name (:name request)
-           :id (:_id (:item request))})})
+  (merge response
+         {:model "conversation"
+          :name  (:name request)
+          :id    (:_id (:item request))}))
 
 (defview #'actions.activity/index :page
   [request response]

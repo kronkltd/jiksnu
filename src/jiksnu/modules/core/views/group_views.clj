@@ -15,22 +15,15 @@
 
 (defview #'actions.group/fetch-by-user :page
   [request page]
-  (let [items (:items page)
-        response (merge page
-                        {:id (:name request)})]
-    {:body {:action "sub-page-updated"
-            :title "Groups"
-            :model "user"
-            :id (:_id (:item request))
-            :body response}}))
+  {:body (merge page
+                {:title "Groups"
+                 :model "user"
+                 :id    (:_id (:item page))})})
 
 ;; index
 
 (defview #'actions.group/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)})]
-    {:body {:action "page-updated"
-            :title "Groups"
-            :body response}}))
+  [request page]
+  {:body (merge page
+                {:id    (:name request)
+                 :title "Groups"})})

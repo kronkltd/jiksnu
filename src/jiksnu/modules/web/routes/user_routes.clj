@@ -131,9 +131,9 @@
   :mixins [subpage-resource]
   :target-model "user"
   :subpage "activities"
-  :parameters  {:_id  (path :model.user/id)}
+  :parameters {:_id (path :model.user/id)}
   :available-formats [:json]
-  :presenter (fn [rsp]  rsp))
+  :presenter :body)
 
 (defresource users-api :groups
   :url "/{_id}/groups"
@@ -142,7 +142,7 @@
   :mixins [subpage-resource]
   :target-model "user"
   :subpage "groups"
-  :parameters  {:_id  (path :model.user/id)}
+  :parameters  {:_id (path :model.user/id)}
   :available-formats [:json]
   :presenter :body)
 

@@ -23,9 +23,7 @@
 
 (defmethod serialize-as :page
   [serialization response]
-  (json/write-str (:body response)) )
-
-;; confirm
+  response)
 
 (defview #'actions/get-model :clj
   [request response]

@@ -1,14 +1,12 @@
 (ns jiksnu.modules.web.routes.user-routes-test
-  (:require [clojurewerkz.support.http.statuses :as status]
-            [clojure.tools.logging :as log]
+  (:require [clojure.data.json :as json]
+            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]
-            [jiksnu.mock :as mock]
-            [jiksnu.util :as util]
-            [clojure.data.json :as json]
             [taoensso.timbre :as timbre]))
 
 (namespace-state-changes
@@ -16,24 +14,24 @@
   (after :contents (th/stop-testing))])
 
 (fact "route: users-api/index :get"
- (let [url "/main/users"]
-   (response-for (req/request :get url)) =>
-   (contains {:status status/success?
-              :body string?})))
+  (let [url "/main/users"]
+    (response-for (req/request :get url)) =>
+    (contains {:status status/success?
+               :body string?})))
 
 (fact "route: users-api/activities :get"
- (future-fact "When the user exists"
-   (let [user (mock/a-user-exists)
-         m 1]
-     (dotimes [n m] (mock/there-is-an-activity {:user user}))
+  (fact "When the user exists"
+    (let [user (mock/a-user-exists)
+          m 1]
+      (dotimes [n m] (mock/there-is-an-activity {:user user}))
 
-     (let [path (format "/model/users/%s/activities" (:_id user))
-           request (req/request :get path)
-           response (response-for request)]
-       response => (contains {:status status/success?})
-       (let [parsed-body (some-> response :body json/read-json)]
-         parsed-body => (contains {:items (has every? string?)
-                                   :totalItems m}))))))
+      (let [path (format "/model/users/%s/activities" (:_id user))
+            request (req/request :get path)
+            response (response-for request)]
+        response => (contains {:status status/success?})
+        (let [parsed-body (some-> response :body json/read-str)]
+          parsed-body => (contains {"items"      (has every? string?)
+                                    "totalItems" m}))))))
 
 (fact "route: users-api/groups :get"
   (fact "When the user exists"
@@ -47,6 +45,6 @@
             request (req/request :get path)
             response (response-for request)]
         response => (contains {:status status/success?})
-        (let [parsed-body (some-> response :body json/read-json)]
-          parsed-body => (contains {:items (has every? string?)
-                                    :totalItems m}))))))
+        (let [parsed-body (some-> response :body json/read-str)]
+          parsed-body => (contains {"items" (has every? string?)
+                                    "totalItems" m}))))))
