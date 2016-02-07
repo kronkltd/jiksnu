@@ -12,13 +12,10 @@
   "Command not found")
 
 (defmethod serialize-as :http
-  [serialization response-map]
-  (let [content-type (or (-> response-map :headers (get "Content-Type"))
-                         "text/html; charset=utf-8")]
-    (assoc-in
-     (assoc response-map :status 200)
-     [:headers "Content-Type"]
-     content-type)))
+  [serialization response]
+  (-> response
+      (assoc :status 200)
+      (update-in [:headers "Content-Type"] #(or % "text/html; charset=utf-8"))))
 
 (defmethod serialize-as :command
   [serialization response]
