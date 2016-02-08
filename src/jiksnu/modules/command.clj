@@ -1,6 +1,6 @@
 (ns jiksnu.modules.command
   (:require [ciste.commands :refer [add-command! command-names]]
-            [jiksnu.actions :as actions]
+            [jiksnu.modules.core.actions :as actions]
             jiksnu.modules.command.filters
             ;; [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.actions.auth-actions :as actions.auth]

@@ -58,7 +58,7 @@
 (defn ^KeyPair generate-key
   "Generates a new RSA keypair"
   []
-  (.genKeyPair keypair-generator))
+  (.genKeyPair ^KeyPairGenerator keypair-generator))
 
 (defn ^PublicKey public-key
   "Extracts the public key from the keypair"

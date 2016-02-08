@@ -27,7 +27,8 @@
            (java.util TimeZone)
            (java.net InetSocketAddress)
            (org.bson.types ObjectId)
-           (org.joda.time DateTime)))
+           (org.joda.time DateTime)
+           (nu.xom Element)))
 
 (defn new-id
   []
@@ -177,7 +178,7 @@
       (:host uri))))
 
 (defn parse-link
-  [link]
+  [^Element link]
   (let [rel (.getAttributeValue link "rel")
         template (.getAttributeValue link "template")
         href (.getAttributeValue link "href")
@@ -227,7 +228,7 @@
   (string/replace template #"\{uri\}" (codec/url-encode url)))
 
 (defn socket-conectable?
-  [host port]
+  [^String host ^long port]
   (let [socket (Socket.)]
     (try+
       (let [address (InetAddress/getByName host)
@@ -259,4 +260,5 @@
 (defn inspect
   "Prints a display of the passed value"
   [v]
-  (puget/cprint v {:print-handlers time-handlers}))
+  (puget/cprint v {:print-handlers time-handlers})
+  v)

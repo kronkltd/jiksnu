@@ -210,6 +210,7 @@
 
 (defn fetch-by-conversation
   [conversation & [options]]
+  (timbre/info "Fetching activities by conversation")
   (index {:conversation (:_id conversation)} options))
 
 (defn fetch-by-conversations

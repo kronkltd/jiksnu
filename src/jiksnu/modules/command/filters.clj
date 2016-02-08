@@ -1,7 +1,5 @@
 (ns jiksnu.modules.command.filters
   (:require [ciste.filters :refer [deffilter]]
-            [clojure.tools.logging :as log]
-            [jiksnu.actions :as actions]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
@@ -22,9 +20,11 @@
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            ;; [jiksnu.modules.http.actions :as http.actions]
+            [jiksnu.modules.core.actions :as actions]
+    ;; [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.session :refer [current-user-id]]
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre]))
 
 (deffilter #'actions/get-model :command
   [action request]

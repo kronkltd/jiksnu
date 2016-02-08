@@ -59,27 +59,14 @@
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)
                    conversation (model.conversation/fetch-by-id id)]
-               {:data conversation}))
-  ;; :delete! #'actions.conversation/delete
-  ;; :put!    #'actions.conversation/update-record
-  )
+               {:data conversation})))
 
 (defresource conversations-api :activities-stream
-  :desc "Activities related to a conversation"
   :url "/{_id}/activities"
-  :parameters {:_id (path :model.conversation/id)}
+  :name "Conversation activities"
+  :description "Activities related to a conversation"
   :mixins [subpage-resource]
-  :target get-conversation
   :target-model "conversation"
   :subpage "activities"
-  :allowed-methods [:get]
-  :available-formats [:json]
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  ;; :exists? (fn [ctx]
-  ;;            (let [id (-> ctx :request :route-params :_id)
-  ;;                  conversation (model.conversation/fetch-by-id id)]
-  ;;              {:data conversation}))
-  ;; :delete! #'actions.conversation/delete
-  ;; :put!    #'actions.conversation/update-record
-  )
+  :parameters {:_id (path :model.conversation/id)}
+  :available-formats [:json])

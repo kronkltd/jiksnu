@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.pages
-  (:require [jiksnu.actions.activity-actions :as activity]
-            [jiksnu.actions.client-actions :as client]
+  (:require [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.conversation-actions :as conversation]
             [jiksnu.actions.domain-actions :as domain]
             [jiksnu.actions.feed-source-actions :as feed-source]
@@ -21,8 +21,8 @@
 (defn pages
   []
   [
-   [{:name "activities"}         {:action #'activity/index}]
-   [{:name "clients"}            {:action #'client/index}]
+   [{:name "activities"}         {:action #'actions.activity/index}]
+   [{:name "clients"}            {:action #'actions.client/index}]
    [{:name "conversations"}      {:action #'conversation/index}]
    [{:name "domains"}            {:action #'domain/index}]
    [{:name "feed-sources"}       {:action #'feed-source/index}]
@@ -40,14 +40,14 @@
 (defn sub-pages
   []
   [
-   [{:type User         :name "activities"}    {:action #'activity/fetch-by-user}]
+   [{:type User         :name "activities"}    {:action #'actions.activity/fetch-by-user}]
    [{:type User         :name "subscriptions"} {:action #'subscription/get-subscriptions}]
    [{:type User         :name "subscribers"}   {:action #'subscription/get-subscribers}]
    [{:type User         :name "streams"}       {:action #'stream/fetch-by-user}]
    [{:type User         :name "groups"}        {:action #'group/fetch-by-user}]
    [{:type User         :name "outbox"}        {:action #'stream/outbox}]
-   [{:type Conversation :name "activities"}    {:action #'activity/fetch-by-conversation}]
+   [{:type Conversation :name "activities"}    {:action #'actions.activity/fetch-by-conversation}]
    [{:type Group        :name "admins"}        {:action #'group/fetch-admins}]
    [{:type Group        :name "conversations"} {:action #'conversation/fetch-by-group}]
-   [{:type Stream       :name "activities"}    {:action #'activity/fetch-by-stream}]
+   [{:type Stream       :name "activities"}    {:action #'actions.activity/fetch-by-stream}]
    ])

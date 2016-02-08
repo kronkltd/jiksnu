@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.page-routes
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.modules.http.resources :refer [defresource defgroup]]
+  (:require [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.actions.page-actions :as page]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]

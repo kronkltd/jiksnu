@@ -4,7 +4,8 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.client-transforms :as transforms.client]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [slingshot.slingshot :refer [throw+ try+]]
+            [jiksnu.util :as util]))
 
 (def model-sym 'jiksnu.model.client)
 
@@ -46,6 +47,7 @@
 
 (defn index
   [& options]
+  (taoensso.timbre/info "indexing clients")
   (apply index* options))
 
 (defn create

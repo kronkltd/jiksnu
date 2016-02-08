@@ -24,7 +24,7 @@
                 (with-out-str (pprint item))))
 
 (defn errors
-  [ex]
+  [^ExceptionInfo ex]
   (let [data (if (instance? ExceptionInfo ex)
                (.getData ex) {})]
     ;; TODO: allow error handlers to hook in here via modules

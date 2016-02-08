@@ -1,5 +1,6 @@
 (ns jiksnu.modules.core
-  (:require jiksnu.modules.core.formats
+  (:require [ciste.loader :refer [defmodule]]
+            jiksnu.modules.core.formats
             jiksnu.modules.core.views
             [jiksnu.db :as db]
             [jiksnu.registry :as registry]
@@ -13,7 +14,11 @@
   []
   (db/set-database!)
 
-  (defn stop [])
-
   (doseq [model-name registry/action-group-names]
     (util/require-module "jiksnu.modules" "core" model-name)))
+
+(defn stop [])
+
+(defmodule "jiksnu.modules.core"
+  :start start
+  :deps [])

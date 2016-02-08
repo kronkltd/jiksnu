@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.actions.page-actions
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.predicates :as pred]))
+  (:require [jiksnu.predicates :as pred]
+            [jiksnu.util :as util]))
 
 (defn index
   []

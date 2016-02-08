@@ -1,4 +1,4 @@
-(ns jiksnu.actions
+(ns jiksnu.modules.core.actions
   (:require [ciste.commands :refer [add-command!]]
             [ciste.core :refer [with-format with-serialization]]
             [ciste.filters :refer [filter-action]]
@@ -77,7 +77,7 @@
                  :args args}
         route-handler (resolve-routes [@pred/*sub-page-predicates*]
                                       @pred/*sub-page-matchers*)]
-    (or (route-handler request)
+    (or (:body (route-handler request))
         (throw+ {:action "error"
                  :page page-name
                  :item item

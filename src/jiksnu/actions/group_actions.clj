@@ -6,7 +6,6 @@
             [jiksnu.templates.actions :as templates.actions]
             [slingshot.slingshot :refer [throw+]]
             [jiksnu.util :as util]
-            [clojure.tools.logging :as log]
             [taoensso.timbre :as timbre])
   (:import jiksnu.model.Group))
 

@@ -89,7 +89,7 @@
        (def ~init-sym (fn []
                         (let [groups# (update-groups @~group-sym)
                               body# (assoc ~options :groups groups#)]
-                          (timbre/debugf "Creating Site. Groups %s" (count groups#))
+                          ;; (timbre/debugf "Creating Site. Groups %s" (count groups#))
                           (let [routes# (octo-routes/routes body#)]
                             (alter-var-root (var ~route-sym) (fn [_#] routes#))))))
        (~init-sym))))

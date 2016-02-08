@@ -2,7 +2,6 @@
   (:require [ciste.sections.default :refer [uri]]
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             [jiksnu.mock :as mock]
             [jiksnu.model.group :as model.group]
             jiksnu.modules.web.routes.group-routes

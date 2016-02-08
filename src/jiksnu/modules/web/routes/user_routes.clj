@@ -132,8 +132,7 @@
   :target-model "user"
   :subpage "activities"
   :parameters {:_id (path :model.user/id)}
-  :available-formats [:json]
-  :presenter :body)
+  :available-formats [:json])
 
 (defresource users-api :groups
   :url "/{_id}/groups"
@@ -143,8 +142,7 @@
   :target-model "user"
   :subpage "groups"
   :parameters  {:_id (path :model.user/id)}
-  :available-formats [:json]
-  :presenter :body)
+  :available-formats [:json])
 
 (defresource users-api :followers
   :url "/{_id}/followers"
@@ -177,10 +175,4 @@
   :subpage "streams"
   :parameters {:_id (path :model.user/id)}
   :available-media-types ["application/json"]
-  :available-formats [:json]
-  :exists? (fn [ctx]
-               (when-let [user (some-> ctx :request :route-params
-                                   :_id model.user/fetch-by-id)]
-                 (let [page (stream/fetch-by-user user)
-                       page (update page :items #(map :_id %))]
-                   {:data page}))))
+  :available-formats [:json])

@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.group-routes
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.actions.group-actions :as actions.group]
+  (:require [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model.group :as model.group]
             jiksnu.modules.core.views.group-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]

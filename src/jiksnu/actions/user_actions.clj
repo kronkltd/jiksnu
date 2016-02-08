@@ -2,7 +2,6 @@
   (:require [ciste.config :refer [config]]
             [ciste.model :as cm]
             [clojure.data.json :as json]
-            [jiksnu.actions :refer [invoke-action]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]
@@ -254,7 +253,9 @@
   "Update the user's activities and information."
   [^User user _]
   (if-let [source-id (:update-source user)]
-    (invoke-action "feed-source" "update" (str source-id))
+    (do
+      #_(invoke-action "feed-source" "update" (str source-id))
+      nil)
     (timbre/warn "user does not have an update source"))
   user)
 

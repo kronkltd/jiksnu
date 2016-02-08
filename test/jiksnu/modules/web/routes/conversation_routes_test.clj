@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.conversation-routes-test
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.mock :as mock]
+  (:require [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
@@ -14,9 +13,7 @@
 (facts "route: converation-api/activities-stream :get"
   (let [conversation (mock/a-conversation-exists)
         url (str "/model/conversations/" (:_id conversation) "/activities")
-        request (req/request :get (log/spy :info url))]
-    (util/inspect request)
-
+        request (req/request :get url)]
     (mock/there-is-an-activity {:conversation conversation})
 
     (let [response (response-for request)]

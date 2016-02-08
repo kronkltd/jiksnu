@@ -6,7 +6,8 @@
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.FeedSource
-           nu.xom.Document))
+           nu.xom.Document
+           (nu.xom Element)))
 
 (def mappings {"xrd" ns/xrd})
 
@@ -25,27 +26,24 @@
 
 (defn get-source-link
   "Returns a update link from a user meta"
-  [xrd]
-  {:pre [(instance? Document xrd)]
-   :post [(or (nil? %) (string? %))]}
+  [^Document xrd]
+  {:post [(or (nil? %) (string? %))]}
   (let [query-str (format "//xrd:Link[@rel = '%s']" ns/updates-from)]
     (-> xrd
          (cm/query query-str mappings)
          util/force-coll
-         (->> (keep #(.getAttributeValue % "href")))
+         (->> (keep #(.getAttributeValue ^Element % "href")))
          first)))
 
 (defn get-feed-source-from-xrd
   [^Document xrd]
-  {:pre [(instance? Document xrd)]
-   :post [(instance? FeedSource %)]}
+  {:post [(instance? FeedSource %)]}
   (if-let [source-link (get-source-link xrd)]
     @(ops/get-source source-link)))
 
 (defn get-username-from-atom-property
   [^Document xrd]
-  {:pre [(instance? Document xrd)]
-   :post [(or (nil? %) (string? %))]}
+  {:post [(or (nil? %) (string? %))]}
   (let [query-str (str "//xrd:Property"
                        "[@type = 'http://apinamespace.org/atom/username']")]
     (let [root (.getRootElement xrd)]
@@ -77,8 +75,7 @@
     (:links lrdd))])
 
 (defn get-links
-  [xrd]
-  {:pre [(instance? Document xrd)]}
+  [^Document xrd]
   (let [root (.getRootElement xrd)]
     (->> (cm/query root "//xrd:Link" mappings)
          util/force-coll
@@ -87,16 +84,14 @@
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
   [^Document xrd]
-  {:pre [(instance? Document xrd)]
-   :post [(coll? %)]}
+  {:post [(coll? %)]}
   (let [root (.getRootElement xrd)
         elts (concat (util/force-coll (cm/query root "//xrd:Subject" mappings))
                      (util/force-coll (cm/query root "//xrd:Alias" mappings)))]
     (map #(.getValue %) elts)))
 
 (defn get-username-from-identifiers
-  [xrd]
-  {:pre [(instance? Document xrd)]}
+  [^Document xrd]
   (try+
     (->> xrd
          get-identifiers
@@ -109,8 +104,7 @@
 ;; takes a document
 (defn get-username-from-xrd
   "return the username component of the user meta"
-  [xrd]
-  {:pre [(instance? Document xrd)]}
+  [^Document xrd]
   (->> [(get-username-from-atom-property xrd)]
        (lazy-cat
         [(get-username-from-identifiers xrd)])

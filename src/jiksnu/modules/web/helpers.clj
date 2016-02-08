@@ -3,14 +3,15 @@
             [clojure.java.io :as io]
             [clojure.tools.reader.edn :as edn]
             [hiccup.core :as h]
-            [jiksnu.actions :as actions]
+            [jiksnu.modules.core.actions :as actions]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
             [jiksnu.modules.http.resources :refer [defresource]]
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre])
+            [taoensso.timbre :as timbre]
+            [jiksnu.util :as util])
   (:import java.io.PushbackReader
            (java.io FileNotFoundException)))
 
@@ -160,7 +161,10 @@
   [resource]
   (-> resource
       ciste-resource
-      (assoc :allowed-methods [:get :post :delete])
+      (assoc :allowed-methods [:get
+                               ;; :post :delete
+
+                               ])
       (assoc :exists? #(subpage-exists? resource %))))
 
 (defn angular-resource
