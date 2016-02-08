@@ -14,6 +14,17 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
+(fact "route: activities-api/item :delete"
+  (let [activity (mock/there-is-an-activity)
+        url (str "/model/activity/" (:_id activity))
+        request (req/request :delete url)
+        response (response-for request)
+        ]
+    response => nil
+
+    )
+  )
+
 (fact "route: activity/update"
   (fact "when the user is authenticated"
     (let [author (mock/a-user-exists)

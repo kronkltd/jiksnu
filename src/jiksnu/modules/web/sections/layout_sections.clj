@@ -61,7 +61,7 @@
     "/vendor/angular/angular.js"
     "/vendor/angular-datatables/dist/angular-datatables.min.js"
     "/vendor/highlightjs/highlight.pack.js"
-    "/vendor/momentjs/min/moment.min.js"
+    "/vendor/moment/min/moment.min.js"
     "/vendor/underscore/underscore-min.js"
     "/vendor/showdown/src/showdown.js"
     "/vendor/datatables/media/js/jquery.dataTables.min.js"

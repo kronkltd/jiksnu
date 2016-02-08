@@ -23,6 +23,7 @@
 (def add-link* (templates.actions/make-add-link* model.activity/collection-name))
 (def index*    (templates.actions/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
 (def delete    (templates.actions/make-delete model.activity/delete can-delete?))
+
 ;; FIXME: this is always hitting the else branch
 (defn add-link
   [item link]

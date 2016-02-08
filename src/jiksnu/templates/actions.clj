@@ -4,7 +4,8 @@
             [manifold.bus :as bus]
             [monger.collection :as mc]
             monger.json
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre]))
 
 (defn make-indexer*
   [{:keys [page-size sort-clause count-fn fetch-fn]}]
@@ -52,6 +53,7 @@
 (defn make-delete
   [delete-fn access-fn]
   (fn[item]
+    (timbre/debug "Deleting item")
     (if (access-fn item)
       (delete-fn item)
       (throw+ {:type :authorization

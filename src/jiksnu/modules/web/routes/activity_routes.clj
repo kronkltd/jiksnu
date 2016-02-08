@@ -5,7 +5,9 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
+                                                defparameter page-resource path]]
+            [jiksnu.util :as util]
             [octohipster.mixins :as mixin]))
 
 (defparameter :model.activity/id
@@ -67,12 +69,15 @@
   :parameters {:_id (path :model.activity/id)}
   :methods {:get {:summary "Show Activity"}
             :delete {:summary "Delete Activity"}}
-  :mixins [mixin/item-resource]
+  :mixins [ciste-resource]
   :available-media-types ["application/json"]
   :presenter (partial into {})
+  :allowed-methods [:get :delete]
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)
                    activity (model.activity/fetch-by-id id)]
                {:data activity}))
   ;; :put!    #'actions.activity/update-record
-  :delete! #'actions.activity/delete)
+  :delete! (fn [ctx]
+             (util/inspect ctx)
+             #_(actions.activity/delete)))
