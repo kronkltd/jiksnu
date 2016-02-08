@@ -71,12 +71,13 @@
             :delete {:summary "Delete Activity"}}
   :mixins [ciste-resource]
   :available-media-types ["application/json"]
+  :available-formats [:json]
   :presenter (partial into {})
   :allowed-methods [:get :delete]
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)
                    activity (model.activity/fetch-by-id id)]
-               {:data activity}))
+               {:data (util/inspect activity)}))
   ;; :put!    #'actions.activity/update-record
   :delete! (fn [ctx]
              (util/inspect ctx)

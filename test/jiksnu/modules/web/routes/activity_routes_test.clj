@@ -6,6 +6,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
+            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]
             [jiksnu.actions.activity-actions :as actions.activity]))
@@ -17,7 +18,7 @@
 (fact "route: activities-api/item :delete"
   (let [activity (mock/there-is-an-activity)
         url (str "/model/activity/" (:_id activity))
-        request (req/request :delete url)
+        request (util/inspect (req/request :delete url))
         response (response-for request)
         ]
     response => nil
