@@ -355,18 +355,21 @@
   [$scope $stateParams Conversations app]
   (set! (.-loaded $scope) false)
 
-  (set! (.-init $scope)
-        (fn [id]
-          #_(timbre/debugf "loading ShowConversationController - %s" id)
-          (.bindOne Conversations id $scope "conversation")
-          (-> (.find Conversations id)
-              (.then (fn [conversation]
-                       (when conversation
-                         (set! (.-item $scope) conversation)
-                         (set! (.-loaded $scope) true)))))))
+  (when-not (.-init $scope)
+    (set! (.-init $scope)
+          (fn [id]
+            (timbre/debugf "loading ShowConversationController - %s" id)
+            (.bindOne Conversations id $scope "conversation")
+            (-> (.find Conversations id)
+                (.then (fn [conversation]
+                         (when conversation
+                           (set! (.-item $scope) conversation)
+                           (set! (.-loaded $scope) true))))))))
 
   (set! (.-deleteRecord $scope)
         (fn [item]
+          (timbre/debugf "deleting conversation")
+          (js/console.log item)
           (let [msg (str "invoke-action \"conversation\", \"delete\", \""
                          (.-id $scope)
                          "\"")]
@@ -374,7 +377,7 @@
 
   (set! (.-fetchActivities $scope)
         (fn [conversation]
-          (timbre/debug "fetch activities")
+          (timbre/warn "fetching activities")
           (-> (.getActivities conversation)
               (.then  (fn [response]
                         (timbre/debug "Activities" response)

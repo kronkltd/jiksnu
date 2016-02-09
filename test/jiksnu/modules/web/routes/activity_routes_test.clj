@@ -17,14 +17,14 @@
 
 (fact "route: activities-api/item :delete"
   (let [activity (mock/there-is-an-activity)
-        url (str "/model/activity/" (:_id activity))
+        url (str "/model/activities/" (:_id activity))
         request (util/inspect (req/request :delete url))
-        response (response-for request)
-        ]
-    response => nil
-
-    )
-  )
+        response (response-for request)]
+    response => (contains {:status status/success?})
+    (let [body (:body response)]
+      body => string?
+      (let [json-obj (json/read-json body true)]
+        json-obj => (contains {:_id (str (:_id activity))})))))
 
 (fact "route: activity/update"
   (fact "when the user is authenticated"

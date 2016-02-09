@@ -9,4 +9,7 @@
     [:div {:ng-repeat "id in $parent.$parent.page.items"}
      [:debug {:expr "id"}]
      [:show-activity {:data-id "{{id}}"}]]]]
-  #_[:button.btn {:ng-click "deleteRecord(item)"} "Delete Conversation"]]]
+  [:ul
+   [:li [:button.btn {:ng-click "deleteRecord(item)"} "Delete Conversation"]]
+
+   ]]]
