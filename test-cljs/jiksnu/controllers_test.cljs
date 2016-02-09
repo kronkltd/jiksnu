@@ -110,53 +110,40 @@
     (describe {:doc show-conversation-controller}
       (js/beforeEach
        (fn []
-         (set! (.-id $scope) "1")))
+         (set! (.-id $scope) "1")
+         (set! (.-init $scope)
+               (fn [id]
+                 (timbre/info "mocked init")
+                 (set! (.-item $scope) conversation)
+                 (set! (.-loaded $scope) true)))))
 
       (describe {:doc "deleteRecord"}
         (js/it "sends a delete action"
           (fn [done]
             (let [conversation #js {:id "1"}]
 
-              (set! (.-init $scope)
-                    (fn [id]
-                      (timbre/info "mocked init")
-                      (set! (.-item $scope) conversation)
-                      (set! (.-loaded $scope) true)))
+              (@$controller show-conversation-controller injections)
 
-              (set! (.-deleteRecord $scope)
-                    (fn [item]
-                      (timbre/info "deleting record")
-                      (js/console.log "Conversation:" item)
-                      (let [d (.defer $q)]
-                        (.reject d true)
-                        (.-promise d))
-                      ;; (.when $q "foo")
-                      )
-                    )
+              (let [spy (.. (js/spyOn $scope "deleteRecord")
+                            -and
+                            (returnValue
+                             (.when $q #js {})))]
 
-
-              (let [response (.deleteRecord $scope conversation)]
-                (js/console.log "app" app)
-                (js/console.log "response" response)
-                (-> response
-                    (.then
-                        (fn [r]
-                          (js/console.info "r" r)
-                          (.toBeDefined (js/expect r))
-                          r)
-                        (fn [r]
-                            (js/console.warn "r" r)
-
-                          r
-                            ))
-                    (.finally (fn []
-                                (timbre/info "Done")
-                                (js/done)
-                                )))
-
-                (@$controller show-conversation-controller injections)
-                (.$apply $scope)
-
-                )))))
+                (let [response (.deleteRecord $scope conversation)]
+                  (js/console.log "app" app)
+                  (js/console.log "response" response)
+                  (-> response
+                      (.then
+                       (fn [r]
+                         (js/console.info "r" r)
+                         (.toBeDefined (js/expect r))
+                         r)
+                       (fn [r]
+                         (js/console.warn "r" r)
+                         r))
+                      (.finally (fn []
+                                  (timbre/info "Done")
+                                  (js/done))))
+                  (.$apply $scope)))))))
       ))
   )
