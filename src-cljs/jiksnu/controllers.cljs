@@ -325,17 +325,12 @@
 
   (set! (.-deleteRecord $scope)
         (fn [activity]
-          (let [msg (str "invoke-action \"activity\", \"delete\", \""
-                         (.-id $scope)
-                         "\"")]
-            (.send app msg))))
+          ;; FIXME: use activity?
+          (.invokeAction app "activity" "delete" (.-id $scope))))
 
   (set! (.-likeActivity $scope)
         (fn [activity]
-          (let [msg (str "invoke-action \"activity\", \"like\", \""
-                         (.-id $scope)
-                         "\"")]
-            (.send app msg))))
+          (.invokeAction app "activity" "like" (.-id $scope))))
 
   (let [id (or (.-id $scope)
                (.-_id $stateParams))]
@@ -370,10 +365,7 @@
         (fn [item]
           (timbre/debugf "deleting conversation")
           (js/console.log item)
-          (let [msg (str "invoke-action \"conversation\", \"delete\", \""
-                         (.-id $scope)
-                         "\"")]
-            (.send app msg))))
+          (.invokeAction app "conversation" "delete" (.-id $scope))))
 
   (set! (.-fetchActivities $scope)
         (fn [conversation]

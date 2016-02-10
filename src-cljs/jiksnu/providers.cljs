@@ -149,23 +149,36 @@
                   :object
                   #js {:id id}}))
 
+(defn invoke-action
+  [app model-name action-name id]
+  (let [msg (str "invoke-action \""
+                 model-name
+                 "\", \""
+                 action-name
+                 "\", \""
+                 id
+                 "\"")]
+    (.send app msg)))
+
+
 (def app-methods
   {
    :addStream     add-stream
    :connect       connect
    :deleteStream  delete-stream
+   :fetchStatus   fetch-status
+   :follow        follow
    :getUser       get-user
    :getUserId     get-user-id
    :go            go
-   :register      register
-   :fetchStatus   fetch-status
-   :follow        follow
    :handleMessage handle-message
+   :invokeAction  invoke-action
    :isFollowing   following?
    :login         login
    :logout        logout
    :ping          ping
    :post          post
+   :register      register
    :send          send
    :unfollow      unfollow
    })

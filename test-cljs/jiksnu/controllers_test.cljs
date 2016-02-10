@@ -137,13 +137,16 @@
                        (fn [r]
                          (js/console.info "r" r)
                          (.toBeDefined (js/expect r))
+                         #_(js/done)
                          r)
                        (fn [r]
                          (js/console.warn "r" r)
                          r))
                       (.finally (fn []
                                   (timbre/info "Done")
-                                  (js/done))))
-                  (.$apply $scope)))))))
+                                  )))
+                  (.$apply $scope)
+                  (.toHaveBeenCalled (js/expect spy))
+                  ))))))
       ))
   )
