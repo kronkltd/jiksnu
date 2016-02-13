@@ -94,12 +94,12 @@
               :repl-launch-commands {"my-launch" ["google-chrome"]}
               :builds
                                     {:main  {:source-paths ["src-cljs"]
-                                             ;; :notify-command ["notify-send"]
+                                             :notify-command ["notify-send"]
                                              :compiler     {:output-to     "target/resources/public/cljs/jiksnu.js"
                                                             :optimizations :simple
                                                             :pretty-print  true}}
                                      :karma {:source-paths ["src-cljs" "test-cljs"]
-                                             ;; :notify-command ["notify-send"]
+                                             :notify-command ["notify-send"]
                                              :compiler     {:output-to     "target/karma-test.js"
                                                             :optimizations :whitespace
                                                             ;; Fix for $q's use of 'finally'
@@ -120,7 +120,7 @@
                           :cljsbuild
                                  {:builds
                                   {:advanced {:source-paths ["src-cljs"]
-                                              ;; :notify-command ["notify-send"]
+                                              :notify-command ["notify-send"]
                                               :compiler     {:output-to     "target/resources/public/cljs/jiksnu.min.js"
                                                              :optimizations :advanced
                                                              :pretty-print  false}}}}}
@@ -131,7 +131,7 @@
 
                           :cljsbuild      {:builds
                                            {:protractor {:source-paths ["specs"]
-                                                         ;; :notify-command ["notify-send"]
+                                                         :notify-command ["notify-send"]
                                                          :compiler     {:output-to     "target/protractor-tests.js"
                                                                         :optimizations :simple
                                                                         :pretty-print  true}}}}}}
