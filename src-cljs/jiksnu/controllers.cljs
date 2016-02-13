@@ -8,23 +8,6 @@
                [jiksnu.macros :only [page-controller]]
                [purnam.core :only [? !]]))
 
-(def.controller jiksnu.AdminActivitiesController
-  [$scope $http]
-  (set! (.-init $scope) (helpers/fetch-page $scope $http "/model/activities.json"))
-  (.init $scope))
-
-(def.controller jiksnu.AdminConversationsController
-  [$scope $http]
-  (set! (.-init $scope) (helpers/fetch-page $scope $http "/admin/conversations.json"))
-  (.init $scope))
-
-(def.controller jiksnu.AdminGroupsController [$scope])
-
-(def.controller jiksnu.AdminUsersController
-  [$scope $http]
-  (set! (.-init $scope) (helpers/fetch-page $scope $http "/admin/users.json"))
-  (.init $scope))
-
 (def.controller jiksnu.AppController [])
 
 (def.controller jiksnu.AvatarPageController [])
@@ -317,7 +300,7 @@
 
   (set! (.-init $scope)
         (fn [id]
-          (timbre/debug "Showing activity: " id)
+          ;; (timbre/debug "Showing activity: " id)
           (when (and id (not= id ""))
             (.bindOne Activities id $scope "activity")
             (-> (.find Activities id)
@@ -341,19 +324,20 @@
   (set! (.-loaded $scope) false)
   (set! (.-init $scope)
         (fn [id]
+          ;; (timbre/debug "Show domain: " id)
           (.bindOne Domains id $scope "domain")
           (-> (.find Domains id)
               (.then (fn [] (set! (.-loaded $scope) true))))))
   (.init $scope (.-_id $stateParams)))
 
 (def.controller jiksnu.ShowConversationController
-  [$scope $stateParams Conversations app]
+  [$scope $stateParams Conversations app $rootScope]
   (set! (.-loaded $scope) false)
 
   (when-not (.-init $scope)
     (set! (.-init $scope)
           (fn [id]
-            (timbre/debugf "loading ShowConversationController - %s" id)
+            ;; (timbre/debug "Show conversation: " id)
             (.bindOne Conversations id $scope "conversation")
             (-> (.find Conversations id)
                 (.then (fn [conversation]
@@ -363,9 +347,12 @@
 
   (set! (.-deleteRecord $scope)
         (fn [item]
-          (timbre/debugf "deleting conversation")
-          (js/console.log item)
-          (.invokeAction app "conversation" "delete" (.-id $scope))))
+          (let [id (.-id $scope)]
+            (timbre/debugf "deleting conversation: %s" id)
+            (-> app
+                (.invokeAction "conversation" "delete" id)
+                (.then (fn []
+                         (.$broadcast $rootScope "updateCollection")))))))
 
   (set! (.-fetchActivities $scope)
         (fn [conversation]
@@ -518,15 +505,16 @@
               (timbre/debug "received refresh event on root")
               (.refresh $scope)))
 
-
-
       (set! (.-init $scope)
             (fn [item]
               (if item
                 (do
                   (set! (.-item $scope) item)
                   (set! (.-loaded $scope) false)
-                  (timbre/info "Refreshing subpage" (.-_id item) subpage)
+                  (timbre/debugf "Refreshing subpage: %s(%s)=>%s"
+                                 (.. item -constructor -name)
+                                 (.-_id item)
+                                 subpage)
                   (-> (.fetch subpageService item subpage)
                       (.then (fn [page]
                                (set! (.-loaded $scope) true)

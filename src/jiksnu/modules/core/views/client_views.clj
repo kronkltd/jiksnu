@@ -7,7 +7,6 @@
 (defview #'actions.client/index :page
   [request response]
   (taoensso.timbre/info "applying client index view")
-  (util/inspect response)
   {:body (merge
            response
            {:name (:name request)})})

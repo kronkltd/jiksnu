@@ -77,8 +77,7 @@
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)
                    activity (model.activity/fetch-by-id id)]
-               {:data (util/inspect activity)}))
+               {:data activity}))
   ;; :put!    #'actions.activity/update-record
   :delete! (fn [ctx]
-             (util/inspect ctx)
-             #_(actions.activity/delete)))
+             (actions.activity/delete)))

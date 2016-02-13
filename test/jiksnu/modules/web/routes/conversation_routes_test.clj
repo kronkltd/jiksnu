@@ -15,9 +15,5 @@
         url (str "/model/conversations/" (:_id conversation) "/activities")
         request (req/request :get url)]
     (mock/there-is-an-activity {:conversation conversation})
-
     (let [response (response-for request)]
-      (util/inspect response)
-      response =>
-      (contains
-       {:status 200}))))
+      response => (contains {:status 200}))))

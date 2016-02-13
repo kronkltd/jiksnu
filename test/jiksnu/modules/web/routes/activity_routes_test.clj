@@ -18,7 +18,7 @@
 (fact "route: activities-api/item :delete"
   (let [activity (mock/there-is-an-activity)
         url (str "/model/activities/" (:_id activity))
-        request (util/inspect (req/request :delete url))
+        request (req/request :delete url)
         response (response-for request)]
     response => (contains {:status status/success?})
     (let [body (:body response)]

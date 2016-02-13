@@ -59,6 +59,7 @@
 
 (defn send
   [app command]
+  (timbre/debug "Sending command: " command)
   (.send (.. app -connection) command))
 
 (defn post
@@ -151,6 +152,7 @@
 
 (defn invoke-action
   [app model-name action-name id]
+  (timbre/debugf "Invoking Action. %s(%s)=>%s" model-name id action-name)
   (let [msg (str "invoke-action \""
                  model-name
                  "\", \""

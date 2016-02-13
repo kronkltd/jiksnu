@@ -48,12 +48,6 @@
            (.format formatter date))
     date))
 
-(defn strip-namespaces
-  [val]
-  (some-> val
-          (string/replace #"http://activitystrea.ms/schema/1.0/" "")
-          (string/replace #"http://ostatus.org/schema/1.0/" "")))
-
 (defn path-segments
   [url]
   (if url
@@ -105,13 +99,6 @@
        (filter #(= "application/atom+xml" (:type (:attrs %))))
        (map #(-> % :attrs :href))
        first))
-
-(defn extract-atom-link
-  "Find the atom link in the page identified by url"
-  [url]
-  (->> url
-       cm/get-links
-       find-atom-link))
 
 (defn parse-http-link
   [url]

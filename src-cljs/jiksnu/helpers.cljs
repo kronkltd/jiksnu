@@ -154,11 +154,10 @@
         (fn []
           (timbre/debug "Loading page: " page-type)
           (set! (.-loaded $scope) false)
-
           (-> pageService
               (.fetch page-type)
               (.then (fn [page]
-                       (timbre/debug "Page loaded: " page-type)
+                       ;; (timbre/debug "Page loaded: " page-type)
                        (set! (.-page $scope) page)
                        (set! (.-loaded $scope) true)))))))
 

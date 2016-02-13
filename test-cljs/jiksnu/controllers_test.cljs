@@ -1,9 +1,9 @@
 (ns jiksnu.controllers-test
-  (:require [purnam.test :refer-macros [describe it is fact]]
-            jiksnu.app
+  (:require jiksnu.app
             jiksnu.controllers
             [taoensso.timbre :as timbre])
-  (:use-macros [gyr.test :only [describe.ng describe.controller it-uses it-compiles]]))
+  (:use-macros [gyr.test :only [describe.ng describe.controller it-uses it-compiles]]
+               [purnam.test :only [describe it is fact beforeEach]]))
 
 (timbre/set-level! :debug)
 
@@ -15,24 +15,28 @@
 (declare $q)
 (declare $rootScope)
 (declare $scope)
-(declare c)
 (declare app)
 (declare injections)
+(declare $httpBackend)
 (def $controller (atom nil))
 
-(describe {:doc "jiksnu"}
-  (js/beforeEach (js/module "jiksnu"))
+(describe {:doc "jiksnu.controllers"}
+  (beforeEach (js/module "jiksnu"))
 
-  (js/beforeEach
+  (beforeEach
    (js/inject
     #js ["$controller" "$rootScope" "$q"
-         "app"
-         (fn [_$controller_ _$rootScope_ _$q_ _app_]
+         "app" "$httpBackend"
+         (fn [_$controller_ _$rootScope_ _$q_ _app_ _$httpBackend_]
            (reset! $controller _$controller_)
            (set! app _app_)
            (set! $rootScope _$rootScope_)
            (set! $scope (.$new $rootScope))
            (set! $q _$q_)
+           (set! $httpBackend _$httpBackend_)
+           (-> (.when $httpBackend "GET" #"/templates/.*")
+               (.respond "<div></div>"))
+
            (set! injections #js {:$scope $scope :app app}))]))
 
   (describe {:doc "FollowButtonController"}
@@ -61,11 +65,10 @@
               (is (.isActor $scope) true)))))))
 
   (describe {:doc nav-bar-controller}
-    (js/beforeEach
-     (fn []
-       (let [mock-then (fn [f] #_(f))
-             mock-response #js {:then mock-then}]
-         (set! (.-fetchStatus app) (constantly mock-response)))))
+    (beforeEach
+     (let [mock-then (fn [f] #_(f))
+           mock-response #js {:then mock-then}]
+       (set! (.-fetchStatus app) (constantly mock-response))))
 
     (it "should be unloaded by default"
       (@$controller nav-bar-controller injections)
@@ -88,10 +91,9 @@
 
   (let [list-streams-controller "ListStreamsController"]
     (describe {:doc list-streams-controller}
-      (js/beforeEach
-       (fn []
-         (let [user #js {:_id "foo"}]
-           (set! (.-user $scope) user))))
+      (beforeEach
+       (let [user #js {:_id "foo"}]
+         (set! (.-user $scope) user)))
 
       (describe {:doc "addStream"}
         (it "sends an add-stream notice to the server"
@@ -108,45 +110,39 @@
 
   (let [show-conversation-controller "ShowConversationController"]
     (describe {:doc show-conversation-controller}
-      (js/beforeEach
-       (fn []
-         (set! (.-id $scope) "1")
-         (set! (.-init $scope)
-               (fn [id]
-                 (timbre/info "mocked init")
-                 (set! (.-item $scope) conversation)
-                 (set! (.-loaded $scope) true)))))
+      (beforeEach
+       (set! (.-id $scope) "1")
+       (set! (.-init $scope)
+             (fn [id]
+               (timbre/info "mocked init")
+               (set! (.-item $scope) #js {:id "1"})
+               (set! (.-loaded $scope) true))))
 
       (describe {:doc "deleteRecord"}
         (js/it "sends a delete action"
           (fn [done]
-            (let [conversation #js {:id "1"}]
+            (@$controller show-conversation-controller injections)
 
-              (@$controller show-conversation-controller injections)
+            (let [spy (.. (js/spyOn app "invokeAction")
+                          -and
+                          (returnValue
+                           (.when $q #js {})))
+                  response (.deleteRecord $scope (.-item $scope))]
+              (js/console.log response)
+              (-> response
+                  (.then
+                   (fn [r]
+                     (timbre/info "then")
+                     (.toBeDefined (js/expect r))
+                     r)
+                   (fn [r]
+                     (timbre/info "error")
+                     (.toBeDefined (js/expect r))))
+                  (.finally (fn []
+                                (timbre/info "Done")
+                                (js/done))))
+              (.$apply $scope)
 
-              (let [spy (.. (js/spyOn $scope "deleteRecord")
-                            -and
-                            (returnValue
-                             (.when $q #js {})))]
-
-                (let [response (.deleteRecord $scope conversation)]
-                  (js/console.log "app" app)
-                  (js/console.log "response" response)
-                  (-> response
-                      (.then
-                       (fn [r]
-                         (js/console.info "r" r)
-                         (.toBeDefined (js/expect r))
-                         #_(js/done)
-                         r)
-                       (fn [r]
-                         (js/console.warn "r" r)
-                         r))
-                      (.finally (fn []
-                                  (timbre/info "Done")
-                                  )))
-                  (.$apply $scope)
-                  (.toHaveBeenCalled (js/expect spy))
-                  ))))))
+              (.toHaveBeenCalled (js/expect spy))))))
       ))
   )

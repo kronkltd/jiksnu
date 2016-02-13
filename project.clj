@@ -102,6 +102,8 @@
                                              ;; :notify-command ["notify-send"]
                                              :compiler     {:output-to     "target/karma-test.js"
                                                             :optimizations :whitespace
+                                                            ;; Fix for $q's use of 'finally'
+                                                            :language-in :ecmascript5
                                                             :pretty-print  true}}}}
   :profiles {:dev        [:dev-core :user-dev]
              :dev-core   {:dependencies
