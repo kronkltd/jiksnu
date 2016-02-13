@@ -6,7 +6,7 @@
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
                     appProvider DSProvider DSHttpAdapterProvider
-                    hljsServiceProvider]
+                    hljsServiceProvider NotificationProvider]
 
   (.setOptions hljsServiceProvider #js {:tabReplace "  "})
 
@@ -16,6 +16,12 @@
 
   (js/angular.extend (.-defaults DSHttpAdapterProvider)
                      #js {:log false})
+
+  (.setOptions NotificationProvider
+               #js {
+                    :startTop 20
+                    }
+               )
 
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider

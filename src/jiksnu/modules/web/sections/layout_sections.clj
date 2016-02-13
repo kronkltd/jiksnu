@@ -47,8 +47,8 @@
    "/vendor/datatables/media/css/jquery.dataTables.min.css"
    "/vendor/angular-busy/dist/angular-busy.min.css"
    "/vendor/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css"
-   "/vendor/angular-notify/dist/angular-notify.min.css"
    "/vendor/angular-ui/build/angular-ui.min.css"
+   "/vendor/angular-ui-notification/dist/angular-ui-notification.min.css"
    "/vendor/angular-cfp-hotkeys/build/hotkeys.min.css"
    "/css/standard.css"))
 
@@ -74,9 +74,9 @@
     "/vendor/angular-highlightjs/angular-highlightjs.js"
     "/vendor/angular-markdown-directive/markdown.js"
     "/vendor/angular-moment/angular-moment.min.js"
-    "/vendor/angular-notify/dist/angular-notify.min.js"
     "/vendor/angular-sanitize/angular-sanitize.min.js"
     "/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"
+    "/vendor/angular-ui-notification/dist/angular-ui-notification.min.js"
     "/vendor/angular-ui-router/release/angular-ui-router.min.js"
     "/vendor/angular-validator/dist/angular-validator.min.js"
     "/vendor/angular-websocket/angular-websocket.min.js"

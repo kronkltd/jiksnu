@@ -43,12 +43,12 @@
 
 (defn update-page
   [app message]
-  (let [notify (.inject app "notify")]
-    (notify "Adding to page")))
+  (let [Notification (.inject app "Notification")]
+    (.info Notification "Adding to page")))
 
 (defn handle-message
   [app message]
-  (let [notify (.inject app "notify")
+  (let [Notification (.inject app "Notification")
         $rootScope (.inject app "$rootScope")
         data (js/JSON.parse (.-data message))
         action (.-action data)]
@@ -57,7 +57,7 @@
     (cond
       (.-connection data)
       (do
-        (notify "connected"))
+        (.info Notification "connected"))
 
       (.-action data)
       (condp = action
@@ -65,18 +65,12 @@
         (update-page app message)
 
         "error"
-        (do
-          (notify #js {:message "Error"
-                       :classes #js ["alert" "alert-danger"]
-                       :duration "0"
-                       :position "right"
-                       })
-          )
+        (.error Notification #js {:message "Error"})
 
         "delete" (.refresh app)
-        (notify (str "Unknown action type: " action)))
+        (.warning Notification (str "Unknown action type: " action)))
 
-      :default (notify (str "Unknown message: " data)))))
+      :default (.warning Notification (str "Unknown message: " data)))))
 
 (defn send
   [app command]
@@ -212,7 +206,7 @@
    })
 
 (defn app-service
-  [$http $q $state notify Users $websocket $window DS
+  [$http $q $state Notification Users $websocket $window DS
    pageService subpageService $injector]
   #_(timbre/debug "creating app service")
   (let [app #js {:inject (.-get $injector)}
@@ -255,6 +249,6 @@
 (def.provider jiksnu.app
   []
   #_(timbre/debug "initializing app service")
-  #js {:$get #js ["$http" "$q" "$state" "notify" "Users" "$websocket" "$window" "DS"
+  #js {:$get #js ["$http" "$q" "$state" "Notification" "Users" "$websocket" "$window" "DS"
                   "pageService" "subpageService" "$injector"
                   app-service]})

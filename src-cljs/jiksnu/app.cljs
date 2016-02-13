@@ -6,7 +6,6 @@
    angularFileUpload
    angularMoment
    btford.markdown
-   cgNotify
    geolocation
    datatables
    hljs
@@ -15,5 +14,6 @@
    ngWebSocket
    cfp.hotkeys
    ui.bootstrap
+   ui-notification
    ui.router
    ])
