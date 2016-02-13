@@ -24,13 +24,15 @@
   [app username password]
   (let [$http (.inject app "$http")]
     (timbre/info "Logging in user." username password)
-    (-> (.post $http
-               "/main/login"
+    (-> (.post $http "/main/login"
                (js/$.param #js {:username username :password password})
                #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
-        (.success (fn [data]
-                    (.fetchStatus app)
-                    (.go app "home"))))))
+        (.then (fn [data]
+                 (timbre/debug "authenticated")
+                 (-> (.fetchStatus app)
+                     (.then (fn []
+                              (timbre/debug "status updated")
+                              (.go app "home")))))))))
 
 (defn logout
   [app]
@@ -59,8 +61,19 @@
 
       (.-action data)
       (condp = action
-        "page-add" (update-page app message)
-        "delete" (.$broadcast $rootScope "updateCollection")
+        "page-add"
+        (update-page app message)
+
+        "error"
+        (do
+          (notify #js {:message "Error"
+                       :classes #js ["alert" "alert-danger"]
+                       :duration "0"
+                       :position "right"
+                       })
+          )
+
+        "delete" (.refresh app)
         (notify (str "Unknown action type: " action)))
 
       :default (notify (str "Unknown message: " data)))))
@@ -170,6 +183,10 @@
                  "\"")]
     (.send app msg)))
 
+(defn refresh
+  [app]
+  (let [$rootScope (.inject app "$rootScope")]
+    (.$broadcast $rootScope "updateCollection")))
 
 (def app-methods
   {
@@ -188,6 +205,7 @@
    :logout        logout
    :ping          ping
    :post          post
+   :refresh       refresh
    :register      register
    :send          send
    :unfollow      unfollow

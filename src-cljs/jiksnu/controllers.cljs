@@ -257,7 +257,7 @@
                 (.then (fn []
                          (.reset $scope)
                          (.toggle $scope)
-                         (.$broadcast $rootScope "updateCollection"))))))
+                         (.refresh app))))))
 
     (helpers/init-subpage $scope subpageService Users "streams")
     (.reset $scope)))
@@ -273,7 +273,7 @@
             (-> (.addStream app stream-name)
                 (.then (fn [stream]
                          (timbre/info "Added Stream" stream)
-                         (.$broadcast $rootScope "updateCollection"))))))))
+                         (.refresh app))))))))
 
 (def.controller jiksnu.RegisterPageController
   [app $scope]
@@ -310,7 +310,7 @@
         (fn [activity]
           ;; FIXME: use activity?
           (-> (.invokeAction app "activity" "delete" (.-id $scope))
-              (.then (fn [] (.$broadcast $rootScope "updateCollection"))))))
+              (.then (fn [] (.refresh app))))))
 
   (set! (.-likeActivity $scope)
         (fn [activity]
@@ -350,18 +350,8 @@
         (fn [item]
           (let [id (.-id $scope)]
             (timbre/debugf "deleting conversation: %s" id)
-            (-> app
-                (.invokeAction "conversation" "delete" id)
-                (.then (fn []
-                         (.$broadcast $rootScope "updateCollection")))))))
-
-  (set! (.-fetchActivities $scope)
-        (fn [conversation]
-          (timbre/warn "fetching activities")
-          (-> (.getActivities conversation)
-              (.then  (fn [response]
-                        (timbre/debug "Activities" response)
-                        (set! (.-activities $scope) (.-body response)))))))
+            (-> (.invokeAction app "conversation" "delete" id)
+                (.then (fn [] (.refresh app)))))))
 
   (let [id (or (.-id $scope) (.-_id $stateParams))]
     (.init $scope id)))
@@ -403,7 +393,8 @@
               (.then (fn [data]
                        (set! (.-group $scope) data)
                        (set! (.-loaded $scope) true))))))
-  (let [id (.-_id $stateParams)]
+
+  (let [id (or (.-id $scope) (.-_id $stateParams))]
     (.init $scope id)))
 
 (def.controller jiksnu.ShowStreamController
