@@ -10,7 +10,6 @@
 (def app-atom (atom nil))
 
 (def jiksnu "jiksnu")
-(def nav-bar-controller "NavBarController")
 
 (declare $q)
 (declare $rootScope)
@@ -64,30 +63,47 @@
               (set! (.-item $scope) #js {:_id item-id})
               (is (.isActor $scope) true)))))))
 
-  (describe {:doc nav-bar-controller}
-    (beforeEach
-     (let [mock-then (fn [f] #_(f))
-           mock-response #js {:then mock-then}]
-       (set! (.-fetchStatus app) (constantly mock-response))))
+  (let [nav-bar-controller "NavBarController"]
+    (describe {:doc nav-bar-controller}
+      (beforeEach
+       (let [mock-then (fn [f] #_(f))
+             mock-response #js {:then mock-then}]
+         (set! (.-fetchStatus app) (constantly mock-response))))
 
-    (it "should be unloaded by default"
-      (@$controller nav-bar-controller injections)
-      (is $scope.loaded false))
-
-    (it "should call fetchStatus"
-      (let [mock-then (fn [f]
-                        (timbre/info "replacement")
-                        (f))
-            mock-response #js {:then mock-then}]
-        (set! (.-fetchStatus app) (constantly mock-response))
+      (it "should be unloaded by default"
         (@$controller nav-bar-controller injections)
-        (is $scope.loaded true)))
+        (is $scope.loaded false))
 
-    (it "should bind the app service to app2"
-      (set! (.-foo app) "bar")
-      (@$controller "NavBarController" injections)
+      (it "should call fetchStatus"
+        (let [mock-then (fn [f]
+                          (timbre/info "replacement")
+                          (f))
+              mock-response #js {:then mock-then}]
+          (set! (.-fetchStatus app) (constantly mock-response))
+          (@$controller nav-bar-controller injections)
+          (is $scope.loaded true)))
 
-      (is $scope.app2.foo "bar")))
+      (it "should bind the app service to app2"
+        (set! (.-foo app) "bar")
+        (@$controller "NavBarController" injections)
+
+        (is $scope.app2.foo "bar"))))
+
+  (let [new-group-controller "NewGroupController"]
+    (describe {:doc new-group-controller}
+      (beforeEach
+       (timbre/info "Set up controller")
+       )
+
+      (describe {:doc ".submit"}
+        (it "Should send the form"
+          (@$controller new-group-controller injections)
+          (.submit $scope)
+
+          )
+        )
+      )
+    )
 
   (let [list-streams-controller "ListStreamsController"]
     (describe {:doc list-streams-controller}
@@ -139,8 +155,8 @@
                      (timbre/info "error")
                      (.toBeDefined (js/expect r))))
                   (.finally (fn []
-                                (timbre/info "Done")
-                                (js/done))))
+                              (timbre/info "Done")
+                              (js/done))))
               (.$apply $scope)
 
               (.toHaveBeenCalled (js/expect spy))))))

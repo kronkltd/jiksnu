@@ -192,9 +192,12 @@
       (.then (fn [] (set! (.-loaded $scope) true)))))
 
 (def.controller jiksnu.NewGroupController
-  [$scope]
-
-  )
+  [$scope app $http]
+  (let [default-form #js {}]
+    (set! (.-submit $scope)
+          (fn []
+            (timbre/info "Submitting group form")
+            (.post $http)))))
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Users]

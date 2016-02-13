@@ -1,7 +1,7 @@
 (ns jiksnu.helpers-test
   (:require [jiksnu.helpers :as helpers]
             purnam.test)
-  (:use-macros [purnam.test :only [describe is it fact facts]]))
+  (:use-macros [purnam.test :only [describe is it fact facts beforeEach]]))
 
 (declare $rootScope)
 (declare $http)
@@ -9,9 +9,9 @@
 
 
 (describe {:doc "jiksnu.helpers"}
-  (js/beforeEach (js/module "jiksnu"))
+  (beforeEach (js/module "jiksnu"))
 
-  (js/beforeEach
+  (beforeEach
    (js/inject
     #js ["$rootScope" "$http"
          (fn [_$rootScope_ _$http_]
@@ -20,8 +20,8 @@
 
   (describe {:doc "hyphen-case"}
 
-  (it "handles multi-parts"
-    (is (helpers/hyphen-case "FeedSource") "feed-source"))
+    (it "handles multi-parts"
+      (is (helpers/hyphen-case "FeedSource") "feed-source"))
 
-  (it "handles single parts"
-    (is (helpers/hyphen-case "Feed") "feed"))))
+    (it "handles single parts"
+      (is (helpers/hyphen-case "Feed") "feed"))))
