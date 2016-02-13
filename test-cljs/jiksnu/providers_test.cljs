@@ -1,6 +1,6 @@
 (ns jiksnu.providers-test
   (:require jiksnu.providers
-            [purnam.test :refer-macros [describe is it fact facts]]))
+            [purnam.test :refer-macros [beforeEach describe is it]]))
 
 (declare $httpBackend)
 (declare app)
@@ -26,7 +26,7 @@
               response (atom nil)]
 
           ;; route: streams-api/collection :post
-          (-> (.whenPOST $httpBackend "/model/streams")
+          (-> (.expectPOST $httpBackend "/model/streams")
               (.respond (fn [] #js [200 stream-name])))
 
           (-> (.addStream app stream-name)

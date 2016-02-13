@@ -194,10 +194,24 @@
 (def.controller jiksnu.NewGroupController
   [$scope app $http]
   (let [default-form #js {}]
+
+    (set! (.-init $scope)
+          (fn []
+            (timbre/info "init NewGroupController")
+            (.reset $scope)))
+
+    (set! (.-reset $scope)
+          (fn []
+            (timbre/info "reset")
+            (set! (.-form $scope) default-form)))
+
     (set! (.-submit $scope)
           (fn []
             (timbre/info "Submitting group form")
-            (.post $http)))))
+            (.post $http)))
+
+    (.init $scope)
+    ))
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Users]
