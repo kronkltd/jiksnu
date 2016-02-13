@@ -52,7 +52,7 @@
 
 (defn make-delete
   [delete-fn access-fn]
-  (fn[item]
+  (fn [item]
     (timbre/debug "Deleting item")
     (if (access-fn item)
       (delete-fn item)

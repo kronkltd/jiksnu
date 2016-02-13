@@ -294,7 +294,7 @@
 (def.controller jiksnu.SettingsPageController [])
 
 (def.controller jiksnu.ShowActivityController
-  [$scope $stateParams Activities app]
+  [$scope $stateParams Activities app $rootScope]
   (set! (.-loaded $scope) false)
   (set! (.-app $scope) app)
 
@@ -309,7 +309,8 @@
   (set! (.-deleteRecord $scope)
         (fn [activity]
           ;; FIXME: use activity?
-          (.invokeAction app "activity" "delete" (.-id $scope))))
+          (-> (.invokeAction app "activity" "delete" (.-id $scope))
+              (.then (fn [] (.$broadcast $rootScope "updateCollection"))))))
 
   (set! (.-likeActivity $scope)
         (fn [activity]

@@ -47,15 +47,23 @@
 (defn handle-message
   [app message]
   (let [notify (.inject app "notify")
-        data (js/JSON.parse (.-data message))]
+        $rootScope (.inject app "$rootScope")
+        data (js/JSON.parse (.-data message))
+        action (.-action data)]
     #_(timbre/debug "Received Message")
     (js/console.debug data)
     (cond
-      (.-connection data) (do #_(notify "connected"))
-      (.-action data) (condp = (.-action data)
-                        "page-add" (update-page app message)
-                        (notify "Unknown action type"))
-      :default (notify data))))
+      (.-connection data)
+      (do
+        (notify "connected"))
+
+      (.-action data)
+      (condp = action
+        "page-add" (update-page app message)
+        "delete" (.$broadcast $rootScope "updateCollection")
+        (notify (str "Unknown action type: " action)))
+
+      :default (notify (str "Unknown message: " data)))))
 
 (defn send
   [app command]
