@@ -10,6 +10,7 @@
             [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.modules.web.core :as core]
             [jiksnu.modules.web.helpers :as helpers]
+            [jiksnu.modules.web.middleware :as middleware]
             [liberator.dev :refer [wrap-trace]]
             [org.httpkit.server :as server]
             [ring.logger.timbre :as logger.timbre]
@@ -39,7 +40,9 @@
             #'core/jiksnu-routes)
            logger.timbre/wrap-with-logger
            (wrap-trace :ui)
+           middleware/wrap-user-binding
            (friend/authenticate auth-config)
+           middleware/wrap-authentication-handler
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info
       wrap-content-type

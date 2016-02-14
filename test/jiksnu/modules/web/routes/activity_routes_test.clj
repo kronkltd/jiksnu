@@ -4,6 +4,7 @@
             [clojure.data.json :as json]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
@@ -15,16 +16,33 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact "route: activities-api/item :delete"
-  (let [activity (mock/there-is-an-activity)
-        url (str "/model/activities/" (:_id activity))
-        request (req/request :delete url)
-        response (response-for request)]
-    response => (contains {:status status/success?})
-    (let [body (:body response)]
-      body => string?
-      (let [json-obj (json/read-json body true)]
-        json-obj => (contains {:_id (str (:_id activity))})))))
+(facts "route: activities-api/item :delete"
+  (fact "when authenticated"
+    (let [user (mock/a-user-exists)
+          activity (mock/there-is-an-activity {:user user})
+          url (str "/model/activities/" (:_id activity))
+          request (-> (req/request :delete url)
+                      (as-user user))
+          response (response-for request)]
+      response => (contains {:status status/success?})
+      (let [body (:body response)]
+        body => string?
+        (let [json-obj (json/read-str body :key-fn keyword)]
+          json-obj => (contains {:_id (str (:_id activity))})
+          (model.activity/fetch-by-id (:_id activity)) => nil))))
+  (fact "when not authenticated"
+    (let [user (mock/a-user-exists)
+          activity (mock/there-is-an-activity {:user user})
+          url (str "/model/activities/" (:_id activity))
+          request (req/request :delete url)
+          response (response-for request)]
+      response => (contains {:status status/client-error?})
+      #_(let [body (:body response)]
+          body => string?
+          (let [json-obj (json/read-str body :key-fn keyword)]
+            json-obj => (contains {:_id (str (:_id activity))})
+            ))
+      (model.activity/fetch-by-id (:_id activity)) =not=> nil)))
 
 (fact "route: activity/update"
   (fact "when the user is authenticated"

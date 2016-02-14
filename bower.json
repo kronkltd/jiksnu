@@ -13,7 +13,7 @@
     "angular-markdown-directive": "0.3.1",
     "angular-moment": "0.10.3",
     "angular-ui": "0.4.0",
-    "angular-ui-notification" : "0.1.0",
+    "angular-ui-notification": "0.1.0",
     "angular-ui-router": "0.2.13",
     "angular-validator": "0.2.6",
     "angular-websocket": "1.0.14",
@@ -30,6 +30,7 @@
     "angular-mocks": "latest"
   },
   "resolutions": {
-    "angular": "1.4.7"
+    "angular": "1.4.7",
+    "moment": "2.11.1"
   }
 }

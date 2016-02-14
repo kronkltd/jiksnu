@@ -244,8 +244,11 @@
      'inst
      (partial f/unparse (f/formatters :date-time)))})
 
-(defn inspect
+(defmacro inspect
   "Prints a display of the passed value"
   [v]
-  (puget/cprint v {:print-handlers time-handlers})
-  v)
+  `(let [val# ~v]
+     (timbre/infof "%s => %s"
+      (puget/cprint-str (quote ~v))
+      (puget/cprint-str val# {:print-handlers time-handlers}))
+     val#))

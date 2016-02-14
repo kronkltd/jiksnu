@@ -1,24 +1,28 @@
 (ns jiksnu.modules.web.middleware
   (:require [ciste.config :refer [config]]
             [taoensso.timbre :as timbre]
+            [cemerick.friend :as friend]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
             [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.session :refer [with-user-id]]
+            [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+ throw+]])
   (:import javax.security.auth.login.LoginException))
 
 (defn wrap-user-binding
   [handler]
   (fn [request]
-    (with-user-id (-> request :session :id)
-      (handler request))))
+    (let [username (get-in request [:session :cemerick.friend/identity :current])
+          id (when username (str "acct:" username "@" (config :domain)))]
+      (with-user-id id
+        (handler request)))))
 
 (defn auth-exception
   [ex]
-  {:status 303
+  {:status 401
    :template false
    :flash "You must be logged in to do that."
    :headers {"location" "/main/login"}})
@@ -29,6 +33,10 @@
     (try+
      (handler request)
      (catch [:type :authentication] ex
+       (timbre/warn ex "Auth error")
+       (auth-exception ex))
+     (catch [:type :authorization] ex
+       (timbre/warn ex "Auth error")
        (auth-exception ex))
      (catch [:type :permission] ex
        (auth-exception ex))

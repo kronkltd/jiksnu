@@ -52,6 +52,7 @@
     (ref-set r/that {}))
    (actions.domain/current-domain)
    (catch Object ex
+     (timbre/error "Setup Error" ex)
      ;; FIXME: Handle error
      (throw+ ex))))
 
@@ -61,7 +62,7 @@
    (stop-application!)
    (catch Object ex
      ;(println "error")
-     (timbre/error ex)
+     (timbre/error "Shutdown Error" ex)
      (throw+ ex))))
 
 (defmacro test-environment-fixture

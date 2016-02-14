@@ -8,7 +8,9 @@
             [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
                                                 defparameter page-resource path]]
             [jiksnu.util :as util]
-            [octohipster.mixins :as mixin]))
+            [octohipster.mixins :as mixin]
+            [slingshot.slingshot :refer [try+ throw+]]
+            [taoensso.timbre :as timbre]))
 
 (defparameter :model.activity/id
   :in :path
@@ -72,12 +74,22 @@
   :mixins [ciste-resource]
   :available-media-types ["application/json"]
   :available-formats [:json]
-  :presenter (partial into {})
+  ;; :presenter (partial into {})
+  :authorized? (fn [ctx]
+                 (timbre/info "Checking authorization")
+                 (util/inspect ctx)
+                )
   :allowed-methods [:get :delete]
   :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)
+             (let [id (get-in ctx [:request :route-params :_id])
                    activity (model.activity/fetch-by-id id)]
                {:data activity}))
   ;; :put!    #'actions.activity/update-record
   :delete! (fn [ctx]
-             (actions.activity/delete)))
+             ;; (try+
+              (actions.activity/delete (:data ctx))
+              ;; (catch Object ex
+              ;;   (timbre/error ex "Delete Error")
+              ;;   )
+             ;; )
+  ))
