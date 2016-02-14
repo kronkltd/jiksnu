@@ -5,8 +5,7 @@
                                             index-section show-section
                                            title]]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.modules.core.sections :refer [format-page-info]]
-            [taoensso.timbre :as timbre]))
+            [jiksnu.modules.core.sections :refer [format-page-info]]))
 
 ;; direct-message-timeline
 

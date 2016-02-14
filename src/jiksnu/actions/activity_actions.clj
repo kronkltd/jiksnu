@@ -10,8 +10,7 @@
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre]
-            [jiksnu.util :as util]))
+            [taoensso.timbre :as timbre]))
 
 (defn can-delete?
   [item]

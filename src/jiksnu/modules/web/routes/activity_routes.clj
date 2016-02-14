@@ -9,7 +9,6 @@
                                                 defparameter page-resource path]]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [try+ throw+]]
             [taoensso.timbre :as timbre]))
 

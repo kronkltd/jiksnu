@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.like-routes
-  (:require [cemerick.friend :as friend]
-            [ciste.config :refer [config]]
+  (:require [ciste.config :refer [config]]
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.model.like :as model.like]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]

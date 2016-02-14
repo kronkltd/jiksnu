@@ -2,8 +2,7 @@
   (:require [ciste.core :refer [with-format]]
             [ciste.formats :refer [format-as]]
             [clojure.data.json :as json]
-            [hiccup.core :as h]
-            [taoensso.timbre :as timbre]))
+            [hiccup.core :as h]))
 
 (defmethod format-as :clj
   [format request response]

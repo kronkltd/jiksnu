@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section]]
-            [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.core.views.stream-views
@@ -9,8 +8,7 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
                                                 path subpage-resource]]
-            [octohipster.mixins :as mixin]
-            [jiksnu.util :as util]))
+            [octohipster.mixins :as mixin]))
 
 (defparameter :model.user/id
   :description "The account Id of a user"

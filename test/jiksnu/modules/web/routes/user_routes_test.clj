@@ -6,8 +6,7 @@
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]
-            [taoensso.timbre :as timbre]))
+            [ring.mock.request :as req]))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))

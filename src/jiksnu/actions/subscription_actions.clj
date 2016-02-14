@@ -2,7 +2,6 @@
   (:require [clojure.string :as string]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
@@ -10,9 +9,6 @@
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
-            [jiksnu.util :as util]
-            [manifold.bus :as bus]
-            [manifold.stream :as s]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 

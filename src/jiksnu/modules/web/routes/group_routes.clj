@@ -9,7 +9,6 @@
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]
-            [jiksnu.util :as util]
             [jiksnu.model.user :as model.user]))
 
 (defparameter :model.group/id

@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.routes
   (:require [cemerick.friend :as friend]
             [cemerick.friend.workflows :as workflows]
-            [taoensso.timbre :as timbre]
             [compojure.core :refer [GET routes]]
             [compojure.handler :as handler]
             [compojure.route :as route]

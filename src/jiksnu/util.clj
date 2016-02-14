@@ -1,6 +1,5 @@
 (ns jiksnu.util
   (:require [ciste.loader :refer [require-namespaces]]
-            [ciste.model :as cm]
             [clj-factory.core :refer [factory]]
             [clj-time.format :as f]
             [clojure.string :as string]

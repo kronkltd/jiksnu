@@ -5,8 +5,7 @@
             [jiksnu.modules.web.handlers :as handlers]
             [jiksnu.modules.web.helpers :as helpers]
             jiksnu.modules.web.routes.pages
-            [jiksnu.modules.web.core :refer [jiksnu-init]]
-            [taoensso.timbre :as timbre]))
+            [jiksnu.modules.web.core :refer [jiksnu-init]]))
 
 (defn start
   []

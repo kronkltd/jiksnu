@@ -10,8 +10,7 @@
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre]
-            [jiksnu.util :as util])
+            [taoensso.timbre :as timbre])
   (:import java.io.PushbackReader
            (java.io FileNotFoundException)))
 

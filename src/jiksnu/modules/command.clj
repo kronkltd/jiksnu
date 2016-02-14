@@ -2,9 +2,7 @@
   (:require [ciste.commands :refer [add-command! command-names]]
             [jiksnu.modules.core.actions :as actions]
             jiksnu.modules.command.filters
-            ;; [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.site-actions :as actions.site]
             [jiksnu.actions.stream-actions :as actions.stream]))
 

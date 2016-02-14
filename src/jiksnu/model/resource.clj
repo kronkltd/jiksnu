@@ -4,7 +4,6 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
-            [monger.collection :as mc]
             [net.cgrand.enlive-html :as enlive]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [validation-set presence-of acceptance-of]])

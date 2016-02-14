@@ -5,7 +5,7 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.modules.web.routes.activity-routes :as routes.activity]
+            jiksnu.modules.web.routes.activity-routes
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]

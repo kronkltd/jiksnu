@@ -21,10 +21,8 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.actions :as actions]
-    ;; [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.session :refer [current-user-id]]
-            [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre]))
+            [slingshot.slingshot :refer [throw+]]))
 
 (deffilter #'actions/get-model :command
   [action request]

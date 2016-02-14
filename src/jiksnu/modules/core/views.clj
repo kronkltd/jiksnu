@@ -3,9 +3,7 @@
             [ciste.formats :refer [format-as]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [link-to index-line edit-button]]
-            [clojure.data.json :as json]
-            [jiksnu.actions :as actions]
-            [taoensso.timbre :as timbre]))
+            [jiksnu.modules.core.actions :as actions]))
 
 (defn command-not-found
   []

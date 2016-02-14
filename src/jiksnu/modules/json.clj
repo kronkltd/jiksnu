@@ -2,8 +2,7 @@
   (:require [ciste.loader :refer [defhandler defmodule]]
             jiksnu.modules.json.views
             [jiksnu.registry :as registry]
-            [jiksnu.util :as util]
-            [taoensso.timbre :as timbre]))
+            [jiksnu.util :as util]))
 
 (defn require-components
   []

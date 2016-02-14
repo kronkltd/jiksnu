@@ -1,14 +1,12 @@
 (ns jiksnu.modules.web.middleware
   (:require [ciste.config :refer [config]]
             [taoensso.timbre :as timbre]
-            [cemerick.friend :as friend]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
             [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.session :refer [with-user-id]]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+ throw+]])
   (:import javax.security.auth.login.LoginException))
 

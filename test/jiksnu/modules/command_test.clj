@@ -3,7 +3,6 @@
             [ciste.core :refer [with-context]]
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
-            [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.mock :as mock]
             [jiksnu.modules.command]
             [jiksnu.test-helper :as th]

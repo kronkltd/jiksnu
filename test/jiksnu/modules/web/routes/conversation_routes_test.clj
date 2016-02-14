@@ -2,7 +2,6 @@
   (:require [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 

@@ -1,8 +1,7 @@
 (ns jiksnu.modules.json.views
   (:require [ciste.views :refer [defview]]
             [jiksnu.modules.core.actions :as actions]
-            [jiksnu.modules.http.actions :as http.actions]
-            [taoensso.timbre :as timbre]))
+            [jiksnu.modules.http.actions :as http.actions]))
 
 (defview #'http.actions/connect :json
   [request response]
