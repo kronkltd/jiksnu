@@ -61,7 +61,7 @@
             [lein-bikeshed "0.2.0"]
             [lein-checkall "0.1.1"]
             [lein-checkouts "1.1.0"]
-            [lein-cljsbuild "1.1.1"]
+            [lein-cljsbuild "1.1.2"]
             [lein-cloverage "1.0.2"]
             [lein-less "1.7.5"]
             [lein-hiera "0.9.5"]
@@ -98,21 +98,36 @@
                  :host    "0.0.0.0"
                  :port    7888}
   :appenders {:jl (make-tools-logging-appender {})}
-  :cljsbuild {:repl-listen-port     9001
-              :repl-launch-commands {"my-launch" ["google-chrome"]}
-              :builds
-                                    {:main  {:source-paths ["src-cljs"]
-                                             :notify-command ["notify-send"]
-                                             :compiler     {:output-to     "target/resources/public/cljs/jiksnu.js"
-                                                            :optimizations :simple
-                                                            :pretty-print  true}}
-                                     :karma {:source-paths ["src-cljs" "test-cljs"]
-                                             :notify-command ["notify-send"]
-                                             :compiler     {:output-to     "target/karma-test.js"
-                                                            :optimizations :whitespace
-                                                            ;; Fix for $q's use of 'finally'
-                                                            :language-in :ecmascript5
-                                                            :pretty-print  true}}}}
+  :cljsbuild {:builds
+              [{
+                :id :main
+                :source-paths ["src-cljs"]
+                :notify-command ["notify-send"]
+                :compiler     {:output-to     "target/resources/public/cljs/jiksnu.js"
+                               :optimizations :simple
+                               :pretty-print  true}}
+               ;; {:id :karma
+               ;;  :source-paths ["src-cljs" "test-cljs"]
+               ;;  :notify-command ["notify-send"]
+               ;;  :compiler     {:output-to     "target/karma-test.js"
+               ;;                 :optimizations :whitespace
+               ;;                 ;; Fix for $q's use of 'finally'
+               ;;                 :language-in :ecmascript5
+               ;;                 :pretty-print  true}}
+               ;; {:id :protractor
+               ;;  :source-paths ["specs"]
+               ;;  :notify-command ["notify-send"]
+               ;;  :compiler     {:output-to     "target/protractor-tests.js"
+               ;;                 :optimizations :simple
+               ;;                 :pretty-print  true}}
+               ;; {
+               ;;  :id :advanced
+               ;;  :source-paths ["src-cljs"]
+               ;;  :notify-command ["notify-send"]
+               ;;  :compiler     {:output-to     "target/resources/public/cljs/jiksnu.min.js"
+               ;;                 :optimizations :advanced
+               ;;                 :pretty-print  false}}
+               ]}
   :profiles {:dev        [:dev-core :user-dev]
              :dev-core   {:dependencies
                           [[midje "1.8.3" :exclusions [org.clojure/clojure]]
@@ -125,25 +140,8 @@
                            [slamhound "1.5.5"]
                            [com.palletops/log-config "0.1.4"]]}
              :production {:aot   :all
-                          :hooks [leiningen.cljsbuild leiningen.less]
-                          :cljsbuild
-                                 {:builds
-                                  {:advanced {:source-paths ["src-cljs"]
-                                              :notify-command ["notify-send"]
-                                              :compiler     {:output-to     "target/resources/public/cljs/jiksnu.min.js"
-                                                             :optimizations :advanced
-                                                             :pretty-print  false}}}}}
-             :test       {:resource-paths ["target/resources"
-
-                                           "resources"
-                                           "test-resources"]
-
-                          :cljsbuild      {:builds
-                                           {:protractor {:source-paths ["specs"]
-                                                         :notify-command ["notify-send"]
-                                                         :compiler     {:output-to     "target/protractor-tests.js"
-                                                                        :optimizations :simple
-                                                                        :pretty-print  true}}}}}}
+                          :hooks [leiningen.cljsbuild leiningen.less]}
+             :test       {:resource-paths ["target/resources" "resources" "test-resources"]}}
   :less {:source-paths ["less"]
          :target-path  "target/resources/public/css"}
   :filespecs [{:type :path :path "ciste.clj"}]

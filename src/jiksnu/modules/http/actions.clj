@@ -4,7 +4,6 @@
             [ciste.core :refer [defaction with-format with-serialization]]
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
-            [clojure.core.incubator :refer [dissoc-in]]
             [clojure.data.json :as json]
             [taoensso.timbre :as timbre]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -44,7 +43,7 @@
     (timbre/with-context {:user-id user-id :connection-id connection-id}
       (timbre/info "closed connection"))
     (dosync
-     (alter connections #(dissoc-in % [user-id connection-id])))))
+     (alter connections #(update % user-id dissoc connection-id)))))
 
 (defaction alert-all
   [message]

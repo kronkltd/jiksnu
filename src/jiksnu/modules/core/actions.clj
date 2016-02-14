@@ -3,7 +3,6 @@
             [ciste.core :refer [with-format with-serialization]]
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
-            [clojure.core.incubator :refer [dissoc-in]]
             [jiksnu.channels :as ch]
             [jiksnu.predicates :as pred]
             [manifold.bus :as bus]
