@@ -99,11 +99,35 @@
                  :port    7888}
   :appenders {:jl (make-tools-logging-appender {})}
   :cljsbuild {:builds
-              {:main {:source-paths ["src-cljs"]
-                      :notify-command ["notify-send"]
-                      :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
-                                 :optimizations :simple
-                                 :pretty-print true}}}}
+              [{
+                :id :main
+                :source-paths ["src-cljs"]
+                :notify-command ["notify-send"]
+                :compiler     {:output-to     "target/resources/public/cljs/jiksnu.js"
+                               :optimizations :simple
+                               :pretty-print  true}}
+               {:id :karma
+                :source-paths ["src-cljs" "test-cljs"]
+                :notify-command ["notify-send"]
+                :compiler     {:output-to     "target/karma-test.js"
+                               :optimizations :whitespace
+                               ;; Fix for $q's use of 'finally'
+                               :language-in :ecmascript5
+                               :pretty-print  true}}
+               {:id :protractor
+                :source-paths ["specs"]
+                :notify-command ["notify-send"]
+                :compiler     {:output-to     "target/protractor-tests.js"
+                               :optimizations :simple
+                               :pretty-print  true}}
+               {
+                :id :advanced
+                :source-paths ["src-cljs"]
+                :notify-command ["notify-send"]
+                :compiler     {:output-to     "target/resources/public/cljs/jiksnu.min.js"
+                               :optimizations :advanced
+                               :pretty-print  false}}
+               ]}
   :profiles {:dev        [:dev-core :user-dev]
              :dev-core   {:dependencies
                           [[midje "1.8.3" :exclusions [org.clojure/clojure]]
