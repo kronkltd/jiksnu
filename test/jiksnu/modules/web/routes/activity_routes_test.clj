@@ -5,6 +5,7 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.modules.web.routes.activity-routes :as routes.activity]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
@@ -36,7 +37,7 @@
           url (str "/model/activities/" (:_id activity))
           request (req/request :delete url)
           response (response-for request)]
-      response => (contains {:status status/client-error?})
+      (util/inspect response) => (contains {:status status/client-error?})
       #_(let [body (:body response)]
           body => string?
           (let [json-obj (json/read-str body :key-fn keyword)]

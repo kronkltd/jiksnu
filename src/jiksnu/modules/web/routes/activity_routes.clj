@@ -81,10 +81,10 @@
                  (if (#{:delete} (util/inspect (get-in ctx [:request :request-method])))
                    (do
                      (timbre/debug "authenticated method")
-                     (util/inspect (session/current-user-id))
-                     nil)
+                     (not (nil? (util/inspect (session/current-user-id)))))
                    (do
                      (timbre/info "unauthenticated method")
+
                      ctx)))
   :allowed-methods [:get :delete]
   :exists? (fn [ctx]
