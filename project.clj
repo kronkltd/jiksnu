@@ -15,20 +15,17 @@
                                ]]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"
                   :exclusions [ciste ciste/ciste-core]]
-                 [clauth "1.0.0-rc17"]
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [clj-time "0.11.0"]
                  [clj-http "2.0.1"]
                  [clojurewerkz/mailer "1.3.0"]
-                 [cheshire "5.5.0"
-                  :exclusions [org.clojure/clojure]]
                  [compojure "1.4.0"]
                  [clojurewerkz/support "1.1.0"]
                  [com.cemerick/friend "0.2.1"]
                  [com.flybe/socket-rocket "0.1.9"]
                  [com.novemberain/monger "3.0.2"]
                  [com.novemberain/validateur "2.5.0"]
-                 [com.taoensso/timbre "4.1.4"]
+                 [com.taoensso/timbre "4.2.1"]
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
                  [http-kit "2.1.19"]
@@ -39,7 +36,6 @@
                  [manifold "0.1.2"]
                  [mvxcvi/puget "1.0.0"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
-                 #_[net.kronkltd/jiksnu-command "0.1.0-SNAPSHOT"]
                  [net.kronkltd/octohipster "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
                  [net.logstash.log4j/jsonevent-layout "1.7"]
@@ -51,27 +47,39 @@
                  [org.clojure/data.json "0.2.6"]
                  [org.jsoup/jsoup "1.8.3"]
                  [org.slf4j/slf4j-api "1.7.16"]
-                 [cider/cider-nrepl "0.10.0-SNAPSHOT"]
-                 [org.slf4j/slf4j-log4j12 "1.7.12"]
-                 ;; [ring "1.2.2"]
+                 [cider/cider-nrepl "0.10.2"]
+                 [org.slf4j/slf4j-log4j12 "1.7.16"]
                  [ring/ring-core "1.4.0"]
                  [ring-basic-authentication "1.0.5"]
                  [ring-logger-timbre "0.7.5"]
                  [slingshot "0.12.2"]
                  [timbre-logstash "0.2.0"]]
-  :plugins [[cider/cider-nrepl "0.10.0-SNAPSHOT"]
+  :plugins [[cider/cider-nrepl "0.10.2"]
             [codox "0.8.13"]
             [lein-ancient "0.6.7"]
+            [lein-annotations "0.1.0"]
             [lein-bikeshed "0.2.0"]
             [lein-checkall "0.1.1"]
             [lein-checkouts "1.1.0"]
-            [lein-cljsbuild "1.0.6"]
+            [lein-cljsbuild "1.1.1"]
             [lein-cloverage "1.0.2"]
             [lein-less "1.7.5"]
+            [lein-hiera "0.9.5"]
             [lein-midje "3.1.3"]
             [lein-shell "0.4.0"]
             [org.clojars.strongh/lein-init-script "1.3.1"]]
   :bower {:package-file "bower.json", :config-file ".bowerrc"}
+  :hiera {:ignore-ns #{"jiksnu.ops"
+                       "jiksnu.model"
+                       "jiksnu.factory"
+                       "jiksnu.namespace"
+                       "jiksnu.channels"
+                       "jiksnu.session"
+                       "jiksnu.util"
+                       "jiksnu.mock"
+                       "jiksnu.registry"
+                       "jiksnu.db"
+                       }}
   :aliases {"karma"             ["shell" "./node_modules/.bin/karma" "start"]
             "protractor"        ["shell" "./node_modules/.bin/protractor" "protractor.config.js"]
             "protractor-start"  ["shell" "./node_modules/.bin/webdriver-manager" "start"]
@@ -110,6 +118,7 @@
                           [[midje "1.8.3" :exclusions [org.clojure/clojure]]
                            [clj-factory "0.2.2-SNAPSHOT"]
                            [clj-webdriver "0.7.2" :exclusions [xalan]]
+                           [org.seleniumhq.selenium/selenium-java "2.52.0"]
                            [helpshift/hydrox "0.1.15"]
                            [org.clojure/tools.nrepl "0.2.12"]
                            [ring-mock "0.1.5"]
