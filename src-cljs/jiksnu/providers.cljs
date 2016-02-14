@@ -1,5 +1,6 @@
 (ns jiksnu.providers
-  (:require jiksnu.app
+  (:require [cljs.reader :as reader]
+            jiksnu.app
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.provider]]))
 
@@ -57,20 +58,26 @@
     (cond
       (.-connection data)
       (do
-        (.info Notification "connected"))
+        (.success Notification "connected"))
 
       (.-action data)
       (condp = action
+        "like"
+        (.success Notification (.-content (.-body data)))
+
         "page-add"
         (update-page app message)
 
         "error"
-        (.error Notification #js {:message "Error"})
+        (let [msg (or (some-> data .-message reader/read-string :msg)
+                      "Error")]
+          (.error Notification #js {:message msg}))
 
         "delete" (.refresh app)
         (.warning Notification (str "Unknown action type: " action)))
 
-      :default (.warning Notification (str "Unknown message: " data)))))
+      :default
+      (.warning Notification (str "Unknown message: " data)))))
 
 (defn send
   [app command]
