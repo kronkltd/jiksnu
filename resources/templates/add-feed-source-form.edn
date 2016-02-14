@@ -1,12 +1,12 @@
   [:form.well.form-horizontal {:method "post" :action "/admin/feed-sources"}
    [:fieldset
     [:legend "Add Source"]
-    (control-line "Topic"  "topic" "text")
-    (control-line "Callback" "callback" "text")
-    (control-line "Challenge" "challenge" "text")
+    ;; (control-line "Topic"  "topic" "text")
+    ;; (control-line "Callback" "callback" "text")
+    ;; (control-line "Challenge" "challenge" "text")
     ;; TODO: radio buttons?
-    (control-line "Mode" "mode" "text")
-    (control-line "User" "user" "text")
+    ;; (control-line "Mode" "mode" "text")
+    ;; (control-line "User" "user" "text")
     [:div.form-actions
      [:button.btn.btn-primary
       {:type "submit"} "Add"]]]]
