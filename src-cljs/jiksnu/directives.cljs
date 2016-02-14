@@ -59,10 +59,11 @@
    :templateUrl "/templates/left-column-section"})
 
 (list-directive "Activities" "activities")
-(list-directive "Followers" "followers")
-(list-directive "Following" "following")
-(list-directive "Groups" "groups")
-(list-directive "Streams" "streams")
+(list-directive "Followers"  "followers")
+(list-directive "Following"  "following")
+(list-directive "Groups"     "groups")
+(list-directive "Likes"      "likes")
+(list-directive "Streams"    "streams")
 
 (def.directive jiksnu.navBar []
   #js
@@ -80,6 +81,7 @@
 (item-directive "Conversation"     "conversation")
 (item-directive "FollowersMinimal" "followers-minimal")
 (item-directive "FollowingMinimal" "following-minimal")
+(item-directive "Like"             "like")
 (item-directive "StreamMinimal"    "stream-minimal")
 (item-directive "Subscription"     "subscription")
 (item-directive "User"             "user")

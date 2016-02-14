@@ -164,6 +164,7 @@
 (page-controller Domains       "domains"       [])
 (page-controller FeedSources   "feed-sources"  [])
 (page-controller Groups        "groups"        [])
+(page-controller Likes         "likes"        [])
 (page-controller Resources     "resources"     [])
 (page-controller Streams       "streams"       [])
 (page-controller Subscriptions "subscriptions" [])
@@ -410,6 +411,18 @@
               (.then (fn [data]
                        (set! (.-group $scope) data)
                        (set! (.-loaded $scope) true))))))
+
+  (let [id (or (.-id $scope) (.-_id $stateParams))]
+    (.init $scope id)))
+
+(def.controller jiksnu.ShowLikeController
+  [$scope $stateParams Likes]
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne Likes id $scope "item")
+          (-> (.find Likes id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
 
   (let [id (or (.-id $scope) (.-_id $stateParams))]
     (.init $scope id)))

@@ -65,6 +65,16 @@
     :deserialize deserializer
     :methods #js {:getType (constantly "Group")}}))
 
+(def.factory jiksnu.Likes
+  [DS subpageService]
+  (.defineResource
+   DS
+   #js
+   {:name "likes"
+    :endpoint "likes"
+    :deserialize deserializer
+    :methods #js {:getType (constantly "Like")}}))
+
 (def.factory jiksnu.Streams
   [DS]
   (.defineResource

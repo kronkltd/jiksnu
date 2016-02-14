@@ -8,6 +8,22 @@
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
 
+(defgroup jiksnu likes
+  :name "Likes"
+  :url "/main/likes")
+
+(defresource likes :collection
+  :methods {:get {:summary "Index Likes Page"}}
+  :mixins [angular-resource])
+
+(defresource likes :resource
+  :url "/{_id}"
+  :methods {:get {:summary "Show like Page"}}
+  :parameters {:_id (path :model.like/id)}
+  :mixins [angular-resource])
+
+;; =============================================================================
+
 (defgroup jiksnu likes-api
   :name "Likes API"
   :url "/model/likes")
