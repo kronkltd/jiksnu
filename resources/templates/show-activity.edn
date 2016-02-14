@@ -55,4 +55,4 @@
      [:li
       [:button.btn {:ng-click "likeActivity(activity)"} "Like"]]
      [:li
-      [:button.btn {:ng-click "deleteRecord(activity)"} "Delete"]]]]]]]
+      [:button.btn {:ng-click "deleteRecord(activity)"} "Delete Activity"]]]]]]]

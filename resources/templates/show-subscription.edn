@@ -4,4 +4,4 @@
   [:debug {:expr "item"}]
   [:p "From: " [:show-user-minimal {:data-id "{{item.from}}"}]]
   [:p "To: " [:show-user-minimal {:data-id "{{item.to}}"}]]
-  [:button.btn {:ng-click "deleteRecord(item)"} "Delete"]]]
+  [:button.btn {:ng-click "deleteRecord(item)"} "Delete Subscription"]]]

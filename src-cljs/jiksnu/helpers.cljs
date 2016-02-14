@@ -49,8 +49,9 @@
     [{:title "Public"               :state "home"}
      {:title "Users"                :state "indexUsers"}
      {:title "Feeds"                :state "indexFeedSources"}
-     {:title "Domains"              :state "indexDomains"}
+     ;; {:title "Domains"              :state "indexDomains"}
      {:title "Groups"               :state "indexGroups"}
+     {:title "Likes"                :state "indexLikes"}
      {:title "Resources"            :state "indexResources"}
      {:title "Streams"              :state "indexStreams"}
      ]}

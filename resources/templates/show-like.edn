@@ -4,5 +4,5 @@
   [:debug {:expr "item"}]
   [:p "User: " [:show-user-minimal {:data-id "{{item.user}}"}]]
   [:p "To: " [:show-activity {:data-id "{{item.activity}}"}]]
-  [:button.btn {:ng-click "deleteRecord(item)"} "Delete"]]
+  [:button.btn {:ng-click "deleteRecord(item)"} "Delete Like"]]
  ]

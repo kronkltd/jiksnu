@@ -7,6 +7,7 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
                                                 defparameter page-resource path]]
+            [jiksnu.session :as session]
             [jiksnu.util :as util]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [try+ throw+]]
@@ -70,19 +71,21 @@
   :url "/{_id}"
   :parameters {:_id (path :model.activity/id)}
   :methods {:get {:summary "Show Activity"}
-            :delete {:summary "Delete Activity"}}
+            :delete {:summary "Delete Activity"
+                     :authenticated true}}
   :mixins [ciste-resource]
   :available-media-types ["application/json"]
   :available-formats [:json]
   ;; :presenter (partial into {})
   :authorized? (fn [ctx]
-                 (if (#{:delete} (get-in ctx [:request :request-method]))
+                 (if (#{:delete} (util/inspect (get-in ctx [:request :request-method])))
                    (do
                      (timbre/debug "authenticated method")
+                     (util/inspect (session/current-user-id))
                      nil)
                    (do
                      (timbre/info "unauthenticated method")
-                     (util/inspect ctx))))
+                     ctx)))
   :allowed-methods [:get :delete]
   :exists? (fn [ctx]
              (let [id (get-in ctx [:request :route-params :_id])
