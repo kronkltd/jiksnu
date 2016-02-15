@@ -416,13 +416,39 @@
     (.init $scope id)))
 
 (def.controller jiksnu.ShowLikeController
-  [$scope $stateParams Likes]
+  [$scope $stateParams app Likes]
   (set! (.-init $scope)
         (fn [id]
           (set! (.-loaded $scope) false)
           (.bindOne Likes id $scope "item")
           (-> (.find Likes id)
               (.then (fn [_] (set! (.-loaded $scope) true))))))
+
+  (set! (.-deleteRecord $scope)
+        (fn [item]
+          (let [id (.-id $scope)]
+            (timbre/debugf "deleting like: %s" id)
+            (-> (.invokeAction app "like" "delete" id)
+                (.then (fn [] (.refresh app)))))))
+
+  (let [id (or (.-id $scope) (.-_id $stateParams))]
+    (.init $scope id)))
+
+(def.controller jiksnu.ShowLikedByController
+  [$scope $stateParams app Likes]
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne Likes id $scope "item")
+          (-> (.find Likes id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
+
+  (set! (.-deleteRecord $scope)
+        (fn [item]
+          (let [id (.-id $scope)]
+            (timbre/debugf "deleting like: %s" id)
+            (-> (.invokeAction app "like" "delete" id)
+                (.then (fn [] (.refresh app)))))))
 
   (let [id (or (.-id $scope) (.-_id $stateParams))]
     (.init $scope id)))
@@ -541,7 +567,7 @@
                       (.then (fn [page]
                                (set! (.-loaded $scope) true)
                                (set! (.-page $scope) page)))))
-                (timbre/warn "Id not bound for subpage" subpage))))
+                (throw (str "parent item not bound for subpage: " subpage)))))
       (.refresh $scope))
     (throw "Subpage not specified")))
 

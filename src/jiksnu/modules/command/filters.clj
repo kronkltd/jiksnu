@@ -22,7 +22,9 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.actions :as actions]
             [jiksnu.session :refer [current-user-id]]
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]]
+            [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.model.like :as model.like]))
 
 (deffilter #'actions/get-model :command
   [action request]
@@ -112,6 +114,11 @@
 (deffilter #'actions.group/leave :command
   [action id]
   (if-let [item (model.group/fetch-by-id id)]
+    (action item)))
+
+(deffilter #'actions.like/delete :command
+  [action id]
+  (let [item (model.like/fetch-by-id id)]
     (action item)))
 
 (deffilter #'actions.resource/delete :command

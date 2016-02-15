@@ -53,7 +53,7 @@
 (defn make-delete
   [delete-fn access-fn]
   (fn [item]
-    (timbre/debug "Deleting item")
+    (timbre/debugf "Deleting item: %s(%s)" (class item) (:_id item))
     (if (access-fn item)
       (delete-fn item)
       (throw+ {:type :authorization

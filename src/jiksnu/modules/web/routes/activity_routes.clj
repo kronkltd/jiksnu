@@ -6,7 +6,8 @@
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
-                                                defparameter page-resource path]]
+                                                defparameter page-resource path
+                                                subpage-resource]]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+ throw+]]
@@ -99,3 +100,13 @@
               ;;   )
              ;; )
   ))
+
+(defresource activities-api :likes
+  :url "/{_id}/likes"
+  :name "activity likes"
+  :description "Likes of {{id}}"
+  :mixins [subpage-resource]
+  :target-model "activity"
+  :subpage "likes"
+  :parameters  {:_id (path :model.activity/id)}
+  :available-formats [:json])

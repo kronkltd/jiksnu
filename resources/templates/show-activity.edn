@@ -50,6 +50,15 @@
        " "]
       #_[:a {:href "/main/conversations/{{activity.conversation}}"}
          "in context"]]]]
+   [:subpage {:name "likes" :item "activity"}
+    [:debug {:expr "$parent.page"}]
+    [:div {:ng-if "!$parent.loaded"} [:spinner]]
+    [:div {:ng-if "$parent.loaded"}
+     [:h3 "Likes"]
+     [:ul
+      [:li {:ng-repeat "id in $parent.$parent.page.items"}
+       [:debug {:expr "id"}]
+       [:show-liked-by {:data-id "{{id}}"}]]]]]
    [:div {:ng-if "app.user"}
     [:ul
      [:li

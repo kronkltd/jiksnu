@@ -53,4 +53,4 @@
                    like (model.like/fetch-by-id id)]
                {:data like}))
   ;; :put!    #'actions.like/update-record
-  :delete! #'actions.like/delete)
+  :delete! (fn [ctx] (actions.like/delete (:data ctx))))

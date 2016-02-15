@@ -17,7 +17,7 @@
    })
 
 (def subpage-mappings
-  {"Activity"     {"likes"      #(str "/model/activities"     (.-_id %) "/likes")}
+  {"Activity"     {"likes"      #(str "/model/activities/"    (.-_id %) "/likes")}
    "Conversation" {"activities" #(str "/model/conversations/" (.-_id %) "/activities")}
    "Stream"       {"activities" #(str "/model/streams/"       (.-_id %) "/activities")}
    "User"         {"activities" #(str "/model/users/"         (.-_id %) "/activities")

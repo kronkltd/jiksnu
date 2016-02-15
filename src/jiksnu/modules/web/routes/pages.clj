@@ -7,13 +7,15 @@
             [jiksnu.actions.feed-subscription-actions :as feed-subscription]
             [jiksnu.actions.group-membership-actions :as group-membership]
             [jiksnu.actions.group-actions :as group]
+            [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.request-token-actions :as request-token]
             [jiksnu.actions.resource-actions :as resource]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as subscription]
             [jiksnu.actions.user-actions :as user])
-  (:import jiksnu.model.Conversation
+  (:import jiksnu.model.Activity
+           jiksnu.model.Conversation
            jiksnu.model.Group
            jiksnu.model.Stream
            jiksnu.model.User))
@@ -40,6 +42,7 @@
 (defn sub-pages
   []
   [
+   [{:type Activity     :name "likes"}         {:action #'actions.like/fetch-by-activity}]
    [{:type User         :name "activities"}    {:action #'actions.activity/fetch-by-user}]
    [{:type User         :name "subscriptions"} {:action #'subscription/get-subscriptions}]
    [{:type User         :name "subscribers"}   {:action #'subscription/get-subscribers}]

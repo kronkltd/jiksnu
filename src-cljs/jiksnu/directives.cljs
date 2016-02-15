@@ -82,6 +82,7 @@
 (item-directive "FollowersMinimal" "followers-minimal")
 (item-directive "FollowingMinimal" "following-minimal")
 (item-directive "Like"             "like")
+(item-directive "LikedBy"          "liked-by")
 (item-directive "StreamMinimal"    "stream-minimal")
 (item-directive "Subscription"     "subscription")
 (item-directive "User"             "user")
