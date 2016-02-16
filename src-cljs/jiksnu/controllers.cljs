@@ -352,6 +352,7 @@
 (def.controller jiksnu.ShowConversationController
   [$scope $stateParams Conversations app $rootScope]
   (set! (.-loaded $scope) false)
+  (set! (.-app $scope) app)
 
   (when-not (.-init $scope)
     (set! (.-init $scope)

@@ -40,6 +40,7 @@
   (let [$http (.inject app "$http")]
     (-> (.post $http "/main/logout")
         (.success (fn [data]
+                    (set! (.-user app) nil)
                     (.fetchStatus app))))))
 
 (defn update-page
