@@ -135,9 +135,7 @@
                  (.init $scope item subpage)
                  (timbre/warn "item is nil")))))
 
-  (set! (.-refresh $scope)
-        (fn []
-          (.init $scope (.-item $scope))))
+  (set! (.-refresh $scope) (fn [] (.$broadcast $scope "refresh-page")))
 
   (set! (.-init $scope)
         (fn [item]

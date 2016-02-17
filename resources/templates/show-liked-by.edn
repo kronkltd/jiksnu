@@ -1,4 +1,4 @@
-[:div.well {:title "show-like"}
+[:div {:title "show-like"}
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:debug {:expr "item"}]

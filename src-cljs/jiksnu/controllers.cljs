@@ -148,9 +148,12 @@
           (if-let [stream-name (.. $scope -stream -name)]
             (.addStream app stream-name)
             (throw (js/Error. "Could not determine stream name")))))
-  (set! (.-updateLabel $scope) (fn []
-                                 (set! (.-btnLabel $scope)
-                                       (if (.-formShown $scope) "-" "+"))))
+
+  (set! (.-updateLabel $scope)
+        (fn []
+          (set! (.-btnLabel $scope)
+                (if (.-formShown $scope) "-" "+"))))
+
   (helpers/init-subpage $scope subpageService Users "streams")
   (.updateLabel $scope))
 
@@ -559,6 +562,11 @@
       (.$on $rootScope refresh-followers
             (fn []
               (timbre/debug "received refresh event on root")
+              (.refresh $scope)))
+
+      (.$on $scope "refresh-page"
+            (fn []
+              #_(timbre/debug "received refresh event on subpage scope")
               (.refresh $scope)))
 
       (set! (.-init $scope)

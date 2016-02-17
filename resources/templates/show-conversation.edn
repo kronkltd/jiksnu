@@ -10,5 +10,5 @@
      [:debug {:expr "id"}]
      [:show-activity {:data-id "{{id}}"}]]]]
   [:div {:ng-if "app.user"}
-   [:ul
+   [:ul.buttons
     [:li [:button.btn {:ng-click "deleteRecord(item)"} "Delete Conversation"]]]]]]
