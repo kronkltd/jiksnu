@@ -51,7 +51,7 @@
   (try+
    (if-let [owner (model.user/get-user (:current (friend/identity request)))]
      (let [params (assoc params :owner (:_id owner))]
-       (if-let [stream (actions.stream/create params {})]
+       (if-let [stream (actions.stream/create params)]
          {:data (:_id stream)}
          (throw+ {:message "Failed to create stream"
                   :type :failure})))

@@ -44,5 +44,3 @@
   (s/consume #'handle-pending-get-domain ch/pending-get-domain)
   (s/consume #'handle-pending-get-discovered ch/pending-get-discovered)
   (s/consume #'handle-add-link (bus/subscribe ch/events ":domains:linkAdded")))
-
-(defonce receivers (init-receivers))

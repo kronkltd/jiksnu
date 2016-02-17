@@ -78,6 +78,7 @@
                            (server/send! ch resp))))
     (server/on-close ch #(handle-closed response-channel status %))
 
+    ;; Send posted activities to connected clients
     (s/connect
      (s/map #(transform-activities connection-id %)
             (bus/subscribe ch/events :activity-posted))

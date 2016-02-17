@@ -40,7 +40,7 @@
 
 (defn create
   "Create a new stream feed source record"
-  [params options]
+  [params]
   (when-let [params (prepare-create params)]
     (model.stream/create params)))
 
@@ -70,11 +70,9 @@
                             options)))
 
 (defn add-stream
-  ([user name]
-   (add-stream user name {}))
-  ([user stream-name options]
-   (create {:user (:_id user)
-            :name stream-name} nil)))
+  [user stream-name]
+  (create {:owner (:_id user)
+           :name stream-name}))
 
 (defn inbox-major
   [user & [options]]

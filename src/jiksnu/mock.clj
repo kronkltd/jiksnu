@@ -102,7 +102,7 @@
   (let [user (or user (a-user-exists options))
         params {:owner (:_id user)
                 :name (or stream-name (fseq :word))}
-        stream (actions.stream/create params {})]
+        stream (actions.stream/create params]
     (set-that :stream stream)
     stream))
 
@@ -274,10 +274,9 @@
 
 (defn user-has-a-stream
   [& options]
-  (let [stream (actions.stream/create
-                (factory :stream {:owner (or (:user options)
-                                             (:_id (get-this :user)))})
-                {})]
+  (let [user (or (:user options) (:_id (get-this :user)))
+        params (factory :stream {:owner user})
+        stream (actions.stream/create params)]
     (set-this :stream stream)
     stream))
 
