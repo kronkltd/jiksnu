@@ -2,7 +2,7 @@
  [:h3 "Streams"
   [:div {:ng-show "app.user._id == item._id"}
    [:button.btn {:ng-click "toggle()"} "{{btnLabel}}"]]
-  [:button.btn.pull-right {:ng-click "$parent.refresh()"} "Refresh"]]
+  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
  [:form {:ng-submit "addStream()" :name "addStreamForm" :ng-show "formShown"}
   [:debug {:expr "stream"}]
   [:input {:ng-model "stream.userId" :name "user" :type "hidden"}]

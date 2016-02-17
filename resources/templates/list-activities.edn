@@ -4,7 +4,7 @@
   [:debug {:expr "$parent.page"}]
   [:div {:ng-if "!$parent.loaded"} [:spinner]]
   [:div {:ng-if "$parent.loaded"}
-   [:ul
+   [:ul.activities-list
     [:li {:ng-repeat "id in $parent.$parent.page.items"}
      [:debug {:expr "id"}]
      [:show-activity {:data-id "{{id}}"}]]]]]]

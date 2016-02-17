@@ -61,7 +61,7 @@
         [:debug {:expr "id"}]
         [:show-liked-by {:data-id "{{id}}"}]]]]]]
    [:div {:ng-if "app.user"}
-    [:ul
+    [:ul.buttons
      [:li
       [:button.btn {:ng-click "likeActivity(activity)"} "Like"]]
      [:li

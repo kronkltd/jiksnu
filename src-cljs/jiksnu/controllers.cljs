@@ -132,11 +132,16 @@
   [$scope app subpageService Users]
   (set! (.-formShown $scope) false)
   (set! (.-app $scope) app)
-  (set! (.-toggle $scope)
-        (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))
-          (.updateLabel $scope)))
+  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
 
-  (set! (.-deleteStream $scope) #(.deleteStream app %))
+  (.$watch $scope
+           (.-formShown $scope)
+           (fn [state]
+             (.updateLabel $scope)))
+
+  (set! (.-deleteStream $scope)
+        (fn [item]
+          (.deleteStream app item)))
 
   (set! (.-addStream $scope)
         (fn []
