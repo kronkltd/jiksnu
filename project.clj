@@ -80,7 +80,8 @@
                        "jiksnu.registry"
                        "jiksnu.db"
                        }}
-  :aliases {"karma"             ["shell" "./node_modules/.bin/karma" "start"]
+  :aliases {"guard"             ["shell" "bundle" "exec" "guard"]
+            "karma"             ["shell" "./node_modules/.bin/karma" "start"]
             "protractor"        ["shell" "./node_modules/.bin/protractor" "protractor.config.js"]
             "protractor-start"  ["shell" "./node_modules/.bin/webdriver-manager" "start"]
             "protractor-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]
