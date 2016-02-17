@@ -217,6 +217,7 @@
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Users]
   #_(timbre/debug "Loading New Post Controller")
+  (set! (.-app $scope) app)
   (let [default-form #js {:source "web"
                           :privacy "public"
                           :title ""
