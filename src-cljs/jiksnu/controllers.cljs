@@ -131,6 +131,7 @@
 (def.controller jiksnu.ListStreamsController
   [$scope app subpageService Users]
   (set! (.-formShown $scope) false)
+  (set! (.-app $scope) app)
   (set! (.-toggle $scope)
         (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))
           (.updateLabel $scope)))
