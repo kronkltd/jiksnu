@@ -10,7 +10,8 @@
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])
-  (:import java.net.URI))
+  (:import java.net.URI
+           org.bson.types.ObjectId))
 
 (defn set-local
   [activity]
