@@ -554,15 +554,15 @@
       #_(timbre/debug "initialize subpage controller" subpage)
       (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
 
-      (.$on $scope refresh-followers
-            (fn []
-              (timbre/debug "received refresh event")
-              (.refresh $scope)))
+      ;; (.$on $scope refresh-followers
+      ;;       (fn []
+      ;;         (timbre/debug "received refresh event")
+      ;;         (.refresh $scope)))
 
-      (.$on $rootScope refresh-followers
-            (fn []
-              (timbre/debug "received refresh event on root")
-              (.refresh $scope)))
+      ;; (.$on $rootScope refresh-followers
+      ;;       (fn []
+      ;;         (timbre/debug "received refresh event on root")
+      ;;         (.refresh $scope)))
 
       (.$on $scope "refresh-page"
             (fn []

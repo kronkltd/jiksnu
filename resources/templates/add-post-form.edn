@@ -1,4 +1,4 @@
-[:div {:ng-show "enabled()"}
+[:div {:ng-show "enabled()" :title "add-post-form"}
  [:div {:ng-show "app.user"}
   [:form  {:ng-submit "submit()" :name "activityForm"}
    [:input {:type "hidden" :ng-model "source"}]

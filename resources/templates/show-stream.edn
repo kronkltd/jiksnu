@@ -5,6 +5,7 @@
   [:p "{{stream.name}}"]
   #_[:p "{{stream.owner}}"]
   [:show-user-minimal {:data-id "{{stream.owner}}"}]
+  [:list-activities {:item "stream"}]
   [:div
    [:h2 "Activities" [:button.btn.pull-right {:ng-click "$parent.refresh()"} "Refresh"]]
    [:subpage {:name "activities" :item "stream" :title "show-stream activities-subpage"}
@@ -13,5 +14,4 @@
      [:debug {:expr "$parent.page"}]
      [:div {:ng-repeat "id in  $parent.$parent.page.items"}
       [:debug {:expr "id"}]
-      [:show-activity {:data-id "{{id}}"}]]]]]]
- ]
+      [:show-activity {:data-id "{{id}}"}]]]]]]]

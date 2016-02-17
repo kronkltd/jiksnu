@@ -220,3 +220,17 @@
                     "like" "Liked an activity"
                     "unknown verb")]
       (assoc activity :content content))))
+
+(defn set-streams
+  [activity]
+  (let [streams (:streams activity)]
+    (map
+     (fn [stream]
+       (if (string? stream)
+         (ObjectId. stream)
+         stream
+         )
+       )
+     streams)
+    )
+  )
