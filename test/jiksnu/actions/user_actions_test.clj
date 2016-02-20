@@ -125,12 +125,14 @@
   (fact "local user"
     (let [params {:username (fseq :username)
                   :domain (config :domain)}]
-      (actions.user/create params) => model/user?))
+      (actions.user/create params) =>
+      (partial instance? User)))
   (fact "when the params contain links"
     (let [params {:username (fseq :username)
                   :domain (config :domain)
                   :links [{:href (fseq :uri) :rel "alternate"}]}]
-      (actions.user/create params) => model/user?)))
+      (actions.user/create params) =>
+      (partial instance? User))))
 
 (fact "#'jiksnu.actions.user-actions/index"
   (actions.user/index {}) => map?)

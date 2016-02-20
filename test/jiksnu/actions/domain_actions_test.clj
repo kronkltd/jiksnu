@@ -5,7 +5,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.test-helper :as th]
-            [midje.sweet :refer :all]))
+            [midje.sweet :refer :all])
+  (:import jiksnu.model.Domain))
 
 (namespace-state-changes
  [(before :contents (th/setup-testing))
@@ -16,7 +17,9 @@
     (fact "and the domain does not already exist"
       (model.domain/drop!)
       (let [options (actions.domain/prepare-create {:_id (fseq :domain)})]
-        (actions.domain/create options) => model/domain?))
+        (actions.domain/create options) =>
+        (partial instance? Domain)
+        ))
     ;; TODO: already exists
     )
   ;; TODO: invalid options

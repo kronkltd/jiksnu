@@ -5,7 +5,8 @@
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+ try+]])
-  (:import jiksnu.model.FeedSource
+  (:import jiksnu.model.Domain
+           jiksnu.model.FeedSource
            nu.xom.Document
            (nu.xom Element)))
 
@@ -14,9 +15,7 @@
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.
 (defn host-meta
-  [domain]
-  {:pre [(model/domain? domain)]
-   :post [(vector? %)]}
+  [^Domain domain]
   [:XRD {"xmlns" ns/xrd
           "xmlns:hm" ns/host-meta}
    [:hm:Host domain]
