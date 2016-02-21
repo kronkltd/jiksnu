@@ -222,7 +222,6 @@
    ;; [[:post   "/users/:id/discover"]                     #'user/discover]
    ;; [[:post   "/users/:id/update"]                       #'user/update-record]
    ;; [[:post   "/users/:id/update"]                       #'user/update-record]
-   ;; [[:post   "/users/:id/streams"]                      #'user/add-stream]
    ;; [[:post   "/users/:id/delete"]                       #'user/delete]
    ;; [[:get    "/users/:id/groups"]                       #'group/fetch-by-user]
    ;; [[:get    "/users"]                                  #'user/index]

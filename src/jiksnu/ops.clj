@@ -94,10 +94,6 @@
     (s/put! ch/pending-create-conversations d)
     d))
 
-(defn create-new-stream
-  [params]
-  (async-op ch/pending-create-stream [params]))
-
 (defn create-new-subscription
   [actor-id user-id]
   (async-op ch/pending-new-subscriptions [actor-id user-id]))

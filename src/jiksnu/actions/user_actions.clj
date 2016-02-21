@@ -312,10 +312,6 @@
   [user]
   user)
 
-(defn show-basic
-  [user]
-  (show user))
-
 (defn update-profile
   [options]
   (let [user (session/current-user)]
@@ -331,8 +327,3 @@
       true)
     (throw+ {:type :auth
              :msg "Must be authenticated"})))
-
-(defn add-stream
-  [user params]
-  (let [params (assoc params :user (:_id user))]
-    [user @(ops/create-new-stream params)]))
