@@ -15,7 +15,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(future-fact "route: streams-api/collection :post"
+(fact "route: streams-api/collection :post"
   (db/drop-all!)
   (let [params {:name (fseq :word)}
         actor (mock/a-user-exists)
@@ -50,10 +50,11 @@
 
     (let [response (response-for request)]
       ;; (json/read-string (:body response)) => {}
-      response  => (contains {:status 200}))))
+      response  => (contains {:status 200})
+      (let [body (json/read-json (:body response))]
+        body => (contains {:totalItems 1})))))
 
-
-(future-fact "public-timeline-http-route"
+(fact "public-timeline-http-route"
   (fact "when there are no activities"
     (db/drop-all!)
 
