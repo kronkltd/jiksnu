@@ -218,10 +218,14 @@
     (set! (.-submit $scope)
           (fn []
             (timbre/info "Submitting group form")
-            (.post $http)))
+            (js/console.log $scope)
+            (let [params (.-group $scope)
+                  path "/main/groups"]
+              (-> (.post $http path params)
+                  (.then (fn []
+                           (timbre/info "Submitted")))))))
 
-    (.init $scope)
-    ))
+    (.init $scope)))
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Users]
