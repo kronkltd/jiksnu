@@ -79,6 +79,8 @@
 
 (item-directive "Activity"         "activity")
 (item-directive "Conversation"     "conversation")
+(item-directive "Group"            "group")
+(item-directive "GroupMinimal"     "group-minimal")
 (item-directive "FollowersMinimal" "followers-minimal")
 (item-directive "FollowingMinimal" "following-minimal")
 (item-directive "Like"             "like")

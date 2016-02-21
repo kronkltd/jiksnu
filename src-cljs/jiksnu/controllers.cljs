@@ -434,6 +434,18 @@
   (let [id (or (.-id $scope) (.-_id $stateParams))]
     (.init $scope id)))
 
+(def.controller jiksnu.ShowGroupMinimalController
+  [$scope $stateParams Groups]
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne Groups id $scope "item")
+          (-> (.find Groups id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
+
+  (let [id (or (.-id $scope) (.-_id $stateParams))]
+    (.init $scope id)))
+
 (def.controller jiksnu.ShowLikeController
   [$scope $stateParams app Likes]
   (set! (.-init $scope)

@@ -7,9 +7,9 @@
  [:fieldset
   [:legend "Add a Group"]
   [:div.control-group
-   [:label {:for "nickname"} "Nickname"]
+   [:label {:for "name"} "name"]
    [:div.controls
-    [:input {:type "text" :ng-model "group.nickname"}]]]
+    [:input {:type "text" :ng-model "group.name"}]]]
   [:div.control-group
    [:label {:for "fullname"} "Full Name"]
    [:div.controls

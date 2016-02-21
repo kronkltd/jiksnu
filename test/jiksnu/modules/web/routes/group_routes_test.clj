@@ -30,12 +30,12 @@
                     (req/content-type "application/json"))
         response (response-for request)
         location (get-in response [:headers "Location"])]
-    response => (contains {:status 303})
+    (util/inspect response) => (contains {:status 303})
     (let [request2 (req/request :get location)
           response2 (response-for request2)]
-      response2 => (contains {:status 200})
+      (util/inspect response2) => (contains {:status 200})
       (let [body (json/read-str (:body response2))]
-        body => (contains {"name" (:name params)})))))
+        (util/inspect body) => (contains {"name" (:name params)})))))
 
 (facts "route: group-api/item :delete"
   (fact "when not authenticated"

@@ -1,4 +1,4 @@
-[:span
+[:span {:title "show-group-minimal"}
+ [:debug {:expr "item"}]
  [:a {:ui-sref "showGroup(item)"}
-  "{{item.description}}"]
- [:debug {:expr "item"}]]
+  "{{item.name}}"]]
