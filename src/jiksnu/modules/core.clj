@@ -12,8 +12,8 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.core.formats
-            jiksnu.modules.core.triggers.activity-triggers
-            jiksnu.modules.core.triggers.conversation-triggers
+            [jiksnu.modules.core.triggers.activity-triggers :as triggers.activity]
+            [jiksnu.modules.core.triggers.conversation-triggers :as triggers.conversation]
             [jiksnu.modules.core.triggers.domain-triggers :as triggers.domain]
             jiksnu.modules.core.views
             [jiksnu.templates.model :as templates.model]

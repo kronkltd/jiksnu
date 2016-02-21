@@ -18,8 +18,11 @@
 
   (fact "when there are items"
     (model.stream/drop!)
-    (let [n 15]
-      (dotimes [i n]
-        (mock/a-stream-exists))
-      (model.stream/count-records) => n))
+    (let [user (mock/a-user-exists)]
+      (let [n 15]
+        (dotimes [i n]
+          (mock/a-stream-exists {:user user}))
+
+        ;; Creating a user adds 2 streams
+        (model.stream/count-records) => (+ n 2))))
   )
