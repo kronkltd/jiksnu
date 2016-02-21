@@ -92,18 +92,12 @@
   (let [new-group-controller "NewGroupController"]
     (describe {:doc new-group-controller}
       (beforeEach
-       (timbre/info "Set up controller")
-       )
+       (timbre/info "Set up controller"))
 
       (describe {:doc ".submit"}
         (it "Should send the form"
           (@$controller new-group-controller injections)
-          (.submit $scope)
-
-          )
-        )
-      )
-    )
+          (.submit $scope)))))
 
   (let [list-streams-controller "ListStreamsController"]
     (describe {:doc list-streams-controller}
@@ -138,7 +132,6 @@
         (js/it "sends a delete action"
           (fn [done]
             (@$controller show-conversation-controller injections)
-
             (let [spy (.. (js/spyOn app "invokeAction")
                           -and
                           (returnValue
@@ -146,19 +139,9 @@
                   response (.deleteRecord $scope (.-item $scope))]
               (js/console.log response)
               (-> response
-                  (.then
-                   (fn [r]
-                     (timbre/info "then")
-                     (.toBeDefined (js/expect r))
-                     r)
-                   (fn [r]
-                     (timbre/info "error")
-                     (.toBeDefined (js/expect r))))
-                  (.finally (fn []
-                              (timbre/info "Done")
-                              (js/done))))
+                  (.then (fn [r] (.toBeDefined (js/expect r)))
+                         (fn [r] (.toBeDefined (js/expect r))))
+                  (.finally (fn [] (js/done))))
               (.$apply $scope)
-
-              (.toHaveBeenCalled (js/expect spy))))))
-      ))
+              (.toHaveBeenCalled (js/expect spy))))))))
   )

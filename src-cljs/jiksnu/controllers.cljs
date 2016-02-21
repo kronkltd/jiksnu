@@ -220,10 +220,14 @@
             (timbre/info "Submitting group form")
             (js/console.log $scope)
             (let [params (.-group $scope)
-                  path "/main/groups"]
+                  path "/model/groups"]
               (-> (.post $http path params)
-                  (.then (fn []
-                           (timbre/info "Submitted")))))))
+                  (.then (fn [r]
+                           (timbre/info "Submitted")
+                           (js/console.info r))
+                         (fn [r]
+                           (timbre/info "Failed")
+                           (js/console.info r)))))))
 
     (.init $scope)))
 
