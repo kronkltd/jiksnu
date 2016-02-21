@@ -102,7 +102,7 @@
   (let [user (or user (a-user-exists options))
         params {:owner (:_id user)
                 :name (or stream-name (fseq :word))}
-        stream (actions.stream/create params]
+        stream (actions.stream/create params)]
     (set-that :stream stream)
     stream))
 
