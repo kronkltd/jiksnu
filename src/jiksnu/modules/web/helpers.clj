@@ -39,7 +39,7 @@
       (dosync
        (alter predicates/*sub-page-matchers* concat matchers))
       (timbre/warn "No matchers returned"))
-    #_(timbre/warn "Could not load subpage function")))
+    (timbre/warnf "Could not load subpage function - %s" route-sym)))
 
 (defn load-routes!
   [route-sym]
@@ -57,7 +57,7 @@
     (if (try (require route-sym) true (catch FileNotFoundException _ nil))
       (do
         (timbre/with-context {:sym (str route-sym)}
-                             (timbre/debugf "Loading route group - %s" route-sym))
+          (timbre/debugf "Loading route group - %s" route-sym))
         (try
           (load-pages! route-sym)
           (load-sub-pages! route-sym)

@@ -32,6 +32,7 @@
    "domain"
    "feed-source"
    "group"
+   "group-membership"
    "home"
    "page"
    "like"

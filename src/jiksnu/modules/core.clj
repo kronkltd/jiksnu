@@ -53,6 +53,10 @@
           (timbre/info "activity created")
           (condp = verb
             (do
+              "post"
+              (do
+                #_(timbre/debug "activity posted"))
+
               (timbre/infof "Unknown verb - %s" verb)
               #_(util/inspect item))))
 

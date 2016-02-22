@@ -2,6 +2,7 @@
   (:require [ciste.sections.default :refer [uri]]
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
+            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             [jiksnu.model.group :as model.group]
             jiksnu.modules.web.routes.group-routes
@@ -62,3 +63,15 @@
     (response-for request) =>
     (contains
      {:status 200})))
+
+(facts "route: group-api/members :get"
+  (let [user (mock/a-user-exists)
+        group (mock/a-group-exists {:members [user]})
+        path (str "/model/groups/" (:_id group) "/members")
+        request (req/request :get path)
+        response (response-for request)]
+
+    response => (contains {:status status/success?})
+
+    (let [body (json/read-json (:body response))]
+      body => (contains {:totalItems 1}))))

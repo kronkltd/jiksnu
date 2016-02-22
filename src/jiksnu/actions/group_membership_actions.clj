@@ -33,3 +33,8 @@
 (defn show
   [item]
   item)
+
+(defn fetch-members
+  "Returns the members of the provided group"
+  [group]
+  (index {:group (:_id group)}))

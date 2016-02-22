@@ -1,7 +1,6 @@
-(ns jiksnu.modules.web.routes.group-routes
-  (:require [jiksnu.actions.group-actions :as actions.group]
-            [jiksnu.model.group :as model.group]
-            jiksnu.modules.core.views.group-views
+(ns jiksnu.modules.web.routes.group-membership-routes
+  (:require [jiksnu.actions.group-membership-actions :as actions.group-membership]
+            [jiksnu.model.group-membership :as model.group-membership]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
@@ -12,35 +11,17 @@
             [taoensso.timbre :as timbre]
             [jiksnu.model.user :as model.user]))
 
-(defparameter :model.group/id
-  :description "The Id of a conversation"
+(timbre/info "loading")
+
+(defparameter :model.group-membership/id
+  :description "The Id of a group membership"
   :type "string")
 
-;; =============================================================================
+(defgroup jiksnu group-memberships-api
+  :name "Group Memberships API"
+  :url "/model/groups-memberships")
 
-(defgroup jiksnu groups
-  :url "/main/groups"
-  :name "Groups")
-
-(defresource groups :collection
-  :mixins [angular-resource])
-
-(defresource groups :item
-  :url "/{_id}"
-  :parameters {:_id (path :model.group/id)}
-  :mixins [angular-resource])
-
-;; (defresource groups resource
-
-;;   )
-
-;; =============================================================================
-
-(defgroup jiksnu groups-api
-  :name "Groups API"
-  :url "/model/groups")
-
-(defresource groups-api :collection
+(defresource group-memberships-api :collection
   :mixins [page-resource]
   :allowed-methods [:get :post]
   :new? :data
@@ -49,17 +30,17 @@
            :properties {:name {:type "string"}}
            :required [:name]}
   :post! (fn [ctx]
-           (timbre/info "Post to group")
+           (timbre/info "Post to group membership")
            (let [params (:params (:request ctx))
-                 group (actions.group/create params)]
+                 group (actions.group-membership/create params)]
              {:data (:_id group)}))
   :available-formats [:json]
-  :ns 'jiksnu.actions.group-actions)
+  :ns 'jiksnu.actions.group-membership-actions)
 
-(defresource groups-api :item
-  :desc "Resource routes for single Group"
+(defresource group-memberships-api :item
+  :desc "Resource routes for single Group Membership"
   :url "/{_id}"
-  :parameters {:_id (path :model.group/id)}
+  :parameters {:_id (path :model.group-membership/id)}
   :authorized? (fn [ctx]
                  (if (#{:delete} (get-in ctx [:request :request-method]))
                    (when-let [username (get-in ctx [:request :session :cemerick.friend/identity :current])]
@@ -71,18 +52,8 @@
   :delete! (fn [ctx]
              (when-let [user (some-> ctx :username model.user/get-user)]
                (if-let [item (:data ctx)]
-                 (actions.group/delete item)
+                 (actions.group-membership/delete item)
                  (throw+ "No data"))))
   :exists? (fn [ctx]
              (let [id (-> ctx :request :route-params :_id)]
-               {:data (model.group/fetch-by-id id)})))
-
-(defresource groups-api :members
-  :url "/{_id}/members"
-  :name "group members"
-  :description "Members of {{group}}"
-  :mixins [subpage-resource]
-  :target-model "group"
-  :subpage "members"
-  :parameters {:_id (path :model.group/id)}
-  :available-formats [:json])
+               {:data (model.group-membership/fetch-by-id id)})))

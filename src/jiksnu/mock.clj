@@ -6,6 +6,7 @@
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.actions.group-membership-actions :as actions.group-membership]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.like-actions :as actions.like]
@@ -288,3 +289,14 @@
          params {:activity (:_id activity)
                  :user (:_id user)}]
      (actions.like/create params))))
+
+(defn a-group-membership-exists
+  ([] (a-group-membership-exists {}))
+  ([options]
+   (let [user (:user options (or (get-that :user) (a-user-exists)))
+         group (:group options (or (get-that :group)
+                                  (get-this :group)
+                                  (a-group-exists)))
+         params {:user (:_id user)
+                 :group (:_id group)}]
+     (actions.group-membership/create params))))
