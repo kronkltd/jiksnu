@@ -15,6 +15,7 @@
     "angular-ui": "0.4.0",
     "angular-ui-notification": "0.1.0",
     "angular-ui-router": "0.2.13",
+    "angular-ui-select": "0.14.9",
     "angular-validator": "0.2.6",
     "angular-websocket": "1.0.14",
     "angularjs-geolocation": "0.1.1",

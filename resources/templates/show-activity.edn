@@ -49,19 +49,19 @@
         "foreign service"]
        " "]
       #_[:a {:href "/main/conversations/{{activity.conversation}}"}
-         "in context"]]]]
-   [:subpage {:name "likes" :item "activity"}
-    [:debug {:expr "$parent.page"}]
-    [:div {:ng-if "!$parent.loaded"} [:spinner]]
-    [:div {:ng-if "$parent.loaded"}
-     [:div {:ng-show "$parent.$parent.page.totalItems > 0"}
-      [:ul
-       [:li {:ng-repeat "id in $parent.$parent.page.items"}
-        [:debug {:expr "id"}]
-        [:show-liked-by {:data-id "{{id}}"}]]]]]]
-   [:div {:ng-if "app.user"}
-    [:ul.buttons
-     [:li
-      [:button.btn {:ng-click "likeActivity(activity)"} "Like"]]
-     [:li
-      [:button.btn {:ng-click "deleteRecord(activity)"} "Delete Activity"]]]]]]]
+         "in context"]]]
+    [:subpage {:name "likes" :item "activity"}
+     [:debug {:expr "$parent.page"}]
+     [:div {:ng-if "!$parent.loaded"} [:spinner]]
+     [:div {:ng-if "$parent.loaded"}
+      [:div {:ng-show "$parent.$parent.page.totalItems > 0"}
+       [:ul.list-unstyled
+        [:li {:ng-repeat "id in $parent.$parent.page.items"}
+         [:debug {:expr "id"}]
+         [:show-liked-by {:data-id "{{id}}"}]]]]]]
+    [:div {:ng-if "app.user"}
+     [:ul.buttons
+      [:li
+       [:button.btn {:ng-click "likeActivity(activity)"} "Like"]]
+      [:li
+       [:button.btn {:ng-click "deleteRecord(activity)"} "Delete Activity"]]]]]]]]

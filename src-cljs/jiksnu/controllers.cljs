@@ -251,6 +251,10 @@
 
     (set! (.-form $scope) #js {:shown false})
 
+    (set! (.-availableStreams $scope)
+          #js ["foo" "bar"]
+          )
+
     (set! (.-enabled $scope)
           (fn []
             (.-data app)))

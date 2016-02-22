@@ -60,6 +60,16 @@
       [:div
        [:h3 "Streams"]
        [:debug {:expr "streams"}]
+       [:ui-select {:multiple ""
+                    :ng-model "streams"
+                    :style "width: 800px;"
+                    }
+        [:ui-select-match {:placeholder "Select Streams"} "{{$item}}"]
+        [:ui-select-choices {:repeat "id in streams.items"}
+         #_[:div "{{id}}"]
+         [:show-stream-minimal {:data-id "{{id}}"}]
+         ]
+        ]
        [:div
         [:h4 "Added"]
         [:ul

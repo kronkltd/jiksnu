@@ -16,4 +16,5 @@
    ui.bootstrap
    ui-notification
    ui.router
+   ui.select
    ])
