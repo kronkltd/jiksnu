@@ -31,12 +31,12 @@
                     (req/content-type "application/json"))
         response (response-for request)
         location (get-in response [:headers "Location"])]
-    (util/inspect response) => (contains {:status 303})
+    response => (contains {:status 303})
     (let [request2 (req/request :get location)
           response2 (response-for request2)]
-      (util/inspect response2) => (contains {:status 200})
+      response2 => (contains {:status 200})
       (let [body (json/read-str (:body response2))]
-        (util/inspect body) => (contains {"name" (:name params)})))))
+        body => (contains {"name" (:name params)})))))
 
 (facts "route: group-api/item :delete"
   (fact "when not authenticated"
@@ -67,6 +67,8 @@
 (facts "route: group-api/members :get"
   (let [user (mock/a-user-exists)
         group (mock/a-group-exists {:members [user]})
+        gm (mock/a-group-membership-exists {:user user
+                                            :group group})
         path (str "/model/groups/" (:_id group) "/members")
         request (req/request :get path)
         response (response-for request)]

@@ -1,7 +1,8 @@
 (ns jiksnu.actions.group-membership-actions
   (:require [jiksnu.model.group-membership :as model.group-membership]
             [jiksnu.templates.actions :as templates.actions]
-            [jiksnu.transforms :as transforms]))
+            [jiksnu.transforms :as transforms]
+            [jiksnu.util :as util]))
 
 (def model-ns 'jiksnu.model.group-membership)
 
@@ -34,7 +35,12 @@
   [item]
   item)
 
-(defn fetch-members
+(defn fetch-by-group
   "Returns the members of the provided group"
   [group]
   (index {:group (:_id group)}))
+
+(defn fetch-by-user
+  "Returns the members of the provided user"
+  [user]
+  (index {:user (:_id user)}))

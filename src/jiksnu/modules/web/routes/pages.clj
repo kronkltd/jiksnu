@@ -46,7 +46,7 @@
    [{:type Conversation :name "activities"}    {:action #'actions.activity/fetch-by-conversation}]
    [{:type Stream       :name "activities"}    {:action #'actions.activity/fetch-by-stream}]
    [{:type Group        :name "admins"}        {:action #'group/fetch-admins}]
-   [{:type Group        :name "members"}       {:action #'actions.group-membership/fetch-members}]
+   [{:type Group        :name "members"}       {:action #'actions.group-membership/fetch-by-group}]
    [{:type Group        :name "conversations"} {:action #'conversation/fetch-by-group}]
    [{:type User         :name "activities"}    {:action #'actions.activity/fetch-by-user}]
    [{:type User         :name "subscriptions"} {:action #'subscription/get-subscriptions}]

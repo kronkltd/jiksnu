@@ -10,4 +10,3 @@
         direction (if (= "desc" (:direction (:params request))) -1 1)]
     (when (and order-by direction)
       {:sort-clause {(keyword order-by) direction}})))
-
