@@ -78,14 +78,9 @@
   :available-formats [:json]
   ;; :presenter (partial into {})
   :authorized? (fn [ctx]
-                 (if (#{:delete} (util/inspect (get-in ctx [:request :request-method])))
-                   (do
-                     (timbre/debug "authenticated method")
-                     (not (nil? (util/inspect (session/current-user-id)))))
-                   (do
-                     (timbre/info "unauthenticated method")
-
-                     ctx)))
+                 (if (#{:delete} (get-in ctx [:request :request-method]))
+                   (not (nil? (session/current-user-id)))
+                   ctx))
   :allowed-methods [:get :delete]
   :exists? (fn [ctx]
              (let [id (get-in ctx [:request :route-params :_id])

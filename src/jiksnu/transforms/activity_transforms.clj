@@ -2,7 +2,7 @@
   (:require [ciste.config :refer [config]]
             [clj-time.core :as time]
             [clojure.string :as string]
-            [jiksnu.actions.group-actions :as actions.group]
+            ;; [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -155,7 +155,7 @@
                         (catch RuntimeException ex
                           ;; FIXME: Handle error
                           nil))
-                      (try
+                      #_(try
                         (actions.group/find-or-create {:url url})
                         (catch RuntimeException ex
                           ;; FIXME: Handle error

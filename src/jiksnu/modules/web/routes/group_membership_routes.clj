@@ -11,8 +11,6 @@
             [taoensso.timbre :as timbre]
             [jiksnu.model.user :as model.user]))
 
-(timbre/info "loading")
-
 (defparameter :model.group-membership/id
   :description "The Id of a group membership"
   :type "string")

@@ -1,2 +1,3 @@
-[:p {:title "show-stream-minimal"}
+[:div {:title "show-stream-minimal"}
+ [:debug {:expr "stream"}]
  [:a {:ui-sref "showStream(stream)"} "{{stream.name}}"]]
