@@ -1,10 +1,12 @@
 (ns jiksnu.actions.group-actions
-  (:require [jiksnu.model.group :as model.group]
+  (:require [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.model.group :as model.group]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.group-transforms :as transforms.group]
             [jiksnu.templates.actions :as templates.actions]
-            [slingshot.slingshot :refer [throw+]])
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre])
   (:import jiksnu.model.Group))
 
 (defn prepare-create
@@ -33,7 +35,10 @@
 (defn join
   [group]
   (if-let [user (session/current-user)]
-    (add-user! group user)
+    (actions.activity/post
+     {:verb "join"
+      :object {:type "group"
+               :id (:_id group)}})
     (throw+ "No user")))
 
 (defn leave

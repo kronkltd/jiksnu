@@ -219,6 +219,7 @@
                     "follow" (str "Follow user: " target-id)
                     "unfollow" (str "Unfollow User: " target-id)
                     "like" "Liked an activity"
+                    "join" (str "Joined a group: " target-id)
                     "unknown verb")]
       (assoc activity :content content))))
 
