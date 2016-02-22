@@ -50,24 +50,24 @@
 
         "activities"
         (let [verb (:verb item)]
-          (timbre/info "activity created")
+          #_(timbre/info "activity created")
           (condp = verb
             (do
               "post"
               (do
                 #_(timbre/debug "activity posted"))
 
-              (timbre/infof "Unknown verb - %s" verb)
+              #_(timbre/infof "Unknown verb - %s" verb)
               #_(util/inspect item))))
 
         "users"
         (do
-          (timbre/info "user created")
-          (actions.stream/add-stream (util/inspect item) "* major")
+          #_(timbre/info "user created")
+          (actions.stream/add-stream item "* major")
           (actions.stream/add-stream item "* minor"))
 
         (do
-          (timbre/infof "Other created - %s" collection-name)
+          #_(timbre/infof "Other created - %s" collection-name)
           #_(util/inspect item)))))
 
   ;; (defobserver event/emitter ::templates.model/item-created

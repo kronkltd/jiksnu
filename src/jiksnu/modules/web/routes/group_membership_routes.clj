@@ -19,7 +19,7 @@
 
 (defgroup jiksnu group-memberships-api
   :name "Group Memberships API"
-  :url "/model/groups-memberships")
+  :url "/model/group-memberships")
 
 (defresource group-memberships-api :collection
   :mixins [page-resource]
