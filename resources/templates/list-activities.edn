@@ -1,10 +1,10 @@
 [:div {:title "list-activities"}
- [:h3 "Activities" [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
  [:subpage {:name "activities" :item "item" :title "list-activities activities-subpage"}
   [:debug {:expr "$parent.page"}]
+  [:h3 "Activities" [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
   [:div {:ng-if "!$parent.loaded"} [:spinner]]
   [:div {:ng-if "$parent.loaded"}
-   [:ul.activities-list
+   [:ul.activities-list.list-unstyled
     [:li {:ng-repeat "id in $parent.$parent.page.items"}
      [:debug {:expr "id"}]
      [:show-activity {:data-id "{{id}}"}]]]]]]
