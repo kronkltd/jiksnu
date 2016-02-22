@@ -167,17 +167,17 @@
 
 (def.controller jiksnu.LogoutController [])
 
-(page-controller Activities    "activities"    [])
-(page-controller Clients       "clients"       [])
-(page-controller Conversations "conversations" ["activities"])
-(page-controller Domains       "domains"       [])
-(page-controller FeedSources   "feed-sources"  [])
-(page-controller Groups        "groups"        [])
-(page-controller Likes         "likes"        [])
-(page-controller Resources     "resources"     [])
-(page-controller Streams       "streams"       [])
-(page-controller Subscriptions "subscriptions" [])
-(page-controller Users         "users"         [])
+(page-controller Activities    "activities")
+(page-controller Clients       "clients")
+(page-controller Conversations "conversations")
+(page-controller Domains       "domains")
+(page-controller FeedSources   "feed-sources")
+(page-controller Groups        "groups")
+(page-controller Likes         "likes")
+(page-controller Resources     "resources")
+(page-controller Streams       "streams")
+(page-controller Subscriptions "subscriptions")
+(page-controller Users         "users")
 
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]

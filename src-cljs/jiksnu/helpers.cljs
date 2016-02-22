@@ -148,7 +148,7 @@
                        (aset item subpage page)))))))
 
 (defn init-page
-  [$scope $rootScope pageService subpageService page-type subpages]
+  [$scope $rootScope pageService subpageService page-type]
   (.$on $rootScope "updateCollection" (fn [] (.init $scope)))
   (set! (.-loaded $scope) false)
   (set! (.-init $scope)

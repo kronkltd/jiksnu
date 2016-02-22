@@ -2,11 +2,14 @@
   (:use [gyr.core :only [def.controller]]))
 
 (defmacro page-controller
-  [klass-name collection-name subpages]
+  [klass-name collection-name]
   (let [controller-sym (symbol (str "jiksnu.Index" klass-name "Controller"))]
     (list 'def.controller controller-sym
           ['$scope '$rootScope 'pageService 'subpageService]
-          (list 'helpers/init-page '$scope '$rootScope 'pageService 'subpageService collection-name subpages)
+          (list 'helpers/init-page
+                '$scope '$rootScope
+                'pageService 'subpageService
+                collection-name)
           (list 'set!
                 (list '.-refresh '$scope)
                 (list 'fn []
