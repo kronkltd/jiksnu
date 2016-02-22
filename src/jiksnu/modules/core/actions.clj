@@ -104,8 +104,7 @@
        (do
          (timbre/warnf "could not find action for: %s(%s) => %s"
                     model-name id action-name)
-         {:message (format "action not found: %s" action-name)
-          :action "error"})))
+         (throw+ {:msg (format "action not found: %s" action-name)}))))
    (catch RuntimeException ex
      (timbre/error ex "Actions error")
      {:message (str ex)

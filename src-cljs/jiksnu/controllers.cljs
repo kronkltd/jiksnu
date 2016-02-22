@@ -418,11 +418,16 @@
     (.init $scope id)))
 
 (def.controller jiksnu.ShowGroupController
-  [$scope $http $stateParams Groups]
+  [$scope $http $stateParams app Groups]
   (timbre/debug "loading ShowGroupController")
   (set! (.-loaded $scope) false)
   (set! (.-addAdmin $scope)  (fn [& opts] (js/console.log opts)))
   (set! (.-addMember $scope) (fn [& opts] (js/console.log opts)))
+  (set! (.-join $scope)
+        (fn []
+          (timbre/info "Joining group")
+          (let [id (.-_id (.-group $scope))]
+            (.invokeAction app "group" "join" id))))
   (set! (.-init $scope)
         (fn [id]
           (.bindOne Groups id $scope "group")

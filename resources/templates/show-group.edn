@@ -1,4 +1,5 @@
-[:div
+[:div {:title "show-group"}
+ [:debug {:expr "group"}]
  [:h2 "{{group.name}}"]
  [:p "{{group.homepage}}"]
  [:p "{{group.location}}"]
@@ -7,10 +8,11 @@
   [:time "{{group.created}}"]
   ]
  [:p "{{group.updated}}"]
+ [:button.btn.btn-default {:ng-click "join()"} "Join"]
  [:div
   [:h3 "Admins {{group.admins.length}}"]
   [:div
-   [:form {:name "addAdmin()" :ng-submit "addAdmin"}
+   [:form {:name "addAdmin" :ng-submit "addAdmin()"}
     [:input {:ng-model "id"}]
     [:input.btn.btn-default {:type "submit"}]]]
   [:ul
@@ -20,7 +22,7 @@
  [:div
   [:h3 "Members {{group.members.length}}"]
   [:div
-   [:form {:name "addMember()" :ng-submit "addMember"}
+   [:form {:name "addMember" :ng-submit "addMember()"}
     [:input {:ng-model "id"}]
     [:input.btn.btn-default {:type "submit"}]]]
   [:ul
