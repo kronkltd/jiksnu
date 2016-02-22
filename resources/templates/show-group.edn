@@ -9,7 +9,9 @@
   ]
  [:p "{{group.updated}}"]
  [:button.btn.btn-default {:ng-click "join()"} "Join"]
- [:div
+ [:list-group-admins {:item "group"}]
+ [:list-group-members {:item "group"}]
+ #_[:div
   [:h3 "Admins {{group.admins.length}}"]
   [:div
    [:form {:name "addAdmin" :ng-submit "addAdmin()"}
@@ -19,7 +21,7 @@
    [:li {:ng-repeat "user in group.admins"}
     [:a {:ui-sref "showUser({_id: user})"}
      "{{user}}"]]]]
- [:div
+ #_[:div
   [:h3 "Members {{group.members.length}}"]
   [:div
    [:form {:name "addMember" :ng-submit "addMember()"}
