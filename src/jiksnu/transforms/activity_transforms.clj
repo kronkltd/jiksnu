@@ -224,14 +224,10 @@
 
 (defn set-streams
   [activity]
-  (let [streams (:streams activity)]
-    (map
-     (fn [stream]
-       (if (string? stream)
-         (ObjectId. stream)
-         stream
-         )
-       )
-     streams)
-    )
-  )
+  (let [streams (->> activity
+                     :streams
+                     (mapv (fn [stream]
+                            (if (string? stream)
+                              (ObjectId. stream)
+                              stream))))]
+    (assoc activity :streams streams)))

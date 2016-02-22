@@ -3,6 +3,7 @@
             [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model.activity :as model.activity]
@@ -75,13 +76,16 @@
 
   (fact "when there is an authenticated user"
     (let [user (mock/a-user-exists)
-          params (factory :activity {:author (:_id user)})]
+          stream (util/inspect (actions.stream/get-stream user "* major"))
+          params (factory :activity {:author (:_id user)
+                                     :streams [(str (:_id stream))]})]
       (actions.activity/post params) =>
       (every-checker
        (partial instance? Activity)
-       (contains {:_id (partial instance? ObjectId)})
-       (contains {:created (partial instance? DateTime)})
-       (contains {:author string?})))))
+       (contains {:_id (partial instance? ObjectId)
+                  :streams (has every? (partial instance? ObjectId))
+                  :created (partial instance? DateTime)
+                  :author string?})))))
 
 (fact "#'actions.activity/show"
   (fact "when the record exists"

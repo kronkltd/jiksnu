@@ -49,12 +49,12 @@
       (condp = collection-name
 
         "activities"
-        (do
+        (let [verb (:verb item)]
           (timbre/info "activity created")
-          (condp = (:verb item)
+          (condp = verb
             (do
-              (timbre/info "Unknown verb")
-              (util/inspect item))))
+              (timbre/infof "Unknown verb - %s" verb)
+              #_(util/inspect item))))
 
         "users"
         (do

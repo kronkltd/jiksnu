@@ -176,3 +176,11 @@
   [request channel status]
   (timbre/info "connection closed")
   #_(connection-closed user-id connection-id))
+
+(defn get-stream
+  [user stream-name]
+  (some-> (index {:name stream-name
+                  :owner (:_id user)})
+          :items
+          first
+          model.stream/fetch-by-id))

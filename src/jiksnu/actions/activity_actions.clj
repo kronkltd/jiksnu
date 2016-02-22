@@ -64,6 +64,7 @@
       transforms.activity/set-title
       transforms.activity/set-local
       transforms.activity/set-source
+      transforms.activity/set-streams
       ;; transforms.activity/set-geo
       transforms.activity/set-object-updated
       transforms.activity/set-object-created
