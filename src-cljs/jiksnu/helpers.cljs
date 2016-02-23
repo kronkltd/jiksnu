@@ -87,29 +87,41 @@
 
 (def route-data
   [
-   ["avatarPage"         "/main/avatar"             "AvatarPage"         :avatar-page]
-   ["home"               "/"                        "IndexConversations" :public-timeline]
-   ["indexActivities"    "/main/activities"         "IndexActivities"    :index-activities]
-   ["indexDomains"       "/main/domains"            "IndexDomains"       :index-domains]
-   ["indexFeedSources"   "/main/feed-sources"       "IndexFeedSources"   :index-feed-sources]
-   ["indexGroups"        "/main/groups"             "IndexGroups"        :index-groups]
-   ["indexLikes"         "/main/likes"              "IndexLikes"         :index-likes]
-   ["indexResources"     "/main/resources"          "IndexResources"     :index-resources]
-   ["indexStreams"       "/main/streams"            "IndexStreams"       :index-streams]
-   ["indexSubscriptions" "/main/subscriptions"      "IndexSubscriptions" :index-subscriptions]
-   ["indexUsers"         "/main/users"              "IndexUsers"         :index-users]
-   ["loginPage"          "/main/login"              "LoginPage"          :login-page]
-   ["registerPage"       "/main/register"           "RegisterPage"       :register-page]
-   ["settingsPage"       "/main/settings"           "SettingsPage"       :settings-page]
-   ["showActivity"       "/main/activities/:_id"    "ShowActivity"       :show-activity]
-   ["showConversation"   "/main/conversations/:_id" "ShowConversation"   :show-conversation]
-   ["showDomain"         "/main/domains/:_id"       "ShowDomain"         :show-domain]
-   ["showGroup"          "/main/groups/:_id"        "ShowGroup"          :show-group]
-   ["showLike"           "/main/likes/:_id"         "ShowLike"           :show-like]
-   ["showStream"         "/main/streams/:_id"       "ShowStream"         :show-stream]
-   ["showUser"           "/main/users/:_id"         "ShowUser"           :show-user]
+   ["avatarPage"            "/main/avatar"             "AvatarPage"            :avatar-page]
+   ["home"                  "/"                        "IndexConversations"    :public-timeline]
+   ["indexActivities"       "/main/activities"         "IndexActivities"       :index-activities]
+   ["indexDomains"          "/main/domains"            "IndexDomains"          :index-domains]
+   ["indexFeedSources"      "/main/feed-sources"       "IndexFeedSources"      :index-feed-sources]
+   ["indexGroups"           "/main/groups"             "IndexGroups"           :index-groups]
+   ["indexGroupMemberships" "/main/group-memberships"  "IndexGroupMemberships" :index-group-memberships]
+   ["indexLikes"            "/main/likes"              "IndexLikes"            :index-likes]
+   ["indexResources"        "/main/resources"          "IndexResources"        :index-resources]
+   ["indexStreams"          "/main/streams"            "IndexStreams"          :index-streams]
+   ["indexSubscriptions"    "/main/subscriptions"      "IndexSubscriptions"    :index-subscriptions]
+   ["indexUsers"            "/main/users"              "IndexUsers"            :index-users]
+   ["loginPage"             "/main/login"              "LoginPage"             :login-page]
+   ["registerPage"          "/main/register"           "RegisterPage"          :register-page]
+   ["settingsPage"          "/main/settings"           "SettingsPage"          :settings-page]
+   ["showActivity"          "/main/activities/:_id"    "ShowActivity"          :show-activity]
+   ["showConversation"      "/main/conversations/:_id" "ShowConversation"      :show-conversation]
+   ["showDomain"            "/main/domains/:_id"       "ShowDomain"            :show-domain]
+   ["showGroup"             "/main/groups/:_id"        "ShowGroup"             :show-group]
+   ["showLike"              "/main/likes/:_id"         "ShowLike"              :show-like]
+   ["showStream"            "/main/streams/:_id"       "ShowStream"            :show-stream]
+   ["showUser"              "/main/users/:_id"         "ShowUser"              :show-user]
    ]
   )
+
+(defn setup-hotkeys
+  [hotkeys $state]
+  (state-hotkey "g a" "indexActivities" "Go to Activities")
+  (state-hotkey "g d" "indexDomains"    "Go to Domains")
+  (state-hotkey "g g" "indexGroups"     "Go to Groups")
+  (state-hotkey "g m" "indexGroupMemberships" "Go to Group Memberships")
+  (state-hotkey "g h" "home"            "Go to Home")
+  (state-hotkey "g l" "indexLikes"      "Go to Likes")
+  (state-hotkey "g s" "indexStreams"    "Go to Streams")
+  (state-hotkey "g u" "indexUsers"      "Go to Users"))
 
 (def states
   (let [as (admin-states admin-data)]
@@ -183,13 +195,3 @@
                        ;; (timbre/debug "Page loaded: " page-type)
                        (set! (.-page $scope) page)
                        (set! (.-loaded $scope) true)))))))
-
-(defn setup-hotkeys
-  [hotkeys $state]
-  (state-hotkey "g a" "indexActivities" "Go to Activities")
-  (state-hotkey "g d" "indexDomains"    "Go to Domains")
-  (state-hotkey "g g" "indexGroups"     "Go to Groups")
-  (state-hotkey "g h" "home"            "Go to Home")
-  (state-hotkey "g l" "indexLikes"      "Go to Likes")
-  (state-hotkey "g s" "indexStreams"    "Go to Streams")
-  (state-hotkey "g u" "indexUsers"      "Go to Users"))

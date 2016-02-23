@@ -8,6 +8,7 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
                                                 path subpage-resource]]
+            [jiksnu.util :as util]
             [octohipster.mixins :as mixin]))
 
 (defparameter :model.user/id
@@ -50,6 +51,19 @@
   :name "Pump API"
   :description "User api matching pump.io spec")
 
+
+(defresource user-pump-api :followers
+  :url "/{username}/followers"
+  :name "user followers"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)]
+               {:data user}))
+  :presenter (fn [user]
+               (with-context [:http :as]
+                 (util/inspect (show-section user)))))
 
 (defresource user-pump-api :profile
   :url "/{username}/profile"

@@ -9,6 +9,7 @@
    "domains"       "/model/domains"
    "feed-sources"  "/model/feed-sources"
    "groups"        "/model/groups"
+   "group-memberships" "/model/group-memberships"
    "likes"         "/model/likes"
    "resources"     "/model/resources"
    "streams"       "/model/streams"

@@ -15,6 +15,18 @@
   :description "The Id of a group membership"
   :type "string")
 
+(defgroup jiksnu group-memberships
+  :url "/main/group-memberships"
+  :name "Group Memberships")
+
+(defresource group-memberships :collection
+  :mixins [angular-resource])
+
+(defresource group-memberships :item
+  :url "/{_id}"
+  :parameters {:_id (path :model.group-membership/id)}
+  :mixins [angular-resource])
+
 (defgroup jiksnu group-memberships-api
   :name "Group Memberships API"
   :url "/model/group-memberships")
