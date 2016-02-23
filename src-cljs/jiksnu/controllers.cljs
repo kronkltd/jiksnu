@@ -341,30 +341,13 @@
 
 (def.controller jiksnu.ShowActivityController
   [$scope $stateParams Activities app $rootScope]
-  (set! (.-loaded $scope) false)
   (set! (.-app $scope) app)
-
-  (set! (.-init $scope)
-        (fn [id]
-          ;; (timbre/debug "Showing activity: " id)
-          (when (and id (not= id ""))
-            (.bindOne Activities id $scope "activity")
-            (-> (.find Activities id)
-                (.then (fn [] (set! (.-loaded $scope) true)))))))
-
-  (set! (.-deleteRecord $scope)
-        (fn [activity]
-          ;; FIXME: use activity?
-          (-> (.invokeAction app "activity" "delete" (.-id $scope))
-              (.then (fn [] (.refresh app))))))
 
   (set! (.-likeActivity $scope)
         (fn [activity]
           (.invokeAction app "activity" "like" (.-id $scope))))
 
-  (let [id (or (.-id $scope)
-               (.-_id $stateParams))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Activities))
 
 (def.controller jiksnu.ShowDomainController
   [$scope $stateParams app Domains]
@@ -426,16 +409,8 @@
             (set! (.-btnLabel $scope) (if shown? "-" "+"))))))
 
 (def.controller jiksnu.ShowSubscriptionController
-  [$scope $stateParams Subscriptions]
-  (set! (.-init $scope)
-        (fn [id]
-          (set! (.-loaded $scope) false)
-          (.bindOne Subscriptions id $scope "item")
-          (-> (.find Subscriptions id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
-
-  (let [id (or (.-_id $stateParams) (.-id $scope))]
-    (.init $scope id)))
+  [$scope $stateParams app Subscriptions]
+  (helpers/init-item $scope $stateParams app Subscriptions))
 
 (def.controller jiksnu.ShowUserController
   [$scope $stateParams Users]

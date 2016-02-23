@@ -1,56 +1,56 @@
 [:div {:title "show-activity"}
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div  {:ng-if "loaded"}
-  [:debug {:expr "activity"}]
+  [:debug {:expr "item"}]
   [:article.hentry.media
    [:div.media-left
-    [:display-avatar {:data-id "{{activity.author}}" :size "80"}]]
+    [:display-avatar {:data-id "{{item.author}}" :size "80"}]]
    [:div.media-body
     [:p
-     [:a {:ui-sref "showUser({_id: activity.author})"}
-      "{{activity.author}}"]]
-    [:h3.media-heading "{{activity.title}}"]
-    [:ul.unstyled {:ng-if "activity.mentioned"}
-     [:li {:ng-repeat "user in activity.mentioned"}
+     [:a {:ui-sref "showUser({_id: item.author})"}
+      "{{item.author}}"]]
+    [:h3.media-heading "{{item.title}}"]
+    [:ul.unstyled {:ng-if "item.mentioned"}
+     [:li {:ng-repeat "user in item.mentioned"}
       [:i.icon-chevron-right]
       [:link-to {:data-id "{{user.id}}"}]]]
     [:ul
-     [:li {:ng-repeat "id in activity.streams"}
+     [:li {:ng-repeat "id in item.streams"}
       [:show-stream-minimal {:data-id "{{id}}"}]]]
 
     [:div.entry-content
-     [:div {:btf-markdown "activity.content"}]]
+     [:div {:btf-markdown "item.content"}]]
     [:div
      [:span.posted
-      "{{activity.verb}}ed a {{activity.object.type}} "
-      [:span {:ng-if "!activity.public"}
+      "{{item.verb}}ed a {{item.object.type}} "
+      [:span {:ng-if "!item.public"}
        "privately "]
-      [:time {:datetime "{{activity.published}}"
-              :title "{{activity.published}}"
+      [:time {:datetime "{{item.published}}"
+              :title "{{item.published}}"
               :property "dc:published"}
-       [:a {:ui-sref "showActivity(activity)"}
-        [:span {:am-time-ago "activity.published"
+       [:a {:ui-sref "showActivity(item)"}
+        [:span {:am-time-ago "item.published"
                 :am-preprocess "utc"}]]]
       " "
-      [:span {:ng-if "activity.source"}
-       "using {{activity.source}}"
+      [:span {:ng-if "item.source"}
+       "using {{item.source}}"
        " "]
-      [:span {:ng-if "activity.geo.latitude && activity.geo.longitude"}
+      [:span {:ng-if "item.geo.latitude && item.geo.longitude"}
        "near ("
-       [:abbr {:title "{{activity.geo.latitude}}"}
-        "{{activity.geo.latitude | number:2}}"]
+       [:abbr {:title "{{item.geo.latitude}}"}
+        "{{item.geo.latitude | number:2}}"]
        ", "
-       [:arrr {:title "{{activity.geo.longitude}}"}
-        "{{activity.geo.longitude | number:2}}"]
+       [:arrr {:title "{{item.geo.longitude}}"}
+        "{{item.geo.longitude | number:2}}"]
        ") "]
-      [:span {:ng-if "!activity.local"}
+      [:span {:ng-if "!item.local"}
        "via a "
-       [:a {:href "{{activity.service}}"}
+       [:a {:href "{{item.service}}"}
         "foreign service"]
        " "]
-      #_[:a {:href "/main/conversations/{{activity.conversation}}"}
+      #_[:a {:href "/main/conversations/{{item.conversation}}"}
          "in context"]]]
-    [:subpage {:name "likes" :item "activity"}
+    [:subpage {:name "likes" :item "item"}
      [:debug {:expr "$parent.page"}]
      [:div {:ng-if "!$parent.loaded"} [:spinner]]
      [:div {:ng-if "$parent.loaded"}
@@ -62,6 +62,6 @@
     [:div {:ng-if "app.user"}
      [:ul.buttons
       [:li
-       [:button.btn {:ng-click "likeActivity(activity)"} "Like"]]
+       [:button.btn {:ng-click "likeActivity(item)"} "Like"]]
       [:li
-       [:button.btn {:ng-click "deleteRecord(activity)"} "Delete Activity"]]]]]]]]
+       [:button.btn {:ng-click "deleteRecord(item)"} "Delete Activity"]]]]]]]]
