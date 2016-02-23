@@ -367,70 +367,26 @@
     (.init $scope id)))
 
 (def.controller jiksnu.ShowDomainController
-  [$scope $stateParams Domains]
+  [$scope $stateParams app Domains]
   (set! (.-loaded $scope) false)
-  (set! (.-init $scope)
-        (fn [id]
-          ;; (timbre/debug "Show domain: " id)
-          (.bindOne Domains id $scope "domain")
-          (-> (.find Domains id)
-              (.then (fn [] (set! (.-loaded $scope) true))))))
-  (.init $scope (.-_id $stateParams)))
+  (helpers/init-item $scope $stateParams app Domains))
 
 (def.controller jiksnu.ShowConversationController
   [$scope $stateParams Conversations app $rootScope]
-  (set! (.-loaded $scope) false)
-  (set! (.-app $scope) app)
-
-  (when-not (.-init $scope)
-    (set! (.-init $scope)
-          (fn [id]
-            ;; (timbre/debug "Show conversation: " id)
-            (.bindOne Conversations id $scope "conversation")
-            (-> (.find Conversations id)
-                (.then (fn [conversation]
-                         (when conversation
-                           (set! (.-item $scope) conversation)
-                           (set! (.-loaded $scope) true))))))))
-
-  (set! (.-deleteRecord $scope)
-        (fn [item]
-          (let [id (.-id $scope)]
-            (timbre/debugf "deleting conversation: %s" id)
-            (-> (.invokeAction app "conversation" "delete" id)
-                (.then (fn [] (.refresh app)))))))
-
-  (let [id (or (.-id $scope) (.-_id $stateParams))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Conversations)
+  (set! (.-app $scope) app))
 
 (def.controller jiksnu.ShowFollowersMinimalController
   [$scope $stateParams Subscriptions]
-  (set! (.-init $scope)
-        (fn [id]
-          (set! (.-loaded $scope) false)
-          (.bindOne Subscriptions id $scope "item")
-          (-> (.find Subscriptions id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
-
-  (let [id (or (.-id $scope) (.-_id $stateParams))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Subscriptions))
 
 (def.controller jiksnu.ShowFollowingMinimalController
   [$scope $stateParams Subscriptions]
-  (set! (.-init $scope)
-        (fn [id]
-          (set! (.-loaded $scope) false)
-          (.bindOne Subscriptions id $scope "item")
-          (-> (.find Subscriptions id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
-
-  (let [id (or (.-id $scope) (.-_id $stateParams))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Subscriptions))
 
 (def.controller jiksnu.ShowGroupController
   [$scope $http $stateParams app Groups]
   (timbre/debug "loading ShowGroupController")
-  (set! (.-loaded $scope) false)
   (set! (.-addAdmin $scope)  (fn [& opts] (js/console.log opts)))
   (set! (.-addMember $scope) (fn [& opts] (js/console.log opts)))
   (set! (.-join $scope)
@@ -438,114 +394,36 @@
           (timbre/info "Joining group")
           (let [id (.-_id (.-group $scope))]
             (.invokeAction app "group" "join" id))))
-  (set! (.-init $scope)
-        (fn [id]
-          (.bindOne Groups id $scope "group")
-          (-> (.find Groups id)
-              (.then (fn [data]
-                       (set! (.-group $scope) data)
-                       (set! (.-loaded $scope) true))))))
-
-  (let [id (or (.-id $scope) (.-_id $stateParams))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Groups))
 
 (def.controller jiksnu.ShowGroupMinimalController
   [$scope $stateParams Groups]
-  (set! (.-init $scope)
-        (fn [id]
-          (set! (.-loaded $scope) false)
-          (.bindOne Groups id $scope "item")
-          (-> (.find Groups id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
-
-  (let [id (or (.-id $scope) (.-_id $stateParams))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Groups))
 
 (def.controller jiksnu.ShowGroupMembershipMinimalController
   [$scope $stateParams GroupMemberships]
-  (set! (.-init $scope)
-        (fn [id]
-          (set! (.-loaded $scope) false)
-          (.bindOne GroupMemberships id $scope "item")
-          (-> (.find GroupMemberships id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
-
-  (let [id (or (.-id $scope) (.-_id $stateParams))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app GroupMemberships))
 
 (def.controller jiksnu.ShowLikeController
   [$scope $stateParams app Likes]
-  (set! (.-init $scope)
-        (fn [id]
-          (set! (.-loaded $scope) false)
-          (.bindOne Likes id $scope "item")
-          (-> (.find Likes id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
-
-  (set! (.-deleteRecord $scope)
-        (fn [item]
-          (let [id (.-id $scope)]
-            (timbre/debugf "deleting like: %s" id)
-            (-> (.invokeAction app "like" "delete" id)
-                (.then (fn [] (.refresh app)))))))
-
-  (let [id (or (.-id $scope) (.-_id $stateParams))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Likes))
 
 (def.controller jiksnu.ShowLikedByController
   [$scope $stateParams app Likes]
-  (set! (.-init $scope)
-        (fn [id]
-          (set! (.-loaded $scope) false)
-          (.bindOne Likes id $scope "item")
-          (-> (.find Likes id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
-
-  (set! (.-deleteRecord $scope)
-        (fn [item]
-          (let [id (.-id $scope)]
-            (timbre/debugf "deleting like: %s" id)
-            (-> (.invokeAction app "like" "delete" id)
-                (.then (fn [] (.refresh app)))))))
-
-  (let [id (or (.-id $scope) (.-_id $stateParams))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Likes))
 
 (def.controller jiksnu.ShowStreamController
   [$scope $http $stateParams Streams]
-  (timbre/info "loading ShowStreamController")
-  (let [model Streams
-        label "stream"]
-    (set! (.-loaded $scope) false)
-    (set! (.-init $scope)
-          (fn [id]
-            (.bindOne model id $scope label)
-            (-> (.find model id)
-                (.then (fn [data]
-                         (set! (.-stream $scope) data)
-                         (set! (.-loaded $scope) true))))))
-
-    (.init $scope (.-_id $stateParams))))
+  (helpers/init-item $scope $stateParams app Streams))
 
 (def.controller jiksnu.ShowStreamMinimalController
-  [$scope Streams]
-  (set! (.-loaded $scope) false)
-  (set! (.-init $scope)
-        (fn [id]
-          (.bindOne Streams id $scope "stream")
-          (-> (.find Streams id)
-              (.then (fn [stream]
-                       (set! (.-stream $scope) stream)
-                       (set! (.-loaded $scope) true))))))
-
+  [$scope $stateParams Streams]
+  (helpers/init-item $scope $stateParams app Streams)
   (set! (.-toggle $scope)
         (fn []
           (let [shown? (not (.-formShown $scope))]
             (set! (.-formShown $scope) shown?)
-            (set! (.-btnLabel $scope) (if shown? "-" "+")))))
-
-  (let [id (.-id $scope)]
-    (.init $scope id)))
+            (set! (.-btnLabel $scope) (if shown? "-" "+"))))))
 
 (def.controller jiksnu.ShowSubscriptionController
   [$scope $stateParams Subscriptions]

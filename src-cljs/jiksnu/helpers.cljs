@@ -123,6 +123,28 @@
       (.fetch item subpage)
       (.then #(aset item subpage (.-body %)))))
 
+(defn init-item
+  [$scope $stateParams app collection]
+  (when-not (.-init $scope)
+    (set! (.-init $scope)
+          (fn [id]
+            (set! (.-loaded $scope) false)
+            (.bindOne collection id $scope "item")
+            (-> (.find collection id)
+                (.then (fn [_] (set! (.-loaded $scope) true)))))))
+
+  (set! (.-deleteRecord $scope)
+        (fn [item]
+          (let [id (.-id $scope)]
+            (js/console.log "item" item)
+            (js/console.log "collection" collection)
+            ;; (timbre/debugf "deleting record: %s(%s)" (.getType item) id)
+            (-> (.invokeAction app (.-name collection) "delete" id)
+                (.then (fn [] (.refresh app)))))))
+
+  (let [id (or (.-id $scope) (.-_id $stateParams))]
+    (.init $scope id)))
+
 (defn init-subpage
   [$scope subpageService collection subpage]
   (set! (.-loaded $scope) false)

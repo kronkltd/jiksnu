@@ -18,7 +18,8 @@
   (.defineResource
    DS
    #js
-   {:name "activities"
+   {:name "activity"
+    :endpoint "activities"
     :methods #js {:getType (constantly "Activity")}}))
 
 (def.factory jiksnu.Conversations
@@ -26,7 +27,7 @@
   (.defineResource
    DS
    #js
-   {:name "conversations"
+   {:name "conversation"
     :endpoint "conversations"
     :deserialize deserializer
     :methods
@@ -40,7 +41,7 @@
   (.defineResource
    DS
    #js
-   {:name "domains"
+   {:name "domain"
     :endpoint "domains"
     :deserialize deserializer
     :methods #js {:getType (constantly "Domain")}}))
@@ -50,7 +51,7 @@
   (.defineResource
    DS
    #js
-   {:name "followings"
+   {:name "following"
     :endpoint "followings"
     :deserialize deserializer
     :methods #js {:getType (constantly "Following")}}))
@@ -60,7 +61,7 @@
   (.defineResource
    DS
    #js
-   {:name "groups"
+   {:name "group"
     :endpoint "groups"
     :deserialize deserializer
     :methods #js {:getType (constantly "Group")}}))
@@ -70,7 +71,7 @@
   (.defineResource
    DS
    #js
-   {:name "group-memberships"
+   {:name "group-membership"
     :endpoint "group-memberships"
     :deserialize deserializer
     :methods #js {:getType (constantly "GroupMembership")}}))
@@ -80,7 +81,7 @@
   (.defineResource
    DS
    #js
-   {:name "likes"
+   {:name "like"
     :endpoint "likes"
     :deserialize deserializer
     :methods #js {:getType (constantly "Like")}}))
@@ -90,7 +91,8 @@
   (.defineResource
    DS
    #js
-   {:name "streams"
+   {:name "stream"
+    :endpoint "streams"
     :methods #js {:getType (constantly "Stream")}}))
 
 (def.factory jiksnu.Subscriptions
@@ -98,7 +100,8 @@
   (.defineResource
    DS
    #js
-   {:name "subscriptions"
+   {:name "subscription"
+    :endpoint "subscriptions"
     :methods #js {:getType (constantly "Subscription")}}))
 
 (def.factory jiksnu.Users
