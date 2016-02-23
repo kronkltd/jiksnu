@@ -39,6 +39,7 @@ module.exports = function(config) {
       vendorBase + "/angular-bootstrap/ui-bootstrap-tpls.min.js",
       vendorBase + "/angular-ui-notification/dist/angular-ui-notification.min.js",
       vendorBase + "/angular-ui-router/release/angular-ui-router.min.js",
+      vendorBase + "/angular-ui-select/dist/select.min.js",
       vendorBase + "/angular-validator/dist/angular-validator.min.js",
       vendorBase + "/angular-websocket/angular-websocket.min.js",
       vendorBase + "/angular-mocks/angular-mocks.js",

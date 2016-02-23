@@ -1,33 +1,35 @@
 [:div {:title "show-group"}
- [:debug {:expr "group"}]
- [:h2 "{{group.name}}"]
- [:p "{{group.homepage}}"]
- [:p "{{group.location}}"]
- [:p "{{group.aliases}}"]
- [:p "Created: "
-  [:time "{{group.created}}"]
-  ]
- [:p "{{group.updated}}"]
- [:button.btn.btn-default {:ng-click "join()"} "Join"]
- [:list-group-admins {:item "group"}]
- [:list-group-members {:item "group"}]
- #_[:div
-  [:h3 "Admins {{group.admins.length}}"]
-  [:div
-   [:form {:name "addAdmin" :ng-submit "addAdmin()"}
-    [:input {:ng-model "id"}]
-    [:input.btn.btn-default {:type "submit"}]]]
-  [:ul
-   [:li {:ng-repeat "user in group.admins"}
-    [:a {:ui-sref "showUser({_id: user})"}
-     "{{user}}"]]]]
- #_[:div
-  [:h3 "Members {{group.members.length}}"]
-  [:div
-   [:form {:name "addMember" :ng-submit "addMember()"}
-    [:input {:ng-model "id"}]
-    [:input.btn.btn-default {:type "submit"}]]]
-  [:ul
-   [:li {:ng-repeat "user in group.members"}
-    [:a {:ui-sref "showUser({_id: user})"}
-     "{{user}}"]]]]]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:debug {:expr "group"}]
+  [:h2 "{{group.name}}"]
+  [:p "{{group.homepage}}"]
+  [:p "{{group.location}}"]
+  [:p "{{group.aliases}}"]
+  [:p "Created: "
+   [:time "{{group.created}}"]
+   ]
+  [:p "{{group.updated}}"]
+  [:button.btn.btn-default {:ng-click "join()"} "Join"]
+  [:list-group-admins {:item "group"}]
+  [:list-group-members {:item "group"}]
+  #_[:div
+     [:h3 "Admins {{group.admins.length}}"]
+     [:div
+      [:form {:name "addAdmin" :ng-submit "addAdmin()"}
+       [:input {:ng-model "id"}]
+       [:input.btn.btn-default {:type "submit"}]]]
+     [:ul
+      [:li {:ng-repeat "user in group.admins"}
+       [:a {:ui-sref "showUser({_id: user})"}
+        "{{user}}"]]]]
+  #_[:div
+     [:h3 "Members {{group.members.length}}"]
+     [:div
+      [:form {:name "addMember" :ng-submit "addMember()"}
+       [:input {:ng-model "id"}]
+       [:input.btn.btn-default {:type "submit"}]]]
+     [:ul
+      [:li {:ng-repeat "user in group.members"}
+       [:a {:ui-sref "showUser({_id: user})"}
+        "{{user}}"]]]]]]

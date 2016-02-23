@@ -1,0 +1,5 @@
+[:div {:title "show-group-membership-minimal"}
+ [:debug {:expr "item"}]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:show-user-minimal {:data-id "{{item.user}}"}]]]

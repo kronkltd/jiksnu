@@ -3,6 +3,8 @@
             [ciste.loader :refer [defmodule]]
             [clojurewerkz.eep.emitter :refer [defobserver delete-handler get-handler]]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.actions.group-membership-actions :as actions.group-membership]
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
@@ -10,6 +12,7 @@
             [jiksnu.channels :as ch]
             [jiksnu.db :as db]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.core.formats
             [jiksnu.modules.core.triggers.activity-triggers :as triggers.activity]
@@ -56,6 +59,17 @@
               "post"
               (do
                 #_(timbre/debug "activity posted"))
+
+              "join"
+              (do
+                (timbre/info "Group join")
+                (let [object-id (get-in item [:object :id])]
+                  (let [group (util/inspect (model.group/fetch-by-id (util/inspect object-id)))]
+                    (util/inspect
+                     (actions.group-membership/create
+                      (util/inspect
+                       {:user (:author item)
+                        :group (:_id group)}))))))
 
               #_(timbre/infof "Unknown verb - %s" verb)
               #_(util/inspect item))))

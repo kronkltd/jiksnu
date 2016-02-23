@@ -19,6 +19,7 @@
 (def subpage-mappings
   {"Activity"     {"likes"      #(str "/model/activities/"    (.-_id %) "/likes")}
    "Conversation" {"activities" #(str "/model/conversations/" (.-_id %) "/activities")}
+   "Group"        {"members"    #(str "/model/groups/"        (.-_id %) "/members")}
    "Stream"       {"activities" #(str "/model/streams/"       (.-_id %) "/activities")}
    "User"         {"activities" #(str "/model/users/"         (.-_id %) "/activities")
                    "following"  #(str "/model/users/"         (.-_id %) "/following")

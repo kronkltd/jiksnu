@@ -58,12 +58,13 @@
    :scope true
    :templateUrl "/templates/left-column-section"})
 
-(list-directive "Activities" "activities")
-(list-directive "Followers"  "followers")
-(list-directive "Following"  "following")
-(list-directive "Groups"     "groups")
-(list-directive "Likes"      "likes")
-(list-directive "Streams"    "streams")
+(list-directive "Activities"   "activities")
+(list-directive "Followers"    "followers")
+(list-directive "Following"    "following")
+(list-directive "Groups"       "groups")
+(list-directive "GroupMembers" "group-members")
+(list-directive "Likes"        "likes")
+(list-directive "Streams"      "streams")
 
 (def.directive jiksnu.navBar []
   #js
@@ -77,18 +78,20 @@
    :scope true
    :templateUrl "/templates/right-column-section"})
 
-(item-directive "Activity"         "activity")
-(item-directive "Conversation"     "conversation")
-(item-directive "Group"            "group")
-(item-directive "GroupMinimal"     "group-minimal")
-(item-directive "FollowersMinimal" "followers-minimal")
-(item-directive "FollowingMinimal" "following-minimal")
-(item-directive "Like"             "like")
-(item-directive "LikedBy"          "liked-by")
-(item-directive "StreamMinimal"    "stream-minimal")
-(item-directive "Subscription"     "subscription")
-(item-directive "User"             "user")
-(item-directive "UserMinimal"      "user-minimal")
+(item-directive "Activity"               "activity")
+(item-directive "Conversation"           "conversation")
+(item-directive "Group"                  "group")
+(item-directive "GroupMembership"        "group-membership")
+(item-directive "GroupMembershipMinimal" "group-membership-minimal")
+(item-directive "GroupMinimal"           "group-minimal")
+(item-directive "FollowersMinimal"       "followers-minimal")
+(item-directive "FollowingMinimal"       "following-minimal")
+(item-directive "Like"                   "like")
+(item-directive "LikedBy"                "liked-by")
+(item-directive "StreamMinimal"          "stream-minimal")
+(item-directive "Subscription"           "subscription")
+(item-directive "User"                   "user")
+(item-directive "UserMinimal"            "user-minimal")
 
 (def.directive jiksnu.spinner []
   #js

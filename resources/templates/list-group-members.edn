@@ -1,0 +1,10 @@
+[:div {:title "list-group-members"}
+ [:h2 "List group members"]
+ [:subpage {:name "members" :item "item"}
+  [:debug {:expr "$parent.page"}]
+  [:div {:ng-if "!$parent.loaded"} [:spinner]]
+  [:div {:ng-if "$parent.loaded"}
+   [:ul
+    [:li {:ng-repeat "id in $parent.$parent.page.items"}
+     [:debug {:expr "id"}]
+     [:show-group-membership-minimal {:data-id "{{id}}"}]]]]]]

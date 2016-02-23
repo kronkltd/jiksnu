@@ -128,6 +128,12 @@
   (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
   (helpers/init-subpage $scope subpageService Users "groups"))
 
+(def.controller jiksnu.ListGroupMembersController
+  [$scope subpageService Groups]
+  (set! (.-formShown $scope) false)
+  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (helpers/init-subpage $scope subpageService Groups "members"))
+
 (def.controller jiksnu.ListStreamsController
   [$scope app subpageService Users]
   (set! (.-formShown $scope) false)
@@ -450,6 +456,18 @@
           (set! (.-loaded $scope) false)
           (.bindOne Groups id $scope "item")
           (-> (.find Groups id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
+
+  (let [id (or (.-id $scope) (.-_id $stateParams))]
+    (.init $scope id)))
+
+(def.controller jiksnu.ShowGroupMembershipMinimalController
+  [$scope $stateParams GroupMemberships]
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne GroupMemberships id $scope "item")
+          (-> (.find GroupMemberships id)
               (.then (fn [_] (set! (.-loaded $scope) true))))))
 
   (let [id (or (.-id $scope) (.-_id $stateParams))]
