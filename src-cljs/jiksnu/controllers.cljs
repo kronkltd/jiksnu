@@ -361,11 +361,11 @@
   (set! (.-app $scope) app))
 
 (def.controller jiksnu.ShowFollowersMinimalController
-  [$scope $stateParams Subscriptions]
+  [$scope $stateParams app Subscriptions]
   (helpers/init-item $scope $stateParams app Subscriptions))
 
 (def.controller jiksnu.ShowFollowingMinimalController
-  [$scope $stateParams Subscriptions]
+  [$scope $stateParams app Subscriptions]
   (helpers/init-item $scope $stateParams app Subscriptions))
 
 (def.controller jiksnu.ShowGroupController
@@ -381,11 +381,11 @@
   (helpers/init-item $scope $stateParams app Groups))
 
 (def.controller jiksnu.ShowGroupMinimalController
-  [$scope $stateParams Groups]
+  [$scope $stateParams app Groups]
   (helpers/init-item $scope $stateParams app Groups))
 
 (def.controller jiksnu.ShowGroupMembershipMinimalController
-  [$scope $stateParams GroupMemberships]
+  [$scope $stateParams app GroupMemberships]
   (helpers/init-item $scope $stateParams app GroupMemberships))
 
 (def.controller jiksnu.ShowLikeController
@@ -397,11 +397,11 @@
   (helpers/init-item $scope $stateParams app Likes))
 
 (def.controller jiksnu.ShowStreamController
-  [$scope $http $stateParams Streams]
+  [$scope $http $stateParams app Streams]
   (helpers/init-item $scope $stateParams app Streams))
 
 (def.controller jiksnu.ShowStreamMinimalController
-  [$scope $stateParams Streams]
+  [$scope $stateParams app Streams]
   (helpers/init-item $scope $stateParams app Streams)
   (set! (.-toggle $scope)
         (fn []
