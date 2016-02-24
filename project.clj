@@ -148,4 +148,6 @@
   :filespecs [{:type :path :path "ciste.clj"}]
   :lis-opts {:name       "jiksnu"
              :properties {:ciste.properties "/vagrant/config/default.properties"}
-             :jvm-opts   ["-server"]})
+             :jvm-opts   ["-server"]}
+  :repositories [["snapshots" "http://artifactory.jiksnu.org/artifactory/libs-snapshot-local/"]
+                 ["releases" "http://artifactory.jiksnu.org/artifactory/libs-releases-local/"]])
