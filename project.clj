@@ -149,5 +149,9 @@
   :lis-opts {:name       "jiksnu"
              :properties {:ciste.properties "/vagrant/config/default.properties"}
              :jvm-opts   ["-server"]}
-  :repositories [["snapshots" "http://artifactory.jiksnu.org/artifactory/libs-snapshot-local/"]
-                 ["releases" "http://artifactory.jiksnu.org/artifactory/libs-releases-local/"]])
+  :repositories [["snapshots" {:url "http://artifactory.jiksnu.org/artifactory/libs-snapshot-local/"
+                               :username [:gpg :env/artifactory_username]
+                               :password [:gpg :env/artifactory_password]}]
+                 ["releases" {:url "http://artifactory.jiksnu.org/artifactory/libs-releases-local/"
+                              :username [:gpg :env/artifactory_username]
+                              :password [:gpg :env/artifactory_password]}]])
