@@ -135,10 +135,8 @@
             (let [spy (.. (js/spyOn app "invokeAction")
                           -and
                           (returnValue
-                           (.when $q #js {})))
-                  response (.deleteRecord $scope (.-item $scope))]
-              (js/console.log response)
-              (-> response
+                           (.when $q #js {})))]
+              (-> (.deleteRecord $scope (.-item $scope))
                   (.then (fn [r] (.toBeDefined (js/expect r)))
                          (fn [r] (.toBeDefined (js/expect r))))
                   (.finally (fn [] (js/done))))

@@ -130,7 +130,6 @@
 (defn fetch-sub-page
   [item subpageService subpage]
   (timbre/debugf "Fetching subpage: %s -> %s" (.-_id item) subpage)
-  ;; (js/console.log item)
   (-> subpageService
       (.fetch item subpage)
       (.then #(aset item subpage (.-body %)))))
@@ -148,8 +147,6 @@
   (set! (.-deleteRecord $scope)
         (fn [item]
           (let [id (.-id $scope)]
-            (js/console.log "item" item)
-            (js/console.log "collection" collection)
             ;; (timbre/debugf "deleting record: %s(%s)" (.getType item) id)
             (-> (.invokeAction app (.-name collection) "delete" id)
                 (.then (fn [] (.refresh app)))))))

@@ -1,7 +1,6 @@
 (ns jiksnu.core-spec
   (:require purnam.test)
-  (:use-macros [purnam.test :only [beforeEach describe it is is-not]])
-  )
+  (:use-macros [purnam.test :only [beforeEach describe it is is-not]]))
 
 (def base-domain "localhost")
 (def base-port 8080)
@@ -12,15 +11,7 @@
     (js/it "FIX THIS: One Plus One Equals... "
       (fn []
         (let [page (.get js/browser (str base-path "/"))]
-          (js/console.log "page" page)
-
           (-> (js/expect (.getTitle js/browser))
               (.toBe "Jiksnu"))
-
           (is (+ 1 1) 2)
-          (is (+ 2 2) 4)
-
-
-          )
-
-        ))))
+          (is (+ 2 2) 4))))))

@@ -78,7 +78,6 @@
                                     (fn [subscriptions]
                                       (let [s (some #(= (.-to %) (.-_id user))
                                                     subscriptions)]
-                                        (js/console.log "s" s)
                                         (.resolve d s)))))))))))
               (do
                 (timbre/warn "No item bound to scope")
@@ -225,7 +224,6 @@
     (set! (.-submit $scope)
           (fn []
             (timbre/info "Submitting group form")
-            (js/console.log $scope)
             (let [params (.-group $scope)
                   path "/model/groups"]
               (-> (.post $http path params)
@@ -371,8 +369,6 @@
 (def.controller jiksnu.ShowGroupController
   [$scope $http $stateParams app Groups]
   (timbre/debug "loading ShowGroupController")
-  (set! (.-addAdmin $scope)  (fn [& opts] (js/console.log opts)))
-  (set! (.-addMember $scope) (fn [& opts] (js/console.log opts)))
   (set! (.-join $scope)
         (fn []
           (timbre/info "Joining group")
