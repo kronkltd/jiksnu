@@ -24,7 +24,7 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
-(fact "fetch-members"
+(fact "fetch-by-group"
   (let [user (mock/a-user-exists)
         group (mock/a-group-exists)]
 
@@ -32,5 +32,5 @@
      {:user (:_id user)
       :group (:_id group)})
 
-    (actions.group-membership/fetch-members group) =>
+    (actions.group-membership/fetch-by-group group) =>
     (contains {:totalItems 1})))
