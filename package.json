@@ -2,6 +2,7 @@
     "dependencies": {
         "angular": "1.4.7",
         "angular-mocks": "1.4.7",
+        "bower": "1.7.7",
         "es6-promise": "3.0.2",
         "karma-angular": "0.0.6",
         "karma-coverage": "0.5.2",
