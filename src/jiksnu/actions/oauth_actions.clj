@@ -2,7 +2,7 @@
   (:require [crypto.random :as random]))
 
 (defn request-token
-  []
+  [request]
   (random/base32 20))
 
 (defn authorize

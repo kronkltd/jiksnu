@@ -8,6 +8,7 @@
             jiksnu.modules.web.routes.client-routes
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
+            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
@@ -26,30 +27,24 @@
             body (json/json-str params)
             request (-> (req/request :post "/api/client/register")
                         (req/content-type "application/json")
-                        (req/body body))]
-        (response-for request) =>
+                        (req/body body))
+            response (response-for request)]
+         response =>
         (contains {
                    ;; TODO: verify against spec
                    :status 201
-                   :headers (contains {"Content-Type" "application/json;charset=UTF-8"})}))
+                   :headers (contains {"Content-Type" "application/json;charset=UTF-8"})})
 
-      #_(let [body (json/read-str (:body response) :key-fn keyword)]
-          body => map?
-
-          (:client_id body) => string?
-
+        (let [body (json/read-str (:body (util/inspect response)) :key-fn keyword)]
+          body => (contains
+                   {:client_id string?
+                    :registration_client_uri string?
+                    :client_id_issued_at number?})
           ;; (:registration_access_token body) => string?
-
-          ;; TODO: this is a URL
-          (:registration_client_uri body) => string?
-
-          ;; Optional per the spec, but this code should always send
-          (:client_id_issued_at body) => number?
-
           ;; Optional
           ;; (:client_secret body) => string?
           ;; (:client_secret_expires_at body) => number?
-          ))
+          )))
 
 (future-fact "route: oauth/access-token :get"
   (fact "when given valid params"
