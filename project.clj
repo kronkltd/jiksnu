@@ -87,6 +87,7 @@
             "protractor-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]
             "wscat"             ["shell" "./node_modules/.bin/wscat" "-c" "ws://localhost:8080/"]}
   :main ciste.runner
+  :aot [ciste.runner]
   :jvm-opts ["-server"
              "-Dfile.encoding=UTF-8"
              ;; "-Dcom.sun.management.jmxremote"
