@@ -77,14 +77,14 @@
                                 v (string/replace v #"\"([^\"]+)\",?" "$1")]
                             [k v])))
                    (into {}))]
-    [type (util/inspect parts)]))
+    [type parts]))
 
 (defn wrap-authorization-header
   [handler]
   (fn [request]
     (let [request
           (or
-           (if-let [authorization (util/inspect (get-in request [:headers "authorization"]))]
+           (if-let [authorization (get-in request [:headers "authorization"])]
              (let [[type parts] (parse-authorization-header authorization)
                    client (some-> parts (get "oauth_consumer_key") model.client/fetch-by-id)
                    token  (some-> parts (get "oauth_token") model.access-token/fetch-by-id)]

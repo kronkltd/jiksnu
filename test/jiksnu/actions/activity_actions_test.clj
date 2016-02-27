@@ -76,7 +76,7 @@
 
   (fact "when there is an authenticated user"
     (let [user (mock/a-user-exists)
-          stream (util/inspect (actions.stream/get-stream user "* major"))
+          stream (actions.stream/get-stream user "* major")
           params (factory :activity {:author (:_id user)
                                      :streams [(str (:_id stream))]})]
       (actions.activity/post params) =>

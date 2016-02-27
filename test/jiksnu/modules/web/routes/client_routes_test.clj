@@ -35,7 +35,7 @@
                    :status 201
                    :headers (contains {"Content-Type" "application/json;charset=UTF-8"})})
 
-        (let [body (json/read-str (:body (util/inspect response)) :key-fn keyword)]
+        (let [body (json/read-str (:body response) :key-fn keyword)]
           body => (contains
                    {:client_id string?
                     :registration_client_uri string?

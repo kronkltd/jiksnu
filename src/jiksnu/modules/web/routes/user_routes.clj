@@ -142,9 +142,7 @@
                                          (let [subscription (model.subscription/fetch-by-id id)]
                                            (model.user/fetch-by-id (:from subscription))))
                                               items))))]
-               {:data (format-collection user (util/inspect page))}))
-
-  )
+               {:data (format-collection user page)})))
 
 (defresource user-pump-api :following
   :url "/{username}/following"
@@ -154,9 +152,19 @@
   :parameters {:username (path :model.user/username)}
   :exists? (fn [ctx]
              (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
+                   [_ page] (actions.subscription/get-subscriptions user)
+                   page (-> page
+                            (assoc :objectTypes "person")
+                            (update :items
+                                    (fn [items]
+                                      (map (fn [id]
+                                             (some-> id
+                                                     model.subscription/fetch-by-id
+                                                     :to
+                                                     model.user/fetch-by-id))
+                                           items))))]
                {:data (format-collection user page)}))
+
   )
 
 (defresource user-pump-api :inbox-direct-major
