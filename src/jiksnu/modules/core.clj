@@ -63,13 +63,11 @@
               "join"
               (do
                 (timbre/info "Group join")
-                (let [object-id (get-in item [:object :id])]
-                  (let [group (util/inspect (model.group/fetch-by-id (util/inspect object-id)))]
-                    (util/inspect
-                     (actions.group-membership/create
-                      (util/inspect
-                       {:user (:author item)
-                        :group (:_id group)}))))))
+                (let [object-id (get-in item [:object :id])
+                      group (model.group/fetch-by-id object-id)]
+                  (actions.group-membership/create
+                   {:user (:author item)
+                    :group (:_id group)})))
 
               #_(timbre/infof "Unknown verb - %s" verb)
               #_(util/inspect item))))

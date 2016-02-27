@@ -37,10 +37,12 @@
        (-> (routes
             async-handler
             #'core/jiksnu-routes)
+           middleware/wrap-response-logging
            logger.timbre/wrap-with-logger
            (wrap-trace :ui)
            middleware/wrap-user-binding
            (friend/authenticate auth-config)
+           middleware/wrap-authorization-header
            middleware/wrap-authentication-handler
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info

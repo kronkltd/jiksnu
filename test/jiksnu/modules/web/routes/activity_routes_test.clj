@@ -37,12 +37,11 @@
           url (str "/model/activities/" (:_id activity))
           request (req/request :delete url)
           response (response-for request)]
-      (util/inspect response) => (contains {:status status/client-error?})
-      #_(let [body (:body response)]
-          body => string?
-          (let [json-obj (json/read-str body :key-fn keyword)]
-            json-obj => (contains {:_id (str (:_id activity))})
-            ))
+      response => (contains {:status status/client-error?})
+      (let [body (:body response)]
+        body => string?
+        (let [json-obj (json/read-str body :key-fn keyword)]
+          json-obj => (contains {:_id (str (:_id activity))})))
       (model.activity/fetch-by-id (:_id activity)) =not=> nil)))
 
 (fact "route: activity/update"

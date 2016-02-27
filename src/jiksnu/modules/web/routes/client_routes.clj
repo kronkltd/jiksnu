@@ -1,6 +1,7 @@
 (ns jiksnu.modules.web.routes.client-routes
   (:require [ciste.config :refer [config]]
             [clj-time.coerce :as coerce]
+            [clojure.string :as string]
             [taoensso.timbre :as timbre]
             [jiksnu.actions.access-token-actions :as actions.access-token]
             [jiksnu.actions.client-actions :as actions.client]
@@ -11,9 +12,10 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource path]]
             [jiksnu.util :as util]
-            [liberator.representation :refer [ring-response]]
+            [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre]))
 
 (defgroup jiksnu clients
   :name "Clients"
@@ -63,20 +65,23 @@
   :methods {:get {:summary "Register Client"}
             :post {:summary "Register Client"}}
   :allowed-methods [:get :post]
+  :mixins [mixin/handled-resource]
   :available-media-types ["application/json"]
-  ;; :mixins [mixin/item-resource]
+  :collection-key :collection
+  :respond-with-entity? true
+  :new? false
+  :can-put-to-missing? false
   :exists? (fn [ctx]
              (let [params (:params (:request ctx))]
                {:data true #_(actions.client/register params)}))
   :post! (fn [ctx]
            (let [params (:params (:request ctx))]
-             (when-let [item (actions.client/register (util/inspect params))]
-               (let [client-id (:_id item)
-                     created (int (/ (coerce/to-long (:created item)) 1000))
-                     token (:token item)
+             (when-let [item (actions.client/register params)]
+               (let [{client-id :_id
+                      expires :secret-expires
+                      :keys [token secret created]} item
+                     created (int (/ (coerce/to-long created) 1000))
                      client-uri (format "https://%s/oauth/request_token" (config :domain))
-                     secret (:secret item)
-                     expires (:secret-expires item)
                      response (merge {:client_id client-id
                                       :client_id_issued_at created
                                       :registration_access_token token
@@ -124,17 +129,30 @@
 (defresource oauth :request-token
   :name "Request Token"
   :url "/request_token"
-  :allowed-methods [:post]
-  ;; :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :schema {:type "object"
-           :properties {}}
-  :exists? (fn [ctx]
-             {:data (actions.oauth/request-token (:request ctx))})
-  :post! (fn [ctx]
-           (let [params (get-in ctx [:request :params])
-                 rt (util/inspect (actions.request-token/get-request-token params))]
-             [200 {:data
-                   (util/inspect
-                    {:token (:_id rt)
-                     :token_secret (:secret rt)})}])))
+  :allowed-methods [:get]
+  ;; :mixins [mixin/handled-resource]
+  :available-media-types ["text/plain"]
+  :collection-key :collection
+  :respond-with-entity? true
+  :new? false
+  :can-put-to-missing? false
+  ;; :schema {:type "object"
+  ;;          :properties {}}
+  :handle-ok (fn [ctx]
+               (let [params (get-in ctx [:request :params])
+                     rt (actions.request-token/get-request-token params)]
+                 (->> {:oauth_token (:_id rt)
+                       :oauth_token_secret (:secret rt)}
+                      (map (fn [[k v]] (str (name k) "=" v)))
+                      (string/join "&"))))
+
+  ;; (fn [ctx]
+  ;;            {:data (actions.oauth/request-token (util/inspect (:request ctx)))})
+  ;; :post! (fn [ctx]
+  ;;          (let [params (get-in ctx [:request :params])
+  ;;                rt (util/inspect (actions.request-token/get-request-token params))
+  ;;                response {:token (:_id rt)
+  ;;                          :token_secret (:secret rt)}]
+  ;;            {:data response}))
+
+  )

@@ -70,7 +70,7 @@
 
 (defn parse-authorization-header
   [header]
-  (let [[type & parts] (string/split header #" ")
+  (let [[type & parts] (string/split header #" |,")
         parts (->> parts
                    (map (fn [part]
                           (let [[k v] (string/split part #"=")
@@ -82,33 +82,32 @@
 (defn wrap-authorization-header
   [handler]
   (fn [request]
-    (util/inspect
-     (handler
-      (if-let [authorization (get-in request [:headers "authorization"])]
-        (let [[type parts] (parse-authorization-header authorization)
-              request (-> request
-                          (assoc :authorization-type type)
-                          (assoc :authorization-parts parts))
-              client (-> (get parts "oauth_consumer_key") model.client/fetch-by-id)]
-          (-> (if-let [access-token (some-> parts
-                                            (get "oauth_token")
-                                            model.access-token/fetch-by-id)]
-                (assoc request :access-token access-token)
-                (do
-                  (timbre/warn "no access token")
-                  request))
-              (assoc :authorization-client client)))
-        request)))))
+    (let [request
+          (or
+           (if-let [authorization (get-in request [:headers "authorization"])]
+             (let [[type parts] (parse-authorization-header authorization)
+                   client (some-> parts (get "oauth_consumer_key") model.client/fetch-by-id)
+                   token  (some-> parts (get "oauth_token") model.access-token/fetch-by-id)]
+               (merge request
+                      {:authorization-type type
+                       :authorization-parts parts}
+                      (when client
+                        {:authorization-client client})
+                      (when token
+                        {:access-token token}))))
+              request)]
+      (handler request))))
 
 (defn wrap-oauth-user-binding
   [handler]
   (fn [request]
-    (let [new-map (when-let [access-token (:access-token request)]
-                    (when-let [id (:request-token access-token)]
-                      (when-let [request-token (model.request-token/fetch-by-id id)]
-                        {})))
-          request (merge request new-map)]
-      (handler request))))
+    (handler
+     (merge
+      request
+      (some-> request
+              :access-token
+              :request-token
+              model.request-token/fetch-by-id)))))
 
 (defn wrap-stacktrace
   [handler]
@@ -128,3 +127,11 @@
 (defn default-html-mode
   []
   (config :htmlOnly))
+
+(defn wrap-response-logging
+  [handler]
+  (fn [request]
+    (util/inspect (:params request))
+    (let [response (handler request)]
+      (util/inspect (:body response))
+      response)))
