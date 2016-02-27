@@ -1,7 +1,10 @@
 (ns jiksnu.modules.as.sections.user-sections
-  (:require [ciste.sections :refer [defsection]]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [with-context]]
+            [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri show-section]]
             [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.User))
 
@@ -32,7 +35,7 @@
     (array-map
      :preferredUsername username
      :url url
-     :displayName (:name user)
+     :displayName (:name user "")
      :links {:self            {:href profile-url}
              :activity-inbox  {:href inbox-url}
              :activity-outbox {:href outbox-url}}
@@ -61,3 +64,18 @@
      :pump_io {:shared false
                :followed false}
      :type "person")))
+
+(defn format-collection
+  [user page]
+  (let [domain (config :domain)]
+    {:displayName (str "Collections of persons for " (:_id user))
+     :objectTypes ["collection"]
+     :url (format lists-pattern domain (:username user))
+     :links {
+             :self {:href (format lists-pattern domain (:username user))}
+             }
+     :items []
+     :totalItems (:totalItems page)
+     :author (with-context [:http :as]
+               (util/inspect (show-section user)))})
+  )

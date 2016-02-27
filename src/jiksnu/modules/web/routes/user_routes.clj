@@ -1,8 +1,9 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [ciste.core :refer [with-context]]
-            [ciste.sections.default :refer [index-section show-section]]
+            [ciste.sections.default :refer [index-section show-section show-section-minimal]]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.as.sections.user-sections :refer [format-collection]]
             jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
@@ -52,6 +53,34 @@
   :description "User api matching pump.io spec")
 
 
+(defresource user-pump-api :user-info
+  :url "/{username}"
+  :name "user info"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [username (get-in ctx [:request :params :username])
+                   user (get-user ctx)]
+               {:data
+                {:updated  (:updated user)
+                 :published (:created user)
+                 :nickname username
+                 :profile  (with-context [:http :as]
+                             (show-section user))}})))
+
+(defresource user-pump-api :favorites
+  :url "/{username}/favorites"
+  :name "user favorites"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)})))
+
 (defresource user-pump-api :followers
   :url "/{username}/followers"
   :name "user followers"
@@ -59,11 +88,64 @@
   :available-media-types ["application/json"]
   :parameters {:username (path :model.user/username)}
   :exists? (fn [ctx]
-             (let [user (get-user ctx)]
-               {:data user}))
-  :presenter (fn [user]
-               (with-context [:http :as]
-                 (util/inspect (show-section user)))))
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)}))
+
+  )
+
+(defresource user-pump-api :following
+  :url "/{username}/following"
+  :name "user following"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)}))
+  )
+
+(defresource user-pump-api :inbox-major
+  :url "/{username}/inbox/major"
+  :name "user inbox major"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)}))
+  )
+
+(defresource user-pump-api :inbox-minor
+  :url "/{username}/inbox/minor"
+  :name "user inbox minor"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)}))
+  )
+
+(defresource user-pump-api :lists
+  :url "/{username}/lists/person"
+  :name "user lists"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)}))
+  )
 
 (defresource user-pump-api :profile
   :url "/{username}/profile"
@@ -73,10 +155,7 @@
   :parameters {:username (path :model.user/username)}
   :exists? (fn [ctx]
              (let [user (get-user ctx)]
-               {:data user}))
-  :presenter (fn [user]
-               (with-context [:http :as]
-                 (show-section user))))
+               {:data (with-context [:http :as] (show-section user))})))
 
 (def outbox-pattern "https://%s/api/user/%s/outbox")
 

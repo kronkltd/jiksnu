@@ -13,7 +13,6 @@
   :name "Authentication"
   :description "Authentication routes")
 
-
 (defresource auth :register
   :url "/main/register"
   :allowed-methods [:get :post]
@@ -83,5 +82,8 @@
 (defresource auth :verify
   :methods {:get {:summary "Verify Credentials"}}
   :url "/api/account/verify_credentials.json"
+  :allowed-methods [:post]
+  :available-media-types ["application/json"]
+  :methods {:post {:summary "Verify Credentials"}}
   :exists? (fn [ctx]
              {:data (auth/verify-credentials)}))
