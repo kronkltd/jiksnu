@@ -70,21 +70,21 @@
 
 (defn parse-authorization-header
   [header]
-  (let [[type & parts] (string/split header #" |,")
+  (let [[type & parts] (string/split header #" |, ?")
         parts (->> parts
                    (map (fn [part]
                           (let [[k v] (string/split part #"=")
                                 v (string/replace v #"\"([^\"]+)\",?" "$1")]
                             [k v])))
                    (into {}))]
-    [type parts]))
+    [type (util/inspect parts)]))
 
 (defn wrap-authorization-header
   [handler]
   (fn [request]
     (let [request
           (or
-           (if-let [authorization (get-in request [:headers "authorization"])]
+           (if-let [authorization (util/inspect (get-in request [:headers "authorization"]))]
              (let [[type parts] (parse-authorization-header authorization)
                    client (some-> parts (get "oauth_consumer_key") model.client/fetch-by-id)
                    token  (some-> parts (get "oauth_token") model.access-token/fetch-by-id)]

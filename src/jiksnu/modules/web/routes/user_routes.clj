@@ -1,7 +1,10 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section show-section-minimal]]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.as.sections.user-sections :refer [format-collection]]
             jiksnu.modules.core.views.stream-views
@@ -81,6 +84,46 @@
                          :totalItems 0}]
                {:data (format-collection user page)})))
 
+(defresource user-pump-api :feed
+  :url "/{username}/feed"
+  :name "user feed"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page (-> user
+                            actions.activity/fetch-by-user
+                            (update :items #(map model.activity/fetch-by-id %))
+                            (assoc :objectTypes "activity"))]
+               {:data (format-collection user page)})))
+
+(defresource user-pump-api :feed-major
+  :url "/{username}/feed/major"
+  :name "user feed major"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page (-> user
+                            actions.activity/fetch-by-user
+                            (update :items #(map model.activity/fetch-by-id %))
+                            (assoc :objectTypes "activity"))]
+               {:data (format-collection user page)})))
+
+(defresource user-pump-api :feed-minor
+  :url "/{username}/feed/minor"
+  :name "user feed minor"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)})))
+
 (defresource user-pump-api :followers
   :url "/{username}/followers"
   :name "user followers"
@@ -89,9 +132,17 @@
   :parameters {:username (path :model.user/username)}
   :exists? (fn [ctx]
              (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
-               {:data (format-collection user page)}))
+                   [_ page] (actions.subscription/get-subscribers user)
+                   page (-> page
+                            (assoc :objectTypes "person")
+                            (update :items
+                                    (fn [items]
+                                      (map
+                                       (fn [id]
+                                         (let [subscription (model.subscription/fetch-by-id id)]
+                                           (model.user/fetch-by-id (:from subscription))))
+                                              items))))]
+               {:data (format-collection user (util/inspect page))}))
 
   )
 
@@ -108,6 +159,42 @@
                {:data (format-collection user page)}))
   )
 
+(defresource user-pump-api :inbox-direct-major
+  :url "/{username}/inbox/direct/major"
+  :name "user inbox directmajor"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)})))
+
+(defresource user-pump-api :inbox-direct-minor
+  :url "/{username}/inbox/direct/minor"
+  :name "user inbox direct minor"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)})))
+
+(defresource user-pump-api :inbox
+  :url "/{username}/inbox"
+  :name "user inbox"
+  :mixins [mixin/item-resource]
+  :available-media-types ["application/json"]
+  :parameters {:username (path :model.user/username)}
+  :exists? (fn [ctx]
+             (let [user (get-user ctx)
+                   page {:items []
+                         :totalItems 0}]
+               {:data (format-collection user page)})))
+
 (defresource user-pump-api :inbox-major
   :url "/{username}/inbox/major"
   :name "user inbox major"
@@ -118,8 +205,7 @@
              (let [user (get-user ctx)
                    page {:items []
                          :totalItems 0}]
-               {:data (format-collection user page)}))
-  )
+               {:data (format-collection user page)})))
 
 (defresource user-pump-api :inbox-minor
   :url "/{username}/inbox/minor"

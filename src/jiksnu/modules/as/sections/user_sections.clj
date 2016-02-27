@@ -3,6 +3,7 @@
             [ciste.core :refer [with-context]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri show-section]]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+]])
@@ -35,7 +36,7 @@
     (array-map
      :preferredUsername username
      :url url
-     :displayName (:name user "")
+     :displayName (:name user "DISPLAY NAME")
      :links {:self            {:href profile-url}
              :activity-inbox  {:href inbox-url}
              :activity-outbox {:href outbox-url}}
@@ -48,15 +49,12 @@
                  :totalItems 0}
      :lists {:url list-url
              :totalItems 0}
-     ;; :image [{:url avatar-url
-     ;;          :rel "avatar"
-     ;;          :type "image/jpeg"
-     ;;          :width 96
-     ;;          :height 96
-     ;;          ;; :pump_io {
-     ;;          ;;           :proxyURL (proxy-url avatar-url)
-     ;;          ;;           }
-     ;;          }]
+     :image {:url avatar-url
+             ;; :rel "avatar"
+             ;; :type "image/jpeg"
+             :width 96
+             :height 96
+             }
      :updated (:updated user)
      :id (:_id user)
      ;; TODO: How are these determined?
@@ -68,14 +66,14 @@
 (defn format-collection
   [user page]
   (let [domain (config :domain)]
-    {:displayName (str "Collections of persons for " (:_id user))
-     :objectTypes ["collection"]
-     :url (format lists-pattern domain (:username user))
-     :links {
-             :self {:href (format lists-pattern domain (:username user))}
-             }
-     :items []
-     :totalItems (:totalItems page)
-     :author (with-context [:http :as]
-               (util/inspect (show-section user)))})
+    (with-context [:http :as]
+     {:displayName (str "Collections of persons for " (:_id user))
+      :objectTypes [(:objectTypes page "collection")]
+      :url (format lists-pattern domain (:username user))
+      :links {
+              :self {:href (format lists-pattern domain (:username user))}
+              }
+      :items (doall (map show-section (:items page)))
+      :totalItems (:totalItems page)
+      :author (show-section user)}))
   )
