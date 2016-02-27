@@ -6,7 +6,7 @@
   (random/base32 20))
 
 (defn authorize
-  []
+  [_]
   true)
 
 (defn access-token

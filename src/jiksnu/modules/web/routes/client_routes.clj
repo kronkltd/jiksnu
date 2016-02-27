@@ -8,6 +8,7 @@
             [jiksnu.actions.oauth-actions :as actions.oauth]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.model.client :as model.client]
+            [jiksnu.model.request-token :as model.request-token]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource path]]
@@ -90,11 +91,7 @@
                                        {:client_secret secret})
                                      (when expires
                                        {:expires_at expires}))]
-                 ;; (ring-response
-                 ;;  (util/inspect response)
-                 ;;  {:status 200})
-                 {:data response}
-                 ))))
+                 {:data response}))))
   :handle-created :data)
 
 (defgroup jiksnu oauth
@@ -104,13 +101,18 @@
 (defresource oauth :access-token
   :name "Access Token"
   :url "/access_token"
-  :allowed-methods [:post]
+  :allowed-methods [:get :post]
   :available-media-types ["application/json"]
+  :mixins [mixin/item-resource]
   :exists? (fn [ctx]
              (try+
-              (let [params (:authorization-parts (:params (:request ctx)))
-                    {:keys [_id secret]} (actions.access-token/get-access-token (util/inspect params))]
-                {:body (format "oauth_token=%s&oauth_token_secret=%s" _id secret)})
+              (let [{client :authorization-client
+                     params :authorization-parts
+                     :as request} (:request ctx)
+                    {:keys [_id secret]} (actions.access-token/get-access-token params)]
+                {:data (util/params-encode
+                        {:oauth_token _id
+                         :oauth_token_secret secret})})
               (catch Object ex
                 (timbre/error ex)
                 {:status 500})))
@@ -120,39 +122,28 @@
 (defresource oauth :authorize
   :name "Authorize"
   :url "/authorize"
+  :allowed-methods [:get]
+  :available-media-types ["application/json"]
+  :mixins [mixin/item-resource]
   :methods {:get {:summary "Authorize Client"
                   :state "authorizeClient"}
             :post {:summary "Do Authorize Client"}}
-  :exists? (fn [ctx])
-  :post! (fn [ctx] (actions.oauth/authorize (:request ctx))))
+  :exists? (fn [ctx]
+             (let [token-id (get-in ctx [:request :params :oauth_token])
+                   rt (model.request-token/fetch-by-id token-id)]
+               {:data rt})))
 
 (defresource oauth :request-token
   :name "Request Token"
   :url "/request_token"
   :allowed-methods [:get]
-  ;; :mixins [mixin/handled-resource]
   :available-media-types ["text/plain"]
-  :collection-key :collection
-  :respond-with-entity? true
-  :new? false
-  :can-put-to-missing? false
-  ;; :schema {:type "object"
-  ;;          :properties {}}
   :handle-ok (fn [ctx]
-               (let [params (get-in ctx [:request :params])
+               (let [request (:request ctx)
+                     client-id (get-in request [:authorization-client :_id])
+                     params (-> (:params request)
+                                (assoc :client client-id))
                      rt (actions.request-token/get-request-token params)]
-                 (->> {:oauth_token (:_id rt)
-                       :oauth_token_secret (:secret rt)}
-                      (map (fn [[k v]] (str (name k) "=" v)))
-                      (string/join "&"))))
-
-  ;; (fn [ctx]
-  ;;            {:data (actions.oauth/request-token (util/inspect (:request ctx)))})
-  ;; :post! (fn [ctx]
-  ;;          (let [params (get-in ctx [:request :params])
-  ;;                rt (util/inspect (actions.request-token/get-request-token params))
-  ;;                response {:token (:_id rt)
-  ;;                          :token_secret (:secret rt)}]
-  ;;            {:data response}))
-
-  )
+                 (util/params-encode
+                  {:oauth_token (:_id rt)
+                   :oauth_token_secret (:secret rt)}))))

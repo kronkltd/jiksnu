@@ -69,16 +69,17 @@
                   (or (not content-type) (= (:type link) content-type))))
            links)))
 
+(defn params-encode
+  [params]
+  (->> params
+       (map (fn [[k v]] (str (name k) "=" v)))
+       (string/join "&")))
+
 ;; TODO: I'm sure this exists somewhere else
 ;; all this is really doing is assembling a uri
 (defn make-subscribe-uri
   [url options]
-  (str url "?"
-       (string/join
-         "&"
-         (map
-           (fn [[k v]] (str (name k) "=" v))
-           options))))
+  (str url "?" (params-encode options)))
 
 (defn force-coll
   [x]

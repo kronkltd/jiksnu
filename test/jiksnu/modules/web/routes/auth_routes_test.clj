@@ -17,12 +17,9 @@
 
 (defn add-form-params
   [request params]
-  (let [body (->> params
-                  (map (fn [[k v]] (str (name k) "=" v)))
-                  (string/join "&"))]
-    (-> request
-        (req/body body)
-        (req/content-type "application/x-www-form-urlencoded"))))
+  (-> request
+      (req/body (util/params-encode params))
+      (req/content-type "application/x-www-form-urlencoded")))
 
 (fact "route: auth/login :post"
   (fact "when given form parameters"

@@ -5,6 +5,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.access-token-transforms :as transforms.access-token]
+            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
 
@@ -30,11 +31,11 @@
 
 (defn prepare-delete
   ([item]
-     (prepare-delete item @delete-hooks))
+   (prepare-delete item @delete-hooks))
   ([item hooks]
-     (if (seq hooks)
-       (recur ((first hooks) item) (rest hooks))
-       item)))
+   (if (seq hooks)
+     (recur ((first hooks) item) (rest hooks))
+     item)))
 
 (defn delete
   [item]
