@@ -63,7 +63,7 @@
   :available-media-types ["application/json"]
   :parameters {:username (path :model.user/username)}
   :exists? (fn [ctx]
-             (let [username (get-in ctx [:request :params :username])
+             (let [username (get-in ctx [:request :route-params :username])
                    user (get-user ctx)]
                {:data
                 {:updated  (:updated user)
@@ -175,8 +175,12 @@
   :parameters {:username (path :model.user/username)}
   :exists? (fn [ctx]
              (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
+                   page (-> (actions.activity/index {})
+                            (assoc :objectTypes "activity")
+                            (update :items
+                                    (fn [ids]
+                                      (->> ids
+                                           (map (fn [id] (model.activity/fetch-by-id id)))))))]
                {:data (format-collection user page)})))
 
 (defresource user-pump-api :inbox-direct-minor
@@ -211,8 +215,12 @@
   :parameters {:username (path :model.user/username)}
   :exists? (fn [ctx]
              (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
+                   page (-> (actions.activity/index {})
+                            (assoc :objectTypes "activity")
+                            (update :items
+                                    (fn [ids]
+                                      (->> ids
+                                           (map (fn [id] (model.activity/fetch-by-id id)))))))]
                {:data (format-collection user page)})))
 
 (defresource user-pump-api :inbox-minor
@@ -223,10 +231,13 @@
   :parameters {:username (path :model.user/username)}
   :exists? (fn [ctx]
              (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
-               {:data (format-collection user page)}))
-  )
+                   page (-> (actions.activity/index {})
+                            (assoc :objectTypes "activity")
+                            (update :items
+                                    (fn [ids]
+                                      (->> ids
+                                           (map (fn [id] (model.activity/fetch-by-id id)))))))]
+               {:data (format-collection user page)})))
 
 (defresource user-pump-api :lists
   :url "/{username}/lists/person"
