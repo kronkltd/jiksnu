@@ -7,6 +7,7 @@
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.session :refer [with-user-id]]
+            [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+ throw+]])
   (:import javax.security.auth.login.LoginException))
 
@@ -81,24 +82,23 @@
 (defn wrap-authorization-header
   [handler]
   (fn [request]
-    (let [authorization (get-in request [:headers "authorization"])
-          request (if authorization
-                    (let [[type parts] (parse-authorization-header authorization)
-                          request (assoc request :authorization-type type)
-                          request (assoc request :authorization-parts parts)
-                          consumer-key (get parts "oauth_consumer_key")
-                          client (model.client/fetch-by-id consumer-key)
-                          token (get parts "oauth_token")
-                          request (if-let [access-token
-                                           (some-> token
-                                                   model.access-token/fetch-by-id)]
-                                    (assoc request :access-token access-token)
-                                    (do
-                                      (timbre/warn "no access token")
-                                      request))]
-                      (assoc request :authorization-client client))
-                    request)]
-      (handler request))))
+    (util/inspect
+     (handler
+      (if-let [authorization (get-in request [:headers "authorization"])]
+        (let [[type parts] (parse-authorization-header authorization)
+              request (-> request
+                          (assoc :authorization-type type)
+                          (assoc :authorization-parts parts))
+              client (-> (get parts "oauth_consumer_key") model.client/fetch-by-id)]
+          (-> (if-let [access-token (some-> parts
+                                            (get "oauth_token")
+                                            model.access-token/fetch-by-id)]
+                (assoc request :access-token access-token)
+                (do
+                  (timbre/warn "no access token")
+                  request))
+              (assoc :authorization-client client)))
+        request)))))
 
 (defn wrap-oauth-user-binding
   [handler]
