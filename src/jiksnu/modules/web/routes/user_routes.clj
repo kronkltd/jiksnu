@@ -14,7 +14,8 @@
                                                 defparameter get-user page-resource path
                                                 subpage-resource]]
             [jiksnu.util :as util]
-            [octohipster.mixins :as mixin]))
+            [octohipster.mixins :as mixin]
+            [taoensso.timbre :as timbre]))
 
 (defparameter :model.user/id
   :description "The account Id of a user"
@@ -81,7 +82,10 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/fetch-by-user user))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher (fn [id] (model.activity/fetch-by-id id))
+  :post! (fn [ctx]
+           (timbre/info "receiving post")
+           (util/inspect (:request ctx))))
 
 (defresource user-pump-api :feed-major
   :url "/{username}/feed/major"

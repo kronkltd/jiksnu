@@ -36,7 +36,7 @@
     (array-map
      :preferredUsername username
      :url url
-     :displayName (:displayName user "DISPLAY NAME")
+     :displayName (:displayName user username)
      :links {:self            {:href profile-url}
              :activity-inbox  {:href inbox-url}
              :activity-outbox {:href outbox-url}}

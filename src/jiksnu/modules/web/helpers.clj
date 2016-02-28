@@ -196,6 +196,7 @@
       ciste-resource
       (assoc :available-media-types ["application/json"])
       (assoc :parameters {:username (path :model.user/username)})
+      (assoc :schema {:type "object"})
       (assoc :exists? (fn [ctx]
                         (let [user (get-user ctx)
                               page (-> (indexer ctx user)

@@ -37,7 +37,7 @@
        (-> (routes
             async-handler
             #'core/jiksnu-routes)
-           ;; middleware/wrap-response-logging
+           middleware/wrap-response-logging
            logger.timbre/wrap-with-logger
            (wrap-trace :ui)
            middleware/wrap-user-binding
