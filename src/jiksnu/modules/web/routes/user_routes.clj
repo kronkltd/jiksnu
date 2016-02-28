@@ -10,8 +10,9 @@
             jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
-                                                path subpage-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource as-collection-resource
+                                                defparameter get-user page-resource path
+                                                subpage-resource]]
             [jiksnu.util :as util]
             [octohipster.mixins :as mixin]))
 
@@ -22,12 +23,6 @@
 (defparameter :model.user/username
   :description "The user's local username"
   :type "string")
-
-(defn get-user
-  "Gets the user from the context"
-  [ctx]
-  (let [username (-> ctx :request :route-params :username)]
-    (model.user/get-user username)))
 
 ;; =============================================================================
 
@@ -75,189 +70,105 @@
 (defresource user-pump-api :favorites
   :url "/{username}/favorites"
   :name "user favorites"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/index {}))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :feed
   :url "/{username}/feed"
   :name "user feed"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page (-> user
-                            actions.activity/fetch-by-user
-                            (update :items #(map model.activity/fetch-by-id %))
-                            (assoc :objectTypes "activity"))]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/fetch-by-user user))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :feed-major
   :url "/{username}/feed/major"
   :name "user feed major"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page (-> user
-                            actions.activity/fetch-by-user
-                            (update :items #(map model.activity/fetch-by-id %))
-                            (assoc :objectTypes "activity"))]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/index {}))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :feed-minor
   :url "/{username}/feed/minor"
   :name "user feed minor"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/index {}))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :followers
   :url "/{username}/followers"
   :name "user followers"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   [_ page] (actions.subscription/get-subscribers user)
-                   page (-> page
-                            (assoc :objectTypes "person")
-                            (update :items
-                                    (fn [items]
-                                      (map
-                                       (fn [id]
-                                         (let [subscription (model.subscription/fetch-by-id id)]
-                                           (model.user/fetch-by-id (:from subscription))))
-                                              items))))]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "person"
+  :indexer (fn [ctx user] (nth (actions.subscription/get-subscribers user) 1))
+  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id
+                            :from model.user/fetch-by-id)))
 
 (defresource user-pump-api :following
   :url "/{username}/following"
   :name "user following"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   [_ page] (actions.subscription/get-subscriptions user)
-                   page (-> page
-                            (assoc :objectTypes "person")
-                            (update :items
-                                    (fn [items]
-                                      (map (fn [id]
-                                             (some-> id
-                                                     model.subscription/fetch-by-id
-                                                     :to
-                                                     model.user/fetch-by-id))
-                                           items))))]
-               {:data (format-collection user page)}))
-
-  )
+  :mixins [as-collection-resource]
+  :collection-type "person"
+  :indexer (fn [ctx user] (nth (actions.subscription/get-subscriptions user) 1))
+  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id
+                            :to model.user/fetch-by-id)))
 
 (defresource user-pump-api :inbox-direct-major
   :url "/{username}/inbox/direct/major"
   :name "user inbox directmajor"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page (-> (actions.activity/index {})
-                            (assoc :objectTypes "activity")
-                            (update :items
-                                    (fn [ids]
-                                      (->> ids
-                                           (map (fn [id] (model.activity/fetch-by-id id)))))))]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/index {}))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :inbox-direct-minor
   :url "/{username}/inbox/direct/minor"
   :name "user inbox direct minor"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/index {}))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :inbox
   :url "/{username}/inbox"
   :name "user inbox"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/index {}))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :inbox-major
   :url "/{username}/inbox/major"
   :name "user inbox major"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page (-> (actions.activity/index {})
-                            (assoc :objectTypes "activity")
-                            (update :items
-                                    (fn [ids]
-                                      (->> ids
-                                           (map (fn [id] (model.activity/fetch-by-id id)))))))]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/index {}))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :inbox-minor
   :url "/{username}/inbox/minor"
   :name "user inbox minor"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page (-> (actions.activity/index {})
-                            (assoc :objectTypes "activity")
-                            (update :items
-                                    (fn [ids]
-                                      (->> ids
-                                           (map (fn [id] (model.activity/fetch-by-id id)))))))]
-               {:data (format-collection user page)})))
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/index {}))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :lists
   :url "/{username}/lists/person"
   :name "user lists"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
-  :exists? (fn [ctx]
-             (let [user (get-user ctx)
-                   page {:items []
-                         :totalItems 0}]
-               {:data (format-collection user page)}))
-  )
+  :mixins [as-collection-resource]
+  :collection-type "activity"
+  :indexer (fn [ctx user] (actions.activity/index {}))
+  :fetcher (fn [id] (model.activity/fetch-by-id id)))
 
 (defresource user-pump-api :profile
   :url "/{username}/profile"
   :name "user profile"
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :parameters {:username (path :model.user/username)}
+  :mixins [as-collection-resource]
   :exists? (fn [ctx]
              (let [user (get-user ctx)]
                {:data (with-context [:http :as] (show-section user))})))

@@ -3,16 +3,35 @@
             [clojure.java.io :as io]
             [clojure.tools.reader.edn :as edn]
             [hiccup.core :as h]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.as.sections.user-sections :refer [format-collection]]
             [jiksnu.modules.core.actions :as actions]
-            [jiksnu.predicates :as predicates]
-            [jiksnu.registry :as registry]
             [jiksnu.modules.http.resources :refer [defresource]]
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
+            [jiksnu.predicates :as predicates]
+            [jiksnu.registry :as registry]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
   (:import java.io.PushbackReader
            (java.io FileNotFoundException)))
+
+(defonce parameters (ref {}))
+
+(defn defparameter
+  [k & {:as options}]
+  (dosync
+   (alter parameters assoc k options)))
+
+(defn get-parameter
+  [k]
+  (k @parameters))
+
+(defn path
+  ([k] (path k nil))
+  ([k required?]
+   (merge (get-parameter k)
+          {:in "path"})))
 
 (defn not-found-msg
   []
@@ -166,9 +185,26 @@
                                ])
       (assoc :exists? #(subpage-exists? resource %))))
 
+(defn get-user
+  "Gets the user from the context"
+  [{{{username :username} :route-params} :request}]
+  (model.user/get-user username))
+
+(defn as-collection-resource
+  [{:keys [indexer fetcher collection-type] :as resource}]
+  (-> resource
+      ciste-resource
+      (assoc :available-media-types ["application/json"])
+      (assoc :parameters {:username (path :model.user/username)})
+      (assoc :exists? (fn [ctx]
+                        (let [user (get-user ctx)
+                              page (-> (indexer ctx user)
+                                       (assoc :objectTypes collection-type)
+                                       (update :items #(map fetcher %)))]
+                          {:data (format-collection user page)})))))
+
 (defn angular-resource
-  [{:keys [methods]
-    :as r}]
+  [{:keys [methods] :as r}]
   (let [get-method (:get methods)]
     (-> {:exists? true
          :handle-ok index
@@ -192,20 +228,3 @@
     (->> opts
          page-resource
          (mapcat (fn [[k v]] [k v])))))
-
-(defonce parameters (ref {}))
-
-(defn defparameter
-  [k & {:as options}]
-  (dosync
-   (alter parameters assoc k options)))
-
-(defn get-parameter
-  [k]
-  (k @parameters))
-
-(defn path
-  ([k] (path k nil))
-  ([k required?]
-   (merge (get-parameter k)
-          {:in "path"})))
