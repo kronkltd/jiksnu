@@ -193,7 +193,7 @@
 
 (defn as-collection-resource
   [{:keys [indexer fetcher collection-type] :as resource}]
-  (-> (merge {:allowed-methods [:get :put :delete]
+  (-> (merge {:allowed-methods [:get :post :put :delete]
               :available-media-types ["application/json"]
               :can-put-to-missing? false
               :collection-key :collection

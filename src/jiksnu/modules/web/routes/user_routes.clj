@@ -1,6 +1,9 @@
 (ns jiksnu.modules.web.routes.user-routes
-  (:require [ciste.core :refer [with-context]]
+  (:require [cemerick.friend :as friend]
+            [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section show-section-minimal]]
+            [clojure.data.json :as json]
+            [clojure.java.io :as io]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]
@@ -85,7 +88,11 @@
   :fetcher (fn [id] (model.activity/fetch-by-id id))
   :post! (fn [ctx]
            (timbre/info "receiving post")
-           (util/inspect (:request ctx))))
+           (let [request (util/inspect (:request ctx))]
+             (if-let [author (model.user/get-user (:current (friend/identity request)))]
+               (let [params (-> (:params (util/inspect (:request ctx)))
+                                (assoc :author (:_id author)))]
+                 (util/inspect (actions.activity/post (util/inspect params))))))))
 
 (defresource user-pump-api :feed-major
   :url "/{username}/feed/major"
