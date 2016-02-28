@@ -33,11 +33,13 @@
     (add-link* item link)))
 
 (defn index
-  [params & [options]]
-  (index* params
-          (merge
+  ([] (index {}))
+  ([params] (index params {}))
+  ([params options]
+   (index* params
+           (merge
             {:sort-clause {:updated -1}}
-            options)))
+            options))))
 
 (defn prepare-create
   [activity]

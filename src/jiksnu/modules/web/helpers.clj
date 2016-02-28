@@ -10,6 +10,7 @@
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
+            [jiksnu.util :as util]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
@@ -147,7 +148,7 @@
   "route mixin for paths that use ciste"
   [{:keys [available-formats] :as resource}]
   (let [media-types (mapv types available-formats)]
-    (-> resource mixin/item-resource
+    (-> resource mixin/handled-resource
         (assoc :available-media-types media-types))))
 
 (defn page-resource
@@ -192,17 +193,22 @@
 
 (defn as-collection-resource
   [{:keys [indexer fetcher collection-type] :as resource}]
-  (-> resource
-      ciste-resource
-      (assoc :available-media-types ["application/json"])
-      (assoc :parameters {:username (path :model.user/username)})
-      (assoc :schema {:type "object"})
-      (assoc :exists? (fn [ctx]
-                        (let [user (get-user ctx)
-                              page (-> (indexer ctx user)
-                                       (assoc :objectTypes collection-type)
-                                       (update :items #(map fetcher %)))]
-                          {:data (format-collection user page)})))))
+  (-> (merge {:allowed-methods [:get :put :delete]
+              :available-media-types ["application/json"]
+              :can-put-to-missing? false
+              :collection-key :collection
+              :exists? (fn [ctx]
+                         (let [user (get-user ctx)
+                               page (-> (indexer ctx user)
+                                        (assoc :objectTypes collection-type)
+                                        (update :items #(map fetcher %)))]
+                           {:data (format-collection user page)}))
+              :new? false
+              :parameters {:username (path :model.user/username)}
+              :respond-with-entity? true
+              :schema {:type "object"}}
+             resource)
+      mixin/handled-resource))
 
 (defn angular-resource
   [{:keys [methods] :as r}]
