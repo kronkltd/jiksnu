@@ -23,25 +23,15 @@
           activity (mock/there-is-an-activity {:user user})
           url (str "/model/activities/" (:_id activity))
           request (-> (req/request :delete url)
-                      (as-user user))
-          response (response-for request)]
-      response => (contains {:status status/success?})
-      (let [body (:body response)]
-        body => string?
-        (let [json-obj (json/read-str body :key-fn keyword)]
-          json-obj => (contains {:_id (str (:_id activity))})
-          (model.activity/fetch-by-id (:_id activity)) => nil))))
+                      (as-user user))]
+      (response-for request) => (contains {:status 204})
+      (model.activity/fetch-by-id (:_id activity)) => nil))
   (fact "when not authenticated"
     (let [user (mock/a-user-exists)
           activity (mock/there-is-an-activity {:user user})
           url (str "/model/activities/" (:_id activity))
-          request (req/request :delete url)
-          response (response-for request)]
-      response => (contains {:status status/client-error?})
-      (let [body (:body response)]
-        body => string?
-        (let [json-obj (json/read-str body :key-fn keyword)]
-          json-obj => (contains {:_id (str (:_id activity))})))
+          request (req/request :delete url)]
+      (response-for request) => (contains {:status 401})
       (model.activity/fetch-by-id (:_id activity)) =not=> nil)))
 
 (fact "route: activity/update"
