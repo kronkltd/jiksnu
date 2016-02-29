@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.client-routes
-  (:require [ciste.config :refer [config]]
+  (:require [cemerick.friend :as friend]
+            [ciste.config :refer [config]]
             [clj-time.coerce :as coerce]
             [clojure.string :as string]
             [taoensso.timbre :as timbre]
@@ -8,6 +9,7 @@
             [jiksnu.actions.oauth-actions :as actions.oauth]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.model.client :as model.client]
+            [jiksnu.model.user :as model.user]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
@@ -129,8 +131,12 @@
                   :state "authorizeClient"}
             :post {:summary "Do Authorize Client"}}
   :exists? (fn [ctx]
-             (let [token-id (get-in ctx [:request :params :oauth_token])
+             (let [request (util/inspect (:request ctx))
+                   params (get-in ctx [:request :params])
+                   author (model.user/get-user (:current (friend/identity request)))
+                   token-id (get-in ctx [:request :params :oauth_token])
                    rt (model.request-token/fetch-by-id token-id)]
+               (util/inspect (actions.request-token/authorize params))
                {:data rt})))
 
 (defresource oauth :request-token

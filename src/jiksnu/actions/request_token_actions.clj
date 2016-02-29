@@ -76,7 +76,9 @@
   (let [id (:oauth_token params)
         token (model.request-token/fetch-by-id id)]
     (if (= (:verifier params) (:verifier token))
-      (let [user (session/current-user)]
-        (model.request-token/set-field! token :user (:_id user))
-        token)
+      (if-let [user (session/current-user)]
+        (do (model.request-token/set-field! token :user (:_id user))
+            token)
+        (throw+ {:msg "No authorized user"})
+        )
       (throw+ "Verifier does not match"))))
