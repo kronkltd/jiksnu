@@ -37,7 +37,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu clients-api
-  :name "Clients API"
+  :name "Client Models"
   :url "/model/clients")
 
 (defresource clients-api :collection

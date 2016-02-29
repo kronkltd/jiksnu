@@ -27,7 +27,7 @@
   :mixins [angular-resource])
 
 (defgroup jiksnu subscriptions-api
-  :name "Subscriptions API"
+  :name "Subscription Models"
   :url "/model/subscriptions")
 
 (defresource subscriptions-api :collection

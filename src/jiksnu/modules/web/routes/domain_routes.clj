@@ -37,13 +37,14 @@
   :url "/{_id}"
   :parameters {:_id (path :model.domain/id)}
   :mixins [angular-resource]
+  :methods {:get {:state "showDomain"}}
   :delete! actions.domain/delete
   :delete-summary "Delete a domain")
 
 ;; =============================================================================
 
 (defgroup jiksnu domains-api
-  :name "Domains API"
+  :name "Domain Models"
   :url "/model/domains")
 
 (defresource domains-api :collection

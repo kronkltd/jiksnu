@@ -29,7 +29,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu resources-api
-  :name "Resource API"
+  :name "Resource Models"
   :url "/model/resources")
 
 (defresource resources-api :collection

@@ -28,7 +28,7 @@
   :mixins [angular-resource])
 
 (defgroup jiksnu group-memberships-api
-  :name "Group Memberships API"
+  :name "Group Membership Models"
   :url "/model/group-memberships")
 
 (defresource group-memberships-api :collection

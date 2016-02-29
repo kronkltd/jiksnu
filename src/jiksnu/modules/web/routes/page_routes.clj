@@ -8,7 +8,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu pages-api
-          :name "Pages API"
+          :name "Page Models"
           :url "/model/pages")
 
 (defresource pages-api :collection

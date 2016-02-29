@@ -221,7 +221,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu users-api
-  :name "Users API"
+  :name "User Models"
   :url "/model/users")
 
 (defresource users-api :collection

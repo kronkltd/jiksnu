@@ -15,7 +15,7 @@
 
 
 (defgroup jiksnu settings-api
-  :name "Settings API"
+  :name "Settings Models"
   :url "/model/settings")
 
 (defresource settings-api :item

@@ -37,7 +37,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu groups-api
-  :name "Groups API"
+  :name "Group Models"
   :url "/model/groups")
 
 (defresource groups-api :collection

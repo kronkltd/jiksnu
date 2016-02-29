@@ -24,7 +24,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu likes-api
-  :name "Likes API"
+  :name "Like Models"
   :url "/model/likes")
 
 (defresource likes-api :collection

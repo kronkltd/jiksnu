@@ -42,7 +42,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu activities-api
-  :name "Activities API"
+  :name "Activity Models"
   :url "/model/activities")
 
 (defn activities-api-post

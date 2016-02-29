@@ -42,7 +42,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu streams-api
-  :name "Streams API"
+  :name "Stream Models"
   :url "/model/streams")
 
 (defn post-stream

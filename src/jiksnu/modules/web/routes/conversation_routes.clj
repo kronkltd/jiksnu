@@ -41,7 +41,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu conversations-api
-  :name "Conversations API"
+  :name "Conversation Models"
   :url "/model/conversations")
 
 (defresource conversations-api :collection

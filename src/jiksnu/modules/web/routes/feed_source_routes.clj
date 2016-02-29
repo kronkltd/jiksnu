@@ -25,7 +25,7 @@
 ;; =============================================================================
 
 (defgroup jiksnu feed-sources-api
-  :name "Feed Sources API"
+  :name "Feed Source Models"
   :url "/model/feed-sources")
 
 (defresource feed-sources-api :collection
