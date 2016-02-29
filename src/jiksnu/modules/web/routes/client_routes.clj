@@ -125,7 +125,8 @@
   :name "Authorize"
   :url "/authorize"
   :mixins [angular-resource]
-  :methods {:get {:summary "Authorize Client"
+  :methods {:get {
+                  ;; :summary "Authorize Client"
                   :state "authorizeClient"}
             :post {:summary "Do Authorize Client"}}
   :post! (fn [ctx]

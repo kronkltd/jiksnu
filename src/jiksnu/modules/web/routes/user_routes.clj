@@ -38,14 +38,16 @@
 (defresource users :collection
   :name "list users"
   :desc "Collection route for users"
-  :mixins [angular-resource])
+  :mixins [angular-resource]
+  :methods {:get {:state "indexUsers"}})
 
 (defresource users :resource
   :url "/{_id}"
   :name "show user"
   :description "show a user"
   :parameters {:_id  (path :model.user/id)}
-  :mixins [angular-resource])
+  :mixins [angular-resource]
+  :methods {:get {:state "showUser"}})
 
 ;; =============================================================================
 

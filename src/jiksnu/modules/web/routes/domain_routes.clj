@@ -22,7 +22,8 @@
 (defresource domains :collection
   :desc "collection of domains"
   :summary "Index Domains"
-  :mixins [angular-resource])
+  :mixins [angular-resource]
+  :methods {:get {:state "indexDomains"}})
 
 ;; (defresource domains :discover
 ;;   :url "/{_id}/discover"

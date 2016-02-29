@@ -193,9 +193,12 @@
 
 (defn as-collection-resource
   [{:keys [indexer fetcher collection-type] :as resource}]
-  (-> (merge {:allowed-methods [:get :post :put :delete]
+  (-> (merge {:allowed-methods [:get :post]
               :available-media-types ["application/json"]
               :can-put-to-missing? false
+              :methods {:get {:summary (str "Get Collection of " collection-type)}
+                        :post {:summary (str "Add to collection of " collection-type)}
+                        }
               :collection-key :collection
               :exists? (fn [ctx]
                          (let [user (get-user ctx)
@@ -220,13 +223,16 @@
         (assoc-in
          [:methods :get]
          (merge
-          {:summary "Angular Template"
+          {:summary (or (when-let [state (get-in r [:methods :get :state])]
+                          (str "state: " state))
+                        "Angular Template")
            :description "This is a double for an angular route. Requesting this page directly will return the angular page."
            :contentType "text/html"
-           :responses {"200" {:description (or (get-in r [:methods :get :description])
-                                               (:description r)
-                                               "Angular Template")
-                              :headers {"Content-Type" {:description "The Content Type"}}}}}
+           :responses
+           {"200" {:description (or (get-in r [:methods :get :description])
+                                    (:description r)
+                                    "Angular Template")
+                   :headers {"Content-Type" {:description "The Content Type"}}}}}
           get-method)))))
 
 (defn make-page-handler
