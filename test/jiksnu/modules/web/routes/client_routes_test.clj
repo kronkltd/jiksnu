@@ -1,9 +1,11 @@
 (ns jiksnu.modules.web.routes.client-routes-test
   (:require [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
+            [clojure.string :as string]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
+            [jiksnu.model.request-token :as model.request-token]
             [jiksnu.modules.web.middleware :as m]
             jiksnu.modules.web.routes.client-routes
             [jiksnu.routes-helper :refer [json-response response-for]]
@@ -37,6 +39,39 @@
                 {:client_id               string?
                  :registration_client_uri string?
                  :client_id_issued_at     number?})})))
+
+(fact "route: client-api/request-token"
+  (db/drop-all!)
+  (let [client (mock/a-client-exists)
+        params {}
+        consumer-key ""
+        nonce "fd0fa162e56e82515dde75b6863a5d4a"
+        signature "Qbq0HZ%2FqkbFk1jBv0HSsUpTjwKk%3D"
+        timestamp 1456723873
+        auth-params {
+                     :oauth_callback "oob"
+                     :oauth_consumer_key consumer-key
+                     :oauth_nonce nonce
+                     :oauth_signature signature
+                     :oauth_signature_method "HMAC-SHA1"
+                     :oauth_timestamp timestamp
+                     :oauth_version "1.0"
+                     }
+        path "/oauth/request_token"
+        authorization-str (m/authorization-header auth-params)
+        request (-> (req/request :get path)
+                    (assoc-in [:headers "authorization"] authorization-str))
+        response (-> (response-for request)
+                     (update :body (fn [body]
+                                     (->> (string/split body #"&")
+                                          (map #(string/split % #"="))
+                                          (into {})))))]
+
+    response => (contains {:status 200})
+    (let [{{secret "oauth_token_secret"
+             token-id "oauth_token"} :body} response]
+      (util/inspect (model.request-token/fetch-by-id token-id)) =>
+      (contains {:secret secret}))))
 
 (future-fact "route: oauth/access-token :get"
   (fact "when given valid params"
