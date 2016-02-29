@@ -55,21 +55,21 @@
         (let [verb (:verb item)]
           #_(timbre/info "activity created")
           (condp = verb
+            "post"
             (do
-              "post"
-              (do
-                #_(timbre/debug "activity posted"))
+              #_(timbre/debug "activity posted"))
 
-              "join"
-              (do
-                (timbre/info "Group join")
-                (let [object-id (get-in item [:object :id])
-                      group (model.group/fetch-by-id object-id)]
-                  (actions.group-membership/create
-                   {:user (:author item)
-                    :group (:_id group)})))
+            "join"
+            (do
+              (timbre/info "Group join")
+              (let [object-id (get-in (util/inspect item) [:object :id])
+                    group (model.group/fetch-by-id object-id)]
+                (actions.group-membership/create
+                 {:user (:author item)
+                  :group (:_id group)})))
 
-              #_(timbre/infof "Unknown verb - %s" verb)
+            (do
+              (timbre/infof "Unknown verb - %s" verb)
               #_(util/inspect item))))
 
         "users"
