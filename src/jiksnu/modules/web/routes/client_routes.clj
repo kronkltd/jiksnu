@@ -125,9 +125,7 @@
   :name "Authorize"
   :url "/authorize"
   :mixins [angular-resource]
-  :methods {:get {
-                  ;; :summary "Authorize Client"
-                  :state "authorizeClient"}
+  :methods {:get {:state "authorizeClient"}
             :post {:summary "Do Authorize Client"}}
   :post! (fn [ctx]
            (let [request (util/inspect (:request ctx))
@@ -142,14 +140,18 @@
 (defresource oauth :request-token
   :name "Request Token"
   :url "/request_token"
-  :allowed-methods [:get]
+  :summary "Get a request token"
+  :allowed-methods [:get :post]
   :available-media-types ["text/plain"]
-  :handle-ok (fn [ctx]
-               (let [request (:request ctx)
-                     client-id (get-in request [:authorization-client :_id])
-                     params (-> (:params request)
-                                (assoc :client client-id))
-                     rt (actions.request-token/get-request-token params)]
-                 (util/params-encode
-                  {:oauth_token (:_id rt)
-                   :oauth_token_secret (:secret rt)}))))
+  :respond-with-entity? true
+  :exists? (fn [ctx]
+             (let [request (:request ctx)
+                   client-id (get-in request [:authorization-client :_id])
+                   params (-> (:params request)
+                              (assoc :client client-id))
+                   rt (actions.request-token/get-request-token params)]
+               {:data (util/params-encode
+                       {:oauth_token (:_id rt)
+                        :oauth_token_secret (:secret rt)})}))
+  :handle-ok (fn [ctx] (:data ctx))
+  :post! (fn [ctx] (:data ctx)))
