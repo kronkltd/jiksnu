@@ -1,0 +1,10 @@
+[:div {:title "authorize-client"}
+ [:h1 "Authorize Client"]
+ [:p "Token Id"]
+ [:p "{{id}}"]
+ [:show-client-minimal {:data-id "{{id}}"}]
+ [:div
+  [:button.btn.btn-success "Approve"]
+  [:button.btn.btn-danger "Deny"]
+  ]
+ ]

@@ -1,0 +1,11 @@
+[:div {:title "index-clients"}
+ [:h1
+  [:span "Clients"]
+  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:debug {:expr "page"}]
+  [:ul.list-unstyled
+   [:li {:ng-repeat "id in page.items"}
+    [:debug {:expr "id"}]
+    [:show-client-minimal {:data-id "{{id}}"}]]]]]

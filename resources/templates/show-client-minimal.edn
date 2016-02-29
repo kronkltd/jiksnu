@@ -1,0 +1,11 @@
+[:span {:title "show-client-minimal"}
+ [:debug {:expr "item"}]
+ [:div {:ng-if "loaded"}
+  [:div {:ng-show "app.user"}
+   [:p "Title: {{item.title}}"]
+   [:img {:src "{{item.logo_uri}}"}]]
+  [:div {:ng-hide "app.user"}
+   [:p "You must be authenticated to perform this action"]
+   ]
+  ]
+ ]

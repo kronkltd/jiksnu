@@ -124,20 +124,19 @@
 (defresource oauth :authorize
   :name "Authorize"
   :url "/authorize"
-  :allowed-methods [:get]
-  :available-media-types ["application/json"]
-  :mixins [mixin/item-resource]
+  :mixins [angular-resource]
   :methods {:get {:summary "Authorize Client"
                   :state "authorizeClient"}
             :post {:summary "Do Authorize Client"}}
-  :exists? (fn [ctx]
-             (let [request (util/inspect (:request ctx))
-                   params (get-in ctx [:request :params])
-                   author (model.user/get-user (:current (friend/identity request)))
-                   token-id (get-in ctx [:request :params :oauth_token])
-                   rt (model.request-token/fetch-by-id token-id)]
-               (util/inspect (actions.request-token/authorize params))
-               {:data rt})))
+  :post! (fn [ctx]
+           (let [request (util/inspect (:request ctx))
+                 params (get-in ctx [:request :params])
+                 author (model.user/get-user (:current (friend/identity request)))
+                 token-id (get-in ctx [:request :params :oauth_token])
+                 rt (model.request-token/fetch-by-id token-id)]
+             (util/inspect (actions.request-token/authorize params))
+             {:data rt}))
+  )
 
 (defresource oauth :request-token
   :name "Request Token"

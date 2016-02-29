@@ -12,6 +12,12 @@
 
 (def.controller jiksnu.AvatarPageController [])
 
+(def.controller jiksnu.AuthorizeClientController
+  [$location $scope $stateParams app]
+  (js/console.log "Location: " $location)
+  (js/console.log "State Params: " $stateParams)
+  (set! (.-id $scope) (aget (.search $location) "oauth_token")))
+
 (def.controller jiksnu.DebugController [$scope $filter app]
   (set! (.-visible $scope) #(.. app -data -debug))
 
@@ -352,6 +358,14 @@
   [$scope $stateParams app Domains]
   (set! (.-loaded $scope) false)
   (helpers/init-item $scope $stateParams app Domains))
+
+(def.controller jiksnu.ShowClientController
+  [$scope $stateParams app Clients]
+  (helpers/init-item $scope $stateParams app Clients))
+
+(def.controller jiksnu.ShowClientMinimalController
+  [$scope $stateParams app Clients]
+  (helpers/init-item $scope $stateParams app Clients))
 
 (def.controller jiksnu.ShowConversationController
   [$scope $stateParams Conversations app $rootScope]

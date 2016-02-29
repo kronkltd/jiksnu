@@ -22,6 +22,18 @@
     :endpoint "activities"
     :methods #js {:getType (constantly "Activity")}}))
 
+(def.factory jiksnu.Clients
+  [DS subpageService]
+  (.defineResource
+   DS
+   #js
+   {:name "client"
+    :endpoint "clients"
+    :deserialize deserializer
+    :methods
+    #js
+    {:getType (constantly "Client")}}))
+
 (def.factory jiksnu.Conversations
   [DS subpageService]
   (.defineResource
@@ -34,7 +46,6 @@
     #js
     {:getActivities (fn [] (this-as item (.fetch subpageService item "activities")))
      :getType (constantly "Conversation")}}))
-
 
 (def.factory jiksnu.Domains
   [DS subpageService]

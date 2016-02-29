@@ -79,6 +79,8 @@
    :templateUrl "/templates/right-column-section"})
 
 (item-directive "Activity"               "activity")
+(item-directive "Client"                 "client")
+(item-directive "ClientMinimal"          "client-minimal")
 (item-directive "Conversation"           "conversation")
 (item-directive "Group"                  "group")
 (item-directive "GroupMembership"        "group-membership")
