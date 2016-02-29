@@ -2,6 +2,7 @@
   (:require [ciste.config :refer [config]]
             [clj-factory.core :refer [factory fseq]]
             [clj-http.cookies :as cookies]
+            [clojure.data.json :as json]
             [clojure.string :as string]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
@@ -22,6 +23,14 @@
       ((resolve (symbol handler)) request)
       (catch Throwable ex
         (timbre/error ex))))))
+
+(defn json-response
+  [request]
+  (let [response (response-for request)]
+    ;; response => (contains {:status status/success?})
+    (let [body (:body response)]
+      ;; body => string?
+      (json/read-str body :key-fn keyword))))
 
 (defn parse-cookie
   [response]

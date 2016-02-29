@@ -6,7 +6,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.model.activity :as model.activity]
             jiksnu.modules.web.routes.activity-routes
-            [jiksnu.routes-helper :refer [as-user response-for]]
+            [jiksnu.routes-helper :refer [as-user json-response response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]
