@@ -74,26 +74,8 @@
   :respond-with-entity? true
   :new? false
   :can-put-to-missing? false
-  :exists? (fn [ctx]
-             (let [params (:params (:request ctx))]
-               {:data true #_(actions.client/register params)}))
-  :post! (fn [ctx]
-           (let [params (:params (:request ctx))]
-             (when-let [item (actions.client/register params)]
-               (let [{client-id :_id
-                      expires :secret-expires
-                      :keys [token secret created]} item
-                     created (int (/ (coerce/to-long created) 1000))
-                     client-uri (format "https://%s/oauth/request_token" (config :domain))
-                     response (merge {:client_id client-id
-                                      :client_id_issued_at created
-                                      :registration_access_token token
-                                      :registration_client_uri client-uri}
-                                     (when secret
-                                       {:client_secret secret})
-                                     (when expires
-                                       {:expires_at expires}))]
-                 {:data response}))))
+  :exists? (fn [ctx] {:data (some-> ctx :request :params actions.client/register)})
+  ;; :post! (fn [ctx] {:data (some-> ctx :request :params actions.client/register)})
   :handle-created :data)
 
 (defgroup jiksnu oauth

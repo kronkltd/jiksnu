@@ -6,7 +6,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.modules.web.middleware :as m]
             jiksnu.modules.web.routes.client-routes
-            [jiksnu.routes-helper :refer [response-for]]
+            [jiksnu.routes-helper :refer [json-response response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]
@@ -17,34 +17,26 @@
   (after :contents (th/stop-testing))])
 
 (fact "route: client-api/register :post"
-      (db/drop-all!)
-      (let [params {:type "client_associate"
-                    :application_type "native"
-                    :application_name (fseq :word)
-                    :logo_url (fseq :uri)
-                    :redirect_uris "oob"
-                    :registration_access_token (fseq :word)}
-            body (json/json-str params)
-            request (-> (req/request :post "/api/client/register")
-                        (req/content-type "application/json")
-                        (req/body body))
-            response (response-for request)]
-         response =>
-        (contains {
-                   ;; TODO: verify against spec
-                   :status 201
-                   :headers (contains {"Content-Type" "application/json;charset=UTF-8"})})
-
-        (let [body (json/read-str (:body response) :key-fn keyword)]
-          body => (contains
-                   {:client_id string?
-                    :registration_client_uri string?
-                    :client_id_issued_at number?})
-          ;; (:registration_access_token body) => string?
-          ;; Optional
-          ;; (:client_secret body) => string?
-          ;; (:client_secret_expires_at body) => number?
-          )))
+  (db/drop-all!)
+  (let [params {:type "client_associate"
+                :application_type "native"
+                :application_name (fseq :word)
+                :logo_url (fseq :uri)
+                :redirect_uris "oob"
+                :registration_access_token (fseq :word)}
+        request (-> (req/request :post "/api/client/register")
+                    (req/content-type "application/json")
+                    (req/body (json/json-str params)))]
+    (json-response request) =>
+    (contains
+     ;; TODO: verify against spec
+     {:status  200
+      :headers (contains
+                {"Content-Type" "application/json"})
+      :json    (contains
+                {:client_id               string?
+                 :registration_client_uri string?
+                 :client_id_issued_at     number?})})))
 
 (future-fact "route: oauth/access-token :get"
   (fact "when given valid params"

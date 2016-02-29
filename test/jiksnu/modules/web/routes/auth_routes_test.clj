@@ -8,6 +8,7 @@
             jiksnu.modules.web.routes.auth-routes
             [jiksnu.routes-helper :refer [parse-cookie response-for]]
             [jiksnu.test-helper :as th]
+            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 

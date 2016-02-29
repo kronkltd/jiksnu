@@ -1,5 +1,7 @@
 (ns jiksnu.actions.client-actions
-  (:require [clojure.string :as string]
+  (:require [ciste.config :refer [config]]
+            [clj-time.coerce :as coerce]
+            [clojure.string :as string]
             jiksnu.model.client
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
@@ -75,6 +77,7 @@
       (if-not (:client_secret params)
         (let [host (:remoteHost params)
               webfinger (:remoteUser params)
+              client-uri (format "https://%s/oauth/request_token" (config :domain))
               params (merge params
                             {:contacts contacts
                              :_id (:registration_access_token params)
@@ -83,8 +86,16 @@
                              :redirect_uris redirect_uris}
                             (when host {:host host})
                             (when webfinger {:webfinger webfinger}))
-              client (create params)]
-          client)
+              {client-id :_id
+               expires :secret-expires
+               :keys [token secret created]} (create params)
+              created (int (/ (coerce/to-long created) 1000))]
+          (merge {:client_id client-id
+                  :client_id_issued_at created
+                  :registration_access_token token
+                  :registration_client_uri client-uri}
+                 (when secret {:client_secret secret})
+                 (when expires {:expires_at expires})))
         (throw+ "Only set client_secret for update"))
       (throw+ "access_token not needed for registration"))))
 
