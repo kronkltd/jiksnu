@@ -112,7 +112,7 @@
                    author (model.user/get-user (:current (friend/identity request)))
                    token-id (get-in ctx [:request :params :oauth_token])
                    rt (model.request-token/fetch-by-id token-id)]
-               (util/inspect (actions.request-token/authorize params))
+               ;; (util/inspect (actions.request-token/authorize (util/inspect params)))
                {:data rt}))
   :post! (fn [ctx] (:data ctx)))
 

@@ -73,12 +73,12 @@
 (defn authorize
   [params]
   (timbre/info "authorizing")
-  (let [id (:oauth_token params)
-        token (model.request-token/fetch-by-id id)]
-    (if (= (:verifier params) (:verifier token))
-      (if-let [user (session/current-user)]
-        (do (model.request-token/set-field! token :user (:_id user))
-            token)
-        (throw+ {:msg "No authorized user"})
-        )
-      (throw+ "Verifier does not match"))))
+  (let [id (:oauth_token params)]
+    (if-let [token (model.request-token/fetch-by-id id)]
+     (if (= (:verifier params) (:verifier token))
+       (if-let [user (session/current-user)]
+         (do (model.request-token/set-field! token :user (:_id user))
+             token)
+         (throw+ {:msg "No authorized user"}))
+       (throw+ "Verifier does not match"))
+     (throw+ "Could not find token"))))
