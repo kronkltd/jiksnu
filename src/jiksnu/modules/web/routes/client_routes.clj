@@ -17,6 +17,7 @@
             [jiksnu.util :as util]
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
+            [ring.util.codec :as codec]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
 
@@ -87,21 +88,17 @@
   :url "/access_token"
   :allowed-methods [:get :post]
   :available-media-types ["application/json"]
-  :mixins [mixin/item-resource]
+  :new? false
+  :respond-with-entity? true
+  :post-redirect? false
   :exists? (fn [ctx]
-             (try+
-              (let [{client :authorization-client
-                     params :authorization-parts
-                     :as request} (:request ctx)
-                    {:keys [_id secret]} (actions.access-token/get-access-token params)]
-                {:data (util/params-encode
-                        {:oauth_token _id
-                         :oauth_token_secret secret})})
-              (catch Object ex
-                (timbre/error ex)
-                {:status 500})))
-  :post! (fn [ctx]
-           (timbre/info "posting")))
+             (let [at (-> ctx :request :authorization-parts
+                          actions.access-token/get-access-token)]
+               {:data
+                (codec/form-encode {:oauth_token (:_id at)
+                                    :oauth_token_secret (:secret at)})}))
+  :handle-ok (fn [ctx] (:data ctx))
+  :post! (fn [ctx] (:data ctx)))
 
 (defresource oauth :authorize
   :name "Authorize"
@@ -109,14 +106,15 @@
   :mixins [angular-resource]
   :methods {:get {:state "authorizeClient"}
             :post {:summary "Do Authorize Client"}}
-  :post! (fn [ctx]
-           (let [request (util/inspect (:request ctx))
-                 params (get-in ctx [:request :params])
-                 author (model.user/get-user (:current (friend/identity request)))
-                 token-id (get-in ctx [:request :params :oauth_token])
-                 rt (model.request-token/fetch-by-id token-id)]
-             (util/inspect (actions.request-token/authorize params))
-             {:data rt})))
+  :exists? (fn [ctx]
+             (let [request (util/inspect (:request ctx))
+                   params (get-in ctx [:request :params])
+                   author (model.user/get-user (:current (friend/identity request)))
+                   token-id (get-in ctx [:request :params :oauth_token])
+                   rt (model.request-token/fetch-by-id token-id)]
+               (util/inspect (actions.request-token/authorize params))
+               {:data rt}))
+  :post! (fn [ctx] (:data ctx)))
 
 (defresource oauth :request-token
   :name "Request Token"

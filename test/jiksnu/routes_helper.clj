@@ -33,7 +33,7 @@
       ;; body => string?
       (let [json-obj (json/read-str body :key-fn keyword)]
         (-> response
-            (assoc :json (util/inspect json-obj))
+            (assoc :json json-obj)
             (dissoc :body))))))
 
 (defn parse-cookie

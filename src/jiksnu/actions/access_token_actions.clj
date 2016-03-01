@@ -82,6 +82,7 @@
                   (if (= consumer-key (:client request-token))
                     (let [params {:client (:_id client)
                                   :request-token (:_id request-token)
+                                  ;; FIXME: generate a random secret
                                   :secret "foo"}]
                       (create params))
                     (throw+ "Consumer Key does not match request token's consumer.")))
