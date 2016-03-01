@@ -40,23 +40,17 @@
                  :registration_client_uri string?
                  :client_id_issued_at     number?})})))
 
-(fact "route: client-api/request-token"
+(fact "route: client-api/request-token :get"
   (db/drop-all!)
   (let [client (mock/a-client-exists)
-        params {}
         consumer-key ""
-        nonce "fd0fa162e56e82515dde75b6863a5d4a"
-        signature "Qbq0HZ%2FqkbFk1jBv0HSsUpTjwKk%3D"
-        timestamp 1456723873
-        auth-params {
-                     :oauth_callback "oob"
-                     :oauth_consumer_key consumer-key
-                     :oauth_nonce nonce
-                     :oauth_signature signature
+        auth-params {:oauth_callback         "oob"
+                     :oauth_consumer_key     consumer-key
+                     :oauth_nonce            "fd0fa162e56e82515dde75b6863a5d4a"
+                     :oauth_signature        "Qbq0HZ%2FqkbFk1jBv0HSsUpTjwKk%3D"
                      :oauth_signature_method "HMAC-SHA1"
-                     :oauth_timestamp timestamp
-                     :oauth_version "1.0"
-                     }
+                     :oauth_timestamp        1456723873
+                     :oauth_version          "1.0"}
         path "/oauth/request_token"
         authorization-str (m/authorization-header auth-params)
         request (-> (req/request :get path)
@@ -66,11 +60,34 @@
                                      (->> (string/split body #"&")
                                           (map #(string/split % #"="))
                                           (into {})))))]
-
     response => (contains {:status 200})
-    (let [{{secret "oauth_token_secret"
-             token-id "oauth_token"} :body} response]
-      (util/inspect (model.request-token/fetch-by-id token-id)) =>
+    (let [{{secret "oauth_token_secret" token-id "oauth_token"} :body} response]
+      (model.request-token/fetch-by-id token-id) =>
+      (contains {:secret secret}))))
+
+(fact "route: client-api/request-token :post"
+  (db/drop-all!)
+  (let [client (mock/a-client-exists)
+        consumer-key ""
+        auth-params {:oauth_callback         "oob"
+                     :oauth_consumer_key     consumer-key
+                     :oauth_nonce            "fd0fa162e56e82515dde75b6863a5d4a"
+                     :oauth_signature        "Qbq0HZ%2FqkbFk1jBv0HSsUpTjwKk%3D"
+                     :oauth_signature_method "HMAC-SHA1"
+                     :oauth_timestamp        1456723873
+                     :oauth_version          "1.0"}
+        path "/oauth/request_token"
+        authorization-str (m/authorization-header auth-params)
+        request (-> (req/request :post path)
+                    (assoc-in [:headers "authorization"] authorization-str))
+        response (-> (response-for request)
+                     (update :body (fn [body]
+                                     (->> (string/split body #"&")
+                                          (map #(string/split % #"="))
+                                          (into {})))))]
+    response => (contains {:status 200})
+    (let [{{secret "oauth_token_secret" token-id "oauth_token"} :body} response]
+      (model.request-token/fetch-by-id token-id) =>
       (contains {:secret secret}))))
 
 (future-fact "route: oauth/access-token :get"

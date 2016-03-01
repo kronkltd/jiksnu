@@ -116,16 +116,17 @@
                  token-id (get-in ctx [:request :params :oauth_token])
                  rt (model.request-token/fetch-by-id token-id)]
              (util/inspect (actions.request-token/authorize params))
-             {:data rt}))
-  )
+             {:data rt})))
 
 (defresource oauth :request-token
   :name "Request Token"
   :url "/request_token"
   :summary "Get a request token"
   :allowed-methods [:get :post]
-  :available-media-types ["text/plain"]
+  :post-redirect? false
+  :new? false
   :respond-with-entity? true
+  :available-media-types ["text/plain"]
   :exists? (fn [ctx]
              (let [request (:request ctx)
                    client-id (get-in request [:authorization-client :_id])
