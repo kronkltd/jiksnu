@@ -107,12 +107,11 @@
   :methods {:get {:state "authorizeClient"}
             :post {:summary "Do Authorize Client"}}
   :exists? (fn [ctx]
-             (let [request (util/inspect (:request ctx))
+             (let [request (:request ctx)
                    params (get-in ctx [:request :params])
                    author (model.user/get-user (:current (friend/identity request)))
                    token-id (get-in ctx [:request :params :oauth_token])
                    rt (model.request-token/fetch-by-id token-id)]
-               ;; (util/inspect (actions.request-token/authorize (util/inspect params)))
                {:data rt}))
   :post! (fn [ctx] (:data ctx)))
 
