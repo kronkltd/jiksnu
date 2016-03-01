@@ -14,7 +14,7 @@
 (def url-pattern       "https://%s/%s")
 (def profile-pattern   "https://%s/api/user/%s/profile")
 (def inbox-pattern     "https://%s/api/user/%s/inbox")
-(def outbox-pattern    "https://%s/api/user/%s/outbox")
+(def outbox-pattern    "https://%s/api/user/%s/feed")
 (def followers-pattern "https://%s/api/user/%s/followers")
 (def following-pattern "https://%s/api/user/%s/following")
 (def favorites-pattern "https://%s/api/user/%s/favorites")
@@ -41,6 +41,8 @@
              :activity-inbox  {:href inbox-url}
              :activity-outbox {:href outbox-url}}
      :objectType "person"
+     :updated (:updated user)
+     :published (:created user)
      :followers {:url followers-url
                  :totalItems 0}
      :following {:url following-url
@@ -49,16 +51,16 @@
                  :totalItems 0}
      :lists {:url list-url
              :totalItems 0}
-     :image {:url avatar-url
+     :image {:url (str avatar-url ".jpg")
              ;; :rel "avatar"
              ;; :type "image/jpeg"
              :width 96
              :height 96
              }
-     :updated (:updated user)
      :id (:_id user)
      ;; TODO: How are these determined?
      :liked false
+     :summary "INSERT SUMMARY HERE"
      :pump_io {:shared false
                :followed false}
      :type "person")))

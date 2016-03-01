@@ -1,8 +1,12 @@
 (ns jiksnu.modules.web.routes.home-routes
-  (:require [jiksnu.actions.site-actions :as site]
+  (:require [cemerick.friend :as friend]
+            [ciste.core :refer [with-context]]
+            [ciste.sections.default :refer [show-section]]
+            [jiksnu.actions.site-actions :as site]
+            [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup resources]]
-            [jiksnu.modules.web.helpers :refer [angular-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource as-collection-resource]]
             [octohipster.mixins :refer [item-resource]]))
 
 (defgroup jiksnu root
@@ -43,9 +47,17 @@
   :doc {:get {:nickname "settings-page"
               :summary "Settings Page"}})
 
-;; (defresource root register
-;;   :name "Register"
-;;   :url "/register"
-;;   :summary "Register user"
-;;   ;; :mixins [item-resource]
-;;   :post! (fn [ctx] ctx))
+;; =============================================================================
+
+(defgroup jiksnu api
+  :name "Pump.io API"
+  :url "/api"
+  :summary "Pump")
+
+(defresource api :whoami
+  :name "Whoami"
+  :url "/whoami"
+  :mixins [as-collection-resource]
+  :exists? (fn [ctx]
+             (let [user (model.user/get-user (:current (friend/identity (:request ctx))))]
+               {:data (with-context [:http :as] (show-section user))})))
