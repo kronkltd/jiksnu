@@ -1,4 +1,4 @@
-# Jiksnu ("zheek snoo")
+# Jiksnu /ˈʒiks.nu/
 
 [![Stack Share](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/duck1123/jiksnu)
 [![Build Status](http://build.jiksnu.org/job/jiksnu-core/branch/master/badge/icon)](http://build.jiksnu.org/job/jiksnu-core/branch/master/)
