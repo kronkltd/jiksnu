@@ -1,10 +1,19 @@
 [:div {:title "authorize-client"}
  [:h1 "Authorize Client"]
- [:p "Token Id"]
- [:p "{{id}}"]
- [:show-client-minimal {:data-id "{{id}}"}]
- [:div
-  [:button.btn.btn-success "Approve"]
-  [:button.btn.btn-danger "Deny"]
-  ]
+ [:debug {:expr "id"}]
+ [:debug {:expr "item"}]
+ [:show-request-token {:data-id "{{id}}"}]
+ [:form {:name "authorizeForm" :ng-submit "submit()"}
+  [:debug {:expr "authorizeForm"}]
+  [:div
+   [:label "Token Id"]
+   [:input {:disabled "" :ng-model "id"}]]
+  [:div
+   [:label "Verifier"]
+   [:input {:ng-model "item.verifier"}]
+   [:button {:clipboard "" :text "item.verifier"} "Copy"]]
+  [:div
+   [:button.btn.btn-success "Approve"]
+   [:button.btn.btn-danger "Deny"]
+   ]]
  ]

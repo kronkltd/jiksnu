@@ -97,6 +97,16 @@
     :deserialize deserializer
     :methods #js {:getType (constantly "Like")}}))
 
+(def.factory jiksnu.RequestTokens
+  [DS subpageService]
+  (.defineResource
+   DS
+   #js
+   {:name "request-token"
+    :endpoint "request-tokens"
+    :deserialize deserializer
+    :methods #js {:getType (constantly "RequestToken")}}))
+
 (def.factory jiksnu.Streams
   [DS]
   (.defineResource

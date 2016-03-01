@@ -36,6 +36,7 @@
    "home"
    "page"
    "like"
+   "request-token"
    "resource"
    "stream"
    "subscription"

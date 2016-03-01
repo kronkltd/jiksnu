@@ -30,6 +30,7 @@ module.exports = function(config) {
       vendorBase + "/angular-busy/dist/angular-busy.min.js",
       vendorBase + "/js-data/dist/js-data.min.js",
       vendorBase + "/js-data-angular/dist/js-data-angular.min.js",
+      vendorBase + "/angular-clipboard/angular-clipboard.js",
       vendorBase + "/angular-file-upload/dist/angular-file-upload.min.js",
       vendorBase + "/angular-moment/angular-moment.js",
       vendorBase + "/angular-cfp-hotkeys/build/hotkeys.min.js",

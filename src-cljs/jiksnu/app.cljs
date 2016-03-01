@@ -3,6 +3,7 @@
 
 (def.module jiksnu
   [
+   angular-clipboard
    angularFileUpload
    angularMoment
    btford.markdown

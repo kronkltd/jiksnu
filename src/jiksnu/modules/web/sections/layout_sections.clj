@@ -72,6 +72,7 @@
     "/vendor/js-data-angular/dist/js-data-angular.min.js"
     "/vendor/angular-file-upload/dist/angular-file-upload.min.js"
     "/vendor/angular-cfp-hotkeys/build/hotkeys.min.js"
+    "/vendor/angular-clipboard/angular-clipboard.js"
     "/vendor/angular-highlightjs/angular-highlightjs.js"
     "/vendor/angular-markdown-directive/markdown.js"
     "/vendor/angular-moment/angular-moment.min.js"

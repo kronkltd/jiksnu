@@ -13,10 +13,11 @@
 (def.controller jiksnu.AvatarPageController [])
 
 (def.controller jiksnu.AuthorizeClientController
-  [$location $scope $stateParams app]
+  [$location $scope $stateParams app RequestTokens]
   (js/console.log "Location: " $location)
   (js/console.log "State Params: " $stateParams)
-  (set! (.-id $scope) (aget (.search $location) "oauth_token")))
+  (set! (.-id $scope) (aget (.search $location) "oauth_token"))
+  (helpers/init-item $scope $stateParams app RequestTokens))
 
 (def.controller jiksnu.DebugController [$scope $filter app]
   (set! (.-visible $scope) #(.. app -data -debug))
@@ -186,6 +187,7 @@
 (page-controller Groups           "groups")
 (page-controller GroupMemberships "group-memberships")
 (page-controller Likes            "likes")
+(page-controller RequestTokens    "request-tokens")
 (page-controller Resources        "resources")
 (page-controller Streams          "streams")
 (page-controller Subscriptions    "subscriptions")
@@ -405,6 +407,10 @@
 (def.controller jiksnu.ShowLikedByController
   [$scope $stateParams app Likes]
   (helpers/init-item $scope $stateParams app Likes))
+
+(def.controller jiksnu.ShowRequestTokenController
+  [$scope $http $stateParams app RequestTokens]
+  (helpers/init-item $scope $stateParams app RequestTokens))
 
 (def.controller jiksnu.ShowStreamController
   [$scope $http $stateParams app Streams]
