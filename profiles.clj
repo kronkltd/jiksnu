@@ -1,6 +1,6 @@
 {
  :user-dev  {:env {:ciste-env "dev"
-                   :jiksnu-database-url "mongodb://localhost/jiksnu_dev"}}
+                   :jiksnu-db-url "mongodb://localhost/jiksnu_dev"}}
  :user-test {:env {:ciste-env "test"
-                   :jiksnu-database-url "mongodb://localhost/jiksnu_test"}}
+                   :jiksnu-db-url "mongodb://localhost/jiksnu_test"}}
  }
