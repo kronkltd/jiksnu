@@ -1,6 +1,6 @@
 (ns jiksnu.action-helpers
   (:require [clj-http.client :as client]
-            [clj-webdriver.taxi :refer [to]]
+            #_[clj-webdriver.taxi :refer [to]]
             [taoensso.timbre :as timbre]
             [manifold.stream :as s]
             [manifold.time :as time]
@@ -60,9 +60,9 @@
     (dosync
      (ref-set current-page response))))
 
-(defn fetch-page-browser
-  [method path]
-  (to (expand-url path)))
+;(defn fetch-page-browser
+;  [method path]
+;  (to (expand-url path)))
 
 (defn get-body
   []
@@ -80,7 +80,7 @@
   []
   (timbre/info (get-body)))
 
-(defn be-at-the-page
-  [page-name]
-  (let [path (get page-names page-name)]
-    (fetch-page-browser :get path)))
+;(defn be-at-the-page
+;  [page-name]
+;  (let [path (get page-names page-name)]
+;    (fetch-page-browser :get path)))
