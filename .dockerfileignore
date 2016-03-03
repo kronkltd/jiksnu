@@ -1,0 +1,13 @@
+.ackrc
+checkouts
+Cheffile
+chefignore
+cookbooks
+data_bags
+docs
+features
+logs
+.profiles
+vagrant
+Vagrantfile
+.vagrant

@@ -1,5 +1,5 @@
 (ns jiksnu.db
-  (:require [ciste.config :refer [config describe-config environment]]
+  (:require [environ.core :refer [env]]
             [inflections.core :as inf]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -22,18 +22,13 @@
   (timbre/info "dropping all collections")
   (db/drop-db @_db))
 
-(describe-config [:database :name]
-                 String
-                 "The name of the database to use")
-
 (defn set-database!
   "Set the connection for mongo"
   []
-  (timbre/info (str "setting database for " (environment)))
   (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
+  (timbre/infof "Connecting to %s" (env :jiksnu-database-url))
   ;; TODO: pass connection options
-  (let [conn (mg/connect)
-        db (mg/get-db conn (config :database :name))]
+  (let [{:keys [conn db]} (mg/connect-via-uri (env :jiksnu-db-url))]
     (dosync
      (ref-set _conn conn)
      (ref-set _db db))))
