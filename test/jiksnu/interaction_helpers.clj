@@ -2,13 +2,16 @@
   (:require [clj-http.client :as client]
             ;[clj-webdriver.taxi :as webdriver]
             ;[clj-webdriver.core :as webdriver.core]
-            [jiksnu.action-helpers :refer [expand-url fetch-page-browser get-domain get-host]]
+            [jiksnu.action-helpers :refer [expand-url
+                                           ;; fetch-page-browser
+                                           get-domain get-host]]
             [jiksnu.mock :refer [a-user-exists my-password]]
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that set-this]]
             [midje.sweet :refer :all]
             [slingshot.slingshot :refer [throw+ try+]])
-  (:import org.openqa.selenium.ElementNotVisibleException))
+  ;; (:import org.openqa.selenium.ElementNotVisibleException)
+  )
 
 ;(defn do-click-button
 ;  [class-name]

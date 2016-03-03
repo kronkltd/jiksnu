@@ -1,15 +1,15 @@
 (ns jiksnu.request-helpers
   (:require [clj-http.client :as client]
             [clojure.string :as string]
-            [jiksnu.action-helpers :refer [expand-url fetch-page fetch-page-browser page-names
+            [jiksnu.action-helpers :refer [expand-url fetch-page page-names
                                            that-stream]]
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that]]
             [manifold.stream :as s]))
 
-(defn request-oembed-resource
-  []
-  (fetch-page-browser :get (str "/main/oembed?format=json&url=" (:url (get-this :activity)))))
+;; (defn request-oembed-resource
+;;   []
+;;   (fetch-page-browser :get (str "/main/oembed?format=json&url=" (:url (get-this :activity)))))
 
 (defn request-stream
   [stream-name]
@@ -35,4 +35,3 @@
   []
   (fetch-page :get
               (str "/main/xrd?uri=" (model.user/get-uri (get-this :user)))))
-
