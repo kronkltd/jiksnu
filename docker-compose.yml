@@ -3,6 +3,6 @@ services:
   web:
     build: .
     depends_on:
-      - mongodb
-  mongodb:
-    image: mongodb
+      - mongo
+  mongo:
+    image: mongo
