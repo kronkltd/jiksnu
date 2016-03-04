@@ -10,13 +10,14 @@ exports.config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   baseUrl: 'http://localhost:8080/',
-
+  allScriptsTimeout: 11000,
+  getPageTimeout: 10000,
   specs: [
     'features/*.feature'
   ],
 
   cucumberOpts: {
     require: 'target/protractor-tests.js',
-    format: 'pretty'
+    format: 'summary'
   }
 };

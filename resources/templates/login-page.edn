@@ -1,5 +1,5 @@
 [:div.col-xs-6.col-xs-offset-3
- [:form {:ng-submit "login()"}
+ [:form {:ng-submit "login()" :name "loginForm"}
   [:h2.text-center "Please Sign In"]
   [:div.form-group
    [:label.sr-only {:for "username"} "Username"]

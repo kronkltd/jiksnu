@@ -24,10 +24,16 @@
 
 (step-definitions
 
+ (this-as this (.setDefaultTimeout this (* 60 1000)))
+
  (Given #"^I am not logged in$"
    [next]
    (let [page (.get browser "/main/login")
-         form (by-model "loginForm")]
+         form (by-model "username")]
+     (.wait browser (fn [] (.isPresent (by-model "username"))))
+     (-> (expect (.getInnerHtml form))
+         .-to .-eventually .-exist)
+
      (-> (expect (.getTitle browser))
          .-to .-eventually (.equal "Jiksnu")
          .-and (.notify next))

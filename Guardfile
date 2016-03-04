@@ -15,6 +15,10 @@
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
+require 'pty'
+
+clearing :on
+
 guard 'livereload' do
   # watch(%r{app/views/.+\.(erb|haml|slim)$})
   watch(%r{target/karma-test.js})
@@ -28,7 +32,18 @@ guard 'livereload' do
 end
 
 def run_protractor
-  `lein protractor`
+  cmd = "lein protractor"
+
+  begin
+    PTY.spawn(cmd) do |stdout, stdin, pid|
+      begin
+        stdout.each { |line| print line }
+      rescue Errno::EIO
+      end
+    end
+  rescue PTY::ChildExited
+
+  end
 end
 
 # guard :shell do
@@ -38,6 +53,12 @@ end
 # end
 
 guard :shell do
+  # Step definitions
   watch(%r{target/protractor-tests.js}) {run_protractor}
+
+  # Features
   watch(%r{features/.+\.feature}) {run_protractor}
+
+  # Page templates
+  watch(%r{resources/templates/.+\.edn}) {run_protractor}
 end
