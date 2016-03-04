@@ -26,3 +26,18 @@ guard 'livereload' do
   # Rails Assets Pipeline
   # watch(%r{(app|vendor)(/assets/\w+/(.+\.(css|js|html|png|jpg))).*}) { |m| "/assets/#{m[3]}" }
 end
+
+def run_protractor
+  `lein protractor`
+end
+
+guard :shell do
+  watch(%r{specs/.+\.cljs}) do
+    `lein with-profile e2e cljsbuild once`
+  end
+end
+
+guard :shell do
+  watch(%r{target/protractor-tests.js}) {run_protractor}
+  watch(%r{features/.+\.feature}) {run_protractor}
+end

@@ -145,6 +145,7 @@
                                  :notify-command ["notify-send"]
                                  :compiler {:output-to "target/protractor-tests.js"
                                             :optimizations :simple
+                                            :target :nodejs
                                             :pretty-print true}}}}}
              :production {:aot   :all
                           :hooks [leiningen.cljsbuild leiningen.less]
