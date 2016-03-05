@@ -1,12 +1,11 @@
 exports.config = {
   // Uncomment this line if running with a separate webdriver server
-  // seleniumAddress: "http://localhost:4444/wd/hub",
-  // capabilities: {
-  //   browserName: 'phantomjs',
-  //   version: '',
-  //   platform: 'ANY'
-  // },
-
+  seleniumAddress: "http://localhost:4444/wd/hub",
+  capabilities: {
+    browserName: 'phantomjs',
+    version: '',
+    platform: 'ANY'
+  },
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   baseUrl: 'http://localhost:8080/',
@@ -15,9 +14,8 @@ exports.config = {
   specs: [
     'features/*.feature'
   ],
-
   cucumberOpts: {
     require: 'target/protractor-tests.js',
-    format: 'summary'
+    format: 'pretty'
   }
 };
