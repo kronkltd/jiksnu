@@ -53,6 +53,9 @@ end
 # end
 
 guard :shell do
+  # Protractor Config
+  watch(%r{protractor.config.js}) {run_protractor}
+
   # Step definitions
   watch(%r{target/protractor-tests.js}) {run_protractor}
 
