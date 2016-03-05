@@ -31,11 +31,11 @@ def run_protractor
   `lein protractor`
 end
 
-guard :shell do
-  watch(%r{specs/.+\.cljs}) do
-    `lein with-profile e2e cljsbuild once`
-  end
-end
+# guard :shell do
+#   watch(%r{specs/.+\.cljs?}) do
+#     `lein with-profile e2e cljsbuild once`
+#   end
+# end
 
 guard :shell do
   watch(%r{target/protractor-tests.js}) {run_protractor}
