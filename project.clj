@@ -99,35 +99,17 @@
                  :port    7888}
   :appenders {:jl (make-tools-logging-appender {})}
   :cljsbuild {:builds
-              [{
-                :id :main
-                :source-paths ["src-cljs"]
-                :notify-command ["notify-send"]
-                :compiler     {:output-to     "target/resources/public/cljs/jiksnu.js"
-                               :optimizations :simple
-                               :pretty-print  true}}
-               {:id :karma
-                :source-paths ["src-cljs" "test-cljs"]
-                :notify-command ["notify-send"]
-                :compiler     {:output-to     "target/karma-test.js"
-                               :optimizations :whitespace
-                               ;; Fix for $q's use of 'finally'
-                               :language-in :ecmascript5
-                               :pretty-print  true}}
-               {:id :protractor
-                :source-paths ["specs"]
-                :notify-command ["notify-send"]
-                :compiler     {:output-to     "target/protractor-tests.js"
-                               :optimizations :simple
-                               :pretty-print  true}}
-               {
-                :id :advanced
-                :source-paths ["src-cljs"]
-                :notify-command ["notify-send"]
-                :compiler     {:output-to     "target/resources/public/cljs/jiksnu.min.js"
-                               :optimizations :advanced
-                               :pretty-print  false}}
-               ]}
+              {:main {:source-paths ["src-cljs"]
+                      :notify-command ["notify-send"]
+                      :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
+                                 :output-dir "target/resources/public/cljs"
+                                 :source-map true
+                                 ;; "target/resources/public/cljs/jiksnu.js.map"
+                                 :main "jiksnu.app"
+                                 :optimizations :none
+                                 :asset-path "cljs"
+                                 ;; :verbose true
+                                 :pretty-print true}}}}
   :profiles {:dev        [:dev-core :user-dev]
              :dev-core   {:dependencies
                           [[midje "1.8.3" :exclusions [org.clojure/clojure]]
@@ -143,8 +125,10 @@
                                {:protractor
                                 {:source-paths ["specs"]
                                  :notify-command ["notify-send"]
-                                 :compiler {:output-to "target/protractor-tests.js"
-                                            :optimizations :simple
+                                 :compiler {
+                                            ;; :output-to "target/protractor-tests.js"
+                                            :output-dir "target/specs/"
+                                            :optimizations :none
                                             :target :nodejs
                                             :pretty-print true}}}}}
              :production {:aot   :all

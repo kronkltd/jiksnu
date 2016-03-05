@@ -85,7 +85,7 @@
     "/vendor/angular-websocket/angular-websocket.min.js"
     "/cljs/jiksnu.js")
    (map #(% request response) @scripts-section-hook)
-   [:script {:type "text/javascript"} "goog.require('jiksnu.core');"]))
+   #_[:script {:type "text/javascript"} "goog.require('jiksnu.core');"]))
 
 (defn page-template-content
   [request response]
