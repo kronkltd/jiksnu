@@ -55,7 +55,7 @@
             m (json/read-str (:body response))]
         (get m "action") => "model-updated"))))
 
-(fact "command 'get-page clients'"
+(future-fact "command 'get-page clients'"
   (let [name "get-page"
         args '("clients")]
     (fact "when there are clients"

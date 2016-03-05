@@ -22,7 +22,7 @@
               :body string?})))
 
 (fact "route: users-api/activities :get"
- (fact "When the user exists"
+ (future-fact "When the user exists"
    (let [user (mock/a-user-exists)
          m 1]
      (dotimes [n m] (mock/there-is-an-activity {:user user}))
