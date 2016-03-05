@@ -4,6 +4,7 @@
 
 (def chai (nodejs/require "chai"))
 (def chai-as-promised (nodejs/require "chai-as-promised"))
+(def util (nodejs/require "util"))
 (.use chai chai-as-promised)
 (nodejs/enable-util-print!)
 (def -main (fn [] nil))
@@ -43,14 +44,39 @@
   (fetch [this]
     (.get browser "/main/login")))
 
+(defn get-app-data
+  "Retrieve the application data"
+  []
+  (.executeScript browser (fn [] (.-data js/app))))
+
+(defn get-username
+  "Retrieve the logged in username from then app service"
+  []
+  (-> (get-app-data)
+      (.then (fn [data]
+               (let [username (.-user data)]
+                 (js/console.log "Username: %s" username)
+                 username)))))
+
+(defn seconds [n] (* n 1000))
+
 (step-definitions
 
- (this-as this (.setDefaultTimeout this (* 60 1000)))
+ (this-as this (.setDefaultTimeout this (seconds 60)))
 
  (Given #"^I am not logged in$" [next]
    (let [page (LoginPage.)]
+     (js/console.log "Fetching Page")
      (fetch page)
+     (js/console.log "Logging in")
      (login page "test" "test")
+     (.waitForAngular browser)
+     (js/console.log "Fetching Status")
+
+     (-> (expect (get-username))
+         .-to .-eventually (.equal "test"))
+
+     (js/console.log "Expecting title")
      (-> (expect (.getTitle browser))
          .-to .-eventually (.equal "Jiksnu")
          .-and (.notify next))
