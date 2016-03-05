@@ -1,7 +1,7 @@
 # Jiksnu /ˈʒiks.nu/
 
 [![Stack Share](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/duck1123/jiksnu)
-[![Build Status](http://build.jiksnu.org/job/jiksnu-core/branch/master/badge/icon)](http://build.jiksnu.org/job/jiksnu-core/branch/master/)
+[![Build Status](http://build.jiksnu.org/buildStatus/icon?job=jiksnu)](http://build.jiksnu.org/job/jiksnu/)
 [![Stories in Ready](https://badge.waffle.io/duck1123/jiksnu.png?label=ready&title=Ready)](http://waffle.io/duck1123/jiksnu)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/duck1123/jiksnu?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
