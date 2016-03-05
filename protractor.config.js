@@ -9,6 +9,7 @@ exports.config = {
 
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
+  baseUrl: 'http://localhost:8080/',
 
   specs: [
     'features/*.feature'

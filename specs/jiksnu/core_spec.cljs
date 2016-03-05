@@ -26,10 +26,9 @@
 
  (Given #"^I am not logged in$"
    [next]
-   (let [page (.get js/browser (str base-path "/main/login"))
+   (let [page (.get browser "/main/login")
          form (by-model "loginForm")]
-     ;; (println form)
      (-> (expect (.getTitle browser))
          .-to .-eventually (.equal "Jiksnu")
          .-and (.notify next))
-     (next))))
+     nil)))
