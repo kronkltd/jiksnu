@@ -73,7 +73,7 @@
             [org.clojars.strongh/lein-init-script "1.3.1"]]
   :bower {:package-file "bower.json", :config-file ".bowerrc"}
   :aliases {"karma"             ["shell" "./node_modules/.bin/karma" "start"]
-            "protractor"        ["shell" "./node_modules/.bin/protractor" "protractor-config.js"]
+            "protractor"        ["shell" "./node_modules/.bin/protractor" "protractor.config.js"]
             "protractor-start"  ["shell" "./node_modules/.bin/webdriver-manager" "start"]
             "protractor-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]
             "wscat"             ["shell" "./node_modules/.bin/wscat" "-c" "ws://localhost:8080/"]}
