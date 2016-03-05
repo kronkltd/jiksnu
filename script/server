@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+script/update
+
+echo ">> Running"
+lein run

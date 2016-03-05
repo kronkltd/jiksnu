@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+script/setup
+
+echo ">> Running Midje Tests"
+lein midje
+
+echo ">> Running Karma Tests"
+node_modules/.bin/karma start --single-run

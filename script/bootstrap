@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+echo ">> Ensuring dependencies are downloaded"
+lein deps
+
+echo ">> Installing from NPM"
+npm install
+
+echo ">> installing from Bower"
+./node_modules/.bin/bower --allow-root install

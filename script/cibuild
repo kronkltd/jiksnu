@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+CISTE_ENV=test
+
+script/test
