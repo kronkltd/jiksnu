@@ -16,6 +16,6 @@ exports.config = {
   ],
   cucumberOpts: {
     require: 'target/protractor-tests.js',
-    format: 'pretty'
+    format: 'summary'
   }
 };

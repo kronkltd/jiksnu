@@ -17,23 +17,40 @@
 (def browser js/browser)
 (def element js/element)
 (def by js/by)
+(def $ js/$)
 
 (defn by-model
   [model-name]
   (element (.model by model-name)))
 
+(defprotocol Page
+  (fetch [this]))
+
+(defprotocol LoginPageProto
+  (login [this username password]))
+
+(deftype LoginPage []
+
+  LoginPageProto
+
+  (login [this username password]
+    (.sendKeys (by-model "username") username)
+    (.sendKeys (by-model "password") password)
+    (.submit ($ "*[name=loginForm]")))
+
+  Page
+
+  (fetch [this]
+    (.get browser "/main/login")))
+
 (step-definitions
 
  (this-as this (.setDefaultTimeout this (* 60 1000)))
 
- (Given #"^I am not logged in$"
-   [next]
-   (let [page (.get browser "/main/login")
-         form (by-model "username")]
-     (.wait browser (fn [] (.isPresent (by-model "username"))))
-     (-> (expect (.getInnerHtml form))
-         .-to .-eventually .-exist)
-
+ (Given #"^I am not logged in$" [next]
+   (let [page (LoginPage.)]
+     (fetch page)
+     (login page "test" "test")
      (-> (expect (.getTitle browser))
          .-to .-eventually (.equal "Jiksnu")
          .-and (.notify next))
