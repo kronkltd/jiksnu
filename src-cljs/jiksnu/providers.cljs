@@ -213,6 +213,11 @@
    :unfollow      unfollow
    })
 
+(def app-service-injections
+  #js
+  ["$http" "$q" "$state" "Notification" "Users" "$websocket" "$window" "DS"
+   "pageService" "subpageService" "$injector"])
+
 (defn app-service
   [$http $q $state Notification Users $websocket $window DS
    pageService subpageService $injector]
@@ -253,10 +258,9 @@
 
     ;; return the app
     app))
+(.$inject app-service app-service-injections)
 
 (def.provider jiksnu.app
   []
   #_(timbre/debug "initializing app service")
-  #js {:$get #js ["$http" "$q" "$state" "Notification" "Users" "$websocket" "$window" "DS"
-                  "pageService" "subpageService" "$injector"
-                  app-service]})
+  #js {:$get app-service})

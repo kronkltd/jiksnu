@@ -1,7 +1,7 @@
 var config = require('cukefarm').config;
 
 config.specs = 'features/*.feature';
-config.baseUrl = 'http://localhost:8080/'
+config.baseUrl = 'http://localhost:8080/';
 config.capabilities.browserName = 'chrome';
 config.cucumberOpts.require.push('target/protractor-tests.js');
 
