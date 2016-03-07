@@ -1,6 +1,5 @@
 (ns jiksnu.pages.LoginPage
-  (:require [jiksnu.World :refer [by-model Page get]])
-  )
+  (:require [jiksnu.World :refer [by-model Page get $]]))
 
 (defprotocol LoginPageProto
   (login [this username password]))

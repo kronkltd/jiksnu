@@ -1,7 +1,5 @@
 (ns jiksnu.World
-  (:require [cljs.nodejs :as nodejs]
-            )
-  )
+  (:require [cljs.nodejs :as nodejs]))
 
 (def chai (nodejs/require "chai"))
 (def chai-as-promised (nodejs/require "chai-as-promised"))

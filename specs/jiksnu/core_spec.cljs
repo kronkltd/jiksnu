@@ -2,13 +2,23 @@
   (:require [cljs.nodejs :as nodejs]
             [jiksnu.pages.LoginPage :refer [LoginPage login]]
             [jiksnu.pages.RegisterPage :refer [RegisterPage]]
-            [jiksnu.World :refer [browser expect]])
+            [jiksnu.World :refer [browser expect $]])
   (:use-macros [jiksnu.step-helpers :only [step-definitions Given When Then And]]))
 
 (defn get-app-data
   "Retrieve the application data"
   []
-  (.executeScript browser (fn [] (.-data js/app))))
+  (-> (.executeScript browser
+                   (fn []
+                     (-> (.fetchStatus js/app)
+                         (.then (fn [data]
+                                  (js/console.log "data" data)
+                                  (.-data js/app)
+                                  data)))))
+      (.then (fn [data]
+               (js/console.log "data" data)
+               (.then data (fn [d2]
+                             (js/console.log "d2" d2)))))))
 
 (defn get-username
   "Retrieve the logged in username from then app service"
@@ -23,7 +33,11 @@
 
 (defn register-user
   []
-  (.get browser "/main/register"))
+  (let [page (RegisterPage.)]
+    (.get page)
+    (.setUsername page "test")
+    (.setPassword page "test")
+    (.submit page)))
 
 (step-definitions
 
@@ -34,6 +48,9 @@
  (Given #"^I am (not )?logged in$" [not-str next]
    (if (empty? not-str)
      (do
+       (register-user)
+       (.waitForAngular browser)
+
        (js/console.log "Logging in user")
        (let [page (LoginPage.)]
         (js/console.log "Fetching Page")
