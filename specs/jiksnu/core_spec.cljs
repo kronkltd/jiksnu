@@ -83,5 +83,4 @@
      (js/console.log "Expecting title")
      (-> (expect (.getTitle browser))
          .-to .-eventually (.equal "Jiksnu")
-         .-and (.notify next))
-     nil)))
+         .-and (.notify next)))))

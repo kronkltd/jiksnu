@@ -5,11 +5,15 @@
   (list 'set! (list '.-exports 'js/module)
         (apply list 'fn [] body)))
 
+
+
 (defmacro Given
   [pattern bind & body]
   (list 'this-as 'this
         (list '.Given 'this pattern
-              (apply list 'fn bind body))))
+              (concat
+               (apply list 'fn bind body)
+               (list nil)))))
 
 (defmacro When
   [pattern bind & body]
@@ -27,4 +31,6 @@
   [pattern bind & body]
   (list 'this-as 'this
         (list '.And 'this pattern
-              (apply list 'fn bind body))))
+              (conj
+               (apply list 'fn bind body)
+               "foo"))))
