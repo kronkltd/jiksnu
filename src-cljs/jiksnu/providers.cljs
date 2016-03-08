@@ -4,6 +4,8 @@
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.provider]]))
 
+(declare update-page)
+
 (defn add-stream
   [app stream-name]
   (timbre/with-context {:name stream-name}
@@ -98,7 +100,7 @@
         (.success Notification (.-content (.-body data)))
 
         "page-add"
-        (.updatePage app message)
+        (update-page app message)
 
         "error"
         (let [msg (or (some-> data .-message reader/read-string :msg)
@@ -132,10 +134,10 @@
                #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
         (.then (fn [data]
                  (timbre/debug "authenticated")
-                 (-> (.fetchStatus app)
-                     (.then (fn []
-                              (timbre/debug "status updated")
-                              (.go app "home")))))))))
+                 (.fetchStatus app)))
+        (.then (fn []
+                 (timbre/debug "status updated")
+                 (.go app "home"))))))
 
 (defn logout
   [app]
