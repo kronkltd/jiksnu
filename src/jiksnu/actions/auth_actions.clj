@@ -82,7 +82,7 @@
                                           {username {:username username
                                                      :password password}}
                                           auth-map))))]
-              (do (timbre/debug "Authenticated")
+              (do (timbre/debugf "Authenticated - %s" username)
                   resp))))
         (do
           (timbre/debug "failed")
