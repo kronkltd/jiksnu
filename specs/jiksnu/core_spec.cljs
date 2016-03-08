@@ -77,7 +77,7 @@
                 (js/console.log "login finished"))))
 
          (js/console.log "Waiting for finish")
-         (.waitForAngular browser)
+         (.waitForAngular js/browser)
 
          (-> (.sleep browser 500)
              (.then (fn []
@@ -86,12 +86,12 @@
                           .-to .-eventually (.equal "test")))))
 
          (js/console.log "Expecting title")
-         (-> (expect (.getTitle browser))
+         (-> (expect (.getTitle js/browser))
              .-to .-eventually (.equal "Jiksnu")
              .-and (.notify next))))
      (do
        (js/console.log "Deleting all cookies")
-       (.deleteAllCookies (.manage browser))
+       (.deleteAllCookies (.manage js/browser))
        (next))))
 
  (Given #"^there is a user$" [next]

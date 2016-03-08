@@ -22,7 +22,10 @@
 
 (defn by-model
   [model-name]
-  (element (.model by model-name)))
+  (js/element (.model js/by model-name)))
 
 (defprotocol Page
   (get [this]))
+
+(let [World (.-World (nodejs/require "cukefarm"))]
+  (set! (.-World (.-exports js/module)) World))
