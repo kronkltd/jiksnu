@@ -81,8 +81,8 @@
   :aliases {"guard"             ["shell" "bundle" "exec" "guard"]
             "karma"             ["shell" "./node_modules/.bin/karma" "start"]
             "protractor"        ["shell" "./node_modules/.bin/protractor" "protractor.config.js"]
-            "protractor-start"  ["shell" "./node_modules/.bin/webdriver-manager" "start"]
-            "protractor-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]
+            "webdriver-start"  ["shell" "./node_modules/.bin/webdriver-manager" "start"]
+            "webdriver-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]
             "wscat"             ["shell" "./node_modules/.bin/wscat" "-c" "ws://localhost:8080/"]}
   :main ciste.runner
   :aot [ciste.runner]
