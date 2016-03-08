@@ -25,7 +25,7 @@
   (element (.model by model-name)))
 
 (defprotocol Page
-  (fetch [this]))
+  (get [this]))
 
 (defprotocol LoginPageProto
   (login [this username password]))
@@ -41,8 +41,12 @@
 
   Page
 
-  (fetch [this]
+  (get [this]
     (.get browser "/main/login")))
+
+(set! (.-get (.-prototype LoginPage)) (fn []
+                                        (.get browser "/main/login")
+                                        ))
 
 (defn get-app-data
   "Retrieve the application data"
@@ -67,7 +71,7 @@
  (Given #"^I am not logged in$" [next]
    (let [page (LoginPage.)]
      (js/console.log "Fetching Page")
-     (fetch page)
+     (.get page)
      (js/console.log "Logging in")
      (login page "test" "test")
      (.waitForAngular browser)
