@@ -21,6 +21,7 @@
     "wscat": "1.0.1"
   },
   "devDependencies": {
-    "cukefarm": "^3.0.1"
+    "cukefarm": "^3.0.1",
+    "protractor-console": "^2.0.0"
   }
 }

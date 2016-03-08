@@ -10,6 +10,9 @@ config.cucumberOpts.require.push('target/protractor-tests.js');
 
 config.seleniumAddress = 'http://localhost:4444/wd/hub';
 
+config.plugins = [({package: 'protractor-console',
+                    logLevels: ['debug', 'info', 'warning', 'severe', 'log']})];
+
 exports.config = config;
 
 // exports.config = {
