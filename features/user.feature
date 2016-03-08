@@ -10,15 +10,16 @@ Scenario: User admin page, admin
   Then I should see a list of users
 
 Scenario: Editing profile
-  Given I am logged in
+  Given there is a user
+  And I am logged in
   When I go to the "edit profile" page
   And I type "John Smith" into the "display-name" field
   And I submit that form
   Then that user's name should be "John Smith"
 
 Scenario: Fetching a User Meta document
-  Given I am not logged in
-  And there is a user
+  Given there is a user
+  And I am not logged in
   When I request the user-meta page for that user with a client
   Then the alias field matches that user's uri
   And the content-type is "application/xrds+xml"
