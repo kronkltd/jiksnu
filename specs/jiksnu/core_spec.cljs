@@ -2,8 +2,10 @@
   (:require [cljs.nodejs :as nodejs]
             [jiksnu.pages.LoginPage :refer [LoginPage login]]
             [jiksnu.pages.RegisterPage :refer [RegisterPage]]
-            [jiksnu.World :refer [browser expect $]])
+            [jiksnu.World :refer [browser expect protractor $]])
   (:use-macros [jiksnu.step-helpers :only [step-definitions Given When Then And]]))
+
+(def http-client (nodejs/require "request"))
 
 (defn get-app-data
   "Retrieve the application data"
@@ -39,6 +41,21 @@
     (.setPassword page "test")
     (.submit page)))
 
+(defn user-exists?
+  "Queries the server to see if a user exists with that name"
+  [username]
+  (let [d (.defer (.-promise protractor))
+        url (str "http://localhost:8080/api/user/" username)
+        callback (fn [error response body]
+                   ;; (js/console.log error)
+                   ;; (js/console.log response)
+                   ;; (js/console.log body)
+                   (if (and (not error) (= (.-statusCode response) 200))
+                     (.fulfill d true)
+                     (.reject d #js {:error error :response response})))]
+    (http-client url callback)
+    (.-promise d)))
+
 (step-definitions
 
  (js/console.log "loading core spec")
@@ -48,18 +65,19 @@
  (Given #"^I am (not )?logged in$" [not-str next]
    (if (empty? not-str)
      (do
-       (register-user)
        (.waitForAngular browser)
 
-       (js/console.log "Logging in user")
        (let [page (LoginPage.)]
         (js/console.log "Fetching Page")
         (.get page)
         (js/console.log "Logging in")
         (login page "test" "test")
+        (js/console.log "Waiting for finish")
         (.waitForAngular browser)
-        (js/console.log "Fetching Status")
 
+        ;; (.pause browser)
+
+        (js/console.log "Fetching Status")
         (-> (expect (get-username))
             .-to .-eventually (.equal "test"))
 
@@ -72,5 +90,13 @@
        (.deleteAllCookies (.manage browser))
        (next))))
 
- (Given #"^there is a user$" []
-   (register-user)))
+ (Given #"^there is a user$" [next]
+   (-> (user-exists? "test")
+       (.then
+        (fn []
+          (js/console.log "user exists")
+          (next))
+        (fn []
+          (js/console.log "user doesn't exist")
+          (-> (register-user)
+              (.then (fn [] (next)))))))))
