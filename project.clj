@@ -103,10 +103,9 @@
                       :notify-command ["notify-send"]
                       :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
                                  :output-dir "target/resources/public/cljs"
-                                 :source-map true
-                                 ;; "target/resources/public/cljs/jiksnu.js.map"
-                                 :main "jiksnu.app"
-                                 :optimizations :none
+                                 :source-map "target/resources/public/cljs/jiksnu.js.map"
+                                 ;; :main "jiksnu.app"
+                                 :optimizations :simple
                                  :asset-path "cljs"
                                  ;; :verbose true
                                  :pretty-print true}}}}
@@ -126,9 +125,9 @@
                                 {:source-paths ["specs"]
                                  :notify-command ["notify-send"]
                                  :compiler {
-                                            ;; :output-to "target/protractor-tests.js"
-                                            :output-dir "target/specs/"
-                                            :optimizations :none
+                                            :output-to "target/protractor-tests.js"
+                                            ;; :output-dir "target/specs/"
+                                            :optimizations :simple
                                             :target :nodejs
                                             :pretty-print true}}}}}
              :production {:aot   :all
