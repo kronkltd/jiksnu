@@ -8,16 +8,16 @@
 (defn get-app-data
   "Retrieve the application data"
   []
-  (-> (.executeScript browser
-                   (fn []
+  (-> (.executeAsyncScript browser
+                   (fn [callback]
                      (-> (.fetchStatus js/app)
                          (.then (fn [data]
                                   (js/console.log "data" data)
-                                  (.-data js/app)
-                                  data)))))
+                                  (callback (.-data js/app)))))))
       (.then (fn [data]
                (js/console.log "data" data)
-               (.then data (fn [d2]
+               data
+               #_(.then data (fn [d2]
                              (js/console.log "d2" d2)))))))
 
 (defn get-username
