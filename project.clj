@@ -7,7 +7,8 @@
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths ["src" "src-cljs"]
   :resource-paths ["resources" "target/resources"]
-  :dependencies [[ciste "0.6.0-SNAPSHOT"
+  :dependencies [[cider/cider-nrepl "0.10.2"]
+                 [ciste "0.6.0-SNAPSHOT"
                   :exclusions [ring/ring-core
                                org.clojure/tools.reader
                                org.clojure/clojurescript
@@ -47,7 +48,6 @@
                  [org.clojure/data.json "0.2.6"]
                  [org.jsoup/jsoup "1.8.3"]
                  [org.slf4j/slf4j-api "1.7.16"]
-                 [cider/cider-nrepl "0.10.2"]
                  [org.slf4j/slf4j-log4j12 "1.7.16"]
                  [ring/ring-core "1.4.0"]
                  [ring-basic-authentication "1.0.5"]
