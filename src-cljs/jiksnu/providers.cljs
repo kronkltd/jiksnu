@@ -4,13 +4,56 @@
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.provider]]))
 
+(defn add-stream
+  [app stream-name]
+  (timbre/with-context {:name stream-name}
+    (timbre/info "Creating Stream"))
+  (let [$http (.inject app "$http")
+        params #js {:name stream-name}]
+    (-> (.post $http "/model/streams" params)
+        (.then #(.-data %)))))
+
 (defn connect
   [app]
   (.send app "connect"))
 
-(defn ping
+(defn delete-stream
+  [app id]
+  (timbre/info "Deleting stream" id)
+  (.post app #js {:action "delete"
+                  :object
+                  #js {:id id}}))
+
+(defn get-user
   [app]
-  (.send app "ping"))
+  (let [$q (.inject app "$q")
+        Users (.inject app "Users")]
+    ($q (fn [resolve reject]
+          (if-let [id (.getUserId app)]
+            (do (timbre/debug "getting user: " id)
+                (resolve (.find Users id)))
+            (do
+              (timbre/warn "No id")
+              (reject nil)))))))
+
+(defn get-user-id
+  "Returns the authenticated user id from app data"
+  [app]
+  (if-let [data (.-data app)]
+    (if-let [username (.-user data)]
+      (let [domain (.-domain data)]
+        (str "acct:" username "@" domain))
+      (do
+        (timbre/warn "could not get authenticated user id")
+        nil))
+    (do
+      (timbre/warn "Attempted to get user id, but data not loaded")
+      nil)))
+
+(defn go
+  [app state]
+  (let [$state (.inject app "$state")]
+    (.go $state state)))
 
 (defn fetch-status
   [app]
@@ -20,6 +63,65 @@
         (.then (fn [response]
                  #_(timbre/debug "setting app status")
                  (set! (.-data app) (.-data response)))))))
+
+(defn follow
+  [app target]
+  (timbre/debug "follow" target)
+  (let [object  #js {:id (.-_id target)}
+        activity #js {:verb "follow" :object object}]
+    (.post app activity)))
+
+(defn following?
+  [app target]
+  (-> (.getUser app)
+      (.then (fn [user]
+               (let [response (= (.-_id user) (.-_id target))]
+                 (timbre/debug "following?" response)
+                 response)))))
+
+(defn handle-message
+  [app message]
+  (let [Notification (.inject app "Notification")
+        $rootScope (.inject app "$rootScope")
+        data (js/JSON.parse (.-data message))
+        action (.-action data)]
+    #_(timbre/debug "Received Message")
+    (js/console.debug data)
+    (cond
+      (.-connection data)
+      (do
+        (.success Notification "connected"))
+
+      (.-action data)
+      (condp = action
+        "like"
+        (.success Notification (.-content (.-body data)))
+
+        "page-add"
+        (.updatePage app message)
+
+        "error"
+        (let [msg (or (some-> data .-message reader/read-string :msg)
+                      "Error")]
+          (.error Notification #js {:message msg}))
+
+        "delete" (.refresh app)
+        (.warning Notification (str "Unknown action type: " action)))
+
+      :default
+      (.warning Notification (str "Unknown message: " data)))))
+
+(defn invoke-action
+  [app model-name action-name id]
+  (timbre/debugf "Invoking Action. %s(%s)=>%s" model-name id action-name)
+  (let [msg (str "invoke-action \""
+                 model-name
+                 "\", \""
+                 action-name
+                 "\", \""
+                 id
+                 "\"")]
+    (.send app msg)))
 
 (defn login
   [app username password]
@@ -43,47 +145,9 @@
                     (set! (.-user app) nil)
                     (.fetchStatus app))))))
 
-(defn update-page
-  [app message]
-  (let [Notification (.inject app "Notification")]
-    (.info Notification "Adding to page")))
-
-(defn handle-message
-  [app message]
-  (let [Notification (.inject app "Notification")
-        $rootScope (.inject app "$rootScope")
-        data (js/JSON.parse (.-data message))
-        action (.-action data)]
-    #_(timbre/debug "Received Message")
-    (js/console.debug data)
-    (cond
-      (.-connection data)
-      (do
-        (.success Notification "connected"))
-
-      (.-action data)
-      (condp = action
-        "like"
-        (.success Notification (.-content (.-body data)))
-
-        "page-add"
-        (update-page app message)
-
-        "error"
-        (let [msg (or (some-> data .-message reader/read-string :msg)
-                      "Error")]
-          (.error Notification #js {:message msg}))
-
-        "delete" (.refresh app)
-        (.warning Notification (str "Unknown action type: " action)))
-
-      :default
-      (.warning Notification (str "Unknown message: " data)))))
-
-(defn send
-  [app command]
-  (timbre/debug "Sending command: " command)
-  (.send (.. app -connection) command))
+(defn ping
+  [app]
+  (.send app "ping"))
 
 (defn post
   [app activity]
@@ -91,39 +155,10 @@
     (timbre/info "Posting Activity" activity)
     (.post $http "/model/activities" activity)))
 
-(defn get-user
+(defn refresh
   [app]
-  (let [$q (.inject app "$q")
-        Users (.inject app "Users")]
-    ($q (fn [resolve reject]
-          (if-let [id (.getUserId app)]
-            (do (timbre/debug "getting user: " id)
-                (resolve (.find Users id)))
-            (do
-              (timbre/warn "No id")
-              (reject nil)))))))
-
-(defn following?
-  [app target]
-  (-> (.getUser app)
-      (.then (fn [user]
-               (let [response (= (.-_id user) (.-_id target))]
-                 (timbre/debug "following?" response)
-                 response)))))
-
-(defn follow
-  [app target]
-  (timbre/debug "follow" target)
-  (let [object  #js {:id (.-_id target)}
-        activity #js {:verb "follow" :object object}]
-    (.post app activity)))
-
-(defn unfollow
-  [app target]
-  (timbre/debug "unfollow" target)
-  (let [object #js {:id (.-_id target)}
-        activity #js {:verb "unfollow" :object object}]
-    (.post app activity)))
+  (let [$rootScope (.inject app "$rootScope")]
+    (.$broadcast $rootScope "updateCollection")))
 
 (defn register
   [app params]
@@ -137,58 +172,22 @@
                  (timbre/debug "Response" data)
                  data)))))
 
-(defn get-user-id
-  "Returns the authenticated user id from app data"
-  [app]
-  (if-let [data (.-data app)]
-    (if-let [username (.-user data)]
-      (let [domain (.-domain data)]
-        (str "acct:" username "@" domain))
-      (do
-        (timbre/warn "could not get authenticated user id")
-        nil))
-    (do
-      (timbre/warn "Attempted to get user id, but data not loaded")
-      nil)))
+(defn send
+  [app command]
+  (timbre/debug "Sending command: " command)
+  (.send (.. app -connection) command))
 
+(defn unfollow
+  [app target]
+  (timbre/debug "unfollow" target)
+  (let [object #js {:id (.-_id target)}
+        activity #js {:verb "unfollow" :object object}]
+    (.post app activity)))
 
-(defn go
-  [app state]
-  (let [$state (.inject app "$state")]
-    (.go $state state)))
-
-(defn add-stream
-  [app stream-name]
-  (timbre/with-context {:name stream-name}
-    (timbre/info "Creating Stream"))
-  (let [$http (.inject app "$http")
-        params #js {:name stream-name}]
-    (-> (.post $http "/model/streams" params)
-        (.then #(.-data %)))))
-
-(defn delete-stream
-  [app id]
-  (timbre/info "Deleting stream" id)
-  (.post app #js {:action "delete"
-                  :object
-                  #js {:id id}}))
-
-(defn invoke-action
-  [app model-name action-name id]
-  (timbre/debugf "Invoking Action. %s(%s)=>%s" model-name id action-name)
-  (let [msg (str "invoke-action \""
-                 model-name
-                 "\", \""
-                 action-name
-                 "\", \""
-                 id
-                 "\"")]
-    (.send app msg)))
-
-(defn refresh
-  [app]
-  (let [$rootScope (.inject app "$rootScope")]
-    (.$broadcast $rootScope "updateCollection")))
+(defn update-page
+  [app message]
+  (let [Notification (.inject app "Notification")]
+    (.info Notification "Adding to page")))
 
 (def app-methods
   {
