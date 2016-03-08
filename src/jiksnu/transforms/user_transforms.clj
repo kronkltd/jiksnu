@@ -43,7 +43,7 @@
       (assoc user :avatarUrl
              (if (:email user)
                (gravatar-image (:email user) :secure? true)
-               (format "http://%s/assets/images/default-avatar.jpg" (config :domain)))))))
+               (format "http://%s/images/default-avatar.jpg" (config :domain)))))))
 
 (defn set-local
   [user]
