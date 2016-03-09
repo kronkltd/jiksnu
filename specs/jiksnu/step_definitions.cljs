@@ -6,8 +6,7 @@
             [jiksnu.pages.LoginPage :refer [LoginPage login]]
             [jiksnu.pages.RegisterPage :refer [RegisterPage]]
             [jiksnu.World :as World]
-            [taoensso.timbre :as timbre]
-            )
+            [taoensso.timbre :as timbre])
   (:use-macros [jiksnu.step-helpers :only [step-definitions Given When Then And]]))
 
 (step-definitions
@@ -16,22 +15,10 @@
 
  (this-as this (.setDefaultTimeout this (helpers/seconds 60)))
 
- (defn login-user
-   []
-   (let [page (LoginPage.)]
-     (timbre/info "Fetching Page")
-     (.get page)
-
-     (timbre/info "Logging in")
-     (-> (login page "test" "test")
-         (.then
-          (fn []
-            (js/console.log "login finished"))))))
-
  (Given #"^I am (not )?logged in$" [not-str next]
    (if (empty? not-str)
      (do
-       (login-user)
+       (helpers.action/login-user)
 
        (timbre/info "Waiting for finish")
        (.waitForAngular js/browser)
@@ -51,7 +38,7 @@
        (next))))
 
  (Given #"^I am logged in as a normal user$" [next]
-   (-> (login-user)
+   (-> (helpers.action/login-user)
        (.then next)))
 
  (Given #"^there is a public activity" [next]
@@ -106,14 +93,11 @@
 
  (Given #"^there is a user$" [next]
    (-> (helpers.http/user-exists? "test")
-       (.then
-        (fn []
-          (js/console.log "user exists")
-          (next))
-        (fn []
-          (js/console.log "user doesn't exist")
-          (-> (helpers.action/register-user)
-              (.then next))))))
+       (.then (fn [a] true)
+              (fn [a] (helpers.action/register-user)))
+       (.then (fn [a]
+                (timbre/infof "a: %s" a)
+                (next)))))
 
  (Given #"^that user posts an activity$" [next]
    (.pending next))
@@ -154,10 +138,11 @@
 
  (Then #"^I should be at the \"([^\"]*)\" page$" [page-name next]
    (js/console.log "Asserting to be at page - %s" page-name)
-   (.. (js/expect "home") -to -eventually (equal page-name)
+   (.. (World/expect "home") -to -eventually (equal page-name)
        -and (notify next)))
 
  (Then #"^I should see a form$" [next]
-   (.. (js/expect (js/$ "form"))
-       -to -eventually -exist
-       -and (notify next))))
+   (.. (World/expect (World/$ "form"))
+       -to -exist)
+   (next))
+ )
