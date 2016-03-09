@@ -45,50 +45,10 @@
    (-> (helpers.http/an-activity-exists)
        (.then next)))
 
- (When #"^I click the \"([^\"]*)\" button for that user$" [button-name next]
-   (.pending next))
-
- (Then #"^I should not see a \"([^\"]*)\" button for that user$" [button-name next]
-   (.pending next))
-
- (Then #"^I should see (\d+) users$" [n next]
-   (.pending next))
-
  (Given #"^another user exists$" [next]
    (.pending next))
 
- ;; (sic)
- (Then #"^the response is sucsessful$" [next]
-   (.pending next))
-
- (When #"^I go to the \"([^\"]*)\" page for that user$" [page-name next]
-   (.pending next))
-
- (When #"^I submit that form$" [next]
-   (.pending next))
-
- (Then #"^I should see an activity$" [next]
-   (.pending next))
-
  (Given #"^I am logged in as an admin$" [next]
-   (.pending next))
-
- (Then #"^I should be an admin$" [next]
-   (.pending next))
-
- (Then #"^I should see a list of users$" [next]
-   (.pending next))
-
- (Then #"^the content\-type is \"([^\"]*)\"$" [content-type next]
-   (.pending next))
-
- (Then #"^that user's name should be \"([^\"]*)\"$" [user-name next]
-   (.pending next))
-
- (Then #"^the alias field matches that user's uri$" [next]
-   (.pending next))
-
- (When #"^I request the user\-meta page for that user with a client$" [next]
    (.pending next))
 
  (Given #"^there is a user$" [next]
@@ -108,10 +68,56 @@
  (Given #"^I am at the \"([^\"]*)\" page$" [page-name next]
    (.pending next))
 
+ (When #"^I click the \"([^\"]*)\" button for that user$" [button-name next]
+   (.pending next))
+
+ (When #"^I go to the \"([^\"]*)\" page for that user$" [page-name next]
+   (.pending next))
+
+ (When #"^I submit that form$" [next]
+   (.pending next))
+
+ (When #"^I request the user\-meta page for that user with a client$" [next]
+   (.pending next))
+
  (When #"^that user should be deleted$" [next]
    (.pending next))
 
  (When #"^I put my username in the \"([^\"]*)\" field$" [username next]
+   (.pending next))
+
+ (When #"^I log out$" [next]
+   (.pending next))
+
+ (When #"^I put my password in the \"([^\"]*)\" field$" [field-name next]
+   (.pending next))
+
+ (Then #"^I should not see a \"([^\"]*)\" button for that user$" [button-name next]
+   (.pending next))
+
+ (Then #"^I should see (\d+) users$" [n next]
+   (.pending next))
+
+ ;; (sic)
+ (Then #"^the response is sucsessful$" [next]
+   (.pending next))
+
+ (Then #"^I should see an activity$" [next]
+   (.pending next))
+
+ (Then #"^I should be an admin$" [next]
+   (.pending next))
+
+ (Then #"^I should see a list of users$" [next]
+   (.pending next))
+
+ (Then #"^the content\-type is \"([^\"]*)\"$" [content-type next]
+   (.pending next))
+
+ (Then #"^that user's name should be \"([^\"]*)\"$" [user-name next]
+   (.pending next))
+
+ (Then #"^the alias field matches that user's uri$" [next]
    (.pending next))
 
  (Then #"^it should have a \"([^\"]*)\" field$" [field-name next]
@@ -126,14 +132,8 @@
  (Then #"^I should not be logged in$" [next]
    (.pending next))
 
- (When #"^I log out$" [next]
-   (.pending next))
-
  (Then #"^I should wait$" [next]
    ;; http://www.lifeway.com/n/Product-Family/True-Love-Waits
-   (.pending next))
-
- (When #"^I put my password in the \"([^\"]*)\" field$" [field-name next]
    (.pending next))
 
  (Then #"^I should be at the \"([^\"]*)\" page$" [page-name next]
