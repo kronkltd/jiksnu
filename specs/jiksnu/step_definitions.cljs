@@ -14,36 +14,43 @@
 
  (this-as this (.setDefaultTimeout this (helpers/seconds 60)))
 
+ (defn login-user
+   []
+   (let [page (LoginPage.)]
+     (js/console.log "Fetching Page")
+     (.get page)
+
+     (js/console.log "Logging in")
+     (-> (login page "test" "test")
+         (.then
+          (fn []
+            (js/console.log "login finished"))))))
+
  (Given #"^I am (not )?logged in$" [not-str next]
    (if (empty? not-str)
      (do
-       (let [page (LoginPage.)]
-         (js/console.log "Fetching Page")
-         (.get page)
+       (login-user)
 
-         (js/console.log "Logging in")
-         (-> (login page "test" "test")
-             (.then
-              (fn []
-                (js/console.log "login finished"))))
+       (js/console.log "Waiting for finish")
+       (.waitForAngular js/browser)
 
-         (js/console.log "Waiting for finish")
-         (.waitForAngular js/browser)
-
-         (-> (.sleep js/browser 500)
-             (.then (fn []
-                      (js/console.log "Fetching Status")
-                      (-> (World/expect (helpers/get-username))
-                          .-to .-eventually (.equal "test")))))
-
-         (js/console.log "Expecting title")
-         (-> (World/expect (.getTitle js/browser))
-             .-to .-eventually (.equal "Jiksnu")
-             .-and (.notify next))))
+       (-> (.sleep js/browser 500)
+           (.then (fn []
+                    (js/console.log "Fetching Status")
+                    (-> (World/expect (helpers/get-username))
+                        .-to .-eventually (.equal "test")))))
+       (js/console.log "Expecting title")
+       (-> (World/expect (.getTitle js/browser))
+           .-to .-eventually (.equal "Jiksnu")
+           .-and (.notify next)))
      (do
        (js/console.log "Deleting all cookies")
        (.deleteAllCookies (.manage js/browser))
        (next))))
+
+ (Given #"^I am logged in as a normal user$" [next]
+   (-> (login-user)
+       (.then next)))
 
  (Given #"^there is a public activity" [next]
    (-> (helpers.http/an-activity-exists)
