@@ -33,18 +33,3 @@
 (defn by-model
   [model-name]
   (js/element (.model js/by model-name)))
-
-(defn user-exists?
-  "Queries the server to see if a user exists with that name"
-  [username]
-  (let [d (.defer (.-promise js/protractor))
-        url (str "http://localhost:8080/api/user/" username)
-        callback (fn [error response body]
-                   ;; (js/console.log error)
-                   ;; (js/console.log response)
-                   ;; (js/console.log body)
-                   (if (and (not error) (= (.-statusCode response) 200))
-                     (.fulfill d true)
-                     (.reject d #js {:error error :response response})))]
-    (http-client url callback)
-    (.-promise d)))

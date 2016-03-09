@@ -1,7 +1,8 @@
 (ns jiksnu.step-definitions
   (:require [cljs.nodejs :as nodejs]
-            [jiksnu.action-helpers :as action-helpers]
             [jiksnu.helpers :as helpers]
+            [jiksnu.helpers.action-helpers :as helpers.action]
+            [jiksnu.helpers.http-helpers :as helpers.http]
             [jiksnu.pages.LoginPage :refer [LoginPage login]]
             [jiksnu.pages.RegisterPage :refer [RegisterPage]]
             [jiksnu.World :as World])
@@ -44,13 +45,17 @@
        (.deleteAllCookies (.manage js/browser))
        (next))))
 
+ (Given #"^there is a public activity" [next]
+   (-> (helpers.http/an-activity-exists)
+       (.then next)))
+
  (Given #"^there is a user$" [next]
-   (-> (helpers/user-exists? "test")
+   (-> (helpers.http/user-exists? "test")
        (.then
         (fn []
           (js/console.log "user exists")
           (next))
         (fn []
           (js/console.log "user doesn't exist")
-          (-> (action-helpers/register-user)
+          (-> (helpers.action/register-user)
               (.then next)))))))

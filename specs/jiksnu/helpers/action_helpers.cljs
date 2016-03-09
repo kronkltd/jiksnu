@@ -1,5 +1,6 @@
-(ns jiksnu.action-helpers
-  (:require [jiksnu.pages.RegisterPage :refer [RegisterPage]]))
+(ns jiksnu.helpers.action-helpers
+  (:require [jiksnu.helpers :as helpers]
+            [jiksnu.pages.RegisterPage :refer [RegisterPage]]))
 
 (defn register-user
   []
