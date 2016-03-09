@@ -1,5 +1,6 @@
 (ns jiksnu.World
-  (:require [cljs.nodejs :as nodejs]))
+  (:require [cljs.nodejs :as nodejs]
+            [jiksnu.PageObjectMap :refer [pages]]))
 
 (def chai (nodejs/require "chai"))
 (def chai-as-promised (nodejs/require "chai-as-promised"))
@@ -20,12 +21,6 @@
 (def browser js/browser)
 (def protractor js/protractor)
 
-(defn by-model
-  [model-name]
-  (js/element (.model js/by model-name)))
-
-(defprotocol Page
-  (get [this]))
-
 (let [World (.-World (nodejs/require "cukefarm"))]
+  (set! (.-pageObjectMap (.-prototype World)) pages)
   (set! (.-World (.-exports js/module)) World))

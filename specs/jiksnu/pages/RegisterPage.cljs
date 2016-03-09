@@ -1,5 +1,5 @@
 (ns jiksnu.pages.RegisterPage
-  (:require [jiksnu.World :refer [by-model $]]))
+  (:require [jiksnu.helpers :refer [by-model]]))
 
 (defn RegisterPage
   [])
@@ -21,4 +21,14 @@
 
 (set! (.-submit (.-prototype RegisterPage))
       (fn []
-        (.submit ($ ".register-form"))))
+        (.submit (js/$ ".register-form"))))
+
+(set! (.-waitForLoaded (.-prototype RegisterPage))
+      (fn []
+        (this-as
+         this
+         (.wait
+          js/browser
+          (fn []
+            (js/console.log "Waiting for loaded")
+            true)))))

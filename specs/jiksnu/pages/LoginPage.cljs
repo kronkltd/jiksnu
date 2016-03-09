@@ -1,5 +1,5 @@
 (ns jiksnu.pages.LoginPage
-  (:require [jiksnu.World :refer [by-model Page get $]]))
+  (:require [jiksnu.helpers :refer [by-model get Page]]))
 
 (defprotocol LoginPageProto
   (login [this username password]))
@@ -11,7 +11,7 @@
   (login [this username password]
     (.sendKeys (by-model "username") username)
     (.sendKeys (by-model "password") password)
-    (.submit ($ "*[name=loginForm]")))
+    (.submit (js/$ "*[name=loginForm]")))
 
   Page
 
@@ -21,3 +21,13 @@
 (set! (.-get (.-prototype LoginPage))
       (fn []
         (.get js/browser "/main/login")))
+
+(set! (.-waitForLoaded (.-prototype LoginPage))
+      (fn []
+        (this-as
+         this
+         (.wait
+          js/browser
+          (fn []
+            (js/console.log "Waiting for loaded")
+            true)))))
