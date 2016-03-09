@@ -1,8 +1,50 @@
-(ns jiksnu.helpers)
+(ns jiksnu.helpers
+  (:require [cljs.nodejs :as nodejs]))
+
+(def http-client (nodejs/require "request"))
+
+(defn get-app-data
+  "Retrieve the application data"
+  []
+  (-> (.executeAsyncScript js/browser
+                           (fn [callback]
+                             (-> (.fetchStatus js/app)
+                                 (.then (fn [data]
+                                          (js/console.log "data" data)
+                                          (callback (.-data js/app)))))))
+      (.then (fn [data]
+               (js/console.log "data" data)
+               data
+               #_(.then data (fn [d2]
+                               (js/console.log "d2" d2)))))))
+
+(defn get-username
+  "Retrieve the logged in username from then app service"
+  []
+  (js/console.log "get-username")
+  (-> (get-app-data)
+      (.then (fn [data]
+               (let [username (.-user data)]
+                 (js/console.log "Username: %s" username)
+                 username)))))
+
+(defn seconds [n] (* n 1000))
 
 (defn by-model
   [model-name]
   (js/element (.model js/by model-name)))
 
-(defprotocol Page
-  (get [this]))
+(defn user-exists?
+  "Queries the server to see if a user exists with that name"
+  [username]
+  (let [d (.defer (.-promise js/protractor))
+        url (str "http://localhost:8080/api/user/" username)
+        callback (fn [error response body]
+                   ;; (js/console.log error)
+                   ;; (js/console.log response)
+                   ;; (js/console.log body)
+                   (if (and (not error) (= (.-statusCode response) 200))
+                     (.fulfill d true)
+                     (.reject d #js {:error error :response response})))]
+    (http-client url callback)
+    (.-promise d)))
