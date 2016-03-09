@@ -43,6 +43,11 @@
 
  (Given #"^there is a public activity" [next]
    (-> (helpers.http/an-activity-exists)
+       (.then (fn [error response body]
+                (timbre/infof "error: %s" error)
+                (timbre/infof "response: %s" response)
+                (timbre/infof "body: %s" body)
+                ))
        (.then next)))
 
  (Given #"^another user exists$" [next]
@@ -134,7 +139,8 @@
 
  (Then #"^I should wait$" [next]
    ;; http://www.lifeway.com/n/Product-Family/True-Love-Waits
-   (.pending next))
+   (.pause js/browser)
+   (next))
 
  (Then #"^I should be at the \"([^\"]*)\" page$" [page-name next]
    (js/console.log "Asserting to be at page - %s" page-name)
