@@ -3,8 +3,14 @@
             [clojure.string :as string]
             [taoensso.timbre :as timbre]))
 
+(def JSData (nodejs/require "js-data"))
+(def DSHttpAdapter (nodejs/require "js-data-http"))
+;; (var store (.DS JSData))
+;; (.registerAdapter store "http" (DSHttpAdapter.) #js {:default true})
+
 (def http-client (nodejs/require "request"))
 (def BASE_URL "http://localhost:8080")
+(def http-adapter (DSHttpAdapter.))
 
 (defn get-cookie-map
   [response]
@@ -22,13 +28,14 @@
          url (str BASE_URL "/main/login")
          data #js {:username "test"
                    :password "test"}]
-     (-> http-client
-         (.post #js {:url url :form data}
-                (fn [error response body]
-                  (if (#{200 303} (.-statusCode response))
-                    (.fulfill d [error response body])
-                    (.reject d [error response body])))))
-
+     #_(.fulfill d true)
+     (.debugger js/browser)
+     (-> (.GET http-adapter url)
+         (.then (fn [data]
+                  (js/console.log "data" data)
+                  (if (#{200 303} (.-status data))
+                    (.fulfill d data)
+                    (.reject d data)))))
      (.-promise d))))
 
 (defn an-activity-exists
@@ -61,9 +68,6 @@
   (let [d (.defer (.-promise js/protractor))
         url (str BASE_URL "/api/user/" username)
         callback (fn [error response body]
-                   ;; (js/console.log error)
-                   ;; (js/console.log response)
-                   ;; (js/console.log body)
                    (if (and (not error) (= (.-statusCode response) 200))
                      (.fulfill d true)
                      (.reject d #js {:error error :response response})))]

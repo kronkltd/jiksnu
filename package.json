@@ -7,6 +7,8 @@
     "chai-as-promised": "5.2.0",
     "cucumber": "0.9.5",
     "es6-promise": "3.0.2",
+    "js-data": "^2.9.0",
+    "js-data-http": "^2.2.0",
     "karma-angular": "0.0.6",
     "karma-coverage": "0.5.2",
     "karma-jasmine": "0.3.6",
