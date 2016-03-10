@@ -1,5 +1,6 @@
 (ns jiksnu.step-definitions
   (:require [cljs.nodejs :as nodejs]
+            [clojure.string :as string]
             [jiksnu.helpers :as helpers]
             [jiksnu.helpers.action-helpers :as helpers.action]
             [jiksnu.helpers.http-helpers :as helpers.http]
@@ -43,12 +44,7 @@
 
  (Given #"^there is a public activity" [next]
    (-> (helpers.http/an-activity-exists)
-       (.then (fn [error response body]
-                (timbre/infof "error: %s" error)
-                (timbre/infof "response: %s" response)
-                (timbre/infof "body: %s" body)
-                ))
-       (.then next)))
+       (.then (fn [] (next)))))
 
  (Given #"^another user exists$" [next]
    (.pending next))
