@@ -21,6 +21,7 @@
 (def auth-config
   {:credential-fn actions.auth/check-credentials
    :login-uri "/main/login"
+   :redirect-on-auth? false
    :workflows [(workflows/http-basic :realm "/")
                (workflows/interactive-form)]})
 

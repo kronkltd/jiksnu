@@ -4,13 +4,15 @@
             [taoensso.timbre :as timbre]))
 
 (def JSData (nodejs/require "js-data"))
-(def DSHttpAdapter (nodejs/require "js-data-http"))
+(def HttpAdapter (nodejs/require "js-data-http-node"))
 ;; (var store (.DS JSData))
 ;; (.registerAdapter store "http" (DSHttpAdapter.) #js {:default true})
 
 (def http-client (nodejs/require "request"))
 (def BASE_URL "http://localhost:8080")
-(def http-adapter (DSHttpAdapter.))
+(def http-adapter (HttpAdapter.))
+
+;; (set! (.-window js/GLOBAL) #js {})
 
 (defn get-cookie-map
   [response]
@@ -29,7 +31,7 @@
          data #js {:username "test"
                    :password "test"}]
      #_(.fulfill d true)
-     (.debugger js/browser)
+     ;; js/debugger
      (-> (.GET http-adapter url)
          (.then (fn [data]
                   (js/console.log "data" data)
@@ -44,22 +46,28 @@
   (let [d (.defer (.-promise js/protractor))
         activity #js {:content "foo"}
         url (str BASE_URL "/model/activities")
-        j (.jar http-client)]
-    (-> (authenticate)
-        (.then
-         (fn [[error response body]]
-           (let [cookie (get-cookie-map response)
-                 c (.cookie http-client (str "ring-session=" (get cookie "ring-session")))]
-             (.setCookie j c (str BASE_URL "/"))
-             (timbre/info "posting")
-             (-> http-client
-                 (.post #js {:url url :form activity :jar j}
-                        (fn [error response body]
-                          (let [status-code (.-statusCode response)]
+        ;; j (.jar http-client)
+        ]
+    ;; (-> (authenticate)
+    ;;     (.then
+    ;;      (fn [response]
+    ;;        (js/console.log "response" response)
+    ;;        (let [cookie (get-cookie-map response)
+    ;;              c (.cookie http-client (str "ring-session=" (get cookie "ring-session")))]
+    ;;          (.setCookie j c (str BASE_URL "/"))
+    ;;          (timbre/info "posting")
+
+             (-> http-adapter
+                 (.POST url activity #js {:auth #js {:username "test" :password "test"}})
+                 (.then (fn [response]
+                          (let [status-code (.-status response)]
                             (timbre/debugf "Status Code: %s" status-code)
                             (if (#{200 201} status-code)
-                              (.fulfill d [error response body])
-                              (.reject d [error response body]))))))))))
+                              (.fulfill d response)
+                              (.reject d response)))))
+                 )
+
+             ;; ))))
     (.-promise d)))
 
 (defn user-exists?

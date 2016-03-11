@@ -50,16 +50,20 @@
        (string/join ",")
        (str "OAuth ")))
 
+(def unparsed-types #{"BASIC" "Basic"})
+
 (defn parse-authorization-header
   [header]
-  (let [[type & parts] (string/split header #" |, ?")
-        parts (->> parts
-                   (map (fn [part]
-                          (let [[k v] (string/split part #"=")
-                                v (string/replace v #"\"([^\"]+)\",?" "$1")]
-                            [k v])))
-                   (into {}))]
-    [type parts]))
+  (let [[type & parts] (string/split header #" |, ?")]
+    (if (unparsed-types type)
+      [type {}]
+      (let [parts (->> parts
+                       (map (fn [part]
+                              (let [[k v] (string/split part #"=")
+                                    v (string/replace v #"\"([^\"]+)\",?" "$1")]
+                                [k v])))
+                       (into {}))]
+        [type parts]))))
 
 (defn wrap-authorization-header
   [handler]
@@ -67,16 +71,18 @@
     (let [request
           (or
            (if-let [authorization (get-in request [:headers "authorization"])]
-             (let [[type parts] (parse-authorization-header authorization)
-                   client (some-> parts (get "oauth_consumer_key") model.client/fetch-by-id)
-                   token  (some-> parts (get "oauth_token") model.access-token/fetch-by-id)]
-               (merge request
-                      {:authorization-type type
-                       :authorization-parts parts}
-                      (when client
-                        {:authorization-client client})
-                      (when token
-                        {:access-token token}))))
+             (let [[type parts] (parse-authorization-header (util/inspect authorization))]
+               (if (unparsed-types type)
+                 request
+                 (let [client (some-> parts (get "oauth_consumer_key") model.client/fetch-by-id)
+                       token  (some-> parts (get "oauth_token") model.access-token/fetch-by-id)]
+                   (merge request
+                                {:authorization-type type
+                                 :authorization-parts parts}
+                                (when client
+                                  {:authorization-client client})
+                                (when token
+                                  {:access-token token}))))))
               request)]
       (handler request))))
 
