@@ -34,7 +34,7 @@
    "group"
    "home"
    "page"
-
+   "like"
    "resource"
    "stream"
    "subscription"

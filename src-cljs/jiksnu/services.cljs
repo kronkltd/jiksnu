@@ -16,13 +16,14 @@
    })
 
 (def subpage-mappings
-  {"Conversation" {"activities" (fn [parent] (str "/model/conversations/" (.-_id parent) "/activities"))}
-   "Stream" {"activities" (fn [parent] (str "/model/streams/" (.-_id parent) "/activities"))}
-   "User" {"activities" (fn [parent] (str "/model/users/" (.-_id parent) "/activities"))
-           "following"  (fn [parent] (str "/model/users/" (.-_id parent) "/following"))
-           "followers"  (fn [parent] (str "/model/users/" (.-_id parent) "/followers"))
-           "groups"     (fn [parent] (str "/model/users/" (.-_id parent) "/groups"))
-           "streams"    (fn [parent] (str "/model/users/" (.-_id parent) "/streams"))}})
+  {"Activity"     {"likes"      #(str "/model/activities"     (.-_id %) "/likes")}
+   "Conversation" {"activities" #(str "/model/conversations/" (.-_id %) "/activities")}
+   "Stream"       {"activities" #(str "/model/streams/"       (.-_id %) "/activities")}
+   "User"         {"activities" #(str "/model/users/"         (.-_id %) "/activities")
+                   "following"  #(str "/model/users/"         (.-_id %) "/following")
+                   "followers"  #(str "/model/users/"         (.-_id %) "/followers")
+                   "groups"     #(str "/model/users/"         (.-_id %) "/groups")
+                   "streams"    #(str "/model/users/"         (.-_id %) "/streams")}})
 
 (def.service jiksnu.pageService
   [$q $http]

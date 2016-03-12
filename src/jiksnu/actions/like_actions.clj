@@ -30,9 +30,9 @@
   (model.like/fetch-all {:activity (:_id activity)}))
 
 (defn like-activity
-  [activity user]
+  [activity]
   (create
-   {:user (:_id user)
+   {:user (:author activity)
     :activity (:_id activity)
     ;; TODO: created flag set lower
     :created (time/now)}))
@@ -47,3 +47,11 @@
 (defn show
   [like]
   like)
+
+(defn handle-like-activity
+  [activity]
+  (let [{:keys [verb]} activity]
+    (condp = verb
+      "like"
+      (like-activity activity)
+      nil)))
