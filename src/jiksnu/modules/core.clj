@@ -26,6 +26,45 @@
             [manifold.stream :as s]
             [taoensso.timbre :as timbre]))
 
+(defn handle-created
+  [{:keys [collection-name event item] :as data}]
+  (timbre/debugf "%s(%s)=>%s" collection-name (:_id item) event)
+  ;; (util/inspect data)
+  (condp = collection-name
+
+    "activities"
+    (let [verb (:verb item)]
+      #_(timbre/info "activity created")
+      (condp = verb
+        "post"
+        (do
+          "post"
+          (do
+            #_(timbre/debug "activity posted"))
+
+          "join"
+          (do
+            (timbre/info "Group join")
+            (let [object-id (get-in item [:object :id])
+                  group (model.group/fetch-by-id object-id)]
+              (actions.group-membership/create
+               {:user (:author item)
+                :group (:_id group)})))
+
+          #_(timbre/infof "Unknown verb - %s" verb)
+          #_(util/inspect item))))
+
+    "users"
+    (do
+      #_(timbre/info "user created")
+      (actions.stream/add-stream item "* major")
+      (actions.stream/add-stream item "* minor"))
+
+    (do
+      #_(timbre/infof "Other created - %s" collection-name)
+      #_(util/inspect item)))
+  )
+
 (defn start
   []
   (db/set-database!)
@@ -47,41 +86,9 @@
 
   (triggers.domain/init-receivers)
 
-  (defobserver event/emitter ::templates.model/item-created
-    (fn [{:keys [collection-name event item]}]
-      (condp = collection-name
+  (util/inspect event/emitter)
 
-        "activities"
-        (let [verb (:verb item)]
-          #_(timbre/info "activity created")
-          (condp = verb
-            "post"
-            (do
-              "post"
-              (do
-                #_(timbre/debug "activity posted"))
-
-              "join"
-              (do
-                (timbre/info "Group join")
-                (let [object-id (get-in item [:object :id])
-                      group (model.group/fetch-by-id object-id)]
-                  (actions.group-membership/create
-                   {:user (:author item)
-                    :group (:_id group)})))
-
-              #_(timbre/infof "Unknown verb - %s" verb)
-              #_(util/inspect item))))
-
-        "users"
-        (do
-          #_(timbre/info "user created")
-          (actions.stream/add-stream item "* major")
-          (actions.stream/add-stream item "* minor"))
-
-        (do
-          #_(timbre/infof "Other created - %s" collection-name)
-          #_(util/inspect item)))))
+  (defobserver event/emitter ::templates.model/item-created handle-created)
 
   ;; (defobserver event/emitter ::templates.model/item-created
   ;;   (fn [{:keys [collection-name event item]}]
