@@ -62,6 +62,7 @@
             [lein-checkouts "1.1.0"]
             [lein-cljsbuild "1.1.2"]
             [lein-cloverage "1.0.2"]
+            [lein-environ "1.0.0"]
             [lein-less "1.7.5"]
             [lein-midje "3.1.3"]
             [lein-shell "0.4.0"]
@@ -152,6 +153,7 @@
                                                    :pretty-print true}}}}}}
   :less {:source-paths ["less"]
          :target-path  "target/resources/public/css"}
+  :env {:ciste-logger "jiksnu.logger"}
   :filespecs [{:type :path :path "ciste.clj"}]
   :lis-opts {:name       "jiksnu"
              :properties {:ciste.properties "/vagrant/config/default.properties"}
