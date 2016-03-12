@@ -45,29 +45,15 @@
   []
   (let [d (.defer (.-promise js/protractor))
         activity #js {:content "foo"}
-        url (str BASE_URL "/model/activities")
-        ;; j (.jar http-client)
-        ]
-    ;; (-> (authenticate)
-    ;;     (.then
-    ;;      (fn [response]
-    ;;        (js/console.log "response" response)
-    ;;        (let [cookie (get-cookie-map response)
-    ;;              c (.cookie http-client (str "ring-session=" (get cookie "ring-session")))]
-    ;;          (.setCookie j c (str BASE_URL "/"))
-    ;;          (timbre/info "posting")
-
-             (-> http-adapter
-                 (.POST url activity #js {:auth #js {:username "test" :password "test"}})
-                 (.then (fn [response]
-                          (let [status-code (.-status response)]
-                            (timbre/debugf "Status Code: %s" status-code)
-                            (if (#{200 201} status-code)
-                              (.fulfill d response)
-                              (.reject d response)))))
-                 )
-
-             ;; ))))
+        url (str BASE_URL "/model/activities")]
+    (-> http-adapter
+        (.POST url activity #js {:auth #js {:username "test" :password "test"}})
+        (.then (fn [response]
+                 (let [status-code (.-status response)]
+                   (timbre/debugf "Status Code: %s" status-code)
+                   (if (#{200 201} status-code)
+                     (.fulfill d response)
+                     (.reject d response))))))
     (.-promise d)))
 
 (defn user-exists?
