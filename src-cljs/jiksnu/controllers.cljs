@@ -317,6 +317,7 @@
 
   (set! (.-init $scope)
         (fn [id]
+          (timbre/debug "Showing activity: " id)
           (when (and id (not= id ""))
             (.bindOne Activities id $scope "activity")
             (-> (.find Activities id)
