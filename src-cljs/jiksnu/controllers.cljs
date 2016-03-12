@@ -337,7 +337,9 @@
                          "\"")]
             (.send app msg))))
 
-  (.init $scope (.-id $scope)))
+  (let [id (or (.-id $scope)
+               (.-_id $stateParams))]
+    (.init $scope id)))
 
 (def.controller jiksnu.ShowDomainController
   [$scope $stateParams Domains]
