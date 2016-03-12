@@ -1,6 +1,5 @@
 (ns jiksnu.test-helper
-  (:require [ciste.config :refer [load-site-config set-environment!]]
-            [ciste.runner :refer [start-application! stop-application!]]
+  (:require [ciste.runner :refer [start-application! stop-application!]]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
@@ -43,8 +42,6 @@
 (defn setup-testing
   []
   (try+
-   ;; (load-site-config)
-   (set-environment! :test)
    (start-application! :test)
    (db/drop-all! )
    (dosync
