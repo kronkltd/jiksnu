@@ -6,40 +6,6 @@
             [jiksnu.modules.web.sections :refer [bind-to]]
             [jiksnu.namespace :as ns]))
 
-(defn navigation-group
-  [group]
-  (concat [[:li.nav-header (:title group)]]
-          (map
-           (fn [link]
-             [:li [:a
-                   (if-let [state (:state link)]
-                     {:ui-sref state}
-                     {:href (:href link)})
-                   (:title link)]])
-           (:items group))))
-
-(defn notification-line
-  [message]
-  [:li.alert
-   [:button {:class "close"
-             :data-bind "click: $parent.dismissNotification"}
-    "x"]
-   [:span {:data-bind "text: message"}]])
-
-(defn notification-area
-  [request response]
-  [:div#flash
-   [:ul.unstyled
-    {:data-bind "foreach: notifications"}
-    (notification-line nil)]])
-
-(defn navbar-search-form
-  []
-  [:form.navbar-search.pull-left
-   {:action "/main/search" :method "post"}
-   [:input.search-query.col-md-3
-    {:type "text" :placeholder "Search" :name "q"}]])
-
 (defn get-prefixes
   []
   (->> [["foaf" ns/foaf]
