@@ -87,6 +87,8 @@
   ;;     (timbre/info "Duplicate observer")
   ;;     (util/inspect event)))
 
+  (defn stop [])
+
   (doseq [model-name registry/action-group-names]
     (util/require-module "jiksnu.modules" "core" model-name)))
 
