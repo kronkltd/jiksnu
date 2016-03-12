@@ -41,10 +41,6 @@
   [item rel content-type]
   (first (util/rel-filter rel (:links item) content-type)))
 
-(defn ensure-indexes
-  []
-  (mc/ensure-index @_db collection-name {:url 1} {:unique true}))
-
 (defn response->tree
   [response]
   (enlive/html-resource (StringReader. (:body response))))
