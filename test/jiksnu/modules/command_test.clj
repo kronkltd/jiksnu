@@ -31,6 +31,24 @@
       (let [response-obj (json/read-str body)]
         response-obj => map?))))
 
+(fact "command 'get-sub-page Users activitites"
+  (let [ch (d/deferred)
+        command "get-sub-page"
+        user (mock/a-user-exists)
+        activity (mock/there-is-an-activity {:user user})
+        model-name "user"
+        id (:_id user)
+        page-name "activities"
+        request {:channel ch
+                 :name command
+                 :args (list model-name id page-name)}
+        response (parse-command request)]
+    response => map?
+    (let [body (:body response)]
+      body => string?
+      (let [response-obj (json/read-str body :key-fn keyword)]
+        response-obj => (contains {:totalItems 1})))))
+
 (facts "command 'get-model user'"
   (let [command "get-model"
         ch (d/deferred)

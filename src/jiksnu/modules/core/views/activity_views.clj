@@ -22,6 +22,12 @@
   {:body (merge response
                 {:name (:name request)})})
 
+(defview #'actions.activity/fetch-by-user :page
+  [request response]
+  {:body (merge
+          response
+          {:name (:name request)})})
+
 (defview #'actions.activity/oembed :xml
   [request m]
   {:status 200

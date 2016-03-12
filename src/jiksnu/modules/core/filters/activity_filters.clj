@@ -7,6 +7,16 @@
   (when-let [conversation (:item request)]
     (action conversation)))
 
+(deffilter #'actions.activity/fetch-by-stream :page
+  [action request]
+  (when-let [item (:item request)]
+    (action item)))
+
+(deffilter #'actions.activity/fetch-by-user :page
+  [action request]
+  (when-let [item (:item request)]
+    (action item)))
+
 (deffilter #'actions.activity/index :page
   [action request]
   (action))

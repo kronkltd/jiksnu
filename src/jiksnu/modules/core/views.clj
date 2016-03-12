@@ -3,7 +3,9 @@
             [ciste.formats :refer [format-as]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [link-to index-line edit-button]]
-            [jiksnu.actions :as actions]))
+            [clojure.data.json :as json]
+            [jiksnu.actions :as actions]
+            [taoensso.timbre :as timbre]))
 
 (defn command-not-found
   []
@@ -24,8 +26,7 @@
 
 (defmethod serialize-as :page
   [serialization response]
-  (:body response)
-  #_(json/read-str (:body response) :key-fn keyword))
+  (json/write-str (:body response)) )
 
 ;; confirm
 

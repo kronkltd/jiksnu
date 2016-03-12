@@ -228,7 +228,7 @@
    (fetch-by-stream stream nil))
   ([{id :_id :as stream} options]
    (timbre/infof "Fetching activities by stream: %s" id)
-   (index {:streams (str id)} options)))
+   (index {:streams id} options)))
 
 (defn fetch-by-user
   ([user]

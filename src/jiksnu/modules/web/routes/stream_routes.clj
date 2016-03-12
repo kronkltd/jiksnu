@@ -102,7 +102,7 @@
   :allowed-methods [:get]
   :available-formats [:json]
   :available-media-types ["application/json"]
-  :presenter (partial into {})
+  ;:presenter :data #_(partial into {})
   ;; :presenter (fn [rsp]
   ;;              (merge (:body rsp)
   ;;                     {:displayName "Activities in Stream"}))

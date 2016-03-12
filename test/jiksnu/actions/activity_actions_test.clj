@@ -49,7 +49,7 @@
           (actions.activity/delete activity) => (throws RuntimeException)
           (model.activity/fetch-by-id (:_id activity)) => activity)))))
 
-(fact "#'actions.activity/find-by-user"
+(fact "#'actions.activity/fetch-by-user"
   (fact "when the user has activities"
     (db/drop-all!)
     (let [user (mock/a-user-exists)
