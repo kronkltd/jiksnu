@@ -34,3 +34,5 @@
   ;; cascade delete on domain deletion
   (dosync
    (alter actions.user/delete-hooks conj #'actions.activity/handle-delete-hook)))
+
+(defn stop [])

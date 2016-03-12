@@ -13,5 +13,7 @@
   []
   (db/set-database!)
 
+  (defn stop [])
+
   (doseq [model-name registry/action-group-names]
     (util/require-module "jiksnu.modules" "core" model-name)))

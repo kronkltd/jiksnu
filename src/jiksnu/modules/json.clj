@@ -13,3 +13,5 @@
 (defn start
   []
   (require-components))
+
+(defn stop [])
