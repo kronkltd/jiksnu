@@ -28,7 +28,7 @@
       [:time {:datetime "{{activity.published}}"
               :title "{{activity.published}}"
               :property "dc:published"}
-       [:a {:href "{{activity.uri}}"}
+       [:a {:ui-sref "showActivity(activity)"}
         [:span {:am-time-ago "activity.published"
                 :am-preprocess "utc"}]]]
       " "
