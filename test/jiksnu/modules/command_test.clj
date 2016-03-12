@@ -65,8 +65,10 @@
                        :name name
                        :format :json
                        :args args}]
-          (let [response (parse-command request)]
-            response => map?
-            (let [body (:body response)]
-              (let [json-obj (json/read-str body :key-fn keyword)]
-                json-obj => map?))))))))
+          (try
+            (let [response (parse-command request)]
+              response => map?
+              (let [body (:body response)]
+                (let [json-obj (json/read-str body :key-fn keyword)]
+                  json-obj => map?)))
+            (catch Exception ex)))))))
