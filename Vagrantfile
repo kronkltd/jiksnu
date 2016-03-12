@@ -69,7 +69,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         }
       }
     end
-
-    node.vm.provision "shell", path: "vagrant/provision_vagrant.sh", privileged: false
   end
 end
