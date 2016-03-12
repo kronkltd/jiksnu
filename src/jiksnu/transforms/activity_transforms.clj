@@ -216,5 +216,7 @@
     (let [target-id (:id (:object activity))
           content (condp = (:verb activity)
                     "follow" (str "Follow user: " target-id)
-                    "unfollow" (str "Unfollow User: " target-id))]
+                    "unfollow" (str "Unfollow User: " target-id)
+                    "like" "Liked an activity"
+                    "unknown verb")]
       (assoc activity :content content))))
