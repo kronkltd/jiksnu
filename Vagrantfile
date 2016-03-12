@@ -5,10 +5,6 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
-  # config.user.defaults = {
-  #   ."host_name" => "jiksnu.dev"
-  # }
-
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   config.hostmanager.ignore_private_ip = false
@@ -38,9 +34,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # node.vm.network "forwarded_port", guest: 27017, host: 27017
 
     config.vm.provision :chef_solo do |chef|
-      chef.cookbooks_path = ["site-cookbooks", "cookbooks"]
-      chef.roles_path = "roles"
-      chef.data_bags_path = "data_bags"
+      chef.cookbooks_path = "chef/cookbooks"
+      chef.roles_path = "chef/roles"
+      chef.data_bags_path = "chef/data_bags"
 
       chef.add_role "develop"
       chef.add_role "web"
@@ -75,6 +71,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     node.vm.provision "shell", path: "vagrant/provision_vagrant.sh", privileged: false
-    # node.vm.provision "shell", path: "vagrant/start_server.sh"
   end
 end
