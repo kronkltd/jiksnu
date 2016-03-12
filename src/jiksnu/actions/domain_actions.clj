@@ -1,6 +1,5 @@
 (ns jiksnu.actions.domain-actions
   (:require [ciste.config :refer [config]]
-            [ciste.initializer :refer [definitializer]]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
@@ -108,6 +107,3 @@
   []
   (find-or-create {:_id (config :domain)
                    :local true}))
-
-;; (definitializer
-;;   (current-domain))

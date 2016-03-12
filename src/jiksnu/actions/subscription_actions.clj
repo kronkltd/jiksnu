@@ -1,6 +1,5 @@
 (ns jiksnu.actions.subscription-actions
-  (:require [ciste.initializer :refer [definitializer]]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
@@ -158,12 +157,3 @@
                 target (model.user/fetch-by-id (:id (:object activity)))]
             (unsubscribe actor target)))
       nil)))
-
-(definitializer
-
-  #_(bus/publish! ch/events :activity-posted {:msg "activity posted"})
-
-  (setup-delete-hooks)
-
-  (->> (bus/subscribe ch/events :activity-posted)
-       (s/consume handle-follow-activity)))

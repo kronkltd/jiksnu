@@ -1,6 +1,5 @@
 (ns jiksnu.model.resource
-  (:require [ciste.initializer :refer [definitializer]]
-            [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
@@ -70,6 +69,3 @@
   (->> (enlive/select tree [:meta])
        (map meta->property)
        (reduce merge)))
-
-;; (definitializer
-;;   (ensure-indexes))

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.activity-actions
   (:require [ciste.config :refer [config]]
-            [ciste.initializer :refer [definitializer]]
             [clojure.set :as set]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
@@ -242,10 +241,3 @@
   (doseq [activity (:items (fetch-by-user user))]
     (delete activity))
   user)
-
-(definitializer
-  ;; (model.activity/ensure-indexes)
-
-  ;; cascade delete on domain deletion
-  (dosync
-   (alter actions.user/delete-hooks conj #'handle-delete-hook)))

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.user-actions
   (:require [ciste.config :refer [config]]
-            [ciste.initializer :refer [definitializer]]
             [ciste.model :as cm]
             [clojure.data.json :as json]
             [jiksnu.actions :refer [invoke-action]]
@@ -336,6 +335,3 @@
   [user params]
   (let [params (assoc params :user (:_id user))]
     [user @(ops/create-new-stream params)]))
-
-;; (definitializer
-;;   (model.user/ensure-indexes))

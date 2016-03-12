@@ -1,6 +1,5 @@
 (ns jiksnu.actions.feed-source-actions
   (:require [ciste.config :refer [config]]
-            [ciste.initializer :refer [definitializer]]
             [clj-http.client :as client]
             [clj-time.core :as time]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -211,6 +210,3 @@
                 (get @pending-discovers id))]
         (or (deref p discovery-timeout nil)
             (throw+ "Could not discover feed source"))))))
-
-;; (definitializer
-;;   (model.feed-source/ensure-indexes))

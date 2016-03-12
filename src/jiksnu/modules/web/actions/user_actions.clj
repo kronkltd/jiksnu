@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.actions.user-actions
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
-            [ciste.initializer :refer [definitializer]]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
