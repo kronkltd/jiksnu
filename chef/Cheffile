@@ -5,6 +5,7 @@ site 'https://supermarket.getchef.com/api/v1'
 
 cookbook 'ack'
 cookbook 'apache2'
+cookbook 'bundler'
 cookbook 'emacs'
 cookbook 'git'
 cookbook 'java'
