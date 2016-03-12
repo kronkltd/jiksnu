@@ -99,7 +99,7 @@
    ["loginPage"          "/main/login"              "LoginPage"          :login-page]
    ["registerPage"       "/main/register"           "RegisterPage"       :register-page]
    ["settingsPage"       "/main/settings"           "SettingsPage"       :settings-page]
-   ["showActivity"       "/notice/:id"              "ShowActivity"       :show-activity]
+   ["showActivity"       "/main/activities/:_id"    "ShowActivity"       :show-activity]
    ["showConversation"   "/main/conversations/:_id" "ShowConversation"   :show-conversation]
    ["showDomain"         "/main/domains/:_id"       "ShowDomain"         :show-domain]
    ["showGroup"          "/main/groups/:_id"        "ShowGroup"          :show-group]
@@ -165,8 +165,8 @@
 (defn setup-hotkeys
   [hotkeys $state]
   (state-hotkey "g a" "indexActivities" "Go to Activities")
-  (state-hotkey "g d" "indexDomains"  "Go to Domains")
-  (state-hotkey "g g" "indexGroups"   "Go to Groups")
-  (state-hotkey "g h" "home"          "Go to Home")
-  (state-hotkey "g s" "indexStreams"  "Go to Streams")
-  (state-hotkey "g u" "indexUsers"    "Go to Users"))
+  (state-hotkey "g d" "indexDomains"    "Go to Domains")
+  (state-hotkey "g g" "indexGroups"     "Go to Groups")
+  (state-hotkey "g h" "home"            "Go to Home")
+  (state-hotkey "g s" "indexStreams"    "Go to Streams")
+  (state-hotkey "g u" "indexUsers"      "Go to Users"))
