@@ -1,21 +1,23 @@
-FROM pandeiro/lein:latest
+FROM clojure
 MAINTAINER duck@kronkltd.net
-ENV jiksnu_home /app
-ENTRYPOINT []
-WORKDIR ${jiksnu_home}
-EXPOSE 8080
+WORKDIR /app
 
 # Install nodejs
-RUN apt-get -y update && apt-get -y install curl git
-RUN curl -sL https://deb.nodesource.com/setup_5.x | bash - && apt-get -y update && apt-get -y install nodejs
+RUN set -x \
+    && apt-get -y update \
+    && apt-get -y install curl git build-essential \
+    && curl -sL https://deb.nodesource.com/setup_5.x | bash - \
+    && apt-get -y update \
+    && apt-get -y install nodejs
 
 # Pre-cache the deps
-ADD project.clj package.json bower.json .bowerrc ${jiksnu_home}/
-ADD script/ ${jiksnu_home}/script/
-RUN script/bootstrap
+ADD project.clj package.json bower.json .bowerrc /app/
+ADD script/ /app/script/
+# RUN script/bootstrap
 
-ENV JIKSNU_DB_NAME=${JIKSNU_DB_NAME:-jiksnu} JIKSNU_DB_HOST=${JIKSNU_DB_HOST:-mongo}
-ENV JIKSNU_DB_URL mongodb://${JIKSNU_DB_HOST}/${JIKSNU_DB_NAME}
+# ENV JIKSNU_DB_NAME=${JIKSNU_DB_NAME:-jiksnu} JIKSNU_DB_HOST=${JIKSNU_DB_HOST:-mongo}
+# ENV JIKSNU_DB_URL mongodb://${JIKSNU_DB_HOST}/${JIKSNU_DB_NAME}
 
-ADD . ${jiksnu_home}/
+ADD . /app/
+EXPOSE 8080
 CMD printenv; script/server

@@ -6,5 +6,12 @@ services:
       - "8080:8080"
     depends_on:
       - mongo
+    extra_hosts:
+      - "artifactory.jiksnu.org:173.255.231.160"
   mongo:
     image: mongo
+    volumes:
+      - mongo-data:/data/db
+volumes:
+  mongo-data:
+    driver: local

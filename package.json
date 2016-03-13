@@ -1,30 +1,34 @@
 {
+  "license": "GPL-3.0",
   "dependencies": {
-    "angular": "1.4.7",
-    "angular-mocks": "1.4.7",
+    "angular": "^1.4.7",
+    "angular-mocks": "^1.4.7",
     "axios": "^0.9.1",
-    "bower": "1.7.7",
-    "chai": "3.5.0",
-    "chai-as-promised": "5.2.0",
-    "cucumber": "0.9.5",
-    "es6-promise": "3.0.2",
-    "js-data": "^3.0.0-alpha.16",
-    "js-data-http-node": "^3.0.0-alpha.6",
-    "karma-angular": "0.0.6",
-    "karma-coverage": "0.5.2",
-    "karma-jasmine": "0.3.6",
+    "bower": "^1.7.7",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.2.0",
+    "cucumber": "^0.9.5",
+    "es6-promise": "^3.0.2",
+    "js-data": "^3.0.0-alpha.18",
+    "js-data-http-node": "^3.0.0-alpha.7",
+    "karma-coverage": "^0.5.2",
+    "karma-jasmine": "^0.3.6",
     "karma-jasmine-html-reporter-livereload": "~1.0",
-    "karma-junit-reporter": "0.3.7",
-    "karma-notify-send-reporter": "0.0.3",
-    "karma-phantomjs-launcher": "0.2.1",
-    "moment": "2.11.1",
-    "protractor": "3.1.1",
-    "protractor-cucumber-framework": "0.3.4",
+    "karma-junit-reporter": "^0.3.7",
+    "karma-notify-send-reporter": "^0.0.3",
+    "karma-phantomjs-launcher": "^0.2.1",
+    "moment": "^2.11.1",
+    "protractor": "^3.1.1",
+    "protractor-cucumber-framework": "^0.3.4",
     "request": "^2.69.0",
-    "wscat": "1.0.1"
+    "wscat": "^1.0.1"
   },
   "devDependencies": {
     "cukefarm": "^3.0.1",
     "protractor-console": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/duck1123/jiksnu.git"
   }
 }
