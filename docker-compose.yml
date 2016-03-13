@@ -12,6 +12,43 @@ services:
     image: mongo
     volumes:
       - mongo-data:/data/db
+  postgres:
+    image: postgres:9.4
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  redis:
+    image: redis:3
+    ports:
+      - "6379:6379"
+  memcached:
+    image: memcached
+  sentry:
+    image: slafs/sentry
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "0.0.0.0:9000:9000"
+    env_file: environment
+    volumes:
+      - sentry-files:/data
+    links:
+      - postgres:postgresdb
+      - redis:sentry_redis1
+      - sentryCeleryWorker:sentryCeleryWorker
+  sentryCeleryWorker:
+    image: slafs/sentry
+    command: celery worker -B
+    env_file: environment
+    volumes:
+      - sentry-files:/data
+    links:
+      - postgres:postgresdb
+      - redis:sentry_redis1
 volumes:
   mongo-data:
+    driver: local
+  postgres-data:
+    driver: local
+  sentry-files:
     driver: local
