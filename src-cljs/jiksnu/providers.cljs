@@ -8,8 +8,7 @@
 
 (defn add-stream
   [app stream-name]
-  (timbre/with-context {:name stream-name}
-    (timbre/info "Creating Stream"))
+  (timbre/info "Creating Stream")
   (let [$http (.inject app "$http")
         params #js {:name stream-name}]
     (-> (.post $http "/model/streams" params)
@@ -32,7 +31,7 @@
         Users (.inject app "Users")]
     ($q (fn [resolve reject]
           (if-let [id (.getUserId app)]
-            (do (timbre/debug "getting user: " id)
+            (do (timbre/debugf "getting user: %s" id)
                 (resolve (.find Users id)))
             (do
               (timbre/warn "No id")
@@ -59,11 +58,11 @@
 
 (defn fetch-status
   [app]
-  #_(timbre/debug "fetching app status")
+  (timbre/debug "fetching app status")
   (let [$http (.inject app "$http")]
     (-> (.get $http "/status")
         (.then (fn [response]
-                 #_(timbre/debug "setting app status")
+                 (timbre/debug "setting app status")
                  (set! (.-data app) (.-data response)))))))
 
 (defn follow
@@ -78,7 +77,7 @@
   (-> (.getUser app)
       (.then (fn [user]
                (let [response (= (.-_id user) (.-_id target))]
-                 (timbre/debug "following?" response)
+                 (timbre/debugf "following?: %s" response)
                  response)))))
 
 (defn handle-message
@@ -87,7 +86,7 @@
         $rootScope (.inject app "$rootScope")
         data (js/JSON.parse (.-data message))
         action (.-action data)]
-    #_(timbre/debug "Received Message")
+    (timbre/debug "Received Message")
     (js/console.debug data)
     (cond
       (.-connection data)
@@ -128,7 +127,7 @@
 (defn login
   [app username password]
   (let [$http (.inject app "$http")]
-    (timbre/info "Logging in user." username password)
+    (timbre/infof "Logging in user. %s:%s" username password)
     (-> (.post $http "/main/login"
                (js/$.param #js {:username username :password password})
                #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
@@ -154,7 +153,7 @@
 (defn post
   [app activity]
   (let [$http (.inject app "$http")]
-    (timbre/info "Posting Activity" activity)
+    (timbre/infof "Posting Activity - %s" activity)
     (.post $http "/model/activities" activity)))
 
 (defn refresh
@@ -164,7 +163,7 @@
 
 (defn register
   [app params]
-  (timbre/debug "Registering" (.-reg params))
+  (timbre/debugf "Registering - %s" (.-reg params))
   (let [$http (.inject app "$http")
         params #js {:method "post"
                     :url    "/main/register"
@@ -176,12 +175,12 @@
 
 (defn send
   [app command]
-  (timbre/debug "Sending command: " command)
+  (timbre/debugf "Sending command: %s" command)
   (.send (.. app -connection) command))
 
 (defn unfollow
   [app target]
-  (timbre/debug "unfollow" target)
+  (timbre/debug "unfollow - %s" target)
   (let [object #js {:id (.-_id target)}
         activity #js {:verb "unfollow" :object object}]
     (.post app activity)))
@@ -217,7 +216,7 @@
 (defn app-service
   [$http $q $state Notification Users $websocket $window DS
    pageService subpageService $injector]
-  #_(timbre/debug "creating app service")
+  (timbre/debug "creating app service")
   (let [app #js {:inject (.-get $injector)}
         data #js {}
         websocket-url (if-let [location (.-location $window)]
@@ -242,7 +241,7 @@
 
     (.onClose connection
               (fn []
-                #_(timbre/debug "Websocket connection closed")
+                (timbre/debug "Websocket connection closed")
                 (.reconnect connection)))
 
     (.onError connection
@@ -257,7 +256,7 @@
 
 (def.provider jiksnu.app
   []
-  #_(timbre/debug "initializing app service")
+  (timbre/debug "initializing app service")
   #js {:$get
        #js
        ["$http" "$q" "$state" "Notification" "Users" "$websocket" "$window" "DS"

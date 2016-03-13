@@ -14,8 +14,8 @@
 
 (def.controller jiksnu.AuthorizeClientController
   [$location $scope $stateParams app RequestTokens]
-  (js/console.log "Location: " $location)
-  (js/console.log "State Params: " $stateParams)
+  (timbre/info "Location: " $location)
+  (timbre/info "State Params: " $stateParams)
   (set! (.-id $scope) (aget (.search $location) "oauth_token"))
   (helpers/init-item $scope $stateParams app RequestTokens))
 
@@ -29,8 +29,8 @@
   [$scope Users]
   (set! (.-init $scope)
         (fn []
-          #_(timbre/debug "Displaying avatar for " id)
           (when-let [id (.-id $scope)]
+            (timbre/debugf "Displaying avatar for %s" id)
             (set! (.-size $scope) (or (.-size $scope) 32))
             (.bindOne Users id $scope "user")
             (.find Users id))))
@@ -205,11 +205,11 @@
            #(.-data app)
            (fn [d]
              (when (.-loaded $scope)
-               #_(timbre/debug "Running navbarcontroller watcher")
+               (timbre/debug "Running navbarcontroller watcher")
                (set! (.-app $scope) d)
                (-> (.getUser app)
                    (.then (fn [user]
-                            #_(timbre/debug "setting app user")
+                            (timbre/debug "setting app user")
                             (set! (.-user app) user)))))))
 
   (-> (.fetchStatus app)
@@ -221,7 +221,7 @@
 
     (set! (.-init $scope)
           (fn []
-            (timbre/info "init NewGroupController")
+            (timbre/debug "init NewGroupController")
             (.reset $scope)))
 
     (set! (.-reset $scope)
@@ -246,7 +246,7 @@
 
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Users]
-  #_(timbre/debug "Loading New Post Controller")
+  (timbre/debug "Loading New Post Controller")
   (set! (.-app $scope) app)
   (let [default-form #js {:source "web"
                           :privacy "public"
@@ -284,10 +284,10 @@
             (timbre/debug "fetching streams")
             (-> (.getUser app)
                 (.then (fn [user]
-                         (timbre/debug "Got User" user)
+                         (timbre/debugf "Got User - %s" user)
                          (-> (.getStreams user)
                              (.then (fn [streams]
-                                      (timbre/debug "Got Streams" streams)
+                                      (timbre/debugf "Got Streams - %s" streams)
                                       (set! (.-streams $scope) streams)))))))))
 
     (set! (.-toggle $scope)
@@ -468,7 +468,7 @@
   (set! (.-loaded $scope) false)
   (if-let [subpage (.-subpage $scope)]
     (do
-      #_(timbre/debug "initialize subpage controller" subpage)
+      (timbre/debug "initialize subpage controller" subpage)
       (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
 
       ;; (.$on $scope refresh-followers
@@ -483,7 +483,7 @@
 
       (.$on $scope "refresh-page"
             (fn []
-              #_(timbre/debug "received refresh event on subpage scope")
+              (timbre/debug "received refresh event on subpage scope")
               (.refresh $scope)))
 
       (set! (.-init $scope)

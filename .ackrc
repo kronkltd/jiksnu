@@ -1,3 +1,4 @@
+--ignore-dir=.idea
 --ignore-dir=checkouts
 --ignore-dir=config
 --ignore-dir=cookbooks

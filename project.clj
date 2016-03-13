@@ -26,7 +26,7 @@
                  [com.flybe/socket-rocket "0.1.9"]
                  [com.novemberain/monger "3.0.2"]
                  [com.novemberain/validateur "2.5.0"]
-                 [com.taoensso/timbre "4.2.1"]
+                 [com.taoensso/timbre "4.3.1"]
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
                  [http-kit "2.1.19"]

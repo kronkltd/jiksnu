@@ -22,4 +22,4 @@
     (-> (login page "test" "test")
         (.then
          (fn []
-           (js/console.log "login finished"))))))
+           (timbre/info "login finished"))))))

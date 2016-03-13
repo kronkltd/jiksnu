@@ -175,7 +175,7 @@
 
   (set! (.-init $scope)
         (fn [item]
-          (timbre/debug "init subpage" (.-name collection) subpage item)
+          (timbre/debugf "init subpage %s(%s)=>%s" (.-name collection) (.-_id item) subpage)
           (set! (.-item $scope) item)
           (set! (.-loaded $scope) false)
           (-> (.fetch subpageService item subpage)
@@ -189,11 +189,11 @@
   (set! (.-loaded $scope) false)
   (set! (.-init $scope)
         (fn []
-          (timbre/debug "Loading page: " page-type)
+          (timbre/debugf "Loading page: %s" page-type)
           (set! (.-loaded $scope) false)
           (-> pageService
               (.fetch page-type)
               (.then (fn [page]
-                       ;; (timbre/debug "Page loaded: " page-type)
+                       (timbre/debugf "Page loaded: %s" page-type)
                        (set! (.-page $scope) page)
                        (set! (.-loaded $scope) true)))))))
