@@ -1,0 +1,107 @@
+#!/bin/sh
+
+### required settings
+
+SENTRY_URL_PREFIX=http://dev.jiksnu.com:9000
+SECRET_KEY='_!!s!lji&822%@q+-*%db$_$p8c5ksgr=$loeka1@^!khox+q*'
+
+### other settings
+### (https://docs.djangoproject.com/en/1.5/ref/settings/)
+### (http://sentry.readthedocs.org/en/latest/config/index.html)
+
+## celery
+# CELERY_ALWAYS_EAGER=False
+SENTRY_BROKER_URL=redis://redis:6379/1
+
+## make everything "public" (readable by all logged in users)
+# SENTRY_PUBLIC=True
+
+## postgres DB
+# DATABASE_URL=postgres://postgres:@postgres/postgres
+DATABASE_URL=postgres://postgres:@postgresdb/postgres
+
+## cache
+# CACHE_URL=hiredis://sentry_redis1:6379/2/
+
+## redis buffers
+SENTRY_USE_REDIS_BUFFERS=True
+# SENTRY_REDIS_BUFFERS=redis:6379
+#SENTRY_REDIS_BUFFERS=redis1:6379,redis2:6379
+
+## redis time-series storage
+SENTRY_USE_REDIS_TSDB=True
+# SENTRY_REDIS_TSDBS=redis:6379
+#SENTRY_REDIS_TSDBS=redis1:6379,redis2:6379
+
+## initial superuser
+# SENTRY_ADMIN_USERNAME=admin
+# SENTRY_ADMIN_PASSWORD=admin
+# SENTRY_ADMIN_EMAIL=admin@example.com
+
+## email settings
+# SENTRY_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+# SENTRY_EMAIL_HOST=localhost
+# SENTRY_EMAIL_HOST_PASSWORD=''
+# SENTRY_EMAIL_HOST_USER=''
+# SENTRY_EMAIL_PORT=25
+# SENTRY_EMAIL_USE_TLS=False
+# SENTRY_SERVER_EMAIL=root@localhost
+
+## social auth
+# TWITTER_CONSUMER_KEY=""
+# TWITTER_CONSUMER_SECRET=""
+# FACEBOOK_APP_ID=""
+# FACEBOOK_API_SECRET=""
+# GOOGLE_OAUTH2_CLIENT_ID=""
+# GOOGLE_OAUTH2_CLIENT_SECRET=""
+# GITHUB_APP_ID=""
+# GITHUB_API_SECRET=""
+# TRELLO_API_KEY=""
+# TRELLO_API_SECRET=""
+# BITBUCKET_CONSUMER_KEY=""
+# BITBUCKET_CONSUMER_SECRET=""
+
+## LDAP (https://pythonhosted.org/django-auth-ldap/reference.html)
+# SENTRY_USE_LDAP=True
+# LDAP_SERVER=ldap://localhost
+# LDAP_BIND_DN=cn=admin,dc=example,dc=com
+# LDAP_BIND_PASSWORD=ldapadminpassword
+# LDAP_USER_DN=REQUIRED! e.g. ou=users,dc=example,dc=com
+# LDAP_USER_FILTER=(&(objectClass=inetOrgPerson)(cn=%(user)s))
+# LDAP_GROUP_DN=ou=django,ou=groups,dc=example,dc=com
+# LDAP_GROUP_FILTER=(objectClass=groupOfUniqueNames)
+# LDAP_REQUIRE_GROUP=cn=enabled,ou=django,ou=groups,dc=example,dc=com
+# LDAP_DENY_GROUP=cn=disabled,ou=django,ou=groups,dc=example,dc=com
+# LDAP_GROUP_TYPE='groupOfUniqueNames'
+# LDAP_MAP_FIRST_NAME=givenName
+# LDAP_MAP_LAST_NAME=sn
+# LDAP_MAP_MAIL=mail
+# LDAP_GROUP_ACTIVE=cn=active,ou=django,ou=groups,dc=example,dc=com
+# LDAP_GROUP_STAFF=cn=staff,ou=django,ou=groups,dc=example,dc=com
+# LDAP_GROUP_SUPERUSER=cn=superuser,ou=django,ou=groups,dc=example,dc=com
+# LDAP_FIND_GROUP_PERMS=False
+# LDAP_CACHE_GROUPS=True
+# LDAP_GROUP_CACHE_TIMEOUT=3600
+
+## REMOTE_USER (https://docs.djangoproject.com/en/stable/howto/auth-remote-user/)
+# SENTRY_USE_REMOTE_USER=True
+# AUTH_REMOTE_USER_HEADER=HTTP_X_SSO_USERNAME
+
+## others
+# SENTRY_ALLOW_REGISTRATION=True
+SENTRY_DATA_DIR=/data
+# SENTRY_SCRIPTS_DIR=/conf
+# SENTRY_BEACON=False
+
+## bootstraping a project
+SENTRY_INITIAL_TEAM=KRONKLtd
+SENTRY_INITIAL_PROJECT=Jiksnu
+# SENTRY_INITIAL_KEY=KRONKLtd:Jiksnu
+# SENTRY_INITIAL_DOMAINS="localhost *.localhost"
+
+## Proxy & SSL
+# SENTRY_SECURE_PROXY_SSL_HEADER=HTTP_X_FORWARDED_PROTO,https
+# SENTRY_USE_X_FORWARDED_HOST=True
+
+## allows JavaScript clients to submit cross-domain error reports.
+# SENTRY_ALLOW_ORIGIN="http://foo.example"

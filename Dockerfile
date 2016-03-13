@@ -1,6 +1,8 @@
-FROM clojure
+FROM pandeiro/lein:latest
 MAINTAINER duck@kronkltd.net
-WORKDIR /app
+ENV jiksnu_home /app
+ENTRYPOINT []
+WORKDIR ${jiksnu_home}
 
 # Install nodejs
 RUN set -x \
@@ -11,13 +13,10 @@ RUN set -x \
     && apt-get -y install nodejs
 
 # Pre-cache the deps
-ADD project.clj package.json bower.json .bowerrc /app/
-ADD script/ /app/script/
-# RUN script/bootstrap
+ADD project.clj package.json bower.json .bowerrc ${jiksnu_home}/
+ADD script/ ${jiksnu_home}/script/
+RUN script/bootstrap
 
-# ENV JIKSNU_DB_NAME=${JIKSNU_DB_NAME:-jiksnu} JIKSNU_DB_HOST=${JIKSNU_DB_HOST:-mongo}
-# ENV JIKSNU_DB_URL mongodb://${JIKSNU_DB_HOST}/${JIKSNU_DB_NAME}
-
-ADD . /app/
+ADD . ${jiksnu_home}/
 EXPOSE 8080
 CMD printenv; script/server

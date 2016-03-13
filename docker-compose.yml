@@ -2,6 +2,7 @@ version: '2'
 services:
   web:
     build: .
+    image: jiksnu
     ports:
       - "8080:8080"
     depends_on:
@@ -12,8 +13,10 @@ services:
     image: mongo
     volumes:
       - mongo-data:/data/db
-  postgres:
+  postgresdb:
     image: postgres:9.4
+    ports:
+      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
   redis:
@@ -25,26 +28,29 @@ services:
   sentry:
     image: slafs/sentry
     depends_on:
-      - postgres
+      - postgresdb
       - redis
+      - sentryCeleryWorker
     ports:
       - "0.0.0.0:9000:9000"
     env_file: environment
     volumes:
       - sentry-files:/data
     links:
-      - postgres:postgresdb
-      - redis:sentry_redis1
+      - postgresdb:postgresdb
+      - redis:redis
       - sentryCeleryWorker:sentryCeleryWorker
   sentryCeleryWorker:
     image: slafs/sentry
     command: celery worker -B
     env_file: environment
+    environment:
+      C_FORCE_ROOT: "true"
     volumes:
       - sentry-files:/data
     links:
-      - postgres:postgresdb
-      - redis:sentry_redis1
+      - postgresdb:postgresdb
+      - redis:redis
 volumes:
   mongo-data:
     driver: local
