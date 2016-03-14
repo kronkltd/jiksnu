@@ -31,7 +31,6 @@
                  [com.taoensso/timbre "4.3.1"]
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
-                 [http-kit "2.1.19"]
                  [im.chit/gyr "0.3.1"]
                  [net.kronkltd/purnam "0.5.3-SNAPSHOT"]
                  [javax.servlet/javax.servlet-api "3.1.0"]
