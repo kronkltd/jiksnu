@@ -85,5 +85,5 @@
               (do (timbre/debugf "Authenticated - %s" username)
                   resp))))
         (do
-          (timbre/debug "failed")
+          (timbre/debugf "Authentication attempt failed - %s" username)
           nil))))
