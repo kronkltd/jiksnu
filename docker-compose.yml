@@ -11,28 +11,96 @@ services:
       - "artifactory.jiksnu.org:173.255.231.160"
     volumes:
       - maven-repo:/root/.m2
+    # network:
+    #   - backend
+  discover:
+    image: jwilder/docker-discover
+    environment:
+      ETCD_HOST: etcd:4001
+    ports:
+      - "1936:1936"
+    depends_on:
+      - register
+      - etcd
+    # network:
+    #   - frontend
+    #   - backend
+  register:
+    image: jwilder/docker-register
+    environment:
+      ETCD_HOST: etcd:4001
+      HOST_IP: "192.168.1.160"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - etcd
+    # network:
+    #   - backend
+  dockerui:
+    image: microbox/dockerui
+    ports:
+      - "9001:9000"
+    volumes:
+      - /var/run/docker.sock:/docker.sock
+    # network:
+    #   - backend
+  elk:
+    image: sebp/elk
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+      - "5000:5000"
+    # network:
+    #   - backend
+  etcd:
+    image: microbox/etcd
+    command: "--name jiksnu -data-dir=/data"
+    ports:
+      - "4001:4001"
+      - "7001:7001"
+    volumes:
+      - etcd-data:/data
+    # network:
+    #   - backend
+  whoami:
+    image: jwilder/whoami
+    ports:
+      - "8000"
+    # network:
+    #   - backend
   mongo:
     image: mongo
     volumes:
       - mongo-data:/data/db
+    # network:
+    #   - backend
   postgresdb:
     image: postgres:9.4
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    # network:
+    #   - backend
   redis:
     image: redis:3
     ports:
       - "6379:6379"
+    # network:
+    #   - backend
   memcached:
     image: memcached
+    # network:
+    #   - backend
   sentry:
     image: slafs/sentry
     depends_on:
       - postgresdb
       - redis
       - sentryCeleryWorker
+    # network:
+    #   - backend
     ports:
       - "0.0.0.0:9000:9000"
     env_file: environment
@@ -45,6 +113,8 @@ services:
   sentryCeleryWorker:
     image: slafs/sentry
     command: celery worker -B
+    # network:
+    #   - backend
     env_file: environment
     environment:
       C_FORCE_ROOT: "true"
@@ -62,3 +132,10 @@ volumes:
     driver: local
   sentry-files:
     driver: local
+  etcd-data:
+    driver: local
+# networks:
+#   frontend:
+#     driver: host
+#   backend:
+#     driver: bridge
