@@ -9,6 +9,8 @@ services:
       - mongo
     extra_hosts:
       - "artifactory.jiksnu.org:173.255.231.160"
+    volumes:
+      - maven-repo:/root/.m2
   mongo:
     image: mongo
     volumes:
@@ -52,6 +54,8 @@ services:
       - postgresdb:postgresdb
       - redis:redis
 volumes:
+  maven-repo:
+    driver: local
   mongo-data:
     driver: local
   postgres-data:
