@@ -31,5 +31,5 @@ RUN set -x \
 VOLUME /root/.m2
 
 ADD . ${jiksnu_home}/
-EXPOSE 8080
-CMD printenv; script/server
+EXPOSE 80
+CMD script/server
