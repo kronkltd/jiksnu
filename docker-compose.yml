@@ -1,18 +1,5 @@
 version: '2'
 services:
-  web:
-    build: .
-    image: jiksnu
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mongo
-    extra_hosts:
-      - "artifactory.jiksnu.org:173.255.231.160"
-    volumes:
-      - maven-repo:/root/.m2
-    # network:
-    #   - backend
   discover:
     image: jwilder/docker-discover
     environment:
@@ -24,17 +11,6 @@ services:
       - etcd
     # network:
     #   - frontend
-    #   - backend
-  register:
-    image: jwilder/docker-register
-    environment:
-      ETCD_HOST: etcd:4001
-      HOST_IP: "192.168.1.160"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - etcd
-    # network:
     #   - backend
   dockerui:
     image: microbox/dockerui
@@ -63,10 +39,8 @@ services:
       - etcd-data:/data
     # network:
     #   - backend
-  whoami:
-    image: jwilder/whoami
-    ports:
-      - "8000"
+  memcached:
+    image: memcached
     # network:
     #   - backend
   mongo:
@@ -75,6 +49,15 @@ services:
       - mongo-data:/data/db
     # network:
     #   - backend
+  nginx:
+    image: jwilder/nginx-proxy
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./volumes/conf.d:/etc/nginx/conf.d"
+      - "./volumes/vhost.d:/etc/nginx/vhost.d"
+      - "./volumes/certs:/etc/nginx/certs:ro"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
   postgresdb:
     image: postgres:9.4
     ports:
@@ -89,8 +72,15 @@ services:
       - "6379:6379"
     # network:
     #   - backend
-  memcached:
-    image: memcached
+  register:
+    image: jwilder/docker-register
+    environment:
+      ETCD_HOST: etcd:4001
+      HOST_IP: "192.168.1.160"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - etcd
     # network:
     #   - backend
   sentry:
@@ -123,6 +113,25 @@ services:
     links:
       - postgresdb:postgresdb
       - redis:redis
+  web:
+    build: .
+    image: jiksnu
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    extra_hosts:
+      - "artifactory.jiksnu.org:173.255.231.160"
+    volumes:
+      - maven-repo:/root/.m2
+    # network:
+    #   - backend
+  whoami:
+    image: jwilder/whoami
+    ports:
+      - "8000"
+    # network:
+    #   - backend
 volumes:
   maven-repo:
     driver: local
