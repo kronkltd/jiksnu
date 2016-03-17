@@ -1,0 +1,4 @@
+build:
+  image: clojure
+  commands:
+    - whoami
