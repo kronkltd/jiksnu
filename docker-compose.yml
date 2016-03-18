@@ -2,42 +2,78 @@ version: '2'
 services:
   dockerui:
     image: microbox/dockerui
+    # command: "-e http://dockerui.localtest.me"
     ports:
-      - "9001:9000"
+      - "9000:9000"
+    environment:
+      VIRTUAL_HOST: dockerui.localtest.me
+      VIRTUAL_NETWORK: nginx-proxy
     volumes:
       - /var/run/docker.sock:/docker.sock
-    # network:
-    #   - backend
+    networks:
+      - frontend
+      - backend
+    # expose:
+    #   - "9000"
   elk:
     image: sebp/elk
+    environment:
+      VIRTUAL_HOST: elk.localtest.me
+      VIRTUAL_PORT: 5601
     ports:
       - "5601:5601"
       - "9200:9200"
       - "5044:5044"
       - "5000:5000"
     networks:
+      - frontend
       - backend
   etcd:
     image: microbox/etcd
     command: "--name jiksnu -data-dir=/data"
+    depends_on:
+      - redis
     ports:
       - "4001:4001"
       - "7001:7001"
+    links:
+      - redis
     volumes:
       - etcd-data:/data
-    # network:
-    #   - backend
+    networks:
+      - backend
+  logspout:
+    image: rtoma/logspout-redis-logstash:0.1.1
+    command: 'redis://redis'
+    depends_on:
+      - redis
+    environment:
+      Debug: 'true'
+      REDIS_KEY: 'logstash'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
   memcached:
     image: memcached
-    # network:
-    #   - backend
+    networks:
+      - backend
   mongo:
     image: mongo
     volumes:
       - mongo-data:/data/db
     networks:
       - backend
-  nginx:
+  mongoexpress:
+    image: knickers/mongo-express
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: "admin"
+      ME_CONFIG_BASICAUTH_PASSWORD: "admin"
+      VIRTUAL_HOST: mongo.localtest.me
+      VIRTUAL_NETWORK: nginx-proxy
+    networks:
+      - backend
+  proxy:
     image: nginx-fork
     ports:
       - "80:80"
@@ -47,7 +83,7 @@ services:
       - "./volumes/certs:/etc/nginx/certs:ro"
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
     networks:
-      - proxy-tier
+      - frontend
       - backend
   postgresdb:
     image: postgres:9.4
@@ -55,61 +91,59 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    # network:
-    #   - backend
+    networks:
+      - backend
   redis:
     image: redis:3
     ports:
       - "6379:6379"
-    # network:
-    #   - backend
+    networks:
+      - backend
   sentry:
     image: slafs/sentry
     depends_on:
       - postgresdb
       - redis
-      - sentryCeleryWorker
-    # network:
-    #   - backend
-    ports:
-      - "0.0.0.0:9000:9000"
+      - sentry_worker
+    environment:
+      VIRTUAL_HOST: sentry.localtest.me
+    networks:
+      - backend
+    # ports:
+    #   - "0.0.0.0:9000:9000"
     env_file: environment
     volumes:
       - sentry-files:/data
-    links:
-      - postgresdb:postgresdb
-      - redis:redis
-      - sentryCeleryWorker:sentryCeleryWorker
-  sentry-worker:
+    # links:
+    #   - postgresdb
+    #   - redis
+    #   - sentry_worker
+  sentry_worker:
     image: slafs/sentry
     command: celery worker -B
-    # network:
-    #   - backend
     env_file: environment
     environment:
       C_FORCE_ROOT: "true"
     volumes:
       - sentry-files:/data
     links:
-      - postgresdb:postgresdb
-      - redis:redis
+      - postgresdb
+      - redis
+    # networks:
+    #   - backend
   web:
     build: .
     image: jiksnu
-    # ports:
-    #   - "80"
     depends_on:
       - mongo
     environment:
       JIKSNU_DB_URL: "mongodb://mongo/jiksnu_docker"
-      VIRTUAL_HOST: dev.jiksnu.com
+      VIRTUAL_HOST: jiksnu.localtest.me
       VIRTUAL_NETWORK: nginx-proxy
-    extra_hosts:
-      - "artifactory.jiksnu.org:173.255.231.160"
+    # extra_hosts:
+    #   - "artifactory.jiksnu.org:173.255.231.160"
     volumes:
       - maven-repo:/root/.m2
-    expose:
-      - "8080"
     networks:
       - backend
 volumes:
@@ -124,10 +158,12 @@ volumes:
   sentry-files:
     driver: local
 networks:
-  proxy-tier:
+  # proxy-tier:
+  frontend:
+    # driver: bridge
     external:
       name: nginx-proxy
-#   frontend:
-#     driver: host
+    # external:
+    #   name: host
   backend:
     driver: bridge
