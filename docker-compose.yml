@@ -52,6 +52,8 @@ services:
       REDIS_KEY: 'logstash'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - backend
   memcached:
     image: memcached
     networks:
@@ -99,38 +101,49 @@ services:
       - "6379:6379"
     networks:
       - backend
+  redis_commander:
+    image: tenstartups/redis-commander
+    command: --redis-host redis
+    ports:
+      - "8081:8081"
+    networks:
+      - frontend
+      - backend
   sentry:
     image: slafs/sentry
     depends_on:
       - postgresdb
       - redis
       - sentry_worker
+    env_file: environment
     environment:
       VIRTUAL_HOST: sentry.localtest.me
+    links:
+      - postgresdb
+      - redis
+      - sentry_worker
     networks:
       - backend
     # ports:
     #   - "0.0.0.0:9000:9000"
-    env_file: environment
     volumes:
       - sentry-files:/data
-    # links:
-    #   - postgresdb
-    #   - redis
-    #   - sentry_worker
   sentry_worker:
     image: slafs/sentry
     command: celery worker -B
+    depends_on:
+      - postgresdb
+      - redis
     env_file: environment
     environment:
       C_FORCE_ROOT: "true"
+    links:
+      - postgresdb:postgresdb
+      - redis:redis
+    networks:
+      - backend
     volumes:
       - sentry-files:/data
-    links:
-      - postgresdb
-      - redis
-    # networks:
-    #   - backend
   web:
     build: .
     image: jiksnu
