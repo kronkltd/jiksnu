@@ -1,17 +1,5 @@
 version: '2'
 services:
-  discover:
-    image: jwilder/docker-discover
-    environment:
-      ETCD_HOST: etcd:4001
-    ports:
-      - "1936:1936"
-    depends_on:
-      - register
-      - etcd
-    # networks:
-    #   - frontend
-    #   - backend
   dockerui:
     image: microbox/dockerui
     ports:
@@ -39,11 +27,6 @@ services:
       - etcd-data:/data
     # network:
     #   - backend
-  gen:
-    image: jwilder/docker-gen
-    volumes:
-      - "/var/run/docker.sock:/tmp/docker.sock:ro"
-      - "./data/templates:/etc/docker-gen/templates:ro"
   memcached:
     image: memcached
     # network:
@@ -80,17 +63,6 @@ services:
       - "6379:6379"
     # network:
     #   - backend
-  register:
-    image: jwilder/docker-register
-    environment:
-      ETCD_HOST: etcd:4001
-      HOST_IP: "192.168.1.160"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - etcd
-    # network:
-    #   - backend
   sentry:
     image: slafs/sentry
     depends_on:
@@ -108,7 +80,7 @@ services:
       - postgresdb:postgresdb
       - redis:redis
       - sentryCeleryWorker:sentryCeleryWorker
-  sentryCeleryWorker:
+  sentry-worker:
     image: slafs/sentry
     command: celery worker -B
     # network:
@@ -140,12 +112,6 @@ services:
       - "8080"
     networks:
       - backend
-  whoami:
-    image: jwilder/whoami
-    ports:
-      - "8000"
-    # network:
-    #   - backend
 volumes:
   etcd-data:
     driver: local
