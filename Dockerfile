@@ -10,13 +10,14 @@ RUN set -x \
     && apt-get -y update \
     && apt-get -y install curl git build-essential
 
-# RUN set -x \
-#     && curl -sL https://deb.nodesource.com/setup_5.x | bash - \
-#     && apt-get -y update
+RUN set -x \
+    && curl -sL https://deb.nodesource.com/setup_5.x | bash - \
+    && apt-get -y update
 
 RUN set -x \
-    && apt-get -y install nodejs npm \
-    && ln -s /usr/bin/nodejs /usr/bin/node
+    && apt-get -y install nodejs
+    # \
+    # && ln -s /usr/bin/nodejs /usr/bin/node
 
 # RUN npm cache clean
 # RUN npm install -g n
@@ -27,9 +28,9 @@ RUN set -x \
 # Pre-cache the deps
 # ADD project.clj package.json bower.json .bowerrc ${jiksnu_home}/
 # ADD script/ ${jiksnu_home}/script/
-# RUN script/bootstrap
 VOLUME /root/.m2
-
 ADD . ${jiksnu_home}/
-EXPOSE 80
-CMD script/server
+RUN script/setup
+
+EXPOSE 8080
+CMD lein run

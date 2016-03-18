@@ -55,7 +55,7 @@ services:
     # network:
     #   - backend
   nginx:
-    image: jwilder/nginx-proxy
+    image: nginx-fork
     ports:
       - "80:80"
     volumes:
@@ -124,8 +124,8 @@ services:
   web:
     build: .
     image: jiksnu
-    ports:
-      - "80"
+    # ports:
+    #   - "80"
     depends_on:
       - mongo
     environment:
@@ -136,6 +136,8 @@ services:
       - "artifactory.jiksnu.org:173.255.231.160"
     volumes:
       - maven-repo:/root/.m2
+    expose:
+      - "8080"
     # network:
     #   - backend
   whoami:
