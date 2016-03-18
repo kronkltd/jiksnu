@@ -52,8 +52,8 @@ services:
     image: mongo
     volumes:
       - mongo-data:/data/db
-    # network:
-    #   - backend
+    networks:
+      - backend
   nginx:
     image: nginx-fork
     ports:
@@ -138,8 +138,8 @@ services:
       - maven-repo:/root/.m2
     expose:
       - "8080"
-    # network:
-    #   - backend
+    networks:
+      - backend
   whoami:
     image: jwilder/whoami
     ports:
