@@ -28,6 +28,8 @@ services:
     networks:
       - frontend
       - backend
+    volumes:
+      - "./logstash.conf:/etc/logstash/conf.d/12-redis.conf"
   etcd:
     image: microbox/etcd
     command: "--name jiksnu -data-dir=/data"
@@ -104,6 +106,8 @@ services:
   redis_commander:
     image: tenstartups/redis-commander
     command: --redis-host redis
+    environment:
+      VIRTUAL_HOST: redis-commander.localtest.me
     ports:
       - "8081:8081"
     networks:
