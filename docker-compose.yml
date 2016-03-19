@@ -15,6 +15,17 @@ services:
       - backend
     # expose:
     #   - "9000"
+  drone:
+    image: drone/drone
+    env_file:
+      - /etc/drone/dronerc
+    environment:
+      VIRTUAL_PORT: drone.localtest.me
+    volumes:
+      - "/var/lib/docker:/var/lib/docker"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - backend
   elk:
     image: sebp/elk
     environment:
@@ -29,7 +40,7 @@ services:
       - frontend
       - backend
     volumes:
-      - "./logstash.conf:/etc/logstash/conf.d/12-redis.conf"
+      - "./logstash.conf:/etc/logstash/conf.d/07-redis.conf"
   etcd:
     image: microbox/etcd
     command: "--name jiksnu -data-dir=/data"
@@ -75,6 +86,23 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: "admin"
       VIRTUAL_HOST: mongo.localtest.me
       VIRTUAL_NETWORK: nginx-proxy
+    networks:
+      - backend
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    networks:
+      - backend
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      VIRTUAL_HOST: phpmyadmin.localtest.me
+      PMA_HOST: mysql
+      # PMA_USER: admin
+      # PMA_PASSWORD: admin
+    depends_on:
+      - mysql
     networks:
       - backend
   proxy:
