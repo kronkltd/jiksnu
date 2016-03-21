@@ -4,20 +4,24 @@
 .idea
 .lein*
 .kitchen
+.nrepl-port
 .project
 .repl
 .sass-cache
 .settings
 .vagrant
+.vagrantuser
 
 certs
 checkouts*
 cookbooks
 config
 data
+deps.txt
 doc
 dump
 init-script
+jiksnu.iml
 lib
 logs
 node_modules
@@ -25,8 +29,5 @@ pom.xml*
 target
 tmp
 repl
-deps.txt
+volumes
 /TAGS
-/.vagrantuser
-/jiksnu.iml
-/.nrepl-port

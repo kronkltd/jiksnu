@@ -31,16 +31,16 @@ services:
     environment:
       VIRTUAL_HOST: elk.localtest.me
       VIRTUAL_PORT: 5601
-    ports:
-      - "5601:5601"
-      - "9200:9200"
-      - "5044:5044"
-      - "5000:5000"
+    # ports:
+    #   - "5601:5601"
+    #   - "9200:9200"
+    #   - "5044:5044"
+    #   - "5000:5000"
     networks:
-      - frontend
+      # - frontend
       - backend
-    volumes:
-      - "./logstash.conf:/etc/logstash/conf.d/07-redis.conf"
+    # volumes:
+    #   - "./logstash.conf:/etc/logstash/conf.d/07-redis.conf"
   etcd:
     image: microbox/etcd
     command: "--name jiksnu -data-dir=/data"
