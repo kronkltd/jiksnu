@@ -39,4 +39,4 @@ ADD logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
 ADD . ${JIKSNU_HOME}/
 RUN script/setup
 
-CMD [ "docker-bootstrap.sh" ]
+CMD ["sh" "docker-bootstrap.sh" ]
