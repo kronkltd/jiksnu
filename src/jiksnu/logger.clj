@@ -26,6 +26,9 @@
           (into {})
           json/json-str))))
 
+(def json-appender (assoc (spit-appender) :output-fn json-formatter))
+(def stdout-appender (println-appender {:stream :auto}))
+
 (defn set-logger
   []
   (timbre/set-config!
@@ -46,5 +49,5 @@
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
     :appenders
-    {:spit (assoc (spit-appender) :output-fn json-formatter)
-     :println (println-appender {:stream :auto})}}))
+    {:spit json-appender
+     :println stdout-appender}}))
