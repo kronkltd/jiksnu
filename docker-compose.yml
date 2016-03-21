@@ -107,7 +107,7 @@ services:
     networks:
       - backend
   proxy:
-    image: nginx-fork
+    image: rckrdstrgrd/nginx-proxy
     ports:
       - "80:80"
     volumes:
