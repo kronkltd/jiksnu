@@ -2,7 +2,12 @@
   (:require [clojure.data.json :as json]
             [jiksnu.util :as util]
             [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]))
+            [taoensso.timbre.appenders.core :refer [println-appender spit-appender]])
+  (:import com.getsentry.raven.Raven
+           com.getsentry.raven.RavenFactory)
+  )
+
+(def raven (.ravenInstance RavenFactory))
 
 (defn json-formatter
   ([data] (json-formatter nil data))
@@ -26,7 +31,16 @@
           (into {})
           json/json-str))))
 
+(defn raven-appender
+  [{:keys [instant level ?err_ varargs_
+           output-fn config appender]
+    :as data}]
+
+  (util/inspect ?err_)
+  )
+
 (def json-appender (assoc (spit-appender) :output-fn json-formatter))
+(def raven-appender (raven-appender))
 (def stdout-appender (println-appender {:stream :auto}))
 
 (defn set-logger
@@ -50,4 +64,5 @@
     :timestamp-opts timbre/default-timestamp-opts
     :appenders
     {:spit json-appender
+     :raven raven-appender
      :println stdout-appender}}))

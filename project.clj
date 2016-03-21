@@ -23,7 +23,7 @@
                  [compojure "1.4.0"]
                  [clojurewerkz/support "1.1.0"]
                  [com.cemerick/friend "0.2.1"]
-                 ;; [com.getsentry.raven/raven-log4j "7.0.0"]
+                 [com.getsentry.raven/raven "7.0.0"]
                  [com.flybe/socket-rocket "0.1.9"]
                  ;; [com.fzakaria/slf4j-timbre "0.3.0"]
                  [com.novemberain/monger "3.0.2"]
