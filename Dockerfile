@@ -1,11 +1,11 @@
 # FROM pandeiro/lein:latest
 FROM clojure
 MAINTAINER duck@kronkltd.net
-ENV jiksnu_home /app
+ENV JIKSNU_HOME /app
 ENTRYPOINT []
 EXPOSE 8080
 VOLUME /root/.m2
-WORKDIR ${jiksnu_home}
+WORKDIR ${JIKSNU_HOME}
 
 ### Install build dependencies
 
@@ -36,7 +36,7 @@ ADD logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
 
 
 
-ADD . ${jiksnu_home}/
+ADD . ${JIKSNU_HOME}/
 RUN script/setup
 
 CMD [ "docker-bootstrap.sh" ]
