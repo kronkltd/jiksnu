@@ -3,8 +3,8 @@
  {:env
   {
    :ciste-env "dev"
-   :domain "dev.jiksnu.com"
-   :jiksnu-db-url "mongodb://localhost/dev.jiksnu.com"
+   :domain "jiksnu.localtest.me"
+   :jiksnu-db-url "mongodb://localhost/jiksnu_dev"
    :jiksnu-http-secure true
    }}
  :user-test
