@@ -39,8 +39,9 @@ services:
     networks:
       # - frontend
       - backend
-    # volumes:
-    #   - "./logstash.conf:/etc/logstash/conf.d/07-redis.conf"
+    volumes:
+      # - "./logstash.conf:/etc/logstash/conf.d/07-redis.conf"
+      - "./02-beats-input.conf:/etc/logstash/conf.d/02-beats-input.conf"
   etcd:
     image: microbox/etcd
     command: "--name jiksnu -data-dir=/data"

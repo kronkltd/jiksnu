@@ -16,3 +16,4 @@ timbre-spit.log
 vagrant
 Vagrantfile
 .vagrant
+volumes

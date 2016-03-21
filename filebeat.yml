@@ -1,21 +1,24 @@
 output:
   logstash:
     enabled: true
-    hosts:
-      - elk:5044
+    hosts: ["elk:5044"]
     timeout: 15
+    insecure: true
     tls:
-      certificate_authorities:
-      - /etc/pki/tls/certs/logstash-beats.crt
+      certificate_authorities: ["/etc/pki/tls/certs/logstash-beats.crt"]
 
 filebeat:
   prospectors:
+    # -
+    #   paths:
+    #     - /var/log/syslog
+    #     - /var/log/auth.log
+    #   document_type: syslog
     -
       paths:
-        - /var/log/syslog
-        - /var/log/auth.log
-      document_type: syslog
-    -
-      paths:
-        - "/var/log/nginx/*.log"
-      document_type: nginx-access
+        - "/app/timbre-spit.log"
+      document_type: json_lines
+    # -
+    #   paths:
+    #     - "/var/log/nginx/*.log"
+    #   document_type: nginx-access
