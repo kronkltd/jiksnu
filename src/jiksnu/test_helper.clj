@@ -1,5 +1,6 @@
 (ns jiksnu.test-helper
-  (:require [ciste.runner :refer [start-application! stop-application!]]
+  (:require [ciste.loader :as loader]
+            [ciste.runner :refer [start-application! stop-application!]]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
@@ -44,11 +45,13 @@
   (timbre/debug "setup testing")
   (try+
    (start-application! :test)
+   (loader/register-module "jiksnu.modules.core")
+
    (db/drop-all! )
    (dosync
     (ref-set r/this {})
     (ref-set r/that {}))
-   (actions.domain/current-domain)
+   ;; (actions.domain/current-domain)
    (catch Object ex
      (timbre/error "Setup Error" ex)
      ;; FIXME: Handle error

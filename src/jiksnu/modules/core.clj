@@ -85,7 +85,7 @@
 
   (util/inspect event/emitter)
 
-  ;; (defobserver event/emitter ::templates.model/item-created handle-created)
+  (defobserver event/emitter ::templates.model/item-created handle-created)
 
   ;; (defobserver event/emitter ::templates.model/item-created
   ;;   (fn [{:keys [collection-name event item]}]
