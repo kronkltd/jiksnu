@@ -1,13 +1,21 @@
 (ns jiksnu.logger
-  (:require [clojure.data.json :as json]
+  (:require [ciste.config :refer [config describe-config]]
+            [clojure.data.json :as json]
             [jiksnu.util :as util]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]])
   (:import com.getsentry.raven.Raven
-           com.getsentry.raven.RavenFactory)
-  )
+           com.getsentry.raven.RavenFactory
+           com.getsentry.raven.event.Event
+           com.getsentry.raven.event.Event$Level
+           com.getsentry.raven.event.EventBuilder
+           com.getsentry.raven.event.interfaces.ExceptionInterface))
 
-(def raven (.ravenInstance RavenFactory))
+(describe-config [:sentry :dsn]
+  String
+  "Private DSN from sentry server")
+
+(def raven (RavenFactory/ravenInstance (config :sentry :dsn)))
 
 (defn json-formatter
   ([data] (json-formatter nil data))
@@ -31,16 +39,26 @@
           (into {})
           json/json-str))))
 
-(defn raven-appender
+(defn raven-formatter
   [{:keys [instant level ?err_ varargs_
            output-fn config appender]
     :as data}]
-
-  (util/inspect ?err_)
-  )
+  (when-let [e (force ?err_)]
+    (let [builder (.. (EventBuilder.)
+                      (withMessage (.getMessage e))
+                      (withLevel Event$Level/ERROR)
+                      (withLogger (:?ns-str data))
+                      (withSentryInterface (ExceptionInterface. e)))]
+      (.runBuilderHelpers raven builder)
+      (.sendEvent raven (.build builder)))))
 
 (def json-appender (assoc (spit-appender) :output-fn json-formatter))
-(def raven-appender (raven-appender))
+(def raven-appender {:enabled? true
+                     :async? false
+                     :min-level nil
+                     :rate-limit nil
+                     :output-fn :inherit
+                     :fn raven-formatter})
 (def stdout-appender (println-appender {:stream :auto}))
 
 (defn set-logger
