@@ -83,9 +83,13 @@
     "/vendor/angular-ui-select/dist/select.min.js"
     "/vendor/angular-validator/dist/angular-validator.min.js"
     "/vendor/angular-websocket/angular-websocket.min.js"
+    "/vendor/raven-js/dist/raven.js"
+    "/vendor/raven-js/dist/plugins/angular.js"
     "/cljs/jiksnu.js")
    (map #(% request response) @scripts-section-hook)
-   #_[:script {:type "text/javascript"} "goog.require('jiksnu.core');"]))
+   [:script {:type "text/javascript"}
+    (format "Raven.config('%s').addPlugin(Raven.Plugins.Angular).install()"
+            (config :sentry :dsn :client))]))
 
 (defn page-template-content
   [request response]

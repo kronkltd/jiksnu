@@ -11,6 +11,7 @@
    datatables
    hljs
    js-data
+   ngRaven
    ngSanitize
    ngWebSocket
    cfp.hotkeys

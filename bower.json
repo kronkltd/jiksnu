@@ -26,7 +26,8 @@
     "highlightjs": "8.9.1",
     "moment": "2.11.1",
     "swagger-ui": "2.1.8-M1",
-    "underscore": "1.8.3"
+    "underscore": "1.8.3",
+    "raven-js": "^2.2.1"
   },
   "devDependencies": {
     "angular-mocks": "latest"
