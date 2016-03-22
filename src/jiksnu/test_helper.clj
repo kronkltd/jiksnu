@@ -41,6 +41,7 @@
 
 (defn setup-testing
   []
+  (timbre/debug "setup testing")
   (try+
    (start-application! :test)
    (db/drop-all! )
@@ -55,6 +56,7 @@
 
 (defn stop-testing
   []
+  (timbre/debug "stop-testing")
   (try+
    (stop-application!)
    (catch Object ex

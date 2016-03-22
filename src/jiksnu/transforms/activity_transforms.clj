@@ -9,7 +9,8 @@
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+]])
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre])
   (:import java.net.URI
            org.bson.types.ObjectId))
 
@@ -231,7 +232,10 @@
   (let [streams (->> activity
                      :streams
                      (mapv (fn [stream]
-                            (if (string? stream)
-                              (ObjectId. stream)
-                              stream))))]
+                             (if (seq stream)
+                               (if (string? (util/inspect stream))
+                                 (ObjectId. stream)
+                                 stream)
+                               (throw+ {:message "Invalid stream"
+                                        :stream stream})))))]
     (assoc activity :streams streams)))

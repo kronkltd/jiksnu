@@ -8,6 +8,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
+            [jiksnu.util :as util]
             [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
@@ -107,12 +108,12 @@
   "Post a new activity"
   [activity]
   ;; TODO: validate user
-  (if-let [prepared-post (-> activity
+  (if-let [prepared-post (-> (util/inspect activity)
                              prepare-post
                              (dissoc :pictures))]
 
     (do (-> activity :pictures model.activity/parse-pictures)
-        (let [created-activity (create prepared-post)]
+        (let [created-activity (create (util/inspect prepared-post))]
           (bus/publish! ch/events :activity-posted created-activity)
           created-activity))
     (throw+ "error preparing")))

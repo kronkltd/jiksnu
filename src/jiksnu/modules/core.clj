@@ -30,40 +30,37 @@
   [{:keys [collection-name event item] :as data}]
   (timbre/debugf "%s(%s)=>%s" collection-name (:_id item) event)
   ;; (util/inspect data)
-  (condp = collection-name
+  ;; (util/inspect item)
+  (try
+    (condp = collection-name
 
-    "activities"
-    (let [verb (:verb item)]
-      #_(timbre/info "activity created")
-      (condp = verb
-        "post"
-        (do
-          "post"
-          (do
-            #_(timbre/debug "activity posted"))
+     "activities" (let [verb (:verb item)]
+                    (timbre/debug "activity created")
+                    (condp = verb
+                      "post" (do
+                               (timbre/debug "activity posted"))
 
-          "join"
-          (do
-            (timbre/info "Group join")
-            (let [object-id (get-in item [:object :id])
-                  group (model.group/fetch-by-id object-id)]
-              (actions.group-membership/create
-               {:user (:author item)
-                :group (:_id group)})))
+                      "join" (do
+                               (timbre/info "Group join")
+                               (let [object-id (get-in item [:object :id])
+                                     group (model.group/fetch-by-id object-id)]
+                                 (actions.group-membership/create
+                                  {:user (:author item)
+                                   :group (:_id group)})))
 
-          #_(timbre/infof "Unknown verb - %s" verb)
-          #_(util/inspect item))))
+                      (do
+                        (timbre/errorf "Unknown verb - %s" verb))))
 
-    "users"
-    (do
-      #_(timbre/info "user created")
-      (actions.stream/add-stream item "* major")
-      (actions.stream/add-stream item "* minor"))
+     "users" (do
+               #_(timbre/info "user created")
+               (actions.stream/add-stream item "* major")
+               (actions.stream/add-stream item "* minor"))
 
-    (do
-      #_(timbre/infof "Other created - %s" collection-name)
-      #_(util/inspect item)))
-  )
+     (do
+       #_(timbre/infof "Other created - %s" collection-name)
+       #_(util/inspect item)))
+    (catch Exception ex
+      (timbre/error "Error in handle-created" ex))))
 
 (defn start
   []
