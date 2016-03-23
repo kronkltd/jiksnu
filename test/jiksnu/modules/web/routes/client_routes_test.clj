@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.client-routes-test
-  (:require [clj-factory.core :refer [fseq]]
+  (:require [ciste.loader :as loader]
+            [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojurewerkz.support.http.statuses :as status]
@@ -20,8 +21,10 @@
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
 
+(loader/register-module "jiksnu.modules.web")
+
 (fact "route: client-api/register :post"
-  (db/drop-all!)
+  ;; (db/drop-all!)
   (let [params {:type "client_associate"
                 :application_type "native"
                 :application_name (fseq :word)
@@ -59,7 +62,7 @@
                     (assoc-in [:headers "authorization"] authorization-str))
         response (-> (response-for request)
                      (update :body (fn [body]
-                                     (->> (string/split body #"&")
+                                     (->> (string/split (util/inspect body) #"&")
                                           (map #(string/split % #"="))
                                           (into {})))))]
     response => (contains {:status 200})

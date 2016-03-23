@@ -17,7 +17,7 @@
   (after :contents (th/stop-testing))])
 
 (facts "route: group-api/collection :get"
-  (let [url (str "/model/groups")
+  (let [url "/model/groups"
         request (req/request :get url)]
     (response-for request) =>
     (contains
@@ -26,17 +26,21 @@
 (facts "route: group-api/collection :post"
   (let [params (factory :group)
         url "/model/groups"
-        request (-> (req/request :post url)
+        request (-> (req/request :post (util/inspect url))
                     (req/body (json/json-str params))
                     (req/content-type "application/json"))
         response (response-for request)
-        location (get-in response [:headers "Location"])]
+        ]
     response => (contains {:status 303})
-    (let [request2 (req/request :get location)
-          response2 (response-for request2)]
-      response2 => (contains {:status 200})
-      (let [body (json/read-str (:body response2))]
-        body => (contains {"name" (:name params)})))))
+    (let [location (get-in response [:headers "Location"])]
+      (if location
+        (let [request2 (req/request :get location)
+             response2 (response-for request2)]
+         response2 => (contains {:status 200})
+         (let [body (json/read-str (:body response2))]
+           body => (contains {"name" (:name params)})))
+        (do
+          location =not=> nil?)))))
 
 (facts "route: group-api/item :delete"
   (fact "when not authenticated"

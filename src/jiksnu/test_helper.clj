@@ -45,7 +45,7 @@
   (timbre/debug "setup testing")
   (try+
    (start-application! :test)
-   ;; (loader/register-module "jiksnu.modules.core")
+   (loader/register-module "jiksnu.modules.core")
 
    ;; (db/drop-all! )
    (dosync
