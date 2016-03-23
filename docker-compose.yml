@@ -56,6 +56,18 @@ services:
       - etcd-data:/data
     networks:
       - backend
+  kamon:
+    image: kamon/grafana_graphite:latest
+    environment:
+      VIRTUAL_HOST: kamon.localtest.me
+    networks:
+      - backend
+    volumes:
+      - ./data/whisper:/opt/graphite/storage/whisper
+      - ./data/elasticsearch:/var/lib/elasticsearch
+      - ./data/grafana:/opt/grafana/data
+      - ./log/graphite:/opt/graphite/storage/log
+      - ./log/elasticsearch:/var/log/elasticsearch
   logspout:
     image: rtoma/logspout-redis-logstash:0.1.1
     command: 'redis://redis'
