@@ -83,8 +83,6 @@
             "webdriver-start"  ["shell" "./node_modules/.bin/webdriver-manager" "start"]
             "webdriver-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]
             "wscat"             ["shell" "./node_modules/.bin/wscat" "-c" "ws://localhost:8080/"]}
-  :main ciste.runner
-  :aot [ciste.runner]
   :auto-clean false
   :jvm-opts ["-server"
              "-Dfile.encoding=UTF-8"
@@ -118,6 +116,8 @@
                            [slamhound "1.5.5"]
                            [com.palletops/log-config "0.1.4"]]}
              :reporting {:dependencies [[helpshift/hydrox "0.1.15"]]}
+             :uberjar {:main ciste.runner
+                       :aot [ciste.runner]}
              :e2e {:dependencies [[clj-webdriver "0.7.2" :exclusions [xalan]]
                                   [org.seleniumhq.selenium/selenium-java "2.52.0"]]
                    :cljsbuild {:builds

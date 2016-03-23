@@ -17,10 +17,12 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.factory :refer [make-uri]]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that set-this set-that this that]]
             [jiksnu.session :as session]
+            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))
 
 (def my-password (ref nil))
@@ -30,10 +32,11 @@
 ;; TODO: this part should return the current domain
 (defn a-domain-exists
   [& [options]]
-  (let [params (factory :domain {:discovered true})
-        domain (actions.domain/create params)]
-    (set-this :domain domain)
-    domain))
+  (let [params (factory :domain {:discovered true})]
+    (or (model.domain/fetch-by-id (:_id params))
+        (let [domain (actions.domain/create params)]
+          (set-this :domain domain)
+          domain))))
 
 (defn a-remote-domain-exists
   [& [options]]
@@ -57,12 +60,15 @@
   [& [opts]]
   (let [password (or (:password opts)
                      (fseq :password))
-        user (actions.user/register
-              {:username (or (:username opts)
-                             (fseq :username))
-               :password password
-               :name (fseq :name)
-               :accepted true})
+        username (or (:username opts)
+                     (fseq :username))
+        user (model.user/get-user username)
+
+        user (or user (actions.user/register
+                       {:username username
+                        :password password
+                        :name (fseq :name)
+                        :accepted true}))
         user (if (:admin opts)
                (do (model.user/set-field! user :admin true)
                    (assoc user :admin true))
@@ -89,9 +95,11 @@
         source (or (:source options)
                    (get-that :feed-source)
                    (a-feed-source-exists {:domain domain}))
-        user (actions.user/create (factory :user
-                                           {:domain (:_id domain)
-                                            :update-source (:_id source)}))]
+        params (factory :user
+                        {:domain (:_id domain)
+                         :update-source (:_id source)})
+        user (or (model.user/fetch-by-id (str "acct:" (:username params) "@" (:domain params)))
+                 (actions.user/create (util/inspect params)))]
     (model.user/set-field! user :discovered true)
     (set-that :user user)
     user))
@@ -117,13 +125,15 @@
                          (a-domain-exists
                           (select-keys options #{:local})))))
 
-        url (fseq :uri)
-        source (actions.feed-source/create
-                (factory :feed-source
-                         {:domain (:_id domain)
-                          :topic url
-                          :hub (make-uri (:_id domain) "/push/hub")})
-                {})]
+        url (or (:topic options)
+                (fseq :uri))
+        source (or (model.feed-source/fetch-by-topic url)
+                   (actions.feed-source/create
+                    (factory :feed-source
+                             {:domain (:_id domain)
+                              :topic url
+                              :hub (make-uri (:_id domain) "/push/hub")})
+                 {}))]
     (set-this :feed-source source)
     source))
 

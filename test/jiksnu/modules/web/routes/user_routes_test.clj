@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.user-routes-test
-  (:require [clojure.data.json :as json]
+  (:require [ciste.loader :as loader]
+            [clojure.data.json :as json]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.mock :as mock]
@@ -11,6 +12,8 @@
 (namespace-state-changes
  [(before :contents (th/setup-testing))
   (after :contents (th/stop-testing))])
+
+(loader/register-module "jiksnu.modules.core")
 
 (fact "route: users-api/index :get"
   (let [url "/main/users"]

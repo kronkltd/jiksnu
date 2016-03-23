@@ -1,7 +1,7 @@
 --ignore-dir=.idea
---ignore-dir=checkouts
 --ignore-dir=config
 --ignore-dir=cookbooks
+--ignore-dir=data
 --ignore-dir=features
 --ignore-dir=logs
 --ignore-dir=node_modules
@@ -9,6 +9,7 @@
 --ignore-dir=target
 --ignore-dir=roles
 --ignore-dir=tmp
+--ignore-dir=volumes
 --ignore-file=is:Cheffile.lock
 --ignore-file=is:pom.xml
 --ignore-file=is:TAGS
