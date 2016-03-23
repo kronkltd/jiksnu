@@ -85,6 +85,7 @@
 
   (util/inspect event/emitter)
 
+  (timbre/info "setting up handle created")
   (defobserver event/emitter ::templates.model/item-created handle-created)
 
   ;; (defobserver event/emitter ::templates.model/item-created
@@ -100,6 +101,7 @@
 (defn stop
   []
   (timbre/info "Stopping core")
+  (util/inspect (get-handler event/emitter))
   (delete-handler event/emitter ::templates.model/item-created))
 
 (def module
