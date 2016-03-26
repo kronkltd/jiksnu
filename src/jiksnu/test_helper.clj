@@ -62,7 +62,7 @@
   []
   (timbre/debug "stop-testing")
   (try+
-   (stop-application!)
+   ;; (stop-application!)
    (catch Object ex
      ;(println "error")
      (timbre/error "Shutdown Error" ex)

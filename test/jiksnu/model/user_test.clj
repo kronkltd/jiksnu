@@ -9,9 +9,6 @@
             [midje.sweet :refer :all])
   (:import jiksnu.model.User))
 
-(def domain-a (actions.domain/current-domain))
-(def user-a (mock/a-user-exists))
-
 (th/module-test ["jiksnu.modules.core"])
 
 (facts "#'count-records"
@@ -73,7 +70,9 @@
   (fact "when passed nil"
     (get-domain nil) => (throws Exception))
   (fact "when passed a user"
-    (get-domain user-a) => domain-a))
+    (let [domain-a (actions.domain/current-domain)
+          user-a (mock/a-user-exists)]
+      (get-domain user-a) => domain-a)))
 
 (facts "#'local?"
   (fact "when passed a user"

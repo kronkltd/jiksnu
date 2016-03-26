@@ -83,10 +83,9 @@
 
   (triggers.domain/init-receivers)
 
-  (util/inspect event/emitter)
-
-  (timbre/info "setting up handle created")
-  (defobserver event/emitter ::templates.model/item-created handle-created)
+  ;; (timbre/info "setting up handle created")
+  (when-not ((get-handler event/emitter) ::templates.model/item-created)
+    (defobserver event/emitter ::templates.model/item-created handle-created))
 
   ;; (defobserver event/emitter ::templates.model/item-created
   ;;   (fn [{:keys [collection-name event item]}]
@@ -98,12 +97,12 @@
 
 (defn stop
   []
-  (timbre/info "Stopping core")
-  (util/inspect (get-handler event/emitter))
+  ;; (timbre/info "Stopping core")
   (delete-handler event/emitter ::templates.model/item-created)
-  (dosync
-   (ref-set db/_db nil)
-   (ref-set db/_conn nil)))
+  ;; (dosync
+  ;;  (ref-set db/_db nil)
+  ;;  (ref-set db/_conn nil))
+  )
 
 (def module
   {:name "jiksnu.modules.core"

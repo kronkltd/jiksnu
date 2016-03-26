@@ -6,22 +6,22 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 
-(def password (fseq :password))
-(def user (mock/a-user-exists {:password password}))
-
 (th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.auth/add-password"
-  (let [mech (add-password user password)]
+  (let [password (fseq :password)
+        user (mock/a-user-exists {:password password})
+        mech (add-password user password)]
     mech => truthy
 
     (creds/bcrypt-verify password (:value mech))))
 
-(fact "#'actions.auth/login"
+(future-fact "#'actions.auth/login"
+  (let [password (fseq :password)
+        user (mock/a-user-exists {:password password})]
+ (fact "when the user doesn't exist"
+   (login .username. .password.) => (throws))
 
-  (fact "when the user doesn't exist"
-    (login .username. .password.) => (throws))
-
-  (fact "when given a valid password"
-    (let [username (:username user)]
-      (login username password) => truthy)))
+ (fact "when given a valid password"
+   (let [username (:username user)]
+     (login username password) => truthy))))
