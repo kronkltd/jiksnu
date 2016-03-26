@@ -1,8 +1,7 @@
 (ns jiksnu.mock-test
   (:require [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
-            [midje.sweet :refer [=> after before fact
-                                 namespace-state-changes]])
+            [midje.sweet :refer :all])
   (:import jiksnu.model.Activity
            jiksnu.model.Client
            jiksnu.model.Conversation
@@ -16,9 +15,7 @@
            jiksnu.model.Subscription
            jiksnu.model.User))
 
-(namespace-state-changes
- [(before :facts (th/setup-testing))
-  (after :facts (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'mock/activity-gets-posted"
   (mock/activity-gets-posted) => (partial instance? Activity))
@@ -57,5 +54,3 @@
 
 (fact "#'mock/a-request-token-exists"
   (mock/a-request-token-exists) => (partial instance? RequestToken))
-
-

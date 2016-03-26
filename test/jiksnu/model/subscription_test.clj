@@ -5,14 +5,10 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
-            [midje.sweet :refer [=> after before fact facts
-                                 namespace-state-changes throws]])
+            [midje.sweet :refer :all])
   (:import jiksnu.model.Subscription))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
-
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "#'model.subscription/count-records"
   (fact "when there aren't any items"

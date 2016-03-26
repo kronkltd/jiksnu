@@ -12,9 +12,8 @@
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.web"])
 
 (facts "route: group-api/collection :get"
   (let [url "/model/groups"

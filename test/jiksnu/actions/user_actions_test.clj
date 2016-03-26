@@ -19,12 +19,6 @@
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
-;; (use-test-environment!
-;;  {
-;;   :modules ["jiksnu.core"]
-;;   }
-;;  )
-
 (defn mock-user-meta
   [username domain-name uri source-link]
   (h/html
@@ -43,9 +37,7 @@
             :href source-link
             :type "application/atom+xml"}]]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'jiksnu.actions.user-actions/get-username-from-http-uri"
   (fact "when the uri does not have user info"

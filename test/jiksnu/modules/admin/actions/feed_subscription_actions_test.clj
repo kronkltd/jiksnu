@@ -6,9 +6,8 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.admin"])
 
 (fact "#'actions.feed-subscription/index"
   (fact "when there are no sources"

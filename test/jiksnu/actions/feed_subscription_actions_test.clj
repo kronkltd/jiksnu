@@ -8,9 +8,7 @@
             [midje.sweet :refer :all])
   (:import jiksnu.model.FeedSubscription))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.feed-subscription/delete"
   (let [item (mock/a-feed-subscription-exists)]

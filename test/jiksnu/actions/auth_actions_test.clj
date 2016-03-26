@@ -6,12 +6,10 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
-
 (def password (fseq :password))
 (def user (mock/a-user-exists {:password password}))
+
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.auth/add-password"
   (let [mech (add-password user password)]

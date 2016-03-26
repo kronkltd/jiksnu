@@ -16,11 +16,7 @@
            org.bson.types.ObjectId
            org.joda.time.DateTime))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
-
-(loader/register-module "jiksnu.modules.core")
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.activity/create"
   (fact "when the user is logged in"

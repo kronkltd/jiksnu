@@ -9,12 +9,10 @@
             [midje.sweet :refer :all])
   (:import jiksnu.model.User))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
-
 (def domain-a (actions.domain/current-domain))
 (def user-a (mock/a-user-exists))
+
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "#'count-records"
   (fact "when there aren't any items"

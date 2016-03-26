@@ -17,11 +17,8 @@
             [ring.mock.request :as req]
             [ring.util.codec :as codec]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
-
-(loader/register-module "jiksnu.modules.web")
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.web"])
 
 (fact "route: client-api/register :post"
   ;; (db/drop-all!)

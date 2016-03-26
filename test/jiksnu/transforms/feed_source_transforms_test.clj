@@ -7,9 +7,7 @@
             [jiksnu.transforms.feed-source-transforms :refer [set-domain]]
             [midje.sweet :refer :all]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "#'set-domain"
   (fact "when the source has a domain"

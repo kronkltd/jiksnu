@@ -5,7 +5,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
             [jiksnu.referrant :as r]
-            [midje.sweet :refer [=> =not=> fact future-fact throws]]
+            [midje.sweet :refer [=> =not=> fact future-fact namespace-state-changes throws]]
             [net.cgrand.enlive-html :as enlive]
             [slingshot.slingshot :refer [try+ throw+]]
             [taoensso.timbre :as timbre])
@@ -41,21 +41,22 @@
      (future-fact var-name# ~@body)))
 
 (defn setup-testing
-  []
-  (timbre/debug "setup testing")
-  (try+
-   (start-application! :test)
-   (loader/register-module "jiksnu.modules.core")
+  ([] (setup-testing nil))
+  ([modules]
+   (timbre/debugf "setup testing - %s" modules)
+   (try+
+    (start-application! :test modules)
+    ;; (loader/register-module "jiksnu.modules.core")
 
-   ;; (db/drop-all! )
-   (dosync
-    (ref-set r/this {})
-    (ref-set r/that {}))
-   ;; (actions.domain/current-domain)
-   (catch Object ex
-     (timbre/error "Setup Error" ex)
-     ;; FIXME: Handle error
-     (throw+ ex))))
+    (db/drop-all! )
+    (dosync
+     (ref-set r/this {})
+     (ref-set r/that {}))
+    ;; (actions.domain/current-domain)
+    (catch Object ex
+      (timbre/error "Setup Error" ex)
+      ;; FIXME: Handle error
+      (throw+ ex)))))
 
 (defn stop-testing
   []
@@ -66,6 +67,13 @@
      ;(println "error")
      (timbre/error "Shutdown Error" ex)
      (throw+ ex))))
+
+(defmacro module-test
+  [modules]
+  `(namespace-state-changes
+    [(before :facts (setup-testing ~modules))
+     (after :facts (stop-testing))]))
+
 
 (defmacro test-environment-fixture
   [& body]

@@ -8,9 +8,7 @@
             [midje.sweet :refer :all])
   (:import jiksnu.model.Domain))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.domain/create"
   (fact "when given valid options"

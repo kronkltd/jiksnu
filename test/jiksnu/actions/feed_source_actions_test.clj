@@ -14,9 +14,7 @@
             [midje.sweet :refer :all])
   (:import jiksnu.model.FeedSource))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.feed-source/add-watcher"
   (let [domain (actions.domain/current-domain)

@@ -12,6 +12,10 @@
   []
   (require-components))
 
-(defmodule "as"
+(defn stop
+  []
+  )
+
+(defmodule "jiksnu.modules.admin"
   :start start
   :deps ["jiksnu.modules.json"])

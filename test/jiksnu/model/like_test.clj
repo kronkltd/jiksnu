@@ -5,9 +5,7 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'model.like/delete"
   (let [like (mock/that-user-likes-this-activity)]

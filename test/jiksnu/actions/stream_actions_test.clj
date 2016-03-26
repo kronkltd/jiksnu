@@ -8,9 +8,7 @@
             [midje.sweet :refer :all])
   (:import org.bson.types.ObjectId))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "#'actions.stream/public-timeline"
   (fact "when there are no activities"

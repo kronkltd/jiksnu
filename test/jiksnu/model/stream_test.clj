@@ -6,9 +6,7 @@
             [midje.sweet :refer :all]
             [validateur.validation :refer [valid?]]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'model.stream/count-records"
 

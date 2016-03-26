@@ -9,11 +9,8 @@
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
-
-(loader/register-module "jiksnu.modules.core")
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.web"])
 
 (fact "route: users-api/index :get"
   (let [url "/main/users"]

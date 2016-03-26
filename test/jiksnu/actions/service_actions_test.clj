@@ -13,9 +13,7 @@
   (:import jiksnu.model.Domain
            nu.xom.Document))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.service/fetch-xrd"
 

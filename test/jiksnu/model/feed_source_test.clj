@@ -11,9 +11,7 @@
            org.bson.types.ObjectId
            org.joda.time.DateTime))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "#'jiksnu.model.feed-source/count-records"
   (fact " when there aren't any items"

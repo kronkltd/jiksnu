@@ -8,9 +8,8 @@
             [ring.mock.request :as req]
             [slingshot.slingshot :refer [throw+]]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.admin"])
 
 (future-fact "delete"
   (let [like (model.like/create (factory :like))

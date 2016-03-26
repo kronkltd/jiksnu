@@ -8,11 +8,9 @@
   (:import jiksnu.model.Resource
            org.joda.time.DateTime))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
-
 (def test-url "http://www.example.com/")
+
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "create"
   (let [params {:_id test-url}]

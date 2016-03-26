@@ -20,9 +20,7 @@
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "fetch-by-group"
   (let [user (mock/a-user-exists)

@@ -93,8 +93,6 @@
   ;;     (timbre/info "Duplicate observer")
   ;;     (util/inspect event)))
 
-  (defn stop [])
-
   (doseq [model-name registry/action-group-names]
     (util/require-module "jiksnu.modules" "core" model-name)))
 
@@ -102,7 +100,10 @@
   []
   (timbre/info "Stopping core")
   (util/inspect (get-handler event/emitter))
-  (delete-handler event/emitter ::templates.model/item-created))
+  (delete-handler event/emitter ::templates.model/item-created)
+  (dosync
+   (ref-set db/_db nil)
+   (ref-set db/_conn nil)))
 
 (def module
   {:name "jiksnu.modules.core"

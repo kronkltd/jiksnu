@@ -6,11 +6,9 @@
   (:import jiksnu.model.Domain
            jiksnu.model.Resource))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
-
 (def test-url "http://www.example.com/")
+
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'ops/get-discovered"
   (let [domain (mock/a-domain-exists)]

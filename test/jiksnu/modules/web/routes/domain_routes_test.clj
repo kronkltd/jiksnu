@@ -16,9 +16,8 @@
   (let [pattern (format "//*[local-name() = 'Link'][@rel = '%s']" rel)]
     (cm/query body pattern)))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.web"])
 
 (facts "Requesting the host meta"
   (fact "host meta json"

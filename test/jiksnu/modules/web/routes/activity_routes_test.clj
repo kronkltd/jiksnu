@@ -13,9 +13,8 @@
             [ring.mock.request :as req]
             [jiksnu.actions.activity-actions :as actions.activity]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.web"])
 
 (facts "route: activities-api/item :delete"
   (fact "when authenticated"

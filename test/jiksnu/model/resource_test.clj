@@ -10,9 +10,7 @@
             [validateur.validation :refer [valid?]])
   (:import jiksnu.model.Resource))
 
-(namespace-state-changes
- [(before :facts (th/setup-testing))
-  (after :facts (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "#'jiksnu.model.resource/count-records"
   (fact "when there aren't any items"

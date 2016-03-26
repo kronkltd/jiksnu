@@ -8,9 +8,7 @@
             [midje.sweet :refer :all])
   (:import nu.xom.Document))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.webfinger/fetch-host-meta"
   (let [resource (mock/a-resource-exists)

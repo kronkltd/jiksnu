@@ -9,9 +9,7 @@
             [validateur.validation :refer [valid?]])
   (:import jiksnu.model.Activity))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'model.activity/count-records"
 
@@ -33,10 +31,11 @@
         conversation (mock/a-conversation-exists {:feed-source feed-source})
         id (factory/make-uri (:_id domain) (fseq :path))
         activity (actions.activity/prepare-create
-                  (factory :full-activity {:conversation (:_id conversation)
-                                      :id id
-                                      :local false
-                                      :update-source (:_id feed-source)}))]
+                  (factory :full-activity
+                           {:conversation (:_id conversation)
+                            :id id
+                            :local false
+                            :update-source (:_id feed-source)}))]
     (model.activity/create activity) => (partial instance? Activity)))
 
 (fact "#'model.activity/get-author"

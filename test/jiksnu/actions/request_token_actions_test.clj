@@ -6,9 +6,7 @@
             [midje.sweet :refer :all])
   (:import jiksnu.model.RequestToken))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "#'actions.request-token/create"
   (let [client (mock/a-client-exists)

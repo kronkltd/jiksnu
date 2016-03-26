@@ -5,9 +5,7 @@
             [midje.sweet :refer :all])
   (:import jiksnu.model.AccessToken))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.access-token/get-access-token"
   (let [client (mock/a-client-exists)

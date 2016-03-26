@@ -7,9 +7,8 @@
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.web"])
 
 (future-fact "rsd document"
   (let [response (-> (req/request :get "/rsd.xml") response-for)]

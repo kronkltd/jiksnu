@@ -13,10 +13,7 @@
            jiksnu.model.User
            org.bson.types.ObjectId))
 
-
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.subscription/subscribe"
   (fact "when the user is not already subscribed"

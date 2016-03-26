@@ -5,9 +5,7 @@
             [midje.sweet :refer :all])
   (:import jiksnu.model.Client))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact #'actions.client/create
   (let [params (factory :client)

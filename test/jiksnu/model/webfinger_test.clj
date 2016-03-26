@@ -23,9 +23,7 @@
     [:XRD {:xmlns ns/xrd}
      [:Subject subject]])))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "#'jiksnu.model.webfinger/get-username-from-atom-property"
   (fact "when the property has an identifier"

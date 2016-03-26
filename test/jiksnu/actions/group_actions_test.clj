@@ -6,9 +6,7 @@
             [midje.sweet :refer :all])
   (:import jiksnu.model.Group))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (fact "#'actions.group/create"
   (fact "when given valid options"

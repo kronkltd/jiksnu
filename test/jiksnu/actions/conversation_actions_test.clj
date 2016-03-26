@@ -7,9 +7,7 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 
-(namespace-state-changes
- [(before :contents (th/setup-testing))
-  (after :contents (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"])
 
 (facts "#'create"
   (let [domain (mock/a-domain-exists)

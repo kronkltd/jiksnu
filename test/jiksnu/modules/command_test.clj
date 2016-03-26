@@ -9,9 +9,8 @@
             [manifold.deferred :as d]
             [midje.sweet :refer :all]))
 
-(namespace-state-changes
- [(before :facts (th/setup-testing))
-  (after :facts (th/stop-testing))])
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.command"])
 
 (facts "command 'get-model user'"
   (let [command "get-model"
