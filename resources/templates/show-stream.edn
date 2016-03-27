@@ -1,8 +1,8 @@
 [:div {:title "show-stream"}
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
-  [:debug {:expr "stream"}]
-  [:p "{{stream.name}}"]
-  #_[:p "{{stream.owner}}"]
-  [:show-user-minimal {:data-id "{{stream.owner}}"}]
-  [:list-activities {:item "stream"}]]]
+  [:debug {:expr "item"}]
+  [:p "{{item.name}}"]
+  #_[:p "{{item.owner}}"]
+  [:show-user-minimal {:data-id "{{item.owner}}"}]
+  [:list-activities {:item "item"}]]]

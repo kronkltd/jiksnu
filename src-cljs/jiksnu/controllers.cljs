@@ -388,7 +388,7 @@
   (set! (.-join $scope)
         (fn []
           (timbre/info "Joining group")
-          (let [id (.-_id (.-group $scope))]
+          (let [id (.-_id (.-item $scope))]
             (.invokeAction app "group" "join" id))))
   (helpers/init-item $scope $stateParams app Groups))
 

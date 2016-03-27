@@ -25,7 +25,8 @@
             [manifold.bus :as bus]
             [manifold.stream :as s]
             [taoensso.timbre :as timbre])
-  (:import kamon.Kamon))
+  (:import kamon.Kamon
+           kamon.trace.Tracer))
 
 (defn handle-created
   [{:keys [collection-name event item] :as data}]
@@ -69,7 +70,10 @@
   (Kamon/start)
 
   (let [tracer (.newContext (Kamon/tracer) "foo")]
-    (db/set-database!)
+
+    (let [segment (.startSegment (Tracer/currentContext) "set-database" "buisness-logic" "kamon")]
+      (db/set-database!)
+      (.finish segment))
     ;; (model.activity/ensure-indexes)
     (model.feed-source/ensure-indexes)
     (model.user/ensure-indexes)

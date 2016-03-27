@@ -9,7 +9,10 @@
             [jiksnu.session :refer [with-user-id]]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+ throw+]])
-  (:import javax.security.auth.login.LoginException))
+  (:import javax.security.auth.login.LoginException
+           kamon.Kamon
+           kamon.trace.Tracer
+           ))
 
 (defn wrap-user-binding
   [handler]
@@ -119,6 +122,7 @@
 (defn wrap-response-logging
   [handler]
   (fn [request]
+    (.increment (.counter (Kamon/metrics) "request-handled"))
     (util/inspect (:params request))
     (let [response (handler request)]
       (util/inspect (:body response))
