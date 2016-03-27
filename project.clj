@@ -32,6 +32,9 @@
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
                  [im.chit/gyr "0.3.1"]
+                 [io.kamon/kamon-core_2.11 "0.4.0"]
+                 [io.kamon/kamon-statsd_2.11 "0.4.0"]
+                 [io.kamon/kamon-log-reporter_2.11 "0.4.0"]
                  [net.kronkltd/purnam "0.5.3-SNAPSHOT"]
                  [javax.servlet/javax.servlet-api "3.1.0"]
                  [liberator "0.14.0"]
@@ -96,6 +99,8 @@
                  :host    "0.0.0.0"
                  :port    7888}
   :appenders {:jl (make-tools-logging-appender {})}
+  :main ciste.runner
+  :aot [ciste.runner]
   :cljsbuild {:builds
               {:main {:source-paths ["src-cljs"]
                       :notify-command ["notify-send"]
@@ -116,8 +121,6 @@
                            [slamhound "1.5.5"]
                            [com.palletops/log-config "0.1.4"]]}
              :reporting {:dependencies [[helpshift/hydrox "0.1.15"]]}
-             :uberjar {:main ciste.runner
-                       :aot [ciste.runner]}
              :e2e {:dependencies [[clj-webdriver "0.7.2" :exclusions [xalan]]
                                   [org.seleniumhq.selenium/selenium-java "2.52.0"]]
                    :cljsbuild {:builds

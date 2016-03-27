@@ -24,13 +24,15 @@
             [jiksnu.util :as util]
             [manifold.bus :as bus]
             [manifold.stream :as s]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:import kamon.Kamon))
 
 (defn handle-created
   [{:keys [collection-name event item] :as data}]
   (timbre/debugf "%s(%s)=>%s" collection-name (:_id item) event)
   ;; (util/inspect data)
   ;; (util/inspect item)
+  (.increment (.counter (Kamon/metrics) "records-created"))
   (try
     (condp = collection-name
 
@@ -64,36 +66,41 @@
 
 (defn start
   []
-  (db/set-database!)
-  ;; (model.activity/ensure-indexes)
-  (model.feed-source/ensure-indexes)
-  (model.user/ensure-indexes)
+  (Kamon/start)
 
-  ;; cascade delete on domain deletion
-  (dosync
-   (alter actions.user/delete-hooks conj #'actions.activity/handle-delete-hook))
+  (let [tracer (.newContext (Kamon/tracer) "foo")]
+    (db/set-database!)
+    ;; (model.activity/ensure-indexes)
+    (model.feed-source/ensure-indexes)
+    (model.user/ensure-indexes)
 
-  (actions.subscription/setup-delete-hooks)
+    ;; cascade delete on domain deletion
+    (dosync
+     (alter actions.user/delete-hooks conj #'actions.activity/handle-delete-hook))
 
-  (->> (bus/subscribe ch/events :activity-posted)
-       (s/consume actions.subscription/handle-follow-activity))
+    (actions.subscription/setup-delete-hooks)
 
-  (->> (bus/subscribe ch/events :activity-posted)
-       (s/consume actions.like/handle-like-activity))
+    (->> (bus/subscribe ch/events :activity-posted)
+         (s/consume actions.subscription/handle-follow-activity))
 
-  (triggers.domain/init-receivers)
+    (->> (bus/subscribe ch/events :activity-posted)
+         (s/consume actions.like/handle-like-activity))
 
-  ;; (timbre/info "setting up handle created")
-  (when-not ((get-handler event/emitter) ::templates.model/item-created)
-    (defobserver event/emitter ::templates.model/item-created handle-created))
+    (triggers.domain/init-receivers)
 
-  ;; (defobserver event/emitter ::templates.model/item-created
-  ;;   (fn [{:keys [collection-name event item]}]
-  ;;     (timbre/info "Duplicate observer")
-  ;;     (util/inspect event)))
+    ;; (timbre/info "setting up handle created")
+    (when-not ((get-handler event/emitter) ::templates.model/item-created)
+      (defobserver event/emitter ::templates.model/item-created handle-created))
 
-  (doseq [model-name registry/action-group-names]
-    (util/require-module "jiksnu.modules" "core" model-name)))
+    ;; (defobserver event/emitter ::templates.model/item-created
+    ;;   (fn [{:keys [collection-name event item]}]
+    ;;     (timbre/info "Duplicate observer")
+    ;;     (util/inspect event)))
+
+    (doseq [model-name registry/action-group-names]
+      (util/require-module "jiksnu.modules" "core" model-name))
+
+    (.finish tracer)))
 
 (defn stop
   []
@@ -102,6 +109,7 @@
   ;; (dosync
   ;;  (ref-set db/_db nil)
   ;;  (ref-set db/_conn nil))
+  (Kamon/shutdown)
   )
 
 (def module
