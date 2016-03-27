@@ -187,6 +187,20 @@ services:
       - maven-repo:/root/.m2
     networks:
       - backend
+  web-dev:
+    build: .
+    image: jiksnu
+    depends_on:
+      - mongo
+    environment:
+      JIKSNU_DB_URL: "mongodb://mongo/jiksnu_docker"
+      VIRTUAL_HOST: jiksnu.localtest.me
+      VIRTUAL_NETWORK: nginx-proxy
+    volumes:
+      - maven-repo:/root/.m2
+      - .:/app
+    networks:
+      - backend
 volumes:
   etcd-data:
     driver: local
