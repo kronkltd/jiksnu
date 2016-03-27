@@ -15,75 +15,80 @@ services:
       - backend
     # expose:
     #   - "9000"
-  drone:
-    image: drone/drone
-    env_file:
-      - /etc/drone/dronerc
-    environment:
-      VIRTUAL_PORT: drone.localtest.me
-    volumes:
-      - "/var/lib/docker:/var/lib/docker"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    networks:
-      - backend
+  # drone:
+  #   image: drone/drone
+  #   env_file:
+  #     - /etc/drone/dronerc
+  #   environment:
+  #     VIRTUAL_PORT: drone.localtest.me
+  #   volumes:
+  #     - "/var/lib/docker:/var/lib/docker"
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+  #   networks:
+  #     - backend
   elk:
     image: sebp/elk
     environment:
+      LOGSPOUT: ignore
       VIRTUAL_HOST: elk.localtest.me
       VIRTUAL_PORT: 5601
-    # ports:
-    #   - "5601:5601"
-    #   - "9200:9200"
-    #   - "5044:5044"
-    #   - "5000:5000"
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+      - "5000:5000"
     networks:
       # - frontend
       - backend
     volumes:
-      # - "./logstash.conf:/etc/logstash/conf.d/07-redis.conf"
-      - "./02-beats-input.conf:/etc/logstash/conf.d/02-beats-input.conf"
-  etcd:
-    image: microbox/etcd
-    command: "--name jiksnu -data-dir=/data"
-    depends_on:
-      - redis
-    ports:
-      - "4001:4001"
-      - "7001:7001"
-    links:
-      - redis
-    volumes:
-      - etcd-data:/data
-    networks:
-      - backend
-  kamon:
+      - "./docker/elk/01-lumberjack-input.conf:/etc/logstash/conf.d/01-lumberjack-input.conf"
+      - "./docker/elk/02-beats-input.conf:/etc/logstash/conf.d/02-beats-input.conf"
+  # etcd:
+  #   image: microbox/etcd
+  #   command: "--name jiksnu -data-dir=/data"
+  #   depends_on:
+  #     - redis
+  #   ports:
+  #     - "4001:4001"
+  #     - "7001:7001"
+  #   links:
+  #     - redis
+  #   volumes:
+  #     - etcd-data:/data
+  #   networks:
+  #     - backend
+  grafana:
     image: kamon/grafana_graphite:latest
     environment:
-      VIRTUAL_HOST: kamon.localtest.me
+      VIRTUAL_HOST: grafana.localtest.me
     networks:
       - backend
     volumes:
       - ./data/whisper:/opt/graphite/storage/whisper
       - ./data/elasticsearch:/var/lib/elasticsearch
       - ./data/grafana:/opt/grafana/data
-      - ./log/graphite:/opt/graphite/storage/log
-      - ./log/elasticsearch:/var/log/elasticsearch
+      - ./data/logs/graphite:/opt/graphite/storage/log
+      - ./data/logs/elasticsearch:/var/log/elasticsearch
   logspout:
-    image: rtoma/logspout-redis-logstash:0.1.1
-    command: 'redis://redis'
-    depends_on:
-      - redis
+    image: duck1123/docker-logspout-redis
+    build:
+      context: docker/logspout
+    # command: 'redis://redis'
+    # depends_on:
+    #   - redis
     environment:
-      Debug: 'true'
-      REDIS_KEY: 'logstash'
+      VIRTUAL_HOST: logspout.localtest.me
+      ROUTE_URIS: logstash://elk:5000
+      # Debug: 'true'
+      # REDIS_KEY: 'logstash'
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - backend
-  memcached:
-    image: memcached
-    networks:
-      - backend
+  # memcached:
+  #   image: memcached
+  #   networks:
+  #     - backend
   mongo:
     image: mongo
     volumes:
@@ -123,17 +128,17 @@ services:
     ports:
       - "80:80"
     volumes:
-      - "./volumes/conf.d:/etc/nginx/conf.d"
-      - "./volumes/vhost.d:/etc/nginx/vhost.d"
-      - "./volumes/certs:/etc/nginx/certs:ro"
+      - "./data/nginx/conf.d:/etc/nginx/conf.d"
+      - "./data/nginx/vhost.d:/etc/nginx/vhost.d"
+      - "./data/nginx/certs:/etc/nginx/certs:ro"
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
     networks:
       - frontend
       - backend
   postgresdb:
     image: postgres:9.4
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
@@ -160,7 +165,7 @@ services:
       - postgresdb
       - redis
       - sentry_worker
-    env_file: environment
+    env_file: docker/sentry/environment
     environment:
       VIRTUAL_HOST: sentry.localtest.me
     links:
@@ -179,7 +184,7 @@ services:
     depends_on:
       - postgresdb
       - redis
-    env_file: environment
+    env_file: docker/sentry/environment
     environment:
       C_FORCE_ROOT: "true"
     links:

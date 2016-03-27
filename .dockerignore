@@ -1,6 +1,7 @@
 .ackrc
 checkouts
 chef
+data
 docs
 environment
 features

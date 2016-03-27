@@ -28,15 +28,15 @@ RUN curl -L -O https://download.elastic.co/beats/filebeat/filebeat_1.0.1_amd64.d
  && dpkg -i filebeat_1.0.1_amd64.deb \
  && rm filebeat_1.0.1_amd64.deb
 
-ADD filebeat.yml /etc/filebeat/filebeat.yml
+ADD docker/elk/filebeat.yml /etc/filebeat/filebeat.yml
 
 # CA cert
 RUN mkdir -p /etc/pki/tls/certs
-ADD logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
+ADD docker/elk/logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
 
 
 
 ADD . ${JIKSNU_HOME}/
 RUN script/setup
 
-CMD [ "docker-bootstrap.sh"]
+CMD [ "script/docker"]
