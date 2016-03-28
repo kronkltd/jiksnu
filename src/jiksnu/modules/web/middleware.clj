@@ -122,8 +122,10 @@
 (defn wrap-response-logging
   [handler]
   (fn [request]
-    (.increment (.counter (Kamon/metrics) "request-handled"))
-    (util/inspect (:params request))
-    (let [response (handler request)]
-      (util/inspect (:body response))
-      response)))
+    (let [tracer (.newContext (Kamon/tracer) "http-request")]
+      (.increment (.counter (Kamon/metrics) "request-handled"))
+      (util/inspect (:params request))
+      (let [response (handler request)]
+        (util/inspect (:body response))
+        (.finish tracer)
+        response))))
