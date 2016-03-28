@@ -52,7 +52,8 @@
       (.runBuilderHelpers raven builder)
       (.sendEvent raven (.build builder)))))
 
-(def json-appender (assoc (spit-appender) :output-fn json-formatter))
+(def json-appender (assoc (spit-appender {:fname "logs/timbre-spit.log"})
+                          :output-fn json-formatter))
 (def raven-appender {:enabled? true
                      :async? false
                      :min-level nil

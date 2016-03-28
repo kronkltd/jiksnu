@@ -9,16 +9,7 @@ output:
 
 filebeat:
   prospectors:
-    # -
-    #   paths:
-    #     - /var/log/syslog
-    #     - /var/log/auth.log
-    #   document_type: syslog
     -
       paths:
-        - "/app/timbre-spit.log"
+        - "/app/logs/timbre-spit.log"
       document_type: json_lines
-    # -
-    #   paths:
-    #     - "/var/log/nginx/*.log"
-    #   document_type: nginx-access
