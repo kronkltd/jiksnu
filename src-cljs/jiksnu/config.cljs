@@ -1,13 +1,20 @@
 (ns jiksnu.config
   (:require jiksnu.app
             [jiksnu.helpers :as helpers]
-            jiksnu.providers)
+            jiksnu.providers
+            [taoensso.timbre :as timbre]
+            [taoensso.timbre.appenders.core :as appenders.core])
   (:use-macros [gyr.core :only [def.config]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
                     appProvider DSProvider DSHttpAdapterProvider
                     hljsServiceProvider NotificationProvider
                     uiSelectConfig]
+
+
+  ;; (timbre/merge-config!
+  ;;  {:appenders {:console (appenders.core/console-appender {:raw-output? true})}}
+  ;;  )
 
   (.setOptions hljsServiceProvider #js {:tabReplace "  "})
 
