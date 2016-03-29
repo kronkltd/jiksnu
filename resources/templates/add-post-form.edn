@@ -56,31 +56,16 @@
        [:a.btn {:ng-click "addTag()"}
         "Add Tags"]]]
      [:div.actions
-      [:debug {:expr "activity.streams"}]
       [:div
-       [:h3 "Streams"]
-       [:debug {:expr "streams"}]
        [:ui-select {:multiple ""
-                    :ng-model "streams"
-                    :style "width: 800px;"
-                    }
-        [:ui-select-match {:placeholder "Select Streams"} "{{$item}}"]
+                    :ng-model "activity.streams"
+                    :style "width: 800px;"}
+        [:ui-select-match {:placeholder "Select Streams"}
+         [:as-model {:model "stream" :data-id "{{$item}}"}
+          "{{$parent.item.name}}"]]
         [:ui-select-choices {:repeat "id in streams.items"}
-         #_[:div "{{id}}"]
-         [:show-stream-minimal {:data-id "{{id}}"}]
-         ]
-        ]
-       [:div
-        [:h4 "Added"]
-        [:ul
-         [:li {:ng-repeat "id in activity.streams"}
-          [:show-stream-minimal {:data-id "{{id}}"}]]]]
-       [:div
-        [:h4 "Available"]
-        [:ul
-         [:li {:ng-repeat "id in streams.items"}
-          [:a {:ng-click "addStream(id)"}
-           [:show-stream-minimal {:data-id "{{id}}"}]]]]]]
+         [:as-model {:model "stream" :data-id "{{id}}"}
+          "{{$parent.item.name}}"]]]]
       [:select {:name "privacy" :ng-model "activity.privacy"}
        [:option {:value "public"} "Public"]
        [:option {:value "group"} "Group"]

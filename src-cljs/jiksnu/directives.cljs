@@ -26,6 +26,13 @@
 (def.directive jiksnu.addWatcherForm []
   #js {})
 
+(def.directive jiksnu.asModel []
+  #js
+  {:controller "AsModelController"
+   :template "<span ng-transclude></span>"
+   :scope #js {:id "@" :model "@"}
+   :transclude true})
+
 (def.directive jiksnu.debug []
   #js
   {:controller "DebugController"
