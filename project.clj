@@ -90,6 +90,7 @@
   :auto-clean false
   :jvm-opts ["-server"
              "-Dfile.encoding=UTF-8"
+             "-Djava.library.path=native"
              ;; "-Dcom.sun.management.jmxremote"
              ;; "-Dcom.sun.management.jmxremote.ssl=false"
              ;; "-Dcom.sun.management.jmxremote.authenticate=false"
