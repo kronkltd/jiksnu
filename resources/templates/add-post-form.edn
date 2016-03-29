@@ -57,6 +57,7 @@
         "Add Tags"]]]
      [:div.actions
       [:div
+       [:debug {:expr "streams"}]
        [:ui-select {:multiple ""
                     :ng-model "activity.streams"
                     :style "width: 800px;"}
