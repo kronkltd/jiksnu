@@ -59,7 +59,7 @@
    [:script {:type "text/javascript"} "var CLOSURE_NO_DEPS = true;"]
    (p/include-js
     "/vendor/jquery/dist/jquery.min.js"
-    "/vendor/angular/angular.js"
+    "/vendor/angular/angular.min.js"
     "/vendor/angular-datatables/dist/angular-datatables.min.js"
     "/vendor/highlightjs/highlight.pack.js"
     "/vendor/moment/min/moment.min.js"
@@ -88,8 +88,7 @@
     "/cljs/jiksnu.js")
    (map #(% request response) @scripts-section-hook)
    [:script {:type "text/javascript"}
-    (format "Raven.config('%s').addPlugin(Raven.Plugins.Angular).install()"
-            (config :sentry :dsn :client))]))
+    (str "SENTRY_DSN_CLIENT=" (config :sentry :dsn :client))]))
 
 (defn page-template-content
   [request response]
