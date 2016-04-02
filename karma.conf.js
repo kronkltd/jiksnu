@@ -10,10 +10,7 @@ module.exports = function(config) {
     basePath: '',
 
     // frameworks to use
-    frameworks: [
-//    'angular',
-    'jasmine'
-    ],
+    frameworks: [ 'jasmine' ],
 
     // list of files / patterns to load in the browser
     files: [
@@ -43,6 +40,8 @@ module.exports = function(config) {
       vendorBase + "/angular-ui-select/dist/select.min.js",
       vendorBase + "/angular-validator/dist/angular-validator.min.js",
       vendorBase + "/angular-websocket/angular-websocket.min.js",
+      vendorBase + "/raven-js/dist/raven.min.js",
+      vendorBase + "/raven-js/dist/plugins/angular.min.js",
       vendorBase + "/angular-mocks/angular-mocks.js",
       "target/karma-test.js"
     ],
@@ -92,9 +91,7 @@ module.exports = function(config) {
     // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
     // - PhantomJS
     // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-    browsers: [
-    'PhantomJS'
-    ],
+    browsers: [ 'PhantomJS2' ],
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,
