@@ -34,7 +34,10 @@ ADD docker/elk/filebeat.yml /etc/filebeat/filebeat.yml
 RUN mkdir -p /etc/pki/tls/certs
 ADD docker/elk/logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
 
-
+# Add notify-send proxy
+RUN set -x \
+    && curl -sL https://github.com/fgrehm/notify-send-http/releases/download/v0.2.0/client-linux_amd64 > /usr/bin/notify-send \
+    && chmod +x /usr/bin/notify-send
 
 ADD . ${JIKSNU_HOME}/
 RUN script/setup
