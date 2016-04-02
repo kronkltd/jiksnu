@@ -2,11 +2,12 @@ version: '2'
 services:
   dockerui:
     image: microbox/dockerui
+    depends_on:
+      - proxy
     ports:
       - "9000:9000"
     environment:
       VIRTUAL_HOST: dockerui.localtest.me
-      VIRTUAL_NETWORK: nginx-proxy
     volumes:
       - /var/run/docker.sock:/docker.sock
     networks:
@@ -29,11 +30,9 @@ services:
       LOGSPOUT: ignore
       VIRTUAL_HOST: elk.localtest.me
       VIRTUAL_PORT: 5601
-    # ports:
-    #   - "5601:5601"
-    #   - "9200:9200"
-    #   - "5044:5044"
-    #   - "5000:5000"
+    depends_on:
+      - proxy
+      - logspout
     networks:
       - backend
     volumes:
@@ -57,6 +56,8 @@ services:
     image: kamon/grafana_graphite:latest
     environment:
       VIRTUAL_HOST: grafana.localtest.me
+    depends_on:
+      - proxy
     networks:
       - backend
     volumes:
@@ -76,10 +77,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - backend
-  # memcached:
-  #   image: memcached
-  #   networks:
-  #     - backend
   mongo:
     image: mongo
     volumes:
@@ -90,11 +87,11 @@ services:
     image: knickers/mongo-express
     depends_on:
       - mongo
+      - proxy
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: "admin"
       ME_CONFIG_BASICAUTH_PASSWORD: "admin"
       VIRTUAL_HOST: mongo.localtest.me
-      VIRTUAL_NETWORK: nginx-proxy
     networks:
       - backend
   mysql:
@@ -110,6 +107,7 @@ services:
       PMA_HOST: mysql
     depends_on:
       - mysql
+      - proxy
     networks:
       - backend
   proxy:
@@ -137,6 +135,9 @@ services:
   redis_commander:
     image: tenstartups/redis-commander
     command: --redis-host redis
+    depends_on:
+      - redis
+      - proxy
     environment:
       VIRTUAL_HOST: redis-commander.localtest.me
     networks:
@@ -147,13 +148,10 @@ services:
       - postgresdb
       - redis
       - sentry_worker
+      - proxy
     env_file: docker/sentry/environment
     environment:
       VIRTUAL_HOST: sentry.localtest.me
-    links:
-      - postgresdb
-      - redis
-      - sentry_worker
     networks:
       - backend
     volumes:
@@ -167,9 +165,6 @@ services:
     env_file: docker/sentry/environment
     environment:
       C_FORCE_ROOT: "true"
-    links:
-      - postgresdb:postgresdb
-      - redis:redis
     networks:
       - backend
     volumes:
@@ -179,10 +174,10 @@ services:
     image: jiksnu
     depends_on:
       - mongo
+      - proxy
     environment:
       JIKSNU_DB_URL: "mongodb://mongo/jiksnu_docker"
       VIRTUAL_HOST: jiksnu.localtest.me
-      VIRTUAL_NETWORK: nginx-proxy
     volumes:
       - maven-repo:/root/.m2
     networks:
@@ -192,10 +187,10 @@ services:
     image: jiksnu
     depends_on:
       - mongo
+      - proxy
     environment:
       JIKSNU_DB_URL: "mongodb://mongo/jiksnu_docker"
       VIRTUAL_HOST: jiksnu.localtest.me
-      VIRTUAL_NETWORK: nginx-proxy
     volumes:
       - maven-repo:/root/.m2
       - .:/app
