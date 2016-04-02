@@ -54,6 +54,3 @@ DEPENDENCIES
   guard
   guard-livereload (~> 2.4)
   guard-shell
-
-BUNDLED WITH
-   1.10.6

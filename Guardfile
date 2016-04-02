@@ -17,18 +17,10 @@
 
 require 'pty'
 
-clearing :on
-
 guard 'livereload' do
-  # watch(%r{app/views/.+\.(erb|haml|slim)$})
   watch(%r{target/karma-test.js})
   watch(%r{target/resources/css/.+\.css})
   watch(%r{target/resources/cljs/.+\.js})
-  # watch(%r{app/helpers/.+\.rb})
-  # watch(%r{public/.+\.(css|js|html)})
-  # watch(%r{config/locales/.+\.yml})
-  # Rails Assets Pipeline
-  # watch(%r{(app|vendor)(/assets/\w+/(.+\.(css|js|html|png|jpg))).*}) { |m| "/assets/#{m[3]}" }
 end
 
 def run_protractor
@@ -46,11 +38,11 @@ def run_protractor
   end
 end
 
-# guard :shell do
-#   watch(%r{specs/.+\.cljs?}) do
-#     `lein with-profile e2e cljsbuild once`
-#   end
-# end
+guard :shell do
+  watch(%r{specs/.+\.cljs?}) do
+    `lein with-profile e2e cljsbuild once`
+  end
+end
 
 guard :shell do
   # Protractor Config
