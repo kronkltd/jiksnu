@@ -111,7 +111,7 @@
   (let [message #js {:message (or (some-> data .-message reader/read-string :msg) "Error")}]
     (.. app
         (inject "Notification")
-        (.error message))))
+        (error message))))
 
 (defmethod handle-action "delete"
   [app data]
@@ -122,7 +122,7 @@
 
 (defmethod handle-action :default
   [app data]
-  (let [message (str "Unknown message: " data)]
+  (let [message (str "Unknown message: " (.stringify js/JSON data))]
     (.. app
         (inject "Notification")
         (warning message))))
