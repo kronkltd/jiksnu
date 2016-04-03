@@ -86,8 +86,9 @@
 (defn go
   "Navigate to the named state"
   [app state]
-  (let [$state (.inject app "$state")]
-    (.go $state state)))
+  (.. app
+      (inject "$state")
+      (go state)))
 
 (defmulti handle-action
   "Handler action response notifications"
@@ -96,8 +97,10 @@
 
 (defmethod handle-action "like"
   [app data]
-  (let [Notification (.inject app "Notification")]
-    (.success Notification (.-content (.-body data)))))
+  (let [message (.-content (.-body data))]
+    (.. app
+        (inject app "Notification")
+        (success message))))
 
 (defmethod handle-action "page-add"
   [app data]
@@ -105,40 +108,36 @@
 
 (defmethod handle-action "error"
   [app data]
-  (let [Notification (.inject app "Notification")
-        msg (or (some-> data .-message reader/read-string :msg)
-                "Error")]
-    (.error Notification #js {:message msg})))
+  (let [message #js {:message (or (some-> data .-message reader/read-string :msg) "Error")}]
+    (.. app
+        (inject "Notification")
+        (.error message))))
 
 (defmethod handle-action "delete"
   [app data]
-  (let [Notification (.inject app "Notification")
-        action (.-action data)]
-    (.warning Notification (str "Unknown action type: " action))))
+  (let [message (str "Unknown action type: " (.-action data))]
+    (.. app
+        (inject "Notification")
+        (warning message))))
 
 (defmethod handle-action :default
   [app data]
-  (let [Notification (.inject app "Notification")]
-    (.warning Notification (str "Unknown message: " data))))
+  (let [message (str "Unknown message: " data)]
+    (.. app
+        (inject "Notification")
+        (warning message))))
 
 (defn handle-message
   "Handler for incoming messages from websocket connection"
   [app message]
   (let [Notification (.inject app "Notification")
-        $rootScope (.inject app "$rootScope")
-        data (js/JSON.parse (.-data message))
-        action (.-action data)]
-    (timbre/debug "Received Message")
-    (js/console.debug data)
+        data-str (.-data message)
+        data (js/JSON.parse data-str)]
+    (timbre/debugf "Received Message - %s" data-str)
     (cond
-      (.-connection data)
-      (do
-        (.success Notification "connected"))
-
-      (.-action data) (handle-action app data)
-
-      :default
-      (.warning Notification (str "Unknown message: " data)))))
+      (.-connection data) (.success Notification "connected")
+      (.-action data)     (handle-action app data)
+      :default            (.warning Notification (str "Unknown message: " data-str)))))
 
 (defn invoke-action
   [app model-name action-name id]
