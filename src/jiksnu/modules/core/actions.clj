@@ -47,7 +47,7 @@
        (catch Throwable ex
          ;; FIXME: Handle error
          ))
-     (throw+ "page not found"))))
+     (throw+ {:message "page not found" :name page-name}))))
 
 (defn get-sub-page-ids
   [item page-name & args]

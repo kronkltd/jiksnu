@@ -10,6 +10,7 @@
             [midje.sweet :refer :all]))
 
 (th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.json"
                  "jiksnu.modules.command"])
 
 (facts "command 'get-model user'"
