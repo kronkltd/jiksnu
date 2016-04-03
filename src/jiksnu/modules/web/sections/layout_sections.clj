@@ -88,7 +88,7 @@
     "/cljs/jiksnu.js")
    (map #(% request response) @scripts-section-hook)
    [:script {:type "text/javascript"}
-    (str "SENTRY_DSN_CLIENT=" (config :sentry :dsn :client))]))
+    (str "SENTRY_DSN_CLIENT=\"" (config :sentry :dsn :client) "\"")]))
 
 (defn page-template-content
   [request response]
