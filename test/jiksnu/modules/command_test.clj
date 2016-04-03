@@ -11,7 +11,9 @@
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.json"
-                 "jiksnu.modules.command"])
+                 "jiksnu.modules.command"
+                 ;; FIXME: This shouldn't be required
+                 "jiksnu.modules.web"])
 
 (facts "command 'get-model user'"
   (let [command "get-model"
