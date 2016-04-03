@@ -10,10 +10,10 @@
   "Create a stream with the given name"
   [app stream-name]
   (timbre/info "Creating Stream")
-  (let [$http (.inject app "$http")
-        params #js {:name stream-name}]
-    (-> (.post $http "/model/streams" params)
-        (.then #(.-data %)))))
+  (.. app
+      (inject "$http")
+      (post "/model/streams" #js {:name stream-name})
+      (then #(.-data %))))
 
 (defn connect
   "Establish a websocket connection"
@@ -24,19 +24,20 @@
   "Delete the stream matching the id"
   [app id]
   (timbre/info "Deleting stream" id)
-  (.post app #js {:action "delete"
-                  :object
-                  #js {:id id}}))
+  (let [activity #js {:action "delete"
+                      :object #js {:id id}}]
+    (.post app activity)))
 
 (defn fetch-status
   "Fetch the status from the server"
   [app]
   (timbre/debug "fetching app status")
-  (let [$http (.inject app "$http")]
-    (.. (get $http "/status")
-        (then (fn [response]
-                (timbre/debug "setting app status")
-                (set! (.-data app) (.-data response)))))))
+  (.. app
+      (inject "$http")
+      (get "/status")
+      (then (fn [response]
+              (timbre/debug "setting app status")
+              (set! (.-data app) (.-data response))))))
 
 (defn follow
   "Follow the target user"
@@ -49,7 +50,7 @@
 (defn following?
   "Is the currently authenticated user following the target user"
   [app target]
-  (.. (getUser app)
+  (.. app getUser
       (then (fn [user]
                (let [response (= (.-_id user) (.-_id target))]
                  (timbre/debugf "following?: %s" response)
@@ -88,6 +89,38 @@
   (let [$state (.inject app "$state")]
     (.go $state state)))
 
+(defmulti handle-action
+  "Handler action response notifications"
+  (fn [app data] (.-action data))
+  :default :default)
+
+(defmethod handle-action "like"
+  [app data]
+  (let [Notification (.inject app "Notification")]
+    (.success Notification (.-content (.-body data)))))
+
+(defmethod handle-action "page-add"
+  [app data]
+  (update-page app data))
+
+(defmethod handle-action "error"
+  [app data]
+  (let [Notification (.inject app "Notification")
+        msg (or (some-> data .-message reader/read-string :msg)
+                "Error")]
+    (.error Notification #js {:message msg})))
+
+(defmethod handle-action "delete"
+  [app data]
+  (let [Notification (.inject app "Notification")
+        action (.-action data)]
+    (.warning Notification (str "Unknown action type: " action))))
+
+(defmethod handle-action :default
+  [app data]
+  (let [Notification (.inject app "Notification")]
+    (.warning Notification (str "Unknown message: " data))))
+
 (defn handle-message
   "Handler for incoming messages from websocket connection"
   [app message]
@@ -102,21 +135,7 @@
       (do
         (.success Notification "connected"))
 
-      (.-action data)
-      (condp = action
-        "like"
-        (.success Notification (.-content (.-body data)))
-
-        "page-add"
-        (update-page app message)
-
-        "error"
-        (let [msg (or (some-> data .-message reader/read-string :msg)
-                      "Error")]
-          (.error Notification #js {:message msg}))
-
-        "delete" (.refresh app)
-        (.warning Notification (str "Unknown action type: " action)))
+      (.-action data) (handle-action app data)
 
       :default
       (.warning Notification (str "Unknown message: " data)))))
