@@ -1,6 +1,7 @@
 (ns jiksnu.providers-test
   (:require jiksnu.providers
-            [purnam.test :refer-macros [beforeEach describe is it]]))
+            [purnam.test :refer-macros [beforeEach describe is it]]
+            [taoensso.timbre :as timbre]))
 
 (declare $httpBackend)
 (declare app)
@@ -33,4 +34,11 @@
               (.then #(reset! response %)))
 
           (.flush $httpBackend)
-          (is @response stream-name))))))
+          (is @response stream-name))))
+
+    (describe {:doc ".connect"}
+      (it "should open a websocket connection"
+        (let [spy (.. (js/spyOn app "send")
+                      -and
+                      (returnValue "foo"))])
+        (timbre/spy (.connect app))))))

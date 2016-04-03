@@ -75,9 +75,7 @@
         (is $scope.loaded false))
 
       (it "should call fetchStatus"
-        (let [mock-then (fn [f]
-                          (timbre/info "replacement")
-                          (f))
+        (let [mock-then (fn [f] (f))
               mock-response #js {:then mock-then}]
           (set! (.-fetchStatus app) (constantly mock-response))
           (@$controller nav-bar-controller injections)
@@ -113,8 +111,7 @@
             (set! (.-stream $scope) params)
 
             (-> (.addStream $scope)
-                (.then (fn [response]
-                         (is response nil)))))))
+                (.then #(is % nil))))))
 
       (describe {:doc "delete"})))
 
@@ -135,10 +132,11 @@
             (let [spy (.. (js/spyOn app "invokeAction")
                           -and
                           (returnValue
-                           (.when $q #js {})))]
-              (-> (.deleteRecord $scope (.-item $scope))
-                  (.then (fn [r] (.toBeDefined (js/expect r)))
-                         (fn [r] (.toBeDefined (js/expect r))))
+                           (.when $q #js {})))
+                  item (.-item $scope)]
+              (-> (.deleteRecord $scope item)
+                  (.then #(.. (js/expect %) toBeDefined)
+                         #(.. (js/expect %) toBeDefined))
                   (.finally (fn [] (js/done))))
               (.$apply $scope)
               (.toHaveBeenCalled (js/expect spy))))))))

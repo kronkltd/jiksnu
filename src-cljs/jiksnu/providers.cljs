@@ -7,6 +7,7 @@
 (declare update-page)
 
 (defn add-stream
+  "Create a stream with the given name"
   [app stream-name]
   (timbre/info "Creating Stream")
   (let [$http (.inject app "$http")
@@ -15,17 +16,47 @@
         (.then #(.-data %)))))
 
 (defn connect
+  "Establish a websocket connection"
   [app]
   (.send app "connect"))
 
 (defn delete-stream
+  "Delete the stream matching the id"
   [app id]
   (timbre/info "Deleting stream" id)
   (.post app #js {:action "delete"
                   :object
                   #js {:id id}}))
 
+(defn fetch-status
+  "Fetch the status from the server"
+  [app]
+  (timbre/debug "fetching app status")
+  (let [$http (.inject app "$http")]
+    (.. (get $http "/status")
+        (then (fn [response]
+                (timbre/debug "setting app status")
+                (set! (.-data app) (.-data response)))))))
+
+(defn follow
+  "Follow the target user"
+  [app target]
+  (timbre/debug "follow" target)
+  (let [object  #js {:id (.-_id target)}
+        activity #js {:verb "follow" :object object}]
+    (.post app activity)))
+
+(defn following?
+  "Is the currently authenticated user following the target user"
+  [app target]
+  (.. (getUser app)
+      (then (fn [user]
+               (let [response (= (.-_id user) (.-_id target))]
+                 (timbre/debugf "following?: %s" response)
+                 response)))))
+
 (defn get-user
+  "Return the authenticated user"
   [app]
   (let [$q (.inject app "$q")
         Users (.inject app "Users")]
@@ -52,35 +83,13 @@
       nil)))
 
 (defn go
+  "Navigate to the named state"
   [app state]
   (let [$state (.inject app "$state")]
     (.go $state state)))
 
-(defn fetch-status
-  [app]
-  (timbre/debug "fetching app status")
-  (let [$http (.inject app "$http")]
-    (-> (.get $http "/status")
-        (.then (fn [response]
-                 (timbre/debug "setting app status")
-                 (set! (.-data app) (.-data response)))))))
-
-(defn follow
-  [app target]
-  (timbre/debug "follow" target)
-  (let [object  #js {:id (.-_id target)}
-        activity #js {:verb "follow" :object object}]
-    (.post app activity)))
-
-(defn following?
-  [app target]
-  (-> (.getUser app)
-      (.then (fn [user]
-               (let [response (= (.-_id user) (.-_id target))]
-                 (timbre/debugf "following?: %s" response)
-                 response)))))
-
 (defn handle-message
+  "Handler for incoming messages from websocket connection"
   [app message]
   (let [Notification (.inject app "Notification")
         $rootScope (.inject app "$rootScope")
@@ -176,7 +185,7 @@
 (defn send
   [app command]
   (timbre/debugf "Sending command: %s" command)
-  (.send (.. app -connection) command))
+  (.. app -connection (send command)))
 
 (defn unfollow
   [app target]
@@ -213,52 +222,43 @@
    :unfollow      unfollow
    })
 
-(defn app-service
-  [$http $q $state Notification Users $websocket $window DS
-   pageService subpageService $injector]
-  (timbre/debug "creating app service")
-  (let [app #js {:inject (.-get $injector)}
-        data #js {}
-        websocket-url (if-let [location (.-location $window)]
-                        (str "ws"
-                             (when (= (.-protocol location) "https:") "s")
-                             "://"
-                             (.-host location) "/")
-                        (throw (js/Error. "No location available")))
-        connection ($websocket websocket-url)]
-
-    (set! (.-connection app) connection)
-    (set! (.-data app) data)
-
-    (doseq [[n f] app-methods]
-      (aset app (name n) (partial f app)))
-
-    (.onMessage connection (.-handleMessage app))
-
-    #_(.onOpen connection
-             (fn []
-               (timbre/debug "Websocket connection opened")))
-
-    (.onClose connection
-              (fn []
-                (timbre/debug "Websocket connection closed")
-                (.reconnect connection)))
-
-    (.onError connection
-              (fn []
-                (timbre/warn "Websocket connection errored")))
-
-    ;; Bind to window for easy debugging
-    (set! (.-app js/window) app)
-
-    ;; return the app
-    app))
+(defn get-websocket-connection
+  [app]
+  (let [$websocket (.inject app "$websocket")
+        $window (.inject app "$window")]
+    (if-let [location (.-location $window)]
+      (let [host (.-host location)
+            scheme (str "ws" (when (= (.-protocol location) "https:") "s"))
+            websocket-url (str scheme "://" host "/")
+            connection ($websocket websocket-url)]
+        (doto connection
+          (.onMessage (.-handleMessage app))
+          (.onOpen (fn []
+                     (timbre/debug "Websocket connection opened")))
+          (.onClose (fn []
+                      (timbre/debug "Websocket connection closed")
+                      (.reconnect connection)))
+          (.onError (fn []
+                      (timbre/warn "Websocket connection errored")))))
+      (throw (js/Error. "No location available")))))
 
 (def.provider jiksnu.app
   []
-  (timbre/debug "initializing app service")
-  #js {:$get
-       #js
-       ["$http" "$q" "$state" "Notification" "Users" "$websocket" "$window" "DS"
-        "pageService" "subpageService" "$injector"
-        app-service]})
+  #js
+  {:$get
+   #js
+   ["$injector"
+    (fn [$injector]
+      (timbre/debug "creating app service")
+      (let [app #js {:inject (.-get $injector)}]
+        (doseq [[n f] app-methods]
+          (aset app (name n) (partial f app)))
+
+        (set! (.-connection app) (get-websocket-connection app))
+        (set! (.-data app)       #js {})
+
+        ;; Bind to window for easy debugging
+        (set! (.-app js/window) app)
+
+        ;; return the app
+        app))]})
