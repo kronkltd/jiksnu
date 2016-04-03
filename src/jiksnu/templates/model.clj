@@ -55,8 +55,7 @@
   (fn [item]
     (let [response (mc/remove-by-id @_db collection-name (:_id item))]
       (when (pos? (.getN response))
-        (notify ::item-deleted {:item item
-                                :collection collection-name})
+        (notify ::item-deleted {:item item :collection collection-name})
         item))))
 
 (defn make-dropper

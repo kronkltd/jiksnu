@@ -32,11 +32,13 @@
       (actions.domain/delete domain) => nil?))
 
   (fact "when the domain exists"
-    (let [domain (mock/a-domain-exists)]
-      (fact "should return the domain"
-        (actions.domain/delete domain) => domain)
-      (fact "should be deleted"
-        (model.domain/fetch-by-id (:_id domain)) => nil?))))
+    (let [domain (mock/a-domain-exists)
+          id (:_id domain)]
+      ;; Returns the domain, if deleted
+      (actions.domain/delete domain) => domain
+
+      ;; Should be deleted
+      (model.domain/fetch-by-id id) => nil?)))
 
 (fact "#'actions.domain/show"
   (actions.domain/show .domain.) => .domain.)
