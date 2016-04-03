@@ -73,6 +73,8 @@ services:
       NOTIFY_SEND_URL: http://172.17.0.1:12345
       VIRTUAL_HOST: karma.localtest.me
       VIRTUAL_PORT: 9876
+    ports:
+      - "35729:35729"
     networks:
       - backend
     volumes:
