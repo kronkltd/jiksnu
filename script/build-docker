@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+set -x
+
+docker build -t jiksnu-base      docker/jiksnu-base/
+docker build -t jiksnu-ruby-base docker/jiksnu-ruby-base/
+docker-compose build web
+docker-compose build web-dev

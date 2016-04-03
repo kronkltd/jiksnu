@@ -127,12 +127,17 @@
         (inject "Notification")
         (warning message))))
 
+(defn on-connection-established
+  [app data]
+  )
+
 (defn handle-message
   "Handler for incoming messages from websocket connection"
   [app message]
   (let [Notification (.inject app "Notification")
         data-str (.-data message)
         data (js/JSON.parse data-str)]
+    (js/console.log message)
     (timbre/debugf "Received Message - %s" data-str)
     (cond
       (.-connection data) (.success Notification "connected")
