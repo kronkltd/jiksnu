@@ -17,6 +17,8 @@
            java.security.KeyStore
            java.security.PublicKey
            java.security.Signature
+           java.security.interfaces.RSAPrivateCrtKey
+           java.security.interfaces.RSAPublicKey
            java.security.spec.RSAPrivateKeySpec
            java.security.spec.RSAPublicKeySpec
            jiksnu.model.Key
@@ -34,8 +36,8 @@
 ))
 
 
-(def key-factory (KeyFactory/getInstance "RSA"))
-(def keypair-generator (KeyPairGenerator/getInstance "RSA"))
+(def ^KeyFactory key-factory (KeyFactory/getInstance "RSA"))
+(def ^KeyPairGenerator keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
 
 (def count-records (templates.model/make-counter       collection-name))
@@ -60,12 +62,12 @@
   []
   (.genKeyPair ^KeyPairGenerator keypair-generator))
 
-(defn ^PublicKey public-key
+(defn ^RSAPublicKey public-key
   "Extracts the public key from the keypair"
   [^KeyPair keypair]
   (.getPublic keypair))
 
-(defn ^PrivateKey private-key
+(defn ^RSAPrivateCrtKey private-key
   [^KeyPair keypair]
   (.getPrivate keypair))
 

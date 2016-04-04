@@ -45,6 +45,7 @@
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/octohipster "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
+                 [org.clojure/core.cache "0.6.3"]
                  [org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.228"]
                  [org.clojure/tools.logging "0.3.1"]
