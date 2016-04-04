@@ -17,12 +17,6 @@
 
 require 'pty'
 
-guard 'livereload' do
-  watch(%r{target/karma-test.js})
-  watch(%r{target/resources/css/.+\.css})
-  watch(%r{target/resources/cljs/.+\.js})
-end
-
 def run_protractor
   cmd = "lein protractor"
 
@@ -38,22 +32,30 @@ def run_protractor
   end
 end
 
+guard 'livereload' do
+  watch(%r{target/karma-test.js})
+  watch(%r{target/resources/css/.+\.css})
+  watch(%r{target/resources/cljs/.+\.js})
+end
+
 guard :shell do
   watch(%r{specs/.+\.cljs?}) do
     `lein with-profile e2e cljsbuild once`
   end
 end
 
-guard :shell do
-  # Protractor Config
-  watch(%r{protractor.config.js}) {run_protractor}
+group :e2e do
+  guard :shell do
+    # Protractor Config
+    watch(%r{protractor.config.js}) {run_protractor}
 
-  # Step definitions
-  watch(%r{target/protractor-tests.js}) {run_protractor}
+    # Step definitions
+    watch(%r{target/protractor-tests.js}) {run_protractor}
 
-  # Features
-  watch(%r{features/.+\.feature}) {run_protractor}
+    # Features
+    watch(%r{features/.+\.feature}) {run_protractor}
 
-  # Page templates
-  watch(%r{resources/templates/.+\.edn}) {run_protractor}
+    # Page templates
+    watch(%r{resources/templates/.+\.edn}) {run_protractor}
+  end
 end
