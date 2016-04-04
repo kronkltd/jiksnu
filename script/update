@@ -4,9 +4,7 @@ set -e
 
 script/bootstrap
 
-echo ">> Compiling Less"
-lein less once
-
+script/compile-less
 script/cljs
 
 lein compile

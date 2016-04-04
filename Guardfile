@@ -38,6 +38,13 @@ guard 'livereload' do
   watch(%r{target/resources/cljs/.+\.js})
 end
 
+guard :shell do
+  watch(%r{less/[^.].+\.less}) do
+    `script/compile-less`
+    `notify-send "CSS updated"`
+  end
+end
+
 group :e2e do
   guard :shell do
     # Protractor Config
