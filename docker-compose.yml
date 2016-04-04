@@ -1,5 +1,15 @@
 version: '2'
 services:
+  base:
+    build:
+      context: .
+      dockerfile: docker/jiksnu-base/Dockerfile
+    image: jiksnu-base
+  ruby-base:
+    build:
+      context: .
+      dockerfile: docker/jiksnu-ruby-base/Dockerfile
+    image: jiksnu-ruby-base
   dockerui:
     image: microbox/dockerui
     depends_on:
@@ -67,7 +77,9 @@ services:
       - ./data/logs/graphite:/opt/graphite/storage/log
       - ./data/logs/elasticsearch:/var/log/elasticsearch
   karma:
-    build: docker/karma
+    build:
+      dockerfile: docker/karma/Dockerfile
+      context: .
     image: jiksnu-karma
     environment:
       NOTIFY_SEND_URL: http://172.17.0.1:12345
