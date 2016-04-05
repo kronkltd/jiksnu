@@ -81,6 +81,9 @@ services:
       dockerfile: docker/karma/Dockerfile
       context: .
     image: jiksnu-karma
+    depends_on:
+      - proxy
+      - elk
     environment:
       NOTIFY_SEND_URL: http://172.17.0.1:12345
       VIRTUAL_HOST: karma.localtest.me
