@@ -79,32 +79,28 @@
 
   (set! (.-isFollowing $scope)
         (fn []
-          (let [d (.defer $q)]
-            (if-let [user (.-item $scope)]
-              (do
-                (timbre/debug "Checking if following")
-                (.. app
-                   (getUser)
-                   (then (fn [actor]
-                           (timbre/debug "Got an actor")
-                           (.getFollowing actor))
-                         (fn []
-                           (timbre/warn "no actor")
-                           )
-                         )
-                   (then (fn [page]
-                           (->> (.-items page)
-                                (map #(.find Subscriptions %))
-                                clj->js
-                                (.all $q))))
-                   (then (fn [subscriptions]
-                           (let [s (some #(= (.-to %) (.-_id user))
-                                         subscriptions)]
-                             (.resolve d s))))))
-              (do
-                (timbre/warn "No item bound to scope")
-                (.resolve d nil)))
-            (.-promise d))))
+          ($q
+           (fn [resolve reject]
+             (if-let [user (.-item $scope)]
+               (let [user-id (.-_id user)]
+                 (timbre/debug "Checking if following")
+                 (.. app
+                     (getUser)
+                     (then #(some-> % .getFollowing))
+                     (then (fn [page]
+                             (timbre/debug "Got page")
+                             (when page
+                               (->> (.-items page)
+                                    (map (.-find Subscriptions))
+                                    clj->js
+                                    (.all $q)))))
+                     (then (fn [subscriptions]
+                             (timbre/debug "got subscriptions")
+                             (some #(#{user-id} (.-to %)) subscriptions)))
+                     (then resolve)))
+               (do
+                 (timbre/warn "No item bound to scope")
+                 (reject)))))))
 
   (set! (.-submit $scope)
         (fn []
