@@ -163,6 +163,7 @@
     (.send app msg)))
 
 (defn login
+  "Authenticate session"
   [app username password]
   (let [$http (.inject app "$http")]
     (timbre/infof "Logging in user. %s:%s" username password)
@@ -177,6 +178,7 @@
                  (.go app "home"))))))
 
 (defn logout
+  "Log out the authenticated user"
   [app]
   (let [$http (.inject app "$http")]
     (-> (.post $http "/main/logout")
@@ -185,21 +187,25 @@
                     (.fetchStatus app))))))
 
 (defn ping
+  "Send a ping command"
   [app]
   (.send app "ping"))
 
 (defn post
+  "Create a new activity"
   [app activity]
   (let [$http (.inject app "$http")]
     (timbre/infof "Posting Activity - %s" activity)
     (.post $http "/model/activities" activity)))
 
 (defn refresh
+  "Send a signal for collections to refresh themselves"
   [app]
   (let [$rootScope (.inject app "$rootScope")]
     (.$broadcast $rootScope "updateCollection")))
 
 (defn register
+  "Register a new user"
   [app params]
   (timbre/debugf "Registering - %s" (.-reg params))
   (let [$http (.inject app "$http")
@@ -212,11 +218,13 @@
                  data)))))
 
 (defn send
+  "Send a command over the websocket connection"
   [app command]
   (timbre/debugf "Sending command: %s" command)
   (.. app -connection (send command)))
 
 (defn unfollow
+  "Remove a subscription to target"
   [app target]
   (timbre/debug "unfollow - %s" target)
   (let [object #js {:id (.-_id target)}
@@ -224,6 +232,7 @@
     (.post app activity)))
 
 (defn update-page
+  "Notify a page update"
   [app message]
   (let [Notification (.inject app "Notification")]
     (.info Notification "Adding to page")))
@@ -252,6 +261,7 @@
    })
 
 (defn get-websocket-connection
+  "Create a websocket connection to the server"
   [app]
   (let [$websocket (.inject app "$websocket")
         $window (.inject app "$window")]
