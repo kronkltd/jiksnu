@@ -197,6 +197,19 @@ services:
     #   - backend
     volumes:
       - sentry-files:/data
+  skydock:
+    image: crosbymichael/skydock
+    command: -ttl 30 -environment dev -s /docker.sock -domain docker -skydns http://172.22.0.3:8080
+    # -name skydns
+    # -skydns http://skydns:8080
+    volumes:
+      - /var/run/docker.sock:/docker.sock
+  skydns:
+    image: crosbymichael/skydns
+    command: -nameserver 8.8.8.8:53 -domain docker -metricsToStdErr
+    dns: 8.8.8.8:53
+    ports:
+      - 172.17.42.1:53:53/udp
   web:
     build: .
     image: jiksnu
@@ -238,7 +251,12 @@ volumes:
     driver: local
   sentry-files:
     driver: local
-# networks:
+networks:
+  default:
+    # driver: bridge
+    external:
+      name: nginx-proxy
+
 #   frontend:
 #     # driver: bridge
 #     external:
