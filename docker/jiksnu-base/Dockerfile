@@ -29,12 +29,11 @@ RUN set -x \
     && dpkg -i filebeat_1.0.1_amd64.deb \
     && rm filebeat_1.0.1_amd64.deb
 
-ADD filebeat.yml /etc/filebeat/filebeat.yml
 
 ### Add certs for Filebeat
 # CA cert
-# RUN mkdir -p /etc/pki/tls/certs
-# ADD docker/elk/logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
+ADD filebeat.yml /etc/filebeat/filebeat.yml
+ADD logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
 
 ### Add notify-send proxy
 RUN set -x \
