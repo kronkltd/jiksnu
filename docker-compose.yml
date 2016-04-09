@@ -1,11 +1,11 @@
 version: '2'
 services:
-  base:
+  jiksnu-base:
     build:
       context: .
       dockerfile: docker/jiksnu-base/Dockerfile
     image: jiksnu-base
-  ruby-base:
+  jiksnu-ruby-base:
     build:
       context: .
       dockerfile: docker/jiksnu-ruby-base/Dockerfile

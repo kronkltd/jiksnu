@@ -7,13 +7,14 @@ ENV JIKSNU_HOME /app
 WORKDIR ${JIKSNU_HOME}
 
 ### Install build dependencies
-# RUN set -x \
-#     && apt-get update \
-#     && apt-get install -y --no-install-recommends \
-#        curl \
-#        git \
-#        build-essential \
-#     && rm -rf /var/lib/apt/lists/*
+RUN set -x \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+       build-essential \
+       curl \
+       git \
+       netcat \
+    && rm -rf /var/lib/apt/lists/*
 
 ### Install nodejs
 RUN set -x \
