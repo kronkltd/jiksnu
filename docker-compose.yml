@@ -41,8 +41,7 @@ services:
       - proxy
       - logspout
     volumes:
-      - "./docker/elk/01-lumberjack-input.conf:/etc/logstash/conf.d/01-lumberjack-input.conf"
-      - "./docker/elk/02-beats-input.conf:/etc/logstash/conf.d/02-beats-input.conf"
+      - "./docker/elk/conf.d:/etc/logstash/conf.d"
   # etcd:
   #   image: microbox/etcd
   #   command: "--name jiksnu -data-dir=/data"
