@@ -55,7 +55,8 @@
                 (follow)
                 (then #(.. (js/expect true) (toBeFalsy))
                       #(.. (js/expect true) (toBeTruthy)))
-                (finally done))))))
+                (finally done))
+            (.$digest $rootScope)))))
 
     (describe {:doc ".getUser"}
       (describe {:doc "when not authenticated"}
