@@ -41,4 +41,26 @@
         (let [spy (.. (js/spyOn app "send")
                       -and
                       (returnValue "foo"))])
-        (timbre/spy (.connect app))))))
+        (timbre/spy (.connect app))))
+
+    (describe {:doc ".getUser"}
+      (describe {:doc "when authenticated"}
+        (js/it "resolves to nil"
+          (fn [done]
+            (let [p (.getUser app)]
+              (js/console.log p)
+              (.then p (fn [user]
+                      (timbre/info "success path")
+                      (is user nil)
+                      (done)
+                      )
+                    (fn [user]
+                      (timbre/info "error path")
+                      (is user nil)
+                      (done)
+                      )
+                    )
+              )))
+        )
+      )
+    ))

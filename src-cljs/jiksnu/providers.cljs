@@ -62,11 +62,10 @@
   (let [$q (.inject app "$q")
         Users (.inject app "Users")]
     ($q (fn [resolve reject]
-          (if-let [id (.getUserId app)]
-            (do (timbre/debugf "getting user: %s" id)
-                (resolve (.find Users id)))
-            (do
-              (timbre/warn "No id")
+          (let [id (.getUserId app)]
+            (timbre/debugf "getting user: %s" id)
+            (if id
+              (resolve (.find Users id))
               (reject nil)))))))
 
 (defn get-user-id

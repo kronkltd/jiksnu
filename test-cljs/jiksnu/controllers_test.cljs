@@ -38,47 +38,58 @@
 
            (set! injections #js {:$scope $scope :app app}))]))
 
-  (describe {:doc "FollowButtonController"}
-    (let [item-id "acct:foo@example.com"
-          controller-name "FollowButtonController"]
-      (describe {:doc "isActor"}
-        (describe {:doc "When not authenticated"}
-          (it "should return false"
-            (@$controller controller-name injections)
-            (set! (.-item $scope) #js {:_id item-id})
-            (is (.isActor $scope) false)))
-        (describe {:doc "When authenticated"}
-          (describe {:doc "As another user"}
+  (let [controller-name "FollowButtonController"]
+    (describe {:doc controller-name}
+      (let [item-id "acct:foo@example.com"]
+        (describe {:doc ".isActor"}
+          (describe {:doc "When not authenticated"}
             (it "should return false"
               (@$controller controller-name injections)
-              (set! (.-domain (.-data app)) "example.com")
-              (set! (.-user (.-data app)) "bar")
               (set! (.-item $scope) #js {:_id item-id})
               (is (.isActor $scope) false)))
-          (describe {:doc "As the actor"}
-            (it "should return true"
-              (@$controller controller-name injections)
-              (set! (.-domain (.-data app)) "example.com")
-              (set! (.-user (.-data app)) "foo")
-              (set! (.-item $scope) #js {:_id item-id})
-              (is (.isActor $scope) true)))))))
+          (describe {:doc "When authenticated"}
+            (describe {:doc "As another user"}
+              (it "should return false"
+                (@$controller controller-name injections)
+                (set! (.-domain (.-data app)) "example.com")
+                (set! (.-user (.-data app)) "bar")
+                (set! (.-item $scope) #js {:_id item-id})
+                (is (.isActor $scope) false)))
+            (describe {:doc "As the actor"}
+              (it "should return true"
+                (@$controller controller-name injections)
+                (set! (.-domain (.-data app)) "example.com")
+                (set! (.-user (.-data app)) "foo")
+                (set! (.-item $scope) #js {:_id item-id})
+                (is (.isActor $scope) true)))))
+        (describe {:doc ".isFollowing"}
+          (describe {:doc "when not authenticated"}
+            (js/xit "should return false"
+              (fn [done]
+                (@$controller controller-name injections)
+                (set! (.-item $scope) #js {:_id item-id})
+                (..  $scope
+                     (isFollowing)
+                     (then (fn [r]
+                             (is r true)
+                             (done)))))))))))
 
-  (let [nav-bar-controller "NavBarController"]
-    (describe {:doc nav-bar-controller}
+  (let [controller-name "NavBarController"]
+    (describe {:doc controller-name}
       (beforeEach
        (let [mock-then (fn [f] #_(f))
              mock-response #js {:then mock-then}]
          (set! (.-fetchStatus app) (constantly mock-response))))
 
       (it "should be unloaded by default"
-        (@$controller nav-bar-controller injections)
+        (@$controller controller-name injections)
         (is $scope.loaded false))
 
       (it "should call fetchStatus"
         (let [mock-then (fn [f] (f))
               mock-response #js {:then mock-then}]
           (set! (.-fetchStatus app) (constantly mock-response))
-          (@$controller nav-bar-controller injections)
+          (@$controller controller-name injections)
           (is $scope.loaded true)))
 
       (it "should bind the app service to app2"
@@ -87,36 +98,36 @@
 
         (is $scope.app2.foo "bar"))))
 
-  (let [new-group-controller "NewGroupController"]
-    (describe {:doc new-group-controller}
+  (let [controller-name "NewGroupController"]
+    (describe {:doc controller-name}
       (beforeEach
        (timbre/info "Set up controller"))
 
       (describe {:doc ".submit"}
         (it "Should send the form"
-          (@$controller new-group-controller injections)
+          (@$controller controller-name injections)
           (.submit $scope)))))
 
-  (let [list-streams-controller "ListStreamsController"]
-    (describe {:doc list-streams-controller}
+  (let [controller-name "ListStreamsController"]
+    (describe {:doc controller-name}
       (beforeEach
        (let [user #js {:_id "foo"}]
          (set! (.-user $scope) user)))
 
-      (describe {:doc "addStream"}
+      (describe {:doc ".addStream"}
         (it "sends an add-stream notice to the server"
           (let [stream-name "bar"
                 params #js {:name stream-name}]
-            (@$controller list-streams-controller injections)
+            (@$controller controller-name injections)
             (set! (.-stream $scope) params)
 
             (-> (.addStream $scope)
                 (.then #(is % nil))))))
 
-      (describe {:doc "delete"})))
+      (describe {:doc ".delete"})))
 
-  (let [show-conversation-controller "ShowConversationController"]
-    (describe {:doc show-conversation-controller}
+  (let [controller-name "ShowConversationController"]
+    (describe {:doc controller-name}
       (beforeEach
        (set! (.-id $scope) "1")
        (set! (.-init $scope)
@@ -125,10 +136,10 @@
                (set! (.-item $scope) #js {:id "1"})
                (set! (.-loaded $scope) true))))
 
-      (describe {:doc "deleteRecord"}
+      (describe {:doc ".deleteRecord"}
         (js/it "sends a delete action"
           (fn [done]
-            (@$controller show-conversation-controller injections)
+            (@$controller controller-name injections)
             (let [spy (.. (js/spyOn app "invokeAction")
                           -and
                           (returnValue
