@@ -3,22 +3,26 @@
             [purnam.test :refer-macros [beforeEach describe is it]]
             [taoensso.timbre :as timbre]))
 
-(declare $httpBackend)
 (declare app)
+(declare $httpBackend)
+(declare $q)
+(declare $rootScope)
 
 (describe {:doc "jiksnu.providers"}
   (js/beforeEach (js/module "jiksnu"))
 
   (js/beforeEach
    (js/inject
-    #js ["app" "$httpBackend"
-         (fn [_app_ _$httpBackend_]
+    #js ["app" "$httpBackend" "$q" "$rootScope"
+         (fn [_app_ _$httpBackend_ _$q_ _$rootScope_]
            (set! app _app_)
            (set! $httpBackend _$httpBackend_)
-           (-> (.when $httpBackend "GET" #"/templates/.*")
-               (.respond "<div></div>"))
-           (-> (.when $httpBackend "GET" #"/model/.*")
-               (.respond "{}")))]))
+           (set! $q _$q_)
+           (set! $rootScope _$rootScope_)
+           (.. $httpBackend (whenGET #"/templates/.*") (respond "<div></div>"))
+           (.. $httpBackend (whenGET #"/model/.*")     (respond "{}")))]))
+
+  (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
 
   (describe {:doc "app"}
     (describe {:doc ".addStream"}
@@ -27,11 +31,11 @@
               response (atom nil)]
 
           ;; route: streams-api/collection :post
-          (-> (.expectPOST $httpBackend "/model/streams")
-              (.respond (fn [] #js [200 stream-name])))
+          (.. $httpBackend (expectPOST "/model/streams") (respond (fn [] #js [200 stream-name])))
 
-          (-> (.addStream app stream-name)
-              (.then #(reset! response %)))
+          (.. app
+              (addStream stream-name)
+              (then #(reset! response %)))
 
           (.flush $httpBackend)
           (is @response stream-name))))
@@ -44,23 +48,28 @@
         (timbre/spy (.connect app))))
 
     (describe {:doc ".getUser"}
-      (describe {:doc "when authenticated"}
+      (describe {:doc "when not authenticated"}
         (js/it "resolves to nil"
           (fn [done]
-            (let [p (.getUser app)]
-              (js/console.log p)
-              (.then p (fn [user]
-                      (timbre/info "success path")
-                      (is user nil)
-                      (done)
-                      )
-                    (fn [user]
-                      (timbre/info "error path")
-                      (is user nil)
-                      (done)
-                      )
-                    )
-              )))
-        )
-      )
-    ))
+            (.. app
+                (getUser)
+                (then (fn [user] (is user true))
+                      (fn [user] (is user nil)))
+                (finally done))
+            (.flush $httpBackend)
+            (.$apply $rootScope))))
+      (describe {:doc "when authenticated"}
+        (js/it "returns that user"
+          (fn [done]
+            (let [id "acct:foo@example.com"
+                  user #js {:_id id}]
+              (.. (js/spyOn app "getUserId") -and (returnValue id))
+              (.. (js/spyOn app "getUser")   -and (returnValue ($q (fn [resolve] (resolve user)))))
+              (.. app
+                  (getUser)
+                  (then (fn [r]
+                          (is r user)
+                          (timbre/infof "r: %s" r)))
+                  (finally done))
+              (.$apply $rootScope)
+              (.. (js/expect (.-getUser app)) (toHaveBeenCalled)))))))))
