@@ -8,11 +8,13 @@ COPY docker/karma/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expose Karma port
 EXPOSE 9876
 
-### Add application
-ADD . ${JIKSNU_HOME}/
+ADD Gemfile Gemfile.lock ${JIKSNU_HOME}/
 
 # Install ruby packages
 RUN bundle install
+
+### Add application
+ADD . ${JIKSNU_HOME}/
 
 CMD ["/usr/bin/supervisord"]
 
