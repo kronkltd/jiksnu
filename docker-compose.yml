@@ -20,9 +20,6 @@ services:
       VIRTUAL_HOST: dockerui.localtest.me
     volumes:
       - /var/run/docker.sock:/docker.sock
-    # networks:
-    #   - frontend
-    #   - backend
   # drone:
   #   image: drone/drone
   #   env_file:
@@ -43,8 +40,6 @@ services:
     depends_on:
       - proxy
       - logspout
-    # networks:
-    #   - backend
     volumes:
       - "./docker/elk/01-lumberjack-input.conf:/etc/logstash/conf.d/01-lumberjack-input.conf"
       - "./docker/elk/02-beats-input.conf:/etc/logstash/conf.d/02-beats-input.conf"
@@ -68,8 +63,6 @@ services:
       VIRTUAL_HOST: grafana.localtest.me
     depends_on:
       - proxy
-    # networks:
-    #   - backend
     volumes:
       - ./data/whisper:/opt/graphite/storage/whisper
       - ./data/elasticsearch:/var/lib/elasticsearch
@@ -90,8 +83,6 @@ services:
       VIRTUAL_PORT: 9876
     ports:
       - "35729:35729"
-    # networks:
-    #   - backend
     volumes:
       - .:/app
   logspout:
@@ -101,16 +92,13 @@ services:
     environment:
       VIRTUAL_HOST: logspout.localtest.me
       ROUTE_URIS: logstash://elk:5000
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    # networks:
-    #   - backend
   mongo:
     image: mongo
     volumes:
       - mongo-data:/data/db
-    # networks:
-    #   - backend
   mongoexpress:
     image: knickers/mongo-express
     depends_on:
@@ -120,14 +108,10 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: "admin"
       ME_CONFIG_BASICAUTH_PASSWORD: "admin"
       VIRTUAL_HOST: mongo.localtest.me
-    # networks:
-    #   - backend
   mysql:
     image: mysql
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
-    # networks:
-    #   - backend
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
@@ -136,8 +120,6 @@ services:
     depends_on:
       - mysql
       - proxy
-    # networks:
-    #   - backend
   proxy:
     image: rckrdstrgrd/nginx-proxy
     ports:
@@ -147,19 +129,12 @@ services:
       - "./data/nginx/vhost.d:/etc/nginx/vhost.d"
       - "./data/nginx/certs:/etc/nginx/certs:ro"
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
-    # networks:
-    #   - frontend
-    #   - backend
   postgresdb:
     image: postgres:9.4
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    # networks:
-    #   - backend
   redis:
     image: redis:3
-    # networks:
-    #   - backend
   redis_commander:
     image: tenstartups/redis-commander
     command: --redis-host redis
@@ -168,8 +143,6 @@ services:
       - proxy
     environment:
       VIRTUAL_HOST: redis-commander.localtest.me
-    # networks:
-    #   - backend
   sentry:
     image: slafs/sentry
     depends_on:
@@ -180,8 +153,6 @@ services:
     env_file: docker/sentry/environment
     environment:
       VIRTUAL_HOST: sentry.localtest.me
-    # networks:
-    #   - backend
     volumes:
       - sentry-files:/data
   sentry_worker:
@@ -193,8 +164,6 @@ services:
     env_file: docker/sentry/environment
     environment:
       C_FORCE_ROOT: "true"
-    # networks:
-    #   - backend
     volumes:
       - sentry-files:/data
   skydock:
@@ -221,14 +190,13 @@ services:
       VIRTUAL_HOST: jiksnu.localtest.me
     volumes:
       - maven-repo:/root/.m2
-    # networks:
-    #   - backend
   web-dev:
     build:
       context: .
       dockerfile: docker/web-dev/Dockerfile
     image: jiksnu-dev
     depends_on:
+      - dockerui
       - mongo
       - proxy
     environment:
@@ -238,8 +206,6 @@ services:
     volumes:
       - maven-repo:/root/.m2
       - .:/app
-    # networks:
-    #   - backend
 volumes:
   etcd-data:
     driver: local
