@@ -68,7 +68,7 @@
                       #(.. (js/expect true) (toBeFalsy)))
                 (finally done))
             (.flush $httpBackend)
-            (.$apply $rootScope))))
+            (.$digest $rootScope))))
       (describe {:doc "when authenticated"}
         (js/it "returns that user"
           (fn [done]
@@ -82,6 +82,20 @@
                   (then #(.. (js/expect %)    (toBe user))
                         #(.. (js/expect true) (toBeFalsy)))
                   (finally done))
-              (.$apply $rootScope)
+              (.$digest $rootScope)
               (.. (js/expect (.-getUser app))   (toHaveBeenCalled))
-              (.. (js/expect (.-getUserId app)) (toHaveBeenCalled)))))))))
+              (.. (js/expect (.-getUserId app)) (toHaveBeenCalled)))))))
+
+    (describe {:doc ".invokeAction"}
+      (js/it "sends a message"
+        (fn [done]
+          (let [model-name "user"
+                action-name "delete"
+                id "acct:user@example.com"]
+            (.. (js/spyOn app "send") -and (returnValue ($q #(%))) )
+            (.. app
+                (invokeAction model-name action-name id)
+                (then #(.. (js/expect true)  (toBeTruthy))
+                      #(.. (js/expect false) (toBeTruthy)))
+                (finally done)))
+          (.$digest $rootScope))))))
