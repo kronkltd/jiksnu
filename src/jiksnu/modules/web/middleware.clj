@@ -11,8 +11,7 @@
             [slingshot.slingshot :refer [try+ throw+]])
   (:import javax.security.auth.login.LoginException
            kamon.Kamon
-           kamon.trace.Tracer
-           ))
+           kamon.trace.Tracer))
 
 (defn wrap-user-binding
   [handler]
@@ -124,8 +123,10 @@
   (fn [request]
     (let [tracer (.newContext (Kamon/tracer) "http-request")]
       (.increment (.counter (Kamon/metrics) "request-handled"))
-      (util/inspect (:params request))
+      (timbre/with-context {:request (-> request
+                                         (dissoc :async-channel)
+                                         (dissoc :cemerick.friend/auth-config))}
+        (timbre/debug "http request"))
       (let [response (handler request)]
-        (util/inspect (:body response))
         (.finish tracer)
         response))))

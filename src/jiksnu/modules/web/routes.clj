@@ -12,7 +12,6 @@
             [jiksnu.modules.web.middleware :as middleware]
             [liberator.dev :refer [wrap-trace]]
             [org.httpkit.server :as server]
-            [ring.logger.timbre :as logger.timbre]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.file-info :refer [wrap-file-info]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
@@ -39,7 +38,6 @@
             async-handler
             #'core/jiksnu-routes)
            middleware/wrap-response-logging
-           logger.timbre/wrap-with-logger
            (wrap-trace :ui)
            middleware/wrap-user-binding
            (friend/authenticate auth-config)
