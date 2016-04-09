@@ -125,6 +125,7 @@
       (.increment (.counter (Kamon/metrics) "request-handled"))
       (timbre/with-context {:request (-> request
                                          (dissoc :async-channel)
+                                         (dissoc :body)
                                          (dissoc :cemerick.friend/auth-config))}
         (timbre/debug "http request"))
       (let [response (handler request)]
