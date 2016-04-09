@@ -43,9 +43,13 @@
   "Follow the target user"
   [app target]
   (timbre/debug "follow" target)
-  (let [object  #js {:id (.-_id target)}
-        activity #js {:verb "follow" :object object}]
-    (.post app activity)))
+  (if target
+    (let [object  #js {:id (.-_id target)}
+          activity #js {:verb "follow" :object object}]
+      (.post app activity))
+    (let [$q (.inject app "$q")]
+      (timbre/warn "No target")
+      ($q (fn [_ reject] (reject))))))
 
 (defn following?
   "Is the currently authenticated user following the target user"
@@ -66,15 +70,18 @@
             (timbre/debugf "getting user: %s" id)
             (if id
               (resolve (.find Users id))
-              (reject nil)))))))
+              (resolve ($q #(% nil)))))))))
 
 (defn get-user-id
   "Returns the authenticated user id from app data"
   [app]
   (if-let [data (.-data app)]
     (if-let [username (.-user data)]
-      (let [domain (.-domain data)]
-        (str "acct:" username "@" domain))
+      (if-let [domain (.-domain data)]
+        (str "acct:" username "@" domain)
+        (do
+          (timbre/warn "No domain")
+          nil))
       (do
         (timbre/warn "could not get authenticated user id")
         nil))

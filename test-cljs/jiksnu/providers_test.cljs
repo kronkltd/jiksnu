@@ -31,7 +31,7 @@
               response (atom nil)]
 
           ;; route: streams-api/collection :post
-          (.. $httpBackend (expectPOST "/model/streams") (respond (fn [] #js [200 stream-name])))
+          (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [200 stream-name])))
 
           (.. app
               (addStream stream-name)
@@ -47,29 +47,40 @@
                       (returnValue "foo"))])
         (timbre/spy (.connect app))))
 
+    (describe {:doc ".follow"}
+      (describe {:doc "when not authenticated"}
+        (js/it "should be rejected"
+          (fn [done]
+            (.. app
+                (follow)
+                (then #(.. (js/expect true) (toBeFalsy))
+                      #(.. (js/expect true) (toBeTruthy)))
+                (finally done))))))
+
     (describe {:doc ".getUser"}
       (describe {:doc "when not authenticated"}
         (js/it "resolves to nil"
           (fn [done]
             (.. app
                 (getUser)
-                (then (fn [user] (is user true))
-                      (fn [user] (is user nil)))
+                (then #(.. (js/expect %)    (toBeNull))
+                      #(.. (js/expect true) (toBeFalsy)))
                 (finally done))
             (.flush $httpBackend)
             (.$apply $rootScope))))
       (describe {:doc "when authenticated"}
         (js/it "returns that user"
           (fn [done]
-            (let [id "acct:foo@example.com"
+            (let [Users (.inject app "Users")
+                  id "acct:foo@example.com"
                   user #js {:_id id}]
-              (.. (js/spyOn app "getUserId") -and (returnValue id))
-              (.. (js/spyOn app "getUser")   -and (returnValue ($q (fn [resolve] (resolve user)))))
+              (.. (js/spyOn app   "getUserId") -and (returnValue id))
+              (.. (js/spyOn Users "find")      -and (returnValue ($q #(% user))))
               (.. app
                   (getUser)
-                  (then (fn [r]
-                          (is r user)
-                          (timbre/infof "r: %s" r)))
+                  (then #(.. (js/expect %)    (toBe user))
+                        #(.. (js/expect true) (toBeFalsy)))
                   (finally done))
               (.$apply $rootScope)
-              (.. (js/expect (.-getUser app)) (toHaveBeenCalled)))))))))
+              (.. (js/expect (.-getUser app))   (toHaveBeenCalled))
+              (.. (js/expect (.-getUserId app)) (toHaveBeenCalled)))))))))

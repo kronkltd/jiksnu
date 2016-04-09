@@ -33,8 +33,7 @@
            (set! $scope (.$new $rootScope))
            (set! $q _$q_)
            (set! $httpBackend _$httpBackend_)
-           (-> (.when $httpBackend "GET" #"/templates/.*")
-               (.respond "<div></div>"))
+           (.. $httpBackend (whenGET #"/templates/.*") (respond "<div></div>"))
 
            (set! injections #js {:$scope $scope :app app}))]))
 
@@ -64,15 +63,17 @@
                 (is (.isActor $scope) true)))))
         (describe {:doc ".isFollowing"}
           (describe {:doc "when not authenticated"}
-            (js/xit "should return false"
+            (js/it "should resolve to falsey"
               (fn [done]
                 (@$controller controller-name injections)
                 (set! (.-item $scope) #js {:_id item-id})
-                (..  $scope
-                     (isFollowing)
-                     (then (fn [r]
-                             (is r true)
-                             (done)))))))))))
+
+                (.. $scope
+                    (isFollowing)
+                    (then #(.. (js/expect %)    (toBeFalsy))
+                          #(.. (js/expect true) (toBeFalsy)))
+                    (finally done))
+                (.$digest $rootScope))))))))
 
   (let [controller-name "NavBarController"]
     (describe {:doc controller-name}
