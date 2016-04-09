@@ -125,6 +125,7 @@ services:
     image: rckrdstrgrd/nginx-proxy
     ports:
       - "80:80"
+    restart: always
     volumes:
       - "./data/nginx/conf.d:/etc/nginx/conf.d"
       - "./data/nginx/vhost.d:/etc/nginx/vhost.d"
