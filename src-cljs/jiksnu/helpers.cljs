@@ -139,16 +139,17 @@
 
 (defn init-item
   [$scope $stateParams app collection]
-  (when-not (.-init $scope)
-    (set! (.-init $scope)
-          (fn [id]
-            (set! (.-loaded $scope) false)
-            (.bindOne collection id $scope "item")
-            (-> (.find collection id)
-                (.then (fn [_] (set! (.-loaded $scope) true)))))))
-
+  (set! (.-init $scope)
+        (fn [id]
+          (set! (.-loaded $scope) false)
+          (.bindOne collection id $scope "item")
+          (-> (.find collection id)
+              (.then (fn [_] (set! (.-loaded $scope) true))))))
+  (set! (.-loaded $scope) false)
+  (set! (.-loading $scope) false)
+  (set! (.-errored $scope) false)
   (set! (.-app $scope) app)
-
+  (set! (.-refresh $scope) (fn [] (.init $scope (.-id $scope))))
   (set! (.-deleteRecord $scope)
         (fn [item]
           (let [id (.-id $scope)]

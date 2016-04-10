@@ -256,75 +256,65 @@
     (.init $scope)))
 
 (def.controller jiksnu.NewPostController
-  [$scope $rootScope geolocation app pageService subpageService $filter Users]
+  [$scope $rootScope geolocation app pageService subpageService $filter Streams Users]
   (timbre/debug "Loading New Post Controller")
+  (set! (.-addStream $scope)
+        (fn [id]
+          (timbre/debug "adding stream" id)
+          (let [streams (.. $scope -activity -streams)]
+            (if (not-any? (partial = id) streams)
+              (.push streams id)))))
   (set! (.-app $scope) app)
-  (let [default-form #js {:source "web"
-                          :privacy "public"
-                          :title ""
-                          :geo #js {:latitude nil
-                                    :longitude nil}
-                          :content ""}
-        get-location (fn []
-                       (-> (.getLocation geolocation)
-                           (.then (fn [data]
-                                    (let [geo (.. $scope -activity -geo)
-                                          coords (.-coords data)]
-                                      (set! (.-latitude geo) (.-latitude coords))
-                                      (set! (.-longitude geo) (.-longitude coords)))))))]
-
-    (set! (.-form $scope) #js {:shown false})
-
-    (set! (.-availableStreams $scope)
-          #js ["foo" "bar"]
-          )
-
-    (set! (.-enabled $scope)
-          (fn []
-            (.-data app)))
-
-    (set! (.-addStream $scope)
-          (fn [id]
-            (timbre/debug "adding stream" id)
-            (let [streams (.. $scope -activity -streams)]
-              (if (not-any? (partial = id) streams)
-                (.push streams id)))))
-
-    (set! (.-fetchStreams $scope)
-          (fn []
-            (timbre/debug "fetching streams")
-            (-> (.getUser app)
-                (.then (fn [user]
-                         (timbre/debugf "Got User - %s" user)
-                         (-> (.getStreams user)
-                             (.then (fn [streams]
-                                      (timbre/debugf "Got Streams - %s" streams)
-                                      (set! (.-streams $scope) streams)))))))))
-
-    (set! (.-toggle $scope)
-          (fn []
-            (timbre/debug "Toggling New Post form")
-            (set! (.. $scope -form -shown)
-                  (not (.. $scope -form -shown)))
-            (when (.. $scope -form -shown)
-              (get-location)
-              (.fetchStreams $scope))))
-
-    (set! (.-reset $scope)
-          (fn []
-            (set! (.-activity $scope) default-form)
-            (set! (.. $scope -activity -streams) #js [])))
-
-    (set! (.-submit $scope)
-          (fn []
-            (-> (.post app (.-activity $scope))
-                (.then (fn []
-                         (.reset $scope)
-                         (.toggle $scope)
-                         (.refresh app))))))
-
-    (helpers/init-subpage $scope subpageService Users "streams")
-    (.reset $scope)))
+  (set! (.-defaultForm $scope) #js {:source "web"
+                                    :privacy "public"
+                                    :title ""
+                                    :geo #js {:latitude nil
+                                              :longitude nil}
+                                    :content ""})
+  (set! (.-enabled $scope) (fn [] (.-data app)))
+  (set! (.-fetchStreams $scope)
+        (fn []
+          (timbre/debug "fetching streams")
+          (.. app
+              (getUser)
+              (then (fn [user]
+                      (timbre/debugf "Got User - %s" user)
+                      (.getStreams user)))
+              (then (fn [streams]
+                      (timbre/debugf "Got Streams - %s" streams)
+                      (set! (.-streams $scope) streams))))))
+  (set! (.-form $scope) #js {:shown false})
+  (set! (.-getLocataion $scope)
+        (fn []
+          (.. geolocation
+              (getLocation)
+              (then (fn [data]
+                      (let [geo (.. $scope -activity -geo)
+                            coords (.-coords data)]
+                        (set! (.-latitude geo) (.-latitude coords))
+                        (set! (.-longitude geo) (.-longitude coords))))))))
+  (set! (.-reset $scope)
+        (fn []
+          (set! (.-activity $scope) (.-defaultForm $scope))
+          (set! (.. $scope -activity -streams) #js [])))
+  (set! (.-submit $scope)
+        (fn []
+          (.. app
+              (post (.-activity $scope))
+              (then (fn []
+                      (.reset $scope)
+                      (.toggle $scope)
+                      (.refresh app))))))
+  (set! (.-toggle $scope)
+        (fn []
+          (timbre/debug "Toggling New Post form")
+          (set! (.. $scope -form -shown)
+                (not (.. $scope -form -shown)))
+          (when (.. $scope -form -shown)
+            (.getLocation $scope)
+            (.fetchStreams $scope))))
+  (helpers/init-subpage $scope subpageService Users "streams")
+  (.reset $scope))
 
 (def.controller jiksnu.NewStreamController
   [$scope $rootScope app]
@@ -334,10 +324,11 @@
         (fn [args]
           (let [stream-name (.-name (.-stream $scope))]
             (set! (.-name $scope) "")
-            (-> (.addStream app stream-name)
-                (.then (fn [stream]
-                         (timbre/info "Added Stream" stream)
-                         (.refresh app))))))))
+            (.. app
+                (addStream stream-name)
+                (then (fn [stream]
+                        (timbre/info "Added Stream" stream)
+                        (.refresh app))))))))
 
 (def.controller jiksnu.RegisterPageController
   [app $scope]
