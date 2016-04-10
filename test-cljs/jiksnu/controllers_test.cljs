@@ -34,7 +34,7 @@
            (set! $q _$q_)
            (set! $httpBackend _$httpBackend_)
            (.. $httpBackend (whenGET #"/templates/.*") (respond "<div></div>"))
-
+           (.. $httpBackend (whenGET #"/model/.*")     (respond "{}"))
            (set! injections #js {:$scope $scope :app app}))]))
 
   (let [controller-name "FollowButtonController"]
