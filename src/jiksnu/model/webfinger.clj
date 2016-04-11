@@ -48,7 +48,7 @@
     (let [root (.getRootElement xrd)]
       (->> (cm/query root query-str mappings)
            util/force-coll
-           (keep (fn [prop] (when prop (.getValue prop))))
+           (keep (fn [^Element prop] (when prop (.getValue prop))))
            first))))
 
 (defn user-meta
@@ -87,7 +87,7 @@
   (let [root (.getRootElement xrd)
         elts (concat (util/force-coll (cm/query root "//xrd:Subject" mappings))
                      (util/force-coll (cm/query root "//xrd:Alias" mappings)))]
-    (map #(.getValue %) elts)))
+    (map #(.getValue ^Element %) elts)))
 
 (defn get-username-from-identifiers
   [^Document xrd]

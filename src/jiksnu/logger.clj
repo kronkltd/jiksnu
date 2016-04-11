@@ -15,7 +15,7 @@
   String
   "Private DSN from sentry server")
 
-(def raven (RavenFactory/ravenInstance (config :sentry :dsn)))
+(def ^Raven raven (RavenFactory/ravenInstance ^String (config :sentry :dsn)))
 
 (defn json-formatter
   ([data] (json-formatter nil data))
@@ -43,12 +43,12 @@
   [{:keys [instant level ?err_ varargs_
            output-fn config appender]
     :as data}]
-  (when-let [e (force ?err_)]
-    (let [builder (.. (EventBuilder.)
-                      (withMessage (.getMessage e))
-                      (withLevel Event$Level/ERROR)
-                      (withLogger (:?ns-str data))
-                      (withSentryInterface (ExceptionInterface. e)))]
+  (when-let [^Exception e (force ?err_)]
+    (let [^EventBuilder builder (.. (EventBuilder.)
+                                    (withMessage (.getMessage e))
+                                    (withLevel Event$Level/ERROR)
+                                    (withLogger ^String (:?ns-str data))
+                                    (withSentryInterface (ExceptionInterface. e)))]
       (.runBuilderHelpers raven builder)
       (.sendEvent raven (.build builder)))))
 

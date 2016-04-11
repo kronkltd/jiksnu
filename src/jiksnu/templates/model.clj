@@ -5,7 +5,8 @@
             [monger.collection :as mc]
             [monger.query :as mq]
             monger.json
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]])
+  (:import com.mongodb.DB))
 
 (defkey ::collection-counted
   "when a collection is counted")
@@ -33,7 +34,7 @@
 (defn make-fetch-fn
   [collection-name make-fn]
   (fn [& [params & [options]]]
-    (let [records (mq/with-collection @_db collection-name
+    (let [records (mq/with-collection ^DB @_db collection-name
                     (mq/find params)
                     (mq/sort (:sort-clause options))
                     (mq/paginate :page (get options :page 1)
