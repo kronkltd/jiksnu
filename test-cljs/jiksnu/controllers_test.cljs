@@ -22,6 +22,8 @@
 (describe {:doc "jiksnu.controllers"}
   (beforeEach (js/module "jiksnu"))
 
+  (js/beforeEach (fn [] (js/installPromiseMatchers)))
+
   (beforeEach
    (js/inject
     #js ["$controller" "$rootScope" "$q"
@@ -63,17 +65,12 @@
                 (is (.isActor $scope) true)))))
         (describe {:doc ".isFollowing"}
           (describe {:doc "when not authenticated"}
-            (js/it "should resolve to falsey"
-              (fn [done]
-                (@$controller controller-name injections)
-                (set! (.-item $scope) #js {:_id item-id})
-
-                (.. $scope
-                    (isFollowing)
-                    (then #(.. (js/expect %)    (toBeFalsy))
-                          #(.. (js/expect true) (toBeFalsy)))
-                    (finally done))
-                (.$digest $rootScope))))))))
+            (it "should resolve to falsey"
+              (@$controller controller-name injections)
+              (set! (.-item $scope) #js {:_id item-id})
+              (let [p (.isFollowing $scope)]
+                (.$digest $rootScope)
+                (.. (js/expect p) (toBeResolvedWith nil)))))))))
 
   (let [controller-name "NavBarController"]
     (describe {:doc controller-name}
@@ -95,8 +92,7 @@
 
       (it "should bind the app service to app2"
         (set! (.-foo app) "bar")
-        (@$controller "NavBarController" injections)
-
+        (@$controller controller-name injections)
         (is $scope.app2.foo "bar"))))
 
   (let [controller-name "NewGroupController"]
@@ -119,11 +115,14 @@
         (it "sends an add-stream notice to the server"
           (let [stream-name "bar"
                 params #js {:name stream-name}]
+            ;; TODO: Just mock app.addStream
+            (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [201])))
             (@$controller controller-name injections)
             (set! (.-stream $scope) params)
-
-            (-> (.addStream $scope)
-                (.then #(is % nil))))))
+            (let [p (.addStream $scope)]
+              (.$apply $scope)
+              (.flush $httpBackend)
+              (.. (js/expect p) (toBeResolved))))))
 
       (describe {:doc ".delete"})))
 
@@ -138,18 +137,11 @@
                (set! (.-loaded $scope) true))))
 
       (describe {:doc ".deleteRecord"}
-        (js/it "sends a delete action"
-          (fn [done]
-            (@$controller controller-name injections)
-            (let [spy (.. (js/spyOn app "invokeAction")
-                          -and
-                          (returnValue
-                           (.when $q #js {})))
-                  item (.-item $scope)]
-              (-> (.deleteRecord $scope item)
-                  (.then #(.. (js/expect %) toBeDefined)
-                         #(.. (js/expect %) toBeDefined))
-                  (.finally (fn [] (js/done))))
-              (.$apply $scope)
-              (.toHaveBeenCalled (js/expect spy))))))))
-  )
+        (it "sends a delete action"
+          (@$controller controller-name injections)
+          (.. (js/spyOn app "invokeAction") -and (returnValue ($q #(%))))
+          (let [item (.-item $scope)
+                p (.deleteRecord $scope item)]
+            (.$apply $scope)
+            (.. (js/expect p) (toBeResolved))
+            (.. (js/expect (.-invokeAction app)) (toHaveBeenCalled))))))))
