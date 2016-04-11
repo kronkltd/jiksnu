@@ -31,7 +31,8 @@
                  [com.taoensso/timbre "4.3.1"]
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
-                 [im.chit/gyr "0.3.1"]
+                 [im.chit/gyr "0.3.1"
+                  :exclusions [im.chit/purnam]]
                  [io.kamon/kamon-core_2.11 "0.4.0"]
                  [io.kamon/kamon-statsd_2.11 "0.4.0"]
                  [io.kamon/kamon-system-metrics_2.11 "0.4.0"]
