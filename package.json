@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "cukefarm": "^3.0.1",
+    "jasmine-promise-matchers": "^2.0.2",
     "protractor-console": "^2.0.0"
   },
   "repository": {
