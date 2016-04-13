@@ -8,6 +8,16 @@
 (declare $q)
 (declare $rootScope)
 
+(defn valid-login-response
+  [method url data headers params]
+  (let [location "/"]
+    #js [303 nil #js {"Location" location} "See Other"]))
+
+(defn invalid-login-response
+  [method url data headers params]
+  (let [location (str "/main/login?&login_failed=Y&username=" username)]
+    #js [302 nil #js {"Location" location} "Found"]))
+
 (describe {:doc "jiksnu.providers"}
   (js/beforeEach (js/module "jiksnu"))
 
@@ -79,4 +89,23 @@
           (.. (js/spyOn app "send") -and (returnValue ($q #(%))) )
           (let [p (.invokeAction app model-name action-name id)]
             (.$digest $rootScope)
-            (.. (js/expect p) (toBeResolved))))))))
+            (.. (js/expect p) (toBeResolved))))))
+
+    (describe {:doc ".login"}
+      (let [username "test"
+            password "test"]
+        (describe {:doc "with valid credentials"}
+          (it "returns successfully"
+            (.. $httpBackend (expectPOST "/main/login") (respond valid-login-response))
+            (let [p (.login app username password)]
+              (.flush $httpBackend)
+              (.$digest $rootScope)
+              (.. (js/expect p) (toBeResolvedWith true))))))
+      (describe {:doc "with invalid credentials"}
+        (it "is rejected"
+          (.. $httpBackend (expectPOST "/main/login") (respond invalid-login-response))
+          (.. $httpBackend (whenGET "/status") (respond #js {}))
+          (let [p (.login app username password)]
+            (.flush $httpBackend)
+            (.$digest $rootScope)
+            (.. (js/expect p) (toBeResolvedWith false))))))))

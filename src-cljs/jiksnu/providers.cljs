@@ -167,15 +167,28 @@
   [app username password]
   (let [$http (.inject app "$http")]
     (timbre/infof "Logging in user. %s:%s" username password)
-    (-> (.post $http "/main/login"
-               (js/$.param #js {:username username :password password})
-               #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
-        (.then (fn [data]
-                 (timbre/debug "authenticated")
-                 (.fetchStatus app)))
-        (.then (fn []
-                 (timbre/debug "status updated")
-                 (.go app "home"))))))
+    (.. $http
+        (post "/main/login"
+              (js/$.param #js {:username username :password password})
+              #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
+        (then (fn [data]
+                (timbre/debug "authenticated")
+                (js/console.log data)
+                (.fetchStatus app))
+              (fn [data]
+                (js/console.log "Data" data)
+                (condp = (.-status data)
+                  302 (do
+                        (timbre/error "Login request failed")
+                        false)
+                  303 (do
+                        (timbre/info "Login request succeeded")
+                        true)
+                  (do
+                    (timbre/warn "Unknown response type")))))
+        #_(then (fn [resp]
+                  (timbre/debugf "status updated: %s" resp)
+                  (.go app "home"))))))
 
 (defn logout
   "Log out the authenticated user"
