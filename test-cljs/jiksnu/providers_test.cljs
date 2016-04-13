@@ -21,8 +21,9 @@
            (set! $httpBackend _$httpBackend_)
            (set! $q _$q_)
            (set! $rootScope _$rootScope_)
-           (.. $httpBackend (whenGET #"/templates/.*") (respond "<div></div>"))
-           (.. $httpBackend (whenGET #"/model/.*")     (respond "{}")))]))
+           (doto $httpBackend
+             (.. (whenGET #"/templates/.*") (respond "<div></div>"))
+             (.. (whenGET #"/model/.*")     (respond "{}"))))]))
 
   (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
 
@@ -31,8 +32,8 @@
       (it "should add the stream"
         (let [stream-name "foo"]
           ;; route: streams-api/collection :post
-          (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [200 stream-name])))
-
+          (doto $httpBackend
+            (.. (expectPOST "/model/streams") (respond (constantly #js [200 stream-name]))))
           (let [p (.addStream app stream-name)]
             (.flush $httpBackend)
             (.. (js/expect p) (toBeResolvedWith stream-name))))))
