@@ -56,9 +56,9 @@
   [app target]
   (.. app getUser
       (then (fn [user]
-               (let [response (= (.-_id user) (.-_id target))]
-                 (timbre/debugf "following?: %s" response)
-                 response)))))
+              (let [response (= (.-_id user) (.-_id target))]
+                (timbre/debugf "following?: %s" response)
+                response)))))
 
 (defn get-user
   "Return the authenticated user"
