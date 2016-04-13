@@ -33,9 +33,9 @@
           (timbre/debug "logging in")
           (session/set-authenticated-user! user)
           user)
-        (throw+ {:type :authentication :message "passwords do not match"}))
-      (throw+ {:type :authentication :message "No authentication mechanisms found"}))
-    (throw+ {:type :authentication :message "User not found"})))
+        (throw+ {:type :authentication :message "passwords do not match" :username username}))
+      (throw+ {:type :authentication :message "No authentication mechanisms found" :username username}))
+    (throw+ {:type :authentication :message "User not found" :username username})))
 
 (defn password-page
   "Page for when the identifier has come from elsewhere"
