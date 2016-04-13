@@ -10,13 +10,11 @@
 
 (defn valid-login-response
   [method url data headers params]
-  (let [location "/"]
-    #js [303 nil #js {"Location" location} "See Other"]))
+  #js [204 nil #js {} "No-Content"])
 
 (defn invalid-login-response
   [method url data headers params]
-  (let [location (str "/main/login?&login_failed=Y&username=" username)]
-    #js [302 nil #js {"Location" location} "Found"]))
+  #js [409 nil #js {} "Unauthenticated"])
 
 (describe {:doc "jiksnu.providers"}
   (js/beforeEach (js/module "jiksnu"))
@@ -92,20 +90,24 @@
             (.. (js/expect p) (toBeResolved))))))
 
     (describe {:doc ".login"}
-      (let [username "test"
-            password "test"]
-        (describe {:doc "with valid credentials"}
-          (it "returns successfully"
-            (.. $httpBackend (expectPOST "/main/login") (respond valid-login-response))
-            (let [p (.login app username password)]
-              (.flush $httpBackend)
-              (.$digest $rootScope)
-              (.. (js/expect p) (toBeResolvedWith true))))))
-      (describe {:doc "with invalid credentials"}
-        (it "is rejected"
-          (.. $httpBackend (expectPOST "/main/login") (respond invalid-login-response))
-          (.. $httpBackend (whenGET "/status") (respond #js {}))
-          (let [p (.login app username password)]
+      (describe {:doc "with valid credentials"}
+        (it "returns successfully"
+          (doto $httpBackend
+            (.. (expectPOST "/main/login") (respond valid-login-response))
+            (.. (whenGET "/status")        (respond #js {})))
+          (let [username "test"
+                password "test"
+                p (.login app username password)]
             (.flush $httpBackend)
             (.$digest $rootScope)
-            (.. (js/expect p) (toBeResolvedWith false))))))))
+            (.. (js/expect p) (toBeResolvedWith true)))))
+      (describe {:doc "with invalid credentials"}
+        (it "is rejected"
+          (doto $httpBackend
+            (.. (expectPOST "/main/login") (respond invalid-login-response)))
+          (let [username "test"
+                password "test"
+                p (.login app username password)]
+            (.flush $httpBackend)
+            (.$digest $rootScope)
+            (.. (js/expect p) (toBeRejected))))))))
