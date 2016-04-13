@@ -10,7 +10,8 @@
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req])
+  (:import org.apache.http.HttpStatus))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
@@ -23,27 +24,41 @@
 
 (fact "route: auth/login :post"
   (fact "when given form parameters"
-    (db/drop-all!)
-    (let [user (mock/a-user-exists)
-          params {:username (:username user)
-                  :password @mock/my-password}
-          request (-> (req/request :post "/main/login")
-                      (req/body params))
-          response (response-for request)
-          cookie (parse-cookie response)]
+    (fact "when the params are correct"
+      (db/drop-all!)
+      (let [user (mock/a-user-exists)
+            params {:username (:username user)
+                    :password @mock/my-password}
+            request (-> (req/request :post "/main/login")
+                        (req/body params))
+            response (response-for request)
+            cookie (parse-cookie response)]
 
-      response =>
-      (contains
-       {:status status/redirect?
-        :body string?
-        :headers (contains {"Set-Cookie" truthy})})
+        response => (contains
+                     {:status HttpStatus/SC_NO_CONTENT
+                      :headers (contains {"Set-Cookie" truthy})})
 
-      (some-> (response-for (-> (req/request :get "/status")
-                                (assoc-in [:headers "cookie"] cookie)
-                                ))
-              :body json/read-str (get "user")) =>
-      (:username user)))
+        (some-> (req/request :get "/status")
+                (assoc-in [:headers "cookie"] cookie)
+                response-for :body json/read-str (get "user")) => (:username user)))
 
+    (fact "when the params are incorrect"
+      (db/drop-all!)
+      (let [user (mock/a-user-exists)
+            params {:username (:username user)
+                    :password (str @mock/my-password "_")}
+            request (-> (req/request :post "/main/login")
+                        (req/body params))
+            response (response-for request)
+            cookie (parse-cookie response)]
+
+        response => (contains
+                     {:status HttpStatus/SC_UNAUTHORIZED
+                      :headers (contains {"Set-Cookie" truthy})})
+
+        (some-> (req/request :get "/status")
+                (assoc-in [:headers "cookie"] cookie)
+                response-for :body json/read-str (get "user")) => nil)))
 
   (future-fact "when given json parameters"
     (db/drop-all!)
@@ -55,16 +70,14 @@
                       (req/content-type "application/json"))
           response (response-for request)
           cookie (parse-cookie response)]
-      response =>
-      (contains
-       {:status status/redirect?
-        :body string?
-        :headers (contains {"Set-Cookie" truthy})})
+      response => (contains
+                   {:status HttpStatus/SC_NO_CONTENT
+                    :body string?
+                    :headers (contains {"Set-Cookie" truthy})})
 
-      (some-> (response-for
-               (-> (req/request :get "/status")
-                   (assoc-in [:headers "cookie"] cookie)))
-              :body json/read-str (get "user")) => (:username user))))
+      (some-> (req/request :get "/status")
+              (assoc-in [:headers "cookie"] cookie)
+              response-for :body json/read-str (get "user")) => (:username user))))
 
 (fact "route: auth/register :post"
   (let [username (fseq :username)
@@ -77,10 +90,10 @@
     (fact "With correct parameters, form encoded"
       (let [request (add-form-params request params)]
         (db/drop-all!)
-        (response-for request) => (contains {:status 201})))
+        (response-for request) => (contains {:status HttpStatus/SC_CREATED})))
 
     (fact "When a user with that username already exists"
       (db/drop-all!)
       (mock/a-user-exists {:username username})
       (let [request (add-form-params request params)]
-        (response-for request) => (contains {:status 409})))))
+        (response-for request) => (contains {:status HttpStatus/SC_CONFLICT})))))
