@@ -8,6 +8,14 @@
 (declare $q)
 (declare $rootScope)
 
+(defn valid-login-response
+  [method url data headers params]
+  #js [204 nil #js {} "No-Content"])
+
+(defn invalid-login-response
+  [method url data headers params]
+  #js [409 nil #js {} "Unauthenticated"])
+
 (describe {:doc "jiksnu.providers"}
   (js/beforeEach (js/module "jiksnu"))
 
@@ -21,8 +29,9 @@
            (set! $httpBackend _$httpBackend_)
            (set! $q _$q_)
            (set! $rootScope _$rootScope_)
-           (.. $httpBackend (whenGET #"/templates/.*") (respond "<div></div>"))
-           (.. $httpBackend (whenGET #"/model/.*")     (respond "{}")))]))
+           (doto $httpBackend
+             (.. (whenGET #"/templates/.*") (respond "<div></div>"))
+             (.. (whenGET #"/model/.*")     (respond "{}"))))]))
 
   (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
 
@@ -31,8 +40,8 @@
       (it "should add the stream"
         (let [stream-name "foo"]
           ;; route: streams-api/collection :post
-          (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [200 stream-name])))
-
+          (doto $httpBackend
+            (.. (expectPOST "/model/streams") (respond (constantly #js [200 stream-name]))))
           (let [p (.addStream app stream-name)]
             (.flush $httpBackend)
             (.. (js/expect p) (toBeResolvedWith stream-name))))))
@@ -78,4 +87,27 @@
           (.. (js/spyOn app "send") -and (returnValue ($q #(%))) )
           (let [p (.invokeAction app model-name action-name id)]
             (.$digest $rootScope)
-            (.. (js/expect p) (toBeResolved))))))))
+            (.. (js/expect p) (toBeResolved))))))
+
+    (describe {:doc ".login"}
+      (describe {:doc "with valid credentials"}
+        (it "returns successfully"
+          (doto $httpBackend
+            (.. (expectPOST "/main/login") (respond valid-login-response))
+            (.. (whenGET "/status")        (respond #js {})))
+          (let [username "test"
+                password "test"
+                p (.login app username password)]
+            (.flush $httpBackend)
+            (.$digest $rootScope)
+            (.. (js/expect p) (toBeResolvedWith true)))))
+      (describe {:doc "with invalid credentials"}
+        (it "is rejected"
+          (doto $httpBackend
+            (.. (expectPOST "/main/login") (respond invalid-login-response)))
+          (let [username "test"
+                password "test"
+                p (.login app username password)]
+            (.flush $httpBackend)
+            (.$digest $rootScope)
+            (.. (js/expect p) (toBeRejected))))))))

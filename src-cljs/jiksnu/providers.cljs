@@ -56,9 +56,9 @@
   [app target]
   (.. app getUser
       (then (fn [user]
-               (let [response (= (.-_id user) (.-_id target))]
-                 (timbre/debugf "following?: %s" response)
-                 response)))))
+              (let [response (= (.-_id user) (.-_id target))]
+                (timbre/debugf "following?: %s" response)
+                response)))))
 
 (defn get-user
   "Return the authenticated user"
@@ -165,26 +165,26 @@
 (defn login
   "Authenticate session"
   [app username password]
-  (let [$http (.inject app "$http")]
+  (let [$http (.inject app "$http")
+        data (js/$.param #js {:username username :password password})
+        opts #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}}]
     (timbre/infof "Logging in user. %s:%s" username password)
-    (-> (.post $http "/main/login"
-               (js/$.param #js {:username username :password password})
-               #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}})
-        (.then (fn [data]
-                 (timbre/debug "authenticated")
-                 (.fetchStatus app)))
-        (.then (fn []
-                 (timbre/debug "status updated")
-                 (.go app "home"))))))
+    (-> (.post $http"/main/login" data opts)
+        (.then (fn [response]
+                 (let [status (.-status response)]
+                   ;; TODO: Find a cljs version of this check
+                   (when (and (<= 200 status) (> 299 status))
+                     (.fetchStatus app)
+                     true)))))))
 
 (defn logout
   "Log out the authenticated user"
   [app]
   (let [$http (.inject app "$http")]
     (-> (.post $http "/main/logout")
-        (.success (fn [data]
-                    (set! (.-user app) nil)
-                    (.fetchStatus app))))))
+        (.then (fn [data]
+                 (set! (.-user app) nil)
+                 (.fetchStatus app))))))
 
 (defn ping
   "Send a ping command"

@@ -1,8 +1,7 @@
 (ns jiksnu.app-test
   (:require jiksnu.app
             purnam.test)
-  (:use-macros [gyr.test :only [describe.controller]]
-               [purnam.test :only [it is is-not describe]]))
+  (:use-macros [purnam.test :only [it is describe]]))
 
 (def a (atom 0))
 

@@ -1,10 +1,11 @@
-(ns jiksnu.modules.core.actions-test
+(ns jiksnu.modules.web.actions-test
   (:require [jiksnu.modules.core.actions :refer [get-sub-page]]
             [jiksnu.mock :as mock]
             [midje.sweet :refer :all]
             [jiksnu.test-helper :as th]))
 
-(th/module-test ["jiksnu.modules.core"])
+(th/module-test ["jiksnu.modules.core"
+                 "jiksnu.modules.web"])
 
 (fact "get-sub-page"
   (fact "User activities"
