@@ -12,7 +12,7 @@
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
 
-(future-fact "subscription request"
+(future-fact "route: subscriptions-api/item :post"
   (let [domain (mock/a-domain-exists)
         source (mock/a-feed-source-exists
                 {:domain (actions.domain/current-domain)})

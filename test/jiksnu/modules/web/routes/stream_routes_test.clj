@@ -52,29 +52,3 @@
       response  => (contains {:status 200})
       (let [body (json/read-json (:body response))]
         body => (contains {:totalItems 1})))))
-
-(fact "public-timeline-http-route"
-  (fact "when there are no activities"
-    (db/drop-all!)
-
-
-    (-> (req/request :get "/")
-        response-for) =>
-    (contains {:status status/success?}))
-
-  (fact "when there are activities"
-    (let [user (mock/a-user-exists)]
-      (dotimes [n 10]
-        (mock/there-is-an-activity {:user user}))
-
-      (fact "when the user is not authenticated"
-        (-> (req/request :get "/")
-            response-for) =>
-        (contains {:status status/success?
-                   :body string?}))
-
-      (fact "when the user is authenticated"
-        (-> (req/request :get "/")
-            as-user response-for) =>
-        (contains {:status status/success?
-                   :body string?})))))

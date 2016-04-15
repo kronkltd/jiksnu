@@ -47,3 +47,12 @@
         (let [parsed-body (some-> response :body json/read-str)]
           parsed-body => (contains {"items" (has every? string?)
                                     "totalItems" m}))))))
+
+(future-fact "route: users-api/subscriptions :get"
+  (let [user (mock/a-user-exists)
+        subscription (mock/a-subscription-exists {:from user})
+        path (str "/users/" (:_id user) "/subscriptions")]
+    (-> (req/request :get path)
+        response-for) =>
+    (contains {:status status/success?
+               :body #(enlive/select (th/hiccup->doc %) [:.subscriptions])})))
