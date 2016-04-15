@@ -5,7 +5,6 @@
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
-            [jiksnu.util :as util]
             [liberator.representation :refer [as-response ring-response]]
             [slingshot.slingshot :refer [try+]]
             [taoensso.timbre :as timbre]))

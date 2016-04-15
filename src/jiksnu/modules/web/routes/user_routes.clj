@@ -2,8 +2,6 @@
   (:require [cemerick.friend :as friend]
             [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section show-section-minimal]]
-            [clojure.data.json :as json]
-            [clojure.java.io :as io]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]

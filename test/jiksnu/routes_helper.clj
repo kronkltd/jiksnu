@@ -7,7 +7,6 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.util :as util]
             [manifold.time :as time]
             [ring.mock.request :as req]
             [ring.util.codec :as codec]

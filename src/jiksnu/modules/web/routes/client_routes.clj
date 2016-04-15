@@ -1,12 +1,8 @@
 (ns jiksnu.modules.web.routes.client-routes
   (:require [cemerick.friend :as friend]
             [ciste.config :refer [config]]
-            [clj-time.coerce :as coerce]
-            [clojure.string :as string]
-            [taoensso.timbre :as timbre]
             [jiksnu.actions.access-token-actions :as actions.access-token]
             [jiksnu.actions.client-actions :as actions.client]
-            [jiksnu.actions.oauth-actions :as actions.oauth]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.model.user :as model.user]
@@ -18,8 +14,7 @@
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
             [ring.util.codec :as codec]
-            [slingshot.slingshot :refer [throw+ try+]]
-            [taoensso.timbre :as timbre]))
+            [slingshot.slingshot :refer [throw+ try+]]))
 
 (defgroup jiksnu clients
   :name "Clients"

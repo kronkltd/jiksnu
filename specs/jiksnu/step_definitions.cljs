@@ -1,7 +1,5 @@
 (ns jiksnu.step-definitions
-  (:require [cljs.nodejs :as nodejs]
-            [clojure.string :as string]
-            [jiksnu.helpers :as helpers]
+  (:require [jiksnu.helpers :as helpers]
             [jiksnu.helpers.action-helpers :as helpers.action]
             [jiksnu.helpers.http-helpers :as helpers.http]
             [jiksnu.pages.LoginPage :refer [LoginPage login]]

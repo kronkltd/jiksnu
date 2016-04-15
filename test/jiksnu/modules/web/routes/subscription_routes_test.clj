@@ -8,7 +8,6 @@
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
             [midje.sweet :refer :all]
-            [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]))
 
 (th/module-test ["jiksnu.modules.core"

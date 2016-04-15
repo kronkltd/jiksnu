@@ -1,8 +1,6 @@
 (ns jiksnu.test-helper
-  (:require [ciste.loader :as loader]
-            [ciste.runner :refer [start-application! stop-application!]]
+  (:require [ciste.runner :refer [start-application! stop-application!]]
             [hiccup.core :as h]
-            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
             [jiksnu.referrant :as r]
             [midje.sweet :refer [=> =not=> fact future-fact namespace-state-changes throws]]

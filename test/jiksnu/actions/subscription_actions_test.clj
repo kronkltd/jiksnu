@@ -7,7 +7,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Subscription
            jiksnu.model.User

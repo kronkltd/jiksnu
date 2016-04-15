@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.client-routes-test
-  (:require [ciste.loader :as loader]
-            [clj-factory.core :refer [fseq]]
+  (:require [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojurewerkz.support.http.statuses :as status]

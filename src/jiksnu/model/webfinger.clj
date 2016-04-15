@@ -1,6 +1,5 @@
 (ns jiksnu.model.webfinger
   (:require [ciste.model :as cm]
-            [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
