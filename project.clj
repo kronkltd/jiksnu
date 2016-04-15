@@ -51,7 +51,6 @@
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/tools.reader "0.10.0"]
                  [org.clojure/data.json "0.2.6"]
-                 [org.jsoup/jsoup "1.8.3"]
                  [org.slf4j/slf4j-api "1.7.16"]
                  [org.slf4j/slf4j-log4j12 "1.7.16"]
                  [ring/ring-core "1.4.0"]

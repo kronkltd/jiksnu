@@ -22,8 +22,6 @@
            java.text.SimpleDateFormat
            java.util.Date
            java.util.UUID
-           org.jsoup.Jsoup
-           org.jsoup.safety.Whitelist
            (java.util TimeZone)
            (java.net InetSocketAddress)
            (org.bson.types ObjectId)
@@ -180,10 +178,6 @@
            (when type {:type type})
            (when title {:title title})
            (when lang {:lang lang}))))
-
-(defn sanitize
-  [input]
-  (Jsoup/clean input (Whitelist/none)))
 
 (defmacro safe-task
   [& body]
