@@ -63,11 +63,6 @@
     (db/drop-all!)
     (actions.activity/index {}) => (contains {:totalItems 0})))
 
-(fact "#'actions.activity/oembed->activity"
-  (let [oembed-str (slurp "test-resources/oembed.json")]
-    ;; TODO: complete
-    oembed-str => string?))
-
 (fact "#'actions.activity/post"
   (fact "when the user is not logged in"
     (let [activity (dissoc (factory :activity) :author)]

@@ -1,8 +1,0 @@
-<iq type="get" to="duck@beta.jiksnu.com"
-    id="osw_52"
-    from="duck@beta.jiksnu.com/Psi+">
-  <pubsub xmlns="http://jabber.org/protocol/pubsub">
-    <subscribers xmlns="http://jabber.org/protocol/pubsub"
-                 node="urn:xmpp:microblog:0" />
-  </pubsub>
-</iq>
