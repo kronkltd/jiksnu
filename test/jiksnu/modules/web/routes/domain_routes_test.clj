@@ -19,7 +19,7 @@
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
 
-(facts "Requesting the host meta"
+(facts "route: well-known/host-meta :get"
   (fact "host meta json"
     (let [domain (actions.domain/current-domain)
           url "/.well-known/host-meta"

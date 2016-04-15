@@ -139,3 +139,15 @@
       (let [id (get-in response [:body "oauth_token"])
             secret (get-in response [:body "oauth_token_secret"])]
         (model.access-token/fetch-by-id id) => (contains {:secret secret})))))
+
+(future-fact "route: oauth/authorize :get"
+  (fact "when authenticated"
+    (let [actor (mock/a-user-exists)]
+
+      (fact "when given a valid request token"
+        (let [request-token (mock/a-request-token-exists)
+              url (format "/oauth/authorize?oauth_token=%s" (:_id request-token))]
+          (let [response (-> (req/request :get url)
+                             (as-user actor)
+                             response-for)]
+            (:status response) => status/success?))))))

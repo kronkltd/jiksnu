@@ -47,3 +47,9 @@
              (let [id (-> ctx :request :route-params :_id)]
                (when-let [subscription (model.subscription/fetch-by-id id)]
                  {:data subscription}))))
+
+(defgroup jiksnu ostatus
+  :url "/main"
+  :name "OStatus")
+
+(defresource ostatus :sub)

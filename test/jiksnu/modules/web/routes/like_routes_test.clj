@@ -10,7 +10,7 @@
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
 
-(future-fact "delete html"
+(future-fact "route: likes-api :delete"
   (let [like (model.like/create (factory :like))
         url (format "/likes/%s/delete" (:_id like))]
     (-> (req/request :post url)
