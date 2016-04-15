@@ -1,13 +1,11 @@
 (ns jiksnu.modules.web.routes.stream-routes-test
   (:require [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             jiksnu.modules.web.routes.stream-routes
             [jiksnu.test-helper :as th]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))
 

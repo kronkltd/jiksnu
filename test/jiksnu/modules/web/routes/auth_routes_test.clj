@@ -1,8 +1,6 @@
 (ns jiksnu.modules.web.routes.auth-routes-test
   (:require [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
-            [clojure.string :as string]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             jiksnu.modules.web.routes.auth-routes

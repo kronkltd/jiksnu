@@ -3,7 +3,6 @@
             [ciste.loader :refer [defmodule]]
             [clojurewerkz.eep.emitter :refer [defobserver delete-handler get-handler]]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -15,8 +14,6 @@
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.core.formats
-            [jiksnu.modules.core.triggers.activity-triggers :as triggers.activity]
-            [jiksnu.modules.core.triggers.conversation-triggers :as triggers.conversation]
             [jiksnu.modules.core.triggers.domain-triggers :as triggers.domain]
             jiksnu.modules.core.views
             [jiksnu.templates.model :as templates.model]

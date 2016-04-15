@@ -9,7 +9,6 @@
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]

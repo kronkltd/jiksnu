@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.user-routes-test
-  (:require [ciste.loader :as loader]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.mock :as mock]

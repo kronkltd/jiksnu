@@ -3,9 +3,7 @@
             [ciste.core :refer [with-context]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri show-section]]
-            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.User))
 

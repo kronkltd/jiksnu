@@ -4,7 +4,6 @@
             [jiksnu.model.like :as model.like]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))
 
 (defn prepare-create

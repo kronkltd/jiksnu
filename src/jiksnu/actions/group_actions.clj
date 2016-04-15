@@ -5,8 +5,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.group-transforms :as transforms.group]
             [jiksnu.templates.actions :as templates.actions]
-            [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre])
+            [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Group))
 
 (defn prepare-create

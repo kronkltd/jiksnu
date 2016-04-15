@@ -1,12 +1,10 @@
 (ns jiksnu.logger
   (:require [ciste.config :refer [config describe-config]]
             [clojure.data.json :as json]
-            [jiksnu.util :as util]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]])
   (:import com.getsentry.raven.Raven
            com.getsentry.raven.RavenFactory
-           com.getsentry.raven.event.Event
            com.getsentry.raven.event.Event$Level
            com.getsentry.raven.event.EventBuilder
            com.getsentry.raven.event.interfaces.ExceptionInterface))

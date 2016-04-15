@@ -10,7 +10,6 @@
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
-            [jiksnu.util :as util]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
