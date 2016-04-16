@@ -13,5 +13,4 @@
 --ignore-file=is:Cheffile.lock
 --ignore-file=is:pom.xml
 --ignore-file=is:TAGS
---ignore-file=is:timbre-spit.log
---ignore-file=is:vagrant.log
+--ignore-file=ext:log

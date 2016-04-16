@@ -1,6 +1,5 @@
 (ns jiksnu.actions.feed-source-actions
-  (:require [ciste.config :refer [config]]
-            [clj-http.client :as client]
+  (:require [clj-http.client :as client]
             [clj-time.core :as time]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.resource :as model.resource]
@@ -11,7 +10,7 @@
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [jiksnu.util :as util]
             [manifold.time :as lt]
-            [slingshot.slingshot :refer [throw+ try+]]
+            [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))

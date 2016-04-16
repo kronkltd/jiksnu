@@ -3,7 +3,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+ try+]])
+            [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
            nu.xom.Document

@@ -11,8 +11,7 @@
             [jiksnu.util :as util]
             [manifold.bus :as bus]
             [manifold.stream :as s]
-            [org.httpkit.server :as server]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [org.httpkit.server :as server]))
 
 (defonce connections (ref {}))
 

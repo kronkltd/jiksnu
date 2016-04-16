@@ -5,7 +5,6 @@
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [net.cgrand.enlive-html :as enlive]
-            [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [validation-set presence-of acceptance-of]])
   (:import java.io.StringReader))
 

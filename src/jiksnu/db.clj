@@ -1,6 +1,5 @@
 (ns jiksnu.db
-  (:require [ciste.config :refer [config]]
-            [environ.core :refer [env]]
+  (:require [ciste.config :refer [config config*]]
             [inflections.core :as inf]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -27,7 +26,12 @@
   "Set the connection for mongo"
   []
   (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
-  (timbre/infof "Connecting to %s" (config :jiksnu :db :url))
+  (let [url (or (config* :jiksnu :db :url)
+                (let [host (config :jiksnu :db :host)
+                      port (config :jiksnu :db :port)
+                      collection-name (config :jiksnu :db :name)]
+                  (format "mongodb://%s:%s/%s" host port collection-name)))]
+   (timbre/infof "Connecting to %s" (config :jiksnu :db :url)))
   ;; TODO: pass connection options
   (let [{:keys [conn db]} (mg/connect-via-uri (config :jiksnu :db :url))]
     (dosync

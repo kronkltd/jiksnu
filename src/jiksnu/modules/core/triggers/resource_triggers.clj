@@ -1,5 +1,4 @@
 (ns jiksnu.modules.core.triggers.resource-triggers
-  (:use [slingshot.slingshot :only [throw+]])
   (:require [taoensso.timbre :as timbre]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.channels :as ch]

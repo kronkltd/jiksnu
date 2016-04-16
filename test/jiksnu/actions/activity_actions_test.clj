@@ -1,6 +1,5 @@
 (ns jiksnu.actions.activity-actions-test
-  (:require [ciste.sections.default :refer [show-section]]
-            [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -62,11 +61,6 @@
   (fact "when there are no activities"
     (db/drop-all!)
     (actions.activity/index {}) => (contains {:totalItems 0})))
-
-(fact "#'actions.activity/oembed->activity"
-  (let [oembed-str (slurp "test-resources/oembed.json")]
-    ;; TODO: complete
-    oembed-str => string?))
 
 (fact "#'actions.activity/post"
   (fact "when the user is not logged in"

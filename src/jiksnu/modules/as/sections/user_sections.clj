@@ -3,8 +3,7 @@
             [ciste.core :refer [with-context]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri show-section]]
-            [jiksnu.model.user :as model.user]
-            [slingshot.slingshot :refer [try+]])
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
 ;; show-section

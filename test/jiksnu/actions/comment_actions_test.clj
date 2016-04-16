@@ -1,6 +1,5 @@
 (ns jiksnu.actions.comment-actions-test
-  (:require [clj-factory.core :refer [factory]]
-            [jiksnu.actions.comment-actions :refer :all]
+  (:require [jiksnu.actions.comment-actions :refer :all]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))

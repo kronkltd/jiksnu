@@ -1,8 +1,7 @@
 (ns jiksnu.actions.dialback-actions
   (:require [jiksnu.model.dialback :as model.dialback]
             [jiksnu.templates.actions :as templates.actions]
-            [jiksnu.transforms :as transforms]
-            [slingshot.slingshot :refer [throw+]]))
+            [jiksnu.transforms :as transforms]))
 
 (def index*    (templates.actions/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))
 
