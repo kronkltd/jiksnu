@@ -9,7 +9,7 @@
                                                 defparameter page-resource path
                                                 subpage-resource]]
             [jiksnu.session :as session]
-            [slingshot.slingshot :refer [try+ throw+]]))
+            [slingshot.slingshot :refer [throw+]]))
 
 (defparameter :model.activity/id
   :in :path

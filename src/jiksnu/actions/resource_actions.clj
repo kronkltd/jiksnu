@@ -13,7 +13,7 @@
             [manifold.deferred :as d]
             [manifold.time :as lt]
             [org.httpkit.client :as client]
-            [slingshot.slingshot :refer [throw+ try+]]
+            [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
   (:import jiksnu.model.Resource
            org.joda.time.DateTime))

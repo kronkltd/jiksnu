@@ -5,7 +5,7 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [slingshot.slingshot :refer [throw+ try+]]
+            [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]
             [validateur.validation :refer [acceptance-of presence-of
                                            validation-set]])

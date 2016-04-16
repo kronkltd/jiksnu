@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.client-routes
   (:require [cemerick.friend :as friend]
-            [ciste.config :refer [config]]
             [jiksnu.actions.access-token-actions :as actions.access-token]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.request-token-actions :as actions.request-token]
@@ -13,8 +12,7 @@
             [jiksnu.util :as util]
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
-            [ring.util.codec :as codec]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [ring.util.codec :as codec]))
 
 (defgroup jiksnu clients
   :name "Clients"

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.activity-actions-test
-  (:require [ciste.sections.default :refer [show-section]]
-            [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]

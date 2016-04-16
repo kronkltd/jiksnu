@@ -8,7 +8,6 @@
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [validation-set presence-of]])
   (:import org.bson.types.ObjectId
            org.joda.time.DateTime))

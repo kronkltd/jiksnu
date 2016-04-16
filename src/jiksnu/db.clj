@@ -1,6 +1,5 @@
 (ns jiksnu.db
   (:require [ciste.config :refer [config config*]]
-            [environ.core :refer [env]]
             [inflections.core :as inf]
             [monger.collection :as mc]
             [monger.core :as mg]

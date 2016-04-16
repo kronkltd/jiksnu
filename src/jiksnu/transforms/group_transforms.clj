@@ -1,5 +1,4 @@
-(ns jiksnu.transforms.group-transforms
-  (:require [slingshot.slingshot :refer [throw+]]))
+(ns jiksnu.transforms.group-transforms)
 
 (defn set-members
   [params]

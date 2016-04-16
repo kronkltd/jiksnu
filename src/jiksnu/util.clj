@@ -13,7 +13,7 @@
             [org.bovinegenius.exploding-fish :as uri]
             [puget.printer :as puget]
             [ring.util.codec :as codec]
-            [slingshot.slingshot :refer [throw+ try+]]
+            [slingshot.slingshot :refer [try+]]
             [taoensso.timbre :as timbre])
   (:import java.io.PrintWriter
            java.net.InetAddress

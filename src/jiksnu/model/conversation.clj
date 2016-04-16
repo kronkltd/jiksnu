@@ -1,11 +1,9 @@
 (ns jiksnu.model.conversation
-  (:require [ciste.config :refer [config]]
-            [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [acceptance-of
                                            presence-of
                                            validation-set]]))

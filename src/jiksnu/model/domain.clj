@@ -7,7 +7,6 @@
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [acceptance-of presence-of valid? validation-set]]))
 
 (def collection-name "domains")

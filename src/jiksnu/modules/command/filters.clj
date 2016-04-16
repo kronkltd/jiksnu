@@ -22,7 +22,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.actions :as actions]
             [jiksnu.session :refer [current-user-id]]
-            [slingshot.slingshot :refer [throw+]]
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.model.like :as model.like]))
 
