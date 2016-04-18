@@ -219,15 +219,3 @@ volumes:
     driver: local
   sentry-files:
     driver: local
-networks:
-  default:
-    # driver: bridge
-    external:
-      name: nginx-proxy
-
-#   frontend:
-#     # driver: bridge
-#     external:
-#       name: bridge
-#   backend:
-#     driver: bridge
