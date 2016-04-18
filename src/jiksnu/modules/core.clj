@@ -47,6 +47,8 @@
 
 (defn start
   []
+  (timbre/info "Starting core")
+
   (try
     (Kamon/start)
     (catch Exception _))
