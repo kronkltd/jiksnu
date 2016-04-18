@@ -3,6 +3,7 @@
 set -e
 
 CISTE_ENV=test
+script/update
 
 lein with-profile +test,+e2e cljsbuild once
 script/test
