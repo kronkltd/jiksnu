@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.sections.layout-sections
   (:require [ciste.core :refer [apply-template]]
-            [ciste.config :refer [config environment]]
+            [ciste.config :refer [config config* environment]]
             [clojure.string :as string]
             [hiccup.page :as p]
             [jiksnu.modules.web.sections :refer [bind-to]]
@@ -87,8 +87,9 @@
     "/vendor/raven-js/dist/plugins/angular.js"
     "/cljs/jiksnu.js")
    (map #(% request response) @scripts-section-hook)
-   [:script {:type "text/javascript"}
-    (str "SENTRY_DSN_CLIENT=\"" (config :sentry :dsn :client) "\"")]))
+   (when-let [dsn (config* :sentry :dsn :client)]
+     [:script {:type "text/javascript"}
+      (str "SENTRY_DSN_CLIENT=\"" dsn "\"")])))
 
 (defn page-template-content
   [request response]

@@ -1,5 +1,5 @@
 (ns jiksnu.db
-  (:require [ciste.config :refer [config config*]]
+  (:require [ciste.config :refer [config config* describe-config]]
             [inflections.core :as inf]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -9,6 +9,25 @@
 
 (def _db (ref nil))
 (def _conn (ref nil))
+
+(describe-config [:jiksnu :db :host]
+  String
+  "The mongodb host"
+  :default "localhost")
+
+(describe-config [:jiksnu :db :name]
+  String
+  "The mongodb collection"
+  :default "jiksnu")
+
+(describe-config [:jiksnu :db :port]
+  Integer
+  "The mongodb port"
+  :default 27017)
+
+(describe-config [:jiksnu :db :url]
+  String
+  "The mongodb connection info as a uri")
 
 ;; Database functions
 
@@ -31,9 +50,9 @@
                       port (config :jiksnu :db :port)
                       collection-name (config :jiksnu :db :name)]
                   (format "mongodb://%s:%s/%s" host port collection-name)))]
-   (timbre/infof "Connecting to %s" (config :jiksnu :db :url)))
-  ;; TODO: pass connection options
-  (let [{:keys [conn db]} (mg/connect-via-uri (config :jiksnu :db :url))]
-    (dosync
-     (ref-set _conn conn)
-     (ref-set _db db))))
+    (timbre/infof "Connecting to %s" url)
+    ;; TODO: pass connection options
+    (let [{:keys [conn db]} (mg/connect-via-uri url)]
+      (dosync
+       (ref-set _conn conn)
+       (ref-set _db db)))))

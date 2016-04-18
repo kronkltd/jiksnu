@@ -202,8 +202,8 @@ services:
       - mongo
       - proxy
     environment:
-      JIKSNU_DB_URL: "mongodb://mongo/jiksnu_docker"
       HTTP_PORT: "80"
+      JIKSNU_DB_NAME: jiksnu_docker
       VIRTUAL_HOST: jiksnu.localtest.me
     volumes:
       - maven-repo:/root/.m2
@@ -219,15 +219,3 @@ volumes:
     driver: local
   sentry-files:
     driver: local
-networks:
-  default:
-    # driver: bridge
-    external:
-      name: nginx-proxy
-
-#   frontend:
-#     # driver: bridge
-#     external:
-#       name: bridge
-#   backend:
-#     driver: bridge
