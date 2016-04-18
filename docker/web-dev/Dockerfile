@@ -15,4 +15,4 @@ RUN bundle install
 ### Add application
 ADD . ${JIKSNU_HOME}/
 
-CMD [ "bash" ]
+CMD [ "script/docker" ]
