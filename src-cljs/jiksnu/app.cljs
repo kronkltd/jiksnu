@@ -1,7 +1,7 @@
 (ns jiksnu.app
   (:use-macros [gyr.core :only [def.module]]))
 
-(def sentry-dsn-client "http://68981c8a90cb4f079bc84dff62851d16@sentry.localtest.me/2")
+(def sentry-dsn-client "http://68981c8a90cb4f079bc84dff62851d16@sentry.docker/2")
 
 (.. js/Raven
     (config sentry-dsn-client)
