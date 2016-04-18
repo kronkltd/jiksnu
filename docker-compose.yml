@@ -15,19 +15,32 @@ services:
   dockerui:
     image: microbox/dockerui
     depends_on:
+      - dnsdock
       - proxy
     ports:
       - "9000:9000"
     environment:
-      VIRTUAL_HOST: dockerui.localtest.me
+      VIRTUAL_HOST: dockerui.docker
     volumes:
       - /var/run/docker.sock:/docker.sock
+  dnsdock:
+    image: duck1123/dnsdock
+    build: docker/dnsdock
+    command: -verbose=true -environment="dev" -nameserver="8.8.4.4:53"
+    environment:
+      VIRTUAL_HOST: dnsdock.docker
+      VIRTUAL_PORT: "80"
+    ports:
+      - 172.17.42.1:53:53/udp
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/dnsdock:/go/src/github.com/tonistiigi/dnsdock
   # drone:
   #   image: drone/drone
   #   env_file:
   #     - /etc/drone/dronerc
   #   environment:
-  #     VIRTUAL_PORT: drone.localtest.me
+  #     VIRTUAL_PORT: drone.docker
   #   volumes:
   #     - "/var/lib/docker:/var/lib/docker"
   #     - "/var/run/docker.sock:/var/run/docker.sock"
@@ -37,7 +50,7 @@ services:
     image: sebp/elk
     environment:
       LOGSPOUT: ignore
-      VIRTUAL_HOST: elk.localtest.me
+      VIRTUAL_HOST: kibana.docker
       VIRTUAL_PORT: 5601
     depends_on:
       - proxy
@@ -61,7 +74,7 @@ services:
   grafana:
     image: kamon/grafana_graphite:latest
     environment:
-      VIRTUAL_HOST: grafana.localtest.me
+      VIRTUAL_HOST: grafana.docker
     depends_on:
       - proxy
     volumes:
@@ -80,7 +93,7 @@ services:
       - elk
     environment:
       NOTIFY_SEND_URL: http://172.17.0.1:12345
-      VIRTUAL_HOST: karma.localtest.me
+      VIRTUAL_HOST: karma.docker
       VIRTUAL_PORT: 9876
     ports:
       - "35729:35729"
@@ -91,7 +104,7 @@ services:
     build:
       context: docker/logspout
     environment:
-      VIRTUAL_HOST: logspout.localtest.me
+      VIRTUAL_HOST: logspout.docker
       ROUTE_URIS: logstash://elk:5000
     restart: always
     volumes:
@@ -108,7 +121,7 @@ services:
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: "admin"
       ME_CONFIG_BASICAUTH_PASSWORD: "admin"
-      VIRTUAL_HOST: mongo.localtest.me
+      VIRTUAL_HOST: mongo.docker
   mysql:
     image: mysql
     environment:
@@ -116,13 +129,17 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
-      VIRTUAL_HOST: phpmyadmin.localtest.me
+      VIRTUAL_HOST: phpmyadmin.docker
       PMA_HOST: mysql
     depends_on:
       - mysql
       - proxy
   proxy:
     image: rckrdstrgrd/nginx-proxy
+    depends_on:
+      - dnsdock
+    environment:
+      DNSDOCK_ALIAS: dns.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,rabbit.docker,redis-commander.docker,sentry.docker
     ports:
       - "80:80"
     restart: always
@@ -144,7 +161,7 @@ services:
       - redis
       - proxy
     environment:
-      VIRTUAL_HOST: redis-commander.localtest.me
+      VIRTUAL_HOST: redis-commander.docker
   sentry:
     image: slafs/sentry
     depends_on:
@@ -154,7 +171,7 @@ services:
       - proxy
     env_file: docker/sentry/environment
     environment:
-      VIRTUAL_HOST: sentry.localtest.me
+      VIRTUAL_HOST: sentry.docker
     volumes:
       - sentry-files:/data
   sentry_worker:
@@ -168,19 +185,6 @@ services:
       C_FORCE_ROOT: "true"
     volumes:
       - sentry-files:/data
-  skydock:
-    image: crosbymichael/skydock
-    command: -ttl 30 -environment dev -s /docker.sock -domain docker -skydns http://172.22.0.3:8080
-    # -name skydns
-    # -skydns http://skydns:8080
-    volumes:
-      - /var/run/docker.sock:/docker.sock
-  skydns:
-    image: crosbymichael/skydns
-    command: -nameserver 8.8.8.8:53 -domain docker -metricsToStdErr
-    dns: 8.8.8.8:53
-    ports:
-      - 172.17.42.1:53:53/udp
   web:
     build: .
     image: jiksnu
@@ -188,8 +192,8 @@ services:
       - mongo
       - proxy
     environment:
-      JIKSNU_DB_URL: "mongodb://mongo/jiksnu_docker"
-      VIRTUAL_HOST: jiksnu.localtest.me
+      JIKSNU_DB_NAME: jiksnu_docker
+      VIRTUAL_HOST: jiksnu.docker
     volumes:
       - maven-repo:/root/.m2
   web-dev:
@@ -204,7 +208,7 @@ services:
     environment:
       HTTP_PORT: "80"
       JIKSNU_DB_NAME: jiksnu_docker
-      VIRTUAL_HOST: jiksnu.localtest.me
+      VIRTUAL_HOST: jiksnu.docker
     volumes:
       - maven-repo:/root/.m2
       - .:/app

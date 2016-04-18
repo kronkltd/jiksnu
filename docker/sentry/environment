@@ -2,7 +2,7 @@
 
 ### required settings
 
-SENTRY_URL_PREFIX=http://sentry.localtest.me
+SENTRY_URL_PREFIX=http://sentry.docker
 SECRET_KEY='_!!s!lji&822%@q+-*%db$_$p8c5ksgr=$loeka1@^!khox+q*'
 
 ### other settings
