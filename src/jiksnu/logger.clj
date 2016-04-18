@@ -1,5 +1,5 @@
 (ns jiksnu.logger
-  (:require [ciste.config :refer [config describe-config]]
+  (:require [ciste.config :refer [config config* describe-config]]
             [clojure.data.json :as json]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]])
@@ -13,7 +13,9 @@
   String
   "Private DSN from sentry server")
 
-(def ^Raven raven (RavenFactory/ravenInstance ^String (config :sentry :dsn)))
+(def ^Raven raven
+  (when-let [dsn (config* :sentry :dsn)]
+    (RavenFactory/ravenInstance ^String dsn)))
 
 (defn json-formatter
   ([data] (json-formatter nil data))
@@ -42,13 +44,14 @@
            output-fn config appender]
     :as data}]
   (when-let [^Exception e (force ?err_)]
-    (let [^EventBuilder builder (.. (EventBuilder.)
-                                    (withMessage (.getMessage e))
-                                    (withLevel Event$Level/ERROR)
-                                    (withLogger ^String (:?ns-str data))
-                                    (withSentryInterface (ExceptionInterface. e)))]
-      (.runBuilderHelpers raven builder)
-      (.sendEvent raven (.build builder)))))
+    (when raven
+      (let [^EventBuilder builder (.. (EventBuilder.)
+                                      (withMessage (.getMessage e))
+                                      (withLevel Event$Level/ERROR)
+                                      (withLogger ^String (:?ns-str data))
+                                      (withSentryInterface (ExceptionInterface. e)))]
+        (.runBuilderHelpers raven builder)
+        (.sendEvent raven (.build builder))))))
 
 (def json-appender (assoc (spit-appender {:fname "logs/timbre-spit.log"})
                           :output-fn json-formatter))
