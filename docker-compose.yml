@@ -12,6 +12,13 @@ services:
     image: duck1123/jiksnu-ruby-base
     depends_on:
       - base
+  docker-proxy:
+    image: shipyard/docker-proxy
+    environment:
+      PORT: 2375
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   dockerui:
     image: microbox/dockerui
     depends_on:
@@ -57,20 +64,13 @@ services:
       - logspout
     volumes:
       - "./docker/elk/conf.d:/etc/logstash/conf.d"
-  # etcd:
-  #   image: microbox/etcd
-  #   command: "--name jiksnu -data-dir=/data"
-  #   depends_on:
-  #     - redis
-  #   ports:
-  #     - "4001:4001"
-  #     - "7001:7001"
-  #   links:
-  #     - redis
-  #   volumes:
-  #     - etcd-data:/data
-  #   networks:
-  #     - backend
+  etcd:
+    image: microbox/etcd
+    command: --name jiksnu -data-dir=/data
+    depends_on:
+      - redis
+    volumes:
+      - etcd-data:/data
   grafana:
     image: kamon/grafana_graphite:latest
     environment:
@@ -139,7 +139,7 @@ services:
     depends_on:
       - dnsdock
     environment:
-      DNSDOCK_ALIAS: dns.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,rabbit.docker,redis-commander.docker,sentry.docker
+      DNSDOCK_ALIAS: dns.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker
     ports:
       - "80:80"
     restart: always
@@ -162,6 +162,9 @@ services:
       - proxy
     environment:
       VIRTUAL_HOST: redis-commander.docker
+  rethinkdb:
+    image: rethinkdb
+    restart: always
   sentry:
     image: slafs/sentry
     depends_on:
@@ -185,6 +188,29 @@ services:
       C_FORCE_ROOT: "true"
     volumes:
       - sentry-files:/data
+  shipyard:
+    image: shipyard/shipyard
+    command: server -d tcp://swarm:3375
+    depends_on:
+      - proxy
+      - rethinkdb
+      - swarm
+    environment:
+      VIRTUAL_HOST: shipyard.docker
+      VIRTUAL_PORT: "8080"
+    restart: always
+  swarm:
+    image: swarm
+    command: manage --host tcp://0.0.0.0:3375 etcd://etcd:4001
+    depends_on:
+      - swarm-agent
+    restart: always
+  swarm-agent:
+    image: swarm
+    command: join --addr docker-proxy:2375 etcd://etcd:4001
+    depends_on:
+      - docker-proxy
+      - etcd
   web:
     build: .
     image: jiksnu
