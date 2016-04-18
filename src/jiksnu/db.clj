@@ -31,9 +31,9 @@
                       port (config :jiksnu :db :port)
                       collection-name (config :jiksnu :db :name)]
                   (format "mongodb://%s:%s/%s" host port collection-name)))]
-   (timbre/infof "Connecting to %s" (config :jiksnu :db :url)))
-  ;; TODO: pass connection options
-  (let [{:keys [conn db]} (mg/connect-via-uri (config :jiksnu :db :url))]
-    (dosync
-     (ref-set _conn conn)
-     (ref-set _db db))))
+    (timbre/infof "Connecting to %s" url)
+    ;; TODO: pass connection options
+    (let [{:keys [conn db]} (mg/connect-via-uri url)]
+      (dosync
+       (ref-set _conn conn)
+       (ref-set _db db)))))
