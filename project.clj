@@ -1,4 +1,4 @@
-(defproject net.kronkltd/jiksnu "0.2.0-SNAPSHOT"
+(defproject net.kronkltd/jiksnu "0.2.0"
   :description "distributed social network"
   :url "https://github.com/duck1123/jiksnu"
   :author "Daniel E. Renfer <duck@kronkltd.net>"
