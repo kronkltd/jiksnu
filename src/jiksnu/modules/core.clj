@@ -64,7 +64,10 @@
 
 (defn start
   []
-  (Kamon/start)
+  (try
+    (Kamon/start)
+    (catch Exception ex
+      (timbre/warn ex "Kamon error")))
 
   (let [tracer (.newContext (Kamon/tracer) "foo")]
 
