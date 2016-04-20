@@ -1,5 +1,5 @@
 (ns jiksnu.pages.RegisterPage
-  (:require [jiksnu.helpers :refer [by-model]]))
+  (:require [jiksnu.page-helpers :refer [by-model]]))
 
 (defn RegisterPage
   [])

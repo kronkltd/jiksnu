@@ -1,7 +1,7 @@
 (ns jiksnu.step-definitions
-  (:require [jiksnu.helpers :as helpers]
-            [jiksnu.helpers.action-helpers :as helpers.action]
+  (:require [jiksnu.helpers.action-helpers :as helpers.action]
             [jiksnu.helpers.http-helpers :as helpers.http]
+            [jiksnu.page-helpers :as page-helpers]
             [jiksnu.pages.LoginPage :refer [LoginPage login]]
             [jiksnu.pages.RegisterPage :refer [RegisterPage]]
             [jiksnu.World :as World]
@@ -12,7 +12,7 @@
 
  (timbre/info "loading core spec")
 
- (this-as this (.setDefaultTimeout this (helpers/seconds 60)))
+ (this-as this (.setDefaultTimeout this (page-helpers/seconds 60)))
 
  (Given #"^I am (not )?logged in$" [not-str next]
    (if (empty? not-str)
@@ -25,7 +25,7 @@
        (-> (.sleep js/browser 500)
            (.then (fn []
                     (timbre/info "Fetching Status")
-                    (-> (World/expect (helpers/get-username))
+                    (-> (World/expect (page-helpers/get-username))
                         .-to .-eventually (.equal "test")))))
        (timbre/info "Expecting title")
        (-> (World/expect (.getTitle js/browser))

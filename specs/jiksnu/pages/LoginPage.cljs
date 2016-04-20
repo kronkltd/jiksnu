@@ -1,5 +1,5 @@
 (ns jiksnu.pages.LoginPage
-  (:require [jiksnu.helpers :refer [by-model get]]
+  (:require [jiksnu.page-helpers :refer [by-model get]]
             [jiksnu.protocols :refer [get Page]]))
 
 (defprotocol LoginPageProto
