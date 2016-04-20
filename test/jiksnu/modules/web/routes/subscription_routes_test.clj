@@ -8,13 +8,12 @@
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
             [midje.sweet :refer :all]
-            [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
 
-(future-fact "ostatus submit"
+(future-fact "route: ostatus/sub :post"
   (let [username (fseq :username)
         domain-name (fseq :domain)
         uri (format "acct:%s@%s" username domain-name)
@@ -39,12 +38,3 @@
               (provided
                 (ops/get-discovered anything) => (d/success-deferred
                                                   (model/map->Domain {:_id domain-name}))))))))
-
-(future-fact "get-subscriptions"
-  (let [user (mock/a-user-exists)
-        subscription (mock/a-subscription-exists {:from user})
-        path (str "/users/" (:_id user) "/subscriptions")]
-    (-> (req/request :get path)
-        response-for) =>
-        (contains {:status status/success?
-                   :body #(enlive/select (th/hiccup->doc %) [:.subscriptions])})))

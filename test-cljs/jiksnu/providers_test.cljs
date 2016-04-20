@@ -8,8 +8,18 @@
 (declare $q)
 (declare $rootScope)
 
+(defn valid-login-response
+  [method url data headers params]
+  #js [204 nil #js {} "No-Content"])
+
+(defn invalid-login-response
+  [method url data headers params]
+  #js [409 nil #js {} "Unauthenticated"])
+
 (describe {:doc "jiksnu.providers"}
   (js/beforeEach (js/module "jiksnu"))
+
+  (js/beforeEach (fn [] (js/installPromiseMatchers)))
 
   (js/beforeEach
    (js/inject
@@ -19,26 +29,22 @@
            (set! $httpBackend _$httpBackend_)
            (set! $q _$q_)
            (set! $rootScope _$rootScope_)
-           (.. $httpBackend (whenGET #"/templates/.*") (respond "<div></div>"))
-           (.. $httpBackend (whenGET #"/model/.*")     (respond "{}")))]))
+           (doto $httpBackend
+             (.. (whenGET #"/templates/.*") (respond "<div></div>"))
+             (.. (whenGET #"/model/.*")     (respond "{}"))))]))
 
   (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
 
   (describe {:doc "app"}
     (describe {:doc ".addStream"}
       (it "should add the stream"
-        (let [stream-name "foo"
-              response (atom nil)]
-
+        (let [stream-name "foo"]
           ;; route: streams-api/collection :post
-          (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [200 stream-name])))
-
-          (.. app
-              (addStream stream-name)
-              (then #(reset! response %)))
-
-          (.flush $httpBackend)
-          (is @response stream-name))))
+          (doto $httpBackend
+            (.. (expectPOST "/model/streams") (respond (constantly #js [200 stream-name]))))
+          (let [p (.addStream app stream-name)]
+            (.flush $httpBackend)
+            (.. (js/expect p) (toBeResolvedWith stream-name))))))
 
     (describe {:doc ".connect"}
       (it "should open a websocket connection"
@@ -49,53 +55,59 @@
 
     (describe {:doc ".follow"}
       (describe {:doc "when not authenticated"}
-        (js/it "should be rejected"
-          (fn [done]
-            (.. app
-                (follow)
-                (then #(.. (js/expect true) (toBeFalsy))
-                      #(.. (js/expect true) (toBeTruthy)))
-                (finally done))
-            (.$digest $rootScope)))))
+        (it "should be rejected"
+          (let [p (.follow app)]
+            (.$digest $rootScope)
+            (.. (js/expect p) (toBeRejected))))))
 
     (describe {:doc ".getUser"}
       (describe {:doc "when not authenticated"}
-        (js/it "resolves to nil"
-          (fn [done]
-            (.. app
-                (getUser)
-                (then #(.. (js/expect %)    (toBeNull))
-                      #(.. (js/expect true) (toBeFalsy)))
-                (finally done))
-            (.flush $httpBackend)
-            (.$digest $rootScope))))
+        (it "resolves to nil"
+          (.. (js/spyOn app   "getUserId") -and (returnValue nil))
+          (let [p (.getUser app)]
+            (.$digest $rootScope)
+            (.. (js/expect p) (toBeResolvedWith nil)))))
       (describe {:doc "when authenticated"}
-        (js/it "returns that user"
-          (fn [done]
-            (let [Users (.inject app "Users")
-                  id "acct:foo@example.com"
-                  user #js {:_id id}]
-              (.. (js/spyOn app   "getUserId") -and (returnValue id))
-              (.. (js/spyOn Users "find")      -and (returnValue ($q #(% user))))
-              (.. app
-                  (getUser)
-                  (then #(.. (js/expect %)    (toBe user))
-                        #(.. (js/expect true) (toBeFalsy)))
-                  (finally done))
+        (it "returns that user"
+          (let [Users (.inject app "Users")
+                id "acct:foo@example.com"
+                user #js {:_id id}]
+            (.. (js/spyOn app   "getUserId") -and (returnValue id))
+            (.. (js/spyOn Users "find")      -and (returnValue ($q #(% user))))
+            (let [p (.getUser app)]
               (.$digest $rootScope)
-              (.. (js/expect (.-getUser app))   (toHaveBeenCalled))
-              (.. (js/expect (.-getUserId app)) (toHaveBeenCalled)))))))
+              (.. (js/expect p) (toBeResolvedWith user))
+              (.. (js/expect (.-find Users)) (toHaveBeenCalledWith id)))))))
 
     (describe {:doc ".invokeAction"}
-      (js/it "sends a message"
-        (fn [done]
-          (let [model-name "user"
-                action-name "delete"
-                id "acct:user@example.com"]
-            (.. (js/spyOn app "send") -and (returnValue ($q #(%))) )
-            (.. app
-                (invokeAction model-name action-name id)
-                (then #(.. (js/expect true)  (toBeTruthy))
-                      #(.. (js/expect false) (toBeTruthy)))
-                (finally done)))
-          (.$digest $rootScope))))))
+      (it "sends a message"
+        (let [model-name "user"
+              action-name "delete"
+              id "acct:user@example.com"]
+          (.. (js/spyOn app "send") -and (returnValue ($q #(%))) )
+          (let [p (.invokeAction app model-name action-name id)]
+            (.$digest $rootScope)
+            (.. (js/expect p) (toBeResolved))))))
+
+    (describe {:doc ".login"}
+      (describe {:doc "with valid credentials"}
+        (it "returns successfully"
+          (doto $httpBackend
+            (.. (expectPOST "/main/login") (respond valid-login-response))
+            (.. (whenGET "/status")        (respond #js {})))
+          (let [username "test"
+                password "test"
+                p (.login app username password)]
+            (.flush $httpBackend)
+            (.$digest $rootScope)
+            (.. (js/expect p) (toBeResolvedWith true)))))
+      (describe {:doc "with invalid credentials"}
+        (it "is rejected"
+          (doto $httpBackend
+            (.. (expectPOST "/main/login") (respond invalid-login-response)))
+          (let [username "test"
+                password "test"
+                p (.login app username password)]
+            (.flush $httpBackend)
+            (.$digest $rootScope)
+            (.. (js/expect p) (toBeRejected))))))))

@@ -1,12 +1,10 @@
 (ns jiksnu.logger
-  (:require [ciste.config :refer [config describe-config]]
+  (:require [ciste.config :refer [config config* describe-config]]
             [clojure.data.json :as json]
-            [jiksnu.util :as util]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]])
   (:import com.getsentry.raven.Raven
            com.getsentry.raven.RavenFactory
-           com.getsentry.raven.event.Event
            com.getsentry.raven.event.Event$Level
            com.getsentry.raven.event.EventBuilder
            com.getsentry.raven.event.interfaces.ExceptionInterface))
@@ -15,7 +13,9 @@
   String
   "Private DSN from sentry server")
 
-(def raven (RavenFactory/ravenInstance (config :sentry :dsn)))
+(def ^Raven raven
+  (when-let [dsn (config* :sentry :dsn)]
+    (RavenFactory/ravenInstance ^String dsn)))
 
 (defn json-formatter
   ([data] (json-formatter nil data))
@@ -43,14 +43,15 @@
   [{:keys [instant level ?err_ varargs_
            output-fn config appender]
     :as data}]
-  (when-let [e (force ?err_)]
-    (let [builder (.. (EventBuilder.)
-                      (withMessage (.getMessage e))
-                      (withLevel Event$Level/ERROR)
-                      (withLogger (:?ns-str data))
-                      (withSentryInterface (ExceptionInterface. e)))]
-      (.runBuilderHelpers raven builder)
-      (.sendEvent raven (.build builder)))))
+  (when-let [^Exception e (force ?err_)]
+    (when raven
+      (let [^EventBuilder builder (.. (EventBuilder.)
+                                      (withMessage (.getMessage e))
+                                      (withLevel Event$Level/ERROR)
+                                      (withLogger ^String (:?ns-str data))
+                                      (withSentryInterface (ExceptionInterface. e)))]
+        (.runBuilderHelpers raven builder)
+        (.sendEvent raven (.build builder))))))
 
 (def json-appender (assoc (spit-appender {:fname "logs/timbre-spit.log"})
                           :output-fn json-formatter))

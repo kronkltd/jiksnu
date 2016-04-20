@@ -1,9 +1,6 @@
 (ns jiksnu.navigation-helpers
   (:require [ciste.core :refer [with-context]]
-            [ciste.model :as cm]
             [ciste.sections.default :refer [uri]]
-            ;[jiksnu.action-helpers :refer [fetch-page fetch-page-browser page-names]]
-            [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that]]))
 
 ;(defn go-to-the-page

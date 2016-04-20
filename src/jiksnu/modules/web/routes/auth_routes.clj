@@ -1,11 +1,10 @@
 (ns jiksnu.modules.web.routes.auth-routes
   (:require [cemerick.friend :as friend]
-            [jiksnu.actions.auth-actions :as auth]
+            [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
-            [jiksnu.util :as util]
             [liberator.representation :refer [as-response ring-response]]
             [slingshot.slingshot :refer [try+]]
             [taoensso.timbre :as timbre]))
@@ -58,18 +57,24 @@
                                            :required true}}
                    :responses {"200" {:description "Login Response"}}}}
   :available-media-types ["text/html" "application/json"]
-  :post! (fn [{:as ctx
-               {{:keys [username password]} :params} :request}]
-           (timbre/debug "handling login post")
-           true)
+  :malformed? (fn [{{{:keys [username password]} :params} :request}]
+                (when (or username password)
+                  (if (and username password)
+                    [false {:username username :password password}]
+                    true)))
+  :authorized? (fn [{:keys [username password]}]
+                 (if (and username password)
+                   (if-let [auth (:username (actions.auth/login username password))]
+                     {:authorized-username auth})
+                   true))
   :post-redirect? false
   :new? false
-  :respond-with-entity? true
-  :handle-created (fn [{:keys [request]}]
-                    (util/inspect
-                     (friend/authenticate-response
-                      request
-                      {:body "ok"}))))
+  :respond-with-entity? false
+  :handle-no-content (fn [ctx]
+                       (ring-response
+                        (friend/merge-authentication
+                         {}
+                         {:identity (:authorized-username ctx)}))))
 
 (defresource auth :logout
   :url                   "/main/logout"
@@ -90,4 +95,4 @@
   :available-media-types ["application/json"]
   :methods {:post {:summary "Verify Credentials"}}
   :exists? (fn [ctx]
-             {:data (auth/verify-credentials)}))
+             {:data (actions.auth/verify-credentials)}))

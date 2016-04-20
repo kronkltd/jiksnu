@@ -18,7 +18,8 @@
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
   (:import java.net.URI
-           jiksnu.model.User))
+           jiksnu.model.User
+           nu.xom.Document))
 
 ;; hooks
 
@@ -139,7 +140,7 @@
   (apply index* options))
 
 (defn parse-xrd
-  [body]
+  [^Document body]
   (timbre/info (.toXML body))
   (let [doc body #_(cm/string->document body)]
     {:links (model.webfinger/get-links doc)}))

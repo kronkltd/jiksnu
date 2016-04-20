@@ -8,7 +8,7 @@
             [jiksnu.model.client :as model.client]
             [jiksnu.session :refer [with-user-id]]
             [jiksnu.util :as util]
-            [slingshot.slingshot :refer [try+ throw+]])
+            [slingshot.slingshot :refer [try+]])
   (:import javax.security.auth.login.LoginException
            kamon.Kamon
            kamon.trace.Tracer))

@@ -5,7 +5,6 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-_id set-created-time set-updated-time]]
             [jiksnu.validators :refer [type-of]]
-            [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [validation-set presence-of]]))
 
 (def collection-name "likes")

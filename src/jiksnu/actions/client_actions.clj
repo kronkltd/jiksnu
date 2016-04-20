@@ -6,7 +6,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.client-transforms :as transforms.client]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [slingshot.slingshot :refer [throw+]]))
 
 (def model-sym 'jiksnu.model.client)
 

@@ -2,8 +2,7 @@
   (:require jiksnu.app
             jiksnu.controllers
             [taoensso.timbre :as timbre])
-  (:use-macros [gyr.test :only [describe.ng describe.controller it-uses it-compiles]]
-               [purnam.test :only [describe it is fact beforeEach]]))
+  (:use-macros [purnam.test :only [describe it is beforeEach]]))
 
 (timbre/set-level! :debug)
 
@@ -22,6 +21,8 @@
 (describe {:doc "jiksnu.controllers"}
   (beforeEach (js/module "jiksnu"))
 
+  (js/beforeEach (fn [] (js/installPromiseMatchers)))
+
   (beforeEach
    (js/inject
     #js ["$controller" "$rootScope" "$q"
@@ -33,8 +34,9 @@
            (set! $scope (.$new $rootScope))
            (set! $q _$q_)
            (set! $httpBackend _$httpBackend_)
-           (.. $httpBackend (whenGET #"/templates/.*") (respond "<div></div>"))
-           (.. $httpBackend (whenGET #"/model/.*")     (respond "{}"))
+           (doto $httpBackend
+             (.. (whenGET #"/templates/.*") (respond "<div></div>"))
+             (.. (whenGET #"/model/.*")     (respond "{}")))
            (set! injections #js {:$scope $scope :app app}))]))
 
   (let [controller-name "FollowButtonController"]
@@ -45,7 +47,7 @@
             (it "should return false"
               (@$controller controller-name injections)
               (set! (.-item $scope) #js {:_id item-id})
-              (is (.isActor $scope) false)))
+              (.. (js/expect (.isActor $scope)) (toBe false))))
           (describe {:doc "When authenticated"}
             (describe {:doc "As another user"}
               (it "should return false"
@@ -53,27 +55,22 @@
                 (set! (.-domain (.-data app)) "example.com")
                 (set! (.-user (.-data app)) "bar")
                 (set! (.-item $scope) #js {:_id item-id})
-                (is (.isActor $scope) false)))
+                (.. (js/expect (.isActor $scope)) (toBe false))))
             (describe {:doc "As the actor"}
               (it "should return true"
                 (@$controller controller-name injections)
                 (set! (.-domain (.-data app)) "example.com")
                 (set! (.-user (.-data app)) "foo")
                 (set! (.-item $scope) #js {:_id item-id})
-                (is (.isActor $scope) true)))))
+                (.. (js/expect (.isActor $scope)) (toBe true))))))
         (describe {:doc ".isFollowing"}
           (describe {:doc "when not authenticated"}
-            (js/it "should resolve to falsey"
-              (fn [done]
-                (@$controller controller-name injections)
-                (set! (.-item $scope) #js {:_id item-id})
-
-                (.. $scope
-                    (isFollowing)
-                    (then #(.. (js/expect %)    (toBeFalsy))
-                          #(.. (js/expect true) (toBeFalsy)))
-                    (finally done))
-                (.$digest $rootScope))))))))
+            (it "should resolve to falsey"
+              (@$controller controller-name injections)
+              (set! (.-item $scope) #js {:_id item-id})
+              (let [p (.isFollowing $scope)]
+                (.$apply $scope)
+                (.. (js/expect p) (toBeResolvedWith nil)))))))))
 
   (let [controller-name "NavBarController"]
     (describe {:doc controller-name}
@@ -91,12 +88,11 @@
               mock-response #js {:then mock-then}]
           (set! (.-fetchStatus app) (constantly mock-response))
           (@$controller controller-name injections)
-          (is $scope.loaded true)))
+          (.. (js/expect (.-loaded $scope)) (toBe true))))
 
       (it "should bind the app service to app2"
         (set! (.-foo app) "bar")
-        (@$controller "NavBarController" injections)
-
+        (@$controller controller-name injections)
         (is $scope.app2.foo "bar"))))
 
   (let [controller-name "NewGroupController"]
@@ -119,11 +115,14 @@
         (it "sends an add-stream notice to the server"
           (let [stream-name "bar"
                 params #js {:name stream-name}]
+            ;; TODO: Just mock app.addStream
+            (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [201])))
             (@$controller controller-name injections)
             (set! (.-stream $scope) params)
-
-            (-> (.addStream $scope)
-                (.then #(is % nil))))))
+            (let [p (.addStream $scope)]
+              (.$apply $scope)
+              (.flush $httpBackend)
+              (.. (js/expect p) (toBeResolved))))))
 
       (describe {:doc ".delete"})))
 
@@ -138,18 +137,11 @@
                (set! (.-loaded $scope) true))))
 
       (describe {:doc ".deleteRecord"}
-        (js/it "sends a delete action"
-          (fn [done]
-            (@$controller controller-name injections)
-            (let [spy (.. (js/spyOn app "invokeAction")
-                          -and
-                          (returnValue
-                           (.when $q #js {})))
-                  item (.-item $scope)]
-              (-> (.deleteRecord $scope item)
-                  (.then #(.. (js/expect %) toBeDefined)
-                         #(.. (js/expect %) toBeDefined))
-                  (.finally (fn [] (js/done))))
-              (.$apply $scope)
-              (.toHaveBeenCalled (js/expect spy))))))))
-  )
+        (it "sends a delete action"
+          (@$controller controller-name injections)
+          (.. (js/spyOn app "invokeAction") -and (returnValue ($q #(%))))
+          (let [item (.-item $scope)
+                p (.deleteRecord $scope item)]
+            (.$apply $scope)
+            (.. (js/expect p) (toBeResolved))
+            (.. (js/expect (.-invokeAction app)) (toHaveBeenCalled))))))))

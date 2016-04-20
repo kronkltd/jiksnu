@@ -5,8 +5,7 @@
             [jiksnu.routes-helper :refer [as-admin response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]
-            [slingshot.slingshot :refer [throw+]]))
+            [ring.mock.request :as req]))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.admin"])

@@ -4,8 +4,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
-            [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+ try+]])
+            [jiksnu.util :as util])
   (:import jiksnu.model.Domain))
 
 (defonce delete-hooks (ref []))

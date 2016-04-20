@@ -2,17 +2,15 @@
   (:require [ciste.config :refer [config]]
             [clj-time.core :as time]
             [clojure.string :as string]
-            ;; [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre])
+            [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI
-           org.bson.types.ObjectId))
+           (org.bson.types ObjectId)))
 
 (defn set-local
   [activity]

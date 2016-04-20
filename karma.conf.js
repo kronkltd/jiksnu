@@ -43,6 +43,7 @@ module.exports = function(config) {
       vendorBase + "/raven-js/dist/raven.min.js",
       vendorBase + "/raven-js/dist/plugins/angular.min.js",
       vendorBase + "/angular-mocks/angular-mocks.js",
+      "node_modules/jasmine-promise-matchers/dist/jasmine-promise-matchers.js",
       "target/karma-test.js"
     ],
 

@@ -13,9 +13,10 @@
             [manifold.deferred :as d]
             [manifold.time :as lt]
             [org.httpkit.client :as client]
-            [slingshot.slingshot :refer [throw+ try+]]
+            [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
-  (:import jiksnu.model.Resource))
+  (:import jiksnu.model.Resource
+           org.joda.time.DateTime))
 
 (defkey ::resource-realized
   "Whenever a resource is realized, this event is fired"
@@ -143,7 +144,7 @@
   (let [d (d/deferred)
         url (:_id item)
         actor (session/current-user)
-        date (time/now)]
+        ^DateTime date (time/now)]
     (if (needs-update? item options)
       (if (:requiresAuth item)
         ;; auth required

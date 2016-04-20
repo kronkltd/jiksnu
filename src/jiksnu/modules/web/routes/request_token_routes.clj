@@ -5,11 +5,9 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
                                                 subpage-resource path]]
-            [jiksnu.util :as util]
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre]
             [jiksnu.model.user :as model.user]))
 
 (defparameter :model.request-token/id

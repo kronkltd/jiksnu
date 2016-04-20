@@ -5,8 +5,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.access-token-transforms :as transforms.access-token]
-            [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+ try+]]
+            [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 
 (def model-sym 'jiksnu.model.access-token)

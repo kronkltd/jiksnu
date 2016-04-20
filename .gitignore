@@ -24,7 +24,6 @@ init-script
 jiksnu.iml
 lib
 logs
-native
 node_modules
 pom.xml*
 target

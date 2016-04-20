@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.user-routes-test
-  (:require [ciste.loader :as loader]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.mock :as mock]
@@ -47,3 +46,12 @@
         (let [parsed-body (some-> response :body json/read-str)]
           parsed-body => (contains {"items" (has every? string?)
                                     "totalItems" m}))))))
+
+(future-fact "route: users-api/subscriptions :get"
+  (let [user (mock/a-user-exists)
+        subscription (mock/a-subscription-exists {:from user})
+        path (str "/users/" (:_id user) "/subscriptions")]
+    (-> (req/request :get path)
+        response-for) =>
+    (contains {:status status/success?
+               :body #(enlive/select (th/hiccup->doc %) [:.subscriptions])})))

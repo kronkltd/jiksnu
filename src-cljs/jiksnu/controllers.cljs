@@ -181,12 +181,14 @@
   (.updateLabel $scope))
 
 (def.controller jiksnu.LoginPageController
-  [$scope app]
+  [$scope $state app Notification]
   (set! (.-login $scope)
         (fn []
           (let [username (.-username $scope)
                 password (.-password $scope)]
-            (.login app username password)))))
+            (-> (.login app username password)
+                (.then (fn [r] (.go $state "home"))
+                       (fn [e] (.warning Notification "login failed"))))))))
 
 (def.controller jiksnu.LogoutController [])
 

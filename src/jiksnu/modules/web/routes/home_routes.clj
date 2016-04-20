@@ -41,6 +41,13 @@
   :available-media-types ["text/html"]
   :exists? (fn [ctx] {:data (str @resources )}))
 
+(defresource root :rsd
+  :name "Really Simple Discovery"
+  :url "/rsd.xml"
+  :mixins [item-resource]
+  :available-media-types ["application/xml"]
+  :exists? (fn [ctx] {:data (site/rsd)}))
+
 (defresource root :settings
   :url "/main/settings"
   :name "Settings Page"
@@ -48,6 +55,10 @@
   :mixins [angular-resource]
   :doc {:get {:nickname "settings-page"
               :summary "Settings Page"}})
+
+(defresource root :oembed
+  :name "OEmbed"
+  :url "/main/oembed")
 
 ;; =============================================================================
 

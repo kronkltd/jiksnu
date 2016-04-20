@@ -2,7 +2,6 @@
   (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
-            [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [validation-set presence-of]]))
 
 (defonce page-size 20)

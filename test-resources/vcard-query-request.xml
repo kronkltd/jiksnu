@@ -1,7 +1,0 @@
-<iq type='get'
-    from='duck@beta.jiksnu.com/Psi+'
-    to='duck@beta.jiksnu.com'
-    id='osw2'>
-  <query xmlns="http://onesocialweb.org/spec/1.0/vcard4#query">
-  </query>
-</iq>

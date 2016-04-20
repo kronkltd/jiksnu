@@ -1,10 +1,9 @@
 (ns jiksnu.model.webfinger
   (:require [ciste.model :as cm]
-            [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [slingshot.slingshot :refer [throw+ try+]])
+            [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
            nu.xom.Document
@@ -48,7 +47,7 @@
     (let [root (.getRootElement xrd)]
       (->> (cm/query root query-str mappings)
            util/force-coll
-           (keep (fn [prop] (when prop (.getValue prop))))
+           (keep (fn [^Element prop] (when prop (.getValue prop))))
            first))))
 
 (defn user-meta
@@ -87,7 +86,7 @@
   (let [root (.getRootElement xrd)
         elts (concat (util/force-coll (cm/query root "//xrd:Subject" mappings))
                      (util/force-coll (cm/query root "//xrd:Alias" mappings)))]
-    (map #(.getValue %) elts)))
+    (map #(.getValue ^Element %) elts)))
 
 (defn get-username-from-identifiers
   [^Document xrd]
