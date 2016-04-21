@@ -35,13 +35,12 @@ services:
     build: docker/dnsdock
     command: -verbose=true -environment="dev" -nameserver="8.8.4.4:53"
     environment:
-      VIRTUAL_HOST: dnsdock.docker
+      VIRTUAL_HOST: dns.docker
       VIRTUAL_PORT: "80"
     ports:
       - 172.17.42.1:53:53/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./docker/dnsdock:/go/src/github.com/tonistiigi/dnsdock
   # drone:
   #   image: drone/drone
   #   env_file:
