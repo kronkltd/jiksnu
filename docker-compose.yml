@@ -70,6 +70,13 @@ services:
       - redis
     volumes:
       - etcd-data:/data
+  etcd-viewer:
+    image: nikfoundas/etcd-viewer
+    depends_on:
+      - etcd
+      - proxy
+    environment:
+      VIRTUAL_HOST: etcd-viewer.docker
   grafana:
     image: kamon/grafana_graphite:latest
     environment:
@@ -138,7 +145,7 @@ services:
     depends_on:
       - dnsdock
     environment:
-      DNSDOCK_ALIAS: dns.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker
+      DNSDOCK_ALIAS: dns.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker,etcd-viewer.docker
     ports:
       - "80:80"
     restart: always
