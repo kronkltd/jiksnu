@@ -145,7 +145,7 @@ services:
     depends_on:
       - dnsdock
     environment:
-      DNSDOCK_ALIAS: dns.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker,etcd-viewer.docker,pump.docker
+      DNSDOCK_ALIAS: dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker
     ports:
       - "80:80"
     restart: always
@@ -163,6 +163,13 @@ services:
     build: docker/pump
     environment:
       VIRTUAL_HOST: pump.docker
+  rancher:
+    image: rancher/server
+    depends_on:
+      - proxy
+    environment:
+      VIRTUAL_HOST: rancher.docker
+      VIRTUAL_PORT: 8080
   redis:
     image: redis:3
   redis_commander:
