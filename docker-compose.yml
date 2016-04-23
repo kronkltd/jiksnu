@@ -240,7 +240,6 @@ services:
       dockerfile: docker/web-dev/Dockerfile
     image: duck1123/jiksnu-dev
     depends_on:
-      - dockerui
       - mongo
       - proxy
     environment:
