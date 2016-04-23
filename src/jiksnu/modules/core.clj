@@ -27,34 +27,19 @@
 
 (defn handle-created
   [{:keys [collection-name event item] :as data}]
-  (timbre/debugf "%s(%s)=>%s" collection-name (:_id item) event)
-  ;; (util/inspect data)
-  ;; (util/inspect item)
+  ;; (timbre/debugf "%s(%s)=>%s" collection-name (:_id item) event)
   (.increment (.counter (Kamon/metrics) "records-created"))
   (try
     (condp = collection-name
+      "activities" (when (= (:verb item) "join")
+                     (let [object-id (get-in item [:object :id])
+                           group (model.group/fetch-by-id object-id)]
+                       (actions.group-membership/create
+                        {:user (:author item)
+                         :group (:_id group)})))
 
-     "activities" (let [verb (:verb item)]
-                    (timbre/debug "activity created")
-                    (condp = verb
-                      "post" (do
-                               (timbre/debug "activity posted"))
-
-                      "join" (do
-                               (timbre/info "Group join")
-                               (let [object-id (get-in item [:object :id])
-                                     group (model.group/fetch-by-id object-id)]
-                                 (actions.group-membership/create
-                                  {:user (:author item)
-                                   :group (:_id group)})))
-
-                      (do
-                        (timbre/errorf "Unknown verb - %s" verb))))
-
-     "users" (do
-               #_(timbre/info "user created")
-               (actions.stream/add-stream item "* major")
-               (actions.stream/add-stream item "* minor"))
+      "users" (do (actions.stream/add-stream item "* major")
+                  (actions.stream/add-stream item "* minor"))
 
      nil)
     (catch Exception ex
@@ -65,7 +50,7 @@
   (try
     (Kamon/start)
     (catch Exception ex
-      (timbre/warn ex "Kamon error")))
+      #_(timbre/warn ex "Kamon error")))
 
   (let [tracer (.newContext (Kamon/tracer) "foo")]
 

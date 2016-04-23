@@ -36,16 +36,17 @@
    {:level :debug
     :ns-whitelist []
     :ns-blacklist [
-                   ;; "ciste.commands"
-                   ;; "ciste.config"
-                   ;; "ciste.loader"
+                   "ciste.commands"
+                   "ciste.config"
+                   "ciste.loader"
                    ;; "ciste.initializer"
-                   ;; "ciste.runner"
-                   ;; "ciste.service"
+                   "ciste.runner"
+                   "ciste.service"
                    ;; "ring.logger.timbre"
-                   ;; "jiksnu.db"
+                   "jiksnu.db"
                    ;; "jiksnu.modules.http.actions"
                    ;; "jiksnu.modules.web.helpers"
+                   "jiksnu.test-helper"
                    ]
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
