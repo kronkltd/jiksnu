@@ -20,8 +20,9 @@
   [doc model-name]
   (enlive/select doc [(enlive/attr= :data-model model-name)]))
 
-(def ^:dynamic *depth* 0)
+(def depth (ref 0))
 
+#_
 (defmacro context
   [description & body]
   `(let [var-name# (str ~description)]
@@ -41,9 +42,17 @@
 (defn setup-testing
   ([] (setup-testing nil))
   ([modules]
+   (timbre/debugf "setup testing(%s) - %s" @depth modules)
    (try+
-    (start-application! modules)
-    (db/drop-all!)
+
+    (when (zero? @depth)
+      (start-application! modules))
+
+    (dosync
+     (alter depth inc))
+
+    ;; (loader/register-module "jiksnu.modules.core")
+    (db/drop-all! )
     (dosync
      (ref-set r/this {})
      (ref-set r/that {}))
@@ -56,7 +65,14 @@
 (defn stop-testing
   []
   (try+
-   ;; (stop-application!)
+   (dosync
+    (alter depth dec))
+
+   (timbre/debugf "stop-testing(%s)" @depth)
+
+   ;; (when (zero? @depth)
+   ;;   (stop-application!))
+
    (catch Object ex
      ;(println "error")
      (timbre/error "Shutdown Error" ex)
