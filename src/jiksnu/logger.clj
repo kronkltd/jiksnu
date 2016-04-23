@@ -1,21 +1,8 @@
 (ns jiksnu.logger
-  (:require [ciste.config :refer [config config* describe-config]]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
+            [jiksnu.sentry :as sentry]
             [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :refer [println-appender spit-appender]])
-  (:import com.getsentry.raven.Raven
-           com.getsentry.raven.RavenFactory
-           com.getsentry.raven.event.Event$Level
-           com.getsentry.raven.event.EventBuilder
-           com.getsentry.raven.event.interfaces.ExceptionInterface))
-
-(describe-config [:sentry :dsn]
-  String
-  "Private DSN from sentry server")
-
-(def ^Raven raven
-  (when-let [dsn (config* :sentry :dsn)]
-    (RavenFactory/ravenInstance ^String dsn)))
+            [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]))
 
 (defn json-formatter
   ([data] (json-formatter nil data))
@@ -39,28 +26,8 @@
           (into {})
           json/json-str))))
 
-(defn raven-formatter
-  [{:keys [instant level ?err_ varargs_
-           output-fn config appender]
-    :as data}]
-  (when-let [^Exception e (force ?err_)]
-    (when raven
-      (let [^EventBuilder builder (.. (EventBuilder.)
-                                      (withMessage (.getMessage e))
-                                      (withLevel Event$Level/ERROR)
-                                      (withLogger ^String (:?ns-str data))
-                                      (withSentryInterface (ExceptionInterface. e)))]
-        (.runBuilderHelpers raven builder)
-        (.sendEvent raven (.build builder))))))
-
-(def json-appender (assoc (spit-appender {:fname "logs/timbre-spit.log"})
-                          :output-fn json-formatter))
-(def raven-appender {:enabled? true
-                     :async? false
-                     :min-level nil
-                     :rate-limit nil
-                     :output-fn :inherit
-                     :fn raven-formatter})
+(def json-appender (-> (spit-appender {:fname "logs/timbre-spit.log"})
+                       (assoc :output-fn json-formatter)))
 (def stdout-appender (println-appender {:stream :auto}))
 
 (defn set-logger
@@ -84,5 +51,5 @@
     :timestamp-opts timbre/default-timestamp-opts
     :appenders
     {:spit json-appender
-     :raven raven-appender
+     :raven sentry/raven-appender
      :println stdout-appender}}))
