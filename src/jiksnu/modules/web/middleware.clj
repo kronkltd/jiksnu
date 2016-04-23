@@ -34,10 +34,10 @@
     (try+
      (handler request)
      (catch [:type :authentication] ex
-       (timbre/warn ex "Auth error")
+       (timbre/warn "Auth error" ex )
        (auth-exception ex))
      (catch [:type :authorization] ex
-       (timbre/warn ex "Auth error")
+       (timbre/warn "Auth error" ex)
        (auth-exception ex))
      (catch [:type :permission] ex
        (auth-exception ex))
@@ -73,7 +73,7 @@
     (let [request
           (or
            (if-let [authorization (get-in request [:headers "authorization"])]
-             (let [[type parts] (parse-authorization-header (util/inspect authorization))]
+             (let [[type parts] (parse-authorization-header authorization)]
                (if (unparsed-types type)
                  request
                  (let [client (some-> parts (get "oauth_consumer_key") model.client/fetch-by-id)

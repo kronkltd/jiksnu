@@ -99,7 +99,7 @@
                         {:domain (:_id domain)
                          :update-source (:_id source)})
         user (or (model.user/fetch-by-id (str "acct:" (:username params) "@" (:domain params)))
-                 (actions.user/create (util/inspect params)))]
+                 (actions.user/create params))]
     (model.user/set-field! user :discovered true)
     (set-that :user user)
     user))

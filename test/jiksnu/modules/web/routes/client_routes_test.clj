@@ -58,7 +58,7 @@
                     (assoc-in [:headers "authorization"] authorization-str))
         response (-> (response-for request)
                      (update :body (fn [body]
-                                     (->> (string/split (util/inspect body) #"&")
+                                     (->> (string/split body #"&")
                                           (map #(string/split % #"="))
                                           (into {})))))]
     response => (contains {:status 200})
@@ -90,8 +90,8 @@
 
 (fact "route: oauth/access-token :get"
   (fact "when given valid params"
-    (let [client (util/inspect (mock/a-client-exists))
-          request-token (util/inspect (mock/a-request-token-exists {:client client}))
+    (let [client (mock/a-client-exists)
+          request-token (mock/a-request-token-exists {:client client})
           url "/oauth/access_token"
           auth-params {"oauth_consumer_key" (:_id client)
                        "oauth_token" (:_id request-token)

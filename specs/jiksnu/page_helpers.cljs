@@ -1,4 +1,4 @@
-(ns jiksnu.helpers
+(ns jiksnu.page-helpers
   (:require [cljs.nodejs :as nodejs]))
 
 (def http-client (nodejs/require "request"))

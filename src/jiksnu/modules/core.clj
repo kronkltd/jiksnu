@@ -56,9 +56,7 @@
                (actions.stream/add-stream item "* major")
                (actions.stream/add-stream item "* minor"))
 
-     (do
-       #_(timbre/infof "Other created - %s" collection-name)
-       #_(util/inspect item)))
+     nil)
     (catch Exception ex
       (timbre/error "Error in handle-created" ex))))
 

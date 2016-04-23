@@ -65,23 +65,15 @@
             [lein-less "1.7.5"]
             [lein-midje "3.1.3"]
             [lein-shell "0.4.0"]]
-  :hiera {:ignore-ns #{"jiksnu.ops"
-                       "jiksnu.model"
-                       "jiksnu.factory"
-                       "jiksnu.namespace"
-                       "jiksnu.channels"
-                       "jiksnu.session"
-                       "jiksnu.util"
-                       "jiksnu.mock"
-                       "jiksnu.registry"
-                       "jiksnu.db"
-                       }}
-  :aliases {"guard"             ["shell" "bundle" "exec" "guard"]
-            "karma"             ["shell" "./node_modules/.bin/karma" "start"]
-            "protractor"        ["shell" "./node_modules/.bin/protractor" "protractor.config.js"]
+  :hiera {:ignore-ns #{"jiksnu.channels" "jiksnu.db" "jiksnu.factory" "jiksnu.mock"
+                       "jiksnu.model" "jiksnu.namespace" "jiksnu.ops" "jiksnu.registry"
+                       "jiksnu.session" "jiksnu.util"}}
+  :aliases {"guard"            ["shell" "bundle" "exec" "guard"]
+            "karma"            ["shell" "./node_modules/.bin/karma" "start"]
+            "protractor"       ["shell" "./node_modules/.bin/protractor" "protractor.config.js"]
             "webdriver-start"  ["shell" "./node_modules/.bin/webdriver-manager" "start"]
             "webdriver-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]
-            "wscat"             ["shell" "./node_modules/.bin/wscat" "-c" "ws://localhost:8080/"]}
+            "wscat"            ["shell" "./node_modules/.bin/wscat" "-c" "ws://localhost:8080/"]}
   :auto-clean false
   :jvm-opts ["-server"
              "-Dfile.encoding=UTF-8"
@@ -108,13 +100,12 @@
                                  :asset-path "cljs"
                                  ;; :verbose true
                                  :pretty-print true}}}}
-  :profiles {:dev        [:dev-core :user-dev]
-             :dev-core   {:dependencies
-                          [[midje "1.8.3" :exclusions [org.clojure/clojure]]
-                           [clj-factory "0.2.2-SNAPSHOT"]
-                           [org.clojure/tools.nrepl "0.2.12"]
-                           [ring-mock "0.1.5"]
-                           [slamhound "1.5.5"]]}
+  :profiles {:dev {:dependencies
+                   [[midje "1.8.3" :exclusions [org.clojure/clojure]]
+                    [clj-factory "0.2.2-SNAPSHOT"]
+                    [org.clojure/tools.nrepl "0.2.12"]
+                    [ring-mock "0.1.5"]
+                    [slamhound "1.5.5"]]}
              :e2e {:cljsbuild {:builds
                                {:protractor
                                 {:source-paths ["specs"]
@@ -133,17 +124,17 @@
                                         :compiler {:output-to "target/resources/public/cljs/jiksnu.min.js"
                                                    :optimizations :advanced
                                                    :pretty-print false}}}}}
-             :test       {:resource-paths ["target/resources" "resources" "test-resources"]
-                          :cljsbuild {:builds
-                                      {:karma
-                                       {:source-paths ["src-cljs" "test-cljs"]
-                                        :notify-command ["notify-send"]
-                                        :compiler {:output-to "target/karma-test.js"
-                                                   :output-dir "target/karma"
-                                                   :optimizations :simple
-                                                   ;; Fix for $q's use of 'finally'
-                                                   :language-in :ecmascript5
-                                                   :pretty-print true}}}}}}
+             :test {:resource-paths ["target/resources" "resources" "test-resources"]
+                    :cljsbuild {:builds
+                                {:karma
+                                 {:source-paths ["src-cljs" "test-cljs"]
+                                  :notify-command ["notify-send"]
+                                  :compiler {:output-to "target/karma-test.js"
+                                             :output-dir "target/karma"
+                                             :optimizations :simple
+                                             ;; Fix for $q's use of 'finally'
+                                             :language-in :ecmascript5
+                                             :pretty-print true}}}}}}
   :less {:source-paths ["less"]
          :target-path  "target/resources/public/css"}
   :filespecs [{:type :path :path "ciste.clj"}]

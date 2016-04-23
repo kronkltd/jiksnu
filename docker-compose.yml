@@ -36,7 +36,7 @@ services:
     command: -verbose=true -environment="dev" -nameserver="8.8.4.4:53"
     environment:
       VIRTUAL_HOST: dns.docker
-      VIRTUAL_PORT: "80"
+      VIRTUAL_PORT: 80
     ports:
       - 172.17.42.1:53:53/udp
     volumes:
@@ -145,7 +145,7 @@ services:
     depends_on:
       - dnsdock
     environment:
-      DNSDOCK_ALIAS: dns.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker,etcd-viewer.docker,pump.docker
+      DNSDOCK_ALIAS: dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker
     ports:
       - "80:80"
     restart: always
@@ -163,6 +163,13 @@ services:
     build: docker/pump
     environment:
       VIRTUAL_HOST: pump.docker
+  rancher:
+    image: rancher/server
+    depends_on:
+      - proxy
+    environment:
+      VIRTUAL_HOST: rancher.docker
+      VIRTUAL_PORT: 8080
   redis:
     image: redis:3
   redis_commander:
@@ -173,6 +180,7 @@ services:
       - proxy
     environment:
       VIRTUAL_HOST: redis-commander.docker
+      VIRTUAL_PORT: 8080
   rethinkdb:
     image: rethinkdb
     restart: always
@@ -208,7 +216,7 @@ services:
       - swarm
     environment:
       VIRTUAL_HOST: shipyard.docker
-      VIRTUAL_PORT: "8080"
+      VIRTUAL_PORT: 8080
     restart: always
   swarm:
     image: swarm
@@ -239,11 +247,10 @@ services:
       dockerfile: docker/web-dev/Dockerfile
     image: duck1123/jiksnu-dev
     depends_on:
-      - dockerui
       - mongo
       - proxy
     environment:
-      HTTP_PORT: "80"
+      HTTP_PORT: 80
       JIKSNU_DB_NAME: jiksnu_docker
       VIRTUAL_HOST: jiksnu.docker
     volumes:

@@ -1,4 +1,4 @@
 build:
-  image: clojure
+  image: jiksnu
   commands:
-    - whoami
+    - script/cibuild

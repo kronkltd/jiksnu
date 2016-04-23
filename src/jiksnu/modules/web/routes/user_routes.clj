@@ -88,11 +88,11 @@
   :fetcher (fn [id] (model.activity/fetch-by-id id))
   :post! (fn [ctx]
            (timbre/info "receiving post")
-           (let [request (util/inspect (:request ctx))]
+           (let [request (:request ctx)]
              (if-let [author (model.user/get-user (:current (friend/identity request)))]
-               (let [params (-> (:params (util/inspect (:request ctx)))
+               (let [params (-> (:params (:request ctx))
                                 (assoc :author (:_id author)))]
-                 (util/inspect (actions.activity/post (util/inspect params))))))))
+                 (actions.activity/post params))))))
 
 (defresource user-pump-api :feed-major
   :url "/{username}/feed/major"
