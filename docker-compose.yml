@@ -145,7 +145,7 @@ services:
     depends_on:
       - dnsdock
     environment:
-      DNSDOCK_ALIAS: dns.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker,etcd-viewer.docker
+      DNSDOCK_ALIAS: dns.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker,etcd-viewer.docker,pump.docker
     ports:
       - "80:80"
     restart: always
@@ -158,6 +158,11 @@ services:
     image: postgres:9.4
     volumes:
       - postgres-data:/var/lib/postgresql/data
+  pump:
+    image: duck1123/pumpio
+    build: docker/pump
+    environment:
+      VIRTUAL_HOST: pump.docker
   redis:
     image: redis:3
   redis_commander:
