@@ -36,7 +36,7 @@ services:
     command: -verbose=true -environment="dev" -nameserver="8.8.4.4:53"
     environment:
       VIRTUAL_HOST: dns.docker
-      VIRTUAL_PORT: "80"
+      VIRTUAL_PORT: 80
     ports:
       - 172.17.42.1:53:53/udp
     volumes:
@@ -173,6 +173,7 @@ services:
       - proxy
     environment:
       VIRTUAL_HOST: redis-commander.docker
+      VIRTUAL_PORT: 8080
   rethinkdb:
     image: rethinkdb
     restart: always
@@ -208,7 +209,7 @@ services:
       - swarm
     environment:
       VIRTUAL_HOST: shipyard.docker
-      VIRTUAL_PORT: "8080"
+      VIRTUAL_PORT: 8080
     restart: always
   swarm:
     image: swarm
@@ -243,7 +244,7 @@ services:
       - mongo
       - proxy
     environment:
-      HTTP_PORT: "80"
+      HTTP_PORT: 80
       JIKSNU_DB_NAME: jiksnu_docker
       VIRTUAL_HOST: jiksnu.docker
     volumes:
