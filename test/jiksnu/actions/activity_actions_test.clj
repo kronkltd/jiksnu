@@ -72,7 +72,7 @@
           stream (actions.stream/get-stream user "* major")
           params (factory :activity {:author (:_id user)
                                      :streams [(str (:_id stream))]})]
-      (util/inspect stream) =not=> nil?
+      stream =not=> nil?
       (actions.activity/post params) =>
       (every-checker
        (partial instance? Activity)

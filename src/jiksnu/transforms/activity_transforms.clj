@@ -231,7 +231,7 @@
                      :streams
                      (mapv (fn [stream]
                              (if (seq stream)
-                               (if (string? (util/inspect stream))
+                               (if (string? stream)
                                  (ObjectId. stream)
                                  stream)
                                (throw+ {:message "Invalid stream"

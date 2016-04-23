@@ -73,7 +73,7 @@
     (let [request
           (or
            (if-let [authorization (get-in request [:headers "authorization"])]
-             (let [[type parts] (parse-authorization-header (util/inspect authorization))]
+             (let [[type parts] (parse-authorization-header authorization)]
                (if (unparsed-types type)
                  request
                  (let [client (some-> parts (get "oauth_consumer_key") model.client/fetch-by-id)

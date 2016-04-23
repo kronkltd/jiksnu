@@ -25,7 +25,7 @@
 (facts "route: group-api/collection :post"
   (let [params (factory :group)
         url "/model/groups"
-        request (-> (req/request :post (util/inspect url))
+        request (-> (req/request :post url)
                     (req/body (json/json-str params))
                     (req/content-type "application/json"))
         response (response-for request)
