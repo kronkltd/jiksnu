@@ -27,7 +27,7 @@
         params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
     (actions.feed-source/create params) => (partial instance? FeedSource)
     (provided
-      (actions.service/get-discovered domain nil nil) => domain)))
+     (actions.service/get-discovered domain nil nil) => domain)))
 
 (fact "#'actions.feed-source/update-record"
   (let [domain (mock/a-domain-exists)
@@ -42,7 +42,7 @@
         result (d/success-deferred response)]
     (actions.feed-source/discover-source url) => (partial instance? FeedSource)
     (provided
-      (ops/update-resource url) => result
-      (model.resource/response->tree response) => .tree.
-      (model.resource/get-links .tree.) => .links.
-      (util/find-atom-link .links.) => topic)))
+     (ops/update-resource url) => result
+     (model.resource/response->tree response) => .tree.
+     (model.resource/get-links .tree.) => .links.
+     (util/find-atom-link .links.) => topic)))

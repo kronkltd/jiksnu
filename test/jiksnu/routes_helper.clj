@@ -55,15 +55,15 @@
 
 (defn as-user
   ([m]
-     (let [user (mock/a-user-exists)]
-       (as-user m user)))
+   (let [user (mock/a-user-exists)]
+     (as-user m user)))
   ([m user]
-     (let [password (fseq :password)]
-       (actions.auth/add-password user password)
-       (as-user m user password)))
+   (let [password (fseq :password)]
+     (actions.auth/add-password user password)
+     (as-user m user password)))
   ([m user password]
-     (let [cookie-str (get-auth-cookie (:username user) password)]
-       (assoc-in m [:headers "cookie"] cookie-str))))
+   (let [cookie-str (get-auth-cookie (:username user) password)]
+     (assoc-in m [:headers "cookie"] cookie-str))))
 
 (defn as-admin
   [m]
