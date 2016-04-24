@@ -101,6 +101,17 @@ services:
       - ./data/logs/graphite:/opt/graphite/storage/log
       - ./data/logs/elasticsearch:/var/log/elasticsearch
 
+  jiksnu-integration:
+    image: duck1123/jiksnu-dev
+    depends_on:
+      - mongo
+      - proxy
+    environment:
+      JIKSNU_DB_NAME: "jiksnu-integration"
+      VIRTUAL_HOST: "jiksnu-integration.docker"
+    volumes:
+      - .:/app
+
   karma:
     build:
       dockerfile: docker/karma/Dockerfile
@@ -161,7 +172,7 @@ services:
     depends_on:
       - dnsdock
     environment:
-      DNSDOCK_ALIAS: "dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker"
+      DNSDOCK_ALIAS: "dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,jiksnu-integration.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker"
     ports:
       - "80:80"
     restart: always

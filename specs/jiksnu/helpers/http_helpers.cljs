@@ -1,6 +1,7 @@
 (ns jiksnu.helpers.http-helpers
   (:require [cljs.nodejs :as nodejs]
             [clojure.string :as string]
+            [jiksnu.World :as World]
             [taoensso.timbre :as timbre]))
 
 (def JSData (nodejs/require "js-data"))
@@ -9,8 +10,8 @@
 ;; (.registerAdapter store "http" (DSHttpAdapter.) #js {:default true})
 
 (def http-client (nodejs/require "request"))
-(def BASE_URL "http://localhost:8080")
-(def http-adapter (HttpAdapter.))
+(def BASE_URL (str "http://" World/base-domain))
+(def http-adapter (HttpAdapter. #js {:basePath BASE_URL}))
 
 ;; (set! (.-window js/GLOBAL) #js {})
 

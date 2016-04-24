@@ -1,7 +1,7 @@
 var config = require('cukefarm').config;
 
 config.specs = 'features/*.feature';
-config.baseUrl = 'http://localhost:8080/';
+config.baseUrl = 'http://jiksnu-integration.docker/';
 config.capabilities.browserName = 'chrome';
 // config.capabilities.browserName = 'phantomjs';
 config.cucumberOpts.format = "pretty";
