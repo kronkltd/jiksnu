@@ -22,19 +22,6 @@ however, that code is out of date.
 Jiksnu is built on top of the Ciste framework, and makes extensive use
 of it's Action Routing framework and services.
 
-## Developing
-
-    sudo apt-get install -y vagrant
-    vagrant plugin install vagrant-git
-    vagrant plugin install vagrant-hostmanager
-
-    git clone https://github.com/duck1123/jiksnu.git
-    cd jiksnu/chef
-    librarian-chef update
-    cd ../
-    vagrant up
-
-
 ## Thanks
 
 I would like to thank the authors of the many excellent free software,
