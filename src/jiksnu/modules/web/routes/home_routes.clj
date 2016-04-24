@@ -39,7 +39,7 @@
   :url "/resources"
   :mixins [item-resource]
   :available-media-types ["text/html"]
-  :exists? (fn [ctx] {:data (str @resources )}))
+  :exists? (fn [ctx] {:data (str @resources)}))
 
 (defresource root :rsd
   :name "Really Simple Discovery"

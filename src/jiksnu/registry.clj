@@ -1,8 +1,7 @@
 (ns jiksnu.registry)
 
 (def model-names
-  [
-   "access-token"
+  ["access-token"
    "activity"
    "authentication-mechanism"
    "client"
@@ -19,13 +18,10 @@
    "request-token"
    "resource"
    "subscription"
-   "user"
-   ]
-  )
+   "user"])
 
 (def action-group-names
-  [
-   "activity"
+  ["activity"
    "auth"
    "client"
    "conversation"
@@ -41,24 +37,20 @@
    "stream"
    "subscription"
    "user"
-   "setting"
-   ])
+   "setting"])
 
 (def module-names
-  [
-   "admin"
+  ["admin"
    "atom"
    "as"
    "command"
    "json"
    "rdf"
    "core"
-   "web"
-   ])
+   "web"])
 
 (def part-names
-  [
-   "filters"
+  ["filters"
    "sections"
    "triggers"
    "views"

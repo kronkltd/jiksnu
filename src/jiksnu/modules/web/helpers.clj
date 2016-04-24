@@ -76,7 +76,7 @@
     (if (try (require route-sym) true (catch FileNotFoundException _ nil))
       (do
         #_(timbre/with-context {:sym (str route-sym)}
-          (timbre/debugf "Loading route group - %s" route-sym))
+            (timbre/debugf "Loading route group - %s" route-sym))
         (try
           (load-pages! route-sym)
           (load-sub-pages! route-sym)
@@ -117,7 +117,7 @@
         reader (PushbackReader. (io/reader url))
         data (edn/read reader)]
     {:headers {"Content-Type" "text/html"}
-     :body (h/html data) }))
+     :body (h/html data)}))
 
 (defn index
   [_]
@@ -196,8 +196,7 @@
               :available-media-types ["application/json"]
               :can-put-to-missing? false
               :methods {:get {:summary (str "Get Collection of " collection-type)}
-                        :post {:summary (str "Add to collection of " collection-type)}
-                        }
+                        :post {:summary (str "Add to collection of " collection-type)}}
               :collection-key :collection
               :exists? (fn [ctx]
                          (let [user (get-user ctx)

@@ -46,7 +46,7 @@
     (start-application! :test modules)
     ;; (loader/register-module "jiksnu.modules.core")
 
-    (db/drop-all! )
+    (db/drop-all!)
     (dosync
      (ref-set r/this {})
      (ref-set r/that {}))
@@ -71,7 +71,6 @@
   `(namespace-state-changes
     [(before :facts (setup-testing ~modules))
      (after :facts (stop-testing))]))
-
 
 (defmacro test-environment-fixture
   [& body]

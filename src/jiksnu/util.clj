@@ -112,7 +112,7 @@
 (defn add-hook!
   [r f]
   (dosync
-    (alter r conj f)))
+   (alter r conj f)))
 
 ;; serializers
 
@@ -183,8 +183,7 @@
   [& body]
   `(let [res# ~@body]
      (d/on-realized (d/future res#)
-                    identity identity
-                    )
+                    identity identity)
      res#))
 
 (defn vector-namespaces
@@ -244,6 +243,6 @@
   [v]
   `(let [val# ~v]
      (timbre/infof "%s => %s"
-      (puget/cprint-str (quote ~v))
-      (puget/cprint-str val# {:print-handlers time-handlers}))
+                   (puget/cprint-str (quote ~v))
+                   (puget/cprint-str val# {:print-handlers time-handlers}))
      val#))

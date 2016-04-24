@@ -41,7 +41,7 @@
       "users" (do (actions.stream/add-stream item "* major")
                   (actions.stream/add-stream item "* minor"))
 
-     nil)
+      nil)
     (catch Exception ex
       (timbre/error "Error in handle-created" ex))))
 
@@ -96,8 +96,7 @@
   ;; (dosync
   ;;  (ref-set db/_db nil)
   ;;  (ref-set db/_conn nil))
-  (Kamon/shutdown)
-  )
+  (Kamon/shutdown))
 
 (def module
   {:name "jiksnu.modules.core"

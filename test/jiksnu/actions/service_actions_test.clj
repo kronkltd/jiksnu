@@ -32,7 +32,7 @@
           (let [url (format "https://%s/1" domain-name)]
             (actions.service/fetch-xrd domain url) => (partial instance? Document)
             (provided
-              (actions.service/fetch-xrd* hm-bare-s) => (cm/string->document "<XRD/>"))))
+             (actions.service/fetch-xrd* hm-bare-s) => (cm/string->document "<XRD/>"))))
 
         (fact "when there is a url context"
           ;; TODO: Secure urls should always be checked first, and if the
@@ -47,29 +47,27 @@
             (fact "and the bare domain has a host-meta"
               (actions.service/fetch-xrd domain url-s) => (partial instance? Document)
               (provided
-                (actions.service/fetch-xrd* hm-bare-s) => (cm/string->document "<XRD/>")))
+               (actions.service/fetch-xrd* hm-bare-s) => (cm/string->document "<XRD/>")))
 
             (fact "and the bare domain does not have a host meta"
 
               (fact "and none of the subpaths have host metas"
                 (actions.service/fetch-xrd domain url-s) => nil
                 (provided
-                  ;; (actions.service/fetch-xrd* hm-bare) => nil
-                  (actions.service/fetch-xrd* hm-bare-s) => nil
-                  ;; (actions.service/fetch-xrd* hm1)     => nil
-                  (actions.service/fetch-xrd* hm1-s)     => nil
-                  ;; (actions.service/fetch-xrd* hm2)     => nil
-                  (actions.service/fetch-xrd* hm2-s)     => nil))
+                 ;; (actions.service/fetch-xrd* hm-bare) => nil
+                 (actions.service/fetch-xrd* hm-bare-s) => nil
+                 ;; (actions.service/fetch-xrd* hm1)     => nil
+                 (actions.service/fetch-xrd* hm1-s)     => nil
+                 ;; (actions.service/fetch-xrd* hm2)     => nil
+                 (actions.service/fetch-xrd* hm2-s)     => nil))
 
               (fact "and one of the subpaths has a host meta"
                 ;; FIXME: this isn't being checked
                 (actions.service/fetch-xrd domain url-s) => (partial instance? Document)
                 (provided
-                  (actions.service/fetch-xrd* hm-bare-s) => nil
-                  (actions.service/fetch-xrd* hm1-s)     => nil
-                  (actions.service/fetch-xrd* hm2-s)     => (cm/string->document "<XRD/>")))
-              )
-            ))))))
+                 (actions.service/fetch-xrd* hm-bare-s) => nil
+                 (actions.service/fetch-xrd* hm1-s)     => nil
+                 (actions.service/fetch-xrd* hm2-s)     => (cm/string->document "<XRD/>"))))))))))
 
 (fact "#'actions.service/discover-statusnet-config"
   (let [domain (mock/a-domain-exists)
@@ -83,8 +81,8 @@
     (actions.service/discover-statusnet-config domain url) => truthy
 
     (provided
-      (model.domain/statusnet-url domain) => statusnet-url
-      (actions.resource/fetch statusnet-url) => res)
+     (model.domain/statusnet-url domain) => statusnet-url
+     (actions.resource/fetch statusnet-url) => res)
 
     (model.domain/fetch-by-id (:_id domain)) =>
     (contains {:statusnet-config config})))
@@ -109,7 +107,7 @@
       (let [url (factory/make-uri domain-name "/1")]
         (actions.service/discover-webfinger domain url) => nil
         (provided
-          (actions.service/fetch-xrd domain url) => nil)))
+         (actions.service/fetch-xrd domain url) => nil)))
 
     (fact "when there is no url context"
       (let [url (factory/make-uri domain-name "/1")
@@ -118,8 +116,7 @@
         (actions.service/discover-webfinger domain url) => (contains {:_id domain-name})
 
         (provided
-          (actions.service/fetch-xrd domain url) => (cm/string->document "<XRD/>")
-          )))
+         (actions.service/fetch-xrd domain url) => (cm/string->document "<XRD/>"))))
 
     (fact "when there is a url context"
       ;; TODO: Secure urls should always be checked first, and if the
@@ -137,9 +134,9 @@
           (actions.service/discover-webfinger domain url) =>
           (contains {:_id domain-name})
           (provided
-            ;; (actions.service/fetch-xrd* hm-bare-s) => nil
-            (actions.service/fetch-xrd* hm-bare-s) =>
-            (cm/string->document "<XRD/>")))
+           ;; (actions.service/fetch-xrd* hm-bare-s) => nil
+           (actions.service/fetch-xrd* hm-bare-s) =>
+           (cm/string->document "<XRD/>")))
 
         (fact "and the bare domain does not have a host meta"
 
@@ -147,24 +144,20 @@
             (actions.service/discover-webfinger domain url) => nil
             (provided
 
-              (actions.service/fetch-xrd* hm-bare-s) => nil
-              (actions.service/fetch-xrd* hm1-s)     => nil
-              (actions.service/fetch-xrd* hm2-s)     => nil
-              ;; (actions.service/fetch-xrd* hm-bare-s) => nil
-              ))
+             (actions.service/fetch-xrd* hm-bare-s) => nil
+             (actions.service/fetch-xrd* hm1-s)     => nil
+             (actions.service/fetch-xrd* hm2-s)     => nil
+             ;; (actions.service/fetch-xrd* hm-bare-s) => nil
+             ))
 
           (fact "and one of the subpaths has a host meta"
             ;; FIXME: this isn't being checked
             (actions.service/discover-webfinger domain url) => (contains {:_id domain-name})
             (provided
-              (actions.service/fetch-xrd* hm-bare-s) => nil
-              ;; (actions.service/fetch-xrd* hm-bare-s) => nil
-              (actions.service/fetch-xrd* hm1-s)     => nil
-              (actions.service/fetch-xrd* hm2-s)     => (cm/string->document "<XRD/>")
-              ))
-          )
-        ))
-    ))
+             (actions.service/fetch-xrd* hm-bare-s) => nil
+             ;; (actions.service/fetch-xrd* hm-bare-s) => nil
+             (actions.service/fetch-xrd* hm1-s)     => nil
+             (actions.service/fetch-xrd* hm2-s)     => (cm/string->document "<XRD/>"))))))))
 
 (fact "#'actions.service/get-discovered"
   (let [domain (mock/a-domain-exists {:discovered false})]

@@ -32,7 +32,7 @@
     `(do (require ~namespace-sym)
          (let [ns-ns# (the-ns ~namespace-sym)]
            (if-let [count-fn# (ns-resolve ns-ns# (symbol "count-records"))]
-             (if-let [fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all" ))]
+             (if-let [fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all"))]
                (make-indexer*
                 {:sort-clause (get ~options :sort-clause {:updated -1})
                  :page-size (get ~options :page-size 20)
@@ -46,8 +46,8 @@
   (fn [item link]
     (bus/publish! ch/events (str collection-name ":linkAdded") [item link])
     (mc/update @_db collection-name
-      (select-keys item #{:_id})
-      {:$addToSet {:links link}})
+               (select-keys item #{:_id})
+               {:$addToSet {:links link}})
     item))
 
 (defn make-delete

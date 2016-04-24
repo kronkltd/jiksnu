@@ -7,5 +7,5 @@
   [request response]
   (taoensso.timbre/info "applying client index view")
   {:body (merge
-           response
-           {:name (:name request)})})
+          response
+          {:name (:name request)})})

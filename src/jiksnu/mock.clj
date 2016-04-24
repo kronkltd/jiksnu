@@ -173,8 +173,8 @@
   (let [source (or (:feed-source options)
                    (get-this :feed-source)
                    (a-feed-source-exists (select-keys options #{:local})))
-        activity (actions.activity/post (factory :activity
-                                                 {:update-source (:_id source)}))]
+        params (factory :activity {:update-source (:_id source)})
+        activity (actions.activity/post params)]
     (set-this :activity activity)
     activity))
 

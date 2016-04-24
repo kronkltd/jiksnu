@@ -50,8 +50,7 @@
 (defn config-output
   []
   {:site
-   {
-    :name (config :site :name)
+   {:name (config :site :name)
     :server (config :domain)
     :theme "classic"
     ;; TODO: logo
@@ -70,40 +69,26 @@
     ;; :textlimit (config :site :limit :text)
     :ssl "sometimes"
     :sslserver (config :domain)
-    :shorturllength 30
-    }
-   :license {
-             :type "cc"
+    :shorturllength 30}
+   :license {:type "cc"
              :owner nil
              :url "http://creativecommons.org/licenses/by/3.0/"
-             :title "Creative Commons Attribution 3.0",
-             :image "http://i.creativecommons.org/l/by/3.0/80x15.png"
-             }
-   :nickname {
-              :featured ["daniel"]
-
-              }
+             :title "Creative Commons Attribution 3.0"
+             :image "http://i.creativecommons.org/l/by/3.0/80x15.png"}
+   :nickname {:featured ["daniel"]}
    :profile {:biolimit nil}
    :group {:desclimit nil}
    :notice {:contentlimit nil}
-   :throttle {
-              :enabled true
+   :throttle {:enabled true
               :count 20
-              :timespan 600
-
-              }
-   :xmpp {
-          :enabled true
+              :timespan 600}
+   :xmpp {:enabled true
           :server (config :domain)
           :port 5222
-          :user "update"
-          }
+          :user "update"}
    :integration {:source "jiksnu"}
-   :attachments {
-                 :upload true
-                 :file_quota 2097152
-                 }
-   })
+   :attachments {:upload true
+                 :file_quota 2097152}})
 
 (defn avatar-page
   [user]

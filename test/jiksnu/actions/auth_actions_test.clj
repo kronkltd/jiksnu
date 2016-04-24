@@ -19,9 +19,9 @@
 (future-fact "#'actions.auth/login"
   (let [password (fseq :password)
         user (mock/a-user-exists {:password password})]
- (fact "when the user doesn't exist"
-   (login .username. .password.) => (throws))
+    (fact "when the user doesn't exist"
+      (login .username. .password.) => (throws))
 
- (fact "when given a valid password"
-   (let [username (:username user)]
-     (login username password) => truthy))))
+    (fact "when given a valid password"
+      (let [username (:username user)]
+        (login username password) => truthy))))

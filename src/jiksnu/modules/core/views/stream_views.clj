@@ -3,7 +3,7 @@
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [index-block index-line
                                             index-section show-section
-                                           title]]
+                                            title]]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.modules.core.sections :refer [format-page-info]]))
 

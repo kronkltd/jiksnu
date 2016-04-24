@@ -34,17 +34,10 @@
                                                             (:_id user)))
             :author (show-section user)
             :url inbox-major-url
-            :links {
-                    :first {
-                            :href inbox-major-url
-                            }
-                    :self {
-                           :href inbox-major-url
-                           }
-                    }
+            :links {:first {:href inbox-major-url}
+                    :self {:href inbox-major-url}}
             :items (doall (index-section (:items page) page))
-            :totalItems (:totalItems page)
-            }}))
+            :totalItems (:totalItems page)}}))
 
 (defview #'actions.stream/inbox-minor :as
   [request [user page]]

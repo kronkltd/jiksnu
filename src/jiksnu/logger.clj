@@ -35,8 +35,7 @@
   (timbre/set-config!
    {:level :debug
     :ns-whitelist []
-    :ns-blacklist [
-                   "ciste.commands"
+    :ns-blacklist ["ciste.commands"
                    "ciste.config"
                    "ciste.loader"
                    ;; "ciste.initializer"
@@ -46,8 +45,7 @@
                    "jiksnu.db"
                    ;; "jiksnu.modules.http.actions"
                    ;; "jiksnu.modules.web.helpers"
-                   "jiksnu.test-helper"
-                   ]
+                   "jiksnu.test-helper"]
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
     :appenders

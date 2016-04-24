@@ -51,7 +51,7 @@
     [:a {:href (uri record)}
      [:span {:about (uri record)
              :property "dc:title"}
-      (or (:title options-map) (title record))] ]))
+      (or (:title options-map) (title record))]]))
 
 (defsection title :default
   [record & _]
@@ -60,7 +60,7 @@
 (defn format-page-info
   [page]
   (->> (:items page)
-       (map :_id )
-       (assoc page :items )
+       (map :_id)
+       (assoc page :items)
        (map (fn [[k v]] [(inf/camel-case (name k) :lower) v]))
        (into {})))

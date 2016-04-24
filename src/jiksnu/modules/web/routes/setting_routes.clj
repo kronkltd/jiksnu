@@ -13,7 +13,6 @@
   :url         "/config.json"
   :description "Config for interop with statusnet")
 
-
 (defgroup jiksnu settings-api
   :name "Settings Models"
   :url "/model/settings")
