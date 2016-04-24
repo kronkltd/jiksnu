@@ -16,7 +16,7 @@
 (defn host-meta
   [^Domain domain]
   [:XRD {"xmlns" ns/xrd
-          "xmlns:hm" ns/host-meta}
+         "xmlns:hm" ns/host-meta}
    [:hm:Host domain]
    [:Link {:rel "lrdd"
            :template (str "http://" domain "/main/xrd?uri={uri}")}
@@ -28,10 +28,10 @@
   {:post [(or (nil? %) (string? %))]}
   (let [query-str (format "//xrd:Link[@rel = '%s']" ns/updates-from)]
     (-> xrd
-         (cm/query query-str mappings)
-         util/force-coll
-         (->> (keep #(.getAttributeValue ^Element % "href")))
-         first)))
+        (cm/query query-str mappings)
+        util/force-coll
+        (->> (keep #(.getAttributeValue ^Element % "href")))
+        first)))
 
 (defn get-feed-source-from-xrd
   [^Document xrd]
@@ -91,13 +91,13 @@
 (defn get-username-from-identifiers
   [^Document xrd]
   (try+
-    (->> xrd
-         get-identifiers
-         (keep (comp first util/split-uri))
-         first)
-    (catch Throwable _
-      ;; FIXME: Handle errors
-      )))
+   (->> xrd
+        get-identifiers
+        (keep (comp first util/split-uri))
+        first)
+   (catch Throwable _
+     ;; FIXME: Handle errors
+     )))
 
 ;; takes a document
 (defn get-username-from-xrd

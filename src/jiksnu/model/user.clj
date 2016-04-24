@@ -46,7 +46,7 @@
 (defn get-uri
   ([^User user] (get-uri user true))
   ([^User user use-scheme?]
-     (str (when use-scheme? "acct:") (:username user) "@" (:domain user))))
+   (str (when use-scheme? "acct:") (:username user) "@" (:domain user))))
 
 (defn image-link
   [user]
@@ -89,18 +89,18 @@
 
 (defn get-link
   ([user rel]
-     (get-link user rel nil))
+   (get-link user rel nil))
   ([user rel content-type]
-     (first (util/rel-filter rel (:links user) content-type))))
+   (first (util/rel-filter rel (:links user) content-type))))
 
 (defn get-user
   "Find a user by username and domain"
   ([username] (get-user username (config :domain)))
   ([username domain]
-     (if-let [user (mc/find-one-as-map @_db collection-name
-                                       {:username username
-                                        :domain domain})]
-       (maker user))))
+   (if-let [user (mc/find-one-as-map @_db collection-name
+                                     {:username username
+                                      :domain domain})]
+     (maker user))))
 
 (defn fetch-by-uri
   "Fetch user by their acct uri"
@@ -112,8 +112,8 @@
 (defn fetch-by-domain
   ([domain] (fetch-by-domain domain {}))
   ([domain options]
-     (fetch-all {:domain (:_id domain)}
-                #_{:limit 20})))
+   (fetch-all {:domain (:_id domain)}
+              #_{:limit 20})))
 
 (defn update-record
   [^User new-user]

@@ -38,8 +38,7 @@
    ;; (presence-of :published)
    (type-of :published             DateTime)
    ;; (presence-of :updated)
-   (type-of :updated               DateTime)
-   ))
+   (type-of :updated               DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

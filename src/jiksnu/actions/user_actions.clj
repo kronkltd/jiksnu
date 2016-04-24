@@ -79,7 +79,6 @@
     ;; TODO: this should be calling a key action
     (model.key/set-armored-key (:_id user) n e)))
 
-
 (defn get-user-meta
   "Returns an enlive document for the user's xrd file"
   [user & [options]]

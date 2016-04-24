@@ -15,7 +15,7 @@
   (let [collection-name (.-model $scope)]
     (set! (.-init $scope)
           (fn [id]
-            (timbre/debugf "init as model %s(%s)" collection-name id )
+            (timbre/debugf "init as model %s(%s)" collection-name id)
             (.bindOne DS collection-name id $scope "item")
             (.find DS collection-name id)))
     (.init $scope (.-id $scope))))

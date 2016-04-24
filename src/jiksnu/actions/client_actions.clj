@@ -28,11 +28,11 @@
 
 (defn prepare-delete
   ([item]
-     (prepare-delete item @delete-hooks))
+   (prepare-delete item @delete-hooks))
   ([item hooks]
-     (if (seq hooks)
-       (recur ((first hooks) item) (rest hooks))
-       item)))
+   (if (seq hooks)
+     (recur ((first hooks) item) (rest hooks))
+     item)))
 
 (defn delete
   [item]

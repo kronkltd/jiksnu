@@ -115,7 +115,6 @@
   [user]
   (user-timeline user))
 
-
 (defn group-timeline
   [group]
   ;; TODO: implement

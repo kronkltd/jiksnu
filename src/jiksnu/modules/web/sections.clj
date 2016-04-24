@@ -24,25 +24,24 @@
    "unsubscribe" "Unsubscribe"})
 
 (def format-links
-  {
-   :as        {:label "Activity Streams"
-               :icon  "as-bw-14x14.png"
-               :type  "application/json"}
-   :atom      {:label "Atom"
-               :icon  "feed-icon-14x14.png"
-               :type  "application/atom+xml"}
-   :json      {:label "JSON"
-               :icon  "json.png"
-               :type  "application/json"}
-   :n3        {:label "N3"
-               :type  "text/n3"
-               :icon  "chart_organisation.png"}
-   :rdf       {:label "RDF/XML"
-               :icon  "foafTiny.gif"
-               :type  "application/rdf+xml"}
-   :xml       {:label "XML"
-               :icon  "file_xml.png"
-               :type  "application/xml"}})
+  {:as   {:label "Activity Streams"
+          :icon  "as-bw-14x14.png"
+          :type  "application/json"}
+   :atom {:label "Atom"
+          :icon  "feed-icon-14x14.png"
+          :type  "application/atom+xml"}
+   :json {:label "JSON"
+          :icon  "json.png"
+          :type  "application/json"}
+   :n3   {:label "N3"
+          :type  "text/n3"
+          :icon  "chart_organisation.png"}
+   :rdf  {:label "RDF/XML"
+          :icon  "foafTiny.gif"
+          :type  "application/rdf+xml"}
+   :xml  {:label "XML"
+          :icon  "file_xml.png"
+          :type  "application/xml"}})
 
 (defn action-link
   [model action id & [options]]

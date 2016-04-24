@@ -24,8 +24,7 @@
       transforms.request-token/set-used
       transforms.request-token/set-authenticated
       transforms/set-created-time
-      transforms/set-updated-time
-      ))
+      transforms/set-updated-time))
 
 (defn prepare-delete
   ([item]

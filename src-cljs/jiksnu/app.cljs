@@ -9,8 +9,7 @@
     (install))
 
 (def.module jiksnu
-  [
-   angular-clipboard
+  [angular-clipboard
    angularFileUpload
    angularMoment
    btford.markdown
@@ -25,5 +24,4 @@
    ui.bootstrap
    ui-notification
    ui.router
-   ui.select
-   ])
+   ui.select])

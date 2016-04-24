@@ -27,4 +27,4 @@
 (defn push
   [user activity]
   (mc/insert @_db collection-name {:user (:_id user)
-                              :activity (:_id activity)}))
+                                   :activity (:_id activity)}))

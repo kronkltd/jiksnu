@@ -133,7 +133,7 @@
                              {:domain (:_id domain)
                               :topic url
                               :hub (make-uri (:_id domain) "/push/hub")})
-                 {}))]
+                    {}))]
     (set-this :feed-source source)
     source))
 
@@ -305,8 +305,8 @@
   ([options]
    (let [user (:user options (or (get-that :user) (a-user-exists)))
          group (:group options (or (get-that :group)
-                                  (get-this :group)
-                                  (a-group-exists)))
+                                   (get-this :group)
+                                   (a-group-exists)))
          params {:user (:_id user)
                  :group (:_id group)}]
      (actions.group-membership/create params))))
