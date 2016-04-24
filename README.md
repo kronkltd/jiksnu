@@ -6,6 +6,7 @@
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/duck1123/jiksnu?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![GitHub license](https://img.shields.io/github/license/duck1123/jiksnu.svg)](http://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Build Status](https://drone.io/github.com/duck1123/jiksnu/status.png)](https://drone.io/github.com/duck1123/jiksnu/latest)
+[![Code Climate](https://codeclimate.com/github/duck1123/jiksnu/badges/gpa.svg)](https://codeclimate.com/github/duck1123/jiksnu)
 
 Jiksnu is a Lojban compound word (lujvo) for the words "Jikca
 Casnu". This translates roughly to "is a social type of interaction"
