@@ -4,6 +4,7 @@ MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 
 ENV JIKSNU_HOME /app
 ENV JIKSNU_DB_HOST mongo
+ENV HTTP_PORT 80
 WORKDIR ${JIKSNU_HOME}
 
 ### Install build dependencies
