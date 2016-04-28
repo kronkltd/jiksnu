@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: docker/jiksnu-base/Dockerfile
     image: duck1123/jiksnu-base
+
   ruby-base:
     build:
       context: .
@@ -12,6 +13,7 @@ services:
     image: duck1123/jiksnu-ruby-base
     depends_on:
       - base
+
   docker-proxy:
     image: shipyard/docker-proxy
     environment:
@@ -19,6 +21,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
   dockerui:
     image: microbox/dockerui
     depends_on:
@@ -30,6 +33,7 @@ services:
       VIRTUAL_HOST: dockerui.docker
     volumes:
       - /var/run/docker.sock:/docker.sock
+
   dnsdock:
     image: duck1123/dnsdock
     build: docker/dnsdock
@@ -41,6 +45,7 @@ services:
       - 172.17.42.1:53:53/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
   # drone:
   #   image: drone/drone
   #   env_file:
@@ -52,6 +57,7 @@ services:
   #     - "/var/run/docker.sock:/var/run/docker.sock"
   #   networks:
   #     - backend
+
   elk:
     image: sebp/elk
     environment:
@@ -70,6 +76,7 @@ services:
       - redis
     volumes:
       - etcd-data:/data
+
   etcd-viewer:
     image: nikfoundas/etcd-viewer
     depends_on:
@@ -77,6 +84,7 @@ services:
       - proxy
     environment:
       VIRTUAL_HOST: etcd-viewer.docker
+
   grafana:
     image: kamon/grafana_graphite:latest
     environment:
@@ -89,6 +97,7 @@ services:
       - ./data/grafana:/opt/grafana/data
       - ./data/logs/graphite:/opt/graphite/storage/log
       - ./data/logs/elasticsearch:/var/log/elasticsearch
+
   karma:
     build:
       dockerfile: docker/karma/Dockerfile
@@ -105,6 +114,7 @@ services:
       - "35729:35729"
     volumes:
       - .:/app
+
   logspout:
     image: duck1123/logspout
     build:
@@ -115,10 +125,12 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
   mongo:
     image: mongo
     volumes:
       - mongo-data:/data/db
+
   mongoexpress:
     image: knickers/mongo-express
     depends_on:
@@ -128,10 +140,12 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: "admin"
       ME_CONFIG_BASICAUTH_PASSWORD: "admin"
       VIRTUAL_HOST: mongo.docker
+
   mysql:
     image: mysql
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
@@ -140,6 +154,7 @@ services:
     depends_on:
       - mysql
       - proxy
+
   proxy:
     image: rckrdstrgrd/nginx-proxy
     depends_on:
@@ -158,11 +173,13 @@ services:
     image: postgres:9.4
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
   pump:
     image: duck1123/pumpio
     build: docker/pump
     environment:
       VIRTUAL_HOST: pump.docker
+
   rancher:
     image: rancher/server
     depends_on:
@@ -172,6 +189,7 @@ services:
       VIRTUAL_PORT: 8080
   redis:
     image: redis:3
+
   redis_commander:
     image: tenstartups/redis-commander
     command: --redis-host redis
@@ -181,9 +199,11 @@ services:
     environment:
       VIRTUAL_HOST: redis-commander.docker
       VIRTUAL_PORT: 8080
+
   rethinkdb:
     image: rethinkdb
     restart: always
+
   sentry:
     image: slafs/sentry
     depends_on:
@@ -196,6 +216,7 @@ services:
       VIRTUAL_HOST: sentry.docker
     volumes:
       - sentry-files:/data
+
   sentry_worker:
     image: slafs/sentry
     command: celery worker -B
@@ -207,6 +228,7 @@ services:
       C_FORCE_ROOT: "true"
     volumes:
       - sentry-files:/data
+
   shipyard:
     image: shipyard/shipyard
     command: server -d tcp://swarm:3375
@@ -218,18 +240,21 @@ services:
       VIRTUAL_HOST: shipyard.docker
       VIRTUAL_PORT: 8080
     restart: always
+
   swarm:
     image: swarm
     command: manage --host tcp://0.0.0.0:3375 etcd://etcd:4001
     depends_on:
       - swarm-agent
     restart: always
+
   swarm-agent:
     image: swarm
     command: join --addr docker-proxy:2375 etcd://etcd:4001
     depends_on:
       - docker-proxy
       - etcd
+
   web:
     build: .
     image: jiksnu
@@ -241,6 +266,7 @@ services:
       VIRTUAL_HOST: jiksnu.docker
     volumes:
       - maven-repo:/root/.m2
+
   web-dev:
     build:
       context: .
@@ -256,6 +282,7 @@ services:
     volumes:
       - maven-repo:/root/.m2
       - .:/app
+
 volumes:
   etcd-data:
     driver: local
