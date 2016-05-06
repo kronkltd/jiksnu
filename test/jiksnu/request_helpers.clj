@@ -21,15 +21,15 @@
 (defn request-page-for-user
   ([page-name] (request-page-for-user page-name nil))
   ([page-name format]
-     (condp = page-name
-       "subscriptions"
-       (fetch-page :get
-                   (str "/users/" (:_id (get-this :user)) "/subscriptions"
-                        (when format
-                          (str "." (string/lower-case format)))))
-       "user-meta"
-       (fetch-page :get
-                   (str "/main/xrd?uri=" (model.user/get-uri (get-this :user)))))))
+   (condp = page-name
+     "subscriptions"
+     (fetch-page :get
+                 (str "/users/" (:_id (get-this :user)) "/subscriptions"
+                      (when format
+                        (str "." (string/lower-case format)))))
+     "user-meta"
+     (fetch-page :get
+                 (str "/main/xrd?uri=" (model.user/get-uri (get-this :user)))))))
 
 (defn request-user-meta
   []

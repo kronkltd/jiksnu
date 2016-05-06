@@ -33,8 +33,7 @@
   (fact "When the path ends without a slash"
     (let [url "http://example.com/status/users/1"]
       (util/path-segments url) =>
-      '("/" "/status/" "/status/users/")))
-  )
+      '("/" "/status/" "/status/users/"))))
 
 (fact "#'util/rel-filter"
   (let [links [{:rel "alternate"}

@@ -34,7 +34,7 @@
               (assoc :params params)
               (as-user actor)
               response-for) =>
-              (contains {:status status/redirect?})
-              (provided
-                (ops/get-discovered anything) => (d/success-deferred
-                                                  (model/map->Domain {:_id domain-name}))))))))
+          (contains {:status status/redirect?})
+          (provided
+           (ops/get-discovered anything) => (d/success-deferred
+                                             (model/map->Domain {:_id domain-name}))))))))
