@@ -5,8 +5,6 @@
   (list 'set! (list '.-exports 'js/module)
         (apply list 'fn [] body)))
 
-
-
 (defmacro Given
   [pattern bind & body]
   (list 'this-as 'this

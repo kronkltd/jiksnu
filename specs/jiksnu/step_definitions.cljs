@@ -6,7 +6,8 @@
             [jiksnu.pages.RegisterPage :refer [RegisterPage]]
             [jiksnu.World :as World]
             [taoensso.timbre :as timbre])
-  (:use-macros [jiksnu.step-helpers :only [step-definitions Given When Then And]]))
+  (:use-macros [jiksnu.step-macros :only [step-definitions Given When Then And]]))
+
 
 (step-definitions
 
