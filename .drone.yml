@@ -1,4 +1,8 @@
+compose:
+  mongo:
+    image: mongo
+
 build:
-  image: jiksnu
+  image: duck1123/jiksnu-dev
   commands:
     - script/cibuild

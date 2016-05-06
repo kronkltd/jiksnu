@@ -17,7 +17,9 @@ services:
   docker-proxy:
     image: shipyard/docker-proxy
     environment:
-      PORT: 2375
+      PORT: "2375"
+      VIRTUAL_HOST: "docker-proxy.docker"
+      VIRTUAL_PORT: "2375"
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -30,7 +32,7 @@ services:
     ports:
       - "9000:9000"
     environment:
-      VIRTUAL_HOST: dockerui.docker
+      VIRTUAL_HOST: "dockerui.docker"
     volumes:
       - /var/run/docker.sock:/docker.sock
 
@@ -39,8 +41,8 @@ services:
     build: docker/dnsdock
     command: -verbose=true -environment="dev" -nameserver="8.8.4.4:53"
     environment:
-      VIRTUAL_HOST: dns.docker
-      VIRTUAL_PORT: 80
+      VIRTUAL_HOST: "dns.docker"
+      VIRTUAL_PORT: "80"
     ports:
       - 172.17.42.1:53:53/udp
     volumes:
@@ -51,7 +53,7 @@ services:
   #   env_file:
   #     - /etc/drone/dronerc
   #   environment:
-  #     VIRTUAL_PORT: drone.docker
+  #     VIRTUAL_PORT: "drone.docker"
   #   volumes:
   #     - "/var/lib/docker:/var/lib/docker"
   #     - "/var/run/docker.sock:/var/run/docker.sock"
@@ -61,14 +63,15 @@ services:
   elk:
     image: sebp/elk
     environment:
-      LOGSPOUT: ignore
-      VIRTUAL_HOST: kibana.docker
-      VIRTUAL_PORT: 5601
+      LOGSPOUT: "ignore"
+      VIRTUAL_HOST: "kibana.docker"
+      VIRTUAL_PORT: "5601"
     depends_on:
       - proxy
       - logspout
     volumes:
-      - "./docker/elk/conf.d:/etc/logstash/conf.d"
+      - ./docker/elk/conf.d:/etc/logstash/conf.d
+
   etcd:
     image: microbox/etcd
     command: --name jiksnu -data-dir=/data
@@ -83,12 +86,12 @@ services:
       - etcd
       - proxy
     environment:
-      VIRTUAL_HOST: etcd-viewer.docker
+      VIRTUAL_HOST: "etcd-viewer.docker"
 
   grafana:
     image: kamon/grafana_graphite:latest
     environment:
-      VIRTUAL_HOST: grafana.docker
+      VIRTUAL_HOST: "grafana.docker"
     depends_on:
       - proxy
     volumes:
@@ -97,6 +100,17 @@ services:
       - ./data/grafana:/opt/grafana/data
       - ./data/logs/graphite:/opt/graphite/storage/log
       - ./data/logs/elasticsearch:/var/log/elasticsearch
+
+  jiksnu-integration:
+    image: duck1123/jiksnu-dev
+    depends_on:
+      - mongo
+      - proxy
+    environment:
+      JIKSNU_DB_NAME: "jiksnu-integration"
+      VIRTUAL_HOST: "jiksnu-integration.docker"
+    volumes:
+      - .:/app
 
   karma:
     build:
@@ -107,11 +121,9 @@ services:
       - proxy
       - elk
     environment:
-      NOTIFY_SEND_URL: http://172.17.0.1:12345
-      VIRTUAL_HOST: karma.docker
-      VIRTUAL_PORT: 9876
-    ports:
-      - "35729:35729"
+      NOTIFY_SEND_URL: "http://172.17.0.1:12345"
+      VIRTUAL_HOST: "karma.docker"
+      VIRTUAL_PORT: "9876"
     volumes:
       - .:/app
 
@@ -120,8 +132,8 @@ services:
     build:
       context: docker/logspout
     environment:
-      VIRTUAL_HOST: logspout.docker
-      ROUTE_URIS: logstash://elk:5000
+      VIRTUAL_HOST: "logspout.docker"
+      ROUTE_URIS: "logstash://elk:5000"
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -139,7 +151,7 @@ services:
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: "admin"
       ME_CONFIG_BASICAUTH_PASSWORD: "admin"
-      VIRTUAL_HOST: mongo.docker
+      VIRTUAL_HOST: "mongo.docker"
 
   mysql:
     image: mysql
@@ -149,8 +161,8 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
-      VIRTUAL_HOST: phpmyadmin.docker
-      PMA_HOST: mysql
+      VIRTUAL_HOST: "phpmyadmin.docker"
+      PMA_HOST: "mysql"
     depends_on:
       - mysql
       - proxy
@@ -160,15 +172,16 @@ services:
     depends_on:
       - dnsdock
     environment:
-      DNSDOCK_ALIAS: dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker
+      DNSDOCK_ALIAS: "dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,jiksnu-integration.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,selenium.docker,sentry.docker,shipyard.docker"
     ports:
       - "80:80"
     restart: always
     volumes:
-      - "./data/nginx/conf.d:/etc/nginx/conf.d"
-      - "./data/nginx/vhost.d:/etc/nginx/vhost.d"
-      - "./data/nginx/certs:/etc/nginx/certs:ro"
-      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - ./data/nginx/conf.d:/etc/nginx/conf.d
+      - ./data/nginx/vhost.d:/etc/nginx/vhost.d
+      - ./data/nginx/certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
   postgresdb:
     image: postgres:9.4
     volumes:
@@ -178,15 +191,16 @@ services:
     image: duck1123/pumpio
     build: docker/pump
     environment:
-      VIRTUAL_HOST: pump.docker
+      VIRTUAL_HOST: "pump.docker"
 
   rancher:
     image: rancher/server
     depends_on:
       - proxy
     environment:
-      VIRTUAL_HOST: rancher.docker
-      VIRTUAL_PORT: 8080
+      VIRTUAL_HOST: "rancher.docker"
+      VIRTUAL_PORT: "8080"
+
   redis:
     image: redis:3
 
@@ -197,8 +211,8 @@ services:
       - redis
       - proxy
     environment:
-      VIRTUAL_HOST: redis-commander.docker
-      VIRTUAL_PORT: 8080
+      VIRTUAL_HOST: "redis-commander.docker"
+      VIRTUAL_PORT: "8080"
 
   rethinkdb:
     image: rethinkdb
@@ -213,7 +227,7 @@ services:
       - proxy
     env_file: docker/sentry/environment
     environment:
-      VIRTUAL_HOST: sentry.docker
+      VIRTUAL_HOST: "sentry.docker"
     volumes:
       - sentry-files:/data
 
@@ -237,8 +251,8 @@ services:
       - rethinkdb
       - swarm
     environment:
-      VIRTUAL_HOST: shipyard.docker
-      VIRTUAL_PORT: 8080
+      VIRTUAL_HOST: "shipyard.docker"
+      VIRTUAL_PORT: "8080"
     restart: always
 
   swarm:
@@ -262,8 +276,8 @@ services:
       - mongo
       - proxy
     environment:
-      JIKSNU_DB_NAME: jiksnu_docker
-      VIRTUAL_HOST: jiksnu.docker
+      JIKSNU_DB_NAME: "jiksnu_docker"
+      VIRTUAL_HOST: "jiksnu.docker"
     volumes:
       - maven-repo:/root/.m2
 
@@ -276,12 +290,22 @@ services:
       - mongo
       - proxy
     environment:
-      HTTP_PORT: 80
-      JIKSNU_DB_NAME: jiksnu_docker
-      VIRTUAL_HOST: jiksnu.docker
+      HTTP_PORT: "80"
+      JIKSNU_DB_NAME: "jiksnu_docker"
+      VIRTUAL_HOST: "jiksnu.docker"
     volumes:
       - maven-repo:/root/.m2
       - .:/app
+
+  webdriver:
+    image: elgalu/selenium
+    environment:
+      VNC_PASSWORD: "hunter2"
+      NOVNC: "true"
+      VIRTUAL_HOST: "selenium.docker"
+      VIRTUAL_PORT: "6080"
+    expose:
+      - "26080"
 
 volumes:
   etcd-data:

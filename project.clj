@@ -115,6 +115,7 @@
                                             ;; :output-dir "target/specs/"
                                             :optimizations :simple
                                             :target :nodejs
+                                            :language-in :ecmascript5
                                             :pretty-print true}}}}}
              :production {:aot   :all
                           :cljsbuild {:builds
