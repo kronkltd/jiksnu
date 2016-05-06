@@ -1,4 +1,4 @@
-FROM jiksnu-base
+FROM duck1123/jiksnu-base
 
 MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 
