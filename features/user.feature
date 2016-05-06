@@ -3,12 +3,6 @@ Feature: Users
   As an administrator
   I want to be able to manage user accounts
 
-Scenario: User admin page, admin
-  Given I am logged in as an admin
-  When I go to the "user admin" page
-  Then I should be an admin
-  Then I should see a list of users
-
 # Scenario: Editing profile
 #   Given there is a user
 #   And I am logged in
@@ -50,14 +44,14 @@ Scenario: User index delete button, authenticated
   When I go to the "user index" page
   Then I should not see a "delete" button for that user
 
-Scenario: User index delete button, admin
-  Given I am logged in as an admin
-  And another user exists
-  When I go to the "user index" page
-  And I click the "delete" button for that user
-  # Then I should see the flash message "user has been deleted"
-  And that user should be deleted
-  And I should be at the "user index" page
+# Scenario: User index delete button, admin
+#   Given I am logged in as an admin
+#   And another user exists
+#   When I go to the "user index" page
+#   And I click the "delete" button for that user
+#   # Then I should see the flash message "user has been deleted"
+#   And that user should be deleted
+#   And I should be at the "user index" page
 
 Scenario: User index subscribe button, unauthenticated
   Given I am not logged in
