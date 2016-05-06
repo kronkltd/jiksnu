@@ -79,8 +79,7 @@
        (contains {:_id (partial instance? ObjectId)
                   :streams (has every? (partial instance? ObjectId))
                   :created (partial instance? DateTime)
-                  :author string?}))
-      )))
+                  :author string?})))))
 
 (fact "#'actions.activity/show"
   (fact "when the record exists"
@@ -88,12 +87,12 @@
       (let [activity (mock/there-is-an-activity)]
         (actions.activity/show activity) => activity
         (provided
-          (actions.activity/viewable? activity) => true)))
+         (actions.activity/viewable? activity) => true)))
     (fact "and the record is not viewable"
       (let [activity (mock/there-is-an-activity)]
         (actions.activity/show activity) => (throws RuntimeException)
         (provided
-          (actions.activity/viewable? activity) => false)))))
+         (actions.activity/viewable? activity) => false)))))
 
 (fact "#'actions.activity/viewable?"
   (fact "When it is public"

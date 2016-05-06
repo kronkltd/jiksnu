@@ -188,8 +188,7 @@
 
 (defn vector-namespaces
   [prefix module-name model-name part-name]
-  [
-   #_(format "%s.%s.%s"
+  [#_(format "%s.%s.%s"
              prefix module-name part-name)
    (format "%s.%s.%s.%s-%s"
            prefix module-name part-name model-name part-name)])
@@ -212,13 +211,13 @@
   [^String host ^long port]
   (let [socket (Socket.)]
     (try+
-      (let [address (InetAddress/getByName host)
-            socket-address (InetSocketAddress. address port)]
-        (.connect socket socket-address))
-      true
-      (catch Object ex false)
-      (finally
-        (.close socket)))))
+     (let [address (InetAddress/getByName host)
+           socket-address (InetSocketAddress. address port)]
+       (.connect socket socket-address))
+     true
+     (catch Object ex false)
+     (finally
+       (.close socket)))))
 
 (defn generate-token
   ([] (generate-token 16))
@@ -231,12 +230,12 @@
 (def time-handlers
   {ObjectId
    (puget/tagged-handler
-     'ObjectId
-     (partial str))
+    'ObjectId
+    (partial str))
    DateTime
    (puget/tagged-handler
-     'inst
-     (partial f/unparse (f/formatters :date-time)))})
+    'inst
+    (partial f/unparse (f/formatters :date-time)))})
 
 (defmacro inspect
   "Prints a display of the passed value"

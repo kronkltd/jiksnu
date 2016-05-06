@@ -8,7 +8,6 @@
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [octohipster.mixins :as mixin]))
 
-
 (defparameter :model.domain/id
   :description "The Id of an domain"
   :type "string")

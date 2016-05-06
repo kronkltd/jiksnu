@@ -86,7 +86,7 @@
 (defn make-uri
   [domain & [path]]
   (let [path (or path (fseq :path))]
-   (str "http://" domain path)))
+    (str "http://" domain path)))
 
 (defseq :uri
   [n]
@@ -188,7 +188,7 @@
 
 (defrecordfactory :local-user model/map->User
   (assoc (factory :user {:domain (config :domain)})
-    :local true))
+         :local true))
 
 (defrecordfactory :conversation model/map->Conversation
   {:url (fseq :uri)})
@@ -197,34 +197,27 @@
   {:_id (fseq :uri)})
 
 (defrecordfactory :activity model/map->Activity
-  {
-   :title (fseq :title)
+  {:title (fseq :title)
    :content (fseq :content)
    ;; :published (time/now)
    ;; :url (fseq :uri)
-   :author #'user-id
    ;; :verb "post"
-   })
+   :author #'user-id})
 
 (defrecordfactory :full-activity model/map->Activity
-  {
-   :title (fseq :title)
+  {:title (fseq :title)
    :content (fseq :content)
    :published (time/now)
    :url (fseq :uri)
    :author #'user-id
-   :verb "post"
-   })
+   :verb "post"})
 
 (defrecordfactory :client model/map->Client
-  {:_id (fseq :word)}
-  )
+  {:_id (fseq :word)})
 
 (defrecordfactory :request-token model/map->RequestToken
   {:_id (fseq :word)
-   :callback (fseq :uri)
-   }
-  )
+   :callback (fseq :uri)})
 
 (defrecordfactory :subscription model/map->Subscription
   {:to #'user-id

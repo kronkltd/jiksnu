@@ -18,9 +18,8 @@
    ;; (type-of :authenticated Boolean)
    ;; (type-of :used          Boolean)
    ;; ;; (type-of :access-token String)
-   ;; (type-of :created       DateTime)
-   ;; (type-of :updated       DateTime)
-   ))
+   (type-of :created       DateTime)
+   (type-of :updated       DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
