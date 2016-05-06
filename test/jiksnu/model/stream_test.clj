@@ -22,5 +22,4 @@
           (mock/a-stream-exists {:user user}))
 
         ;; Creating a user adds 2 streams
-        (model.stream/count-records) => (+ n 2))))
-  )
+        (model.stream/count-records) => (+ n 2)))))

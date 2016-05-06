@@ -45,7 +45,7 @@
   [uri]
   (->> uri
        util/split-uri
-       (apply model.user/get-user )))
+       (apply model.user/get-user)))
 
 (defn set-source-from-xrd
   [user xrd]

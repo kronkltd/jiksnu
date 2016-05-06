@@ -12,8 +12,7 @@
 (defsection index-section [Activity :as]
   [activities page]
   (let [items (:items page)]
-    {
-     :objectTypes ["activity"]
+    {:objectTypes ["activity"]
      :items (doall (map
                     (fn [item]
                       (show-section item page))
@@ -67,7 +66,7 @@
 
 (defn format-to
   [activity]
-  [{ :id "http://activityschema.org/collection/public"}])
+  [{:id "http://activityschema.org/collection/public"}])
 
 (defn format-cc
   [activity]

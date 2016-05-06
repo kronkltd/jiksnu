@@ -4,8 +4,7 @@
   (:use-macros [gyr.core :only [def.service]]))
 
 (def page-mappings
-  {
-   "activities"    "/model/activities"
+  {"activities"    "/model/activities"
    "conversations" "/model/conversations"
    "domains"       "/model/domains"
    "feed-sources"  "/model/feed-sources"
@@ -15,8 +14,7 @@
    "resources"     "/model/resources"
    "streams"       "/model/streams"
    "subscriptions" "/model/subscriptions"
-   "users"         "/model/users"
-   })
+   "users"         "/model/users"})
 
 (def subpage-mappings
   {"Activity"     {"likes"      #(str "/model/activities/"    (.-_id %) "/likes")}

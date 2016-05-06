@@ -140,14 +140,14 @@
 
 (defn viewable?
   ([activity]
-     (viewable? activity (session/current-user)))
+   (viewable? activity (session/current-user)))
   ([activity user]
-     (or (:public activity)
-         (and user
-              (or (= (:author activity) (:_id user))
-                  (:admin user)))
-         ;; TODO: Group membership and acl
-         )))
+   (or (:public activity)
+       (and user
+            (or (= (:author activity) (:_id user))
+                (:admin user)))
+       ;; TODO: Group membership and acl
+       )))
 
 (defn show
   "Show an activity"
@@ -240,7 +240,7 @@
 
 (defn fetch-by-user
   ([user]
-    (fetch-by-user user nil))
+   (fetch-by-user user nil))
   ([user options]
    (index {:author (:_id user)} options)))
 

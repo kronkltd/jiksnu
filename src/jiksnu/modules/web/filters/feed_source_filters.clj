@@ -31,7 +31,7 @@
   [action request]
   (let [{{id :id} :params} request]
     (if-let [user (model.feed-source/fetch-by-id id)]
-     (action user))))
+      (action user))))
 
 (deffilter #'actions.feed-source/update-record :http
   [action request]

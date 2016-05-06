@@ -52,8 +52,7 @@
              ;; :rel "avatar"
              ;; :type "image/jpeg"
              :width 96
-             :height 96
-             }
+             :height 96}
      :id (:_id user)
      ;; TODO: How are these determined?
      :liked false
@@ -66,13 +65,10 @@
   [user page]
   (let [domain (config :domain)]
     (with-context [:http :as]
-     {:displayName (str "Collections of persons for " (:_id user))
-      :objectTypes [(:objectTypes page "collection")]
-      :url (format lists-pattern domain (:username user))
-      :links {
-              :self {:href (format lists-pattern domain (:username user))}
-              }
-      :items (doall (map show-section (:items page)))
-      :totalItems (:totalItems page)
-      :author (show-section user)}))
-  )
+      {:displayName (str "Collections of persons for " (:_id user))
+       :objectTypes [(:objectTypes page "collection")]
+       :url (format lists-pattern domain (:username user))
+       :links {:self {:href (format lists-pattern domain (:username user))}}
+       :items (doall (map show-section (:items page)))
+       :totalItems (:totalItems page)
+       :author (show-section user)})))

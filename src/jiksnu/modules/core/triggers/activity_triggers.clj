@@ -32,7 +32,6 @@
   ;; Create events for each created activity
   #_(s/connect
      (s/filter filter-activity-create ciste.core/*actions*)
-     ch/posted-activities)
-  )
+     ch/posted-activities))
 
 (defonce receivers (init-receivers))

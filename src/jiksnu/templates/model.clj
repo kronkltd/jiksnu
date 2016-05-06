@@ -106,16 +106,16 @@
 
 (defn make-fetch-by-id
   ([collection-name maker]
-     (make-fetch-by-id collection-name maker true))
+   (make-fetch-by-id collection-name maker true))
   ([collection-name maker convert-id]
-     (fn [id]
-       (let [id (if (and convert-id (string? id))
-                  (util/make-id id) id)]
-         (when-let [item (mc/find-map-by-id @_db collection-name id)]
-           (let [item (maker item)]
-             (notify ::item-fetched {:collection-name collection-name
-                                     :item item})
-             item))))))
+   (fn [id]
+     (let [id (if (and convert-id (string? id))
+                (util/make-id id) id)]
+       (when-let [item (mc/find-map-by-id @_db collection-name id)]
+         (let [item (maker item)]
+           (notify ::item-fetched {:collection-name collection-name
+                                   :item item})
+           item))))))
 
 (defn make-push-value!
   [collection-name]

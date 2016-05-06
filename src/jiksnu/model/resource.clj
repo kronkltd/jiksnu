@@ -6,7 +6,8 @@
             [jiksnu.validators :refer [type-of]]
             [net.cgrand.enlive-html :as enlive]
             [validateur.validation :refer [validation-set presence-of acceptance-of]])
-  (:import java.io.StringReader))
+  (:import java.io.StringReader
+           org.joda.time.DateTime))
 
 (def collection-name "resources")
 (def maker           #'model/map->Resource)
@@ -17,10 +18,8 @@
    ;; (type-of :_id     String)
    ;; (type-of :domain  String)
    ;; (type-of :local   Boolean)
-   ;; (type-of :created DateTime)
-   ;; (type-of :updated DateTime)
-
-))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

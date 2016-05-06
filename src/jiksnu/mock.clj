@@ -133,7 +133,7 @@
                              {:domain (:_id domain)
                               :topic url
                               :hub (make-uri (:_id domain) "/push/hub")})
-                 {}))]
+                    {}))]
     (set-this :feed-source source)
     source))
 
@@ -173,8 +173,8 @@
   (let [source (or (:feed-source options)
                    (get-this :feed-source)
                    (a-feed-source-exists (select-keys options #{:local})))
-        activity (actions.activity/post (factory :activity
-                                                 {:update-source (:_id source)}))]
+        params (factory :activity {:update-source (:_id source)})
+        activity (actions.activity/post params)]
     (set-this :activity activity)
     activity))
 
@@ -305,8 +305,8 @@
   ([options]
    (let [user (:user options (or (get-that :user) (a-user-exists)))
          group (:group options (or (get-that :group)
-                                  (get-this :group)
-                                  (a-group-exists)))
+                                   (get-this :group)
+                                   (a-group-exists)))
          params {:user (:_id user)
                  :group (:_id group)}]
      (actions.group-membership/create params))))

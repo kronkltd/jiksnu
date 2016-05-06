@@ -31,5 +31,5 @@
   [action request]
   (let [{{id :id} :params} request]
     (if-let [item (model.resource/fetch-by-id id)]
-     (action item))))
+      (action item))))
 

@@ -16,9 +16,7 @@
   (fact "when there are no activities"
     (db/drop-all!)
 
-
-    (-> (req/request :get "/")
-        response-for) =>
+    (-> (req/request :get "/") response-for) =>
     (contains {:status status/success?}))
 
   (fact "when there are activities"

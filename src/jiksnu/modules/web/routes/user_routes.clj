@@ -54,7 +54,6 @@
   :name "Pump API"
   :description "User api matching pump.io spec")
 
-
 (defresource user-pump-api :user-info
   :url "/{username}"
   :name "user info"

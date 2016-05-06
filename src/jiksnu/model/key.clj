@@ -35,7 +35,6 @@
    ;; (type-of :_id           ObjectId)
 ))
 
-
 (def ^KeyFactory key-factory (KeyFactory/getInstance "RSA"))
 (def ^KeyPairGenerator keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
@@ -78,7 +77,6 @@
 (defn private-spec
   [^KeyPair keypair]
   (.getKeySpec key-factory (private-key keypair) RSAPrivateKeySpec))
-
 
 ;; Base64 functions
 
@@ -196,7 +194,7 @@
 
 (defn sign
   "Signs the data with the private key and returns the result"
-  [ ^"[B" data ^PrivateKey priv-key]
+  [^"[B" data ^PrivateKey priv-key]
   (let [^Signature sig (Signature/getInstance "SHA256withRSA")]
     (doto sig
       (.initSign priv-key)

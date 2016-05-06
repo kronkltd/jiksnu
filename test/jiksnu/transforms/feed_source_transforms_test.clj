@@ -21,4 +21,4 @@
       (set-domain source) => (contains {:domain (:_id domain)})
 
       (provided
-        (actions.service/get-discovered anything nil nil) => {:_id (:_id domain)}))))
+       (actions.service/get-discovered anything nil nil) => {:_id (:_id domain)}))))

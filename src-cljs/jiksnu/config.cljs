@@ -11,11 +11,6 @@
                     hljsServiceProvider NotificationProvider
                     uiSelectConfig]
 
-
-  ;; (timbre/merge-config!
-  ;;  {:appenders {:console (appenders.core/console-appender {:raw-output? true})}}
-  ;;  )
-
   (.setOptions hljsServiceProvider #js {:tabReplace "  "})
 
   (set! (.-theme uiSelectConfig) "bootstrap")

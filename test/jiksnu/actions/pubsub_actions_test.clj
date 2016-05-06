@@ -10,11 +10,11 @@
   (let [params {:verify "async"}]
     (actions.pubsub/subscribe params) => .response.
     (provided
-      (actions.feed-subscription/subscription-request params) => .subscription.
-      (actions.pubsub/verify-subscription-async .subscription. params) => .response.)))
+     (actions.feed-subscription/subscription-request params) => .subscription.
+     (actions.pubsub/verify-subscription-async .subscription. params) => .response.)))
 
 (fact "#'actions.pubsub/hub-dispatch"
   (let [params {:mode "subscribe"}]
     (actions.pubsub/hub-dispatch params) => .response.
     (provided
-      (actions.pubsub/subscribe params) => .response.)))
+     (actions.pubsub/subscribe params) => .response.)))

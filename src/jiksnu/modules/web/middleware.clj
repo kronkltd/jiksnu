@@ -34,7 +34,7 @@
     (try+
      (handler request)
      (catch [:type :authentication] ex
-       (timbre/warn "Auth error" ex )
+       (timbre/warn "Auth error" ex)
        (auth-exception ex))
      (catch [:type :authorization] ex
        (timbre/warn "Auth error" ex)
@@ -79,13 +79,13 @@
                  (let [client (some-> parts (get "oauth_consumer_key") model.client/fetch-by-id)
                        token  (some-> parts (get "oauth_token") model.access-token/fetch-by-id)]
                    (merge request
-                                {:authorization-type type
-                                 :authorization-parts parts}
-                                (when client
-                                  {:authorization-client client})
-                                (when token
-                                  {:access-token token}))))))
-              request)]
+                          {:authorization-type type
+                           :authorization-parts parts}
+                          (when client
+                            {:authorization-client client})
+                          (when token
+                            {:access-token token}))))))
+           request)]
       (handler request))))
 
 (defn wrap-oauth-user-binding

@@ -55,9 +55,9 @@
   "Fetch service's statusnet config. blocks"
   [domain url]
   (let [url (model.domain/statusnet-url domain)]
-   (when-let [response (actions.resource/fetch url)]
-     (when-let [sconfig (json/read-str (:body @response))]
-       (model.domain/set-field! domain :statusnet-config sconfig)))))
+    (when-let [response (actions.resource/fetch url)]
+      (when-let [sconfig (json/read-str (:body @response))]
+        (model.domain/set-field! domain :statusnet-config sconfig)))))
 
 (defn discover-capabilities
   [domain & [url]]

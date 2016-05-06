@@ -134,8 +134,7 @@
         (warning message))))
 
 (defn on-connection-established
-  [app data]
-  )
+  [app data])
 
 (defn handle-message
   "Handler for incoming messages from websocket connection"
@@ -169,7 +168,7 @@
         data (js/$.param #js {:username username :password password})
         opts #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}}]
     (timbre/infof "Logging in user. %s:%s" username password)
-    (-> (.post $http"/main/login" data opts)
+    (-> (.post $http "/main/login" data opts)
         (.then (fn [response]
                  (let [status (.-status response)]
                    ;; TODO: Find a cljs version of this check
@@ -238,8 +237,7 @@
     (.info Notification "Adding to page")))
 
 (def app-methods
-  {
-   :addStream     add-stream
+  {:addStream     add-stream
    :connect       connect
    :deleteStream  delete-stream
    :fetchStatus   fetch-status
@@ -257,8 +255,7 @@
    :refresh       refresh
    :register      register
    :send          send
-   :unfollow      unfollow
-   })
+   :unfollow      unfollow})
 
 (defn get-websocket-connection
   "Create a websocket connection to the server"

@@ -60,17 +60,17 @@
         args '("clients")]
     (fact "when there are clients"
       #_(let [client (mock/a-client-exists)
-            ch (d/deferred)
-            request {:channel ch
-                     :name name
-                     :format :json
-                     :args args}
-            response (parse-command request)]
+              ch (d/deferred)
+              request {:channel ch
+                       :name name
+                       :format :json
+                       :args args}
+              response (parse-command request)]
 
-        response => map?
-        (let [body (:body response)
-              json-obj (json/read-str body :key-fn keyword)]
-          json-obj => map?)))))
+          response => map?
+          (let [body (:body response)
+                json-obj (json/read-str body :key-fn keyword)]
+            json-obj => map?)))))
 
 (fact "command 'get-page streams'"
   (let [name "get-page"

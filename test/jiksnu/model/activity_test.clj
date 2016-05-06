@@ -22,8 +22,7 @@
     (let [n 15]
       (dotimes [i n]
         (mock/there-is-an-activity))
-      (model.activity/count-records) => n))
-  )
+      (model.activity/count-records) => n)))
 
 (fact "#'model.activity/create"
   (let [domain (mock/a-domain-exists)
@@ -31,11 +30,10 @@
         conversation (mock/a-conversation-exists {:feed-source feed-source})
         id (factory/make-uri (:_id domain) (fseq :path))
         activity (actions.activity/prepare-create
-                  (factory :full-activity
-                           {:conversation (:_id conversation)
-                            :id id
-                            :local false
-                            :update-source (:_id feed-source)}))]
+                  (factory :full-activity {:conversation (:_id conversation)
+                                           :id id
+                                           :local false
+                                           :update-source (:_id feed-source)}))]
     (model.activity/create activity) => (partial instance? Activity)))
 
 (fact "#'model.activity/get-author"
@@ -47,5 +45,4 @@
   (fact "when given a real activity"
     (let [user (mock/a-user-exists)
           activity (mock/there-is-an-activity {:user user})]
-      (model.activity/get-author activity) => user))
-  )
+      (model.activity/get-author activity) => user)))

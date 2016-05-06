@@ -13,8 +13,7 @@
   (require-components))
 
 (defn stop
-  []
-  )
+  [])
 
 (defmodule "jiksnu.modules.admin"
   :start start

@@ -66,8 +66,8 @@
                 params {:_id uri}]
             (actions.user/get-username params) => (contains {:username username})
             (provided
-              (actions.user/discover-user-xrd anything anything) =>
-              {:username username})))))
+             (actions.user/discover-user-xrd anything anything) =>
+             {:username username})))))
 
     (fact "when given an acct uri"
       (let [uri (str "acct:" username "@" domain-name)
@@ -149,9 +149,9 @@
         (fact "when the domain has a jrd endpoint"
           (db/drop-all!)
           (let [domain-params (factory :domain
-                                       {:_id domain-name
-                                        :jrdTemplate jrd-template
-                                        :discovered true})
+                                {:_id domain-name
+                                 :jrdTemplate jrd-template
+                                 :discovered true})
                 domain (actions.domain/find-or-create domain-params)]
 
             (actions.domain/add-link domain {:rel "jrd" :template jrd-template})
@@ -159,27 +159,23 @@
             (fact "when the username can be determined"
               (actions.user/find-or-create params) => (partial instance? User)
               (provided
-                (actions.user/get-username params) => {:domain domain-name
-                                                       :_id uri
-                                                       :username username}))))
+               (actions.user/get-username params) => {:domain domain-name
+                                                      :_id uri
+                                                      :username username}))))
 
         (fact "when the domain has an xrd endpoint"
           (db/drop-all!)
           (let [domain (actions.domain/find-or-create
                         (factory :domain
-                                 {:_id domain-name
-                                  :xrdTemplate xrd-template
-                                  :discovered true}))]
+                          {:_id domain-name
+                           :xrdTemplate xrd-template
+                           :discovered true}))]
             (model.domain/set-field! domain :xrdTemplate xrd-template)
-            (actions.domain/add-link domain {:rel "xrd" :template xrd-template})
+            (actions.domain/add-link domain {:rel "xrd" :template xrd-template}) (fact "when the username can be determined"
+                                                                                   (actions.user/find-or-create params) => (partial instance? User)
 
-
-            (fact "when the username can be determined"
-              (actions.user/find-or-create params) => (partial instance? User)
-
-              #_(provided
-                 (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd}))
-              )))))
+                                                                                   #_(provided
+                                                                                      (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd})))))))
 
     (fact "when given an acct uri uri"
       (db/drop-all!)

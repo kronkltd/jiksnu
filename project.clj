@@ -56,10 +56,12 @@
                  [ring/ring-core "1.4.0"]
                  [ring-basic-authentication "1.0.5"]
                  [slingshot "0.12.2"]]
+  :cljfmt {:indents {#".*fact.*" [[:inner 0]]}}
   :plugins [[cider/cider-nrepl "0.10.2"]
             [codox "0.8.13"]
             [lein-annotations "0.1.0"]
             [lein-checkall "0.1.1"]
+            [lein-cljfmt "0.5.2"]
             [lein-cljsbuild "1.1.2"]
             [lein-cloverage "1.0.2"]
             [lein-less "1.7.5"]

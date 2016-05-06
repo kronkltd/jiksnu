@@ -14,11 +14,11 @@
 
 (defn is-admin?
   ([]
-     (if-let [user (current-user)]
-       (is-admin? user)
-       false))
+   (if-let [user (current-user)]
+     (is-admin? user)
+     false))
   ([user]
-     (:admin user)))
+   (:admin user)))
 
 (defmacro with-user-id
   [id & body]

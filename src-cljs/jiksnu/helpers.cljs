@@ -53,41 +53,37 @@
      {:title "Groups"               :state "indexGroups"}
      {:title "Likes"                :state "indexLikes"}
      {:title "Resources"            :state "indexResources"}
-     {:title "Streams"              :state "indexStreams"}
-     ]}
+     {:title "Streams"              :state "indexStreams"}]}
    #_{:label "Settings"
       :items
       [{:title "Settings"           :state "settingsPage"}]}
    #_{:label "Admin"
       :items
       [{:title "Activities"         :state "adminActivities"}
-       ;; {:title "Auth"               :state "adminAuthentication"}
-       ;; {:title "Clients"            :state "adminClients"}
+       {:title "Auth"               :state "adminAuthentication"}
+       {:title "Clients"            :state "adminClients"}
        {:title "Conversations"      :state "adminConversations"}
-       ;; {:title "Feed Sources"       :state "adminSources"}
-       ;; {:title "Feed Subscriptions" :state "adminFeedSubscriptions"}
+       {:title "Feed Sources"       :state "adminSources"}
+       {:title "Feed Subscriptions" :state "adminFeedSubscriptions"}
        {:title "Groups"             :state "adminGroups"}
-       ;; {:title "Group Memberships"  :state "adminGroupMemberships"}
-       ;; {:title "Keys"               :state "adminKeys"}
-       ;; {:title "Likes"              :state "adminLikes"}
-       ;; {:title "Request Tokens"     :state "adminRequestTokens"}
-       ;; {:title "Streams"            :state "adminStreams"}
-       ;; {:title "Subscriptions"      :state "adminSubscriptions"}
+       {:title "Group Memberships"  :state "adminGroupMemberships"}
+       {:title "Keys"               :state "adminKeys"}
+       {:title "Likes"              :state "adminLikes"}
+       {:title "Request Tokens"     :state "adminRequestTokens"}
+       {:title "Streams"            :state "adminStreams"}
+       {:title "Subscriptions"      :state "adminSubscriptions"}
        {:title "Users"              :state "adminUsers"}
-       ;; {:title "Workers"            :state "adminWorkers"}
-       ]}])
+       {:title "Workers"            :state "adminWorkers"}]}])
 
 (def admin-data
   [["Activities"    "Activity"]
    ["Conversations" "Conversation"]
    ["Groups"        "Group"]
    ["Resources"     "Resource"]
-   ["Users"         "User"]
-   ])
+   ["Users"         "User"]])
 
 (def route-data
-  [
-   ["avatarPage"            "/main/avatar"             "AvatarPage"            :avatar-page]
+  [["avatarPage"            "/main/avatar"             "AvatarPage"            :avatar-page]
    ["home"                  "/"                        "IndexConversations"    :public-timeline]
    ["indexActivities"       "/main/activities"         "IndexActivities"       :index-activities]
    ["indexClients"          "/main/clients"            "IndexClents"           :index-clients]
@@ -110,9 +106,7 @@
    ["showLike"              "/main/likes/:_id"         "ShowLike"              :show-like]
    ["showStream"            "/main/streams/:_id"       "ShowStream"            :show-stream]
    ["showUser"              "/main/users/:_id"         "ShowUser"              :show-user]
-   ["authorizeClient"       "/oauth/authorize"         "AuthorizeClient"       :authorize-client]
-   ]
-  )
+   ["authorizeClient"       "/oauth/authorize"         "AuthorizeClient"       :authorize-client]])
 
 (defn setup-hotkeys
   [hotkeys $state]

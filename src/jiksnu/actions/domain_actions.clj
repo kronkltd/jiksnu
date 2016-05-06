@@ -52,8 +52,7 @@
 
 (defn host-meta
   [ctx]
-  nil
-  )
+  nil)
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.domain

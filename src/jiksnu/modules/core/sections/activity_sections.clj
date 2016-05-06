@@ -7,7 +7,7 @@
             [hiccup.core :as h]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block
-                                                  admin-index-section ]]
+                                                  admin-index-section]]
             [jiksnu.util :as util])
   (:import jiksnu.model.Activity))
 

@@ -87,7 +87,7 @@
   ;; :put!    #'actions.activity/update-record
   :delete! (fn [ctx]
              ;; (try+
-              (actions.activity/delete (:data ctx))
+             (actions.activity/delete (:data ctx))
               ;; (catch Object ex
               ;;   (timbre/error ex "Delete Error")
               ;;   )

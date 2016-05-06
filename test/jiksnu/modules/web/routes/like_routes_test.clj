@@ -15,8 +15,8 @@
         url (format "/likes/%s/delete" (:_id like))]
     (-> (req/request :post url)
         as-admin response-for) =>
-        (contains {:status status/redirect?
-                   :headers (contains {"Content-Type" "text/html"})
-                   :body string?})
+    (contains {:status status/redirect?
+               :headers (contains {"Content-Type" "text/html"})
+               :body string?})
 
-        (model.like/fetch-by-id (:_id like)) => nil))
+    (model.like/fetch-by-id (:_id like)) => nil))

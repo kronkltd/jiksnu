@@ -24,8 +24,7 @@
            :response "Map"})
 
 (defkey ::resource-updated
-  "Whenever a resource is updated"
-  )
+  "Whenever a resource is updated")
 
 (def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
 

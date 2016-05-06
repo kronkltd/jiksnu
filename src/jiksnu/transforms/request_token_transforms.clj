@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.request-token-transforms
-  (:require [jiksnu.util :as util])
-  )
+  (:require [jiksnu.util :as util]))
 
 (defn set-_id
   [params]

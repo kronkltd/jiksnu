@@ -15,8 +15,7 @@
       {:subject (model.user/get-uri user)
        :alias full-uri
        :links
-       [
-        {:rel ns/wf-profile
+       [{:rel ns/wf-profile
          :type "text/html"
          :href full-uri}
 
@@ -46,8 +45,6 @@
         {:rel ns/salmon-mention :href salmon-link}
         {:rel ns/oid-provider   :href full-uri}
         {:rel ns/osw-service    :href (str "xmpp:" (:username user) "@" (:domain user))}
-
-
         {:rel "magic-public-key"
          :href (-> user
                    model.key/get-key-for-user
@@ -55,8 +52,6 @@
 
         {:rel ns/ostatus-subscribe
          :template (str "https://" (config :domain) "/main/ostatussub?profile={uri}")}
-
-
         {:rel ns/twitter-username
          :href (str "https://" (config :domain) "/api/")
          :property [{:type "http://apinamespace.org/twitter/username"

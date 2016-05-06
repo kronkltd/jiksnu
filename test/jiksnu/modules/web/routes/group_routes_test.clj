@@ -28,16 +28,15 @@
         request (-> (req/request :post url)
                     (req/body (json/json-str params))
                     (req/content-type "application/json"))
-        response (response-for request)
-        ]
+        response (response-for request)]
     response => (contains {:status 303})
     (let [location (get-in response [:headers "Location"])]
       (if location
         (let [request2 (req/request :get location)
-             response2 (response-for request2)]
-         response2 => (contains {:status 200})
-         (let [body (json/read-str (:body response2))]
-           body => (contains {"name" (:name params)})))
+              response2 (response-for request2)]
+          response2 => (contains {:status 200})
+          (let [body (json/read-str (:body response2))]
+            body => (contains {"name" (:name params)})))
         (do
           location =not=> nil?)))))
 

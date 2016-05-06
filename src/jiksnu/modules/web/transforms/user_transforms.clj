@@ -4,7 +4,6 @@
   [user]
   #_(named-url "user salmon" {:id (:_id user)}))
 
-
 (defn set-url
   [user]
   (if (:url user)
