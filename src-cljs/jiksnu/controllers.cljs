@@ -145,6 +145,12 @@
   (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
   (helpers/init-subpage $scope subpageService Users "groups"))
 
+(def.controller jiksnu.ListGroupAdminsController
+  [$scope subpageService Groups]
+  (set! (.-formShown $scope) false)
+  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (helpers/init-subpage $scope subpageService Groups "admins"))
+
 (def.controller jiksnu.ListGroupMembersController
   [$scope subpageService Groups]
   (set! (.-formShown $scope) false)
