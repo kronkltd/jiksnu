@@ -19,4 +19,6 @@
   [:list-followers {:item "user"}]
   [:list-following {:item "user"}]
   [:list-groups    {:item "user"}]
-  [:list-activities {:item "user"}]]]
+  [:list-activities {:item "user"}]
+  [:div.action-buttons
+   [:button.btn {:ng-click "deleteRecord()"} "Delete User"]]]]

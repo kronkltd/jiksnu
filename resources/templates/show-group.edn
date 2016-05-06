@@ -32,4 +32,6 @@
      [:ul
       [:li {:ng-repeat "user in item.members"}
        [:a {:ui-sref "showUser({_id: user})"}
-        "{{user}}"]]]]]]
+        "{{user}}"]]]]
+  [:div.action-buttons
+   [:button.btn {:ng-click "deleteRecord()"} "Delete Group"]]]]
