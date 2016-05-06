@@ -58,9 +58,8 @@
 
    (timbre/infof "Url: %s" (.getLocationAbsUrl js/browser))
 
-   (let [page-object (aget pom/pages page-name)
-         page (page-object.)]
-     (.then (.get page) (fn [] (next)))))
+   (let [page-object (aget pom/pages page-name)]
+     (.. (page-object.) get (then next))))
 
  (Given #"^I am logged in as a normal user$" [next]
    (.. (helpers.action/login-user)
