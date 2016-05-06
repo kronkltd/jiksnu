@@ -172,7 +172,7 @@ services:
     depends_on:
       - dnsdock
     environment:
-      DNSDOCK_ALIAS: "dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,jiksnu-integration.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,sentry.docker,shipyard.docker"
+      DNSDOCK_ALIAS: "dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,jiksnu-integration.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,selenium.docker,sentry.docker,shipyard.docker"
     ports:
       - "80:80"
     restart: always
@@ -296,6 +296,16 @@ services:
     volumes:
       - maven-repo:/root/.m2
       - .:/app
+
+  webdriver:
+    image: elgalu/selenium
+    environment:
+      VNC_PASSWORD: "hunter2"
+      NOVNC: "true"
+      VIRTUAL_HOST: "selenium.docker"
+      VIRTUAL_PORT: "6080"
+    expose:
+      - "26080"
 
 volumes:
   etcd-data:

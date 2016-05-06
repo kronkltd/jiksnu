@@ -8,7 +8,7 @@ config.cucumberOpts.format = "pretty";
 // config.cucumberOpts.format = "summary";
 config.cucumberOpts.require.push('target/protractor-tests.js');
 
-config.seleniumAddress = 'http://localhost:4444/wd/hub';
+config.seleniumAddress = 'http://selenium:24444/wd/hub';
 
 config.plugins = [({package: 'protractor-console',
                     logLevels: ['debug', 'info', 'warning', 'severe', 'log']})];
