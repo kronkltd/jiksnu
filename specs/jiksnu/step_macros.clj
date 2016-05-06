@@ -1,4 +1,4 @@
-(ns jiksnu.step-helpers)
+(ns jiksnu.step-macros)
 
 (defmacro step-definitions
   [& body]
@@ -19,18 +19,22 @@
   [pattern bind & body]
   (list 'this-as 'this
         (list '.When 'this pattern
-              (apply list 'fn bind body))))
+              (concat
+               (apply list 'fn bind body)
+               (list nil)))))
 
 (defmacro Then
   [pattern bind & body]
   (list 'this-as 'this
         (list '.Then 'this pattern
-              (apply list 'fn bind body))))
+              (concat
+               (apply list 'fn bind body)
+               (list nil)))))
 
 (defmacro And
   [pattern bind & body]
   (list 'this-as 'this
         (list '.And 'this pattern
-              (conj
+              (concat
                (apply list 'fn bind body)
-               "foo"))))
+               (list nil)))))
