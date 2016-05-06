@@ -28,17 +28,17 @@
   ([] (authenticate nil))
   ([cookie]
    (let [d (.defer (.-promise js/protractor))
-         url (str BASE_URL "/main/login")
          data #js {:username "test"
                    :password "test"}]
      #_(.fulfill d true)
      ;; js/debugger
-     (-> (.GET http-adapter url)
-         (.then (fn [data]
-                  (js/console.log "data" data)
-                  (if (#{200 303} (.-status data))
-                    (.fulfill d data)
-                    (.reject d data)))))
+     (.. http-adapter
+         (GET "/main/login")
+         (then (fn [data]
+                 (js/console.log "data" data)
+                 (if (#{200 303} (.-status data))
+                   (.fulfill d data)
+                   (.reject d data)))))
      (.-promise d))))
 
 (defn an-activity-exists
@@ -47,9 +47,9 @@
   (let [d (.defer (.-promise js/protractor))
         activity #js {:content "foo"}
         url (str BASE_URL "/model/activities")]
-    (-> http-adapter
-        (.POST url activity #js {:auth #js {:username "test" :password "test"}})
-        (.then (fn [response]
+    (.. http-adapter
+        (POST url activity #js {:auth #js {:username "test" :password "test"}})
+        (then (fn [response]
                  (let [status-code (.-status response)]
                    (timbre/debugf "Status Code: %s" status-code)
                    (if (#{200 201} status-code)
