@@ -33,6 +33,7 @@
   Page
 
   (get [this]
+    (timbre/debugf "loading login page")
     (.get js/browser "/main/login")))
 
 (set! (.-get (.-prototype LoginPage))
