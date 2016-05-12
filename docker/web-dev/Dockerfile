@@ -1,4 +1,4 @@
-FROM duck1123/jiksnu-ruby-base
+FROM registry.kronkltd.net:5000/duck1123/jiksnu-ruby-base
 
 MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 

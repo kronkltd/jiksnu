@@ -4,13 +4,13 @@ services:
     build:
       context: .
       dockerfile: docker/jiksnu-base/Dockerfile
-    image: duck1123/jiksnu-base
+    image: registry.kronkltd.net:5000/duck1123/jiksnu-base
 
   ruby-base:
     build:
       context: .
       dockerfile: docker/jiksnu-ruby-base/Dockerfile
-    image: duck1123/jiksnu-ruby-base
+    image: registry.kronkltd.net:5000/duck1123/jiksnu-ruby-base
     depends_on:
       - base
 
@@ -37,7 +37,7 @@ services:
       - /var/run/docker.sock:/docker.sock
 
   dnsdock:
-    image: duck1123/dnsdock
+    image: registry.kronkltd.net:5000/duck1123/dnsdock
     build: docker/dnsdock
     command: -verbose=true -environment="dev" -nameserver="8.8.4.4:53"
     environment:
@@ -102,7 +102,7 @@ services:
       - ./data/logs/elasticsearch:/var/log/elasticsearch
 
   jiksnu-integration:
-    image: duck1123/jiksnu-dev
+    image: registry.kronkltd.net:5000/duck1123/jiksnu-dev
     depends_on:
       - mongo
       - proxy
@@ -116,7 +116,7 @@ services:
     build:
       dockerfile: docker/karma/Dockerfile
       context: .
-    image: duck1123/jiksnu-karma
+    image: registry.kronkltd.net:5000/duck1123/jiksnu-karma
     depends_on:
       - proxy
       - elk
@@ -128,7 +128,7 @@ services:
       - .:/app
 
   logspout:
-    image: duck1123/logspout
+    image: registry.kronkltd.net:5000/duck1123/logspout
     build:
       context: docker/logspout
     environment:
@@ -188,7 +188,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   pump:
-    image: duck1123/pumpio
+    image: registry.kronkltd.net:5000/duck1123/pumpio
     build: docker/pump
     environment:
       VIRTUAL_HOST: "pump.docker"
@@ -271,7 +271,7 @@ services:
 
   web:
     build: .
-    image: jiksnu
+    image: registry.kronkltd.net:5000/duck1123/jiksnu
     depends_on:
       - mongo
       - proxy
@@ -285,7 +285,7 @@ services:
     build:
       context: .
       dockerfile: docker/web-dev/Dockerfile
-    image: duck1123/jiksnu-dev
+    image: registry.kronkltd.net:5000/duck1123/jiksnu-dev
     depends_on:
       - mongo
       - proxy
