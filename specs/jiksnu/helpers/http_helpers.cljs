@@ -9,8 +9,8 @@
 ;; (var store (.DS JSData))
 ;; (.registerAdapter store "http" (DSHttpAdapter.) #js {:default true})
 
-(def http-client (nodejs/require "request"))
 (def BASE_URL (str "http://" World/base-domain))
+(set! (.. axios -defaults -baseURL) BASE_URL)
 (def http-adapter (HttpAdapter. #js {:basePath BASE_URL}))
 
 ;; (set! (.-window js/GLOBAL) #js {})
@@ -61,10 +61,11 @@
   "Queries the server to see if a user exists with that name"
   [username]
   (let [d (.defer (.-promise js/protractor))
-        url (str BASE_URL "/api/user/" username)
-        callback (fn [error response body]
-                   (if (and (not error) (= (.-statusCode response) 200))
-                     (.fulfill d true)
-                     (.reject d #js {:error error :response response})))]
-    (http-client url callback)
+        url (str BASE_URL "/api/user/" username)]
+    (.. js/axios
+        (get url)
+        (then (fn [response]
+                (if (= (.-statusCode response) 200)
+                  (.fulfill d true)
+                  (.reject d #js {:response response})))))
     (.-promise d)))
