@@ -1,7 +1,4 @@
-(ns jiksnu.page-helpers
-  (:require [cljs.nodejs :as nodejs]))
-
-(def http-client (nodejs/require "request"))
+(ns jiksnu.page-helpers)
 
 (defn get-app-data
   "Retrieve the application data"
