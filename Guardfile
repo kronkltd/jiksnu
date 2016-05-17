@@ -51,5 +51,7 @@ group :e2e do
 
     # Page templates
     watch(%r{resources/templates/.+\.edn}) {run_protractor}
-  end
+
+    watch(%r{target/specs/.+\.js}) {run_protractor}
+end
 end

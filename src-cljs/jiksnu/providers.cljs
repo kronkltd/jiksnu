@@ -142,7 +142,6 @@
   (let [Notification (.inject app "Notification")
         data-str (.-data message)
         data (js/JSON.parse data-str)]
-    (js/console.log message)
     (timbre/debugf "Received Message - %s" data-str)
     (cond
       (.-connection data) (.success Notification "connected")
@@ -167,8 +166,8 @@
   (let [$http (.inject app "$http")
         data (js/$.param #js {:username username :password password})
         opts #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}}]
-    (timbre/infof "Logging in user. %s:%s" username password)
-    (-> (.post $http "/main/login" data opts)
+    ;; (timbre/infof "Logging in user. %s:%s" username password)
+    (-> (.post $http"/main/login" data opts)
         (.then (fn [response]
                  (let [status (.-status response)]
                    ;; TODO: Find a cljs version of this check

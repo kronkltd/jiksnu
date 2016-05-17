@@ -14,8 +14,6 @@
 (def base-port 80)
 (def base-path (str "http://" base-domain ":" base-port))
 
-(def $ js/$)
-(def by js/by)
 (def element js/element)
 (def expect (.-expect chai))
 (def browser js/browser)

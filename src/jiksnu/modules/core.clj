@@ -49,14 +49,12 @@
   []
   (try
     (Kamon/start)
-    (catch Exception ex
-      #_(timbre/warn ex "Kamon error")))
+    (catch Exception _))
 
-  (let [tracer (.newContext (Kamon/tracer) "foo")]
-
-    (let [segment (.startSegment (Tracer/currentContext) "set-database" "buisness-logic" "kamon")]
-      (db/set-database!)
-      (.finish segment))
+  (let [tracer (.newContext (Kamon/tracer) "foo")
+        segment (.startSegment (Tracer/currentContext) "set-database" "buisness-logic" "kamon")]
+    (db/set-database!)
+    (.finish segment)
     ;; (model.activity/ensure-indexes)
     (model.feed-source/ensure-indexes)
     (model.user/ensure-indexes)
