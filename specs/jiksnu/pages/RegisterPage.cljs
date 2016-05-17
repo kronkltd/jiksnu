@@ -1,11 +1,14 @@
 (ns jiksnu.pages.RegisterPage
-  (:require [jiksnu.page-helpers :refer [by-model]]))
+  (:require [jiksnu.page-helpers :refer [by-model]]
+            [taoensso.timbre :as timbre]))
 
 (defn RegisterPage
   [])
 
 (set! (.-get (.-prototype RegisterPage))
-      (fn [] (.get js/browser "/main/register")))
+      (fn []
+        (timbre/debug "loading register page")
+        (.get js/browser "/main/register")))
 
 (set! (.-setUsername (.-prototype RegisterPage))
       (fn [username]
@@ -21,14 +24,12 @@
 
 (set! (.-submit (.-prototype RegisterPage))
       (fn []
+        (timbre/debug "submitting register form")
         (.submit (js/$ ".register-form"))))
 
 (set! (.-waitForLoaded (.-prototype RegisterPage))
       (fn []
-        (this-as
-         this
-         (.wait
-          js/browser
-          (fn []
-            (js/console.log "Waiting for loaded")
-            true)))))
+        (.wait js/browser
+         (fn []
+           (timbre/info "Waiting for loaded, register")
+           true))))

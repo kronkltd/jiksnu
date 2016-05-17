@@ -16,6 +16,7 @@
 ;; (set! (.-window js/GLOBAL) #js {})
 
 (defn get-cookie-map
+  "Returns the cookie data from a response map"
   [response]
   (if-let [set-cookie-string (first (aget (.-headers response) "set-cookie"))]
     (->> (string/split set-cookie-string #";")

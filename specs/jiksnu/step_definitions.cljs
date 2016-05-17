@@ -1,13 +1,20 @@
 (ns jiksnu.step-definitions
-  (:require [jiksnu.helpers.action-helpers :as helpers.action]
+  (:require [cljs.nodejs :as nodejs]
+            [jiksnu.helpers.action-helpers :as helpers.action]
             [jiksnu.helpers.http-helpers :as helpers.http]
             [jiksnu.page-helpers :as page-helpers]
-            [jiksnu.pages.LoginPage :refer [LoginPage login]]
+            [jiksnu.pages.LoginPage :as lp :refer [LoginPage login]]
             [jiksnu.pages.RegisterPage :refer [RegisterPage]]
+            [jiksnu.PageObjectMap :as pom]
             [jiksnu.World :as World]
             [taoensso.timbre :as timbre])
   (:use-macros [jiksnu.step-macros :only [step-definitions Given When Then And]]))
 
+(def chai (nodejs/require "chai"))
+(def chai-as-promised (nodejs/require "chai-as-promised"))
+(.use chai chai-as-promised)
+
+(def expect (.-expect chai))
 
 (step-definitions
 
@@ -18,10 +25,12 @@
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
  (Given #"^a user exists with the password \"([^\"]*)\"$" [password next]
-   (.pending next))
+   (helpers.action/register-user)
+   (next))
 
  (Given #"^another user exists$" [next]
-   (.pending next))
+   (helpers.action/register-user)
+   (next))
 
  (Given #"^I am (not )?logged in$" [not-str next]
    (if (empty? not-str)
@@ -31,44 +40,48 @@
        (timbre/info "Waiting for finish")
        (.waitForAngular js/browser)
 
-       (-> (.sleep js/browser 500)
-           (.then (fn []
-                    (timbre/info "Fetching Status")
-                    (-> (World/expect (page-helpers/get-username))
-                        .-to .-eventually (.equal "test")))))
-       (timbre/info "Expecting title")
-       (-> (World/expect (.getTitle js/browser))
-           .-to .-eventually (.equal "Jiksnu")
-           .-and (.notify next)))
+       (.. js/browser
+           (sleep 500)
+           (then (fn []
+                   (timbre/info "Fetching Status")
+                   (.. (World/expect (page-helpers/get-username))
+                       -to -eventually (equal "test")))))
+       (next))
      (do
        (timbre/info "Deleting all cookies")
-       (.deleteAllCookies (.manage js/browser))
+       (.. js/browser (manage) (deleteAllCookies))
        (next))))
 
  (Given #"^I am at the \"([^\"]*)\" page$" [page-name next]
-   (.pending next))
+
+   (timbre/infof "Page: %s" page-name)
+
+   (timbre/infof "Url: %s" (.getLocationAbsUrl js/browser))
+
+   (let [page-object (aget pom/pages page-name)
+         page (page-object.)]
+     (.then (.get page) (fn [] (next)))))
 
  (Given #"^I am logged in as a normal user$" [next]
-   (-> (helpers.action/login-user)
-       (.then next)))
+   (.. (helpers.action/login-user)
+       (then next)))
 
  (Given #"^I am logged in as an admin$" [next]
-   (.pending next))
+   (.click (js/$ ".logout-button"))
+   (next))
 
  (Given #"^that user posts an activity$" [next]
    (.pending next))
 
  (Given #"^there is a public activity" [next]
-   (-> (helpers.http/an-activity-exists)
-       (.then (fn [] (next)))))
+   (.. (helpers.http/an-activity-exists)
+       (then next)))
 
  (Given #"^there is a user$" [next]
-   (-> (helpers.http/user-exists? "test")
-       (.then (fn [a] true)
-              (fn [a] (helpers.action/register-user)))
-       (.then (fn [a]
-                (timbre/infof "a: %s" a)
-                (next)))))
+   (.. (helpers.http/user-exists? "test")
+       (then (fn [a] true)
+             (fn [a] (helpers.action/register-user)))
+       (then next)))
 
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -85,7 +98,11 @@
    (.pending next))
 
  (When #"^I put my username in the \"([^\"]*)\" field$" [username next]
-   (.pending next))
+   (let [page (LoginPage.)]
+     (.waitForLoaded page)
+     (timbre/info "loaded")
+     (-> (lp/set-username page "test")
+         (.then (fn [] (next))))))
 
  (When #"^I request the user\-meta page for that user with a client$" [next]
    (.pending next))
@@ -113,7 +130,9 @@
    (.pending next))
 
  (Then #"^I should not see a \"([^\"]*)\" button for that user$" [button-name next]
-   (.pending next))
+   (.. (World/expect (js/$ (str "." button-name "-button")))
+       -to -not -exist)
+   (next))
 
  (Then #"^I should see (\d+) users$" [n next]
    (.pending next))
@@ -127,7 +146,10 @@
    (.pending next))
 
  (Then #"^I should see an activity$" [next]
-   (.pending next))
+   (let [element (js/element (.. js/by (css "article")))]
+     (timbre/infof "checking activity - %s" element)
+     (.. (World/expect (.isPresent element)) -to -eventually (equal true)))
+   (next))
 
  (Then #"^I should see that activity$" [next]
    (.pending next))
@@ -138,7 +160,10 @@
    (next))
 
  (Then #"^it should have a \"([^\"]*)\" field$" [field-name next]
-   (.pending next))
+   (.. (World/expect (js/$ (str "*[name=" field-name "]")))
+       -to -exist)
+
+   (next))
 
  (Then #"^that user's name should be \"([^\"]*)\"$" [user-name next]
    (.pending next))
