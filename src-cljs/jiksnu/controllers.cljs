@@ -254,7 +254,6 @@
                          (fn [r]
                            (timbre/info "Failed")
                            (js/console.info r)))))))
-
     (.init $scope)))
 
 (def.controller jiksnu.NewPostController
