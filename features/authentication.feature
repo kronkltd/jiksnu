@@ -22,7 +22,7 @@ Scenario: Logging in
 
 Scenario: Logging out
   Given I am logged in
-  And I am at the "home" page
+  And I go to the "home" page
   When I log out
   Then I should be at the "home" page
   And I should not be logged in
