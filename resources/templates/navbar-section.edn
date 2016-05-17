@@ -35,4 +35,4 @@
      [:li [:a {:ui-sref "indexSubscriptions"} "Subscriptions"]]
      ;; [:li [:a {:ui-sref "settingsPage"} "Settings"]]
      ;; [:li [:a {:ui-sref "profile"}  "Profile"]]
-     [:li [:a {:ng-click "logout()"}   "Log out"]]]]]]]
+     [:li [:a.logout-button {:ng-click "logout()"}   "Log out"]]]]]]]
