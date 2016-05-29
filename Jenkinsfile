@@ -16,18 +16,18 @@ node {
         stage 'Build base image'
 
         sh 'cd docker/jiksnu-base'
-        sh "docker build -t registry.kronkltd.net:5000/duck1123/jiksnu-base:${env.GIT_COMMIT} ."
-        sh "docker tag registry.kronkltd.net:5000/duck1123/jiksnu-base:${env.GIT_COMMIT} registry.kronkltd.net:5000/duck1123/jiksnu-base:latest"
-        sh "docker push registry.kronkltd.net:5000/duck1123/jiksnu-base:${env.GIT_COMMIT}"
-        sh 'docker push registry.kronkltd.net:5000/duck1123/jiksnu-base:latest'
+        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT} ."
+        sh "docker tag repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu-base:latest"
+        sh "docker push repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT}"
+        sh 'docker push repo.jiksnu.org/duck1123/jiksnu-base:latest'
 
         stage 'Build ruby image'
 
         sh 'cd docker/jiksnu-ruby-base'
-        sh "docker build -t registry.kronkltd.net:5000/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT} ."
-        sh "docker tag registry.kronkltd.net:5000/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT} registry.kronkltd.net:5000/duck1123/jiksnu-ruby-base:latest"
-        sh "docker push registry.kronkltd.net:5000/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT}"
-        sh 'docker push registry.kronkltd.net:5000/duck1123/jiksnu-ruby-base:latest'
+        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT} ."
+        sh "docker tag repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu-ruby-base:latest"
+        sh "docker push repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT}"
+        sh 'docker push repo.jiksnu.org/duck1123/jiksnu-ruby-base:latest'
 
         stage 'Unit Tests'
 
@@ -45,17 +45,17 @@ node {
 
         stage 'Build image'
 
-        sh "docker build -t registry.kronkltd.net:5000/duck1123/jiksnu:${env.GIT_COMMIT} ."
-        sh "docker tag registry.kronkltd.net:5000/duck1123/jiksnu:${env.GIT_COMMIT} registry.kronkltd.net:5000/duck1123/jiksnu:latest"
-        sh "docker push registry.kronkltd.net:5000/duck1123/jiksnu:${env.GIT_COMMIT}"
-        sh 'docker push registry.kronkltd.net:5000/duck1123/jiksnu:latest'
+        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT} ."
+        sh "docker tag repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu:latest"
+        sh "docker push repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT}"
+        sh 'docker push repo.jiksnu.org/duck1123/jiksnu:latest'
 
         // stage 'Integration tests'
 
         // try {     
         //     // sh 'docker run -d --name pipeline_mongo_1 mongo'
 
-        //     // sh 'docker run -d --name pipeline_jiksnu_1 --link pipeline_mongo_1:mongo registry.kronkltd.net:5000/duck1123/jiksnu:latest'
+        //     // sh 'docker run -d --name pipeline_jiksnu_1 --link pipeline_mongo_1:mongo repo.jiksnu.org/duck1123/jiksnu:latest'
 
         //     sh 'docker-compose up -d webdriver'
         //     sh 'docker-compose up -d jiksnu-integration'

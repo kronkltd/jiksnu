@@ -3,7 +3,7 @@
 set -e
 set -x
 
-docker build -t registry.kronkltd.net:5000/duck1123/jiksnu-base      docker/jiksnu-base/
-docker build -t registry.kronkltd.net:5000/duck1123/jiksnu-ruby-base docker/jiksnu-ruby-base/
+docker build -t repo.jiksnu.org/duck1123/jiksnu-base      docker/jiksnu-base/
+docker build -t repo.jiksnu.org/duck1123/jiksnu-ruby-base docker/jiksnu-ruby-base/
 docker-compose build web
 docker-compose build web-dev
