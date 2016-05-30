@@ -2,18 +2,12 @@
 
 node {
 
-    properties [
-        [
-        $class: 'GithubProjectProperty',
+    properties([[$class: 'GithubProjectProperty',
         displayName: 'Jiksnu',
-        projectUrlStr: 'https://github.com/duck1123/jiksnu/'
-        ],
-        [
-        $class: 'RebuildSettings',
+        projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
+        [$class: 'RebuildSettings',
         autoRebuild: false,
-        rebuildDisabled: false
-        ]
-    ]
+        rebuildDisabled: false]])
 
     wrap([$class: 'AnsiColorBuildWrapper']) {
         env.PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
