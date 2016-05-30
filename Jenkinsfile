@@ -3,6 +3,8 @@
 node {
     wrap([$class: 'AnsiColorBuildWrapper']) {
         env.PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+        sh "git rev-parse HEAD | tr -d '\n' > git-commit"
+        env.GIT_COMMIT = readFile('git-commit')
 
         stage 'Print Environment'
 
@@ -15,23 +17,43 @@ node {
 
         stage 'Build base image'
 
-        sh 'cd docker/jiksnu-base'
-        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT} ."
+        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT} docker/jiksnu-base"
         sh "docker tag repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu-base:latest"
         sh "docker push repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT}"
         sh 'docker push repo.jiksnu.org/duck1123/jiksnu-base:latest'
 
         stage 'Build ruby image'
 
-        sh 'cd docker/jiksnu-ruby-base'
-        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT} ."
+        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT} docker/jiksnu-ruby-base"
         sh "docker tag repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu-ruby-base:latest"
         sh "docker push repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT}"
         sh 'docker push repo.jiksnu.org/duck1123/jiksnu-ruby-base:latest'
 
         stage 'Unit Tests'
 
-        sh 'script/cibuild'
+        def err
+
+        try {
+            sh "docker-compose up -d mongo"
+
+            // sleep 15
+
+            sh "docker inspect workspace_mongo_1 | jq '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tr -d '\"' | tr -d '\n' > jiksnu_db_host"
+            sh "docker inspect workspace_mongo_1 | jq '.[].NetworkSettings.Ports | keys | .[] | split(\"/\")[0]' | tr -d '\"' | tr -d '\n' > jiksnu_db_port"
+
+            env.JIKSNU_DB_HOST = readFile('jiksnu_db_host')
+            env.JIKSNU_DB_PORT = readFile('jiksnu_db_port')
+
+            sh 'script/cibuild'
+        } catch (caughtError) {
+            err = caughtError
+        } finally {
+            sh 'docker-compose stop'
+
+            if (err) {
+                throw err
+            }
+        }
 
         stage 'Build jar'
 
