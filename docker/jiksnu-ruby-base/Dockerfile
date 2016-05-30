@@ -1,4 +1,4 @@
-FROM registry.kronkltd.net:5000/duck1123/jiksnu-base
+FROM repo.jiksnu.org/duck1123/jiksnu-base
 
 MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 

@@ -141,9 +141,9 @@
   :less {:source-paths ["less"]
          :target-path  "target/resources/public/css"}
   :filespecs [{:type :path :path "ciste.clj"}]
-  :repositories [["snapshots" {:url "http://artifactory.jiksnu.com/artifactory/libs-snapshot-local/"
-                               :username [:gpg :env/artifactory_username]
-                               :password [:gpg :env/artifactory_password]}]
-                 ["releases" {:url "http://artifactory.jiksnu.com/artifactory/libs-releases-local/"
-                              :username [:gpg :env/artifactory_username]
-                              :password [:gpg :env/artifactory_password]}]])
+  :repositories [["snapshots" {:url "http://repo.jiksnu.org/repository/maven-snapshots/"
+                               :username [:gpg :env/repo_username]
+                               :password [:gpg :env/repo_password]}]
+                 ["releases" {:url "http://repo.jiksnu.org/repository/maven-releases/"
+                              :username [:gpg :env/repo_username]
+                              :password [:gpg :env/repo_password]}]])
