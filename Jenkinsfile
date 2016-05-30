@@ -56,7 +56,7 @@ node {
 
             step([$class: 'JUnitResultArchiver',
                  testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
-                 testResults: 'target/surfire-reports/*.xml'])
+                 testResults: 'target/surefire-reports/*.xml'])
         } catch (caughtError) {
             err = caughtError
         } finally {
