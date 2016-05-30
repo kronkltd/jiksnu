@@ -1,19 +1,27 @@
 #!groovy
 
 node {
+
     wrap([$class: 'AnsiColorBuildWrapper']) {
         env.PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
         sh "git rev-parse HEAD | tr -d '\n' > git-commit"
         env.GIT_COMMIT = readFile('git-commit')
 
+        properties([[$class: 'GithubProjectProperty',
+                       displayName: 'Jiksnu',
+                       projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
+                    [$class: 'RebuildSettings',
+                    autoRebuild: false,
+                    rebuildDisabled: false]])
+
         stage 'Print Environment'
 
         sh 'env'
 
-        stage 'Checkout'
+        // stage 'Checkout'
 
-        checkout scm
-        sh 'git submodule sync'
+        // checkout scm
+        // sh 'git submodule sync'
 
         stage 'Build base image'
 
@@ -45,6 +53,8 @@ node {
             env.JIKSNU_DB_PORT = readFile('jiksnu_db_port')
 
             sh 'script/cibuild'
+
+            step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
         } catch (caughtError) {
             err = caughtError
         } finally {
@@ -71,6 +81,23 @@ node {
         sh "docker tag repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu:latest"
         sh "docker push repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT}"
         sh 'docker push repo.jiksnu.org/duck1123/jiksnu:latest'
+
+        stage 'Build metrics'
+
+        step([$class: 'TasksPublisher',
+             canComputeNew: false,
+             defaultEncoding: '',
+             excludePattern: '',
+             healthy: '',
+             high: 'FIXME',
+             low: '',
+             normal: 'TODO',
+             pattern: '**/*.clj,**/*.cljs',
+             unHealthy: ''])
+
+        sh 'lein doc'
+
+        step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
 
         // stage 'Integration tests'
 

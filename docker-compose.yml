@@ -182,17 +182,6 @@ services:
       - ./data/nginx/certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
-  postgresdb:
-    image: postgres:9.4
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-
-  pump:
-    image: repo.jiksnu.org/duck1123/pumpio
-    build: docker/pump
-    environment:
-      VIRTUAL_HOST: "pump.docker"
-
   rancher:
     image: rancher/server
     depends_on:
@@ -204,70 +193,9 @@ services:
   redis:
     image: redis:3
 
-  redis_commander:
-    image: tenstartups/redis-commander
-    command: --redis-host redis
-    depends_on:
-      - redis
-      - proxy
-    environment:
-      VIRTUAL_HOST: "redis-commander.docker"
-      VIRTUAL_PORT: "8080"
-
   rethinkdb:
     image: rethinkdb
     restart: always
-
-  sentry:
-    image: slafs/sentry
-    depends_on:
-      - postgresdb
-      - redis
-      - sentry_worker
-      - proxy
-    env_file: docker/sentry/environment
-    environment:
-      VIRTUAL_HOST: "sentry.docker"
-    volumes:
-      - sentry-files:/data
-
-  sentry_worker:
-    image: slafs/sentry
-    command: celery worker -B
-    depends_on:
-      - postgresdb
-      - redis
-    env_file: docker/sentry/environment
-    environment:
-      C_FORCE_ROOT: "true"
-    volumes:
-      - sentry-files:/data
-
-  shipyard:
-    image: shipyard/shipyard
-    command: server -d tcp://swarm:3375
-    depends_on:
-      - proxy
-      - rethinkdb
-      - swarm
-    environment:
-      VIRTUAL_HOST: "shipyard.docker"
-      VIRTUAL_PORT: "8080"
-    restart: always
-
-  swarm:
-    image: swarm
-    command: manage --host tcp://0.0.0.0:3375 etcd://etcd:4001
-    depends_on:
-      - swarm-agent
-    restart: always
-
-  swarm-agent:
-    image: swarm
-    command: join --addr docker-proxy:2375 etcd://etcd:4001
-    depends_on:
-      - docker-proxy
-      - etcd
 
   web:
     build: .
