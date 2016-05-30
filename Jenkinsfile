@@ -2,17 +2,17 @@
 
 node {
 
-    properties([[$class: 'GithubProjectProperty',
-        displayName: 'Jiksnu',
-        projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
-        [$class: 'RebuildSettings',
-        autoRebuild: false,
-        rebuildDisabled: false]])
-
     wrap([$class: 'AnsiColorBuildWrapper']) {
         env.PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
         sh "git rev-parse HEAD | tr -d '\n' > git-commit"
         env.GIT_COMMIT = readFile('git-commit')
+
+        properties([[$class: 'GithubProjectProperty',
+                       displayName: 'Jiksnu',
+                       projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
+                    [$class: 'RebuildSettings',
+                    autoRebuild: false,
+                    rebuildDisabled: false]])
 
         stage 'Print Environment'
 
