@@ -54,7 +54,7 @@ node {
 
             sh 'script/cibuild'
 
-            step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+            step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
         } catch (caughtError) {
             err = caughtError
         } finally {
