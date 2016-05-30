@@ -18,10 +18,10 @@ node {
 
         sh 'env'
 
-        stage 'Checkout'
+        // stage 'Checkout'
 
-        checkout scm
-        sh 'git submodule sync'
+        // checkout scm
+        // sh 'git submodule sync'
 
         stage 'Build base image'
 
