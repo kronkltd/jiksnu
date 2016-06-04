@@ -88,30 +88,29 @@ node {
 
         step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
 
-        // stage 'Integration tests'
+        stage 'Integration tests'
 
-        // try {     
-        //     // sh 'docker run -d --name pipeline_mongo_1 mongo'
+        try {
+            // sh 'docker run -d --name pipeline_mongo_1 mongo'
 
-        //     // sh 'docker run -d --name pipeline_jiksnu_1 --link pipeline_mongo_1:mongo repo.jiksnu.org/duck1123/jiksnu:latest'
+            // sh 'docker run -d --name pipeline_jiksnu_1 --link pipeline_mongo_1:mongo repo.jiksnu.org/duck1123/jiksnu:latest'
 
-        //     sh 'docker-compose up -d webdriver'
-        //     sh 'docker-compose up -d jiksnu-integration'
-
-        //     sh 'docker-compose run web-dev lein protractor'
-        // } catch (caughtError) {
-        //     err = caughtError
-        // } finally {
-        //     // sh 'docker stop pipeline_mongo_1'
-        //     // sh 'docker rm pipeline_mongo_1'
-        //     // sh 'docker stop pipeline_jiksnu_1'
-        //     // sh 'docker rm pipeline_jiksnu_1'
-        //     sh 'docker-compose stop'
-        //     sh 'docker-compose rm -f'
+            sh 'docker-compose up -d webdriver > webdriver_container_id'
+            sh 'docker-compose up -d jiksnu-integration'
+            sh 'docker-compose run web-dev lein protractor'
+        } catch (caughtError) {
+            err = caughtError
+        } finally {
+            // sh 'docker stop pipeline_mongo_1'
+            // sh 'docker rm pipeline_mongo_1'
+            // sh 'docker stop pipeline_jiksnu_1'
+            // sh 'docker rm pipeline_jiksnu_1'
+            sh 'docker-compose stop'
+            sh 'docker-compose rm -f'
             
-        //     if (err) {
-        //         throw err
-        //     }
-        // }
+            if (err) {
+                throw err
+            }
+        }
     }
 }
