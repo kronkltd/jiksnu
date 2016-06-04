@@ -1,5 +1,5 @@
 (ns jiksnu.pages.LoginPage
-  (:require [jiksnu.page-helpers :refer [by-model get]]
+  (:require [jiksnu.helpers.page-helpers :refer [by-css by-model]]
             [jiksnu.protocols :refer [get Page]]
             [taoensso.timbre :as timbre]))
 
@@ -23,12 +23,17 @@
 
   (set-username [this username]
     (timbre/debug "setting username, login")
-    (.sleep js/browser 5000)
-    (.sendKeys (by-model "username") username))
+    ;; (.sleep js/browser 5000)
+    (try
+      (.sendKeys (by-model "username") username)
+      (catch js/Exception ex
+        (timbre/error "username error" ex))))
 
   (submit [this]
     (timbre/debug "submitting login form")
-    (.submit (js/$ "*[name=loginForm]")))
+    (if-let [locator (js/element (by-css "form[name=loginForm]"))]
+      (.submit locator)
+      (throw (js/Exception. "Could not find login form"))))
 
   Page
 
@@ -36,12 +41,15 @@
     (timbre/debugf "loading login page")
     (.get js/browser "/main/login")))
 
-(set! (.-get (.-prototype LoginPage))
+(set! (.. LoginPage -prototype -get)
       (fn [] (this-as this (get this))))
 
-(set! (.-waitForLoaded (.-prototype LoginPage))
+(set! (.. LoginPage -prototype -waitForLoaded)
       (fn []
         (.wait js/browser
                (fn []
                  (timbre/info "Waiting for loaded")
                  true))))
+
+(set! (.. LoginPage -prototype -loginLink)
+      (js/element (by-css ".loginLink")))

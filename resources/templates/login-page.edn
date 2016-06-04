@@ -16,6 +16,6 @@
      :ng-model "password"
      :placeholder "password"
      }]]
-  [:input.btn.btn-custom.btn-lg.btn-block
+  [:input.btn.btn-custom.btn-lg.btn-block.loginLink
    {:type "submit"}]]
  ]

@@ -1,5 +1,5 @@
 (ns jiksnu.pages.RegisterPage
-  (:require [jiksnu.page-helpers :refer [by-model]]
+  (:require [jiksnu.helpers.page-helpers :refer [by-model]]
             [taoensso.timbre :as timbre]))
 
 (defn RegisterPage

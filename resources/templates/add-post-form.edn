@@ -3,8 +3,8 @@
   [:form  {:ng-submit "submit()" :name "activityForm"}
    [:input {:type "hidden" :ng-model "source"}]
    [:div {:uib-collapse "form.shown"}
-    [:input {:type "text" :placeholder "What are you doing?"
-             :ng-click "toggle()"}]]
+    [:input#placeholderInput
+     {:type "text" :placeholder "What are you doing?" :ng-click "toggle()"}]]
    [:div.post-form {:uib-collapse "!form.shown"}
     [:debug {:expr "activity"}]
     [:debug {:expr "form"}]

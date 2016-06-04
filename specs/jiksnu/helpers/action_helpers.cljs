@@ -4,17 +4,18 @@
             [taoensso.timbre :as timbre]))
 
 (defn register-user
-  []
-  (let [page (RegisterPage.)]
-    (.get page)
-    (.setUsername page "test")
-    (.setPassword page "test")
-    (.submit page)))
+  ([] (register-user "test"))
+  ([username]
+   (let [page (RegisterPage.)]
+     (.get page)
+     (.setUsername page username)
+     (.setPassword page "test")
+     (.submit page))))
 
 (defn login-user
   []
   (let [page (LoginPage.)]
-    (timbre/info "Fetching Page")
+    (timbre/info "Fetching login Page")
     (.get page)
 
     (timbre/info "Logging in")
