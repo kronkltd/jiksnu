@@ -73,7 +73,8 @@ node {
         archive 'target/*jar'
 
         stage 'Build image'
-
+        sh 'docker-compose build web-dev'
+        sh 'docker push repo.jiksnu.org/duck1123/jiksnu:dev'
         sh "docker build -t repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT} ."
         sh "docker tag repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu:latest"
         sh "docker push repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT}"
