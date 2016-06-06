@@ -102,7 +102,7 @@ services:
       - ./data/logs/elasticsearch:/var/log/elasticsearch
 
   jiksnu-integration:
-    image: repo.jiksnu.org/duck1123/jiksnu-dev
+    image: repo.jiksnu.org/duck1123/jiksnu:dev
     depends_on:
       - mongo
       - proxy
@@ -285,7 +285,7 @@ services:
     build:
       context: .
       dockerfile: docker/web-dev/Dockerfile
-    image: repo.jiksnu.org/duck1123/jiksnu-dev
+    image: repo.jiksnu.org/duck1123/jiksnu:dev
     depends_on:
       - mongo
       - proxy
