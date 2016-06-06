@@ -19,18 +19,18 @@ Feature: Users
 #   And the content-type is "application/xrds+xml"
 #   And the response is sucsessful
 
-Scenario: User timeline, HTML, unauthenticated
-  Given I am not logged in
-  And another user exists
-  And that user posts an activity
-  When I go to the "user timeline" page for that user
-  Then I should see that activity
+# Scenario: User timeline, HTML, unauthenticated
+#   Given I am not logged in
+#   And another user exists
+#   And that user posts an activity
+#   When I go to the "user timeline" page for that user
+#   Then I should see that activity
 
-Scenario: User index, authenticated
-  Given I am logged in as a normal user
-  And another user exists
-  When I go to the "user index" page
-  Then I should see 2 users
+# Scenario: User index, authenticated
+#   Given I am logged in as a normal user
+#   And another user exists
+#   When I go to the "user index" page
+#   Then I should see 2 users
 
 # Scenario: User index delete button, unauthenticated
 #   Given I am not logged in
