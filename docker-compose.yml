@@ -25,7 +25,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   dockerui:
-    image: microbox/dockerui
+    image: uifd/ui-for-docker
     depends_on:
       - dnsdock
       - proxy
@@ -34,7 +34,7 @@ services:
     environment:
       VIRTUAL_HOST: "dockerui.docker"
     volumes:
-      - /var/run/docker.sock:/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
 
   dnsdock:
     image: repo.jiksnu.org/duck1123/dnsdock
