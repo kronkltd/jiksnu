@@ -8,5 +8,5 @@ echo ">> Compiling Less"
 lein less once
 
 echo ">> Compiling CLJS"
-# lein with-profile +e2e,+test cljsbuild once
-lein cljsbuild once
+lein with-profile +e2e,+test cljsbuild once
+# lein cljsbuild once
