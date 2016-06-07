@@ -81,11 +81,14 @@
    (.pending next))
 
  (When #"^I log out$" [next]
+   (.. js/browser
+       (wait (fn []
+               (.. element
+                   (all (by-css ".ui-notification"))
+                   (count)
+                   (then (fn [c] (zero? c)))))))
    (let [locator (element (by-css ".logout-button"))]
-     (.wait js/browser (fn [] (zero? (.count (.all element (by-css ".ui-notification"))))))
-     (timbre/info "Element is displayed")
-     ;; (.wait js/browser #(.isDisplayed locator))
-     (.. locator click (then next))))
+     (.. locator click (then (fn [] (next))))))
 
  (When #"^I put my password in the \"([^\"]*)\" field$" [field-name next]
    (let [page (LoginPage.)]
