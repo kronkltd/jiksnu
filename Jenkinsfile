@@ -1,5 +1,7 @@
 #!groovy
 
+def err
+
 node {
     wrap([$class: 'AnsiColorBuildWrapper']) {
         stage 'Prepare Environment'
@@ -41,8 +43,6 @@ node {
         sh 'docker push repo.jiksnu.org/duck1123/jiksnu-ruby-base:latest'
 
         stage 'Unit Tests'
-
-        def err
 
         try {
             sh "docker-compose up -d mongo > mongo_container_id"
@@ -90,22 +90,18 @@ node {
 
         // stage 'Integration tests'
 
-        // try {     
-        //     // sh 'docker run -d --name pipeline_mongo_1 mongo'
-
-        //     // sh 'docker run -d --name pipeline_jiksnu_1 --link pipeline_mongo_1:mongo repo.jiksnu.org/duck1123/jiksnu:latest'
-
+        // try {
         //     sh 'docker-compose up -d webdriver'
         //     sh 'docker-compose up -d jiksnu-integration'
 
-        //     sh 'docker-compose run web-dev lein protractor'
+        //     sh "docker inspect workspace_jiksnu-integration_1 | jq '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tr -d '\"' | tr -d '\n' > jiksnu_host"
+        //     env.JIKSNU_HOST = readFile('jiksnu_host')
+
+        //     sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
+        //     sh 'docker-compose run --rm web-dev script/protractor'
         // } catch (caughtError) {
         //     err = caughtError
         // } finally {
-        //     // sh 'docker stop pipeline_mongo_1'
-        //     // sh 'docker rm pipeline_mongo_1'
-        //     // sh 'docker stop pipeline_jiksnu_1'
-        //     // sh 'docker rm pipeline_jiksnu_1'
         //     sh 'docker-compose stop'
         //     sh 'docker-compose rm -f'
             

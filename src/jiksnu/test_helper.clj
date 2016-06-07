@@ -3,6 +3,7 @@
             [hiccup.core :as h]
             [jiksnu.db :as db]
             [jiksnu.referrant :as r]
+            [jiksnu.util :as util]
             [midje.sweet :refer [=> =not=> fact future-fact namespace-state-changes throws]]
             [net.cgrand.enlive-html :as enlive]
             [slingshot.slingshot :refer [try+ throw+]]
@@ -45,8 +46,9 @@
    (try+
     (start-application! :test modules)
     ;; (loader/register-module "jiksnu.modules.core")
-
-    (db/drop-all!)
+    (timbre/info "application started")
+    (util/inspect @db/_db)
+    (db/drop-all! )
     (dosync
      (ref-set r/this {})
      (ref-set r/that {}))

@@ -1,0 +1,1 @@
+(ns jiksnu.pages.NewPostPage)

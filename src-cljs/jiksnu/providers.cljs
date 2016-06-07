@@ -144,9 +144,9 @@
         data (js/JSON.parse data-str)]
     (timbre/debugf "Received Message - %s" data-str)
     (cond
-      (.-connection data) (.success Notification "connected")
+      ;; (.-connection data) (.success Notification "connected")
       (.-action data)     (handle-action app data)
-      :default            (.warning Notification (str "Unknown message: " data-str)))))
+      :default            nil #_(.warning Notification (str "Unknown message: " data-str)))))
 
 (defn invoke-action
   [app model-name action-name id]
