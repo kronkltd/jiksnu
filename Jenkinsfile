@@ -88,26 +88,26 @@ node {
 
         step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
 
-        stage 'Integration tests'
+        // stage 'Integration tests'
 
-        try {
-            sh 'docker-compose up -d webdriver'
-            sh 'docker-compose up -d jiksnu-integration'
+        // try {
+        //     sh 'docker-compose up -d webdriver'
+        //     sh 'docker-compose up -d jiksnu-integration'
 
-            sh "docker inspect workspace_jiksnu-integration_1 | jq '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tr -d '\"' | tr -d '\n' > jiksnu_host"
-            env.JIKSNU_HOST = readFile('jiksnu_host')
+        //     sh "docker inspect workspace_jiksnu-integration_1 | jq '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tr -d '\"' | tr -d '\n' > jiksnu_host"
+        //     env.JIKSNU_HOST = readFile('jiksnu_host')
 
-            sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
-            sh 'docker-compose run --rm web-dev script/protractor'
-        } catch (caughtError) {
-            err = caughtError
-        } finally {
-            sh 'docker-compose stop'
-            sh 'docker-compose rm -f'
+        //     sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
+        //     sh 'docker-compose run --rm web-dev script/protractor'
+        // } catch (caughtError) {
+        //     err = caughtError
+        // } finally {
+        //     sh 'docker-compose stop'
+        //     sh 'docker-compose rm -f'
             
-            if (err) {
-                throw err
-            }
-        }
+        //     if (err) {
+        //         throw err
+        //     }
+        // }
     }
 }
