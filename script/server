@@ -2,7 +2,7 @@
 
 set -e
 
-printenv
+printenv | sort
 
 script/update
 
