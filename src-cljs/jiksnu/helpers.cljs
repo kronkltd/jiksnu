@@ -43,38 +43,6 @@
             :template (str "admin-" (hyphen-case c))}]))
        (map (fn [o] (mapv #(% o) [:state :path :class :template])))))
 
-(def nav-info
-  [{:label "Home"
-    :items
-    [{:title "Public"               :state "home"}
-     {:title "Users"                :state "indexUsers"}
-     {:title "Feeds"                :state "indexFeedSources"}
-     ;; {:title "Domains"              :state "indexDomains"}
-     {:title "Groups"               :state "indexGroups"}
-     {:title "Likes"                :state "indexLikes"}
-     {:title "Resources"            :state "indexResources"}
-     {:title "Streams"              :state "indexStreams"}]}
-   #_{:label "Settings"
-      :items
-      [{:title "Settings"           :state "settingsPage"}]}
-   #_{:label "Admin"
-      :items
-      [{:title "Activities"         :state "adminActivities"}
-       {:title "Auth"               :state "adminAuthentication"}
-       {:title "Clients"            :state "adminClients"}
-       {:title "Conversations"      :state "adminConversations"}
-       {:title "Feed Sources"       :state "adminSources"}
-       {:title "Feed Subscriptions" :state "adminFeedSubscriptions"}
-       {:title "Groups"             :state "adminGroups"}
-       {:title "Group Memberships"  :state "adminGroupMemberships"}
-       {:title "Keys"               :state "adminKeys"}
-       {:title "Likes"              :state "adminLikes"}
-       {:title "Request Tokens"     :state "adminRequestTokens"}
-       {:title "Streams"            :state "adminStreams"}
-       {:title "Subscriptions"      :state "adminSubscriptions"}
-       {:title "Users"              :state "adminUsers"}
-       {:title "Workers"            :state "adminWorkers"}]}])
-
 (def admin-data
   [["Activities"    "Activity"]
    ["Conversations" "Conversation"]

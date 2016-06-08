@@ -117,10 +117,6 @@
            (fn [data old-data] (.init $scope)))
   (.$on $scope refresh-followers (.-init $scope)))
 
-(def.controller jiksnu.LeftColumnController
-  [$scope $http]
-  (set! (.-groups $scope) (clj->js helpers/nav-info)))
-
 (defn get-toggle-fn
   [$scope]
   (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
