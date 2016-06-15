@@ -5,6 +5,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]
             [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.actions.notification-actions :as actions.notification]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
@@ -37,6 +38,10 @@
                        (actions.group-membership/create
                         {:user (:author item)
                          :group (:_id group)})))
+
+      "likes" (do
+                (actions.notification/create {:user (:user item)
+                                              :activity (:activity item)}))
 
       "users" (do (actions.stream/add-stream item "* major")
                   (actions.stream/add-stream item "* minor"))

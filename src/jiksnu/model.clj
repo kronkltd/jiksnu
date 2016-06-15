@@ -19,6 +19,7 @@
 (defrecord Item                    [])
 (defrecord Key                     [])
 (defrecord Like                    [])
+(defrecord Notification            [])
 (defrecord RequestToken            [])
 (defrecord Resource                [])
 (defrecord Stream                  [])

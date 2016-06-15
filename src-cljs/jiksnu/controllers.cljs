@@ -151,6 +151,12 @@
   (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
   (helpers/init-subpage $scope subpageService Groups "members"))
 
+(def.controller jiksnu.ListNotificationsController
+  [$scope subpageService Notifications]
+  (set! (.-formShown $scope) false)
+  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (helpers/init-subpage $scope subpageService Notifications "notifications"))
+
 (def.controller jiksnu.ListStreamsController
   [$scope app subpageService Users]
   (set! (.-formShown $scope) false)
@@ -200,6 +206,7 @@
 (page-controller Groups           "groups")
 (page-controller GroupMemberships "group-memberships")
 (page-controller Likes            "likes")
+(page-controller Notifications    "notifications")
 (page-controller RequestTokens    "request-tokens")
 (page-controller Resources        "resources")
 (page-controller Streams          "streams")
@@ -410,6 +417,10 @@
 (def.controller jiksnu.ShowLikedByController
   [$scope $stateParams app Likes]
   (helpers/init-item $scope $stateParams app Likes))
+
+(def.controller jiksnu.ShowNotificationController
+  [$scope $stateParams app Notifications]
+  (helpers/init-item $scope $stateParams app Notifications))
 
 (def.controller jiksnu.ShowRequestTokenController
   [$scope $http $stateParams app RequestTokens]

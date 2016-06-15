@@ -105,7 +105,7 @@
   [app data]
   (let [message (.-content (.-body data))]
     (.. app
-        (inject app "Notification")
+        (inject "Notification")
         (success message))))
 
 (defmethod handle-action "page-add"
