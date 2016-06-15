@@ -121,28 +121,32 @@
   [$scope $http]
   (set! (.-groups $scope) (clj->js helpers/nav-info)))
 
+(defn get-toggle-fn
+  [$scope]
+  (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+
 (def.controller jiksnu.ListActivitiesController
   [$scope subpageService Users]
   (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! (.-toggle $scope) (get-toggle-fn $scope))
   (set! (.-refresh $scope) (fn [] (.$broadcast $scope refresh-followers))))
 
 (def.controller jiksnu.ListFollowersController
   [$scope subpageService Users]
   (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! (.-toggle $scope) (get-toggle-fn $scope))
   (set! (.-refresh $scope) (fn [] (.$broadcast $scope refresh-followers))))
 
 (def.controller jiksnu.ListFollowingController
   [$scope subpageService Users]
   (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! (.-toggle $scope) (get-toggle-fn $scope))
   (set! (.-refresh $scope) (fn [] (.$broadcast $scope refresh-followers))))
 
 (def.controller jiksnu.ListGroupsController
   [$scope subpageService Users]
   (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! (.-toggle $scope) (get-toggle-fn $scope))
   (helpers/init-subpage $scope subpageService Users "groups"))
 
 (def.controller jiksnu.ListGroupAdminsController
@@ -154,7 +158,7 @@
 (def.controller jiksnu.ListGroupMembersController
   [$scope subpageService Groups]
   (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! (.-toggle $scope) (get-toggle-fn $scope))
   (helpers/init-subpage $scope subpageService Groups "members"))
 
 (def.controller jiksnu.ListNotificationsController
@@ -167,7 +171,7 @@
   [$scope app subpageService Users]
   (set! (.-formShown $scope) false)
   (set! (.-app $scope) app)
-  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! (.-toggle $scope) (get-toggle-fn $scope))
 
   (.$watch $scope
            (.-formShown $scope)
