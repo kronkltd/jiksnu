@@ -92,6 +92,7 @@
    ["indexGroups"           "/main/groups"             "IndexGroups"           :index-groups]
    ["indexGroupMemberships" "/main/group-memberships"  "IndexGroupMemberships" :index-group-memberships]
    ["indexLikes"            "/main/likes"              "IndexLikes"            :index-likes]
+   ["indexNotifications"    "/main/notifications"      "IndexNotifications"    :index-notifications]
    ["indexResources"        "/main/resources"          "IndexResources"        :index-resources]
    ["indexStreams"          "/main/streams"            "IndexStreams"          :index-streams]
    ["indexSubscriptions"    "/main/subscriptions"      "IndexSubscriptions"    :index-subscriptions]
@@ -115,6 +116,7 @@
   (state-hotkey "g d" "indexDomains"          "Go to Domains")
   (state-hotkey "g g" "indexGroups"           "Go to Groups")
   (state-hotkey "g m" "indexGroupMemberships" "Go to Group Memberships")
+  (state-hotkey "g m" "indexNotifications"    "Go to Notifications")
   (state-hotkey "g h" "home"                  "Go to Home")
   (state-hotkey "g l" "indexLikes"            "Go to Likes")
   (state-hotkey "g s" "indexStreams"          "Go to Streams")

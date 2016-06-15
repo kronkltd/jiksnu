@@ -6,6 +6,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.actions.notification-actions :as actions.notification]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.site-actions :as actions.site]
@@ -17,6 +18,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.notification :as model.notification]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
@@ -118,6 +120,11 @@
 (deffilter #'actions.like/delete :command
   [action id]
   (let [item (model.like/fetch-by-id id)]
+    (action item)))
+
+(deffilter #'actions.notification/delete :command
+  [action id]
+  (when-let [item (model.notification/fetch-by-id id)]
     (action item)))
 
 (deffilter #'actions.resource/delete :command

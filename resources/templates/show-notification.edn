@@ -1,0 +1,10 @@
+[:div {:title "show-notification"}
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div  {:ng-if "loaded"}
+  [:debug {:expr "item"}]
+  [:show-activity {:data-id "{{item.activity}}"}]
+  [:ul.buttons
+   [:li
+    [:button.btn {:ng-click "deleteRecord(item)"} "Delete Notification"]]
+   [:li
+    [:button.btn {:ng-click "refresh()"} "Refresh"]]]]]

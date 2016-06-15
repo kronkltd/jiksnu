@@ -97,6 +97,16 @@
     :deserialize deserializer
     :methods #js {:getType (constantly "Like")}}))
 
+(def.factory jiksnu.Notifications
+  [DS subpageService]
+  (.defineResource
+   DS
+   #js
+   {:name "notification"
+    :endpoint "notifications"
+    :deserialize deserializer
+    :methods #js {:getType (constantly "Notification")}}))
+
 (def.factory jiksnu.RequestTokens
   [DS subpageService]
   (.defineResource

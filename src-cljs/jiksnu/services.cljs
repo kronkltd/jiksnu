@@ -11,6 +11,7 @@
    "groups"        "/model/groups"
    "group-memberships" "/model/group-memberships"
    "likes"         "/model/likes"
+   "notifications" "/model/notifications"
    "resources"     "/model/resources"
    "streams"       "/model/streams"
    "subscriptions" "/model/subscriptions"
