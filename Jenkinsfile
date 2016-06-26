@@ -1,6 +1,11 @@
 #!groovy
 
 def err
+def repo = 'repo.jiksnu.org/'
+
+// Set build properties
+properties([[$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
+            [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]])
 
 node {
     wrap([$class: 'AnsiColorBuildWrapper']) {
@@ -13,34 +18,26 @@ node {
         checkout scm
         sh 'git submodule sync'
         sh "git rev-parse HEAD | tr -d '\n' > git-commit"
+        // sh 'git rev-parse --abbrev-ref HEAD > git-branch'
         env.GIT_COMMIT = readFile('git-commit')
-        echo "GIT_COMMIT=${env.GIT_COMMIT}"
-
-        // Set build properties
-        properties([[$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
-                    [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]])
+        env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
 
         // Print Environment
-        sh 'env'
+        sh 'env | sort'
 
         stage 'Build base image'
 
-        // Build jiksnu-base
-        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT} docker/jiksnu-base"
-        sh "docker push repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT}"
-
-        echo 'tag as latest'
-        sh "docker tag repo.jiksnu.org/duck1123/jiksnu-base:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu-base:latest"
-        sh 'docker push repo.jiksnu.org/duck1123/jiksnu-base:latest'
+        sh "docker build -t ${repo}duck1123/jiksnu-base:${env.BRANCH_TAG} docker/jiksnu-base"
+        sh "docker tag ${repo}duck1123/jiksnu-base:${env.BRANCH_TAG} ${repo}duck1123/jiksnu-base:latest"
+        sh "docker push ${repo}duck1123/jiksnu-base:${env.BRANCH_TAG}"
+        sh "docker push ${repo}duck1123/jiksnu-base:latest"
 
         stage 'Build ruby image'
 
-        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT} docker/jiksnu-ruby-base"
-        sh "docker push repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT}"
-
-        echo 'tag as latest'
-        sh "docker tag repo.jiksnu.org/duck1123/jiksnu-ruby-base:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu-ruby-base:latest"
-        sh 'docker push repo.jiksnu.org/duck1123/jiksnu-ruby-base:latest'
+        sh "docker build -t ${repo}duck1123/jiksnu-ruby-base:${env.BRANCH_TAG} docker/jiksnu-ruby-base"
+        sh "docker tag ${repo}duck1123/jiksnu-ruby-base:${env.BRANCH_TAG} ${repo}duck1123/jiksnu-ruby-base:latest"
+        sh "docker push ${repo}duck1123/jiksnu-ruby-base:${env.BRANCH_TAG}"
+        sh "docker push ${repo}duck1123/jiksnu-ruby-base:latest"
 
         stage 'Unit Tests'
 
@@ -73,20 +70,20 @@ node {
         archive 'target/*jar'
 
         stage 'Build image'
+
         sh 'docker-compose build web-dev'
-        sh 'docker push repo.jiksnu.org/duck1123/jiksnu:dev'
-        sh "docker build -t repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT} ."
-        sh "docker tag repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT} repo.jiksnu.org/duck1123/jiksnu:latest"
-        sh "docker push repo.jiksnu.org/duck1123/jiksnu:${env.GIT_COMMIT}"
-        sh 'docker push repo.jiksnu.org/duck1123/jiksnu:latest'
+        sh "docker push ${repo}duck1123/jiksnu:dev"
+        sh "docker build -t ${repo}duck1123/jiksnu:${env.BRANCH_TAG} ."
+        sh "docker tag ${repo}duck1123/jiksnu:${env.BRANCH_TAG} ${repo}duck1123/jiksnu:latest"
+        sh "docker push ${repo}duck1123/jiksnu:${env.BRANCH_TAG}"
+        sh "docker push ${repo}duck1123/jiksnu:latest"
 
         stage 'Generate Reports'
 
+        sh 'lein doc'
+        step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
         step([$class: 'TasksPublisher', high: 'FIXME', normal: 'TODO', pattern: '**/*.clj,**/*.cljs'])
 
-        sh 'lein doc'
-
-        step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
 
         // stage 'Integration tests'
 
