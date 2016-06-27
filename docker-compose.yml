@@ -38,7 +38,6 @@ services:
 
   dnsdock:
     image: repo.jiksnu.org/duck1123/dnsdock
-    build: docker/dnsdock
     command: -verbose=true -environment="dev" -nameserver="8.8.4.4:53"
     environment:
       VIRTUAL_HOST: "dns.docker"
