@@ -17,10 +17,32 @@ node {
         // Set current git commit
         checkout scm
         sh 'git submodule sync'
-        sh "git rev-parse HEAD | tr -d '\n' > git-commit"
-        // sh 'git rev-parse --abbrev-ref HEAD > git-branch'
-        env.GIT_COMMIT = readFile('git-commit')
-        env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
+        sh "git rev-parse HEAD | tr -d '\n' | tee git-commit"
+        env.GIT_COMMIT = readFile('git-commit').trim()
+
+        sh 'git rev-parse --abbrev-ref HEAD | tee git-branch'
+        env.GIT_BRANCH = readFile('git-branch').trim()
+
+        sh 'git branch --contains HEAD -r | tee git-branches'
+        def gitBranches = readFile('git-branches').trim().tokenize('\n')
+
+        def isPR = false
+
+        for (branch in gitBranches) {
+            if (branch.contains('origin/pr')) {
+                isPR = true
+                break
+            }
+        }
+
+        if (env.BRANCH_NAME) {
+            env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
+        } else if (isPR) {
+            def matcher = gitBranches =~ /origin\/pr\/(\d+)\/*/
+            env.BRANCH_TAG = 'PR-' + matcher[0][1]
+        } else {
+            env.BRANCH_TAG = env.GIT_BRANCH.replaceAll('/', '-')
+        }
 
         // Print Environment
         sh 'env | sort'
