@@ -1,3 +1,0 @@
-[submodule "/home/duck/projects/jiksnu/docker/dnsdock/"]
-	path = docker/dnsdock
-	url = git@github.com:duck1123/dnsdock.git
