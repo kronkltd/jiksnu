@@ -44,11 +44,11 @@ node {
         try {
             sh "docker-compose up -d mongo > mongo_container_id"
 
-            sh "docker inspect workspace_mongo_1 | jq '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tr -d '\"' | tr -d '\n' > jiksnu_db_host"
-            env.JIKSNU_DB_HOST = readFile('jiksnu_db_host')
+            sh "docker inspect workspace_mongo_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_db_host"
+            env.JIKSNU_DB_HOST = readFile('jiksnu_db_host').trim()
 
-            sh "docker inspect workspace_mongo_1 | jq '.[].NetworkSettings.Ports | keys | .[] | split(\"/\")[0]' | tr -d '\"' | tr -d '\n' > jiksnu_db_port"
-            env.JIKSNU_DB_PORT = readFile('jiksnu_db_port')
+            sh "docker inspect workspace_mongo_1 | jq -r '.[].NetworkSettings.Ports | keys | .[] | split(\"/\")[0]' | tee jiksnu_db_port"
+            env.JIKSNU_DB_PORT = readFile('jiksnu_db_port').trim()
 
             sh 'script/cibuild'
 
@@ -84,15 +84,14 @@ node {
         step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
         step([$class: 'TasksPublisher', high: 'FIXME', normal: 'TODO', pattern: '**/*.clj,**/*.cljs'])
 
-
         // stage 'Integration tests'
 
         // try {
         //     sh 'docker-compose up -d webdriver'
         //     sh 'docker-compose up -d jiksnu-integration'
 
-        //     sh "docker inspect workspace_jiksnu-integration_1 | jq '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tr -d '\"' | tr -d '\n' > jiksnu_host"
-        //     env.JIKSNU_HOST = readFile('jiksnu_host')
+        //     sh "docker inspect workspace_jiksnu-integration_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_host"
+        //     env.JIKSNU_HOST = readFile('jiksnu_host').trim()
 
         //     sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
         //     sh 'docker-compose run --rm web-dev script/protractor'
@@ -101,7 +100,7 @@ node {
         // } finally {
         //     sh 'docker-compose stop'
         //     sh 'docker-compose rm -f'
-            
+
         //     if (err) {
         //         throw err
         //     }
