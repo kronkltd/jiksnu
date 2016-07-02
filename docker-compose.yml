@@ -278,8 +278,6 @@ services:
     environment:
       JIKSNU_DB_NAME: "jiksnu_docker"
       VIRTUAL_HOST: "jiksnu.docker"
-    volumes:
-      - maven-repo:/root/.m2
 
   web-dev:
     build:
@@ -295,7 +293,6 @@ services:
       JIKSNU_DB_NAME: "jiksnu_docker"
       VIRTUAL_HOST: "jiksnu.docker"
     volumes:
-      - maven-repo:/root/.m2
       - .:/app
 
   webdriver:
@@ -310,8 +307,6 @@ services:
 
 volumes:
   etcd-data:
-    driver: local
-  maven-repo:
     driver: local
   mongo-data:
     driver: local
