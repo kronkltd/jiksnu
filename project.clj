@@ -75,7 +75,7 @@
             "protractor"       ["shell" "./node_modules/.bin/protractor" "protractor.config.js"]
             "webdriver-start"  ["shell" "./node_modules/.bin/webdriver-manager" "start"]
             "webdriver-update" ["shell" "./node_modules/.bin/webdriver-manager" "update"]
-            "wscat"            ["shell" "./node_modules/.bin/wscat" "-c" "ws://localhost:8080/"]}
+            "wscat"            ["shell" "./node_modules/.bin/wscat" "-c" "ws://localhost/"]}
   :auto-clean false
   :jvm-opts ["-server"
              "-Dfile.encoding=UTF-8"
