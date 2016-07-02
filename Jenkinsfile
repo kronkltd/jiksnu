@@ -5,7 +5,7 @@ def repo = 'repo.jiksnu.org/'
 
 // Set build properties
 properties([[$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
-            [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]])
+            [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]]);
 
 node {
     wrap([$class: 'AnsiColorBuildWrapper']) {
