@@ -69,6 +69,7 @@
 (list-directive "Followers"     "followers")
 (list-directive "Following"     "following")
 (list-directive "Groups"        "groups")
+(list-directive "GroupAdmins"   "group-admins")
 (list-directive "GroupMembers"  "group-members")
 (list-directive "Likes"         "likes")
 (list-directive "Notifications" "notifications")
