@@ -52,7 +52,7 @@
 
 (defn start
   []
-  (timbre/info "Starting core")
+  ;; (timbre/info "Starting core")
 
   (try
     (Kamon/start)

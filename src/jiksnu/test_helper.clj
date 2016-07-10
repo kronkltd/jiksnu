@@ -46,8 +46,7 @@
    (try+
     (start-application! :test modules)
     ;; (loader/register-module "jiksnu.modules.core")
-    (timbre/info "application started")
-    (util/inspect @db/_db)
+    (timbre/debug "application started")
     (db/drop-all! )
     (dosync
      (ref-set r/this {})
@@ -77,7 +76,7 @@
 (defmacro test-environment-fixture
   [& body]
   `(try+
-    (timbre/info "wrapping testing fixture")
+    (timbre/debug "wrapping testing fixture")
     (setup-testing)
     ;; (fact (do ~@body) =not=> (throws))
     ~@body
