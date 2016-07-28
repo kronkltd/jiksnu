@@ -12,7 +12,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   jiksnu-integration:
-    image: repo.jiksnu.org/duck1123/jiksnu:dev
+    image: repo.jiksnu.org/kronkltd/jiksnu:dev
     depends_on:
       - mongo
     environment:
@@ -25,7 +25,7 @@ services:
     build:
       dockerfile: docker/karma/Dockerfile
       context: .
-    image: repo.jiksnu.org/duck1123/jiksnu-karma
+    image: repo.jiksnu.org/kronkltd/jiksnu-karma
     environment:
       NOTIFY_SEND_URL: "http://172.17.0.1:12345"
       VIRTUAL_HOST: "karma.docker"
@@ -60,7 +60,7 @@ services:
 
   web:
     build: .
-    image: repo.jiksnu.org/duck1123/jiksnu
+    image: repo.jiksnu.org/kronkltd/jiksnu
     depends_on:
       - mongo
     environment:
@@ -71,7 +71,7 @@ services:
     build:
       context: .
       dockerfile: docker/web-dev/Dockerfile
-    image: repo.jiksnu.org/duck1123/jiksnu:dev
+    image: repo.jiksnu.org/kronkltd/jiksnu:dev
     depends_on:
       - mongo
     environment:

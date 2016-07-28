@@ -7,7 +7,7 @@ def repoPath = 'https://repo.jiksnu.org/'
 
 // Set build properties
 properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']],
-            [$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
+            [$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/kronkltd/jiksnu/'],
             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]]);
 
 stage 'Prepare Environment'
@@ -51,7 +51,7 @@ node {
 stage 'Build Dev Image'
 
 node {
-    devImage = docker.build("${repo}duck1123/jiksnu-dev", "docker/web-dev")
+    devImage = docker.build("${repo}kronkltd/jiksnu-dev", "docker/web-dev")
 
     docker.withRegistry('https://repo.jiksnu.org/', repoCreds) {
         devImage.push()
@@ -100,7 +100,7 @@ clojureImage.inside('-u root') {
 stage 'Build Run Image'
 
 node {
-    def mainImage = docker.build("${repo}duck1123/jiksnu:${env.BRANCH_TAG}")
+    def mainImage = docker.build("${repo}kronkltd/jiksnu:${env.BRANCH_TAG}")
 
     docker.withRegistry(repoPath, repoCreds) {
         mainImage.push()

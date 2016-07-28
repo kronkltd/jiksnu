@@ -116,9 +116,9 @@
        [:div {:ui-view ""}]]
       #_[:right-column.col-sm-2]]]
     [:footer.row.page-footer
-     [:p "Copyright © 2011-2015 KRONK Ltd."]
+     [:p "Copyright © 2011-2016 KRONK Ltd."]
      [:p "Powered by "
-      [:a {:href "https://github.com/duck1123/jiksnu"}
+      [:a {:href "https://github.com/kronkltd/jiksnu"}
        "Jiksnu"]]
      [:p
       [:a {:href (str "/vendor/swagger-ui/dist/index.html?url=https://"

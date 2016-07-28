@@ -1,4 +1,4 @@
-FROM repo.jiksnu.org/duck1123/jiksnu-dev
+FROM repo.jiksnu.org/kronkltd/jiksnu-dev
 
 MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 

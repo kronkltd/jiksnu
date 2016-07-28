@@ -1,6 +1,6 @@
 (defproject net.kronkltd/jiksnu "0.3.0-SNAPSHOT"
   :description "distributed social network"
-  :url "https://github.com/duck1123/jiksnu"
+  :url "https://github.com/kronkltd/jiksnu"
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
   :license {:name "Eclipse Public License"
