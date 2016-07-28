@@ -1,131 +1,141 @@
 #!groovy
 
-def err
+def devImage, err, mongoContainer
 def repo = 'repo.jiksnu.org/'
+def repoCreds = '8bb2c76c-133c-4c19-9df1-20745c31ac38'
+def repoPath = 'https://repo.jiksnu.org/'
 
 // Set build properties
-properties([[$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
+properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']],
+            [$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]]);
 
+stage 'Prepare Environment'
+
 node {
-    wrap([$class: 'AnsiColorBuildWrapper']) {
-        stage 'Prepare Environment'
+    // Set current git commit
+    checkout scm
+    sh 'git submodule sync'
+    sh "git rev-parse HEAD | tr -d '\n' | tee git-commit"
+    env.GIT_COMMIT = readFile('git-commit').trim()
 
-        // Set the path
-        env.PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    sh 'git rev-parse --abbrev-ref HEAD | tee git-branch'
+    env.GIT_BRANCH = readFile('git-branch').trim()
 
-        // Set current git commit
-        checkout scm
-        sh 'git submodule sync'
-        sh "git rev-parse HEAD | tr -d '\n' | tee git-commit"
-        env.GIT_COMMIT = readFile('git-commit').trim()
+    sh 'git branch --contains HEAD -r | tee git-branches'
+    def gbs = readFile('git-branches').trim()
+    def gitBranches = gbs.tokenize('\n')
 
-        sh 'git rev-parse --abbrev-ref HEAD | tee git-branch'
-        env.GIT_BRANCH = readFile('git-branch').trim()
+    def isPR = false
 
-        sh 'git branch --contains HEAD -r | tee git-branches'
-        def gitBranches = readFile('git-branches').trim().tokenize('\n')
-
-        def isPR = false
-
-        for (branch in gitBranches) {
-            if (branch.contains('origin/pr')) {
-                isPR = true
-                break
-            }
+    for (branch in gitBranches) {
+        if (branch.contains('origin/pr')) {
+            isPR = true
+            break
         }
+    }
 
-        if (env.BRANCH_NAME) {
-            env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
-        } else if (isPR) {
-            def matcher = gitBranches =~ /origin\/pr\/(\d+)\/*/
-            env.BRANCH_TAG = 'PR-' + matcher[0][1]
-        } else {
-            env.BRANCH_TAG = env.GIT_BRANCH.replaceAll('/', '-')
-        }
+    if (env.BRANCH_NAME) {
+        env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
+    } else if (isPR) {
+        def matcher = gitBranches =~ /origin\/pr\/(\d+)\/\*/
+        env.BRANCH_TAG = 'PR-' + matcher[0][1]
+    } else {
+        env.BRANCH_TAG = env.GIT_BRANCH.replaceAll('/', '-')
+    }
 
-        // Print Environment
-        sh 'env | sort'
+    // Print Environment
+    sh 'env | sort'
+}
 
-        stage 'Build base image'
+stage 'Build Dev Image'
 
-        sh "docker build -t ${repo}duck1123/jiksnu-base:${env.BRANCH_TAG} docker/jiksnu-base"
-        sh "docker tag ${repo}duck1123/jiksnu-base:${env.BRANCH_TAG} ${repo}duck1123/jiksnu-base:latest"
-        sh "docker push ${repo}duck1123/jiksnu-base:${env.BRANCH_TAG}"
-        sh "docker push ${repo}duck1123/jiksnu-base:latest"
+node {
+    devImage = docker.build("${repo}duck1123/jiksnu-dev", "docker/web-dev")
 
-        stage 'Build ruby image'
-
-        sh "docker build -t ${repo}duck1123/jiksnu-ruby-base:${env.BRANCH_TAG} docker/jiksnu-ruby-base"
-        sh "docker tag ${repo}duck1123/jiksnu-ruby-base:${env.BRANCH_TAG} ${repo}duck1123/jiksnu-ruby-base:latest"
-        sh "docker push ${repo}duck1123/jiksnu-ruby-base:${env.BRANCH_TAG}"
-        sh "docker push ${repo}duck1123/jiksnu-ruby-base:latest"
-
-        stage 'Unit Tests'
-
-        try {
-            sh "docker-compose up -d mongo > mongo_container_id"
-
-            sh "docker inspect workspace_mongo_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_db_host"
-            env.JIKSNU_DB_HOST = readFile('jiksnu_db_host').trim()
-
-            sh "docker inspect workspace_mongo_1 | jq -r '.[].NetworkSettings.Ports | keys | .[] | split(\"/\")[0]' | tee jiksnu_db_port"
-            env.JIKSNU_DB_PORT = readFile('jiksnu_db_port').trim()
-
-            sh 'script/cibuild'
-
-            step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
-        } catch (caughtError) {
-            err = caughtError
-        } finally {
-            sh 'docker-compose stop'
-
-            if (err) {
-                throw err
-            }
-        }
-
-        stage 'Build jars'
-
-        sh 'lein install'
-        sh 'lein uberjar'
-        archive 'target/*jar'
-
-        stage 'Build image'
-
-        sh 'docker-compose build web-dev'
-        sh "docker push ${repo}duck1123/jiksnu:dev"
-        sh "docker build -t ${repo}duck1123/jiksnu:${env.BRANCH_TAG} ."
-        sh "docker tag ${repo}duck1123/jiksnu:${env.BRANCH_TAG} ${repo}duck1123/jiksnu:latest"
-        sh "docker push ${repo}duck1123/jiksnu:${env.BRANCH_TAG}"
-        sh "docker push ${repo}duck1123/jiksnu:latest"
-
-        stage 'Generate Reports'
-
-        sh 'lein doc'
-        step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
-        step([$class: 'TasksPublisher', high: 'FIXME', normal: 'TODO', pattern: '**/*.clj,**/*.cljs'])
-
-        // stage 'Integration tests'
-
-        // try {
-        //     sh 'docker-compose up -d webdriver'
-        //     sh 'docker-compose up -d jiksnu-integration'
-
-        //     sh "docker inspect workspace_jiksnu-integration_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_host"
-        //     env.JIKSNU_HOST = readFile('jiksnu_host').trim()
-
-        //     sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
-        //     sh 'docker-compose run --rm web-dev script/protractor'
-        // } catch (caughtError) {
-        //     err = caughtError
-        // } finally {
-        //     sh 'docker-compose stop'
-        //     sh 'docker-compose rm -f'
-
-        //     if (err) {
-        //         throw err
-        //     }
-        // }
+    docker.withRegistry('https://repo.jiksnu.org/', repoCreds) {
+        devImage.push()
     }
 }
+
+stage 'Unit Tests'
+
+node {
+    try {
+        mongoContainer = docker.image('mongo').run()
+
+        devImage.inside("--link ${mongoContainer.id}:mongo -u root") {
+            checkout scm
+
+            wrap([$class: 'AnsiColorBuildWrapper']) {
+                sh 'script/cibuild'
+            }
+        }
+
+        step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
+    } catch (caughtError) {
+        err = caughtError
+    } finally {
+        sh 'docker-compose stop'
+        mongoContainer.stop()
+
+        if (err) {
+            throw err
+        }
+    }
+}
+
+stage 'Build Jars'
+
+def clojureImage = docker.image('clojure')
+clojureImage.pull()
+
+clojureImage.inside('-u root') {
+    checkout scm
+    sh 'lein install'
+    sh 'lein uberjar'
+    archive 'target/*jar'
+}
+
+stage 'Build Run Image'
+
+node {
+    def mainImage = docker.build("${repo}duck1123/jiksnu:${env.BRANCH_TAG}")
+
+    docker.withRegistry(repoPath, repoCreds) {
+        mainImage.push()
+    }
+}
+
+stage 'Generate Reports'
+
+clojureImage.inside('-u root') {
+    checkout scm
+    sh 'lein doc'
+    step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
+    step([$class: 'TasksPublisher', high: 'FIXME', normal: 'TODO', pattern: '**/*.clj,**/*.cljs'])
+}
+
+// stage 'Integration tests'
+
+// node {
+//     try {
+//         sh 'docker-compose up -d webdriver'
+//         sh 'docker-compose up -d jiksnu-integration'
+
+//         sh "docker inspect workspace_jiksnu-integration_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_host"
+//         env.JIKSNU_HOST = readFile('jiksnu_host').trim()
+
+//         sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
+//         sh 'docker-compose run --rm web-dev script/protractor'
+//     } catch (caughtError) {
+//         err = caughtError
+//     } finally {
+//         sh 'docker-compose stop'
+//         sh 'docker-compose rm -f'
+
+//         if (err) {
+//             throw err
+//         }
+//     }
+// }
