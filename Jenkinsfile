@@ -42,10 +42,18 @@ node {
     // isPR = gitBranches.any { it.contains('origin/pr') }
 
     if (env.BRANCH_NAME) {
-        env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
+        env.GIT_BRANCH = env.BRANCH_NAME
     } else if (isPR) {
         def matcher = gitBranches =~ /origin\/pr\/(\d+)\/\*/
-        env.BRANCH_TAG = 'PR-' + matcher[0][1]
+        env.PR_NUMBER = matcher[0][1]
+        env.GIT_BRANCH = 'PR-' + env.PR_NUMBER
+    }
+
+    if (env.GIT_BRANCH == 'develop') {
+        env.BRANCH_TAG = 'latest'
+    } else if (env.GIT_BRANCH == 'master') {
+        // TODO: Parse version numbers
+        env.BRANCH_TAG = 'stable'
     } else {
         env.BRANCH_TAG = env.GIT_BRANCH.replaceAll('/', '-')
     }
