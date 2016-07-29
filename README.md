@@ -1,12 +1,12 @@
 # Jiksnu /ˈʒiks.nu/
 
-[![Stack Share](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/duck1123/jiksnu)
+[![Stack Share](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/kronkltd/jiksnu)
 [![Build Status](http://build.jiksnu.org/buildStatus/icon?job=jiksnu)](http://build.jiksnu.org/job/jiksnu/)
-[![Stories in Ready](https://badge.waffle.io/duck1123/jiksnu.png?label=ready&title=Ready)](http://waffle.io/duck1123/jiksnu)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/duck1123/jiksnu?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![GitHub license](https://img.shields.io/github/license/duck1123/jiksnu.svg)](http://www.gnu.org/licenses/gpl-3.0.en.html)
-[![Build Status](https://drone.io/github.com/duck1123/jiksnu/status.png)](https://drone.io/github.com/duck1123/jiksnu/latest)
-[![Code Climate](https://codeclimate.com/github/duck1123/jiksnu/badges/gpa.svg)](https://codeclimate.com/github/duck1123/jiksnu)
+[![Stories in Ready](https://badge.waffle.io/kronkltd/jiksnu.png?label=ready&title=Ready)](http://waffle.io/kronkltd/jiksnu)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kronkltd/jiksnu?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![GitHub license](https://img.shields.io/github/license/kronkltd/jiksnu.svg)](http://www.gnu.org/licenses/gpl-3.0.en.html)
+[![Build Status](https://drone.io/github.com/kronkltd/jiksnu/status.png)](https://drone.io/github.com/kronkltd/jiksnu/latest)
+[![Code Climate](https://codeclimate.com/github/kronkltd/jiksnu/badges/gpa.svg)](https://codeclimate.com/github/kronkltd/jiksnu)
 
 Jiksnu is a Lojban compound word (lujvo) for the words "Jikca
 Casnu". This translates roughly to "is a social type of interaction"

@@ -3,6 +3,6 @@ compose:
     image: mongo
 
 build:
-  image: repo.jiksnu.com/duck1123/jiksnu:dev
+  image: repo.jiksnu.com/kronkltd/jiksnu:dev
   commands:
     - script/cibuild

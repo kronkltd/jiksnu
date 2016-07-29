@@ -4,15 +4,19 @@ def devImage, err, mongoContainer
 def repo = 'repo.jiksnu.org/'
 def repoCreds = '8bb2c76c-133c-4c19-9df1-20745c31ac38'
 def repoPath = 'https://repo.jiksnu.org/'
+def clojureImage = docker.image('clojure')
+def mainImage
 
 // Set build properties
 properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']],
-            [$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/duck1123/jiksnu/'],
+            [$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/kronkltd/jiksnu/'],
             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]]);
 
 stage 'Prepare Environment'
 
 node {
+    clojureImage.pull()
+
     // Set current git commit
     checkout scm
     sh 'git submodule sync'
@@ -23,8 +27,7 @@ node {
     env.GIT_BRANCH = readFile('git-branch').trim()
 
     sh 'git branch --contains HEAD -r | tee git-branches'
-    def gbs = readFile('git-branches').trim()
-    def gitBranches = gbs.tokenize('\n')
+    def gitBranches = readFile('git-branches').trim().tokenize('\n')
 
     def isPR = false
 
@@ -34,6 +37,9 @@ node {
             break
         }
     }
+
+    // FIXME: Awaiting JENKINS-26481
+    // isPR = gitBranches.any { it.contains('origin/pr') }
 
     if (env.BRANCH_NAME) {
         env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
@@ -51,7 +57,7 @@ node {
 stage 'Build Dev Image'
 
 node {
-    devImage = docker.build("${repo}duck1123/jiksnu-dev", "docker/web-dev")
+    devImage = docker.build("${repo}kronkltd/jiksnu-dev:${env.BRANCH_TAG}", "docker/web-dev")
 
     docker.withRegistry('https://repo.jiksnu.org/', repoCreds) {
         devImage.push()
@@ -87,9 +93,6 @@ node {
 
 stage 'Build Jars'
 
-def clojureImage = docker.image('clojure')
-clojureImage.pull()
-
 clojureImage.inside('-u root') {
     checkout scm
     sh 'lein install'
@@ -100,7 +103,14 @@ clojureImage.inside('-u root') {
 stage 'Build Run Image'
 
 node {
-    def mainImage = docker.build("${repo}duck1123/jiksnu:${env.BRANCH_TAG}")
+
+    sh 'wget -q https://github.com/gliderlabs/sigil/releases/download/v0.4.0/sigil_0.4.0_Linux_x86_64.tgz -O sigil.tgz'
+    sh 'tar -zxv -f sigil.tgz'
+    sh "cat Dockerfile.tmpl | ./sigil -p > Dockerfile"
+
+    wrap([$class: 'AnsiColorBuildWrapper']) {
+        mainImage = docker.build("${repo}kronkltd/jiksnu:${env.BRANCH_TAG}")
+    }
 
     docker.withRegistry(repoPath, repoCreds) {
         mainImage.push()
@@ -111,7 +121,11 @@ stage 'Generate Reports'
 
 clojureImage.inside('-u root') {
     checkout scm
-    sh 'lein doc'
+
+    wrap([$class: 'AnsiColorBuildWrapper']) {
+        sh 'lein doc'
+    }
+
     step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
     step([$class: 'TasksPublisher', high: 'FIXME', normal: 'TODO', pattern: '**/*.clj,**/*.cljs'])
 }
