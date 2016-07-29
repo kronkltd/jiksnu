@@ -14,13 +14,6 @@ Jiksnu /ˈʒiks.nu/ - Federated Social Networking
 Jiksnu is a Lojban compound word (lujvo) for the words "Jikca
 Casnu". This translates roughly to "is a social type of interaction"
 
-Jiksnu is a federated social network communicating over both HTTP and
-XMPP. Currently, basic interop with Status.net servers is mostly
-working. (Salmon support is not yet complete.) In addition, many other
-standards-based applications work to some extent. The OneSocialWeb
-protocol as well as other XEP-0277 XMPP-based servers are supported,
-however, that code is out of date.
-
 Jiksnu is built on top of the Ciste framework, and makes extensive use
 of it's Action Routing framework and services.
 
