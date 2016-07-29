@@ -1,25 +1,25 @@
 #!groovy
 
-def devImage, err, mongoContainer
+def org = 'kronkltd'
+def project = 'jiksnu'
+
 def repo = 'repo.jiksnu.org/'
 def repoCreds = '8bb2c76c-133c-4c19-9df1-20745c31ac38'
 def repoPath = 'https://repo.jiksnu.org/'
-def clojureImage = docker.image('clojure')
-def mainImage
+
+def clojureImage, devImage, err, mainImage, mongoContainer
 
 // Set build properties
 properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']],
-            [$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: 'https://github.com/kronkltd/jiksnu/'],
+            [$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: "https://github.com/${org}/${project}/"],
             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]]);
 
 stage 'Prepare Environment'
 
 node {
-    clojureImage.pull()
-
     // Set current git commit
     checkout scm
-    sh 'git submodule sync'
+
     sh "git rev-parse HEAD | tr -d '\n' | tee git-commit"
     env.GIT_COMMIT = readFile('git-commit').trim()
 
@@ -42,10 +42,18 @@ node {
     // isPR = gitBranches.any { it.contains('origin/pr') }
 
     if (env.BRANCH_NAME) {
-        env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
+        env.GIT_BRANCH = env.BRANCH_NAME
     } else if (isPR) {
         def matcher = gitBranches =~ /origin\/pr\/(\d+)\/\*/
-        env.BRANCH_TAG = 'PR-' + matcher[0][1]
+        env.PR_NUMBER = matcher[0][1]
+        env.GIT_BRANCH = 'PR-' + env.PR_NUMBER
+    }
+
+    if (env.GIT_BRANCH == 'develop') {
+        env.BRANCH_TAG = 'latest'
+    } else if (env.GIT_BRANCH == 'master') {
+        // TODO: Parse version numbers
+        env.BRANCH_TAG = 'stable'
     } else {
         env.BRANCH_TAG = env.GIT_BRANCH.replaceAll('/', '-')
     }
@@ -57,9 +65,9 @@ node {
 stage 'Build Dev Image'
 
 node {
-    devImage = docker.build("${repo}kronkltd/jiksnu-dev:${env.BRANCH_TAG}", "docker/web-dev")
+    devImage = docker.build("${org}/${project}-dev:${env.BRANCH_TAG}", "docker/web-dev")
 
-    docker.withRegistry('https://repo.jiksnu.org/', repoCreds) {
+    docker.withRegistry(repoPath, repoCreds) {
         devImage.push()
     }
 }
@@ -82,7 +90,6 @@ node {
     } catch (caughtError) {
         err = caughtError
     } finally {
-        sh 'docker-compose stop'
         mongoContainer.stop()
 
         if (err) {
@@ -93,27 +100,29 @@ node {
 
 stage 'Build Jars'
 
-clojureImage.inside('-u root') {
-    checkout scm
-    sh 'lein install'
-    sh 'lein uberjar'
-    archive 'target/*jar'
+node {
+    clojureImage = docker.image('clojure')
+    clojureImage.pull()
+
+    clojureImage.inside('-u root') {
+        checkout scm
+        sh 'lein install'
+        sh 'lein uberjar'
+        archive 'target/*jar'
+    }
 }
 
 stage 'Build Run Image'
 
 node {
-
-    sh 'wget -q https://github.com/gliderlabs/sigil/releases/download/v0.4.0/sigil_0.4.0_Linux_x86_64.tgz -O sigil.tgz'
-    sh 'tar -zxv -f sigil.tgz'
-    sh "cat Dockerfile.tmpl | ./sigil -p > Dockerfile"
-
     wrap([$class: 'AnsiColorBuildWrapper']) {
-        mainImage = docker.build("${repo}kronkltd/jiksnu:${env.BRANCH_TAG}")
-    }
+        sh "sigil -f Dockerfile.tmpl -p > Dockerfile"
 
-    docker.withRegistry(repoPath, repoCreds) {
-        mainImage.push()
+        mainImage = docker.build("${org}/${project}:${env.BRANCH_TAG}")
+
+        docker.withRegistry(repoPath, repoCreds) {
+            mainImage.push()
+        }
     }
 }
 
