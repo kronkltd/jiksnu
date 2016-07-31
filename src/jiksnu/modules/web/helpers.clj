@@ -178,11 +178,9 @@
   "route mixin for paths that operate on a subpage"
   [resource]
   (-> resource
+      (assoc :allowed-methods [:get])
+      (assoc :available-formats [:json])
       ciste-resource
-      (assoc :allowed-methods [:get
-                               ;; :post :delete
-
-                               ])
       (assoc :exists? #(subpage-exists? resource %))))
 
 (defn get-user

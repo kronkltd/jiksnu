@@ -84,5 +84,4 @@
   :mixins [subpage-resource]
   :target-model "group"
   :subpage "members"
-  :parameters {:_id (path :model.group/id)}
-  :available-formats [:json])
+  :parameters {:_id (path :model.group/id)})

@@ -98,7 +98,4 @@
   :mixins [subpage-resource]
   :target get-stream
   :target-model "stream"
-  :subpage "activities"
-  :allowed-methods [:get]
-  :available-formats [:json]
-  :available-media-types ["application/json"])
+  :subpage "activities")

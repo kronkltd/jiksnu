@@ -68,5 +68,4 @@
   :mixins [subpage-resource]
   :target-model "conversation"
   :subpage "activities"
-  :parameters {:_id (path :model.conversation/id)}
-  :available-formats [:json])
+  :parameters {:_id (path :model.conversation/id)})

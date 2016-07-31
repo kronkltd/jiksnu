@@ -248,8 +248,7 @@
   :mixins [subpage-resource]
   :target-model "user"
   :subpage "activities"
-  :parameters {:_id (path :model.user/id)}
-  :available-formats [:json])
+  :parameters {:_id (path :model.user/id)})
 
 (defresource users-api :groups
   :url "/{_id}/groups"
@@ -258,8 +257,7 @@
   :mixins [subpage-resource]
   :target-model "user"
   :subpage "groups"
-  :parameters  {:_id (path :model.user/id)}
-  :available-formats [:json])
+  :parameters  {:_id (path :model.user/id)})
 
 (defresource users-api :followers
   :url "/{_id}/followers"
@@ -290,6 +288,4 @@
   :mixins [subpage-resource]
   :target-model "user"
   :subpage "streams"
-  :parameters {:_id (path :model.user/id)}
-  :available-media-types ["application/json"]
-  :available-formats [:json])
+  :parameters {:_id (path :model.user/id)})

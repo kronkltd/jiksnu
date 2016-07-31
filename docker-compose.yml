@@ -37,12 +37,10 @@ services:
     image: mongo
 
   mongoexpress:
-    image: knickers/mongo-express
+    image: mongo-express
     depends_on:
       - mongo
     environment:
-      ME_CONFIG_BASICAUTH_USERNAME: "admin"
-      ME_CONFIG_BASICAUTH_PASSWORD: "admin"
       VIRTUAL_HOST: "mongo.docker"
 
   proxy:
