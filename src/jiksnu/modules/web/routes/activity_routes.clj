@@ -101,5 +101,4 @@
   :mixins [subpage-resource]
   :target-model "activity"
   :subpage "likes"
-  :parameters  {:_id (path :model.activity/id)}
-  :available-formats [:json])
+  :parameters {:_id (path :model.activity/id)})
