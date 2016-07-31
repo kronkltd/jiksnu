@@ -3,8 +3,7 @@
             [jiksnu.model.group-membership :as model.group-membership]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
-                                                subpage-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]

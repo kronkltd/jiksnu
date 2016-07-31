@@ -6,7 +6,7 @@
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
-                                                path subpage-resource]]
+                                                path]]
             [octohipster.mixins :as mixin]))
 
 (defgroup jiksnu subscriptions
