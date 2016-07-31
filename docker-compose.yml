@@ -64,19 +64,25 @@ services:
     environment:
       JIKSNU_DB_NAME: "jiksnu_docker"
       VIRTUAL_HOST: "jiksnu.docker"
+      DOMAIN: jiksnu.docker
 
   web-dev:
     build:
       context: .
       dockerfile: docker/web-dev/Dockerfile
-    image: repo.jiksnu.org/kronkltd/jiksnu:dev
+    image: repo.jiksnu.org/kronkltd/jiksnu-dev
     depends_on:
       - mongo
+      - proxy
     environment:
-      CISTE_LOGGER: "jiksnu.logger"
-      HTTP_PORT: "80"
-      JIKSNU_DB_NAME: "jiksnu_docker"
-      VIRTUAL_HOST: "jiksnu.docker"
+      CISTE_LOGGER: jiksnu.logger
+      HTTP_PORT: 80
+      JIKSNU_DB_NAME: jiksnu_docker
+      VIRTUAL_HOST: jiksnu.docker
+      DOMAIN: jiksnu.docker
+    ports:
+      - "7888:7888"
+      - "9876:9876"
     volumes:
       - .:/app
 
