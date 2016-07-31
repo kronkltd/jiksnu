@@ -127,7 +127,7 @@
                                          (dissoc :async-channel)
                                          (dissoc :body)
                                          (dissoc :cemerick.friend/auth-config))}
-        (timbre/debug "http request"))
+        (timbre/debugf "%s %s" (:request-method request) (:uri request)))
       (let [response (handler request)]
         (.finish tracer)
         response))))
