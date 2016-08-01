@@ -34,8 +34,8 @@ RUN set -x \
 
 ### Add certs for Filebeat
 # CA cert
-ADD filebeat.yml       /etc/filebeat/filebeat.yml
-ADD logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
+ADD docker/web-dev/filebeat.yml       /etc/filebeat/filebeat.yml
+ADD docker/web-dev/logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
 
 ### Add notify-send proxy
 RUN set -x \
@@ -43,14 +43,19 @@ RUN set -x \
     && chmod +x /usr/bin/notify-send
 
 # Add Supervisor config
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/web-dev/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# ADD Gemfile Gemfile.lock ${JIKSNU_HOME}/
+ADD Gemfile Gemfile.lock ${JIKSNU_HOME}/
 
-# RUN bundle install
+RUN bundle install
 
-# ### Add application
-# ADD . ${JIKSNU_HOME}/
+ADD script ${JIKSNU_HOME}/script
+ADD package.json project.clj bower.json ${JIKSNU_HOME}/
+
+RUN script/bootstrap
+
+### Add application
+ADD . ${JIKSNU_HOME}/
 
 # Expose Karma port
 EXPOSE 9876
@@ -63,4 +68,4 @@ ENTRYPOINT []
 
 # CMD ["/usr/bin/supervisord"]
 
-# CMD [ "script/docker" ]
+CMD [ "script/docker" ]

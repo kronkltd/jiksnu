@@ -2,8 +2,6 @@
 
 set -e
 
-script/bootstrap
-
 echo ">> Compiling Less"
 lein less once
 

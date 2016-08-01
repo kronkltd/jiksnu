@@ -65,10 +65,13 @@ node {
 stage 'Build Dev Image'
 
 node {
-    devImage = docker.build("${org}/${project}-dev:${env.BRANCH_TAG}", "docker/web-dev")
+    wrap([$class: 'AnsiColorBuildWrapper']) {
+        devImage = docker.build("${org}/${project}-dev:${env.BRANCH_TAG}",
+                                "-f docker/web-dev/Dockerfile .")
 
-    docker.withRegistry(repoPath, repoCreds) {
-        devImage.push()
+        docker.withRegistry(repoPath, repoCreds) {
+            devImage.push()
+        }
     }
 }
 
