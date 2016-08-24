@@ -7,7 +7,7 @@ ADD project.clj package.json bower.json .bowerrc \${JIKSNU_HOME}/
 
 ADD script \${JIKSNU_HOME}/script
 
-RUN script/bootstrap
+RUN script/update
 
 ### Add application
 ADD . \${JIKSNU_HOME}/
