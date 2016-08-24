@@ -17,6 +17,8 @@ properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', 
 stage 'Prepare Environment'
 
 node {
+    step([$class: 'WsCleanup'])
+
     // Set current git commit
     checkout scm
 
