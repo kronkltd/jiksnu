@@ -133,7 +133,7 @@ node {
 
 stage 'Generate Reports'
 
-clojureImage.inside('-u root') {
+mainImage.inside('-u root') {
     checkout scm
 
     wrap([$class: 'AnsiColorBuildWrapper']) {
