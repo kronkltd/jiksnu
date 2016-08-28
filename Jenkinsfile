@@ -106,10 +106,7 @@ node {
 stage 'Build Jars'
 
 node {
-    clojureImage = docker.image('clojure')
-    clojureImage.pull()
-
-    clojureImage.inside('-u root') {
+    devImage.inside('-u root') {
         checkout scm
         sh 'lein install'
         sh 'lein uberjar'
@@ -133,7 +130,7 @@ node {
 
 stage 'Generate Reports'
 
-mainImage.inside('-u root') {
+devImage.inside('-u root') {
     checkout scm
 
     wrap([$class: 'AnsiColorBuildWrapper']) {
