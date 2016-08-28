@@ -122,52 +122,35 @@
   (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
 
 (def.controller jiksnu.ListActivitiesController
-  [$scope subpageService Users]
-  (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (get-toggle-fn $scope))
-  (set! (.-refresh $scope) (fn [] (.$broadcast $scope refresh-followers))))
+  [$scope app Users]
+  (helpers/init-subpage $scope app Users "activities"))
 
 (def.controller jiksnu.ListFollowersController
-  [$scope subpageService Users]
-  (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (get-toggle-fn $scope))
-  (set! (.-refresh $scope) (fn [] (.$broadcast $scope refresh-followers))))
+  [$scope app Users]
+  (helpers/init-subpage $scope app Users "followers"))
 
 (def.controller jiksnu.ListFollowingController
-  [$scope subpageService Users]
-  (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (get-toggle-fn $scope))
-  (set! (.-refresh $scope) (fn [] (.$broadcast $scope refresh-followers))))
+  [$scope app Users]
+  (helpers/init-subpage $scope app Users "following"))
 
 (def.controller jiksnu.ListGroupsController
-  [$scope subpageService Users]
-  (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (get-toggle-fn $scope))
-  (helpers/init-subpage $scope subpageService Users "groups"))
+  [$scope app Users]
+  (helpers/init-subpage $scope app Users "groups"))
 
 (def.controller jiksnu.ListGroupAdminsController
-  [$scope subpageService Groups]
-  (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
-  (helpers/init-subpage $scope subpageService Groups "admins"))
+  [$scope app Groups]
+  (helpers/init-subpage $scope app Groups "admins"))
 
 (def.controller jiksnu.ListGroupMembersController
-  [$scope subpageService Groups]
-  (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (get-toggle-fn $scope))
-  (helpers/init-subpage $scope subpageService Groups "members"))
+  [$scope app Groups]
+  (helpers/init-subpage $scope app Groups "members"))
 
 (def.controller jiksnu.ListNotificationsController
-  [$scope subpageService Notifications]
-  (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
-  (helpers/init-subpage $scope subpageService Notifications "notifications"))
+  [$scope app Users]
+  (helpers/init-subpage $scope app Users "notifications"))
 
 (def.controller jiksnu.ListStreamsController
-  [$scope app subpageService Users]
-  (set! (.-formShown $scope) false)
-  (set! (.-app $scope) app)
-  (set! (.-toggle $scope) (get-toggle-fn $scope))
+  [$scope app app Users]
 
   (.$watch $scope
            (.-formShown $scope)
@@ -189,7 +172,7 @@
           (set! (.-btnLabel $scope)
                 (if (.-formShown $scope) "-" "+"))))
 
-  (helpers/init-subpage $scope subpageService Users "streams")
+  (helpers/init-subpage $scope app Users "streams")
   (.updateLabel $scope))
 
 (def.controller jiksnu.LoginPageController
@@ -329,7 +312,7 @@
           (when (.. $scope -form -shown)
             (.getLocation $scope)
             (.fetchStreams $scope))))
-  (helpers/init-subpage $scope subpageService Users "streams")
+  ;; (helpers/init-subpage $scope subpageService Users "streams")
   (.reset $scope))
 
 (def.controller jiksnu.NewStreamController
@@ -490,7 +473,7 @@
   (set! (.-loaded $scope) false)
   (if-let [subpage (.-subpage $scope)]
     (do
-      (timbre/debug "initialize subpage controller" subpage)
+      ;; (timbre/debug "initialize subpage controller" subpage)
       (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
 
       ;; (.$on $scope refresh-followers
@@ -511,17 +494,25 @@
       (set! (.-init $scope)
             (fn [item]
               (if item
-                (do
+                (let [model-name (.. item -constructor -name)]
                   (set! (.-item $scope) item)
                   (set! (.-loaded $scope) false)
+                  (set! (.-loading $scope) true)
                   (timbre/debugf "Refreshing subpage: %s(%s)=>%s"
-                                 (.. item -constructor -name)
-                                 (.-_id item)
-                                 subpage)
+                                 model-name (.-_id item) subpage)
                   (-> (.fetch subpageService item subpage)
                       (.then (fn [page]
+                               (set! (.-errored $scope) false)
                                (set! (.-loaded $scope) true)
-                               (set! (.-page $scope) page)))))
+                               (set! (.-loading $scope) false)
+                               (set! (.-page $scope) page)
+                               page)
+                             (fn [page]
+                               (timbre/errorf "Failed to load subpage. %s(%s)=>%s"
+                                              model-name (.-_id item) subpage)
+                               (set! (.-errored $scope) true)
+                               (set! (.-loading $scope) false)
+                               page))))
                 (throw (str "parent item not bound for subpage: " subpage)))))
       (.refresh $scope))
     (throw "Subpage not specified")))

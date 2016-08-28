@@ -54,7 +54,7 @@
                   d (.defer $q)]
               (if-let [mapping-fn (get-in subpage-mappings [type page-name])]
                 (let [url (mapping-fn parent)]
-                  (timbre/debug "url" url parent)
+                  ;; (timbre/debugf "url: %s" url)
                   (-> $http
                       (.get url)
                       (.success #(.resolve d %))
