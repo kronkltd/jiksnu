@@ -283,7 +283,7 @@
                       (timbre/debugf "Got Streams - %s" streams)
                       (set! (.-streams $scope) streams))))))
   (set! (.-form $scope) #js {:shown false})
-  (set! (.-getLocataion $scope)
+  (set! (.-getLocation $scope)
         (fn []
           (.. geolocation
               (getLocation)
@@ -291,7 +291,8 @@
                       (let [geo (.. $scope -activity -geo)
                             coords (.-coords data)]
                         (set! (.-latitude geo) (.-latitude coords))
-                        (set! (.-longitude geo) (.-longitude coords))))))))
+                        (set! (.-longitude geo) (.-longitude coords))))
+                    (fn [data] (timbre/errorf "Location error: %s" data))))))
   (set! (.-reset $scope)
         (fn []
           (set! (.-activity $scope) (.-defaultForm $scope))
