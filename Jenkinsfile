@@ -83,7 +83,7 @@ node {
     try {
         mongoContainer = docker.image('mongo').run()
 
-        devImage.inside("--link ${mongoContainer.id}:mongo -u root") {
+        devImage.inside("--link ${mongoContainer.id}:mongo") {
             checkout scm
 
             wrap([$class: 'AnsiColorBuildWrapper']) {
@@ -106,7 +106,7 @@ node {
 stage 'Build Jars'
 
 node {
-    devImage.inside('-u root') {
+    devImage.inside() {
         checkout scm
         sh 'lein install'
         sh 'lein uberjar'
@@ -130,7 +130,7 @@ node {
 
 stage 'Generate Reports'
 
-devImage.inside('-u root') {
+devImage.inside() {
     checkout scm
 
     wrap([$class: 'AnsiColorBuildWrapper']) {
