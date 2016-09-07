@@ -4,13 +4,21 @@ MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 
 ENV JIKSNU_HOME /app
 ENV JIKSNU_DB_HOST mongo
-ENV HTTP_PORT 80
+ENV HTTP_PORT 8080
 WORKDIR ${JIKSNU_HOME}
+
+ARG user=jiksnu
+ARG group=jiksnu
+ARG uid=1000
+ARG gid=1000
+
+### Create docker group
+RUN groupadd -g ${gid} ${group} \
+    && useradd -u ${uid} -g ${gid} --create-home -s /bin/bash ${user}
 
 RUN set -x \
     && apt-get update \
     && apt-get install -y \
-       bundler \
        byobu \
        supervisor \
        build-essential \
@@ -45,24 +53,32 @@ RUN set -x \
 # Add Supervisor config
 COPY docker/web-dev/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-ADD Gemfile Gemfile.lock ${JIKSNU_HOME}/
-
-RUN bundle install
-
 ADD script ${JIKSNU_HOME}/script
-ADD package.json project.clj bower.json ${JIKSNU_HOME}/
+ADD package.json project.clj bower.json .bowerrc ${JIKSNU_HOME}/
+
+RUN chown -R ${uid}:${gid} ${JIKSNU_HOME}
+
+USER ${user}
 
 RUN script/bootstrap
 
 ### Add application
 ADD . ${JIKSNU_HOME}/
 
+RUN script/update
+
+USER root
+
+RUN chown -R ${uid}:${gid} ${JIKSNU_HOME}
+
+USER ${user}
+
 # Expose Karma port
 EXPOSE 9876
 # Expose nRepl port
 EXPOSE 7888
 # Expose HTTP port
-EXPOSE 80
+EXPOSE 8080
 
 ENTRYPOINT []
 
