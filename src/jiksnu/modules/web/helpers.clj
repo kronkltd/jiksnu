@@ -28,10 +28,8 @@
   (k @parameters))
 
 (defn path
-  ([k] (path k nil))
-  ([k required?]
-   (merge (get-parameter k)
-          {:in "path"})))
+  [k]
+  (merge (get-parameter k) {:in "path"}))
 
 (defn not-found-msg
   []
@@ -96,16 +94,6 @@
 (def types
   {:json "application/json"
    :html "text/html"})
-
-(defn handle-ok
-  [ctx]
-  (timbre/info "Handling ok")
-  (condp = (get-in ctx [:representation :media-type])
-    (types :html)
-    (index (:request ctx))
-
-    (types :json)
-    (json/json-str (:page ctx))))
 
 (defn ciste-resource
   "route mixin for paths that use ciste"
