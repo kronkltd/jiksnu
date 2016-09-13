@@ -32,6 +32,7 @@
 (def app
   (-> (routes
        (route/resources "/")
+       (route/files "/assets" {:root "/data"})
        (GET "/templates/*" [] #'helpers/serve-template)
        (-> (routes
             async-handler

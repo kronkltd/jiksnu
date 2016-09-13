@@ -1,0 +1,9 @@
+([:h3 "Pictures"  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
+ [:subpage {:name "pictures" :item "item"}
+  [:debug {:expr "$parent.page"}]
+  [:div {:ng-if "!$parent.loaded"} [:spinner]]
+  [:div {:ng-if "$parent.loaded"}
+   [:ul
+    [:li {:ng-repeat "id in $parent.$parent.page.items"}
+     [:debug {:expr "id"}]
+     [:show-picture {:data-id "{{id}}"}]]]]])

@@ -10,6 +10,7 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -217,6 +218,16 @@
   (let [user (actions.user/create (factory :local-user))]
     (there-is-an-activity {:modifier  modifier
                            :user user})))
+
+(defn there-is-a-picture
+  [& [options]]
+  (let [user (a-user-exists)
+        activity (there-is-an-activity {:user user})
+        params {:activity (:_id activity)
+                :user (:_id user)}
+        picture (actions.picture/create params)]
+    (set-this :picture picture)
+    picture))
 
 (defn a-feed-subscription-exists
   [& [options]]

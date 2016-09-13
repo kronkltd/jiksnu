@@ -1,0 +1,13 @@
+([:div.title-section
+  [:h3 "Albums"]
+  [:div {:ng-show "app.user._id == item._id"}
+   [:button.btn {:ng-click "toggle()"} "{{btnLabel}}"]]
+  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
+ [:subpage {:name "albums" :item "item" :title "list-albums albums-subpage"}
+  [:debug {:expr "$parent.page"}]
+  [:div {:ng-if "!$parent.loaded"} [:spinner]]
+  [:div {:ng-if "$parent.loaded"}
+   [:ul
+    [:li {:ng-repeat "id in $parent.$parent.page.items"}
+     [:debug {:expr "id"}]
+     [:show-album-minimal {:data-id "{{id}}"}]]]]])

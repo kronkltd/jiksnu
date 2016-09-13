@@ -54,6 +54,7 @@
   [["avatarPage"            "/main/avatar"             "AvatarPage"            :avatar-page]
    ["home"                  "/"                        "IndexConversations"    :public-timeline]
    ["indexActivities"       "/main/activities"         "IndexActivities"       :index-activities]
+   ["indexAlbums"           "/main/albums"             "IndexAlbums"           :index-albums]
    ["indexClients"          "/main/clients"            "IndexClents"           :index-clients]
    ["indexDomains"          "/main/domains"            "IndexDomains"          :index-domains]
    ["indexFeedSources"      "/main/feed-sources"       "IndexFeedSources"      :index-feed-sources]
@@ -61,6 +62,7 @@
    ["indexGroupMemberships" "/main/group-memberships"  "IndexGroupMemberships" :index-group-memberships]
    ["indexLikes"            "/main/likes"              "IndexLikes"            :index-likes]
    ["indexNotifications"    "/main/notifications"      "IndexNotifications"    :index-notifications]
+   ["indexPictures"         "/main/pictures"           "IndexPictures"         :index-pictures]
    ["indexResources"        "/main/resources"          "IndexResources"        :index-resources]
    ["indexStreams"          "/main/streams"            "IndexStreams"          :index-streams]
    ["indexSubscriptions"    "/main/subscriptions"      "IndexSubscriptions"    :index-subscriptions]
@@ -69,6 +71,7 @@
    ["registerPage"          "/main/register"           "RegisterPage"          :register-page]
    ["settingsPage"          "/main/settings"           "SettingsPage"          :settings-page]
    ["showActivity"          "/main/activities/:_id"    "ShowActivity"          :show-activity]
+   ["showAlbum"             "/main/albums/:_id"        "ShowAlbum"             :show-album]
    ["showConversation"      "/main/conversations/:_id" "ShowConversation"      :show-conversation]
    ["showDomain"            "/main/domains/:_id"       "ShowDomain"            :show-domain]
    ["showGroup"             "/main/groups/:_id"        "ShowGroup"             :show-group]
@@ -80,11 +83,13 @@
 (defn setup-hotkeys
   [hotkeys $state]
   (state-hotkey "g a" "indexActivities"       "Go to Activities")
+  (state-hotkey "g b" "indexAlbums"           "Go to Albums")
   (state-hotkey "g c" "indexClients"          "Go to Clients")
   (state-hotkey "g d" "indexDomains"          "Go to Domains")
   (state-hotkey "g g" "indexGroups"           "Go to Groups")
   (state-hotkey "g m" "indexGroupMemberships" "Go to Group Memberships")
-  (state-hotkey "g m" "indexNotifications"    "Go to Notifications")
+  (state-hotkey "g n" "indexNotifications"    "Go to Notifications")
+  (state-hotkey "g p" "indexPictures"         "Go to Pictures")
   (state-hotkey "g h" "home"                  "Go to Home")
   (state-hotkey "g l" "indexLikes"            "Go to Likes")
   (state-hotkey "g s" "indexStreams"          "Go to Streams")

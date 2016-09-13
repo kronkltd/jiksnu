@@ -1,0 +1,15 @@
+([:p "Add Picture"]
+ [:div {:ng-if "app.user"}
+  [:debug {:expr "picture"}]
+  [:form
+   [:input {:type "text" :name "name" :ng-model "picture.name"}]
+   [:input {:type "file" :nv-file-select "" :uploader "uploader" :multiple ""}]
+   [:ul
+    [:li {:ng-repeat "item in uploader.queue"}
+     [:debug {:expr "item.file"}]
+     [:span "Name:"]
+     [:span {:ng-bind "item.file.name"}]
+     [:div {:ng-hide "item.isUploaded"}
+      [:button {:ng-click "item.upload()"} "Upload"]]]]
+   [:input {:type "submit"}]
+   [:button {:ng-click "reset()"} "Reset"]]])

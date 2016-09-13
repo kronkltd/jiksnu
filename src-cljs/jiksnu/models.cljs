@@ -22,6 +22,16 @@
     :endpoint "activities"
     :methods #js {:getType (constantly "Activity")}}))
 
+(def.factory jiksnu.Albums
+  [DS]
+  (.defineResource
+   DS
+   #js
+   {:name "album"
+    :endpoint "albums"
+    :deserialize deserializer
+    :methods #js {:getType (constantly "Album")}}))
+
 (def.factory jiksnu.Clients
   [DS subpageService]
   (.defineResource
@@ -106,6 +116,16 @@
     :endpoint "notifications"
     :deserialize deserializer
     :methods #js {:getType (constantly "Notification")}}))
+
+(def.factory jiksnu.Pictures
+  [DS subpageService]
+  (.defineResource
+   DS
+   #js
+   {:name "picture"
+    :endpoint "pictures"
+    :deserialize deserializer
+    :methods #js {:getType (constantly "Picture")}}))
 
 (def.factory jiksnu.RequestTokens
   [DS subpageService]
