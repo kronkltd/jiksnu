@@ -32,7 +32,7 @@
 
 (defn add-resource!
   [group-var resource-name resource]
-  ;; (timbre/debugf "adding resource %s(%s)" group-var resource-name)
+  ;; (timbre/debugf "adding resource %s(%s)" (:name (meta group-var)) resource-name)
   (dosync
    (alter (get-resources group-var) assoc resource-name resource)))
 
