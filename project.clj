@@ -146,4 +146,5 @@
                                :password [:gpg :env/repo_password]}]
                  ["releases" {:url "http://repo.jiksnu.org/repository/maven-releases/"
                               :username [:gpg :env/repo_username]
-                              :password [:gpg :env/repo_password]}]])
+                              :password [:gpg :env/repo_password]}]
+                 ["maven-mirror" {:url "http://repo.jiksnu.org/repository/maven-central/"}]])
