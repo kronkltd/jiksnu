@@ -60,16 +60,6 @@
       (timbre/warn "No matchers returned"))
     #_(timbre/warnf "Could not load subpage function - %s" route-sym)))
 
-(defn load-routes!
-  [route-sym]
-  (when-let [f (try-resolve route-sym 'routes)]
-    (f)))
-
-(defn trigger-on-loaded!
-  [route-sym]
-  (when-let [f (try-resolve route-sym 'on-loaded)]
-    (f)))
-
 (defn load-group
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
@@ -80,8 +70,6 @@
         (try
           (load-pages! route-sym)
           (load-sub-pages! route-sym)
-          (trigger-on-loaded! route-sym)
-          (load-routes! route-sym)
           (catch Exception ex
             (timbre/error "Failed to load routes" ex)
             (throw+ ex))))
@@ -91,24 +79,6 @@
   []
   (doseq [group registry/action-group-names]
     (load-group group)))
-
-(defn make-matchers
-  [handlers]
-  (timbre/debug "making matchers")
-  (map
-   (fn [[matcher action]]
-     (let [o (merge
-              {:serialization :http
-               :format :html}
-              (if (var? action)
-                {:action action}
-                action))]
-       (let [[method route] matcher]
-         [{:method method
-           ;; :format :html
-           :serialization :http
-           :path route} o])))
-   handlers))
 
 (defn serve-template
   [{{template-name :*} :params}]
@@ -122,12 +92,6 @@
 (defn index
   [_]
   (sections.layout/page-template-content {} {}))
-
-(defn close-connection
-  [handler]
-  (fn [request]
-    (if-let [response (handler request)]
-      (assoc-in response [:headers "Connection"] "close"))))
 
 (def types
   {:json "application/json"
@@ -230,10 +194,3 @@
                                     "Angular Template")
                    :headers {"Content-Type" {:description "The Content Type"}}}}}
           get-method)))))
-
-(defn make-page-handler
-  [& {:as opts}]
-  (let []
-    (->> opts
-         page-resource
-         (mapcat (fn [[k v]] [k v])))))

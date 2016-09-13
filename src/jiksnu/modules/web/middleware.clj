@@ -7,11 +7,9 @@
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.session :refer [with-user-id]]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+]])
   (:import javax.security.auth.login.LoginException
-           kamon.Kamon
-           kamon.trace.Tracer))
+           kamon.Kamon))
 
 (defn wrap-user-binding
   [handler]

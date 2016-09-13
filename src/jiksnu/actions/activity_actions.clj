@@ -108,10 +108,7 @@
   "Post a new activity"
   [activity]
   ;; TODO: validate user
-  (if-let [prepared-post (-> activity
-                             prepare-post
-                             (dissoc :pictures))]
-
+  (if-let [prepared-post (prepare-post activity)]
     (do (-> activity :pictures model.activity/parse-pictures)
         (let [created-activity (create prepared-post)]
           (bus/publish! ch/events :activity-posted created-activity)
