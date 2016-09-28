@@ -16,5 +16,5 @@
    [:md-button.md-icon-button {:clipboard "" :text "item.verifier"}
     [:ng-md-icon {:icon "content_copy"}]]]
   [:div
-   [:md-button.md-primary.md-raised "Approve"]
+   [:input.md-button.md-primary.md-raised {:type "submit" :value "Approve"}]
    [:md-button.md-warn.md-raised "Deny"]]]]
