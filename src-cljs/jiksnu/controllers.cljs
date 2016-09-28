@@ -27,9 +27,6 @@
   (timbre/info "Location: " $location)
   (timbre/info "State Params: " $stateParams)
   (set! (.-id $scope) (aget (.search $location) "oauth_token"))
-  (set! (.-submit $scope) (fn [data]
-                            (timbre/info "submitting")
-                            (js/console.log data)))
   (helpers/init-item $scope $stateParams app RequestTokens))
 
 (def.controller jiksnu.DebugController [$scope $filter app]

@@ -3,7 +3,7 @@
  [:debug {:expr "id"}]
  [:debug {:expr "item"}]
  [:show-request-token {:data-id "{{id}}"}]
- [:form {:name "authorizeForm" :ng-submit "submit()" :flex "" :layout "column"}
+ [:form {:name "authorizeForm" :action "" :method "post" :flex "" :layout "column"}
   [:debug {:expr "authorizeForm"}]
   [:div
    [:md-input-container
