@@ -20,8 +20,6 @@
                  :model "user"
                  :id    (:_id (:item page))})})
 
-;; index
-
 (defview #'actions.group/index :page
   [request page]
   {:body (merge page

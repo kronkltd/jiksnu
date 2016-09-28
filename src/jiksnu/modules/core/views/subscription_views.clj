@@ -37,4 +37,3 @@
             :title (str "Subscriptions of " (:name user))
             :id (:_id (:item request))
             :body response}}))
-

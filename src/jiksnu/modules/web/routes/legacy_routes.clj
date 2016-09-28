@@ -1,7 +1,5 @@
 (ns jiksnu.modules.web.routes.legacy-routes
-  (:require [ciste.commands :refer [add-command!]]
-            ;; [ciste.routes :refer [make-matchers]]
-            ))
+  (:require [ciste.commands :refer [add-command!]]))
 
 (defn routes
   []

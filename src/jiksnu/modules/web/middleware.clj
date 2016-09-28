@@ -22,7 +22,7 @@
         (handler request)))))
 
 (defn auth-exception
-  [ex]
+  [_]
   {:status 401
    :template false
    :flash "You must be logged in to do that."
@@ -113,10 +113,6 @@
           (catch Throwable ex
             ;; FIXME: handle error
             (timbre/fatalf ex "Error parsing exception: %s")))))))
-
-(defn default-html-mode
-  []
-  (config :htmlOnly))
 
 (defn wrap-response-logging
   [handler]

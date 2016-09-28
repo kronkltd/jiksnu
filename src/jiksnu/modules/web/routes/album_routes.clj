@@ -84,7 +84,6 @@
              (let [id (get-in ctx [:request :route-params :_id])
                    album (model.album/fetch-by-id id)]
                {:data album}))
-  ;; :put!    #'actions.album/update-record
   :delete! #(actions.album/delete (:data %)))
 
 (defresource albums-api :pictures

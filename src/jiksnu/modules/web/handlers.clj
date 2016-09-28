@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.handlers
   (:require [ciste.loader :refer [defhandler]]
             [jiksnu.handlers :as handler]
-            ;; jiksnu.handlers.atom
             jiksnu.handlers.html
             jiksnu.handlers.xrd
             jiksnu.modules.web.formats

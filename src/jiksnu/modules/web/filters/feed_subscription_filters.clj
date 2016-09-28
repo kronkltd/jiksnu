@@ -8,4 +8,3 @@
   (let [{{id :id} :params} request]
     (if-let [user (model.feed-subscription/fetch-by-id id)]
       (action user))))
-

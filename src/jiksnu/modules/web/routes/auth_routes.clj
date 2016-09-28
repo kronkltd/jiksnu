@@ -89,10 +89,10 @@
                      (friend/logout* (as-response {:data "ok"} ctx)))))
 
 (defresource auth :verify
-  :methods {:get {:summary "Verify Credentials"}}
+  :methods {:get {:summary "Verify Credentials"}
+            :post {:summary "Verify Credentials"}}
   :url "/api/account/verify_credentials.json"
   :allowed-methods [:post]
   :available-media-types ["application/json"]
-  :methods {:post {:summary "Verify Credentials"}}
   :exists? (fn [ctx]
              {:data (actions.auth/verify-credentials)}))

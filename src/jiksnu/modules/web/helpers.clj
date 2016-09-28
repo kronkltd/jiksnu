@@ -155,7 +155,7 @@
   [{action-ns :ns :as r}]
   (if-let [action-sym (ns-resolve action-ns 'index)]
     (merge {:allowed-methods [:get :post :delete]
-            :exists? (fn [ctx]
+            :exists? (fn [_]
                        #_(timbre/with-context {:ns (str action-ns)}
                            (timbre/debugf "Fetching Page - %s" (:name r)))
                        (when-let [action-var (var-get action-sym)]
