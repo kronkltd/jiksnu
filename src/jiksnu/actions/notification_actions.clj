@@ -33,3 +33,9 @@
 (defn show
   [notification]
   notification)
+
+(defn fetch-by-user
+  ([user]
+   (fetch-by-user user nil))
+  ([user options]
+   (index {:owner (:_id user)} options)))
