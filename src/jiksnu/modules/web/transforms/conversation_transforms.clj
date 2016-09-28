@@ -6,4 +6,3 @@
     item
     (when (:local item)
       (assoc item :url ""))))
-

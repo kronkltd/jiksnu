@@ -44,12 +44,12 @@ services:
       VIRTUAL_HOST: "mongo.docker"
 
   proxy:
-    image: rckrdstrgrd/nginx-proxy
+    image: jwilder/nginx-proxy
     environment:
       DNSDOCK_ALIAS: "dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,jiksnu-integration.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,selenium.docker,sentry.docker,shipyard.docker"
+      DEFAULT_HOST: jiksnu.docker
     ports:
       - "80:80"
-    restart: always
     volumes:
       - ./data/nginx/conf.d:/etc/nginx/conf.d
       - ./data/nginx/vhost.d:/etc/nginx/vhost.d

@@ -32,7 +32,7 @@
 
 (defn add-resource!
   [group-var resource-name resource]
-  ;; (timbre/debugf "adding resource %s(%s)" group-var resource-name)
+  ;; (timbre/debugf "adding resource %s(%s)" (:name (meta group-var)) resource-name)
   (dosync
    (alter (get-resources group-var) assoc resource-name resource)))
 
@@ -62,7 +62,7 @@
 
 (defmacro defresource
   [group resource-name & {:as options}]
-  #_(timbre/debugf "defining resource: %s(%s) =>" group resource-name)
+  #_(timbre/debugf "defining resource: %s(%s)" group resource-name)
   `(add-resource! (var ~group) ~resource-name (octo/resource ~(assoc options :name resource-name))))
 
 (defmacro defgroup
