@@ -3,12 +3,26 @@
             [jiksnu.macros :refer-macros [list-directive item-directive]])
   (:use-macros [gyr.core :only [def.directive]]))
 
+(def.directive jiksnu.addAlbumForm
+  []
+  #js
+  {:controller "NewAlbumController"
+   :scope true
+   :templateUrl "/templates/add-album-form"})
+
 (def.directive jiksnu.addGroupForm
   []
   #js
   {:controller "NewGroupController"
    :scope true
    :templateUrl "/templates/add-group-form"})
+
+(def.directive jiksnu.addPictureForm
+  []
+  #js
+  {:controller "NewPictureController"
+   :scope true
+   :templateUrl "/templates/add-picture-form"})
 
 (def.directive jiksnu.addPostForm
   []
@@ -66,6 +80,7 @@
    :templateUrl "/templates/left-column-section"})
 
 (list-directive "Activities"    "activities")
+(list-directive "Albums"        "albums")
 (list-directive "Followers"     "followers")
 (list-directive "Following"     "following")
 (list-directive "Groups"        "groups")
@@ -73,6 +88,7 @@
 (list-directive "GroupMembers"  "group-members")
 (list-directive "Likes"         "likes")
 (list-directive "Notifications" "notifications")
+(list-directive "Pictures"      "pictures")
 (list-directive "Streams"       "streams")
 
 (def.directive jiksnu.navBar []
@@ -88,6 +104,8 @@
    :templateUrl "/templates/right-column-section"})
 
 (item-directive "Activity"               "activity")
+(item-directive "Album"                  "album")
+(item-directive "AlbumMinimal"           "album-minimal")
 (item-directive "Client"                 "client")
 (item-directive "ClientMinimal"          "client-minimal")
 (item-directive "Conversation"           "conversation")
@@ -100,6 +118,7 @@
 (item-directive "Like"                   "like")
 (item-directive "LikedBy"                "liked-by")
 (item-directive "Notification"           "notification")
+(item-directive "Picture"                "picture")
 (item-directive "RequestToken"           "request-token")
 (item-directive "StreamMinimal"          "stream-minimal")
 (item-directive "Subscription"           "subscription")

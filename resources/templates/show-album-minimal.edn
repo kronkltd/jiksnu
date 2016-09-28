@@ -1,0 +1,10 @@
+([:debug {:expr "item"}]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:p
+   [:a {:ui-sref "showAlbum(item)"} "{{item.name}}"]]
+  [:show-user-minimal {:data-id "{{item.owner}}"}]
+  [:div {:ng-if "app.user"}
+   [:ul.buttons
+    [:li
+     [:button.btn {:ng-click "deleteRecord(item)"} "Delete Album"]]]]])

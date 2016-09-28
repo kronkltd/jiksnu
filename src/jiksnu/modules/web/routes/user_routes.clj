@@ -250,6 +250,15 @@
   :subpage "activities"
   :parameters {:_id (path :model.user/id)})
 
+(defresource users-api :albums
+  :url "/{_id}/albums"
+  :name "user albums"
+  :description "Albums of {{username}}"
+  :mixins [subpage-resource]
+  :target-model "user"
+  :subpage "albums"
+  :parameters {:_id (path :model.user/id)})
+
 (defresource users-api :groups
   :url "/{_id}/groups"
   :name "user groups"

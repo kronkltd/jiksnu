@@ -4,25 +4,29 @@
   (:use-macros [gyr.core :only [def.service]]))
 
 (def page-mappings
-  {"activities"    "/model/activities"
-   "conversations" "/model/conversations"
-   "domains"       "/model/domains"
-   "feed-sources"  "/model/feed-sources"
-   "groups"        "/model/groups"
+  {"activities"        "/model/activities"
+   "albums"            "/model/albums"
+   "conversations"     "/model/conversations"
+   "domains"           "/model/domains"
+   "feed-sources"      "/model/feed-sources"
+   "groups"            "/model/groups"
    "group-memberships" "/model/group-memberships"
-   "likes"         "/model/likes"
-   "notifications" "/model/notifications"
-   "resources"     "/model/resources"
-   "streams"       "/model/streams"
-   "subscriptions" "/model/subscriptions"
-   "users"         "/model/users"})
+   "likes"             "/model/likes"
+   "notifications"     "/model/notifications"
+   "pictures"          "/model/pictures"
+   "resources"         "/model/resources"
+   "streams"           "/model/streams"
+   "subscriptions"     "/model/subscriptions"
+   "users"             "/model/users"})
 
 (def subpage-mappings
   {"Activity"     {"likes"      #(str "/model/activities/"    (.-_id %) "/likes")}
+   "Album"        {"pictures"   #(str "/model/albums/"        (.-_id %) "/pictures")}
    "Conversation" {"activities" #(str "/model/conversations/" (.-_id %) "/activities")}
    "Group"        {"members"    #(str "/model/groups/"        (.-_id %) "/members")}
    "Stream"       {"activities" #(str "/model/streams/"       (.-_id %) "/activities")}
    "User"         {"activities" #(str "/model/users/"         (.-_id %) "/activities")
+                   "albums"     #(str "/model/users/"         (.-_id %) "/albums")
                    "following"  #(str "/model/users/"         (.-_id %) "/following")
                    "followers"  #(str "/model/users/"         (.-_id %) "/followers")
                    "groups"     #(str "/model/users/"         (.-_id %) "/groups")

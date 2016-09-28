@@ -9,6 +9,7 @@
            jiksnu.model.FeedSource
            jiksnu.model.FeedSubscription
            jiksnu.model.Group
+           jiksnu.model.Picture
            jiksnu.model.RequestToken
            jiksnu.model.Resource
            jiksnu.model.Stream
@@ -54,3 +55,6 @@
 
 (fact "#'mock/a-request-token-exists"
   (mock/a-request-token-exists) => (partial instance? RequestToken))
+
+(fact "#'mock/there-is-a-picture"
+  (mock/there-is-a-picture) => (partial instance? Picture))

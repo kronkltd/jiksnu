@@ -3,6 +3,7 @@
 (def model-names
   ["access-token"
    "activity"
+   "album"
    "authentication-mechanism"
    "client"
    "conversation"
@@ -16,6 +17,7 @@
    "key"
    "like"
    "notification"
+   "pictures"
    "request-token"
    "resource"
    "subscription"
@@ -23,6 +25,7 @@
 
 (def action-group-names
   ["activity"
+   "album"
    "auth"
    "client"
    "conversation"
@@ -34,6 +37,7 @@
    "page"
    "like"
    "notification"
+   "picture"
    "request-token"
    "resource"
    "stream"

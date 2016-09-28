@@ -1,0 +1,11 @@
+[:form {:ng-submit "submit()" :name "albumForm"}
+ [:debug {:expr "albumForm"}]
+ [:debug {:expr "album"}]
+ [:fieldset
+  [:legend "Add an album"]
+  [:div.control-group
+   [:label {:for "name"} "Name"]
+   [:div.controls
+    [:input {:type "text" :ng-model "album.name" :name "name"}]]]]
+ [:div.controls
+  [:input.btn.btn-primary {:type "submit" :value "Submit"}]]]

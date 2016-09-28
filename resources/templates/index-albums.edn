@@ -1,0 +1,11 @@
+([:h1
+  [:span "Albums"]
+  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
+ [:debug {:expr "page"}]
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:add-album-form]
+  [:ul
+   [:li.well {:ng-repeat "id in page.items"}
+    [:debug {:expr "id"}]
+    [:show-album-minimal {:data-id "{{id}}"}]]]])

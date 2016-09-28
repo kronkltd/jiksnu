@@ -125,6 +125,10 @@
   [$scope app Users]
   (helpers/init-subpage $scope app Users "activities"))
 
+(def.controller jiksnu.ListAlbumsController
+  [$scope app Users]
+  (helpers/init-subpage $scope app Users "albums"))
+
 (def.controller jiksnu.ListFollowersController
   [$scope app Users]
   (helpers/init-subpage $scope app Users "followers"))
@@ -148,6 +152,10 @@
 (def.controller jiksnu.ListNotificationsController
   [$scope app Users]
   (helpers/init-subpage $scope app Users "notifications"))
+
+(def.controller jiksnu.ListPicturesController
+  [$scope app Albums]
+  (helpers/init-subpage $scope app Albums "pictures"))
 
 (def.controller jiksnu.ListStreamsController
   [$scope app app Users]
@@ -188,6 +196,7 @@
 (def.controller jiksnu.LogoutController [])
 
 (page-controller Activities       "activities")
+(page-controller Albums           "albums")
 (page-controller Clients          "clients")
 (page-controller Conversations    "conversations")
 (page-controller Domains          "domains")
@@ -196,6 +205,7 @@
 (page-controller GroupMemberships "group-memberships")
 (page-controller Likes            "likes")
 (page-controller Notifications    "notifications")
+(page-controller Pictures         "pictures")
 (page-controller RequestTokens    "request-tokens")
 (page-controller Resources        "resources")
 (page-controller Streams          "streams")
@@ -226,6 +236,28 @@
   (-> (.fetchStatus app)
       (.then (fn [] (set! (.-loaded $scope) true)))))
 
+(def.controller jiksnu.NewAlbumController
+  [$scope app $http]
+  (let [default-form #js {}]
+    (set! (.-init $scope) #(.reset $scope))
+    (set! (.-reset $scope) #(set! (.-album $scope) default-form))
+
+    (set! (.-submit $scope)
+          (fn []
+            (timbre/info "Submitting album form")
+            (let [params (.-album $scope)
+                  path "/model/albums"]
+              (.. $http
+                  (post path params)
+                  (then
+                   (fn [r]
+                     (timbre/info "Submitted")
+                     (js/console.log r))
+                   (fn [r]
+                     (timbre/info "Failed")
+                     (js/console.info r)))))))
+    (.init $scope)))
+
 (def.controller jiksnu.NewGroupController
   [$scope app $http]
   (let [default-form #js {}]
@@ -252,6 +284,43 @@
                          (fn [r]
                            (timbre/info "Failed")
                            (js/console.info r)))))))
+    (.init $scope)))
+
+(def.controller jiksnu.NewPictureController
+  [$scope app $http FileUploader]
+  (let [default-form #js {}
+        path "/model/pictures"]
+    (set! (.-init $scope) #(.reset $scope))
+    (set! (.-reset $scope) #(set! (.-album $scope) default-form))
+    (set! (.-uploader $scope)
+          (FileUploader.
+           #js
+           {:url path
+            :onBeforeUploadItem
+            (fn [item]
+              (let [form-data (.-formData item)
+                    album (.-item (.-$parent $scope))
+                    data #js {:album (.-_id album)}]
+                (.push form-data data)))}))
+
+    (set! (.-submit $scope)
+          (fn []
+            (timbre/info "Submitting picture form")
+            ;; TODO: Use the model
+            (let [params (.-album $scope)]
+
+              (.uploadAll (.-uploader $scope))
+
+              (.. $http
+                  (post path params)
+                  (then
+                   (fn [r]
+                     (timbre/info "Submitted")
+                     (js/console.log r))
+                   (fn [r]
+                     (timbre/info "Failed")
+                     (js/console.info r)))))))
+
     (.init $scope)))
 
 (def.controller jiksnu.NewPostController
@@ -358,6 +427,16 @@
 
   (helpers/init-item $scope $stateParams app Activities))
 
+(def.controller jiksnu.ShowAlbumController
+  [$scope $stateParams app Albums]
+  (set! (.-loaded $scope) false)
+  (helpers/init-item $scope $stateParams app Albums))
+
+(def.controller jiksnu.ShowAlbumMinimalController
+  [$scope $stateParams app Albums]
+  (set! (.-loaded $scope) false)
+  (helpers/init-item $scope $stateParams app Albums))
+
 (def.controller jiksnu.ShowDomainController
   [$scope $stateParams app Domains]
   (set! (.-loaded $scope) false)
@@ -413,6 +492,10 @@
 (def.controller jiksnu.ShowNotificationController
   [$scope $stateParams app Notifications]
   (helpers/init-item $scope $stateParams app Notifications))
+
+(def.controller jiksnu.ShowPictureController
+  [$scope $stateParams app Pictures]
+  (helpers/init-item $scope $stateParams app Pictures))
 
 (def.controller jiksnu.ShowRequestTokenController
   [$scope $http $stateParams app RequestTokens]
