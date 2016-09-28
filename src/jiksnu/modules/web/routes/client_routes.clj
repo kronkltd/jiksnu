@@ -98,14 +98,24 @@
   :mixins [angular-resource]
   :methods {:get {:state "authorizeClient"}
             :post {:summary "Do Authorize Client"}}
+  :allowed-methods [:get :post]
+  :new? false
+  :respond-with-entity? true
+  :post-redirect? (fn [ctx]
+                    (let [rt (::data ctx)]
+                      {:location (format "%s?oauth_token=%s&oauth_verifier=%s"
+                                         (:callback rt)
+                                         (:_id rt) (:verifier rt))}))
   :exists? (fn [ctx]
              (let [request (:request ctx)
-                   params (get-in ctx [:request :params])
                    author (model.user/get-user (:current (friend/identity request)))
                    token-id (get-in ctx [:request :params :oauth_token])
                    rt (model.request-token/fetch-by-id token-id)]
-               {:data rt}))
-  :post! (fn [ctx] (:data ctx)))
+               {::data rt}))
+  :post! (fn [ctx]
+           ;; TODO: Mark Request Token as used
+           (let [rt (::data ctx)]
+             {:data {:url rt}})))
 
 (defresource oauth :request-token
   :name "Request Token"
@@ -119,13 +129,13 @@
   :exists? (fn [ctx]
              (let [request (:request ctx)
                    client-id (get-in request [:authorization-client :_id])
-                   {callback "oauth_callback"
-                    consumer-key "oauth_consumer_key"
-                    nonce "oauth_nonce"
-                    signature "oauth_signature"
+                   {callback         "oauth_callback"
+                    consumer-key     "oauth_consumer_key"
+                    nonce            "oauth_nonce"
+                    signature        "oauth_signature"
                     signature-method "oauth_signature_method"
-                    timestamp "oauth_timestamp"
-                    version "oauth_version"
+                    timestamp        "oauth_timestamp"
+                    version          "oauth_version"
                     :as parts} (:authorization-parts request)]
                (if (= version "1.0")
                  ;; TODO: Verify signature

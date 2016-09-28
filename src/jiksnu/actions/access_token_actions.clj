@@ -63,28 +63,28 @@
 (defn get-access-token
   [params]
   (timbre/info "getting access token")
-  (let [version (get params "oauth_version")]
+  (let [{nonce        "oauth_nonce"
+         consumer-key "oauth_consumer_key"
+         timestamp    "oauth_timestamp"
+         signature    "oauth_signature"
+         signature-method "oauth_signature_method"
+         verifier     "oauth_verifier"
+         token        "oauth_token"
+         version      "oauth_version"} params]
     (if (= version "1.0")
-      (let [signature-method (get params "oauth_signature_method")]
-        (if (= signature-method "HMAC-SHA1")
-          (let [nonce (get params "oauth_nonce")
-                consumer-key (get params "oauth_consumer_key")
-                timestamp (get params "oauth_timestamp")
-                signature (get params "oauth_signature")
-                verifier (get params "oauth_verifier")
-                token (get params "oauth_token")]
-            (if-let [client (model.client/fetch-by-id consumer-key)]
-              (if-let [request-token (model.request-token/fetch-by-id token)]
-                (if (:access-token request-token)
-                  (throw+ "Request Token has already been consumed")
-                  (if (= consumer-key (:client request-token))
-                    (let [params {:client (:_id client)
-                                  :request-token (:_id request-token)
-                                  ;; FIXME: generate a random secret
-                                  :secret "foo"}]
-                      (create params))
-                    (throw+ "Consumer Key does not match request token's consumer.")))
-                (throw+ "Request token not found"))
-              (throw+ "Consumer not found")))
-          (throw+ "Unknown Signature method")))
+      (if (= signature-method "HMAC-SHA1")
+        (if-let [client (model.client/fetch-by-id consumer-key)]
+          (if-let [request-token (model.request-token/fetch-by-id token)]
+            (if (:access-token request-token)
+              (throw+ "Request Token has already been consumed")
+              (if (= consumer-key (:client request-token))
+                (let [params {:client (:_id client)
+                              :request-token (:_id request-token)
+                              ;; FIXME: generate a random secret
+                              :secret "foo"}]
+                  (create params))
+                (throw+ "Consumer Key does not match request token's consumer.")))
+            (throw+ "Request token not found"))
+          (throw+ "Consumer not found"))
+        (throw+ "Unknown Signature method"))
       (throw+ "Invalid Oauth version"))))
