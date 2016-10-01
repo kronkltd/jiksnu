@@ -423,7 +423,9 @@
 
   (set! (.-likeActivity $scope)
         (fn [activity]
-          (.invokeAction app "activity" "like" (.-id $scope))))
+          (-> app
+              (.invokeAction "activity" "like" (.-id $scope))
+              (.then (fn [] (.refresh $scope))))))
 
   (helpers/init-item $scope $stateParams app Activities))
 
