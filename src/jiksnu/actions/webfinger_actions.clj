@@ -22,20 +22,28 @@
       (throw+ {:msg "Could not fetch host meta"
                :type :fetch-error})))
 
-(defn get-xrd-template
-  []
-  (let [domain (actions.domain/current-domain)]
-    ;; TODO: Check ssl mode
-    (format "http://%s/main/xrd?uri={uri}" (:_id domain))))
-
-;; TODO: show domain, format :jrd
 (defn host-meta
   ([] (host-meta (actions.domain/current-domain)))
   ([domain]
-   (let [template (get-xrd-template)
-         links [{:template template
-                 :rel "lrdd"
-                 :title "Resource Descriptor"}]]
+   (let [prefix (str "http://" (:_id domain))
+         links [{:rel "lrdd"
+                 :type "application/xrd+xml"
+                 :template (str prefix "/main/xrd?uri={uri}")}
+                {:rel "lrdd"
+                 :type "application/json"
+                 :template (str prefix "/.well-known/webfinger?resource={uri}")}
+                {:rel "registration_endpoint"
+                 :href (str prefix "/api/client/register")}
+                {:rel "http://apinamespace.org/oauth/request_token"
+                 :href (str prefix "/oauth/request_token")}
+                {:rel "http://apinamespace.org/oauth/authorize"
+                 :href (str prefix "/oauth/authorize")}
+                {:rel "http://apinamespace.org/oauth/access_token"
+                 :href (str prefix "/oauth/access_token")}
+                {:rel "dialback"
+                 :href (str prefix "/api/dialback")}
+                {:rel "http://apinamespace.org/activitypub/whoami"
+                 :href (str prefix "/api/whoami")}]]
      {:host (:_id domain)
       :links links})))
 
