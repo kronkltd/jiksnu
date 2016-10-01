@@ -326,6 +326,7 @@
 (def.controller jiksnu.NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Streams Users]
   (timbre/debug "Loading New Post Controller")
+  (helpers/init-subpage $scope app Users "streams")
   (set! (.-addStream $scope)
         (fn [id]
           (timbre/debug "adding stream" id)
@@ -377,12 +378,10 @@
   (set! (.-toggle $scope)
         (fn []
           (timbre/debug "Toggling New Post form")
-          (set! (.. $scope -form -shown)
-                (not (.. $scope -form -shown)))
+          (set! (.. $scope -form -shown) (not (.. $scope -form -shown)))
           (when (.. $scope -form -shown)
             (.getLocation $scope)
             (.fetchStreams $scope))))
-  ;; (helpers/init-subpage $scope subpageService Users "streams")
   (.reset $scope))
 
 (def.controller jiksnu.NewStreamController
@@ -423,7 +422,9 @@
 
   (set! (.-likeActivity $scope)
         (fn [activity]
-          (.invokeAction app "activity" "like" (.-id $scope))))
+          (-> app
+              (.invokeAction "activity" "like" (.-id $scope))
+              (.then (fn [] (.refresh $scope))))))
 
   (helpers/init-item $scope $stateParams app Activities))
 

@@ -28,7 +28,7 @@
 
 (defn handle-created
   [{:keys [collection-name event item] :as data}]
-  ;; (timbre/debugf "%s(%s)=>%s" collection-name (:_id item) event)
+  (timbre/debugf "%s(%s)=>%s" collection-name (:_id item) event)
   (.increment (.counter (Kamon/metrics) "records-created"))
   (try
     (condp = collection-name

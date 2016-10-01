@@ -14,153 +14,155 @@ properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', 
             [$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: "https://github.com/${org}/${project}/"],
             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]]);
 
-stage 'Prepare Environment'
+stage('Prepare Environment') {
+    node('docker') {
+        step([$class: 'WsCleanup'])
 
-node {
-    step([$class: 'WsCleanup'])
+        // Set current git commit
+        checkout scm
 
-    // Set current git commit
-    checkout scm
+        sh "git rev-parse HEAD | tr -d '\n' | tee git-commit"
+        env.GIT_COMMIT = readFile('git-commit').trim()
 
-    sh "git rev-parse HEAD | tr -d '\n' | tee git-commit"
-    env.GIT_COMMIT = readFile('git-commit').trim()
+        sh 'git rev-parse --abbrev-ref HEAD | tee git-branch'
+        env.GIT_BRANCH = readFile('git-branch').trim()
 
-    sh 'git rev-parse --abbrev-ref HEAD | tee git-branch'
-    env.GIT_BRANCH = readFile('git-branch').trim()
+        sh 'git branch --contains HEAD -r | tee git-branches'
+        def gitBranches = readFile('git-branches').trim().tokenize('\n')
 
-    sh 'git branch --contains HEAD -r | tee git-branches'
-    def gitBranches = readFile('git-branches').trim().tokenize('\n')
+        def isPR = false
 
-    def isPR = false
-
-    for (branch in gitBranches) {
-        if (branch.contains('origin/pr')) {
-            isPR = true
-            break
-        }
-    }
-
-    // FIXME: Awaiting JENKINS-26481
-    // isPR = gitBranches.any { it.contains('origin/pr') }
-
-    if (env.BRANCH_NAME) {
-        env.GIT_BRANCH = env.BRANCH_NAME
-    } else if (isPR) {
-        def matcher = gitBranches =~ /origin\/pr\/(\d+)\/\*/
-        env.PR_NUMBER = matcher[0][1]
-        env.GIT_BRANCH = 'PR-' + env.PR_NUMBER
-    }
-
-    if (env.GIT_BRANCH == 'develop') {
-        env.BRANCH_TAG = 'latest'
-    } else if (env.GIT_BRANCH == 'master') {
-        // TODO: Parse version numbers
-        env.BRANCH_TAG = 'stable'
-    } else {
-        env.BRANCH_TAG = env.GIT_BRANCH.replaceAll('/', '-')
-    }
-
-    // Print Environment
-    sh 'env | sort'
-}
-
-stage 'Build Dev Image'
-
-node {
-    wrap([$class: 'AnsiColorBuildWrapper']) {
-        devImage = docker.build("${org}/${project}-dev:${env.BRANCH_TAG}",
-                                "-f docker/web-dev/Dockerfile .")
-
-        docker.withRegistry(repoPath, repoCreds) {
-            devImage.push()
-        }
-    }
-}
-
-stage 'Unit Tests'
-
-node {
-    try {
-        mongoContainer = docker.image('mongo').run()
-
-        devImage.inside("--link ${mongoContainer.id}:mongo") {
-            checkout scm
-
-            wrap([$class: 'AnsiColorBuildWrapper']) {
-                sh 'script/cibuild'
+        for (branch in gitBranches) {
+            if (branch.contains('origin/pr')) {
+                isPR = true
+                break
             }
         }
 
-        step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
-    } catch (caughtError) {
-        err = caughtError
-    } finally {
-        mongoContainer.stop()
+        // FIXME: Awaiting JENKINS-26481
+        // isPR = gitBranches.any { it.contains('origin/pr') }
 
-        if (err) {
-            throw err
+        if (env.BRANCH_NAME) {
+            env.GIT_BRANCH = env.BRANCH_NAME
+        } else if (isPR) {
+            def matcher = gitBranches =~ /origin\/pr\/(\d+)\/\*/
+            env.PR_NUMBER = matcher[0][1]
+            env.GIT_BRANCH = 'PR-' + env.PR_NUMBER
+        }
+
+        if (env.GIT_BRANCH == 'develop') {
+            env.BRANCH_TAG = 'latest'
+        } else if (env.GIT_BRANCH == 'master') {
+            // TODO: Parse version numbers
+            env.BRANCH_TAG = 'stable'
+        } else {
+            env.BRANCH_TAG = env.GIT_BRANCH.replaceAll('/', '-')
+        }
+
+        // Print Environment
+        sh 'env | sort'
+    }
+}
+
+stage('Build Dev Image') {
+    node('docker') {
+        wrap([$class: 'AnsiColorBuildWrapper']) {
+            devImage = docker.build("${org}/${project}-dev:${env.BRANCH_TAG}",
+                                    "-f docker/web-dev/Dockerfile .")
+
+            docker.withRegistry(repoPath, repoCreds) {
+                devImage.push()
+            }
         }
     }
 }
 
-stage 'Build Jars'
+stage('Unit Tests') {
+    node('docker') {
+        try {
+            mongoContainer = docker.image('mongo').run()
 
-node {
-    devImage.inside() {
-        checkout scm
-        sh 'lein install'
-        sh 'lein uberjar'
-        archive 'target/*jar'
-    }
-}
+            devImage.inside("--link ${mongoContainer.id}:mongo") {
+                checkout scm
 
-stage 'Build Run Image'
+                wrap([$class: 'AnsiColorBuildWrapper']) {
+                    sh 'script/cibuild'
+                }
+            }
 
-node {
-    wrap([$class: 'AnsiColorBuildWrapper']) {
-        sh "sigil -f Dockerfile.tmpl -p > Dockerfile"
+            step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
+        } catch (caughtError) {
+            err = caughtError
+        } finally {
+            mongoContainer.stop()
 
-        mainImage = docker.build("${org}/${project}:${env.BRANCH_TAG}")
-
-        docker.withRegistry(repoPath, repoCreds) {
-            mainImage.push()
+            if (err) {
+                throw err
+            }
         }
     }
 }
 
-stage 'Generate Reports'
-
-devImage.inside() {
-    checkout scm
-
-    wrap([$class: 'AnsiColorBuildWrapper']) {
-        sh 'lein doc'
+stage('Build Jars') {
+    node('docker') {
+        devImage.inside() {
+            checkout scm
+            sh 'lein install'
+            sh 'lein uberjar'
+            archive 'target/*jar'
+        }
     }
-
-    step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
-    step([$class: 'TasksPublisher', high: 'FIXME', normal: 'TODO', pattern: '**/*.clj,**/*.cljs'])
 }
 
-// stage 'Integration tests'
+stage('Build Run Image') {
+    node('docker') {
+        wrap([$class: 'AnsiColorBuildWrapper']) {
+            sh "sigil -f Dockerfile.tmpl -p > Dockerfile"
 
-// node {
-//     try {
-//         sh 'docker-compose up -d webdriver'
-//         sh 'docker-compose up -d jiksnu-integration'
+            mainImage = docker.build("${org}/${project}:${env.BRANCH_TAG}")
 
-//         sh "docker inspect workspace_jiksnu-integration_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_host"
-//         env.JIKSNU_HOST = readFile('jiksnu_host').trim()
+            docker.withRegistry(repoPath, repoCreds) {
+                mainImage.push()
+            }
+        }
+    }
+}
 
-//         sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
-//         sh 'docker-compose run --rm web-dev script/protractor'
-//     } catch (caughtError) {
-//         err = caughtError
-//     } finally {
-//         sh 'docker-compose stop'
-//         sh 'docker-compose rm -f'
+stage('Generate Reports') {
+    node('docker') {
+        devImage.inside() {
+            checkout scm
 
-//         if (err) {
-//             throw err
+            wrap([$class: 'AnsiColorBuildWrapper']) {
+                sh 'lein doc'
+            }
+
+            step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
+            step([$class: 'TasksPublisher', high: 'FIXME', normal: 'TODO', pattern: '**/*.clj,**/*.cljs'])
+        }
+    }
+}
+
+// stage('Integration tests') {
+//     node('docker') {
+//         try {
+//             sh 'docker-compose up -d webdriver'
+//             sh 'docker-compose up -d jiksnu-integration'
+
+//             sh "docker inspect workspace_jiksnu-integration_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_host"
+//             env.JIKSNU_HOST = readFile('jiksnu_host').trim()
+
+//             sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
+//             sh 'docker-compose run --rm web-dev script/protractor'
+//         } catch (caughtError) {
+//             err = caughtError
+//         } finally {
+//             sh 'docker-compose stop'
+//             sh 'docker-compose rm -f'
+
+//             if (err) {
+//                 throw err
+//             }
 //         }
 //     }
 // }

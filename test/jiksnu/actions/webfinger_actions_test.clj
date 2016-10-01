@@ -31,4 +31,4 @@
         response (actions.webfinger/host-meta)]
     response => map?
     (:host response) => domain
-    (count (:links response)) => (partial >= 1)))
+    (count (:links response)) => (partial <= 1)))
