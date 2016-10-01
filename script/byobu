@@ -1,0 +1,10 @@
+#!/bin/sh
+
+byobu new-session -d -s dev
+
+byobu new-window -t dev:1 -n "Server" "script/server"
+byobu new-window -t dev:2 -n "Watch" "script/watch-cljs"
+
+byobu select-window -t dev:1
+
+byobu -2 attach-session -t dev

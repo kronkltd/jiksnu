@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -ex
+
+docker-compose up -d mongo
+
+docker run \
+  --rm \
+  --name jiksnu-dev \
+  -it \
+  --net jiksnu_default \
+  -v ${PWD}:/app \
+  -v jiksnu-dev-media:/data \
+  -e CISTE_LOGGER=jiksnu.logger \
+  -e DOMAIN=dev.jiksnu.com \
+  -p 8081:8080 \
+  -p 7889:7888 \
+  repo.jiksnu.org/kronkltd/jiksnu-dev:feature-material \
+  script/byobu
