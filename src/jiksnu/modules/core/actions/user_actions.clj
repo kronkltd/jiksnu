@@ -348,9 +348,10 @@
   [params]
   (let [id (:_id params)]
     (or (model.user/fetch-by-id id)
-        (let [[_ username domain] (re-matches #"acct:([^@]+)@(.*)" id)]
+        (let [[_ username domain-id] (re-matches #"acct:([^@]+)@(.*)" id)]
           (timbre/infof "Username: %s" username)
-          (timbre/infof "Domain: %s" domain)
-          {:_id id
-           :username username
-           :domain domain}))))
+          (timbre/infof "Domain: %s" domain-id)
+          (let [domain (actions.domain/find-or-create {:_id domain-id})]
+            {:_id id
+             :username username
+             :domain (:_id domain)})))))
