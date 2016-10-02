@@ -44,7 +44,7 @@
   ([modules]
    (timbre/debugf "setup testing - %s" modules)
    (try+
-    (start-application! :test modules)
+    (start-application! modules)
     ;; (loader/register-module "jiksnu.modules.core")
     (timbre/debug "application started")
     (db/drop-all! )

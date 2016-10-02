@@ -170,10 +170,6 @@
   [action request]
   (apply action (:args request)))
 
-(deffilter #'actions.site/get-environment :command
-  [action request]
-  (apply action (:args request)))
-
 ;; (deffilter #'actions.site/get-load :command
 ;;   [action request]
 ;;   (apply action (:args request)))

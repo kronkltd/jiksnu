@@ -1,6 +1,5 @@
 (ns jiksnu.actions.setting-actions
-  (:require [ciste.config :refer [config describe-config set-config!
-                                  write-config!]]))
+  (:require [ciste.config :refer [config describe-config write-config!]]))
 
 (defn oauth-apps
   []
