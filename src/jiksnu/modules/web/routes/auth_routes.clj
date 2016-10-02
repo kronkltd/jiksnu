@@ -11,6 +11,13 @@
             [slingshot.slingshot :refer [try+]]
             [taoensso.timbre :as timbre]))
 
+(defn auth-remote-post
+  [{{{:keys [webfinger]} :params} :request}]
+  (timbre/infof "Webfinger: %s" webfinger)
+  (let [id (str "acct:" webfinger)
+        user (actions.user/get-remote-user {:_id id})]
+    {:data user}))
+
 (defn login-malformed?
   [{{{:keys [username password]} :params} :request}]
   (when (or username password)
@@ -57,13 +64,8 @@
   :allowed-methods [:get :post]
   :new? false
   :respond-with-entity? true
-  :post! (fn [ctx]
-           (let [{{{webfinger :webfinger :as params} :params :as request} :request} ctx]
-             (timbre/infof "Webfinger: %s" webfinger)
-             (util/inspect request)
-             (let [id (str "acct:" webfinger)
-                   user (actions.user/get-remote-user {:_id (util/inspect id)})]
-               {:data (util/inspect user)}))))
+  :handle-ok-post :data
+  :post! auth-remote-post)
 
 (defresource auth :login
   :url "/main/login"
