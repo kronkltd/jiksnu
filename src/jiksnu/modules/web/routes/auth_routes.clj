@@ -47,6 +47,14 @@
              {:data data}))
   :handle-created :data)
 
+(defresource auth :remote
+  :url "/main/remote"
+  :mixins [angular-resource]
+  :methods {:get  {:summary "Login Page"
+                   :state "loginPage"}}
+
+  )
+
 (defresource auth :login
   :url "/main/login"
   :mixins [angular-resource]

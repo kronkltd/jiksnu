@@ -1,0 +1,7 @@
+[:form {:method "post" :action "" :flex "" :layout "column"}
+ [:md-content
+  [:md-input-container {:flex ""}
+   [:label "Webfinger"]
+   [:input {:type "text" :ng-model "item.webfinger"}]]
+  [:md-input-container {:flex ""}
+   [:input.md-button.md-primary.md-raised {:type "submit"}]]]]
