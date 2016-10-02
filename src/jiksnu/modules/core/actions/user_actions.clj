@@ -343,3 +343,14 @@
       true)
     (throw+ {:type :auth
              :msg "Must be authenticated"})))
+
+(defn get-remote-user
+  [params]
+  (let [id (:_id params)]
+    (or (model.user/fetch-by-id id)
+        (let [[_ username domain] (re-matches #"acct:([^@]+)@(.*)" id)]
+          (timbre/infof "Username: %s" username)
+          (timbre/infof "Domain: %s" domain)
+          {:_id id
+           :username username
+           :domain domain}))))

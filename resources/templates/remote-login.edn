@@ -2,6 +2,6 @@
  [:md-content
   [:md-input-container {:flex ""}
    [:label "Webfinger"]
-   [:input {:type "text" :ng-model "item.webfinger"}]]
+   [:input {:type "text" :ng-model "item.webfinger" :name "webfinger"}]]
   [:md-input-container {:flex ""}
    [:input.md-button.md-primary.md-raised {:type "submit"}]]]]

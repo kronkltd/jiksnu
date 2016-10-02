@@ -1,10 +1,12 @@
 (ns jiksnu.modules.web.routes.auth-routes
   (:require [cemerick.friend :as friend]
+            [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.actions.auth-actions :as actions.auth]
             [jiksnu.modules.core.actions.user-actions :as actions.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]
+            [jiksnu.util :as util]
             [liberator.representation :refer [as-response ring-response]]
             [slingshot.slingshot :refer [try+]]
             [taoensso.timbre :as timbre]))
@@ -50,10 +52,18 @@
 (defresource auth :remote
   :url "/main/remote"
   :mixins [angular-resource]
-  :methods {:get  {:summary "Login Page"
-                   :state "loginPage"}}
-
-  )
+  :methods {:get  {:summary "Remote Login Page" :state "loginPage"}
+            :post {:summary "Remote Login"}}
+  :allowed-methods [:get :post]
+  :new? false
+  :respond-with-entity? true
+  :post! (fn [ctx]
+           (let [{{{webfinger :webfinger :as params} :params :as request} :request} ctx]
+             (timbre/infof "Webfinger: %s" webfinger)
+             (util/inspect request)
+             (let [id (str "acct:" webfinger)
+                   user (actions.user/get-remote-user {:_id (util/inspect id)})]
+               {:data (util/inspect user)}))))
 
 (defresource auth :login
   :url "/main/login"
