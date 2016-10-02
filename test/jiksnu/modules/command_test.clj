@@ -51,9 +51,10 @@
                        :args args}]
           (let [response (parse-command request)]
             response => map?
-            (let [body (:body response)]
-              (let [json-obj (json/read-str body :key-fn keyword)]
-                json-obj => map?))))))))
+            (let [body (:body response)
+                  json-obj (json/read-str body :key-fn keyword)]
+              json-obj => map?
+              (:items (:body json-obj)) => (contains (str (:_id activity))))))))))
 
 (fact "command 'get-page clients'"
   (let [name "get-page"
