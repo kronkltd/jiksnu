@@ -121,20 +121,16 @@
   (let [domain (or (:domain options)
                    (if (:local options)
                      (actions.domain/current-domain)
-                     (or (when-not (:local options)
-                           (get-this :domain))
-                         (a-domain-exists
-                          (select-keys options #{:local})))))
+                     (or (when-not (:local options) (get-this :domain))
+                         (a-domain-exists options))))
 
-        url (or (:topic options)
-                (fseq :uri))
+        url (or (:topic options) (fseq :uri))
         source (or (model.feed-source/fetch-by-topic url)
                    (actions.feed-source/create
                     (factory :feed-source
-                             {:domain (:_id domain)
-                              :topic url
-                              :hub (make-uri (:_id domain) "/push/hub")})
-                    {}))]
+                      {:domain (:_id domain)
+                       :topic url
+                       :hub (make-uri (:_id domain) "/push/hub")})))]
     (set-this :feed-source source)
     source))
 
@@ -145,8 +141,7 @@
         specialized-var (ns-resolve (the-ns 'jiksnu.mock) (symbol specialized-name))]
     (if specialized-var
       (apply specialized-var opts)
-      (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
-                                   (name type)))]
+      (let [ns-sym (symbol (format "jiksnu.actions.%s-actions" (name type)))]
         (require ns-sym)
         (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
           (when-let [record (create-fn (factory type opts))]
@@ -158,10 +153,10 @@
   [& [options]]
   (let [domain (or (:domain options)
                    (get-this :domain)
-                   (a-domain-exists))
+                   (a-domain-exists options))
         source (or (:update-source options)
                    (get-this :feed-source)
-                   (a-feed-source-exists {:domain domain}))
+                   (a-feed-source-exists (merge options {:domain domain})))
         conversation (actions.conversation/create
                       (factory :conversation {:domain (:_id domain)
                                               :local (:local domain)
