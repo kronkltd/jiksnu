@@ -6,7 +6,7 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths ["src" "src-cljs"]
-  :resource-paths ["resources" "target/resources"]
+  :resource-paths ["resources" "target/resources" "node_modules"]
   :dependencies [[cider/cider-nrepl "0.10.2"]
                  [ciste "0.6.0-SNAPSHOT"
                   :exclusions [ring/ring-core

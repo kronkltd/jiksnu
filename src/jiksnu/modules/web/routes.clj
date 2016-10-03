@@ -33,10 +33,9 @@
   (-> (routes
        (route/resources "/")
        (route/files "/assets" {:root "/data"})
+       (route/files "/vendor" {:root "node_modules"})
        (GET "/templates/*" [] #'helpers/serve-template)
-       (-> (routes
-            async-handler
-            #'core/jiksnu-routes)
+       (-> (routes async-handler #'core/jiksnu-routes)
            middleware/wrap-response-logging
            (wrap-trace :ui)
            middleware/wrap-user-binding

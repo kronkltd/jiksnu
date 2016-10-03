@@ -3,9 +3,5 @@
 set -e
 
 script/setup
-
-echo ">> Running Midje Tests"
-lein midje :config test.midje.clj
-
-echo ">> Running Karma Tests"
-node_modules/.bin/karma start --single-run
+script/midje
+script/karma

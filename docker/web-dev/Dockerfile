@@ -54,7 +54,7 @@ RUN set -x \
 COPY docker/web-dev/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 ADD script ${JIKSNU_HOME}/script
-ADD package.json project.clj bower.json .bowerrc ${JIKSNU_HOME}/
+ADD package.json project.clj ${JIKSNU_HOME}/
 
 RUN chown -R ${uid}:${gid} ${JIKSNU_HOME}
 

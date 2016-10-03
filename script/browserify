@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+
+echo ">> Gathering Client JS libraries"
+./node_modules/.bin/browserify main.js -o target/resources/public/main.js
