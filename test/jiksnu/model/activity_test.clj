@@ -21,7 +21,7 @@
     (model.activity/drop!)
     (let [n 15]
       (dotimes [i n]
-        (mock/there-is-an-activity))
+        (mock/an-activity-exists))
       (model.activity/count-records) => n)))
 
 (fact "#'model.activity/create"
@@ -44,5 +44,5 @@
 
   (fact "when given a real activity"
     (let [user (mock/a-user-exists)
-          activity (mock/there-is-an-activity {:user user})]
+          activity (mock/an-activity-exists {:user user})]
       (model.activity/get-author activity) => user)))

@@ -15,7 +15,7 @@
 (fact "route: activities-api/item :delete"
   (fact "when authenticated"
     (let [user (mock/a-user-exists)
-          activity (mock/there-is-an-activity {:user user})
+          activity (mock/an-activity-exists {:user user})
           url (str "/model/activities/" (:_id activity))
           request (-> (req/request :delete url)
                       (as-user user))]
@@ -23,7 +23,7 @@
       (model.activity/fetch-by-id (:_id activity)) => nil))
   (fact "when not authenticated"
     (let [user (mock/a-user-exists)
-          activity (mock/there-is-an-activity {:user user})
+          activity (mock/an-activity-exists {:user user})
           url (str "/model/activities/" (:_id activity))
           request (req/request :delete url)]
       (response-for request) => (contains {:status 401})

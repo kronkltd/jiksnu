@@ -15,7 +15,7 @@
 (fact "route: pictures-api/index :get"
   (fact "when there is a picture"
     (let [url "/model/pictures"]
-      (let [picture  (mock/there-is-a-picture)
+      (let [picture  (mock/a-picture-exists)
             response (util/inspect (response-for (req/request :get url)))]
         response =>
         (contains {:status status/success?

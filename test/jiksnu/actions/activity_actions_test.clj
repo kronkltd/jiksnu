@@ -37,13 +37,13 @@
     (fact "and the user owns the activity"
       (let [user (mock/a-user-exists)]
         (session/with-user user
-          (let [activity (mock/there-is-an-activity {:user user})]
+          (let [activity (mock/an-activity-exists {:user user})]
             (actions.activity/delete activity) => activity
             (model.activity/fetch-by-id (:_id activity)) => nil))))
     (fact "and the user does not own the activity"
       (let [user (mock/a-user-exists)
             author (mock/a-remote-user-exists)
-            activity (mock/there-is-an-activity {:user author})]
+            activity (mock/an-activity-exists {:user author})]
         (session/with-user user
           (actions.activity/delete activity) => (throws RuntimeException)
           (model.activity/fetch-by-id (:_id activity)) => activity)))))
@@ -52,7 +52,7 @@
   (fact "when the user has activities"
     (db/drop-all!)
     (let [user (mock/a-user-exists)
-          activity (mock/there-is-an-activity {:user user})]
+          activity (mock/an-activity-exists {:user user})]
       (actions.activity/fetch-by-user user) =>
       (contains {:totalItems 1
                  :items (has every? #(instance? ObjectId %))}))))
@@ -84,35 +84,35 @@
 (fact "#'actions.activity/show"
   (fact "when the record exists"
     (fact "and the record is viewable"
-      (let [activity (mock/there-is-an-activity)]
+      (let [activity (mock/an-activity-exists)]
         (actions.activity/show activity) => activity
         (provided
          (actions.activity/viewable? activity) => true)))
     (fact "and the record is not viewable"
-      (let [activity (mock/there-is-an-activity)]
+      (let [activity (mock/an-activity-exists)]
         (actions.activity/show activity) => (throws RuntimeException)
         (provided
          (actions.activity/viewable? activity) => false)))))
 
 (fact "#'actions.activity/viewable?"
   (fact "When it is public"
-    (let [activity (mock/there-is-an-activity)]
+    (let [activity (mock/an-activity-exists)]
       (actions.activity/viewable? activity .user.)) => truthy)
   (fact "when it is not public"
     (fact "when the user is the author"
       (let [user (mock/a-user-exists)
-            activity (mock/there-is-an-activity {:user user})]
+            activity (mock/an-activity-exists {:user user})]
         (actions.activity/viewable? activity user)) => truthy)
     (fact "when the user is not the author"
       (fact "when the user is an admin"
         (let [user (mock/a-user-exists {:admin true})
-              activity (mock/there-is-an-activity {:modifier "private"})]
+              activity (mock/an-activity-exists {:modifier "private"})]
           (actions.activity/viewable? activity user)) => truthy)
       (fact "when the user is not an admin"
         (let [user (mock/a-user-exists)
               author (mock/a-user-exists)
-              activity (mock/there-is-an-activity {:modifier "private"
-                                                   :user author})]
+              activity (mock/an-activity-exists {:modifier "private"
+                                                   :user   author})]
           (actions.activity/viewable? activity user)) => falsey))))
 
 (fact "#'actions.activity/edit"
@@ -130,12 +130,12 @@
       (actions.activity/edit params) => (throws)))
 
   (fact "when there is no actor"
-    (let [activity (mock/there-is-an-activity)
+    (let [activity (mock/an-activity-exists)
           params {:_id (:_id activity)}]
       (actions.activity/edit params) => (throws)))
 
   (fact "when the activity is not editable"
-    (let [activity (mock/there-is-an-activity)
+    (let [activity (mock/an-activity-exists)
           actor (mock/a-user-exists)
           params {:_id activity}]
       (session/with-user actor
@@ -143,7 +143,7 @@
 
   (fact "when the provided params contain invalid keys"
     (let [actor (mock/a-user-exists)
-          activity (mock/there-is-an-activity {:user actor})
+          activity (mock/an-activity-exists {:user actor})
           params {:_id (:_id activity)
                   :author "acct:foo@bar.baz"}]
       (session/with-user actor
@@ -151,7 +151,7 @@
 
   (fact "when the params are valid"
     (let [actor (mock/a-user-exists)
-          activity (mock/there-is-an-activity {:user actor})
+          activity (mock/an-activity-exists {:user actor})
           params {:_id (:_id activity)
                   :title (fseq :title)
                   :nsfw true}]
@@ -162,14 +162,14 @@
                    :nsfw true})))))
 
 (fact "#'actions.activity/oembed"
-  (let [activity (mock/there-is-an-activity)]
+  (let [activity (mock/an-activity-exists)]
     (actions.activity/oembed activity) =>
     (contains {:html string?})))
 
 (fact "#'actions.activity/fetch-by-conversation"
   (fact "when there are matching activities"
     (let [conversation (mock/a-conversation-exists)
-          activity (mock/there-is-an-activity {:conversation conversation})]
+          activity (mock/an-activity-exists {:conversation conversation})]
       (actions.activity/fetch-by-conversation conversation) =>
       (contains {:items #(= (count %) 1)}))))
 
@@ -177,8 +177,8 @@
   (fact "when there are matching activities"
     (let [conversation1 (mock/a-conversation-exists)
           conversation2 (mock/a-conversation-exists)
-          activity1 (mock/there-is-an-activity {:conversation conversation1})
-          activity2 (mock/there-is-an-activity {:conversation conversation2})
+          activity1 (mock/an-activity-exists {:conversation conversation1})
+          activity2 (mock/an-activity-exists {:conversation conversation2})
           ids [(:_id conversation1) (:_id conversation2)]]
       (actions.activity/fetch-by-conversations ids) =>
       (contains {:totalItems 2

@@ -22,7 +22,7 @@
   (fact "when there are activities"
     (let [user (mock/a-user-exists)]
       (dotimes [n 10]
-        (mock/there-is-an-activity {:user user}))
+        (mock/an-activity-exists {:user user}))
 
       (fact "when the user is not authenticated"
         (-> (req/request :get "/")
@@ -38,14 +38,14 @@
 
 (future-fact "route: root/oembed :get"
   (fact "when the format is json"
-    (let [activity (mock/there-is-an-activity)
+    (let [activity (mock/an-activity-exists)
           url (str "/main/oembed?format=json&url=" (:url activity))]
       (response-for (req/request :get url)) =>
       (contains {:status status/redirect?
                  :body string?})))
 
   (fact "when the format is xml"
-    (let [activity (mock/there-is-an-activity)
+    (let [activity (mock/an-activity-exists)
           url (str "/main/oembed?format=xml&url=" (:url activity))]
       (response-for (req/request :get url)) =>
       (contains {:status status/success?
