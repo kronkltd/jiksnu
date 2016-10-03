@@ -12,3 +12,4 @@ lein with-profile +e2e,+test cljsbuild once
 # lein cljsbuild once
 
 lein compile
+script/browserify

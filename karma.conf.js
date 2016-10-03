@@ -2,7 +2,7 @@
 // Generated on Wed Oct 30 2013 09:32:06 GMT+1100 (EST)
 
 module.exports = function(config) {
-  var vendorBase = "target/resources/public/vendor";
+  var vendorBase = "node_modules";
 
   config.set({
 
@@ -10,40 +10,14 @@ module.exports = function(config) {
     basePath: '',
 
     // frameworks to use
-    frameworks: [ 'jasmine' ],
+    frameworks: [ 'jasmine', 'browserify' ],
 
     // list of files / patterns to load in the browser
     files: [
-      "node_modules/es6-promise/dist/es6-promise.js",
-      vendorBase + "/jquery/dist/jquery.min.js",
-      vendorBase + "/angular/angular.min.js",
-      vendorBase + "/angular-datatables/dist/angular-datatables.min.js",
-      vendorBase + "/highlightjs/highlight.pack.js",
-      vendorBase + "/moment/min/moment.min.js",
-      vendorBase + "/underscore/underscore-min.js",
-      vendorBase + "/showdown/src/showdown.js",
-      vendorBase + "/datatables/media/js/jquery.dataTables.min.js",
-      vendorBase + "/angularjs-geolocation/dist/angularjs-geolocation.min.js",
-      vendorBase + "/angular-busy/dist/angular-busy.min.js",
-      vendorBase + "/js-data/dist/js-data.min.js",
-      vendorBase + "/js-data-angular/dist/js-data-angular.min.js",
-      vendorBase + "/angular-clipboard/angular-clipboard.js",
-      vendorBase + "/angular-file-upload/dist/angular-file-upload.min.js",
-      vendorBase + "/angular-moment/angular-moment.js",
-      vendorBase + "/angular-cfp-hotkeys/build/hotkeys.min.js",
-      vendorBase + "/angular-highlightjs/angular-highlightjs.js",
-      vendorBase + "/angular-markdown-directive/markdown.js",
-      vendorBase + "/angular-sanitize/angular-sanitize.min.js",
-      vendorBase + "/angular-bootstrap/ui-bootstrap-tpls.min.js",
-      vendorBase + "/angular-ui-notification/dist/angular-ui-notification.min.js",
-      vendorBase + "/angular-ui-router/release/angular-ui-router.min.js",
-      vendorBase + "/angular-ui-select/dist/select.min.js",
-      vendorBase + "/angular-validator/dist/angular-validator.min.js",
-      vendorBase + "/angular-websocket/angular-websocket.min.js",
-      vendorBase + "/raven-js/dist/raven.min.js",
-      vendorBase + "/raven-js/dist/plugins/angular.min.js",
+      "target/resources/public/main.js",
+      vendorBase + "/es6-promise/dist/es6-promise.js",
       vendorBase + "/angular-mocks/angular-mocks.js",
-      "node_modules/jasmine-promise-matchers/dist/jasmine-promise-matchers.js",
+      vendorBase + "/jasmine-promise-matchers/dist/jasmine-promise-matchers.js",
       "target/karma-test.js"
     ],
 
@@ -61,9 +35,25 @@ module.exports = function(config) {
       outputDir: "target/karma"
     },
 
-    // preprocessors: {
-    //     "target/karma-test.js": ["coverage"]
-    // },
+
+    plugins: [
+      'karma-browserify',
+      'karma-jasmine',                      // Required plugin
+      'karma-chrome-launcher',              // Launches Chrome
+      'karma-phantomjs-launcher',           // Launches PhantomJS
+      'karma-html-detailed-reporter',
+      'karma-junit-reporter',
+      'karma-notify-send-reporter'
+    ],
+
+    preprocessors: {
+      // "target/karma-test.js": ["coverage"],
+      "main.js": [ 'browserify']
+    },
+
+    browserify: {
+      debug: true
+    },
 
     // coverageReporter: {
     //     type: "html",

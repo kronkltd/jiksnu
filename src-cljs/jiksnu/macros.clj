@@ -36,7 +36,7 @@
           (list
            'js-obj
            "templateUrl" (str "/templates/show-" template-stub)
-           "scope" (list 'js-obj "id" "@" "item" "=")
+           "scope" (list 'js-obj "id" "@")
            "controller" (str "Show" klass-name "Controller")))))
 
 (defmacro state-hotkey
