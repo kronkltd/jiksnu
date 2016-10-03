@@ -98,7 +98,7 @@
     :methods #js {:getType (constantly "GroupMembership")}}))
 
 (def.factory jiksnu.Likes
-  [DS subpageService]
+  [DS]
   (.defineResource
    DS
    #js

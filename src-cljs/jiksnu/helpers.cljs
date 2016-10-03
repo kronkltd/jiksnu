@@ -55,7 +55,7 @@
    ["home"                  "/"                        "IndexConversations"    :public-timeline]
    ["indexActivities"       "/main/activities"         "IndexActivities"       :index-activities]
    ["indexAlbums"           "/main/albums"             "IndexAlbums"           :index-albums]
-   ["indexClients"          "/main/clients"            "IndexClents"           :index-clients]
+   ["indexClients"          "/main/clients"            "IndexClients"          :index-clients]
    ["indexDomains"          "/main/domains"            "IndexDomains"          :index-domains]
    ["indexFeedSources"      "/main/feed-sources"       "IndexFeedSources"      :index-feed-sources]
    ["indexGroups"           "/main/groups"             "IndexGroups"           :index-groups]

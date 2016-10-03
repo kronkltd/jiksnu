@@ -110,10 +110,9 @@
       (get-user username domain-name))))
 
 (defn fetch-by-domain
-  ([domain] (fetch-by-domain domain {}))
+  ([domain] (fetch-by-domain domain {:limit 20}))
   ([domain options]
-   (fetch-all {:domain (:_id domain)}
-              #_{:limit 20})))
+   (fetch-all {:domain (:_id domain)} options)))
 
 (defn update-record
   [^User new-user]

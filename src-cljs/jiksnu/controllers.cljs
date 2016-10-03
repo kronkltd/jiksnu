@@ -40,7 +40,7 @@
   (set! (.-init $scope)
         (fn []
           (when-let [id (.-id $scope)]
-            (timbre/debugf "Displaying avatar for %s" id)
+            ;; (timbre/debugf "Displaying avatar for %s" id)
             (set! (.-size $scope) (or (.-size $scope) 32))
             (.bindOne Users id $scope "user")
             (.find Users id))))
