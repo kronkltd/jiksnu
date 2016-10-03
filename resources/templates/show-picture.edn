@@ -1,10 +1,10 @@
 ([:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:debug {:expr "item"}]
-  [:img {:ng-src "/assets/{{item.filename}}" :alt "{{item.filename}}"}]
+  [:img {:ng-src "/assets/{{item._id}}.jpg" :alt "{{item.filename}}" :style "max-width: 100%"}]
   [:p "Album: {{item.album}}"]
-  [:p [:a {:ui-sref "showUser({_id: item.user})"} "{{item.user}}"]]
+  [:p "User: " [:a {:ui-sref "showUser({_id: item.user})"} "{{item.user}}"]]
   [:p "Created: " [:time {:datetime "{{item.created}}" :property "dc:published"}
                    [:span {:am-time-ago "item.created" :am-preprocess "utc"}]]]
-  [:div.action-buttons
-   [:button.btn {:ng-click "deleteRecord()"} "Delete Picture"]]])
+  [:md-button.md-icon-button {:ng-click "deleteRecord()" :aria-label "Delete Picture"}
+   [:ng-md-icon {:icon "delete"}]]])

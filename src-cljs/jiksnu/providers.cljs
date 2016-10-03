@@ -191,10 +191,27 @@
 
 (defn post
   "Create a new activity"
-  [app activity]
-  (let [$http (.inject app "$http")]
-    (timbre/infof "Posting Activity - %s" activity)
-    (.post $http "/model/activities" activity)))
+  [app activity & [pictures]]
+  (let [path "/model/activities"
+        $http (.inject app "$http")
+        form-data (js/FormData.)]
+
+    (js/console.info "pictures" pictures)
+
+    (.forEach
+     js/angular activity
+     (fn [v k]
+       (timbre/debugf "Adding parameter: %s => %s" k v)
+       (.append form-data k v)))
+
+    (doseq [picture pictures]
+      (js/console.info "Picture" picture)
+      (.append form-data "pictures[]" picture))
+
+    (timbre/infof "Posting Activity - %s" (js/JSON.stringify activity))
+    (.post $http path form-data
+           #js {:transformRequest (.-identity js/angular)
+                :headers #js {"Content-Type" js/undefined}})))
 
 (defn refresh
   "Send a signal for collections to refresh themselves"

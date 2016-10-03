@@ -4,7 +4,9 @@
             [jiksnu.model.picture :as model.picture]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]]
+            [taoensso.timbre :as timbre]
+            [clojure.java.io :as io]))
 
 (defn prepare-create
   [activity]
@@ -68,3 +70,15 @@
           (picture-activity target author)
           (throw+ {:msg "Could not find target activity"})))
       nil)))
+
+(defn upload
+  [user-id album-id file]
+  (timbre/debugf "Adding image to %s for user %s" album-id user-id)
+  (let [filename (:filename file)
+        src (:tempfile file)
+        picture (create {:filename filename
+                         :album album-id
+                         :user user-id})
+        dest (io/file "/data" (str (:_id picture) ".jpg"))]
+    (io/copy src dest)
+    picture))

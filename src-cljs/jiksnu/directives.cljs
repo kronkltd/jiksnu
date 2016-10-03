@@ -119,6 +119,7 @@
 (item-directive "LikedBy"                "liked-by")
 (item-directive "Notification"           "notification")
 (item-directive "Picture"                "picture")
+(item-directive "PictureMinimal"         "picture-minimal")
 (item-directive "RequestToken"           "request-token")
 (item-directive "StreamMinimal"          "stream-minimal")
 (item-directive "Subscription"           "subscription")
