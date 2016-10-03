@@ -10,10 +10,6 @@
    :body {:type "status-updated"
           :body stats}})
 
-(defview #'actions.site/get-environment :json
-  [request data]
-  {:body data})
-
 (defview #'actions.site/get-config :json
   [request data]
   {:body data})

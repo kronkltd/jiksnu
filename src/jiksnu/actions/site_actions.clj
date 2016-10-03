@@ -11,10 +11,6 @@
        (map keyword)
        (apply ciste.config/config)))
 
-(defn get-environment
-  []
-  (ciste.config/environment))
-
 ;; (defn get-load
 ;;   []
 ;;   (str (core.host/get-load-average)))

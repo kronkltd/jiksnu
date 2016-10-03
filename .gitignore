@@ -15,7 +15,6 @@
 certs
 checkouts*
 cookbooks
-config
 data
 deps.txt
 doc

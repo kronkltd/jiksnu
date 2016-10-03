@@ -16,7 +16,6 @@
   (add-command! "auth"            #'actions.auth/login)
   (add-command! "config"          #'actions.site/get-config)
   ;; (add-command! "connect"       #'http.actions/connect)
-  (add-command! "get-environment" #'actions.site/get-environment)
   ;; (add-command! "get-load"        #'actions.site/get-load)
   (add-command! "get-model"       #'actions/get-model)
   (add-command! "get-page"        #'actions/get-page)
