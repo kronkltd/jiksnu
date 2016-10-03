@@ -179,7 +179,7 @@
     (set-this :activity activity)
     activity))
 
-(defn there-is-an-activity
+(defn an-activity-exists
   [& [options]]
   (let [modifier (:modifier options "public")
         user (or (:user options) (get-this :user))
@@ -216,13 +216,13 @@
 (defn there-is-an-activity-by-another
   [modifier]
   (let [user (actions.user/create (factory :local-user))]
-    (there-is-an-activity {:modifier  modifier
-                           :user user})))
+    (an-activity-exists {:modifier modifier
+                           :user   user})))
 
-(defn there-is-a-picture
+(defn a-picture-exists
   [& [options]]
   (let [user (a-user-exists)
-        activity (there-is-an-activity {:user user})
+        activity (an-activity-exists {:user user})
         params {:activity (:_id activity)
                 :user (:_id user)}
         picture (actions.picture/create params)]
@@ -284,15 +284,15 @@
 
 (defn user-posts-activity
   []
-  (there-is-an-activity {:modifier "public"}))
+  (an-activity-exists {:modifier "public"}))
 
 (defn that-user-posts-activity
   []
   (let [user (get-that :user)
         params (factory :activity {:author (:_id user)})]
     (actions.activity/post params)
-    #_(there-is-an-activity {:modifier "public"
-                             :user user})))
+    #_(an-activity-exists {:modifier "public"
+                             :user   user})))
 
 (defn user-has-a-stream
   [& options]
@@ -306,7 +306,7 @@
   ([] (that-user-likes-this-activity {}))
   ([options]
    (let [user (:user options (or (get-that :user) (a-user-exists)))
-         activity (:activity options (or (get-this :activity) (there-is-an-activity)))
+         activity (:activity options (or (get-this :activity) (an-activity-exists)))
          params {:activity (:_id activity)
                  :user (:_id user)}]
      (actions.like/create params))))

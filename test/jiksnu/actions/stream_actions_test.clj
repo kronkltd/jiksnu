@@ -19,7 +19,7 @@
       :items empty?}))
   (fact "when there are activities"
     (db/drop-all!)
-    (let [activity (mock/there-is-an-activity)]
+    (let [activity (mock/an-activity-exists)]
       (actions.stream/public-timeline) =>
       (contains
        {:totalItems 1
@@ -28,7 +28,7 @@
 (fact "#'actions.stream/user-timeline"
   (fact "when the user has activities"
     (let [user (mock/a-user-exists)
-          activity (mock/there-is-an-activity)]
+          activity (mock/an-activity-exists)]
       (actions.stream/user-timeline user) =>
       (just
        user

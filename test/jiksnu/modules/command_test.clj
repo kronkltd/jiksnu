@@ -43,7 +43,7 @@
   (let [name "get-page"
         args '("activities")]
     (fact "when there are activities"
-      (let [activity (mock/there-is-an-activity)]
+      (let [activity (mock/an-activity-exists)]
         (let [ch (d/deferred)
               request {:channel ch
                        :name name
@@ -92,7 +92,7 @@
   (let [ch (d/deferred)
         command "get-sub-page"
         user (mock/a-user-exists)
-        activity (mock/there-is-an-activity :user user)
+        activity (mock/an-activity-exists :user user)
         model-name "user"
         id (:_id user)
         page-name "activities"

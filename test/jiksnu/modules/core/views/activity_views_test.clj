@@ -11,7 +11,7 @@
 (future-fact "apply-view #'actions.activity/oembed [:http :json]"
   (let [action #'actions.activity/oembed]
     (with-context [:http :json]
-      (let [activity (mock/there-is-an-activity)
+      (let [activity (mock/an-activity-exists)
             request {:params {:url (:id activity)}
                      :action action}
             response (filter-action action request)]
@@ -22,7 +22,7 @@
 (future-fact "apply-view #'actions.activity/oembed [:http :xml]"
   (let [action #'actions.activity/oembed]
     (with-context [:http :xml]
-      (let [activity (mock/there-is-an-activity)
+      (let [activity (mock/an-activity-exists)
             request {:params {:url (:id activity)}
                      :action action}
             item {} #_(filter-action action request)]

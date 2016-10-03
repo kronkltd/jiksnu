@@ -43,7 +43,7 @@
   (let [stream (mock/a-stream-exists)
         url (str "/model/streams/" (:_id stream) "/activities")
         request (-> (req/request :get url))]
-    (mock/there-is-an-activity {:stream stream})
+    (mock/an-activity-exists {:stream stream})
 
     (let [response (response-for request)]
       ;; (json/read-string (:body response)) => {}

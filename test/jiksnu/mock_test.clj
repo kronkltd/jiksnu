@@ -56,5 +56,5 @@
 (fact "#'mock/a-request-token-exists"
   (mock/a-request-token-exists) => (partial instance? RequestToken))
 
-(fact "#'mock/there-is-a-picture"
-  (mock/there-is-a-picture) => (partial instance? Picture))
+(fact "#'mock/a-picture-exists"
+  (mock/a-picture-exists) => (partial instance? Picture))

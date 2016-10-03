@@ -21,7 +21,7 @@
   (fact "When the user exists"
     (let [user (mock/a-user-exists)
           m 1]
-      (dotimes [n m] (mock/there-is-an-activity {:user user}))
+      (dotimes [n m] (mock/an-activity-exists {:user user}))
 
       (let [path (format "/model/users/%s/activities" (:_id user))
             request (req/request :get path)

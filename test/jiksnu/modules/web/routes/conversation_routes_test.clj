@@ -12,6 +12,6 @@
   (let [conversation (mock/a-conversation-exists)
         url (str "/model/conversations/" (:_id conversation) "/activities")
         request (req/request :get url)]
-    (mock/there-is-an-activity {:conversation conversation})
+    (mock/an-activity-exists {:conversation conversation})
     (let [response (response-for request)]
       response => (contains {:status 200}))))

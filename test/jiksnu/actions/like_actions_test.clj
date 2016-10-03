@@ -14,7 +14,7 @@
 
 (fact "#'jiksnu.actions.like-actions/delete"
   (let [user (mock/a-user-exists)
-        activity (mock/there-is-an-activity)
+        activity (mock/an-activity-exists)
         like (actions.like/create (factory
                                    :like
                                    {:user (:_id user)
