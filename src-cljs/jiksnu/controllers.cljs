@@ -287,39 +287,37 @@
     (.init $scope)))
 
 (def.controller jiksnu.NewPictureController
-  [$scope app $http FileUploader]
+  [$scope app $http]
   (let [default-form #js {}
         path "/model/pictures"]
     (set! (.-init $scope) #(.reset $scope))
     (set! (.-reset $scope) #(set! (.-album $scope) default-form))
-    (set! (.-uploader $scope)
-          (FileUploader.
-           #js
-           {:url path
-            :onBeforeUploadItem
-            (fn [item]
-              (let [form-data (.-formData item)
-                    album (.-item (.-$parent $scope))
-                    data #js {:album (.-_id album)}]
-                (.push form-data data)))}))
 
     (set! (.-submit $scope)
           (fn []
             (timbre/info "Submitting picture form")
             ;; TODO: Use the model
-            (let [params (.-album $scope)]
+            (let [params (.-album $scope)
+                  form-data (js/FormData. params)
+                  options #js {:transformRequest (.-identity js/angular)
+                               :headers #js {"Content-Type" js/undefined}}]
 
-              (.uploadAll (.-uploader $scope))
+              (doseq [o (.-files $scope)]
+                (.append form-data "files[]" (.-lfFile o)))
 
-              (.. $http
-                  (post path params)
-                  (then
-                   (fn [r]
-                     (timbre/info "Submitted")
-                     (js/console.log r))
-                   (fn [r]
-                     (timbre/info "Failed")
-                     (js/console.info r)))))))
+              (.append form-data "album" (.-_id (.-item $scope)))
+
+              (.forEach js/angular params
+                        (fn [k v] (.append form-data k v)))
+
+              (-> $http
+                  (.post path form-data options)
+                  (.then (fn [r]
+                           (timbre/info "Submitted")
+                           (js/console.log r))
+                         (fn [r]
+                           (timbre/info "Failed")
+                           (js/console.info r)))))))
 
     (.init $scope)))
 
@@ -341,6 +339,7 @@
                                               :longitude nil}
                                     :content ""})
   (set! (.-enabled $scope) (fn [] (.-data app)))
+  (set! (.-visible $scope) (fn [] (and (.enabled $scope) app.user)))
   (set! (.-fetchStreams $scope)
         (fn []
           (timbre/debug "fetching streams")
@@ -369,12 +368,14 @@
           (set! (.. $scope -activity -streams) #js [])))
   (set! (.-submit $scope)
         (fn []
-          (.. app
-              (post (.-activity $scope))
-              (then (fn []
-                      (.reset $scope)
-                      (.toggle $scope)
-                      (.refresh app))))))
+          (js/console.info "Scope: " $scope)
+          (let [activity (.-activity $scope)
+                pictures (map #(.-lfFile %) (.-files $scope))]
+            (-> (.post app activity pictures)
+                (.then (fn []
+                         (.reset $scope)
+                         (.toggle $scope)
+                         (.refresh app)))))))
   (set! (.-toggle $scope)
         (fn []
           (timbre/debug "Toggling New Post form")
@@ -495,6 +496,10 @@
   (helpers/init-item $scope $stateParams app Notifications))
 
 (def.controller jiksnu.ShowPictureController
+  [$scope $stateParams app Pictures]
+  (helpers/init-item $scope $stateParams app Pictures))
+
+(def.controller jiksnu.ShowPictureMinimalController
   [$scope $stateParams app Pictures]
   (helpers/init-item $scope $stateParams app Pictures))
 

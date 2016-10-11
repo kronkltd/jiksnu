@@ -7,8 +7,10 @@
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [octohipster.mixins :as mixin]))
+            [octohipster.mixins :as mixin]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defgroup jiksnu pictures
   :name "Pictures"
@@ -33,22 +35,16 @@
 (defresource pictures-api :collection
   :desc "Collection route for pictures"
   :mixins [page-resource]
-  :available-formats [:json]
-  :allowed-methods [:get :post]
-  :available-media-types ["application/json"]
   :methods {:get {:summary "Index Pictures"}
             :post {:summary "Create Picture"}}
+  :available-formats [:json]
   :post! (fn [{{:keys [params] :as request} :request :as ctx}]
-           (let [username (get-in ctx [:request :session :cemerick.friend/identity :current])
-                 user (model.user/get-user username)
-                 filename (:filename (:file params))
-                 src (:tempfile (:file params))
-                 dest (io/file "/data" filename)]
-             (actions.picture/create
-              {:filename filename
-               :album (util/make-id (:album params))
-               :user (:_id user)})
-             (io/copy src dest)))
+           (let [username (get-in ctx [:request :session :cemerick.friend/identity :current])]
+             (if-let [user (model.user/get-user username)]
+               (let [files (:files params)]
+                 (doseq [file files]
+                   (actions.picture/upload (:_id user) (:album params) file)))
+               (throw+ {:body "Could not get user"}))))
   ;; :schema picture-schema
   :ns 'jiksnu.actions.picture-actions)
 

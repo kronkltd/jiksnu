@@ -1,11 +1,9 @@
-[:form {:ng-submit "submit()" :name "albumForm"}
- [:debug {:expr "albumForm"}]
- [:debug {:expr "album"}]
- [:fieldset
-  [:legend "Add an album"]
-  [:div.control-group
+[:div {:title "add-album-form"}
+ [:form {:ng-submit "submit()" :name "albumForm" :layout "row" :flex ""}
+  [:debug {:expr "albumForm"}]
+  [:debug {:expr "album"}]
+  [:md-input-container.md-block
    [:label {:for "name"} "Name"]
-   [:div.controls
-    [:input {:type "text" :ng-model "album.name" :name "name"}]]]]
- [:div.controls
-  [:input.btn.btn-primary {:type "submit" :value "Submit"}]]]
+   [:input {:type "text" :ng-model "album.name" :name "name"}]]
+  [:md-input-container
+   [:input.md-button.md-primary.md-raised {:type "submit" :value "Submit"}]]]]

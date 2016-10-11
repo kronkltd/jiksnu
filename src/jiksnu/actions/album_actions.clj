@@ -127,10 +127,10 @@
       (create params)))
 
 (defn fetch-by-user
-  ([user]
-   (fetch-by-user user nil))
-  ([user options]
-   (index {:owner (:_id user)} options)))
+  [user & [name]]
+  (let [params {:owner (:_id user)}
+        params (merge params (when name {:name name}))]
+    (index params)))
 
 (defn handle-delete-hook
   [user]

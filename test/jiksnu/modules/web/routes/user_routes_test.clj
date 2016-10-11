@@ -6,7 +6,8 @@
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req]
+            [net.cgrand.enlive-html :as enlive]))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
@@ -54,4 +55,4 @@
     (-> (req/request :get path)
         response-for) =>
     (contains {:status status/success?
-               :body #(enlive/select (th/hiccup->doc %) [:.subscriptions])})))
+               :body   #(enlive/select (th/hiccup->doc %) [:.subscriptions])})))
