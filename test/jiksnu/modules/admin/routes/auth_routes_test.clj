@@ -6,7 +6,8 @@
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req])
+  (:import (org.apache.http HttpStatus)))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.admin"])
@@ -25,4 +26,4 @@
         (let [response (-> (req/request :get "/admin/auth")
                            response-for)]
           response => map?
-          (:status response) => status/success?)))))
+          (:status response) => HttpStatus/SC_OK)))))

@@ -2,7 +2,6 @@
   (:require [ciste.sections.default :refer [uri]]
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             [jiksnu.model.group :as model.group]
             jiksnu.modules.web.routes.group-routes
@@ -10,7 +9,8 @@
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req])
+  (:import (org.apache.http HttpStatus)))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
@@ -20,7 +20,7 @@
         request (req/request :get url)]
     (response-for request) =>
     (contains
-     {:status 200})))
+     {:status HttpStatus/SC_OK})))
 
 (facts "route: group-api/collection :post"
   (let [params (factory :group)
@@ -29,12 +29,12 @@
                     (req/body (json/json-str params))
                     (req/content-type "application/json"))
         response (response-for request)]
-    response => (contains {:status 303})
+    response => (contains {:status HttpStatus/SC_SEE_OTHER})
     (let [location (get-in response [:headers "Location"])]
       (if location
         (let [request2 (req/request :get location)
               response2 (response-for request2)]
-          response2 => (contains {:status 200})
+          response2 => (contains {:status HttpStatus/SC_OK})
           (let [body (json/read-str (:body response2))]
             body => (contains {"name" (:name params)})))
         (do
@@ -46,7 +46,7 @@
           url (str "/model/groups/" (:_id group))
           request (-> (req/request :delete url))
           response (response-for request)]
-      response => (contains {:status 401})
+      response => (contains {:status HttpStatus/SC_UNAUTHORIZED})
       (model.group/fetch-by-id (:_id group)) => group))
   (fact "when authenticated as the owner"
     (let [user (mock/a-user-exists)
@@ -55,7 +55,7 @@
           request (-> (req/request :delete url)
                       (as-user user))
           response (response-for request)]
-      response => (contains {:status 200})
+      response => (contains {:status HttpStatus/SC_OK})
       (model.group/fetch-by-id (:_id group)) => nil)))
 
 (facts "route: group-api/item :get"
@@ -64,7 +64,7 @@
         request (req/request :get url)]
     (response-for request) =>
     (contains
-     {:status 200})))
+     {:status HttpStatus/SC_OK})))
 
 (facts "route: group-api/members :get"
   (let [user (mock/a-user-exists)
@@ -75,7 +75,7 @@
         request (req/request :get path)
         response (response-for request)]
 
-    response => (contains {:status status/success?})
+    response => (contains {:status HttpStatus/SC_OK})
 
     (let [body (json/read-json (:body response))]
       body => (contains {:totalItems 1}))))

@@ -7,7 +7,8 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]
-            [net.cgrand.enlive-html :as enlive]))
+            [net.cgrand.enlive-html :as enlive])
+  (:import (org.apache.http HttpStatus)))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
@@ -15,8 +16,8 @@
 (fact "route: users-api/index :get"
   (let [url "/main/users"]
     (response-for (req/request :get url)) =>
-    (contains {:status status/success?
-               :body string?})))
+    (contains {:status HttpStatus/SC_OK
+               :body   string?})))
 
 (fact "route: users-api/activities :get"
   (fact "When the user exists"
@@ -27,7 +28,7 @@
       (let [path (format "/model/users/%s/activities" (:_id user))
             request (req/request :get path)
             response (response-for request)]
-        response => (contains {:status status/success?})
+        response => (contains {:status HttpStatus/SC_OK})
         (let [parsed-body (some-> response :body json/read-str)]
           parsed-body => (contains {"items"      (has every? string?)
                                     "totalItems" m}))))))
@@ -43,7 +44,7 @@
       (let [path (format "/model/users/%s/groups" (:_id user))
             request (req/request :get path)
             response (response-for request)]
-        response => (contains {:status status/success?})
+        response => (contains {:status HttpStatus/SC_OK})
         (let [parsed-body (some-> response :body json/read-str)]
           parsed-body => (contains {"items" (has every? string?)
                                     "totalItems" m}))))))
@@ -54,5 +55,5 @@
         path (str "/users/" (:_id user) "/subscriptions")]
     (-> (req/request :get path)
         response-for) =>
-    (contains {:status status/success?
+    (contains {:status HttpStatus/SC_OK
                :body   #(enlive/select (th/hiccup->doc %) [:.subscriptions])})))

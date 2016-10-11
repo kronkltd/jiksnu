@@ -14,7 +14,8 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.stream-transforms :as transforms.stream]
             [slingshot.slingshot :refer [throw+ try+]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:import (org.apache.http HttpStatus)))
 
 ;; hooks
 
@@ -137,9 +138,9 @@
             (s/map format-message)
             (s/map (fn [m] (str m "\r\n"))))
        stream)
-      {:status 200
+      {:status  HttpStatus/SC_OK
        :headers {"content-type" "application/json"}
-       :body stream}))
+       :body    stream}))
 
 (defn format-event
   [m]

@@ -7,7 +7,8 @@
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
-  (:import nu.xom.Document))
+  (:import nu.xom.Document
+           (org.apache.http HttpStatus)))
 
 (defn fetch-host-meta
   [url]
@@ -16,7 +17,7 @@
   (timbre/infof "fetching host meta: %s" url)
   (or (try
         (let [response @(ops/update-resource url)]
-          (when (= 200 (:status response))
+          (when (= (:status response) HttpStatus/SC_OK)
             (cm/string->document (:body response))))
         (catch RuntimeException ex))
       (throw+ {:msg "Could not fetch host meta"
