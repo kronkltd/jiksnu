@@ -1,5 +1,6 @@
 (ns jiksnu.modules.core.triggers.domain-triggers
-  (:require [jiksnu.actions.domain-actions :as actions.domain]
+  (:require [ciste.event :as event]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.channels :as ch]
             [jiksnu.model.domain :as model.domain]
@@ -43,4 +44,4 @@
   []
   (s/consume #'handle-pending-get-domain ch/pending-get-domain)
   (s/consume #'handle-pending-get-discovered ch/pending-get-discovered)
-  (s/consume #'handle-add-link (bus/subscribe ch/events ":domains:linkAdded")))
+  (s/consume #'handle-add-link (bus/subscribe event/events ":domains:linkAdded")))

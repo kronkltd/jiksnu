@@ -2,6 +2,7 @@
   (:require [cemerick.friend :as friend]
             [ciste.commands :refer [add-command!]]
             [ciste.core :refer [defaction with-format with-serialization]]
+            [ciste.event :as event]
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
             [clojure.data.json :as json]
@@ -64,7 +65,7 @@
     (dosync
      (alter connections #(assoc-in % [user-id connection-id] response-channel)))
 
-    (bus/publish! ch/events :connection-opened status)
+    (event/notify :connection-opened status)
 
     (server/send! ch (json/json-str {:connection connection-id}))
 
@@ -80,12 +81,12 @@
     ;; Send posted activities to connected clients
     (s/connect
      (s/map #(transform-activities connection-id %)
-            (bus/subscribe ch/events :activity-posted))
+            (bus/subscribe event/events :activity-posted))
      response-channel)
 
     (s/connect
      (s/map #(transform-conversations connection-id %)
-            (bus/subscribe ch/events :conversation-created))
+            (bus/subscribe event/events :conversation-created))
      response-channel)
 
     (s/consume #(server/send! ch %) response-channel)

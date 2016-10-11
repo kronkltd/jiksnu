@@ -1,5 +1,6 @@
 (ns jiksnu.modules.core.triggers.user-triggers
-  (:require [jiksnu.namespace :as ns]
+  (:require [ciste.event :as event]
+            [jiksnu.namespace :as ns]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
@@ -59,7 +60,7 @@
   []
   (s/consume #'handle-pending-get-user-meta ch/pending-get-user-meta)
   (s/consume #'handle-add-link
-             (bus/subscribe ch/events ":users:linkAdded")))
+             (bus/subscribe event/events ":users:linkAdded")))
 
 (defn init-hooks
   []
