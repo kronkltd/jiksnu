@@ -70,28 +70,7 @@
     (when-let [dsn (config* :sentry :dsn :client)]
       [:script {:type "text/javascript"}
        (str "SENTRY_DSN_CLIENT=\"" dsn "\"")])]
-   [:body
-    [:nav-bar]
-    [:div.container
-     ;; [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
-     [:div.row
-      #_[:left-column.col-sm-2]
-      [:div.col-sm-12
-       [:add-post-form.center]
-       [:h1 {:data-bind "text: title"}]
-       [:div {:ui-view ""}]]
-      #_[:right-column.col-sm-2]]]
-    [:footer.row.page-footer
-     [:p "Copyright © 2011-2016 KRONK Ltd."]
-     [:p "Powered by "
-      [:a {:href "https://github.com/kronkltd/jiksnu"}
-       "Jiksnu"]]
-     [:p
-      [:a {:href (str "/vendor/swagger-ui/dist/index.html?url=https://"
-                      (config :domain)
-                      "/api-docs.json")
-           :target "_top"}
-       "API"]]]]))
+   [:body {:main-layout ""}]))
 
 (defmethod apply-template :html
   [request response]

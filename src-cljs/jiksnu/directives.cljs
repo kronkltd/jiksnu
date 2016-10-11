@@ -73,6 +73,12 @@
   {:scope true
    :templateUrl "/templates/groups-widget"})
 
+(def.directive jiksnu.mainLayout []
+  #js
+  {:templateUrl "/templates/main-layout"
+   :controller "MainLayoutController"})
+
+
 (def.directive jiksnu.leftColumn []
   #js
   {:controller "LeftColumnController"

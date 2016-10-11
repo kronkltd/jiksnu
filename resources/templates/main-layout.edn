@@ -1,0 +1,14 @@
+([:nav-bar]
+ [:div.container
+  ;; [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
+  [:div.row
+   #_[:left-column.col-sm-2]
+   [:div.col-sm-12
+    [:add-post-form.center]
+    [:h1 {:data-bind "text: title"}]
+    [:div {:ui-view ""}]]
+   #_[:right-column.col-sm-2]]
+  [:footer.row.page-footer {:style "text-align: center"}
+   [:p "Copyright © 2011-2016 KRONK Ltd."]
+   [:p "Powered by " [:a {:href "https://github.com/kronkltd/jiksnu"} "Jiksnu"]]
+   [:p [:a {:ng-href "{{apiUrl}}" :target "_top"} "API"]]]])

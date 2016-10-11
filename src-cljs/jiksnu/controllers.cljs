@@ -212,6 +212,21 @@
 (page-controller Subscriptions    "subscriptions")
 (page-controller Users            "users")
 
+(def.controller jiksnu.MainLayoutController
+  [$location $scope app]
+  (let [protocol (.protocol $location)
+        hostname (.host $location)
+        port (.port $location)
+        secure? (= protocol "https")
+        default-port? (or (and secure?       (= port 443))
+                          (and (not secure?) (= port 80)))]
+    (set! (.-apiUrl $scope)
+          (str "/vendor/swagger-ui/dist/index.html?url="
+               protocol "://" hostname
+               (when-not default-port? (str ":" port))
+               "/api-docs.json"))
+    (set! (.-logout $scope) (.-logout app))))
+
 (def.controller jiksnu.NavBarController
   [$scope app hotkeys $state]
   (set! (.-app2 $scope) app)
