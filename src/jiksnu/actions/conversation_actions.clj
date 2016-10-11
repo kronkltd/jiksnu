@@ -1,5 +1,6 @@
 (ns jiksnu.actions.conversation-actions
-  (:require [clj-time.core :as time]
+  (:require [ciste.event :as event]
+            [clj-time.core :as time]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.model.conversation :as model.conversation]
@@ -37,7 +38,7 @@
   [params]
   (if-let [conversation (prepare-create params)]
     (let [conversation (model.conversation/create conversation)]
-      (bus/publish! ch/events :conversation-created conversation)
+      (event/notify :conversation-created conversation)
       conversation)
     (throw+ "Could not prepare conversation")))
 
@@ -96,7 +97,7 @@
 (defn add-activity
   [conversation activity]
   (when-not (:parent activity)
-    (bus/publish! ch/events ":conversations:parent:set" [conversation activity])
+    (event/notify ":conversations:parent:set" [conversation activity])
     (model.conversation/set-field! conversation :parent (:_id activity)))
   #_(let [lu (:lastUpdated conversation)
           c (:published activity)]

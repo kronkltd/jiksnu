@@ -1,6 +1,7 @@
 (ns jiksnu.modules.core.actions
   (:require [ciste.commands :refer [add-command!]]
             [ciste.core :refer [with-format with-serialization]]
+            [ciste.event :as event]
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
             [jiksnu.channels :as ch]
@@ -99,7 +100,7 @@
                        :action action-name
                        :id id
                        :body body}]
-         (bus/publish! ch/events ":actions:invoked" response)
+         (event/notify ":actions:invoked" response)
          response)
        (do
          (timbre/warnf "could not find action for: %s(%s) => %s"

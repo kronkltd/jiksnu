@@ -1,5 +1,6 @@
 (ns jiksnu.actions.activity-actions
   (:require [ciste.config :refer [config]]
+            [ciste.event :as event]
             [clojure.set :as set]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
@@ -111,7 +112,7 @@
   (if-let [prepared-post (prepare-post activity)]
     (do (-> activity :pictures model.activity/parse-pictures)
         (let [created-activity (create prepared-post)]
-          (bus/publish! ch/events :activity-posted created-activity)
+          (event/notify :activity-posted created-activity)
           created-activity))
     (throw+ "error preparing")))
 

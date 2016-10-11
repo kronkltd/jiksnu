@@ -1,5 +1,6 @@
 (ns jiksnu.templates.actions
-  (:require [jiksnu.channels :as ch]
+  (:require [ciste.event :as event]
+            [jiksnu.channels :as ch]
             [jiksnu.db :refer [_db]]
             [manifold.bus :as bus]
             [monger.collection :as mc]
@@ -44,7 +45,7 @@
 (defn make-add-link*
   [collection-name]
   (fn [item link]
-    (bus/publish! ch/events (str collection-name ":linkAdded") [item link])
+    (event/notify (str collection-name ":linkAdded") {:item item :link link})
     (mc/update @_db collection-name
                (select-keys item #{:_id})
                {:$addToSet {:links link}})

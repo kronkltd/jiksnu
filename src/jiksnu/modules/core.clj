@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core
   (:require [ciste.event :as event]
             [ciste.loader :refer [defmodule]]
-            [clojurewerkz.eep.emitter :refer [defobserver delete-handler get-handler]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]
             [jiksnu.actions.like-actions :as actions.like]
@@ -72,22 +71,16 @@
 
     (actions.subscription/setup-delete-hooks)
 
-    (->> (bus/subscribe ch/events :activity-posted)
+    (->> (bus/subscribe event/events :activity-posted)
          (s/consume actions.subscription/handle-follow-activity))
 
-    (->> (bus/subscribe ch/events :activity-posted)
+    (->> (bus/subscribe event/events :activity-posted)
          (s/consume actions.like/handle-like-activity))
 
     (triggers.domain/init-receivers)
 
-    ;; (timbre/info "setting up handle created")
-    (when-not ((get-handler event/emitter) ::templates.model/item-created)
-      (defobserver event/emitter ::templates.model/item-created handle-created))
-
-    ;; (defobserver event/emitter ::templates.model/item-created
-    ;;   (fn [{:keys [collection-name event item]}]
-    ;;     (timbre/info "Duplicate observer")
-    ;;     (util/inspect event)))
+    (->> (bus/subscribe event/events ::templates.model/item-created)
+         (s/consume handle-created))
 
     (doseq [model-name registry/action-group-names]
       (util/require-module "jiksnu.modules" "core" model-name))
@@ -97,7 +90,6 @@
 (defn stop
   []
   ;; (timbre/info "Stopping core")
-  (delete-handler event/emitter ::templates.model/item-created)
   ;; (dosync
   ;;  (ref-set db/_db nil)
   ;;  (ref-set db/_conn nil))

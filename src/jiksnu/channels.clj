@@ -2,8 +2,6 @@
   (:require [manifold.bus :as bus]
             [manifold.stream :as s]))
 
-(defonce events (bus/event-bus))
-
 ;; async fetchers
 
 (defonce pending-get-conversation

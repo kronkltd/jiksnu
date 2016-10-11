@@ -1,5 +1,6 @@
 (ns jiksnu.actions.album-actions
   (:require [ciste.config :refer [config]]
+            [ciste.event :as event]
             [clojure.set :as set]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
@@ -60,7 +61,7 @@
   ;; TODO: validate user
   (if-let [prepared-post (prepare-post album)]
     (let [created-album (create prepared-post)]
-      (bus/publish! ch/events :album-posted created-album)
+      (event/notify :album-posted created-album)
       created-album)
     (throw+ "error preparing")))
 
