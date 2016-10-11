@@ -42,12 +42,17 @@
     (var-get (ns-resolve (:ns m) (symbol (str (:name m) "-routes"))))))
 
 (defn init-site-reloading!
-  [f]
-  (add-watch
-   resources
-   :site (fn [k r os ns]
-           (timbre/debug "refreshing site")
-           (f))))
+  "Initialize reloading for the var site"
+  [site]
+  (let [{site-ns :ns site-name :name} (meta site)
+        groups-var (ns-resolve site-ns (symbol (str site-name "-groups")))
+        groups @(var-get groups-var)
+        init-var (ns-resolve site-ns (symbol (str site-name "-init")))]
+    (doseq [group-var groups]
+      (let [{group-ns :ns group-name :name} (meta group-var)
+            resources-var (ns-resolve group-ns (symbol (str group-name "-resources")))
+            resources (var-get resources-var)]
+        (add-watch resources :site (fn [k r os ns] (timbre/debug "refreshing site") (init-var)))))))
 
 (defn update-groups
   [groups]
@@ -85,7 +90,8 @@
     `(do
        (def ~site-name ~options)
        (declare ~route-sym)
-       (defonce ~group-sym (ref []))
+       (declare ~resource-sym)
+       (defonce ~group-sym (ref #{}))
        (def ~init-sym (fn []
                         (let [groups# (update-groups @~group-sym)
                               body# (assoc ~options :groups groups#)]
