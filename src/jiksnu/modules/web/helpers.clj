@@ -10,6 +10,7 @@
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
             [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
+            [jiksnu.session :as session]
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
@@ -116,6 +117,54 @@
             :count (constantly 4)}
            (ciste-resource r))
     (throw+ "Could not resolve index action")))
+
+(defn get-handler
+  [ctx handler-sym]
+  (if-let [action-ns-sym (:ns (:resource ctx))]
+    (if-let [model-ns-var (some-> (action-ns-sym) (ns-resolve 'model-ns))]
+      (if-let [model-ns-ref (var-get model-ns-var)]
+        (or (ns-resolve model-ns-ref handler-sym)
+            (throw+ {:message "Could not determine handler sym" :handler handler-sym}))
+        (throw+ {:message "Model ns not found" :var model-ns-var}))
+      (throw+ {:message "Model ns not defined" :action-ns (action-ns-sym)}))
+    (throw+ {:message "Could not determine action namespace"})))
+
+(defn item-resource-delete!
+  "Generic item delete handler for page items"
+  [ctx]
+  (let [{{{id :_id} :route-params} :request} ctx]
+    ((get-handler ctx 'delete) (:data ctx))))
+
+(defn item-resource-malformed?
+  [ctx]
+  (let [fetcher (get-handler ctx 'fetch-by-id)
+        id (get-in ctx [:request :route-params :_id])]
+    [false {:data (fetcher id)}]))
+
+(defn item-resource-authorized?
+  [ctx]
+  (let [{{method :request-method} :request} ctx
+        username (session/current-user-id)]
+    [(if (#{:put :delete} method) (boolean (seq username)) true)
+     {:username username}]))
+
+(defn item-resource
+  "Route mixin for resources that represent a page item"
+  [resource]
+  (if-let [action-ns-sym (:ns resource)]
+    (do
+      (require action-ns-sym)
+      (-> {:respond-with-entity? false
+           :allowed-methods [:get :put :delete]
+           :available-formats [:json :clj]
+           :exists? :data
+           :malformed? item-resource-malformed?
+           :delete! item-resource-delete!
+           :authorized? item-resource-authorized?}
+          (merge resource)
+          ciste-resource
+          mixin/item-resource))
+    (throw+ {:message "Ns not defined"})))
 
 (defn subpage-exists?
   [{:keys [subpage target target-model]}
