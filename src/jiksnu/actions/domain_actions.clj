@@ -8,6 +8,8 @@
             [jiksnu.util :as util])
   (:import jiksnu.model.Domain))
 
+(def model-ns 'jiksnu.model.domain)
+
 (defonce delete-hooks (ref []))
 
 (defn prepare-create

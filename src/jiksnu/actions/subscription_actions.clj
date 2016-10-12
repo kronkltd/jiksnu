@@ -12,6 +12,8 @@
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 
+(def model-ns 'jiksnu.model.subscription)
+
 (defonce delete-hooks (ref []))
 
 (defn prepare-delete
@@ -30,7 +32,7 @@
       transforms/set-created-time))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.subscription))
+  (templates.actions/make-indexer model-ns))
 
 (defn create
   [params]

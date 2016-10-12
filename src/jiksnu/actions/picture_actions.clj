@@ -8,6 +8,8 @@
             [taoensso.timbre :as timbre]
             [clojure.java.io :as io]))
 
+(def model-ns 'jiksnu.model.picture)
+
 (defn prepare-create
   [activity]
   (-> activity

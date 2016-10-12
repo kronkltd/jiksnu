@@ -22,8 +22,9 @@
     (or (session/is-admin?)
         (= actor-id author))))
 
+(def model-ns 'jiksnu.model.activity)
 (def add-link* (templates.actions/make-add-link* model.activity/collection-name))
-(def index*    (templates.actions/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
+(def index*    (templates.actions/make-indexer model-ns :sort-clause {:updated 1}))
 (def delete    (templates.actions/make-delete model.activity/delete can-delete?))
 
 ;; FIXME: this is always hitting the else branch

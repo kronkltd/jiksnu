@@ -5,7 +5,8 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter
+                                                item-resource page-resource path]]
             [octohipster.mixins :as mixin]))
 
 (defparameter :model.domain/id
@@ -55,17 +56,9 @@
 (defresource domains-api :item
   :desc "Resource routes for single Domain"
   :url "/{_id}"
+  :ns 'jiksnu.actions.domain-actions
   :parameters {:_id (path :model.domain/id)}
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)
-                   activity (model.domain/fetch-by-id id)]
-               {:data activity}))
-  :delete! #'actions.domain/delete
-  ;; :put!    #'actions.domain/update-record
-  )
+  :mixins [item-resource])
 
 ;; =============================================================================
 

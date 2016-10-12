@@ -3,7 +3,9 @@
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path subpage-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter
+                                                item-resource page-resource path
+                                                subpage-resource]]
             [octohipster.mixins :as mixin]))
 
 (defn get-conversation
@@ -52,14 +54,9 @@
 (defresource conversations-api :item
   :desc "Resource routes for single Conversation"
   :url "/{_id}"
+  :ns 'jiksnu.actions.conversation-actions
   :parameters {:_id (path :model.conversation/id)}
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)
-                   conversation (model.conversation/fetch-by-id id)]
-               {:data conversation})))
+  :mixins [item-resource])
 
 (defresource conversations-api :activities-stream
   :url "/{_id}/activities"

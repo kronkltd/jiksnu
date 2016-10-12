@@ -6,6 +6,8 @@
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))
 
+(def model-ns 'jiksnu.model.notification)
+
 (defn prepare-create
   [activity]
   (-> activity
@@ -23,8 +25,7 @@
 
 (def delete    (templates.actions/make-delete model.notification/delete can-delete?))
 
-(def index*
-  (templates.actions/make-indexer 'jiksnu.model.notification))
+(def index* (templates.actions/make-indexer model-ns))
 
 (defn index
   [& options]

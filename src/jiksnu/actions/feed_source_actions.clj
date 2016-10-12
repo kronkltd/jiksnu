@@ -15,6 +15,8 @@
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))
 
+(def model-ns 'jiksnu.model.feed-source)
+
 (defonce pending-discovers (ref {}))
 
 ;; TODO: Config option
@@ -34,7 +36,7 @@
       transforms/set-no-links))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.feed-source
+  (templates.actions/make-indexer model-ns
                                   :sort-clause {:created -1}))
 
 (defn add-watcher

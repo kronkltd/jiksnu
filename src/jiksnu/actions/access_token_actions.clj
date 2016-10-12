@@ -8,11 +8,11 @@
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 
-(def model-sym 'jiksnu.model.access-token)
+(def model-ns 'jiksnu.model.access-token)
 
-(def create-fn (ns-resolve (the-ns model-sym) 'create))
-(def delete-fn (ns-resolve (the-ns model-sym) 'delete))
-(def fetch-fn  (ns-resolve (the-ns model-sym) 'fetch-by-id))
+(def create-fn (ns-resolve (the-ns model-ns) 'create))
+(def delete-fn (ns-resolve (the-ns model-ns) 'delete))
+(def fetch-fn  (ns-resolve (the-ns model-ns) 'fetch-by-id))
 
 (defonce delete-hooks (ref []))
 
@@ -45,7 +45,7 @@
   item)
 
 (def index*
-  (templates.actions/make-indexer model-sym :sort-clause {:created 1}))
+  (templates.actions/make-indexer model-ns :sort-clause {:created 1}))
 
 (defn index
   [& options]

@@ -7,7 +7,7 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup resources]]
             [jiksnu.modules.web.helpers :refer [angular-resource as-collection-resource]]
-            [octohipster.mixins :refer [item-resource]]
+            [octohipster.mixins :as mixin]
             [taoensso.timbre :as timbre]))
 
 (defgroup jiksnu root
@@ -29,7 +29,7 @@
   :url         "/status"
   :summary     "Site Status"
   :description "Contains base data used to initialize the front-end application"
-  :mixins      [item-resource]
+  :mixins      [mixin/item-resource]
   :exists?     (fn [ctx]
                  (timbre/info "getting status")
                  {:data (site/status (:request ctx))}))
@@ -37,14 +37,14 @@
 (defresource root :resources
   :name "Resources"
   :url "/resources"
-  :mixins [item-resource]
+  :mixins [mixin/item-resource]
   :available-media-types ["text/html"]
   :exists? (fn [ctx] {:data (str @resources)}))
 
 (defresource root :rsd
   :name "Really Simple Discovery"
   :url "/rsd.xml"
-  :mixins [item-resource]
+  :mixins [mixin/item-resource]
   :available-media-types ["application/xml"]
   :exists? (fn [ctx] {:data (site/rsd)}))
 

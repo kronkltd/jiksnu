@@ -6,7 +6,7 @@
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
-                                                defparameter page-resource path
+                                                defparameter item-resource page-resource path
                                                 subpage-resource]]
             [jiksnu.session :as session]
             [slingshot.slingshot :refer [throw+]]))
@@ -71,28 +71,9 @@
   :methods {:get {:summary "Show Activity"}
             :delete {:summary "Delete Activity"
                      :authenticated true}}
-  :mixins [ciste-resource]
-  :available-media-types ["application/json"]
-  :available-formats [:json]
-  ;; :presenter (partial into {})
-  :authorized? (fn [ctx]
-                 (if (#{:delete} (get-in ctx [:request :request-method]))
-                   (not (nil? (session/current-user-id)))
-                   ctx))
-  :allowed-methods [:get :delete]
-  :exists? (fn [ctx]
-             (let [id (get-in ctx [:request :route-params :_id])
-                   activity (model.activity/fetch-by-id id)]
-               {:data activity}))
-  ;; :put!    #'actions.activity/update-record
-  :delete! (fn [ctx]
-             ;; (try+
-             (actions.activity/delete (:data ctx))
-              ;; (catch Object ex
-              ;;   (timbre/error ex "Delete Error")
-              ;;   )
-             ;; )
-  ))
+  :mixins [item-resource]
+  :target-model "activity"
+  :ns 'jiksnu.actions.activity-actions)
 
 (defresource activities-api :likes
   :url "/{_id}/likes"

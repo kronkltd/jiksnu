@@ -22,6 +22,8 @@
            jiksnu.model.User
            nu.xom.Document))
 
+(def model-ns 'jiksnu.model.user)
+
 ;; hooks
 
 (defonce delete-hooks (ref []))

@@ -12,8 +12,8 @@
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource as-collection-resource
-                                                defparameter get-user page-resource path
-                                                subpage-resource]]
+                                                defparameter get-user item-resource
+                                                page-resource path subpage-resource]]
             [jiksnu.util :as util]
             [octohipster.mixins :as mixin]
             [taoensso.timbre :as timbre]))
@@ -231,15 +231,10 @@
 (defresource users-api :item
   :url "/{_id}"
   :name "user routes"
+  :ns 'jiksnu.actions.user-actions
   :description "Resource routes for single User"
-  :mixins [mixin/item-resource]
-  :parameters {:_id (path :model.user/id)}
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)]
-               (when-let [user (model.user/fetch-by-id id)]
-                 {:data user}))))
+  :mixins [item-resource]
+  :parameters {:_id (path :model.user/id)})
 
 (defresource users-api :activities
   :url "/{_id}/activities"

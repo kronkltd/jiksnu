@@ -17,6 +17,8 @@
             [taoensso.timbre :as timbre])
   (:import (org.apache.http HttpStatus)))
 
+(def model-ns 'jiksnu.model.stream)
+
 ;; hooks
 
 (defn prepare-create
@@ -46,7 +48,7 @@
     (model.stream/create params)))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.stream
+  (templates.actions/make-indexer model-ns
                                   :sort-clause {:modified 1}))
 
 (defn index

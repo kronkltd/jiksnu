@@ -4,7 +4,7 @@
             [jiksnu.model.like :as model.like]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource page-resource path]]
             [octohipster.mixins :as mixin]))
 
 (defgroup jiksnu likes
@@ -42,15 +42,8 @@
 (defresource likes-api :item
   :desc "Resource routes for single Like"
   :url "/{_id}"
+  :ns 'jiksnu.actions.like-actions
   :parameters {:_id (path :model.like/id)}
   :methods {:get {:summary "Show Like"}
             :delete {:summary "Delete Like"}}
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)
-                   like (model.like/fetch-by-id id)]
-               {:data like}))
-  ;; :put!    #'actions.like/update-record
-  :delete! (fn [ctx] (actions.like/delete (:data ctx))))
+  :mixins [item-resource])

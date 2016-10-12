@@ -6,7 +6,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource
+                                                page-resource path]]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [octohipster.mixins :as mixin]
@@ -51,15 +52,9 @@
 (defresource pictures-api :item
   :desc "Resource routes for single Picture"
   :url "/{_id}"
+  :ns 'jiksnu.actions.picture-actions
   :parameters {:_id (path :model.picture/id)}
   :methods {:get {:summary "Show Picture"}
-            :delete {:summary "Delete Picture"}}
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)
-                   picture (model.picture/fetch-by-id id)]
-               {:data picture}))
-  ;; :put!    #'actions.picture/update-record
-  :delete! (fn [ctx] (actions.picture/delete (:data ctx))))
+            :delete {:summary "Delete Picture"
+                     :authenticated true}}
+  :mixins [item-resource])

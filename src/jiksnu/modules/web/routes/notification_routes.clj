@@ -4,7 +4,7 @@
             [jiksnu.model.notification :as model.notification]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource page-resource path]]
             [octohipster.mixins :as mixin]))
 
 (defgroup jiksnu notifications
@@ -42,15 +42,8 @@
 (defresource notifications-api :item
   :desc "Resource routes for single Notification"
   :url "/{_id}"
+  :ns 'jiksnu.actions.notification-actions
   :parameters {:_id (path :model.notification/id)}
   :methods {:get {:summary "Show Notification"}
             :delete {:summary "Delete Notification"}}
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)
-                   notification (model.notification/fetch-by-id id)]
-               {:data notification}))
-  ;; :put!    #'actions.notification/update-record
-  :delete! (fn [ctx] (actions.notification/delete (:data ctx))))
+  :mixins [item-resource])

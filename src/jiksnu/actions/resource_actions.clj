@@ -19,6 +19,8 @@
   (:import jiksnu.model.Resource
            org.joda.time.DateTime))
 
+(def model-ns 'jiksnu.model.resource)
+
 (defkey ::resource-realized
   "Whenever a resource is realized, this event is fired"
   :schema {:item "Resource"
@@ -81,7 +83,7 @@
     (throw+ "Could not delete resource")))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.resource
+  (templates.actions/make-indexer model-ns
                                   :sort-clause {:updated -1}))
 
 (defn index

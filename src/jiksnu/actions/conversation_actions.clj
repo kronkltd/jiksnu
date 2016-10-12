@@ -12,6 +12,8 @@
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 
+(def model-ns 'jiksnu.model.conversation)
+
 (defonce delete-hooks (ref []))
 
 (defn prepare-create
