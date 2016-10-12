@@ -55,7 +55,7 @@
           request (-> (req/request :delete url)
                       (as-user user))
           response (response-for request)]
-      response => (contains {:status HttpStatus/SC_OK})
+      response => (contains {:status HttpStatus/SC_NO_CONTENT})
       (model.group/fetch-by-id (:_id group)) => nil)))
 
 (facts "route: group-api/item :get"

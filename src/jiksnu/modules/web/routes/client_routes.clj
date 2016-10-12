@@ -8,7 +8,8 @@
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource page-resource path]]
+            [jiksnu.modules.web.helpers :refer [angular-resource item-resource
+                                                page-resource path]]
             [jiksnu.util :as util]
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
@@ -42,14 +43,9 @@
 (defresource clients-api :item
   :desc "Resource routes for single Conversation"
   :url "/{_id}"
+  :ns 'jiksnu.actions.client-actions
   :parameters {:_id (path :model.client/id)}
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)
-                   conversation (model.client/fetch-by-id id)]
-               {:data conversation})))
+  :mixins [item-resource])
 
 ;; =============================================================================
 

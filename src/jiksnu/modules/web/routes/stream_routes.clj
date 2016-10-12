@@ -8,11 +8,9 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter
-                                                page-resource path
-                                                subpage-resource]]
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource
+                                                page-resource path subpage-resource]]
             [liberator.representation :refer [as-response ring-response]]
-            [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
 
@@ -64,11 +62,8 @@
 (defresource streams-api :collection
   :desc "Collection route for streams"
   :mixins [page-resource]
-  :available-formats [:json]
-  :allowed-methods [:get :post]
   :post! post-stream
-  :post-redirect? (fn [ctx]
-                    {:location (format "/model/streams/%s" (:data ctx))})
+  :post-redirect? (fn [ctx] {:location (format "/model/streams/%s" (:data ctx))})
   :schema {:type "object"
            :properties {:name {:type "string"}}
            :required [:name]}
@@ -77,17 +72,9 @@
 (defresource streams-api :item
   :desc "Resource routes for single Stream"
   :url "/{_id}"
+  :ns 'jiksnu.actions.stream-actions
   :parameters {:_id (path :model.stream/id)}
-  :mixins [mixin/item-resource]
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)
-                   item (model.stream/fetch-by-id id)]
-               {:data item}))
-  ;; :delete! #'actions.stream/delete
-  ;; :put!    #'actions.stream/update-record
-  )
+  :mixins [item-resource])
 
 (defresource streams-api :activities
   :desc "activities in stream"

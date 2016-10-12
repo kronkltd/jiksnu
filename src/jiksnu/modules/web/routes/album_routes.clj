@@ -2,13 +2,11 @@
   (:require [cemerick.friend :as friend]
             [ciste.config :refer [config]]
             [jiksnu.actions.album-actions :as actions.album]
-            [jiksnu.model.album :as model.album]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
-                                                defparameter page-resource path
-                                                subpage-resource]]
-            [jiksnu.session :as session]
+                                                defparameter item-resource page-resource
+                                                path subpage-resource]]
             [slingshot.slingshot :refer [throw+]]))
 
 (defparameter :model.album/id
@@ -71,20 +69,8 @@
   :methods {:get {:summary "Show Album"}
             :delete {:summary "Delete Album"
                      :authenticated true}}
-  :mixins [ciste-resource]
-  :available-media-types ["application/json"]
-  :available-formats [:json]
-  ;; :presenter (partial into {})
-  :authorized? (fn [ctx]
-                 (if (#{:delete} (get-in ctx [:request :request-method]))
-                   (not (nil? (session/current-user-id)))
-                   ctx))
-  :allowed-methods [:get :delete]
-  :exists? (fn [ctx]
-             (let [id (get-in ctx [:request :route-params :_id])
-                   album (model.album/fetch-by-id id)]
-               {:data album}))
-  :delete! #(actions.album/delete (:data %)))
+  :ns 'jiksnu.actions.album-actions
+  :mixins [item-resource])
 
 (defresource albums-api :pictures
   :url "/{_id}/pictures"
