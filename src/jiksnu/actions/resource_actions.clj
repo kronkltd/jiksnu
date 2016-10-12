@@ -4,6 +4,7 @@
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
+            [jiksnu.model :as model]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
@@ -89,9 +90,7 @@
 
 (defn add-link
   [item link]
-  (if-let [existing-link (model.resource/get-link item
-                                                  (:rel link)
-                                                  (:type link))]
+  (if-let [existing-link (model/get-link item (:rel link) (:type link))]
     item
     (add-link* item link)))
 

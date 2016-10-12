@@ -4,6 +4,7 @@
             [clojure.set :as set]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
@@ -28,9 +29,7 @@
 ;; FIXME: this is always hitting the else branch
 (defn add-link
   [item link]
-  (if-let [existing-link (model.activity/get-link item
-                                                  (:rel link)
-                                                  (:type link))]
+  (if-let [existing-link (model/get-link item (:rel link) (:type link))]
     item
     (add-link* item link)))
 
