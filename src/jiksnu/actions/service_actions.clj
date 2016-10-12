@@ -16,6 +16,8 @@
   (:import jiksnu.model.Domain
            (org.apache.http HttpStatus)))
 
+(def model-ns 'jiksnu.model.service)
+
 (defonce pending-discovers (ref {}))
 
 (defn fetch-xrd*

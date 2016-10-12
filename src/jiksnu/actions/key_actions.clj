@@ -4,6 +4,8 @@
             [jiksnu.transforms :as transforms])
   (:import jiksnu.model.User))
 
+(def model-ns 'jiksnu.model.key)
+
 (defn prepare-create
   [user]
   (-> user

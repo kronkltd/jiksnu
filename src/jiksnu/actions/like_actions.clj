@@ -6,6 +6,8 @@
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))
 
+(def model-ns 'jiksnu.model.like)
+
 (defn prepare-create
   [activity]
   (-> activity
@@ -39,8 +41,7 @@
     ;; TODO: created flag set lower
     :created (time/now)}))
 
-(def index*
-  (templates.actions/make-indexer 'jiksnu.model.like))
+(def index* (templates.actions/make-indexer model-ns))
 
 (defn index
   [& options]

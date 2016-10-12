@@ -14,6 +14,8 @@
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 
+(def model-ns 'jiksnu.model.album)
+
 (defn can-delete?
   [item]
   (let [actor-id (session/current-user-id)
@@ -21,7 +23,7 @@
     (or (session/is-admin?)
         (= actor-id author))))
 
-(def index*    (templates.actions/make-indexer 'jiksnu.model.album :sort-clause {:updated 1}))
+(def index*    (templates.actions/make-indexer model-ns :sort-clause {:updated 1}))
 (def delete    (templates.actions/make-delete model.album/delete can-delete?))
 
 (defn index

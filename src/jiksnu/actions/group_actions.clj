@@ -8,6 +8,8 @@
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Group))
 
+(def model-ns 'jiksnu.model.group)
+
 (defn prepare-create
   [group]
   (-> group

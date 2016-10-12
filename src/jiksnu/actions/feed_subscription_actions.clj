@@ -5,6 +5,8 @@
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))
 
+(def model-ns 'jiksnu.model.feed-subscription)
+
 (defn prepare-create
   [item]
   (-> item
