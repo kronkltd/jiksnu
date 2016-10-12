@@ -130,12 +130,10 @@
 
 (defview #'actions.group/fetch-admins :page
   [request {:keys [items] :as page}]
-  (let [response (merge page
-                        {:id (:name request)})]
-    {:action "sub-page-updated"
-     :model "group"
-     :id (:_id (:item request))
-     :body response}))
+  (merge page
+         {:model "group-membership"
+          :name (:name request)
+          :id (:_id (:item request))}))
 
 (defview #'actions.group/fetch-by-user :page
   [request page]
