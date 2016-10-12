@@ -3,7 +3,8 @@
             [ciste.formats :refer [format-as]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [link-to index-line edit-button]]
-            [jiksnu.modules.core.actions :as actions]))
+            [jiksnu.modules.core.actions :as actions])
+  (:import (org.apache.http HttpStatus)))
 
 (defn command-not-found
   []
@@ -12,7 +13,7 @@
 (defmethod serialize-as :http
   [serialization response]
   (-> response
-      (assoc :status 200)
+      (assoc :status HttpStatus/SC_OK)
       (update-in [:headers "Content-Type"] #(or % "text/html; charset=utf-8"))))
 
 (defmethod serialize-as :command

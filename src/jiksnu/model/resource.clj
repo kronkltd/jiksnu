@@ -34,10 +34,6 @@
   [url]
   (first (fetch-all {:url url})))
 
-(defn get-link
-  [item rel content-type]
-  (first (util/rel-filter rel (:links item) content-type)))
-
 (defn response->tree
   [response]
   (enlive/html-resource (StringReader. (:body response))))

@@ -87,12 +87,6 @@
         (str (:first-name user) " " (:last-name user)))
       (get-uri user)))
 
-(defn get-link
-  ([user rel]
-   (get-link user rel nil))
-  ([user rel content-type]
-   (first (util/rel-filter rel (:links user) content-type))))
-
 (defn get-user
   "Find a user by username and domain"
   ([username] (get-user username (config :domain)))
@@ -110,10 +104,9 @@
       (get-user username domain-name))))
 
 (defn fetch-by-domain
-  ([domain] (fetch-by-domain domain {}))
+  ([domain] (fetch-by-domain domain {:limit 20}))
   ([domain options]
-   (fetch-all {:domain (:_id domain)}
-              #_{:limit 20})))
+   (fetch-all {:domain (:_id domain)} options)))
 
 (defn update-record
   [^User new-user]
@@ -129,7 +122,7 @@
 (defn user-meta-uri
   [^User user]
   (if-let [domain (get-domain user)]
-    (if-let [lrdd-link (get-link domain "lrdd" nil)]
+    (if-let [lrdd-link (model/get-link domain "lrdd" nil)]
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user)))
       (throw+ "could not find lrdd link"))
@@ -138,8 +131,8 @@
 ;; TODO: This should check for an associated source
 (defn feed-link-uri
   [^User user]
-  (if-let [link (or (get-link user ns/updates-from "application/atom+xml")
-                    (get-link user ns/updates-from nil))]
+  (if-let [link (or (model/get-link user ns/updates-from "application/atom+xml")
+                    (model/get-link user ns/updates-from nil))]
     (:href link)))
 
 (defn ensure-indexes

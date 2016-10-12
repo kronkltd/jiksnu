@@ -1,7 +1,8 @@
 (ns jiksnu.modules.core.views.activity-views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [index-section show-section]]
-            [jiksnu.actions.activity-actions :as actions.activity]))
+            [jiksnu.actions.activity-actions :as actions.activity])
+  (:import (org.apache.http HttpStatus)))
 
 (defview #'actions.activity/fetch-by-conversation :page
   [request response]
@@ -30,7 +31,7 @@
 
 (defview #'actions.activity/oembed :xml
   [request m]
-  {:status 200
+  {:status HttpStatus/SC_OK
    :body
    [:oembed
     [:version (:version m)]

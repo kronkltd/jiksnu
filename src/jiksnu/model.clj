@@ -1,4 +1,5 @@
-(ns jiksnu.model)
+(ns jiksnu.model
+  (:require [jiksnu.util :as util]))
 
 ;; TODO: pull these from ns/
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
@@ -27,4 +28,10 @@
 (defrecord Stream                  [])
 (defrecord Subscription            [])
 (defrecord User                    [])
-(defrecord UserList                    [])
+(defrecord UserList                [])
+
+(defn get-link
+  ([item rel]
+    (get-link item rel nil))
+  ([item rel content-type]
+   (first (util/rel-filter rel (:links item) content-type))))

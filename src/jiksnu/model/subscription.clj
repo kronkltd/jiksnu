@@ -45,6 +45,7 @@
   [actor target]
   (fetch-all {:from (:_id actor) :to (:_id target)}))
 
+;; TODO: Should take a subscription
 (defn unsubscribe
   [actor target]
   (if-let [subscription (first (find-by-users actor target))]

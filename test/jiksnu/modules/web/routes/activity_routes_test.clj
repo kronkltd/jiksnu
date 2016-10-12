@@ -7,7 +7,8 @@
             [jiksnu.routes-helper :refer [as-user json-response response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req])
+  (:import org.apache.http.HttpStatus))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
@@ -19,12 +20,12 @@
           url (str "/model/activities/" (:_id activity))
           request (-> (req/request :delete url)
                       (as-user user))]
-      (response-for request) => (contains {:status 204})
+      (response-for request) => (contains {:status HttpStatus/SC_NO_CONTENT})
       (model.activity/fetch-by-id (:_id activity)) => nil))
   (fact "when not authenticated"
     (let [user (mock/a-user-exists)
           activity (mock/an-activity-exists {:user user})
           url (str "/model/activities/" (:_id activity))
           request (req/request :delete url)]
-      (response-for request) => (contains {:status 401})
+      (response-for request) => (contains {:status HttpStatus/SC_UNAUTHORIZED})
       (model.activity/fetch-by-id (:_id activity)) =not=> nil)))

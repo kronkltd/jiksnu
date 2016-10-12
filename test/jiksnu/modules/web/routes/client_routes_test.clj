@@ -14,7 +14,8 @@
             [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]
-            [ring.util.codec :as codec]))
+            [ring.util.codec :as codec])
+  (:import (org.apache.http HttpStatus)))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
@@ -108,7 +109,7 @@
           response (-> (response-for request)
                        (update :body codec/form-decode))]
 
-      response => (contains {:status status/success?})
+      response => (contains {:status HttpStatus/SC_OK})
 
       (let [id (get-in response [:body "oauth_token"])
             secret (get-in response [:body "oauth_token_secret"])]
@@ -133,7 +134,7 @@
           response (-> (response-for request)
                        (update :body codec/form-decode))]
 
-      response => (contains {:status status/success?})
+      response => (contains {:status HttpStatus/SC_OK})
 
       (let [id (get-in response [:body "oauth_token"])
             secret (get-in response [:body "oauth_token_secret"])]
@@ -149,4 +150,4 @@
           (let [response (-> (req/request :get url)
                              (as-user actor)
                              response-for)]
-            (:status response) => status/success?))))))
+            (:status response) => HttpStatus/SC_OK))))))

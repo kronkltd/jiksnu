@@ -61,10 +61,6 @@
              {:author (:_id user)}]})
     {:public true}))
 
-(defn get-link
-  [user rel content-type]
-  (first (util/rel-filter rel (:links user) content-type)))
-
 (defn get-author
   "Returns the user that is the author of this activity"
   [activity]

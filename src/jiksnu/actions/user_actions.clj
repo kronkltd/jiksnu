@@ -5,6 +5,7 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]
+            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
@@ -98,9 +99,7 @@
 
 (defn add-link
   [user link]
-  (if-let [existing-link (model.user/get-link user
-                                              (:rel link)
-                                              (:type link))]
+  (if-let [existing-link (model/get-link user (:rel link) (:type link))]
     user
     (add-link* user link)))
 
@@ -197,7 +196,7 @@
                     (merge params {:url id :_id acct-id})))
                 (do
                   (timbre/debug "Does not have a username from xrd")
-                  (when-let [profile-link (:href (model.user/get-link params "self"))]
+                  (when-let [profile-link (:href (model/get-link params "self"))]
                     (let [response @(ops/update-resource profile-link {})
                           body (:body response)
                           profile (json/read-str body :key-fn keyword)

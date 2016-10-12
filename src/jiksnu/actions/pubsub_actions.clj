@@ -4,7 +4,8 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.util :as util]
             [org.httpkit.client :as client]
-            [slingshot.slingshot :refer [throw+]]))
+            [slingshot.slingshot :refer [throw+]])
+  (:import (org.apache.http HttpStatus)))
 
 (defn verify-subscribe-sync
   "Verify subscription request in this thread"
@@ -22,9 +23,9 @@
             response-p (client/get url)]
         ;; NB: This blocks
         (let [response @response-p]
-          (if (= 200 (:status response))
-            {:status 204}
-            {:status 404})))
+          (if (= HttpStatus/SC_OK (:status response))
+            {:status HttpStatus/SC_NO_CONTENT}
+            {:status HttpStatus/SC_NOT_FOUND})))
       (throw+ "feed subscription is not valid"))
     (throw+ "Could not determine callback url")))
 

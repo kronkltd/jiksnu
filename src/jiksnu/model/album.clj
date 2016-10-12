@@ -1,13 +1,8 @@
 (ns jiksnu.model.album
-  (:require [clojure.java.io :as io]
-            [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
-            [monger.collection :as mc]
             [validateur.validation :refer [validation-set presence-of]])
   (:import org.bson.types.ObjectId
            org.joda.time.DateTime))

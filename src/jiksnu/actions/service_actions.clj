@@ -13,7 +13,8 @@
             [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre])
-  (:import jiksnu.model.Domain))
+  (:import jiksnu.model.Domain
+           (org.apache.http HttpStatus)))
 
 (defonce pending-discovers (ref {}))
 
@@ -27,7 +28,7 @@
                     (fn [_] (timbre/error "Fetching xrd caused error")))
 
      (let [response @res]
-       (when (= 200 (:status response))
+       (when (= (:status response) HttpStatus/SC_OK)
          (try
            (if-let [body (:body response)]
              (cm/string->document body))

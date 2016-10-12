@@ -9,7 +9,8 @@
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req])
+  (:import (org.apache.http HttpStatus)))
 
 (defn get-link
   [body rel]
@@ -27,8 +28,8 @@
           response (response-for request)
           body (json/read-str (:body response) :key-fn keyword)]
       response =>
-      (contains {:status status/success?
-                 :body string?
+      (contains {:status HttpStatus/SC_OK
+                 :body   string?
                  :headers
                  (contains {"Content-Type" "application/json;charset=UTF-8"})})
       body => (contains {:links #(>= (count %) 1)

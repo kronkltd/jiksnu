@@ -8,7 +8,8 @@
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req])
+  (:import (org.apache.http HttpStatus)))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
@@ -18,6 +19,6 @@
         path "/model/group-memberships"
         request (req/request :get path)
         response (response-for request)]
-    response => (contains {:status status/success?})
+    response => (contains {:status HttpStatus/SC_OK})
     (let [body (json/read-json (:body response))]
       body => (contains {:totalItems 1}))))

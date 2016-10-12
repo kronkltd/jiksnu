@@ -4,7 +4,7 @@
 --ignore-dir=data
 --ignore-dir=logs
 --ignore-dir=node_modules
---ignore-dir=site-ccokbooks
+--ignore-dir=site-cookbooks
 --ignore-dir=target
 --ignore-dir=roles
 --ignore-dir=tmp

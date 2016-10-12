@@ -42,11 +42,8 @@
 (defn setup-testing
   ([] (setup-testing nil))
   ([modules]
-   (timbre/debugf "setup testing - %s" modules)
    (try+
     (start-application! modules)
-    ;; (loader/register-module "jiksnu.modules.core")
-    (timbre/debug "application started")
     (db/drop-all! )
     (dosync
      (ref-set r/this {})
@@ -59,7 +56,6 @@
 
 (defn stop-testing
   []
-  (timbre/debug "stop-testing")
   (try+
    ;; (stop-application!)
    (catch Object ex
