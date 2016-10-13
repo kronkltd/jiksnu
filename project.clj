@@ -92,7 +92,15 @@
   :main ciste.runner
   :aot [ciste.runner]
   :cljsbuild {:builds
-              {:main {:source-paths ["src-cljs"]
+              {:none {:figwheel true
+                      :source-paths ["src-cljs" "test-cljs"]
+                      :notify-command ["notify-send"]
+                      :compiler {:output-to "target/resources/public/cljs-none/jiksnu.js"
+                                 :output-dir "target/resources/public/cljs-none"
+                                 :optimizations :none
+                                 :asset-path "base/target/resources/public/cljs-none"
+                                 :pretty-print true}}
+               :main {:source-paths ["src-cljs"]
                       :notify-command ["notify-send"]
                       :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
                                  :output-dir "target/resources/public/cljs"
