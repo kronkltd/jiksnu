@@ -1,13 +1,12 @@
-[:div {:title "index-likes"}
- [:h1
-  [:span "Index Likes"]
-  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]
-  ]
-
+([:div.title-section {:layout "row" :flex ""}
+  [:div {:flex ""}
+   [:h1.md-headline {:layout-padding ""} "Likes"]]
+  [:div {:layout-align "end"}
+   [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh" :layout-align "start end"}
+    [:ng-md-icon {:icon "loop"}]]]]
  [:debug {:expr "page"}]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:div {:ng-repeat "id in page.items"}
    [:debug {:expr "id"}]
-   [:show-like {:data-id "{{id}}"}]]]
- ]
+   [:show-like {:data-id "{{id}}"}]]])

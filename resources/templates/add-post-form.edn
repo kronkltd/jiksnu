@@ -1,77 +1,89 @@
-[:div {:ng-show "enabled()" :title "add-post-form"}
- [:div {:ng-show "app.user"}
-  [:form  {:ng-submit "submit()" :name "activityForm"}
-   [:input {:type "hidden" :ng-model "source"}]
-   [:div {:uib-collapse "form.shown"}
-    [:input#placeholderInput
-     {:type "text" :placeholder "What are you doing?" :ng-click "toggle()"}]]
-   [:div.post-form {:uib-collapse "!form.shown"}
-    [:debug {:expr "activity"}]
-    [:debug {:expr "form"}]
-    [:div.close.pull-right {:ng-click "toggle()"} "X"]
-    [:fieldset
-     [:legend "Post an activity"]
-     [:div.control-group
-      [:label.control-label {:for "title"} "Title"]
-      [:div.controls
-       [:input {:type "text"
-                :name "title"
-                :ng-model "activity.title"}]]]
-     [:div.control-group
-      [:label.control-label {:for "content"} "Content"]
-      [:div.controls
-       [:textarea {:name "content" :rows "3"
-                   :ng-model "activity.content"}]]]
-     [:fieldset.add-buttons
-      [:legend "Add:"]
-      [:div.button-group
-       [:label.btn {:ng-model "form.add.tags" :uib-btn-checkbox ""}
-        [:i.icon-tag]        [:span.button-text "Tags"]]
-       #_[:label.btn {:ng-model "form.add.recipients" :uib-btn-checkbox ""}
-          [:i.icon-user]       [:span.button-text "Recipients"]]
-       [:label.btn {:ng-model "form.add.location" :uib-btn-checkbox ""}
-        [:i.icon-map-marker] [:span.button-text "Location"]]
-       [:label.btn {:ng-model "form.add.links" :uib-btn-checkbox ""}
-        [:i.icon-bookmark]   [:span.button-text "Links"]]
-       [:label.btn {:ng-model "form.add.pictures" :uib-btn-checkbox ""}
-        [:i.icon-picture]    [:span.button-text "Pictures"]]]]
+[:div {:layout "row" :flex "" :layout-align "center" :ng-show "visible()" :title "add-post-form"}
+ [:form  {:ng-submit "submit()" :name "activityForm" :flex "50" :layout "column"}
+  [:input {:type "hidden" :ng-model "source"}]
 
-     [:div.control-group {:uib-collapse "!form.add.pictures"}
-      [:label.control-label {:for "pictures"} "Pictures"]
-      [:div.controls
-       [:input {:type "file" :name "pictures"}]]]
-     [:div.control-group {:uib-collapse "!form.add.location"}
-      [:label.control-label "Location"]
-      [:div.controls
-       [:label {:for "geo.latitude"} "Latitude"]
-       [:div.input
-        [:input {:type "text" :ng-model "activity.geo.latitude"}]]
-       [:label {:for "geo.longitude"} "Longitude"]
-       [:div.input
-        [:input {:type "text" :ng-model "activity.geo.longitude"}]]]]
-     [:div.control-group {:uib-collapse "!form.add.tags"}
-      [:label.control-label {:for "tags"} "Tags"]
-      [:div.controls
-       [:input {:type "text" :name "tags" :ng-model "tag"}]
-       [:a.btn {:ng-click "addTag()"}
-        "Add Tags"]]]
-     [:div.actions
-      [:div
-       [:debug {:expr "streams"}]
-       [:ui-select {:multiple ""
-                    :ng-model "activity.streams"
-                    :style "width: 800px;"}
-        [:ui-select-match {:placeholder "Select Streams"}
-         [:as-model {:model "stream" :data-id "{{$item}}"}
-          "{{$parent.item.name}}"]]
-        [:ui-select-choices {:repeat "id in streams.items"}
-         [:as-model {:model "stream" :data-id "{{id}}"}
-          "{{$parent.item.name}}"]]]]
-      [:select {:name "privacy" :ng-model "activity.privacy"}
-       [:option {:value "public"} "Public"]
-       [:option {:value "group"} "Group"]
-       [:option {:value "custom"} "Custom"]
-       [:option {:value "private"} "Private"]]
-      ;; TODO: Group dropdown
-      [:group-select]]
-     [:button.btn.btn-primary.pull-right {:type "submit"} "Post"]]]]]]
+  [:md-content {:ng-hide "form.shown"}
+   [:md-input-container
+    [:input#placeholderInput
+     {:type "text" :placeholder "What are you doing?" :ng-click "toggle()"}]]]
+
+  [:div {:ng-show "form.shown"}
+   [:debug {:expr "activity"}]
+   [:debug {:expr "form"}]
+
+   [:div
+    [:md-input-container.md-block
+     [:label "Title"]
+     [:input {:type "text" :ng-model "activity.title"}]]]
+
+   [:div
+    [:md-input-container.md-block
+     [:label "Content"]
+     [:textarea {:rows "5" :ng-model "activity.content"}]]]
+
+   [:md-content
+    [:md-list
+     [:md-list-item
+      [:ng-md-icon {:icon "add_box"}]
+      [:p "Tags"]
+      [:md-switch.md-secondary {:ng-model "form.add.tags"}]]
+     [:md-list-item
+      [:ng-md-icon {:icon "add_box"}]
+      [:p "Recipients"]
+      [:md-switch.md-secondary {:ng-model "form.add.recipients"}]]
+     [:md-list-item
+      [:ng-md-icon {:icon "add_box"}]
+      [:p "Location"]
+      [:md-switch.md-secondary {:ng-model "form.add.location"}]]
+     [:md-list-item
+      [:ng-md-icon {:icon "add_box"}]
+      [:p "Links"]
+      [:md-switch.md-secondary {:ng-model "form.add.links"}]]
+     [:md-list-item
+      [:ng-md-icon {:icon "add_box"}]
+      [:p "Pictures"]
+      [:md-switch.md-secondary {:ng-model "form.add.pictures"}]]]]
+
+   [:div {:ng-show "form.add.pictures"}
+    [:md-input-container.md-block
+     [:lf-ng-md-file-input {:lf-files "files" :multiple "" :aria-label "fileupload" :preview ""}]]]
+
+   [:div {:ng-show "form.add.location"}
+    [:md-input-container
+     [:label "Latitude"]
+     [:input {:type "text" :ng-model "activity.geo.latitude"}]]
+    [:md-input-container
+     [:label "Longitude"]
+     [:input {:type "text" :ng-model "activity.geo.longitude"}]]]
+
+   [:div {:ng-show "form.add.tags"}
+    [:md-input-container.md-block
+     [:label "Tags"]
+     [:input {:type "text" :name "tags" :ng-model "tag"}]]
+    [:md-button {:ng-click "addTag()"} "Add Tags"]]
+
+   [:div
+    [:debug {:expr "streams"}]
+    [:ui-select {:multiple ""
+                 :ng-model "activity.streams"
+                 :style "width: 800px;"}
+     [:ui-select-match {:placeholder "Select Streams"}
+      [:as-model {:model "stream" :data-id "{{$item}}"}
+       "{{$parent.item.name}}"]]
+     [:ui-select-choices {:repeat "id in streams.items"}
+      [:as-model {:model "stream" :data-id "{{id}}"}
+       "{{$parent.item.name}}"]]]
+
+    [:md-select {:name "privacy" :ng-model "activity.privacy"}
+     [:option {:value "public"} "Public"]
+     [:option {:value "group"} "Group"]
+     [:option {:value "custom"} "Custom"]
+     [:option {:value "private"} "Private"]]]
+
+   [:div
+    [:group-select]]
+
+   [:div
+    [:md-input-container {:layout-align "end" :layout "row"}
+     [:md-button.md-raised.md-warn {:ng-click "toggle()"} "Cancel"]
+     [:md-button.md-primary.md-raised {:type "submit"} "Post"]]]]]]

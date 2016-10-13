@@ -3,8 +3,10 @@
  [:div  {:ng-if "loaded"}
   [:debug {:expr "item"}]
   [:show-activity {:data-id "{{item.activity}}"}]
-  [:ul.buttons
-   [:li
-    [:button.btn {:ng-click "deleteRecord(item)"} "Delete Notification"]]
-   [:li
-    [:button.btn {:ng-click "refresh()"} "Refresh"]]]]]
+  [:md-list.buttons
+   [:md-list-item
+    [:md-button {:ng-click "deleteRecord(item)" :aria-label "Delete Notification"}
+     [:ng-md-icon {:icon "delete"}]]]
+   [:md-list-item
+    [:md-button {:ng-click "refresh()" :aria-label "Refresh"}
+     [:ng-md-icon {:icon "loop"}]]]]]]

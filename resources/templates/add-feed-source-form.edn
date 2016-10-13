@@ -8,5 +8,5 @@
     ;; (control-line "Mode" "mode" "text")
     ;; (control-line "User" "user" "text")
     [:div.form-actions
-     [:button.btn.btn-primary
+     [:md-button.md-primary
       {:type "submit"} "Add"]]]]

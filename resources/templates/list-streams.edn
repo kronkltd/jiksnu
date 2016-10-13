@@ -1,9 +1,13 @@
-[:div {:title "list-streams"}
- [:h3 "Streams"
-  [:div {:ng-show "app.user._id == item._id"}
-   [:button.btn {:ng-click "toggle()"} "{{btnLabel}}"]]
-  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
- [:form {:ng-submit "addStream()" :name "addStreamForm" :ng-show "formShown"}
+[:div {:layout "column" :flex ""}
+ [:section {:layout "row" :flex ""}
+  [:h3 {:layout "column"} "Streams"]
+  [:div {:ng-show "app.user._id == item._id" :layout "column" :flex ""}
+   [:md-button {:ng-click "toggle()" :aria-label "Add Stream"} "{{btnLabel}}"]]
+  [:div {:layout "column" :flex ""}]
+  [:div {:layout "column" :layout-align "right" :flex "10"}
+   [:md-button.pull-right {:ng-click "refresh()" :aria-label "Refresh"}
+    [:ng-md-icon {:icon "loop"}]]]]
+ [:form {:ng-submit "addStream()" :name "addStreamForm" :ng-show "formShown" :layout "column"}
   [:debug {:expr "stream"}]
   [:input {:ng-model "stream.userId" :name "user" :type "hidden"}]
   [:input {:ng-model "stream.name" :name "name" :type "text"}]
@@ -12,11 +16,10 @@
   [:debug {:expr "$parent.page"}]
   [:div {:ng-if "!$parent.loaded"} [:spinner]]
   [:div {:ng-if "$parent.loaded"}
-   [:table.table
-    [:tr {:ng-repeat "id in $parent.$parent.page.items"}
-     [:td
-      [:show-stream-minimal {:data-id "{{id}}"}]
-      [:debug {:expr "id"}]]
-     [:td
-      [:button.btn.btn-default {:ng-click "deleteStream(id)"}
-       [:i.glyphicon.glyphicon-trash]]]]]]]]
+   [:md-list
+    [:md-list-item {:ng-repeat "id in $parent.$parent.page.items" :ui-sref "showStream({_id: id})"}
+     [:debug {:expr "id"}]
+     [:show-stream-minimal {:data-id "{{id}}"}]
+     [:div
+      [:md-button.btn-default {:ng-click "deleteStream(id)" :aria-label "Delete Stream" :ng-show "app.user"}
+       [:ng-md-icon {:icon "delete"}]]]]]]]]

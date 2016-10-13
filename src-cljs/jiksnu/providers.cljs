@@ -105,8 +105,8 @@
   [app data]
   (let [message (.-content (.-body data))]
     (.. app
-        (inject "Notification")
-        (success message))))
+        (inject "$mdToast")
+        (showSimple message))))
 
 (defmethod handle-action "page-add"
   [app data]
@@ -116,22 +116,22 @@
   [app data]
   (let [message #js {:message (or (some-> data .-message reader/read-string :msg) "Error")}]
     (.. app
-        (inject "Notification")
-        (error message))))
+        (inject "$mdToast")
+        (showSimple message))))
 
 (defmethod handle-action "delete"
   [app data]
   (let [message (str "Unknown action type: " (.-action data))]
     (.. app
-        (inject "Notification")
-        (warning message))))
+        (inject "$mdToast")
+        (showSimple message))))
 
 (defmethod handle-action :default
   [app data]
   (let [message (str "Unknown message: " (.stringify js/JSON data))]
     (.. app
-        (inject "Notification")
-        (warning message))))
+        (inject "$mdToast")
+        (showSimple message))))
 
 (defn on-connection-established
   [app data])
@@ -139,7 +139,7 @@
 (defn handle-message
   "Handler for incoming messages from websocket connection"
   [app message]
-  (let [Notification (.inject app "Notification")
+  (let [$mdToast (.inject app "$mdToast")
         data-str (.-data message)
         data (js/JSON.parse data-str)]
     (timbre/debugf "Received Message - %s" data-str)
@@ -164,7 +164,8 @@
   "Authenticate session"
   [app username password]
   (let [$http (.inject app "$http")
-        data (js/$.param #js {:username username :password password})
+        $httpParamSerializerJQLike (.inject app "$httpParamSerializerJQLike")
+        data ($httpParamSerializerJQLike #js {:username username :password password})
         opts #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}}]
     ;; (timbre/infof "Logging in user. %s:%s" username password)
     (-> (.post $http"/main/login" data opts)
@@ -249,8 +250,8 @@
 (defn update-page
   "Notify a page update"
   [app message]
-  (let [Notification (.inject app "Notification")]
-    (.info Notification "Adding to page")))
+  (let [$mdToast (.inject app "$mdToast")]
+    (.showSimple $mdToast "Adding to page")))
 
 (def app-methods
   {:addStream     add-stream

@@ -4,7 +4,8 @@
   [:p
    [:a {:ui-sref "showAlbum(item)"} "{{item.name}}"]]
   [:show-user-minimal {:data-id "{{item.owner}}"}]
+  #_
   [:div {:ng-if "app.user"}
    [:ul.buttons
     [:li
-     [:button.btn {:ng-click "deleteRecord(item)"} "Delete Album"]]]]])
+     [:md-button {:ng-click "deleteRecord(item)"} "Delete Album"]]]]])

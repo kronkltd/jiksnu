@@ -42,14 +42,11 @@
 (defn style-section
   []
   (p/include-css
-   "/vendor/bootstrap/dist/css/bootstrap.min.css"
-   "/vendor/highlightjs/styles/github.css"
-   "/vendor/datatables.net-dt/css/jquery.dataTables.css"
-   "/vendor/angular-busy/dist/angular-busy.min.css"
-   "/vendor/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css"
-   "/vendor/angular-ui-notification/dist/angular-ui-notification.min.css"
-   "/vendor/ui-select/dist/select.min.css"
+   "/vendor/lf-ng-md-file-input/dist/lf-ng-md-file-input.min.css"
+   "/vendor/highlight.js/styles/github.css"
    "/vendor/angular-hotkeys/build/hotkeys.min.css"
+   "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic"
+   "//ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css"
    "/css/standard.css"))
 
 (defn page-template-content
@@ -63,6 +60,7 @@
     [:base {:href "/"}]
     [:title {:property "dc:title"} (config :site :name)]
     (style-section)
+    #_
     (links-section request response)
     [:script {:type "text/javascript"} "var CLOSURE_NO_DEPS = true;"]
     (p/include-js "/main.js" "/cljs/jiksnu.js")

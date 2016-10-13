@@ -2,6 +2,8 @@
   (:require [cemerick.friend :as friend]
             [ciste.config :refer [config]]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.album-actions :as actions.album]
+            [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
@@ -45,12 +47,17 @@
 
 (defn activities-api-post
   [ctx]
-  (let [{{params :params
-          :as request} :request} ctx
+  (let [{{params :params :as request} :request} ctx
         username (:current (friend/identity request))
         id (str "acct:" username "@" (config :domain))
         params (assoc params :author id)]
-    (actions.activity/post params)))
+    (if-let [album-id (first (:items (actions.album/fetch-by-user {:_id id} "* uploads")))]
+      (let [picture-ids (map (fn [file]
+                               (:_id (actions.picture/upload id album-id file)))
+                             (:pictures params))
+            params (assoc params :pictures picture-ids)]
+        (actions.activity/post params))
+      (throw+ {:message "Could not determine default photo album"}))))
 
 (defresource activities-api :collection
   :desc "Collection route for activities"

@@ -9,6 +9,8 @@
     [:div {:ng-repeat "id in $parent.$parent.page.items"}
      [:debug {:expr "id"}]
      [:show-activity {:data-id "{{id}}"}]]]]
-  [:div {:ng-if "app.user"}
-   [:ul.buttons
-    [:li [:button.btn {:ng-click "deleteRecord(item)"} "Delete Conversation"]]]]]]
+  #_
+  [:md-list.buttons {:ng-if "app.user"}
+   [:md-list-item
+    [:md-button {:ng-click "deleteRecord(item)" :aria-label "Delete Conversation"}
+     [:ng-md-icon {:icon "delete"}]]]]]]
