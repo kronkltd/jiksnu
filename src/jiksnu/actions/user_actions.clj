@@ -231,24 +231,23 @@
   [{id :_id
     :keys [username domain]
     :as params} & [_options]]
-  (let [id (:_id params)]
-    (or (when id
-          (or (model.user/fetch-by-id id)
-              (do
-                (timbre/debug "user not found by id")
-                (or (let [[uid did] (util/split-uri id)]
-                      (model.user/get-user uid did))
-                    (do
-                      (timbre/debug "user not found by acct id")
-                      (first (model.user/fetch-all {:url id})))))))
-        (do
-          (timbre/debug "user not found by url")
-          (let [params (if id
-                         (get-username params)
-                         params)]
-            (or (when (and username domain)
-                  (model.user/get-user username domain))
-                (create params)))))))
+  (or (when id
+        (or (model.user/fetch-by-id id)
+            (do
+              (timbre/debug "user not found by id")
+              (or (let [[uid did] (util/split-uri id)]
+                    (model.user/get-user uid did))
+                  (do
+                    (timbre/debug "user not found by acct id")
+                    (first (model.user/fetch-all {:url id})))))))
+      (do
+        (timbre/debug "user not found by url")
+        (let [params (if id
+                       (get-username params)
+                       params)]
+          (or (when (and username domain)
+                (model.user/get-user username domain))
+              (create params))))))
 
 (defn update-record
   "Update the user's activities and information."
