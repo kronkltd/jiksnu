@@ -84,7 +84,7 @@
 
 (defn get-user-meta
   "Returns an enlive document for the user's xrd file"
-  [user & [options]]
+  [user & [_options]]
   (if-let [url (get-user-meta-uri user)]
     (let [response @(ops/update-resource url)]
       (if-let [body (:body response)]
@@ -101,7 +101,7 @@
 
 (defn add-link
   [user link]
-  (if-let [existing-link (model/get-link user (:rel link) (:type link))]
+  (if-let [_existing-link (model/get-link user (:rel link) (:type link))]
     user
     (add-link* user link)))
 
@@ -146,7 +146,7 @@
     {:links (model.webfinger/get-links doc)}))
 
 (defn process-xrd
-  [user xrd & [options]]
+  [user xrd & [_options]]
   (timbre/info "processing xrd")
   (let [links (concat (:links user) (:links xrd))]
     (assoc user :links links)))
@@ -179,7 +179,7 @@
         params)))
 
 (defn get-username-from-http-uri
-  [{id :_id username :username :as params} & [options]]
+  [{id :_id :as params} & [options]]
   (if-let [username (some-> id URI. .getUserInfo)]
     (do
       (timbre/debugf "Username from uri: %s" username)
@@ -230,7 +230,7 @@
 (defn find-or-create
   [{id :_id
     :keys [username domain]
-    :as params} & [options]]
+    :as params} & [_options]]
   (let [id (:_id params)]
     (or (when id
           (or (model.user/fetch-by-id id)
@@ -253,7 +253,7 @@
 (defn update-record
   "Update the user's activities and information."
   [^User user _]
-  (if-let [source-id (:update-source user)]
+  (if-let [_source-id (:update-source user)]
     (do
       #_(invoke-action "feed-source" "update" (str source-id))
       nil)
@@ -283,11 +283,11 @@
 
 (defn register
   "Register a new user"
-  [{:keys [username password email name location bio] :as options}]
+  [{:keys [username password email name location bio]}]
   ;; TODO: should we check reg-enabled here?
   ;; verify submission.
   (if (and username password)
-    (if-let [user (model.user/get-user username)]
+    (if-let [_user (model.user/get-user username)]
       (throw+ {:type :conflict
                :msg "user already exists"
                :username username})
