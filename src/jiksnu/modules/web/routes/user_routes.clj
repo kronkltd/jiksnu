@@ -99,7 +99,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :feed-minor
   :url "/{username}/feed/minor"
@@ -107,7 +107,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :followers
   :url "/{username}/followers"
@@ -115,8 +115,7 @@
   :mixins [as-collection-resource]
   :collection-type "person"
   :indexer (fn [ctx user] (nth (actions.subscription/get-subscribers user) 1))
-  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id
-                            :from model.user/fetch-by-id)))
+  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id :from model.user/fetch-by-id)))
 
 (defresource user-pump-api :following
   :url "/{username}/following"
@@ -124,8 +123,7 @@
   :mixins [as-collection-resource]
   :collection-type "person"
   :indexer (fn [ctx user] (nth (actions.subscription/get-subscriptions user) 1))
-  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id
-                            :to model.user/fetch-by-id)))
+  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id :to model.user/fetch-by-id)))
 
 (defresource user-pump-api :inbox-direct-major
   :url "/{username}/inbox/direct/major"
@@ -133,7 +131,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :inbox-direct-minor
   :url "/{username}/inbox/direct/minor"
@@ -141,7 +139,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :inbox
   :url "/{username}/inbox"
@@ -149,7 +147,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :inbox-major
   :url "/{username}/inbox/major"
@@ -157,7 +155,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :inbox-minor
   :url "/{username}/inbox/minor"
