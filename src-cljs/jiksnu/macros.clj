@@ -5,11 +5,9 @@
   [klass-name collection-name]
   (let [controller-sym (symbol (str "jiksnu.Index" klass-name "Controller"))]
     (list 'def.controller controller-sym
-          ['$scope '$rootScope 'pageService 'subpageService]
+          ['$scope '$rootScope 'app 'pageService 'subpageService]
           (list 'helpers/init-page
-                '$scope '$rootScope
-                'pageService 'subpageService
-                collection-name)
+                '$scope '$rootScope 'app collection-name)
           (list 'set!
                 (list '.-refresh '$scope)
                 (list 'fn []
