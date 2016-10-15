@@ -1,11 +1,17 @@
-([:h1
-  [:span "Index Pictures"]
-  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
-
+([:div.title-section {:layout "row" :flex ""}
+  [:div {:flex ""}
+   [:h1.md-headline {:layout-padding ""} "Picture"]]
+  [:div {:layout-align "end"}
+   [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh" :layout-align "start end"}
+    [:ng-md-icon {:icon "loop"}]]]]
  [:debug {:expr "page"}]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
-  [:div {:ng-repeat "id in page.items"}
-   [:debug {:expr "id"}]
-   [:show-picture.well {:data-id "{{id}}"}]]
+  [:section {:layout "row"}
+   [:md-list {:flex ""}
+    [:md-list-item.md-3-line {:ng-repeat "id in page.items"}
+     [:div.md-list-item-text
+      [:debug {:expr "id"}]
+      [:show-picture.well {:data-id "{{id}}"}]]
+     [:md-divider {:ng-if "!$last"}]]]]
   [:add-picture-form]])

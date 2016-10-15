@@ -8,12 +8,13 @@
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
                     appProvider DSProvider DSHttpAdapterProvider
-                    hljsServiceProvider NotificationProvider
-                    uiSelectConfig]
+                    hljsServiceProvider $mdThemingProvider]
 
   (.setOptions hljsServiceProvider #js {:tabReplace "  "})
 
-  (set! (.-theme uiSelectConfig) "bootstrap")
+  (-> $mdThemingProvider
+      (.theme "default")
+      (.primaryPalette "blue"))
 
   (js/angular.extend (.-defaults DSProvider)
                      #js {:idAttribute "_id"
@@ -21,8 +22,6 @@
 
   (js/angular.extend (.-defaults DSHttpAdapterProvider)
                      #js {:log false})
-
-  (.setOptions NotificationProvider #js {:startTop 20})
 
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider

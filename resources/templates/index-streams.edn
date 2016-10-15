@@ -1,12 +1,17 @@
 [:div {:title "index-streams"}
- [:h1
-  [:span "Streams"]
-  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
+ [:section {:layout "row" :flex ""}
+  [:h1 {:layout "column" :flex ""} "Streams"]
+  [:div {:layout "column" :flex ""}]
+  [:div {:layout "column" :flex "10" :layout-align "right"}
+   [:md-button {:ng-click "refresh()" :aria-label "Refresh"}
+    [:ng-md-icon {:icon "loop"}]]]]
  [:debug {:expr "page"}]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
-  [:ul
-   [:li {:ng-repeat "id in page.items"}
-    [:debug {:expr "id"}]
-    [:show-stream-minimal {:data-id "{{id}}"}]]]]
- [:add-stream-form]]
+  [:md-list {:flex ""}
+   [:md-list-item {:ng-repeat "id in page.items"}
+    [:div.md-list-item-text
+     [:debug {:expr "id"}]
+     [:show-stream-minimal {:data-id "{{id}}"}]]]]]
+ [:section {:layout "row"}
+  [:add-stream-form]]]

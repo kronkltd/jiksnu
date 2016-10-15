@@ -1,33 +1,24 @@
 [:div
  [:debug {:expr "page"}]
- [:table.domains.table
-  [:thead
-   [:tr
-    [:th "Name"]
-    [:th "HTTP"]
-    [:th "HTTPS"]
-    [:th "XMPP?"]
-    [:th "Discovered"]
-    [:th "Host Meta"]
-    [:th "# Links"]
-    ]]
-  [:tbody
-   [:tr {:ng-repeat "domain in page.items"}
-    [:td
-     [:debug {:expr "domain"}]
-     #_(favicon-link domain)
-     #_(link-to domain)
-     [:a {:ui-sref "showDomain(domain)"}
-      "{{domain._id}}"]
-     ]
-    [:td "{{domain.http}}"]
-    [:td "{{domain.https}}"]
-    [:td "{{domain.xmpp}}"]
-    [:td "{{domain.discovered}}"]
-    [:td
-     [:a {:href "http://{{domain._id}}/.well-known/host-meta"}
-      "Host-Meta"]]
-    [:td "{{domain.links.length}}"]
-    [:th #_(actions-section domain)]]]]
-
- ]
+ [:md-table-container
+  [:table {:md-table ""}
+   [:thead
+    [:tr {:md-row ""}
+     [:th "Name"]
+     [:th "HTTP"]
+     [:th "HTTPS"]
+     [:th "XMPP?"]
+     [:th "Discovered"]
+     [:th "Host Meta"]
+     [:th "# Links"]]]
+   [:tbody
+    [:tr {:ng-repeat "domain in page.items"}
+     [:td
+      [:debug {:expr "domain"}]
+      [:a {:ui-sref "showDomain(domain)"} "{{domain._id}}"]]
+     [:td "{{domain.http}}"]
+     [:td "{{domain.https}}"]
+     [:td "{{domain.xmpp}}"]
+     [:td "{{domain.discovered}}"]
+     [:td [:a {:href "http://{{domain._id}}/.well-known/host-meta"} "Host-Meta"]]
+     [:td "{{domain.links.length}}"]]]]]]

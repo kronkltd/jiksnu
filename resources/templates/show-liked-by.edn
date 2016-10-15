@@ -3,6 +3,7 @@
  [:div {:ng-if "loaded"}
   [:debug {:expr "item"}]
   [:show-user-minimal {:data-id "{{item.user}}"}]
-  ;; [:p "To: " [:show-activity {:data-id "{{item.activity}}"}]]
-  ;; [:button.btn {:ng-click "deleteRecord(item)"} "Delete Like"]
-  ]]
+  #_
+  [:p "To: " [:show-activity {:data-id "{{item.activity}}"}]]
+  #_
+  [:md-button {:ng-click "deleteRecord(item)"} "Delete Like"]]]

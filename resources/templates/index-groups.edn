@@ -1,22 +1,14 @@
-[:div {:title "index-groups"}
- [:h1
-  [:span "Groups"]
-  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
+([:div.title-section {:layout "row" :flex ""}
+  [:div {:flex ""}
+   [:h1.md-headline {:layout-padding ""} "Groups"]]
+  [:div {:layout-align "end"}
+   [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh" :layout-align "start end"}
+    [:ng-md-icon {:icon "loop"}]]]]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:debug {:expr "page"}]
-  [:ul.profiles
-   [:li {:ng-repeat "group in page.items"}
-    [:debug {:expr "group"}]
-    [:show-group-minimal {:data-id "{{group}}"}]
-    #_[:section.profile.hentry.vcard
-     [:p
-      [:a.url.entry-title {:ui-sref "showGroup(group._id)"}
-       [:img {:ng-src "{{group.avatarUrl}}"}]
-       [:span.nickname
-        "{{group.name}} ({{group.nickname}})"]]]
-     [:a.url {:href "{{group.homepage}}"}
-      "{{group.homepage}}"]
-     [:p.note "{{group.description}}"]]]
-   ]
-  [:add-group-form]]]
+  [:md-list
+   [:md-list-item {:ng-repeat "id in page.items" :ui-sref "showGroup({_id: id})"}
+    [:debug {:expr "id"}]
+    [:show-group-minimal {:data-id "{{id}}"}]]]
+  [:add-group-form]])

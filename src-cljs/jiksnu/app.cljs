@@ -10,18 +10,17 @@
 
 (def.module jiksnu
   [angular-clipboard
-   angularFileUpload
    angularMoment
    btford.markdown
+   cfp.hotkeys
    geolocation
-   datatables
    hljs
    js-data
+   lfNgMdFileInput
    ngRaven
+   ngMaterial
+   ngMdIcons
    ngSanitize
    ngWebSocket
-   cfp.hotkeys
-   ui.bootstrap
-   ui-notification
    ui.router
    ui.select])

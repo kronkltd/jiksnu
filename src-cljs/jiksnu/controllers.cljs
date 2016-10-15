@@ -184,14 +184,14 @@
   (.updateLabel $scope))
 
 (def.controller jiksnu.LoginPageController
-  [$scope $state app Notification]
+  [$scope $state app $mdToast]
   (set! (.-login $scope)
         (fn []
           (let [username (.-username $scope)
                 password (.-password $scope)]
             (-> (.login app username password)
                 (.then (fn [r] (.go $state "home"))
-                       (fn [e] (.warning Notification "login failed"))))))))
+                       (fn [e] (.showSimple $mdToast "login failed"))))))))
 
 (def.controller jiksnu.LogoutController [])
 
@@ -213,7 +213,7 @@
 (page-controller Users            "users")
 
 (def.controller jiksnu.MainLayoutController
-  [$location $scope app]
+  [$location $mdSidenav $scope app]
   (let [protocol (.protocol $location)
         hostname (.host $location)
         port (.port $location)
@@ -225,16 +225,20 @@
                protocol "://" hostname
                (when-not default-port? (str ":" port))
                "/api-docs.json"))
+    (set! (.-$mdSidenav $scope) $mdSidenav)
     (set! (.-logout $scope) (.-logout app))))
 
 (def.controller jiksnu.NavBarController
-  [$scope app hotkeys $state]
+  [$mdSidenav $rootScope $scope $state app hotkeys]
   (set! (.-app2 $scope) app)
   (set! (.-loaded $scope) false)
   (set! (.-logout $scope) (.-logout app))
   (set! (.-navbarCollapsed $scope) true)
 
   (helpers/setup-hotkeys hotkeys $state)
+
+  (.$on $rootScope "$stateChangeSuccess"
+        (fn [] (.close ($mdSidenav "left"))))
 
   (set! (.-init $scope)
         (fn [d]
@@ -245,6 +249,8 @@
                 (.then (fn [user]
                          (timbre/debug "setting app user")
                          (set! (.-user app) user)))))))
+
+  (set! (.-toggleSidenav $scope) (fn [] (.toggle ($mdSidenav "left"))))
 
   (.$watch $scope #(.-data app) (.-init $scope))
 
@@ -572,6 +578,32 @@
                  (when-let [domain (.-domain $stateParams)]
                    (str "acct:" username "@" domain))))]
     (.init $scope id)))
+
+(def.controller jiksnu.SidenavController
+  [$scope app]
+  (let [route-data
+        [["Home"          "home"]
+         ["Activities"    "indexActivities"]
+         #_
+         ["Domains"       "indexDomains"]
+         ["Groups"        "indexGroups"]
+         ["Likes"         "indexLikes"]
+         ["Albums"        "indexAlbums"]
+         ["Notifications" "indexNotifications"]
+         ["Pictures"      "indexPictures"]
+         #_
+         ["Streams"       "indexStreams"]
+         ["Users"         "indexUsers"]
+         #_
+         ["Settings"      "settingsPage"]
+         #_
+         ["Profile"       "profile"]]]
+
+    (set! (.-app $scope) app)
+
+    (set! (.-items $scope)
+          (clj->js
+           (map (fn [[label ref]] {:label label :ref ref}) route-data)))))
 
 (def.controller jiksnu.SubpageController
   [$scope subpageService $rootScope]

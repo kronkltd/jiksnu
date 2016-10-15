@@ -132,6 +132,11 @@
 (item-directive "User"                   "user")
 (item-directive "UserMinimal"            "user-minimal")
 
+(def.directive jiksnu.sidenav []
+  #js
+  {:templateUrl "/templates/sidenav"
+   :controller "SidenavController"})
+
 (def.directive jiksnu.spinner []
   #js
   {:templateUrl "/templates/spinner"})

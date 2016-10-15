@@ -5,4 +5,4 @@
   [:p "User: " [:show-user-minimal {:data-id "{{item.user}}"}]]
   [:p "To: " [:show-activity {:data-id "{{item.activity}}"}]]
   [:div.action-buttons
-   [:button.btn {:ng-click "deleteRecord(item)"} "Delete Like"]]]]
+   [:md-button {:ng-click "deleteRecord(item)"} "Delete Like"]]]]

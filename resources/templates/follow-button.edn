@@ -6,5 +6,5 @@
    [:p "This is you"]]
   [:div {:ng-if "!actor"}
    [:form {:name "followButton" :ng-submit "submit()"}
-    [:button.btn.btn-default {:type "submit"}
+    [:md-button.md-primary {:type "submit"}
      "{{followLabel}}"]]]]]

@@ -1,17 +1,16 @@
 window.jQuery = require('jquery');
 window.$ = window.jQuery;
 
-window.jQuery.fn.DataTable = require('datatables.net');
-
 var requires = {
   angular: require('angular'),
   angularClipboard: require('angular-clipboard'),
-  angularDatatables: require('angular-datatables'),
   angularFileUpload: require('angular-file-upload'),
   angularGeolocation: require('angularjs-geolocation'),
   angularHighlightjs: require('angular-highlightjs'),
   angularHotkeys: require('angular-hotkeys'),
   angularMarkdownDirective: require('angular-markdown-directive'),
+  angularMaterial: require('angular-material'),
+  angularMaterialIcons: require('angular-material-icons'),
   angularMoment: require('angular-moment'),
   angularSanitize: require('angular-sanitize'),
   angularUiRouter: require('angular-ui-router'),
@@ -23,8 +22,6 @@ var requires = {
   raven: require('raven-js'),
   ravenAngular: require('raven-js/dist/plugins/angular.js'),
   showdown: require('showdown'),
-  uiBootstrap: require('angular-ui-bootstrap'),
-  uiNotification: require('angular-ui-notification'),
   uiSelect: require('ui-select'),
   underscore: require('underscore')
 };

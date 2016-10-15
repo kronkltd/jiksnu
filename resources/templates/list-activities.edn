@@ -1,10 +1,14 @@
-[:div {:title "list-activities"}
+[:div {:title "list-activities" :layout "column" :flex ""}
+ [:section {:layout "row" :flex ""}
+  [:h3 {:layout "column" :flex ""} "Activities"]
+  [:div {:layout "column" :flex ""}]
+  [:div {:flex "10" :layout "column" :layout-align "right"}
+   [:md-button.pull-right {:ng-click "refresh()" :aria-label "Refresh"}
+    [:ng-md-icon {:icon "loop"}]]]]
  [:subpage {:name "activities" :item "item" :title "list-activities activities-subpage"}
   [:debug {:expr "$parent.page"}]
-  [:h3 "Activities" [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
   [:div {:ng-if "!$parent.loaded"} [:spinner]]
   [:div {:ng-if "$parent.loaded"}
-   [:ul.activities-list.list-unstyled
-    [:li {:ng-repeat "id in $parent.$parent.page.items"}
-     [:debug {:expr "id"}]
-     [:show-activity {:data-id "{{id}}"}]]]]]]
+   [:div {:ng-repeat "id in $parent.$parent.page.items"}
+    [:debug {:expr "id"}]
+    [:show-activity {:data-id "{{id}}"}]]]]]

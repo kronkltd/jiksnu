@@ -7,8 +7,9 @@
   [:p "{{item.owner}}"]
   ;; [:link-to {:data-id "{{item.owner}}"}]
   [:div {:ng-if "app.user"}
-   [:ul.buttons
-    [:li
-     [:button.btn {:ng-click "deleteRecord(item)"} "Delete Album"]]]]
+   [:md-list
+    [:md-list-item
+     [:md-button {:ng-click "deleteRecord(item)" :aria-label "Delete Album"}
+      [:ng-md-icon {:icon "delete"}]]]]]
   [:add-picture-form]
   [:list-pictures {:item "item"}]]]

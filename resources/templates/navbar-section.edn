@@ -1,41 +1,13 @@
-[:nav.navbar.navbar-default.navbar-inverse
- {:role "navigation"}
- #_[:debug {:expr "app"}]
- [:div.container {:ng-if "loaded"}
-  [:div.navbar-header
-   [:button.navbar-toggle
-    {:type "button"
-     :ng-init "navCollapsed = false"
-     :ng-click "navCollapsed = !navCollapsed"
-     :data-target "#navbar"
-     :aria-expanded "false"
-     :aria-controls "navbar"}
-    [:span.sr-only "Toggle Navigation"]
-    [:span.icon-bar]
-    [:span.icon-bar]
-    [:span.icon-bar]]
-   [:a.navbar-brand.home {:href "/" :rel "top"} "{{app.name}}"]]
-  #_[:display-avatar.navbar-btn
-   {:ng-if "app.user" :data-id "{{app2.getUserId()}}"}]
-  [:div.collapse.navbar-collpase {:ng-class "{'in':!navCollapsed}"}
-   [:div {:ng-if "!app.user"}
-    [:ul.nav.navbar-nav.navbar-right
-     [:li [:a {:ui-sref "loginPage"} "Login"]]
-     [:li.divider-vertical]
-     [:li [:a {:ui-sref "registerPage"} "Register"]]]]
+[:md-toolbar {:md-scroll-shrink ""}
+ [:div.md-toolbar-tools
+  [:md-button.md-icon-button {:aria-label "Settings" :ng-click "toggleSidenav()"}
+   [:ng-md-icon {:icon "menu"}]]
+  [:h2 [:span "{{app.name}}"]]
+  [:span {:flex ""}]
+  [:div {:ng-if "loaded"}
    [:div {:ng-if "app.user"}
-    [:ul.nav.navbar-nav.navbar-right
-     [:li [:a {:ui-sref "home"} "Home"]]
-     [:li [:a {:ui-sref "indexActivities"} "Activities"]]
-     ;; [:li [:a {:ui-sref "indexDomains"} "Domains"]]
-     [:li [:a {:ui-sref "indexGroups"} "Groups"]]
-     ;; [:li [:a {:ui-sref "indexLikes"} "Likes"]]
-     [:li [:a {:ui-sref "indexAlbums"} "Albums"]]
-     [:li [:a {:ui-sref "indexNotifications"} "Notifications"]]
-     [:li [:a {:ui-sref "indexPictures"} "Pictures"]]
-     [:li [:a {:ui-sref "indexStreams"} "Streams"]]
-     [:li [:a {:ui-sref "indexUsers"} "Users"]]
-     [:li [:a {:ui-sref "indexSubscriptions"} "Subscriptions"]]
-     ;; [:li [:a {:ui-sref "settingsPage"} "Settings"]]
-     ;; [:li [:a {:ui-sref "profile"}  "Profile"]]
-     [:li [:a.logout-button {:ng-click "logout()"}   "Log out"]]]]]]]
+    [:display-avatar.navbar-btn
+     {:ng-if "app.user" :data-id "{{app2.getUserId()}}"}]]
+   [:div {:ng-if "!app.user"}
+    [:md-button {:ui-sref "loginPage"} "Login"]
+    [:md-button {:ui-sref "registerPage"} "Register"]]]]]

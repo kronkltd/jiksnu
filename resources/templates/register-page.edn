@@ -1,46 +1,24 @@
-[:form.well.form-horizontal.register-form {:ng-submit "register()"}
- [:fieldset
-  [:legend "Register"]
-  [:div.form-group
-   [:label.sr-only {:for "username"} "Username"]
-   [:input.form-control.input-lg
-    {:ng-model "reg.username"
-     :type "text"
-     :name "username"
-     :placeholder "Username"}]]
-  [:div.form-group
-   [:label.sr-only {:for "password"} "Password"]
-   [:input.form-control
-    {:ng-model "reg.password"
-     :type "password"
-     :name "password"
-     :placeholder "Password"
-}]]
-  [:div.form-group
-   [:label.sr-only "Confirm Password"]
-   [:input.form-control
-    {:ng-model "reg.confirmPassword"
-     :type "password"
-     :name "confirmPassword"
-     :placeholder "Confirm Password"
-}]]
-  [:div.form-group
-   [:label.sr-only "Email"]
-   [:input.form-control
-    {:ng-model "reg.email"
-     :type "email"
-     :name "email"
-     :placeholder "Email"
-}]]
-  [:div.form-group
-   [:label.sr-only "Display Name"]
-   [:input.form-control
-    {:ng-model "reg.displayName"
-     :name "name"
-     :type "text"
-     :placeholder "Display Name"}]]
-  [:div.form-group
-   [:label "I have checked the box"]
-   [:input.form-control {:ng-model "reg.accepted" :type "checkbox"}]]
-  [:div.actions
-   [:input.btn.primary {:type "submit" :value "Register"}]]]]
+[:div {:layout "row" :layout-align "center"}
+ [:form.register-form
+  {:ng-submit "register()" :layout "column" :layout-align "center" :flex "35"}
+  [:md-input-container
+   [:label "Username"]
+   [:input {:ng-model "reg.username" :type "text" :name "username"}]]
+  [:md-input-container
+   [:label "Password"]
+   [:input {:ng-model "reg.password" :type "password" :name "password"}]]
+  [:md-input-container
+   [:label "Confirm Password"]
+   [:input {:ng-model "reg.confirmPassword" :type "password" :name "confirmPassword"}]]
+  [:md-input-container
+   [:label "Email"]
+   [:input {:ng-model "reg.email" :type "email" :name "email"}]]
+  [:md-input-container
+   [:label "Display Name"]
+   [:input {:ng-model "reg.displayName" :name "name" :type "text"}]]
+  [:md-input-container
+   [:md-checkbox {:ng-model "reg.accepted" :type "checkbox"}
+    "I have checked the box"]]
+  [:div.actions {:layout-align "end" :layout "row" :flex ""}
+   [:md-button.md-primary.md-raised {:type "submit" :value "Register"}
+    "Register"]]]]
