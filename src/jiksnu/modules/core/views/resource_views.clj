@@ -1,9 +1,7 @@
 (ns jiksnu.modules.core.views.resource-views
   (:require [ciste.core :refer [with-format]]
             [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [show-section]]
-            [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.modules.core.sections :refer [format-page-info]]))
+            [jiksnu.actions.resource-actions :as actions.resource]))
 
 (defview #'actions.resource/index :page
   [request response]

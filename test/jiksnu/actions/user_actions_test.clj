@@ -1,6 +1,5 @@
 (ns jiksnu.actions.user-actions-test
   (:require [ciste.config :refer [config]]
-            [ciste.sections.default :refer [show-section]]
             [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
             [hiccup.core :as h]

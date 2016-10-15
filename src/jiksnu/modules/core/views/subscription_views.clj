@@ -1,8 +1,7 @@
 (ns jiksnu.modules.core.views.subscription-views
   (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [show-section uri]]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.modules.core.sections :refer [format-page-info]]))
+            [ciste.sections.default :refer [uri]]
+            [jiksnu.actions.subscription-actions :as actions.subscription]))
 
 (defn subscription-formats
   [user]

@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [cemerick.friend :as friend]
             [ciste.core :refer [with-context]]
-            [ciste.sections.default :refer [index-section show-section show-section-minimal]]
+            [ciste.sections.default :refer [index-section show-section]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]

@@ -1,9 +1,6 @@
 (ns jiksnu.modules.core.sections.activity-sections
   (:require [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [edit-button
-                                            show-section-minimal
-                                            show-section uri title index-block
-                                            index-line index-section update-button]]
+            [ciste.sections.default :refer [show-section uri index-section]]
             [hiccup.core :as h]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.util :as util])

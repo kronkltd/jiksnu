@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.activity-routes-test
-  (:require [ciste.sections.default :refer [full-uri]]
-            [clj-factory.core :refer [fseq]]
+  (:require [clj-factory.core :refer [fseq]]
             [jiksnu.mock :as mock]
             [jiksnu.model.activity :as model.activity]
             jiksnu.modules.web.routes.activity-routes

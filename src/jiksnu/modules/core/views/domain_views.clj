@@ -1,8 +1,6 @@
 (ns jiksnu.modules.core.views.domain-views
   (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [show-section]]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.modules.core.sections :refer [format-page-info]]))
+            [jiksnu.actions.domain-actions :as actions.domain]))
 
 (defview #'actions.domain/index :page
   [request response]

@@ -1,9 +1,7 @@
 (ns jiksnu.modules.core.sections.domain-sections
   (:require [ciste.core :refer [with-format]]
             [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [actions-section index-block index-line
-                                            show-section uri]]
-            [jiksnu.session :refer [current-user is-admin?]]
+            [ciste.sections.default :refer [show-section]]
             [jiksnu.namespace :as ns])
   (:import jiksnu.model.Domain))
 

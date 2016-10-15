@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.sections
   (:require [ciste.config :refer [config]]
             [ciste.sections :refer [declare-section defsection]]
-            [ciste.sections.default :refer [edit-button full-uri index-block index-line index-section link-to
+            [ciste.sections.default :refer [full-uri index-block index-line index-section link-to
                                             show-section title uri]]
             [inflections.core :as inf]))
 
@@ -34,11 +34,3 @@
 (defsection title :default
   [record & _]
   (str (:_id record)))
-
-(defn format-page-info
-  [page]
-  (->> (:items page)
-       (map :_id)
-       (assoc page :items)
-       (map (fn [[k v]] [(inf/camel-case (name k) :lower) v]))
-       (into {})))

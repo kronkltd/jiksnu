@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.subscription-routes
   (:require [ciste.core :refer [with-context]]
-            [ciste.sections.default :refer [index-section show-section]]
             [jiksnu.model.subscription :as model.subscription]
             jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
