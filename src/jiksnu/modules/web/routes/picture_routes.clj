@@ -36,6 +36,7 @@
 (defresource pictures-api :collection
   :desc "Collection route for pictures"
   :mixins [page-resource]
+  :page "pictures"
   :methods {:get {:summary "Index Pictures"}
             :post {:summary "Create Picture"}}
   :available-formats [:json]

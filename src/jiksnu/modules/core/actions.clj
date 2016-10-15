@@ -35,6 +35,7 @@
      (throw+ "page not found"))))
 
 (defn get-page
+  "Retrieve a named page"
   [page-name & args]
   (timbre/debugf "Getting page: %s" page-name)
   (let [request {:format :page
@@ -46,8 +47,7 @@
        ((resolve-routes [@pred/*page-predicates*]
                         @pred/*page-matchers*) request)
        (catch Throwable ex
-         ;; FIXME: Handle error
-         ))
+         (timbre/error "Error fetching page" ex)))
      (throw+ {:message "page not found" :name page-name}))))
 
 (defn get-sub-page-ids

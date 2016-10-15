@@ -222,7 +222,7 @@
 
 (defresource users-api :collection
   :mixins [page-resource]
-  :available-formats [:json]
+  :page "users"
   :ns 'jiksnu.actions.user-actions)
 
 (defresource users-api :item

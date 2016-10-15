@@ -31,20 +31,22 @@
   :name "Group Membership Models"
   :url "/model/group-memberships")
 
+(defn group-membership-api-collection-post!
+  [ctx]
+  (timbre/info "Post to group membership")
+  (let [params (:params (:request ctx))
+        group (actions.group-membership/create params)]
+    {:data (:_id group)}))
+
 (defresource group-memberships-api :collection
   :mixins [page-resource]
-  :allowed-methods [:get :post]
   :new? :data
+  :page "group-memberships"
   :post-redirect? (fn [ctx] {:location (format "/model/groups/%s" (:data ctx))})
   :schema {:type "object"
            :properties {:name {:type "string"}}
            :required [:name]}
-  :post! (fn [ctx]
-           (timbre/info "Post to group membership")
-           (let [params (:params (:request ctx))
-                 group (actions.group-membership/create params)]
-             {:data (:_id group)}))
-  :available-formats [:json]
+  :post! group-membership-api-collection-post!
   :ns 'jiksnu.actions.group-membership-actions)
 
 (defresource group-memberships-api :item

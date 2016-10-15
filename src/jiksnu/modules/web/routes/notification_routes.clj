@@ -30,13 +30,8 @@
 (defresource notifications-api :collection
   :desc "Collection route for notifications"
   :mixins [page-resource]
-  :available-formats [:json]
-  :allowed-methods [:get :post]
-  :available-media-types ["application/json"]
   :methods {:get {:summary "Index Notifications"}
             :post {:summary "Create Notification"}}
-  ;; :post! notifications-api-post
-  ;; :schema notification-schema
   :ns 'jiksnu.actions.notification-actions)
 
 (defresource notifications-api :item

@@ -47,6 +47,7 @@
 
 (defresource conversations-api :collection
   :mixins [page-resource]
+  :page "conversations"
   :available-formats [:json]
   :ns 'jiksnu.actions.conversation-actions)
 

@@ -21,17 +21,17 @@
                     (req/body (json/write-str params))
                     (req/content-type "application/json")
                     (as-user actor))
-        response (response-for request)
-        location (get-in response [:headers "Location"])
-        request2 (req/request :get location)]
+        response (response-for request)]
 
     response =>
     (contains {:status  HttpStatus/SC_SEE_OTHER
                :headers (contains {"Location" #"/model/streams/[\d\w]+"})})
 
-    (some-> request2 response-for :body json/read-str) =>
-    (contains {"name" (:name params)
-               "owner" (:_id actor)})))
+    (let [location (get-in response [:headers "Location"])
+          request2 (req/request :get location)]
+      (some-> request2 response-for :body json/read-str) =>
+      (contains {"name" (:name params)
+                 "owner" (:_id actor)}))))
 
 (facts "route: streams-api/collection :delete"
   (fact "when not authenticated"
@@ -44,7 +44,14 @@
           stream (mock/a-stream-exists {:user user})
           url (str "/model/streams/" (:_id stream))
           request (-> (req/request :delete url) (as-user user))]
-      (response-for request) => (contains {:status HttpStatus/SC_NO_CONTENT}))))
+      (response-for request) => (contains {:status HttpStatus/SC_NO_CONTENT})))
+  (fact "when authenticated as a non-privileged user"
+    (let [user (mock/a-user-exists)
+          stream (mock/a-stream-exists {:user user})
+          url (str "/model/streams/" (:_id stream))
+          user2 (mock/a-user-exists)
+          request (-> (req/request :delete url) (as-user user2))]
+      (response-for request) => (contains {:status HttpStatus/SC_FORBIDDEN}))))
 
 (fact "route: streams-api/activities :get"
   (db/drop-all!)
@@ -54,7 +61,6 @@
     (mock/an-activity-exists {:stream stream})
 
     (let [response (response-for request)]
-      ;; (json/read-string (:body response)) => {}
       response  => (contains {:status HttpStatus/SC_OK})
       (let [body (json/read-str (:body response) :key-fn keyword)]
         body => (contains {:totalItems 1})))))

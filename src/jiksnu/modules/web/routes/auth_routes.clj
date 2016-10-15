@@ -9,6 +9,13 @@
             [slingshot.slingshot :refer [try+]]
             [taoensso.timbre :as timbre]))
 
+(defn login-malformed?
+  [{{{:keys [username password]} :params} :request}]
+  (when (or username password)
+    (if (and username password)
+      [false {:username username :password password}]
+      true)))
+
 (defgroup jiksnu auth
   :name "Authentication"
   :description "Authentication routes")
@@ -57,11 +64,7 @@
                                            :required true}}
                    :responses {"200" {:description "Login Response"}}}}
   :available-media-types ["text/html" "application/json"]
-  :malformed? (fn [{{{:keys [username password]} :params} :request}]
-                (when (or username password)
-                  (if (and username password)
-                    [false {:username username :password password}]
-                    true)))
+  :malformed? login-malformed?
   :authorized? (fn [{:keys [username password]}]
                  (if (and username password)
                    (if-let [auth (:username (actions.auth/login username password))]
