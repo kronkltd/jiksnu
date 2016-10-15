@@ -140,6 +140,10 @@
         (it "sends a delete action"
           (@$controller controller-name injections)
           (.. (js/spyOn app "invokeAction") -and (returnValue ($q #(%))))
+          (.. $httpBackend
+              (expectGET (str "conversations/" (.-id $scope)))
+              (respond (constantly (clj->js [201 {:items []}]))))
+
           (let [item (.-item $scope)
                 p (.deleteRecord $scope item)]
             (.$apply $scope)

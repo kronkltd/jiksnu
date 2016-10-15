@@ -14,11 +14,15 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      "target/resources/public/main.js",
       vendorBase + "/es6-promise/dist/es6-promise.js",
-      vendorBase + "/angular-mocks/angular-mocks.js",
       vendorBase + "/jasmine-promise-matchers/dist/jasmine-promise-matchers.js",
-      "target/karma-test.js"
+      "test.js",
+      {pattern: vendorBase + "/**/*", included: false},
+      {pattern: "main.js", included: false},
+      "target/resources/public/cljs-none/goog/base.js",
+      "target/resources/public/cljs-none/jiksnu.js",
+      {pattern: "target/resources/public/**/*", included: false},
+      "test-runner.js"
     ],
 
     // list of files to exclude
@@ -47,8 +51,7 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      // "target/karma-test.js": ["coverage"],
-      "main.js": [ 'browserify']
+      "test.js": [ 'browserify']
     },
 
     browserify: {
