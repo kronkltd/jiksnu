@@ -27,4 +27,4 @@
   (-> $locationProvider
       (.hashPrefix "!")
       (.html5Mode true))
-  (helpers/add-states $stateProvider helpers/states))
+  (helpers/add-states $stateProvider helpers/route-data))
