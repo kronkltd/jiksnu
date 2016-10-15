@@ -21,10 +21,6 @@
   (let [item (prepare-create params)]
     (model.like/create item)))
 
-(defn admin-index
-  [_]
-  (model.like/fetch-all {} {:limit 20}))
-
 (def can-delete? (constantly true))
 
 (def delete    (templates.actions/make-delete model.like/delete can-delete?))

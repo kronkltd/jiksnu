@@ -5,28 +5,6 @@
                                             show-section title uri]]
             [inflections.core :as inf]))
 
-(declare-section admin-actions-section)
-(declare-section admin-index-section :seq)
-(declare-section admin-index-block :seq)
-(declare-section admin-index-line)
-(declare-section admin-show-section)
-
-(defsection admin-index-block :default
-  [records & [options & _]]
-  (map #(index-block % options) records))
-
-(defsection admin-index-line :default
-  [record & [options]]
-  (admin-show-section record options))
-
-(defsection admin-index-section :default
-  [items & [page]]
-  (admin-index-block items page))
-
-(defsection admin-show-section :default
-  [item & [page]]
-  (show-section item page))
-
 (defsection full-uri :default
   [record & options]
   (str "http://" (config :domain)

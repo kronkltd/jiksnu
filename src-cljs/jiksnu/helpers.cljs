@@ -28,28 +28,6 @@
   (string/lower-case
    (string/replace s #"([a-z])([A-Z])" "$1-$2")))
 
-(defn admin-states
-  [data]
-  (->> data
-       (mapcat
-        (fn [[a c]]
-          [{:state    (str "admin" a)
-            :path     (str "/admin/" (hyphen-case a))
-            :class    (str "Admin" a)
-            :template (str "admin-" (hyphen-case a))}
-           {:state    (str "admin" c)
-            :path     (str "/admin/" (hyphen-case a) "/:id")
-            :class    (str "Admin" c)
-            :template (str "admin-" (hyphen-case c))}]))
-       (map (fn [o] (mapv #(% o) [:state :path :class :template])))))
-
-(def admin-data
-  [["Activities"    "Activity"]
-   ["Conversations" "Conversation"]
-   ["Groups"        "Group"]
-   ["Resources"     "Resource"]
-   ["Users"         "User"]])
-
 (def route-data
   [["avatarPage"            "/main/avatar"             "AvatarPage"            :avatar-page]
    ["home"                  "/"                        "IndexConversations"    :public-timeline]
@@ -94,10 +72,6 @@
   (state-hotkey "g l" "indexLikes"            "Go to Likes")
   (state-hotkey "g s" "indexStreams"          "Go to Streams")
   (state-hotkey "g u" "indexUsers"            "Go to Users"))
-
-(def states
-  (let [as (admin-states admin-data)]
-    (concat as route-data)))
 
 (defn fetch-sub-page
   [item subpageService subpage]

@@ -23,10 +23,6 @@
   (let [item (prepare-create params)]
     (model.picture/create item)))
 
-(defn admin-index
-  [_]
-  (model.picture/fetch-all {} {:limit 20}))
-
 (def can-delete? (constantly true))
 
 (def delete    (templates.actions/make-delete model.picture/delete can-delete?))

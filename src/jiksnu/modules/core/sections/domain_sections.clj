@@ -4,12 +4,8 @@
             [ciste.sections.default :refer [actions-section index-block index-line
                                             show-section uri]]
             [jiksnu.session :refer [current-user is-admin?]]
-            [jiksnu.modules.core.sections :refer [admin-index-block
-                                                  admin-index-line]]
             [jiksnu.namespace :as ns])
   (:import jiksnu.model.Domain))
-
-;; admin-index-block
 
 (defsection show-section [Domain :jrd]
   [item & [page]]
