@@ -1,8 +1,6 @@
 (ns jiksnu.modules.core.views.feed-source-views
   (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [show-section]]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.modules.core.sections :refer [format-page-info]]))
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]))
 
 (defview #'actions.feed-source/index :page
   [request response]

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.feed-source-actions-test
-  (:require [ciste.sections.default :refer [show-section]]
-            [clj-factory.core :refer [factory fseq]]
+  (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.service-actions :as actions.service]

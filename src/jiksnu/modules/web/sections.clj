@@ -1,8 +1,5 @@
 (ns jiksnu.modules.web.sections
-  (:require [ciste.sections :refer [declare-section defsection]]
-            [ciste.sections.default :refer [edit-button index-block
-                                            index-block-type index-line uri]]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
             [ring.util.response :as response]))
 
 (def action-icons

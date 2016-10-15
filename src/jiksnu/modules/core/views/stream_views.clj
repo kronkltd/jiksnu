@@ -2,10 +2,8 @@
   (:require [ciste.core :refer [with-format]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [index-block index-line
-                                            index-section show-section
-                                            title]]
-            [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.modules.core.sections :refer [format-page-info]]))
+                                            index-section title]]
+            [jiksnu.actions.stream-actions :as actions.stream]))
 
 ;; direct-message-timeline
 

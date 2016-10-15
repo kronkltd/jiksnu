@@ -2,7 +2,7 @@
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [with-context]]
             [ciste.sections :refer [defsection]]
-            [ciste.sections.default :refer [full-uri show-section]]
+            [ciste.sections.default :refer [show-section]]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 

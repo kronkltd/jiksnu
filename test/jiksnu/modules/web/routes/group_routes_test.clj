@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.group-routes-test
-  (:require [ciste.sections.default :refer [uri]]
-            [clj-factory.core :refer [factory]]
+  (:require [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
             [jiksnu.mock :as mock]
             [jiksnu.model.group :as model.group]

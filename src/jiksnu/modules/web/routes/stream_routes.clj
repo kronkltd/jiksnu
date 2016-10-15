@@ -2,7 +2,6 @@
   (:require [cemerick.friend :as friend]
             [ciste.commands :refer [add-command!]]
             [ciste.core :refer [with-context]]
-            [ciste.sections.default :refer [index-section show-section]]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.stream :as model.stream]
             [jiksnu.model.user :as model.user]

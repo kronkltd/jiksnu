@@ -1,7 +1,7 @@
 (ns jiksnu.modules.json.views.stream-views
   (:require [ciste.core :refer [with-format]]
             [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [index-section show-section]]
+            [ciste.sections.default :refer [index-section]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]))
 

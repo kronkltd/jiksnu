@@ -2,7 +2,7 @@
   (:require [ciste.core :refer [serialize-as with-format]]
             [ciste.formats :refer [format-as]]
             [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [link-to index-line edit-button]]
+            [ciste.sections.default :refer [link-to]]
             [jiksnu.modules.core.actions :as actions])
   (:import (org.apache.http HttpStatus)))
 

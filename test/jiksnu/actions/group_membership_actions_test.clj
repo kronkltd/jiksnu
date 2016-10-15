@@ -1,6 +1,5 @@
 (ns jiksnu.actions.group-membership-actions-test
   (:require [ciste.config :refer [config]]
-            [ciste.sections.default :refer [show-section]]
             [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]
             [jiksnu.mock :as mock]

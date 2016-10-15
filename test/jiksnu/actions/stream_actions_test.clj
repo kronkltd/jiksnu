@@ -1,6 +1,5 @@
 (ns jiksnu.actions.stream-actions-test
-  (:require [ciste.sections.default :refer [index-section]]
-            [clj-factory.core :refer [factory]]
+  (:require [clj-factory.core :refer [factory]]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
