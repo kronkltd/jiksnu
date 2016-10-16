@@ -3,7 +3,7 @@
  [:div  {:ng-if "loaded"}
   [:debug {:expr "item"}]
   [:show-activity {:data-id "{{item.activity}}"}]
-  [:md-list.buttons
+  [:md-list.buttons {:ng-show "app.user"}
    [:md-list-item
     [:md-button {:ng-click "deleteRecord(item)" :aria-label "Delete Notification"}
      [:ng-md-icon {:icon "delete"}]]]

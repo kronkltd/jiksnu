@@ -6,7 +6,6 @@
    [:add-post-form]
    [:div {:ui-view ""}]]]
  [:div {:layout "column" :flex "" :layout-align "end center"}
-  [:section {:layout "row" :flex ""}
-   [:div {:flex ""} "Copyright © 2011-2016 KRONK Ltd."]
-   [:div {:flex ""} "Powered by " [:a {:href "https://github.com/kronkltd/jiksnu"} "Jiksnu"]]
-   [:div {:flex ""} [:a {:ng-href "{{apiUrl}}" :target "_top"} "API"]]]]]
+  [:div {:flex ""} "Copyright © 2011-2016 KRONK Ltd."]
+  [:div {:flex ""} "Powered by " [:a {:href "https://github.com/kronkltd/jiksnu"} "Jiksnu"]]
+  [:div {:flex ""} [:a {:ng-href "{{apiUrl}}" :target "_top"} "API"]]]]

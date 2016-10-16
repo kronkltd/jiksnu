@@ -11,4 +11,4 @@
    [:md-list-item {:ng-repeat "id in page.items" :ui-sref "showGroup({_id: id})"}
     [:debug {:expr "id"}]
     [:show-group-minimal {:data-id "{{id}}"}]]]
-  [:add-group-form]])
+  [:add-group-form {:ng-show "app.user"}]])

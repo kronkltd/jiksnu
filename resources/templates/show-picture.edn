@@ -6,5 +6,6 @@
   [:p "User: " [:a {:ui-sref "showUser({_id: item.user})"} "{{item.user}}"]]
   [:p "Created: " [:time {:datetime "{{item.created}}" :property "dc:published"}
                    [:span {:am-time-ago "item.created" :am-preprocess "utc"}]]]
-  [:md-button.md-icon-button {:ng-click "deleteRecord()" :aria-label "Delete Picture"}
-   [:ng-md-icon {:icon "delete"}]]])
+  [:div {:ng-show "app.user"}
+   [:md-button.md-icon-button {:ng-click "deleteRecord()" :aria-label "Delete Picture"}
+    [:ng-md-icon {:icon "delete"}]]]])
