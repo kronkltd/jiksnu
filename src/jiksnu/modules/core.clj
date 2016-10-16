@@ -15,6 +15,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.filters :as core.filters]
             jiksnu.modules.core.formats
+            [jiksnu.modules.core.helpers :as helpers]
+            jiksnu.modules.core.pages
             jiksnu.modules.core.sections
             [jiksnu.modules.core.triggers.domain-triggers :as triggers.domain]
             [jiksnu.modules.core.views :as core.views]
@@ -67,6 +69,8 @@
     (model.feed-source/ensure-indexes)
     (model.user/ensure-indexes)
 
+    (helpers/load-pages! 'jiksnu.modules.core.pages)
+    (helpers/load-sub-pages! 'jiksnu.modules.core.pages)
     (core.filters/register-filters!)
     (core.views/register-views!)
 

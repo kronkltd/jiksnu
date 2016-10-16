@@ -1,4 +1,4 @@
-(ns jiksnu.modules.web.routes.pages
+(ns jiksnu.modules.core.pages
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.album-actions :as actions.album]
             [jiksnu.actions.client-actions :as actions.client]
