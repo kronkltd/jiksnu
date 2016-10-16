@@ -15,7 +15,8 @@
             [ring.util.codec :as codec]
             [slingshot.slingshot :refer [try+]]
             [taoensso.timbre :as timbre])
-  (:import java.io.PrintWriter
+  (:import clojure.lang.Var
+           java.io.PrintWriter
            java.net.InetAddress
            java.net.Socket
            java.net.URL
@@ -141,8 +142,15 @@
   ([id ^PrintWriter out escape-unicode]
    (.print out (str "\"" id "\""))))
 
+(defn write-quoted
+  ([o ^PrintWriter out]
+   (write-quoted o out false))
+  ([o ^PrintWriter out escape-unicode]
+   (.print out (str "\"" o "\""))))
+
 (extend Date json/JSONWriter {:-write write-json-date})
 (extend ObjectId json/JSONWriter {:-write write-json-object-id})
+(extend Var json/JSONWriter {:-write write-quoted})
 
 (defn split-uri
   "accepts a uri in the form of username@domain or scheme:username@domain and
