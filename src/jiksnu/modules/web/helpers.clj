@@ -1,14 +1,13 @@
 (ns jiksnu.modules.web.helpers
-  (:require [clojure.data.json :as json]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [clojure.tools.reader.edn :as edn]
             [hiccup.core :as h]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.as.sections.user-sections :refer [format-collection]]
             [jiksnu.modules.core.actions :as actions]
+            [jiksnu.modules.core.helpers :as core.helpers]
             [jiksnu.modules.http.resources :refer [defresource]]
             [jiksnu.modules.web.sections.layout-sections :as sections.layout]
-            [jiksnu.predicates :as predicates]
             [jiksnu.registry :as registry]
             [jiksnu.session :as session]
             [octohipster.mixins :as mixin]
@@ -36,29 +35,6 @@
   []
   "Not Found")
 
-(defn try-resolve
-  [route-sym fn-sym]
-  (try
-    (ns-resolve route-sym fn-sym)
-    (catch Exception ex
-      (timbre/error ex))))
-
-(defn load-pages!
-  [route-sym]
-  (when-let [page-fn (try-resolve route-sym 'pages)]
-    (when-let [matchers (page-fn)]
-      (dosync
-       (alter predicates/*page-matchers* concat matchers)))))
-
-(defn load-sub-pages!
-  [route-sym]
-  (if-let [page-fn (try-resolve route-sym 'sub-pages)]
-    (if-let [matchers (page-fn)]
-      (dosync
-       (alter predicates/*sub-page-matchers* concat matchers))
-      (timbre/warn "No matchers returned"))
-    #_(timbre/warnf "Could not load subpage function - %s" route-sym)))
-
 (defn load-group
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
@@ -67,8 +43,8 @@
         #_(timbre/with-context {:sym (str route-sym)}
             (timbre/debugf "Loading route group - %s" route-sym))
         (try
-          (load-pages! route-sym)
-          (load-sub-pages! route-sym)
+          (core.helpers/load-pages! route-sym)
+          (core.helpers/load-sub-pages! route-sym)
           (catch Exception ex
             (timbre/error "Failed to load routes" ex)
             (throw+ ex))))
