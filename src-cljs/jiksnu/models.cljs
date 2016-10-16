@@ -117,6 +117,16 @@
     :deserialize deserializer
     :methods #js {:getType (constantly "Notification")}}))
 
+(def.factory jiksnu.Pages
+  [DS ]
+  (.defineResource
+   DS
+   #js
+   {:name "page"
+    :endpoint "pages"
+    :deserialize deserializer
+    :methods #js {:getType (constantly "Notification")}}))
+
 (def.factory jiksnu.Pictures
   [DS subpageService]
   (.defineResource

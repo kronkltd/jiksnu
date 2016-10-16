@@ -141,16 +141,20 @@
                            (set! (.-errored $scope) true)))))))))
 
 (defn init-page
-  [$scope $rootScope pageService subpageService page-type]
+  [$scope $rootScope app page-type]
   (.$on $rootScope "updateCollection" (fn [] (.init $scope)))
   (set! (.-loaded $scope) false)
   (set! (.-init $scope)
         (fn []
-          (timbre/debugf "Loading page: %s" page-type)
-          (set! (.-loaded $scope) false)
-          (-> pageService
-              (.fetch page-type)
-              (.then (fn [page]
-                       (timbre/debugf "Page loaded: %s" page-type)
-                       (set! (.-page $scope) page)
-                       (set! (.-loaded $scope) true)))))))
+          (let [Pages (.inject app "Pages")
+                pageService (.inject app "pageService")]
+            (timbre/debugf "Loading page: %s" page-type)
+            (set! (.-loaded $scope) false)
+            (-> pageService
+                (.fetch page-type)
+                (.then (fn [page]
+                         (timbre/debugf "Page loaded: %s" page-type)
+                         (set! (.-_id page) page-type)
+                         (.inject Pages page)
+                         (set! (.-page $scope) page)
+                         (set! (.-loaded $scope) true))))))))

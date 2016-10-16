@@ -121,7 +121,7 @@
 
 (defmethod handle-action "delete"
   [app data]
-  (let [message (str "Unknown action type: " (.-action data))]
+  (let [message (str "Deleted item: " (js/JSON.stringify (.-action data)))]
     (.. app
         (inject "$mdToast")
         (showSimple message))))
@@ -250,7 +250,10 @@
 (defn update-page
   "Notify a page update"
   [app message]
-  (let [$mdToast (.inject app "$mdToast")]
+  (let [$mdToast (.inject app "$mdToast")
+        Pages (.inject app "Pages")
+        conversation-page (.get Pages "conversations")]
+    (.unshift (.-items conversation-page) (.-body message))
     (.showSimple $mdToast "Adding to page")))
 
 (def app-methods
