@@ -17,7 +17,7 @@
             jiksnu.modules.core.formats
             jiksnu.modules.core.sections
             [jiksnu.modules.core.triggers.domain-triggers :as triggers.domain]
-            jiksnu.modules.core.views
+            [jiksnu.modules.core.views :as core.views]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.registry :as registry]
             [jiksnu.util :as util]
@@ -68,6 +68,7 @@
     (model.user/ensure-indexes)
 
     (core.filters/register-filters!)
+    (core.views/register-views!)
 
     ;; cascade delete on domain deletion
     (dosync

@@ -11,9 +11,12 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.actions.group-membership-actions :as actions.group-membership]
+            [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.modules.core.actions :as actions])
   (:import (org.apache.http HttpStatus)))
 
@@ -49,23 +52,6 @@
            :name  (:name request)
            :id    (:_id (:item request))})})
 
-(defview #'actions.activity/index :page
-  [request response]
-  {:body (merge
-          response
-          {:name (:name request)})})
-
-(defview #'actions.activity/fetch-by-stream :page
-  [request response]
-  {:body (merge response
-                {:name (:name request)})})
-
-(defview #'actions.activity/fetch-by-user :page
-  [request response]
-  {:body (merge
-          response
-          {:name (:name request)})})
-
 (defview #'actions.activity/oembed :xml
   [request m]
   {:status HttpStatus/SC_OK
@@ -81,12 +67,45 @@
     [:url (:url m)]
     [:html (:html m)]]})
 
-(defview #'actions.client/index :page
-  [request response]
-  (taoensso.timbre/info "applying client index view")
-  {:body (merge
-          response
-          {:name (:name request)})})
+(defview #'actions.stream/direct-message-timeline :xml
+  [request activities]
+  {:body
+   [:statuses {:type "array"}
+    (map index-line (index-section activities))]})
+
+
+(defview #'actions.stream/home-timeline :xml
+  [request activities]
+  {:body (index-section activities)})
+
+(defview #'actions.stream/mentions-timeline :xml
+  [request activities]
+  {:body
+   [:statuses {:type "array"} (map index-line (index-section activities))]})
+
+(defview #'actions.stream/user-timeline :xml
+  [request [user activities]]
+  {:body (index-block activities)
+   :template :false})
+
+
+
+(def index-views
+  [#'actions.activity/index
+   #'actions.activity/fetch-by-stream
+   #'actions.activity/fetch-by-user
+   #'actions.client/index
+   #'actions.picture/index
+   #'actions.stream/index
+   #'actions.user/index])
+
+
+(defn register-views!
+  []
+  (doseq [v index-views]
+    (defview v :page
+      [request response]
+      (merge response {:name (:name request)}))))
 
 (defview #'actions.conversation/fetch-by-group :page
   [request {:keys [items] :as page}]
@@ -167,12 +186,6 @@
 
 ;; direct-message-timeline
 
-(defview #'actions.stream/direct-message-timeline :xml
-  [request activities]
-  {:body
-   [:statuses {:type "array"}
-    (map index-line (index-section activities))]})
-
 (defview #'actions.stream/fetch-by-user :page
   [request response]
   (let [items (:items response)]
@@ -182,23 +195,6 @@
              :target-model "user"
              :target (:_id (:item request))
              :items items})}))
-
-(defview #'actions.stream/home-timeline :xml
-  [request activities]
-  {:body (index-section activities)})
-
-(defview #'actions.stream/index :page
-  [request response]
-  {:body (merge
-          response
-          {:name (:name request)})})
-
-;; mentions-timeline
-
-(defview #'actions.stream/mentions-timeline :xml
-  [request activities]
-  {:body
-   [:statuses {:type "array"} (map index-line (index-section activities))]})
 
 ;; public-timeline
 
@@ -235,11 +231,6 @@
             :user user
             :id (:_id (:item request))
             :body response}}))
-
-(defview #'actions.stream/user-timeline :xml
-  [request [user activities]]
-  {:body (index-block activities)
-   :template :false})
 
 (defn subscription-formats
   [user]
