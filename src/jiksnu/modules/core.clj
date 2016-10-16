@@ -13,7 +13,7 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
-            jiksnu.modules.core.filters
+            [jiksnu.modules.core.filters :as core.filters]
             jiksnu.modules.core.formats
             jiksnu.modules.core.sections
             [jiksnu.modules.core.triggers.domain-triggers :as triggers.domain]
@@ -66,6 +66,8 @@
     ;; (model.activity/ensure-indexes)
     (model.feed-source/ensure-indexes)
     (model.user/ensure-indexes)
+
+    (core.filters/register-filters!)
 
     ;; cascade delete on domain deletion
     (dosync

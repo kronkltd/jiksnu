@@ -2,11 +2,13 @@
   (:require [ciste.filters :refer [deffilter]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.album-actions :as actions.album]
+            [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]
+            [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]))
@@ -22,106 +24,42 @@
     (when (and order-by direction)
       {:sort-clause {(keyword order-by) direction}})))
 
-(deffilter #'actions.activity/fetch-by-conversation :page
-  [action request]
-  (when-let [conversation (:item request)]
-    (action conversation)))
+(def bare-actions
+  [#'actions.activity/index
+   #'actions.album/index
+   #'actions.client/index
+   #'actions.conversation/index
+   #'actions.conversation/fetch-by-group
+   #'actions.domain/index
+   #'actions.feed-source/index
+   #'actions.group/index
+   #'actions.group-membership/index
+   #'actions.picture/index
+   #'actions.resource/index
+   #'actions.stream/index
+   #'actions.stream/public-timeline
+   #'actions.user/index])
 
-(deffilter #'actions.activity/fetch-by-stream :page
-  [action request]
-  (when-let [item (:item request)]
-    (action item)))
+(def item-actions
+  [#'actions.activity/fetch-by-conversation
+   #'actions.activity/fetch-by-stream
+   #'actions.activity/fetch-by-user
+   #'actions.album/fetch-by-user
+   #'actions.group/fetch-admins
+   #'actions.group/fetch-by-user
+   #'actions.group-membership/fetch-by-group
+   #'actions.group-membership/fetch-by-user
+   #'actions.stream/fetch-by-user
+   #'actions.stream/outbox
+   #'actions.stream/user-timeline])
 
-(deffilter #'actions.activity/fetch-by-user :page
-  [action request]
-  (when-let [item (:item request)]
-    (action item)))
-
-(deffilter #'actions.activity/index :page
-  [action request]
-  (action))
-
-(deffilter #'actions.album/index :page
-  [action request]
-  (action))
-
-(deffilter #'actions.album/fetch-by-user :page
-  [action request]
-  (when-let [item (:item request)]
-    (action item)))
-
-(deffilter #'actions.conversation/index :page
-  [action request]
-  (action))
-
-(deffilter #'actions.conversation/fetch-by-group :page
-  [action request]
-  (action))
-
-(deffilter #'actions.domain/index :page
-  [action request]
-  (action))
-
-(deffilter #'actions.feed-source/index :page
-  [action request]
-  (action))
-
-(deffilter #'actions.group/index :page
-  [action request]
-  (action))
-
-(deffilter #'actions.group/fetch-admins :page
-  [action request]
-  (when-let [item (:item request)]
-    (action item)))
-
-(deffilter #'actions.group/fetch-by-user :page
-  [action request]
-  (when-let [item (:item request)]
-    (action item)))
-
-(deffilter #'actions.group-membership/index :page
-  [action request]
-  (action))
-
-(deffilter #'actions.group-membership/fetch-by-group :page
-  [action request]
-  (when-let [item (:item request)]
-    (action item)))
-
-(deffilter #'actions.group-membership/fetch-by-user :page
-  [action request]
-  (when-let [item (:item request)]
-    (action item)))
-
-(deffilter #'actions.resource/index :page
-  [action request]
-  (action))
-
-(deffilter #'actions.stream/fetch-by-user :page
-  [action request]
-  (let [item (:item request)]
-    (action item)))
-
-(deffilter #'actions.stream/outbox :page
-  [action request]
-  (let [item (:item request)]
-    (action item)))
-
-(deffilter #'actions.stream/index :page
-  [action request]
-  ;; TODO: fetch user
-  (action))
-
-(deffilter #'actions.stream/public-timeline :page
-  [action request]
-  (action))
-
-(deffilter #'actions.stream/user-timeline :page
-  [action request]
-  (let [item (:item request)]
-    (action item)))
-
-(deffilter #'actions.user/index :page
-  [action request]
-  (action))
+(defn register-filters!
+  []
+  (doseq [v bare-actions]
+    (deffilter v :page
+      [action _request]
+      (action)))
+  (doseq [v item-actions]
+    (deffilter v :page
+      [action request]
+      (some-> request :item action))))
