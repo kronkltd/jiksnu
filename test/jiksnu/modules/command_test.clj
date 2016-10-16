@@ -86,7 +86,7 @@
     response => map?
     (let [body (:body response)]
       body => string?
-      (let [response-obj (json/read-str body)]
+      (let [response-obj (json/read-str body :key-fn keyword)]
         response-obj => map?))))
 
 (fact "command 'get-sub-page Users activitites"

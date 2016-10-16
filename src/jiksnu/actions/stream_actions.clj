@@ -98,9 +98,9 @@
   [message]
   (if-let [records (:records message)]
     (with-context [:http :as]
-      (->> records
-           show-section
-           json/json-str))))
+      (-> records
+          show-section
+          (json/read-str :key-fn keyword)))))
 
 (defn format-message-html
   [message]
@@ -146,9 +146,8 @@
 
 (defn format-event
   [m]
-  (str (json/json-str
-        {:body {:action "activity-created"
-                :body m}
+  (str (json/write-str
+        {:body {:action "activity-created" :body m}
          :event "stream-add"
          :stream "public"})
        "\r\n"))
@@ -168,7 +167,7 @@
            (throw+ "no command found"))
        (catch Object ex
          ;; FIXME: handle error
-         (json/json-str
+         (json/write-str
           {:action "error"
            :name (:name request)
            :args (:args request)

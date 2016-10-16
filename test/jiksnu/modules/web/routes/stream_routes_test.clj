@@ -18,7 +18,7 @@
   (let [params {:name (fseq :word)}
         actor (mock/a-user-exists)
         request (-> (req/request :post "/model/streams")
-                    (req/body (json/json-str params))
+                    (req/body (json/write-str params))
                     (req/content-type "application/json")
                     (as-user actor))
         response (response-for request)
@@ -56,5 +56,5 @@
     (let [response (response-for request)]
       ;; (json/read-string (:body response)) => {}
       response  => (contains {:status HttpStatus/SC_OK})
-      (let [body (json/read-json (:body response))]
+      (let [body (json/read-str (:body response) :key-fn keyword)]
         body => (contains {:totalItems 1})))))

@@ -25,7 +25,7 @@
   (let [params (factory :group)
         url "/model/groups"
         request (-> (req/request :post url)
-                    (req/body (json/json-str params))
+                    (req/body (json/write-str params))
                     (req/content-type "application/json"))
         response (response-for request)]
     response => (contains {:status HttpStatus/SC_SEE_OTHER})
@@ -34,8 +34,8 @@
         (let [request2 (req/request :get location)
               response2 (response-for request2)]
           response2 => (contains {:status HttpStatus/SC_OK})
-          (let [body (json/read-str (:body response2))]
-            body => (contains {"name" (:name params)})))
+          (let [body (json/read-str (:body response2) :key-fn keyword)]
+            body => (contains {:name (:name params)})))
         (do
           location =not=> nil?)))))
 
@@ -76,5 +76,5 @@
 
     response => (contains {:status HttpStatus/SC_OK})
 
-    (let [body (json/read-json (:body response))]
+    (let [body (json/read-str (:body response) :key-fn keyword)]
       body => (contains {:totalItems 1}))))

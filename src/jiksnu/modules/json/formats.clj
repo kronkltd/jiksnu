@@ -6,4 +6,4 @@
   [format request response]
   (-> response
       (assoc-in [:headers "Content-Type"] "application/json")
-      (assoc :body (json/json-str (:body response)))))
+      (assoc :body (json/write-str (:body response)))))
