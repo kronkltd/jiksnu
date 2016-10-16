@@ -5,23 +5,23 @@
 
 (defview #'http.actions/connect :json
   [request response]
-  {:body {:action "connect"
-          :connection-id response}})
+  {:action "connect"
+   :connection-id response})
 
 (defview #'actions/get-model :json
   [request response]
-  {:body {:action "model-updated"
-          :type (first (:args request))
-          :body response}})
+  {:action "model-updated"
+   :type (first (:args request))
+   :body response})
 
 (defview #'actions/get-page :json
   [request response]
-  {:body response})
+  response)
 
 (defview #'actions/get-sub-page :json
   [request response]
-  {:body response})
+  response)
 
 (defview #'actions/invoke-action :json
   [request data]
-  {:body data})
+  data)

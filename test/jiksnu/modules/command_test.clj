@@ -34,44 +34,36 @@
             request {:channel ch
                      :name command
                      :format :json
-                     :args (list "user" (:_id user))}
-            response (parse-command request)
-            m (json/read-str (:body response))]
-        (get m "action") => "model-updated"))))
+                     :args (list "user" (:_id user))}]
+        (some-> request parse-command (json/read-str :key-fn keyword)) =>
+        (contains {:action "model-updated"})))))
 
 (fact "command 'get-page activities'"
   (let [name "get-page"
         args '("activities")]
     (fact "when there are activities"
-      (let [activity (mock/an-activity-exists)]
-        (let [ch (d/deferred)
-              request {:channel ch
-                       :name name
-                       :format :json
-                       :args args}]
-          (let [response (parse-command request)]
-            response => map?
-            (let [body (:body response)
-                  json-obj (json/read-str body :key-fn keyword)]
-              json-obj => map?
-              (:items (:body json-obj)) => (contains (str (:_id activity))))))))))
+      (let [activity (mock/an-activity-exists)
+            ch (d/deferred)
+            request {:channel ch
+                     :name name
+                     :format :json
+                     :args args}]
+        (some-> request parse-command (json/read-str :key-fn keyword)) =>
+        (contains {:items (contains (str (:_id activity)))})))))
 
 (fact "command 'get-page clients'"
   (let [name "get-page"
         args '("clients")]
     (fact "when there are clients"
-      #_(let [client (mock/a-client-exists)
-              ch (d/deferred)
-              request {:channel ch
+      (let [client (mock/a-client-exists)
+            ch (d/deferred)
+            request {:channel ch
                        :name name
                        :format :json
                        :args args}
               response (parse-command request)]
-
-          response => map?
-          (let [body (:body response)
-                json-obj (json/read-str body :key-fn keyword)]
-            json-obj => map?)))))
+        (some-> request parse-command (json/read-str :key-fn keyword)) =>
+        map?))))
 
 (fact "command 'get-page streams'"
   (let [name "get-page"
@@ -82,12 +74,8 @@
                  :format :json
                  :args args}
         response (parse-command request)]
-
-    response => map?
-    (let [body (:body response)]
-      body => string?
-      (let [response-obj (json/read-str body)]
-        response-obj => map?))))
+    (some-> request parse-command (json/read-str :key-fn keyword)) =>
+    map?))
 
 (fact "command 'get-sub-page Users activitites"
   (let [ch (d/deferred)
@@ -102,8 +90,5 @@
                  :name command
                  :args (list model-name id page-name)}
         response (parse-command request)]
-    response => map?
-    (let [body (:body response)]
-      body => string?
-      (let [response-obj (json/read-str body :key-fn keyword)]
-        response-obj => (contains {:totalItems 1})))))
+    (some-> request parse-command (json/read-str :key-fn keyword)) =>
+    (contains {:totalItems 1})))

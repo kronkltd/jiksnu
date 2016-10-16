@@ -13,11 +13,13 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
-            jiksnu.modules.core.filters
+            [jiksnu.modules.core.filters :as core.filters]
             jiksnu.modules.core.formats
+            [jiksnu.modules.core.helpers :as helpers]
+            jiksnu.modules.core.pages
             jiksnu.modules.core.sections
             [jiksnu.modules.core.triggers.domain-triggers :as triggers.domain]
-            jiksnu.modules.core.views
+            [jiksnu.modules.core.views :as core.views]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.registry :as registry]
             [jiksnu.util :as util]
@@ -66,6 +68,11 @@
     ;; (model.activity/ensure-indexes)
     (model.feed-source/ensure-indexes)
     (model.user/ensure-indexes)
+
+    (helpers/load-pages! 'jiksnu.modules.core.pages)
+    (helpers/load-sub-pages! 'jiksnu.modules.core.pages)
+    (core.filters/register-filters!)
+    (core.views/register-views!)
 
     ;; cascade delete on domain deletion
     (dosync

@@ -29,9 +29,10 @@
             request (req/request :get path)
             response (response-for request)]
         response => (contains {:status HttpStatus/SC_OK})
-        (let [parsed-body (some-> response :body json/read-str)]
-          parsed-body => (contains {"items"      (has every? string?)
-                                    "totalItems" m}))))))
+        (let [parsed-body (some-> response :body (json/read-str :key-fn keyword))]
+          parsed-body =>
+          (contains {:items      (has every? string?)
+                     :totalItems m}))))))
 
 (fact "route: users-api/groups :get"
   (fact "When the user exists"
@@ -45,9 +46,10 @@
             request (req/request :get path)
             response (response-for request)]
         response => (contains {:status HttpStatus/SC_OK})
-        (let [parsed-body (some-> response :body json/read-str)]
-          parsed-body => (contains {"items" (has every? string?)
-                                    "totalItems" m}))))))
+        (let [parsed-body (some-> response :body (json/read-str :key-fn keyword))]
+          parsed-body =>
+          (contains {:items (has every? string?)
+                     :totalItems m}))))))
 
 (future-fact "route: users-api/subscriptions :get"
   (let [user (mock/a-user-exists)

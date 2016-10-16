@@ -20,5 +20,5 @@
         request (req/request :get path)
         response (response-for request)]
     response => (contains {:status HttpStatus/SC_OK})
-    (let [body (json/read-json (:body response))]
+    (let [body (json/read-str (:body response) :key-fn keyword)]
       body => (contains {:totalItems 1}))))

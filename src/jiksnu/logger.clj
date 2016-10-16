@@ -25,7 +25,7 @@
      (->> out-data
           (map (fn [[k v]] (when v [k v])))
           (into {})
-          json/json-str))))
+          json/write-str))))
 
 (def json-appender (-> (spit-appender {:fname "logs/timbre-spit.log"})
                        (assoc :output-fn json-formatter)))

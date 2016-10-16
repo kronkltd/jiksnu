@@ -21,8 +21,8 @@
         response =>
         (contains {:status HttpStatus/SC_OK
                    :body   string?})
-        (let [body (some-> response :body json/read-str)]
-          body => (contains {"totalItems" 1}))))))
+        (let [body (some-> response :body (json/read-str :key-fn keyword))]
+          body => (contains {:totalItems 1}))))))
 
 (future-fact "route: pictures-api/item :delete"
   (fact "when not authenticated"

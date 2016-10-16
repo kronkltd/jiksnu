@@ -30,7 +30,7 @@
                 :registration_access_token (fseq :word)}
         request (-> (req/request :post "/api/client/register")
                     (req/content-type "application/json")
-                    (req/body (json/json-str params)))]
+                    (req/body (json/write-str params)))]
     (json-response request) =>
     (contains
      ;; TODO: verify against spec

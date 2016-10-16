@@ -24,17 +24,17 @@
   [connection-id activity]
   (timbre/with-context {:activity activity}
     (timbre/info "Transforming activity"))
-  (json/json-str {:action "model-updated"
-                  :connection-id connection-id
-                  :type "activity"
-                  :id (:_id activity)}))
+  (json/write-str {:action "model-updated"
+                   :connection-id connection-id
+                   :type "activity"
+                   :id (:_id activity)}))
 
 (defn transform-conversations
   [connection-id item]
-  (json/json-str {:action "page-add"
-                  :connection-id connection-id
-                  :name "public-timeline"
-                  :body (:_id item)}))
+  (json/write-str {:action "page-add"
+                   :connection-id connection-id
+                   :name "public-timeline"
+                   :body (:_id item)}))
 
 (defn handle-closed
   [channel status message]
@@ -48,8 +48,7 @@
 (defaction alert-all
   [message]
   (doseq [ch (all-channels)]
-    (let [response (json/json-str {:action "add notice"
-                                   :message message})]
+    (let [response (json/write-str {:action "add notice" :message message})]
       (s/put! ch response))))
 
 (defn connect
@@ -67,7 +66,7 @@
 
     (event/notify :connection-opened status)
 
-    (server/send! ch (json/json-str {:connection connection-id}))
+    (server/send! ch (json/write-str {:connection connection-id}))
 
     ;; Executes commands for each input
     (server/on-receive ch

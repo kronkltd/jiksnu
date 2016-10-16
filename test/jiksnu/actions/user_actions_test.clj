@@ -140,8 +140,8 @@
             profile-url (format "https://%s/api/user/%s/profile" domain-name username)
             links [{:href profile-url :rel "self"}]
             mock-xrd (mock-user-meta username domain-name uri source-link)
-            mock-jrd (json/json-str {:links links})
-            mock-profile (json/json-str {:preferredUsername username})
+            mock-jrd (json/write-str {:links links})
+            mock-profile (json/write-str {:preferredUsername username})
             xrd-url (util/replace-template xrd-template uri)
             jrd-url (util/replace-template jrd-template uri)]
 

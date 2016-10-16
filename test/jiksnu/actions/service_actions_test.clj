@@ -75,7 +75,7 @@
         statusnet-url (fseq :uri)
         res (d/deferred)
         config {:foo "bar"}
-        response {:body (json/json-str config)}]
+        response {:body (json/write-str config)}]
 
     (d/success! res response)
     (actions.service/discover-statusnet-config domain url) => truthy

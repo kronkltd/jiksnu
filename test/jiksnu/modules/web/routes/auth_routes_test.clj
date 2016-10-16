@@ -38,7 +38,8 @@
 
         (some-> (req/request :get "/status")
                 (assoc-in [:headers "cookie"] cookie)
-                response-for :body json/read-str (get "user")) => (:username user)))
+                response-for :body
+                (json/read-str :key-fn keyword) :user) => (:username user)))
 
     (fact "when the params are incorrect"
       (db/drop-all!)
@@ -56,7 +57,8 @@
 
         (some-> (req/request :get "/status")
                 (assoc-in [:headers "cookie"] cookie)
-                response-for :body json/read-str (get "user")) => nil)))
+                response-for :body
+                (json/read-str :key-fn keyword) :user) => nil)))
 
   (future-fact "when given json parameters"
     (db/drop-all!)
@@ -64,7 +66,7 @@
           params {:username (:username user)
                   :password @mock/my-password}
           request (-> (req/request :post "/main/login")
-                      (req/body (json/json-str params))
+                      (req/body (json/write-str params))
                       (req/content-type "application/json"))
           response (response-for request)
           cookie (parse-cookie response)]
@@ -75,7 +77,8 @@
 
       (some-> (req/request :get "/status")
               (assoc-in [:headers "cookie"] cookie)
-              response-for :body json/read-str (get "user")) => (:username user))))
+              response-for :body
+              (json/read-str :key-fn keyword) :user) => (:username user))))
 
 (fact "route: auth/register :post"
   (let [username (fseq :username)

@@ -4,6 +4,4 @@
 
 (defmethod format-as :json
   [format request response]
-  (-> response
-      (assoc-in [:headers "Content-Type"] "application/json")
-      (assoc :body (json/json-str (:body response)))))
+  (json/write-str response))
