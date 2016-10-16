@@ -2,7 +2,6 @@
   (:require [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
-            jiksnu.modules.core.views.group-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource
