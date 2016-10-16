@@ -15,6 +15,7 @@
             [jiksnu.model.user :as model.user]
             jiksnu.modules.core.filters
             jiksnu.modules.core.formats
+            jiksnu.modules.core.sections
             [jiksnu.modules.core.triggers.domain-triggers :as triggers.domain]
             jiksnu.modules.core.views
             [jiksnu.templates.model :as templates.model]
