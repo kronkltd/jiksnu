@@ -40,19 +40,13 @@
      :objectType "person"
      :updated (:updated user)
      :published (:created user)
-     :followers {:url followers-url
-                 :totalItems 0}
-     :following {:url following-url
-                 :totalItems 0}
-     :favorites {:url favorites-url
-                 :totalItems 0}
-     :lists {:url list-url
-             :totalItems 0}
-     :image {:url (str avatar-url ".jpg")
-             ;; :rel "avatar"
-             ;; :type "image/jpeg"
-             :width 96
-             :height 96}
+     :followers {:url followers-url :totalItems 0}
+     :following {:url following-url :totalItems 0}
+     :favorites {:url favorites-url :totalItems 0}
+     :lists     {:url list-url      :totalItems 0}
+     :image     {:url    (str avatar-url ".jpg")
+                 :width  96
+                 :height 96}
      :id (:_id user)
      ;; TODO: How are these determined?
      :liked false
@@ -67,8 +61,8 @@
     (with-context [:http :as]
       {:displayName (str "Collections of persons for " (:_id user))
        :objectTypes [(:objectTypes page "collection")]
-       :url (format lists-pattern domain (:username user))
-       :links {:self {:href (format lists-pattern domain (:username user))}}
-       :items (doall (map show-section (:items page)))
-       :totalItems (:totalItems page)
-       :author (show-section user)})))
+       :url         (format lists-pattern scheme domain (:username user))
+       :links       {:self {:href (format lists-pattern scheme domain (:username user))}}
+       :items       (doall (map show-section (:items page)))
+       :totalItems  (:totalItems page)
+       :author      (show-section user)})))
