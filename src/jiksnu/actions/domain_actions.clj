@@ -63,30 +63,6 @@
   [& options]
   (apply index* options))
 
-(defn ping
-  [domain]
-  true)
-
-;; Occurs if the ping request caused an error
-(defn ping-error
-  [domain]
-  (model.domain/set-field! domain :xmpp false)
-  false)
-
-(defn set-xmpp
-  [domain value]
-  (model.domain/set-field! domain :xmpp false))
-
-(defn ping-response
-  [domain]
-  {:pre [(instance? Domain domain)]}
-  (set-xmpp domain true))
-
-;; (defn count
-;;   [ctx]
-;;   1
-;;   )
-
 (defn create
   [params]
   (let [item (prepare-create params)]

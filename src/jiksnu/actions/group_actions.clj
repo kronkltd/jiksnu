@@ -69,10 +69,6 @@
   [& options]
   (apply index* options))
 
-(defn new-page
-  []
-  (Group.))
-
 (defn fetch-admins
   [group]
   (index {:_id (:admins group)}))
