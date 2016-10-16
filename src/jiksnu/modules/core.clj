@@ -13,6 +13,7 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
+            jiksnu.modules.core.filters
             jiksnu.modules.core.formats
             [jiksnu.modules.core.triggers.domain-triggers :as triggers.domain]
             jiksnu.modules.core.views
