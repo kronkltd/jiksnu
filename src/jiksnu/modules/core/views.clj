@@ -46,11 +46,11 @@
 
 (defview #'actions.activity/fetch-by-conversation :page
   [request response]
-  {:body (merge
-          response
-          {:model "conversation"
-           :name  (:name request)
-           :id    (:_id (:item request))})})
+  (merge
+   response
+   {:model "conversation"
+    :name  (:name request)
+    :id    (:_id (:item request))}))
 
 (defview #'actions.activity/oembed :xml
   [request m]
@@ -112,10 +112,10 @@
   (let [response (merge page
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "sub-page-updated"
-            :model "group"
-            :id (:_id (:item request))
-            :body response}}))
+    {:action "sub-page-updated"
+     :model "group"
+     :id (:_id (:item request))
+     :body response}))
 
 (defview #'actions.conversation/index :page
   [request response]
@@ -123,8 +123,8 @@
         response (merge response
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :body response}}))
+    {:action "page-updated"
+     :body response}))
 
 (defview #'actions.domain/index :page
   [request response]
@@ -132,8 +132,8 @@
         response (merge response
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :body response}}))
+    {:action "page-updated"
+     :body response}))
 
 (defview #'actions.feed-source/index :page
   [request response]
@@ -141,8 +141,8 @@
         response (merge response
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :body response}}))
+    {:action "page-updated"
+     :body response}))
 
 (defview #'actions.feed-subscription/index :page
   [request response]
@@ -150,30 +150,30 @@
         response (merge response
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :body response}}))
+    {:action "page-updated"
+     :body response}))
 
 (defview #'actions.group/fetch-admins :page
   [request {:keys [items] :as page}]
   (let [response (merge page
                         {:id (:name request)})]
-    {:body {:action "sub-page-updated"
-            :model "group"
-            :id (:_id (:item request))
-            :body response}}))
+    {:action "sub-page-updated"
+     :model "group"
+     :id (:_id (:item request))
+     :body response}))
 
 (defview #'actions.group/fetch-by-user :page
   [request page]
-  {:body (merge page
-                {:title "Groups"
-                 :model "user"
-                 :id    (:_id (:item page))})})
+  (merge page
+         {:title "Groups"
+          :model "user"
+          :id    (:_id (:item page))}))
 
 (defview #'actions.group/index :page
   [request page]
-  {:body (merge page
-                {:id    (:name request)
-                 :title "Groups"})})
+  (merge page
+         {:id    (:name request)
+          :title "Groups"}))
 
 (defview #'actions.group-membership/fetch-by-group :page
   [request page]
@@ -188,20 +188,19 @@
         response (merge response
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :body response}}))
+    {:action "page-updated"
+     :body response}))
 
 ;; direct-message-timeline
 
 (defview #'actions.stream/fetch-by-user :page
   [request response]
   (let [items (:items response)]
-    {:body
-     (merge response
-            {:id (:name request)
-             :target-model "user"
-             :target (:_id (:item request))
-             :items items})}))
+    (merge response
+           {:id (:name request)
+            :target-model "user"
+            :target (:_id (:item request))
+            :items items})))
 
 ;; public-timeline
 
@@ -211,9 +210,9 @@
         response (merge response
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "page-updated"
-            :title "Public Timeline"
-            :body response}}))
+    {:action "page-updated"
+     :title "Public Timeline"
+     :body response}))
 
 (defview #'actions.stream/user-timeline :page
   [request [user page]]
@@ -221,10 +220,10 @@
         response (merge page
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "sub-page-updated"
-            :model "user"
-            :id (:_id (:item request))
-            :body response}}))
+    {:action "sub-page-updated"
+     :model "user"
+     :id (:_id (:item request))
+     :body response}))
 
 (defview #'actions.stream/outbox :page
   [request [user page]]
@@ -232,12 +231,12 @@
         response (merge page
                         {:id (:name request)
                          :items items})]
-    {:title (title user)
-     :body {:action "sub-page-updated"
-            :model "user"
-            :user user
-            :id (:_id (:item request))
-            :body response}}))
+    {:action "sub-page-updated"
+     :model "user"
+     :title (title user)
+     :user user
+     :id (:_id (:item request))
+     :body response}))
 
 (defn subscription-formats
   [user]
@@ -253,13 +252,13 @@
 
 (defview #'actions.subscription/get-subscribers :page
   [request [user page]]
-  {:body (merge
-          page
-          {:name (:name request)
-           :title (str "Subscribers of " (:name user))
-           :model "user"
-           :target (:_id user)
-           :id (:_id (:item request))})})
+  (merge
+   page
+   {:name (:name request)
+    :title (str "Subscribers of " (:name user))
+    :model "user"
+    :target (:_id user)
+    :id (:_id (:item request))}))
 
 (defview #'actions.subscription/get-subscriptions :page
   [request [user page]]
@@ -267,8 +266,8 @@
         response (merge page
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "sub-page-updated"
-            :model "user"
-            :title (str "Subscriptions of " (:name user))
-            :id (:_id (:item request))
-            :body response}}))
+    {:action "sub-page-updated"
+     :model "user"
+     :title (str "Subscriptions of " (:name user))
+     :id (:_id (:item request))
+     :body response}))

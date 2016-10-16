@@ -163,7 +163,7 @@
                  :args (process-args args)}]
     (session/with-user (:auth request)
       (try+
-       (or (:body (parse-command request))
+       (or (parse-command request)
            (throw+ "no command found"))
        (catch Object ex
          ;; FIXME: handle error

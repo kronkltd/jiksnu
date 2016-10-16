@@ -77,7 +77,7 @@
                  :args args}
         route-handler (resolve-routes [@pred/*sub-page-predicates*]
                                       @pred/*sub-page-matchers*)]
-    (or (:body (route-handler request))
+    (or (route-handler request)
         (throw+ {:action "error"
                  :page page-name
                  :item item
