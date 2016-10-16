@@ -3,7 +3,7 @@
  [:debug {:expr "id"}]
  [:debug {:expr "item"}]
  [:show-request-token {:data-id "{{id}}"}]
- [:form {:name "authorizeForm" :ng-submit "submit()" :flex "" :layout "column"}
+ [:form {:name "authorizeForm" :action "" :method "post" :flex "" :layout "column"}
   [:debug {:expr "authorizeForm"}]
   [:div
    [:md-input-container
@@ -16,5 +16,5 @@
    [:md-button.md-icon-button {:clipboard "" :text "item.verifier"}
     [:ng-md-icon {:icon "content_copy"}]]]
   [:div
-   [:md-button.md-primary.md-raised "Approve"]
+   [:input.md-button.md-primary.md-raised {:type "submit" :value "Approve"}]
    [:md-button.md-warn.md-raised "Deny"]]]]

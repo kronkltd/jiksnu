@@ -6,6 +6,7 @@
 (def page-mappings
   {"activities"        "/model/activities"
    "albums"            "/model/albums"
+   "clients"           "/model/clients"
    "conversations"     "/model/conversations"
    "domains"           "/model/domains"
    "feed-sources"      "/model/feed-sources"
