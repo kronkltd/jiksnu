@@ -175,6 +175,13 @@
                 {:id    (:name request)
                  :title "Groups"})})
 
+(defview #'actions.group-membership/fetch-by-group :page
+  [request page]
+  (merge page
+         {:title "Memberships by Group"
+          :model "GroupMemberships"
+          :id    (:_id (:item page))}))
+
 (defview #'actions.resource/index :page
   [request response]
   (let [items (:items response)
