@@ -33,7 +33,7 @@
     :methods #js {:getType (constantly "Album")}}))
 
 (def.factory jiksnu.Clients
-  [DS subpageService]
+  [DS]
   (.defineResource
    DS
    #js
@@ -58,7 +58,7 @@
      :getType (constantly "Conversation")}}))
 
 (def.factory jiksnu.Domains
-  [DS subpageService]
+  [DS]
   (.defineResource
    DS
    #js
@@ -68,7 +68,7 @@
     :methods #js {:getType (constantly "Domain")}}))
 
 (def.factory jiksnu.Followings
-  [DS subpageService]
+  [DS]
   (.defineResource
    DS
    #js
@@ -78,7 +78,7 @@
     :methods #js {:getType (constantly "Following")}}))
 
 (def.factory jiksnu.Groups
-  [DS subpageService]
+  [DS]
   (.defineResource
    DS
    #js
@@ -88,7 +88,7 @@
     :methods #js {:getType (constantly "Group")}}))
 
 (def.factory jiksnu.GroupMemberships
-  [DS subpageService]
+  [DS]
   (.defineResource
    DS
    #js
@@ -108,7 +108,7 @@
     :methods #js {:getType (constantly "Like")}}))
 
 (def.factory jiksnu.Notifications
-  [DS subpageService]
+  [DS]
   (.defineResource
    DS
    #js
@@ -118,7 +118,7 @@
     :methods #js {:getType (constantly "Notification")}}))
 
 (def.factory jiksnu.Pages
-  [DS ]
+  [DS]
   (.defineResource
    DS
    #js
@@ -128,7 +128,7 @@
     :methods #js {:getType (constantly "Notification")}}))
 
 (def.factory jiksnu.Pictures
-  [DS subpageService]
+  [DS]
   (.defineResource
    DS
    #js
@@ -138,7 +138,7 @@
     :methods #js {:getType (constantly "Picture")}}))
 
 (def.factory jiksnu.RequestTokens
-  [DS subpageService]
+  [DS]
   (.defineResource
    DS
    #js

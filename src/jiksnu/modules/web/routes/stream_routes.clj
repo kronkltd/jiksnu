@@ -9,6 +9,7 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource
                                                 page-resource path subpage-resource]]
+            [jiksnu.session :as session]
             [liberator.representation :refer [as-response ring-response]]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
@@ -58,9 +59,18 @@
      (timbre/error ex)
      (ring-response ex {:status 500}))))
 
+(defn stream-allowed?
+  [ctx]
+  (let [method (some-> ctx :request :request-method)]
+    (if (#{:delete} method)
+      (= (session/current-user-id)
+         (some-> ctx :data :owner))
+      true)))
+
 (defresource streams-api :collection
   :desc "Collection route for streams"
   :mixins [page-resource]
+  :page "streams"
   :post! post-stream
   :post-redirect? (fn [ctx] {:location (format "/model/streams/%s" (:data ctx))})
   :schema {:type "object"
@@ -72,6 +82,7 @@
   :desc "Resource routes for single Stream"
   :url "/{_id}"
   :ns 'jiksnu.actions.stream-actions
+  :allowed? stream-allowed?
   :parameters {:_id (path :model.stream/id)}
   :mixins [item-resource])
 

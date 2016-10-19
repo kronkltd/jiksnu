@@ -3,5 +3,5 @@
 set -e
 
 echo ">> Running Midje Tests"
-lein midje :config test.midje.clj
-
+echo $*
+lein midje :config test.midje.clj $*

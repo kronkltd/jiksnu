@@ -76,5 +76,5 @@
 
     response => (contains {:status HttpStatus/SC_OK})
 
-    (let [body (json/read-str (:body response) :key-fn keyword)]
-      body => (contains {:totalItems 1}))))
+    (some-> response :body (json/read-str :key-fn keyword)) =>
+    (contains {:totalItems 1})))

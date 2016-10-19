@@ -50,7 +50,9 @@
 
 (defresource domains-api :collection
   :mixins [page-resource]
+  :page "domains"
   :available-formats [:json]
+  :target-model "Domain"
   :ns 'jiksnu.actions.domain-actions)
 
 (defresource domains-api :item

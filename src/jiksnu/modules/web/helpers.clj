@@ -16,6 +16,10 @@
   (:import java.io.PushbackReader
            (java.io FileNotFoundException)))
 
+(def types
+  {:json "application/json"
+   :html "text/html"})
+
 (defonce parameters (ref {}))
 
 (defn defparameter
@@ -31,17 +35,38 @@
   [k]
   (merge (get-parameter k) {:in "path"}))
 
-(defn not-found-msg
-  []
-  "Not Found")
+(defn index
+  [_]
+  (sections.layout/page-template-content {} {}))
+
+(defn angular-resource-handle-ok
+  [{{method :request-method} :request
+    resource :resource :as ctx}]
+  (let [k (keyword (str "handle-ok-" (name method)))]
+    (timbre/infof "Method: %s" method)
+    ((get resource k index) ctx)))
+
+(defn angular-resource-description
+  [r]
+  {:summary (or (when-let [state (get-in r [:methods :get :state])]
+                  (str "state: " state))
+                "Angular Template")
+   :description "This is a double for an angular route. Requesting this page directly will return the angular page."
+   :contentType "text/html"
+   :responses
+   {"200" {:description (or (get-in r [:methods :get :description])
+                            (:description r)
+                            "Angular Template")
+           :headers {"Content-Type" {:description "The Content Type"}}}}})
 
 (defn load-group
   [group]
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
     (if (try (require route-sym) true (catch FileNotFoundException _ nil))
       (do
-        #_(timbre/with-context {:sym (str route-sym)}
-            (timbre/debugf "Loading route group - %s" route-sym))
+        #_
+        (timbre/with-context {:sym (str route-sym)}
+          (timbre/debugf "Loading route group - %s" route-sym))
         (try
           (core.helpers/load-pages! route-sym)
           (core.helpers/load-sub-pages! route-sym)
@@ -64,36 +89,6 @@
     {:headers {"Content-Type" "text/html"}
      :body (h/html data)}))
 
-(defn index
-  [_]
-  (sections.layout/page-template-content {} {}))
-
-(def types
-  {:json "application/json"
-   :html "text/html"})
-
-(defn ciste-resource
-  "route mixin for paths that use ciste"
-  [{:keys [available-formats] :as resource}]
-  (let [media-types (mapv types available-formats)]
-    (-> resource mixin/handled-resource
-        (assoc :available-media-types media-types))))
-
-(defn page-resource
-  "route mixin for paths that operate on a page"
-  [{action-ns :ns :as r}]
-  (if-let [action-sym (ns-resolve action-ns 'index)]
-    (merge {:allowed-methods [:get :post :delete]
-            :exists? (fn [_]
-                       #_(timbre/with-context {:ns (str action-ns)}
-                           (timbre/debugf "Fetching Page - %s" (:name r)))
-                       (when-let [action-var (var-get action-sym)]
-                         [true {:data (action-var)}]))
-            ;; FIXME: Return actual count
-            :count (constantly 4)}
-           (ciste-resource r))
-    (throw+ "Could not resolve index action")))
-
 (defn get-handler
   [ctx handler-sym]
   (if-let [action-ns-sym (:ns (:resource ctx))]
@@ -105,6 +100,28 @@
       (throw+ {:message "Model ns not defined" :action-ns (action-ns-sym)}))
     (throw+ {:message "Could not determine action namespace"})))
 
+(defn page-exists?
+  [{resource :resource}]
+  (if-let [page-name (when-let [page-name-fn (:page resource)] (page-name-fn))]
+    (do
+      (timbre/with-context {:page page-name}
+        (timbre/debugf "Fetching Page - %s" page-name))
+      {:data (actions/get-page page-name)})
+    (throw+ {:message "Resource does not define a page name"})))
+
+(defn subpage-exists?
+  [{{:keys [subpage target target-model]} :resource
+    {{id :_id} :route-params} :request :as ctx}]
+  #_
+  (timbre/infof "fetching subpage - %s(%s)" target-model subpage)
+  (when-let [item (actions/get-model (target-model) id)]
+    {:data (actions/get-sub-page item (subpage))}))
+
+(defn get-user
+  "Gets the user from the context"
+  [{{{username :username} :route-params} :request}]
+  (model.user/get-user username))
+
 (defn item-resource-delete!
   "Generic item delete handler for page items"
   [ctx]
@@ -113,9 +130,10 @@
 
 (defn item-resource-malformed?
   [ctx]
-  (let [fetcher (get-handler ctx 'fetch-by-id)
-        id (get-in ctx [:request :route-params :_id])]
-    [false {:data (fetcher id)}]))
+  (let [fetcher (get-handler ctx 'fetch-by-id)]
+    (if-let [id (get-in ctx [:request :route-params :_id])]
+      [false {:data (fetcher id)}]
+      true)))
 
 (defn item-resource-authorized?
   [ctx]
@@ -123,6 +141,29 @@
         username (session/current-user-id)]
     [(if (#{:put :delete} method) (boolean (seq username)) true)
      {:username username}]))
+
+;;; Resource Mixins
+
+(defn ciste-resource
+  "route mixin for paths that use ciste"
+  [{:keys [available-formats] :as resource}]
+  (-> {:available-media-types (mapv types available-formats)}
+      (merge resource)
+      mixin/handled-resource))
+
+(defn page-resource
+  "route mixin for paths that operate on a page"
+  [{action-ns :ns :as resource}]
+  (if-let [action-sym (ns-resolve action-ns 'index)]
+    (-> {:allowed-methods [:get :post :delete]
+         :available-formats [:json]
+         :available-media-types ["application/json"]
+         :exists? page-exists?
+         ;; FIXME: Return actual count
+         :count (constantly 4)}
+        (merge resource)
+        ciste-resource)
+    (throw+ "Could not resolve index action")))
 
 (defn item-resource
   "Route mixin for resources that represent a page item"
@@ -142,68 +183,42 @@
           mixin/item-resource))
     (throw+ {:message "Ns not defined"})))
 
-(defn subpage-exists?
-  [{:keys [subpage target target-model]}
-   {{{id :_id} :route-params} :request :as ctx}]
-  #_(timbre/infof "fetching subpage - %s(%s)" target-model subpage)
-  (when-let [item (if target
-                    (target ctx)
-                    (actions/get-model target-model id))]
-    {:data (actions/get-sub-page item subpage)}))
-
 (defn subpage-resource
   "route mixin for paths that operate on a subpage"
   [resource]
-  (-> resource
-      (assoc :allowed-methods [:get])
-      (assoc :available-formats [:json])
-      ciste-resource
-      (assoc :exists? #(subpage-exists? resource %))))
-
-(defn get-user
-  "Gets the user from the context"
-  [{{{username :username} :route-params} :request}]
-  (model.user/get-user username))
+  (-> {:allowed-methods [:get]
+       :available-formats [:json]
+       :exists? subpage-exists?}
+      (merge resource)
+      ciste-resource))
 
 (defn as-collection-resource
   [{:keys [indexer fetcher collection-type] :as resource}]
-  (-> (merge {:allowed-methods [:get :post]
-              :available-media-types ["application/json"]
-              :can-put-to-missing? false
-              :methods {:get {:summary (str "Get Collection of " collection-type)}
-                        :post {:summary (str "Add to collection of " collection-type)}}
-              :collection-key :collection
-              :exists? (fn [ctx]
-                         (let [user (get-user ctx)
-                               page (-> (indexer ctx user)
-                                        (assoc :objectTypes collection-type)
-                                        (update :items #(map fetcher %)))]
-                           {:data (format-collection user page)}))
-              :new? false
-              :parameters {:username (path :model.user/username)}
-              :respond-with-entity? true
-              :schema {:type "object"}}
-             resource)
+  (-> {:allowed-methods [:get :post]
+       :available-media-types ["application/json"]
+       :can-put-to-missing? false
+       :methods {:get {:summary (str "Get Collection of " collection-type)}
+                 :post {:summary (str "Add to collection of " collection-type)}}
+       :collection-key :collection
+       :exists? (fn [ctx]
+                  (let [user (get-user ctx)
+                        page (-> (indexer ctx user)
+                                 (assoc :objectTypes collection-type)
+                                 (update :items #(map fetcher %)))]
+                    {:data (format-collection user page)}))
+       :new? false
+       :parameters {:username (path :model.user/username)}
+       :respond-with-entity? true
+       :schema {:type "object"}}
+      (merge resource)
       mixin/handled-resource))
 
 (defn angular-resource
   [{:keys [methods] :as r}]
-  (let [get-method (:get methods)]
+  (let [get-method (:get methods)
+        description (merge (angular-resource-description r) get-method)]
     (-> {:exists? true
-         :handle-ok index
+         :handle-ok angular-resource-handle-ok
          :available-media-types (mapv types [:html])}
         (merge r)
-        (assoc-in
-         [:methods :get]
-         (merge
-          {:summary (or (when-let [state (get-in r [:methods :get :state])]
-                          (str "state: " state))
-                        "Angular Template")
-           :description "This is a double for an angular route. Requesting this page directly will return the angular page."
-           :contentType "text/html"
-           :responses
-           {"200" {:description (or (get-in r [:methods :get :description])
-                                    (:description r)
-                                    "Angular Template")
-                   :headers {"Content-Type" {:description "The Content Type"}}}}}
-          get-method)))))
+        (assoc-in [:methods :get] description))))

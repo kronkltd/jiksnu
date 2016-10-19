@@ -95,6 +95,7 @@
    #'actions.activity/fetch-by-stream
    #'actions.activity/fetch-by-user
    #'actions.client/index
+   #'actions.group-membership/index
    #'actions.picture/index
    #'actions.stream/index
    #'actions.user/index])

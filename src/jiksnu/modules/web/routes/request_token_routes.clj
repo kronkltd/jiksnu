@@ -28,8 +28,7 @@
 
 (defresource request-tokens-api :collection
   :mixins [page-resource]
-  :allowed-methods [:get]
-  :available-formats [:json]
+  :page "request-tokens"
   :ns 'jiksnu.actions.request-token-actions)
 
 (defresource request-tokens-api :item
