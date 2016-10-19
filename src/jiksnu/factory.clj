@@ -55,6 +55,10 @@
   [n]
   (str (fseq :givenName) " " (fseq :surname)))
 
+(defseq :album-name
+  [n]
+  (fseq :name))
+
 (defseq :password
   [n]
   "hunter2")
@@ -195,6 +199,9 @@
 
 (defrecordfactory :resource model/map->Resource
   {:_id (fseq :uri)})
+
+(defrecordfactory :album model/map->Album
+  {:name (fseq :album-name)})
 
 (defrecordfactory :activity model/map->Activity
   {:title (fseq :title)

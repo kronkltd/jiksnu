@@ -5,6 +5,7 @@
             [ciste.sections.default :refer [index-block index-line index-section
                                             link-to title uri]]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.album-actions :as actions.album]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -94,6 +95,7 @@
   [#'actions.activity/index
    #'actions.activity/fetch-by-stream
    #'actions.activity/fetch-by-user
+   #'actions.album/index
    #'actions.client/index
    #'actions.conversation/index
    #'actions.domain/index

@@ -3,6 +3,7 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Activity
+           jiksnu.model.Album
            jiksnu.model.Client
            jiksnu.model.Conversation
            jiksnu.model.Domain
@@ -52,6 +53,9 @@
 
 (fact "#'mock/a-group-exists"
   (mock/a-group-exists) => (partial instance? Group))
+
+(fact "#'mock/an-album-exists"
+  (mock/an-album-exists) => (partial instance? Album))
 
 (fact "#'mock/a-request-token-exists"
   (mock/a-request-token-exists) => (partial instance? RequestToken))

@@ -2,6 +2,7 @@
   (:require [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.album-actions :as actions.album]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -213,6 +214,14 @@
   (let [user (actions.user/create (factory :local-user))]
     (an-activity-exists {:modifier modifier
                            :user   user})))
+
+(defn an-album-exists
+  [& [options]]
+  (let [user (or (:user options) (a-user-exists options))
+        params (factory :album {:owner (:_id user)})
+        album (actions.album/create params)]
+    (set-this :album album)
+    album))
 
 (defn a-picture-exists
   [& [options]]
