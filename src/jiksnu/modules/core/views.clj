@@ -95,8 +95,14 @@
    #'actions.activity/fetch-by-stream
    #'actions.activity/fetch-by-user
    #'actions.client/index
+   #'actions.conversation/index
+   #'actions.domain/index
+   #'actions.feed-source/index
+   #'actions.feed-subscription/index
+   #'actions.group/index
    #'actions.group-membership/index
    #'actions.picture/index
+   #'actions.resource/index
    #'actions.stream/index
    #'actions.user/index])
 
@@ -118,42 +124,6 @@
      :id (:_id (:item request))
      :body response}))
 
-(defview #'actions.conversation/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
-(defview #'actions.domain/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
-(defview #'actions.feed-source/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
-(defview #'actions.feed-subscription/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
 (defview #'actions.group/fetch-admins :page
   [request {:keys [items] :as page}]
   (let [response (merge page
@@ -170,29 +140,12 @@
           :model "user"
           :id    (:_id (:item page))}))
 
-(defview #'actions.group/index :page
-  [request page]
-  (merge page
-         {:id    (:name request)
-          :title "Groups"}))
-
 (defview #'actions.group-membership/fetch-by-group :page
   [request page]
   (merge page
          {:title "Memberships by Group"
           :model "GroupMemberships"
           :id    (:_id (:item page))}))
-
-(defview #'actions.resource/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
-;; direct-message-timeline
 
 (defview #'actions.stream/fetch-by-user :page
   [request response]
