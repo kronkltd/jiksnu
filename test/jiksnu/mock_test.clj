@@ -10,6 +10,7 @@
            jiksnu.model.FeedSource
            jiksnu.model.FeedSubscription
            jiksnu.model.Group
+           jiksnu.model.Like
            jiksnu.model.Picture
            jiksnu.model.RequestToken
            jiksnu.model.Resource
@@ -30,6 +31,9 @@
 
 (fact "#'mock/a-client-exists"
   (mock/a-client-exists) => (partial instance? Client))
+
+(fact "#'mock/a-like-exists"
+  (mock/a-like-exists) => (partial instance? Like))
 
 (fact "#'mock/a-user-exists"
   (fact "without any params"

@@ -77,6 +77,23 @@
     (some-> request parse-command (json/read-str :key-fn keyword)) =>
     map?))
 
+(fact "command 'get-sub-page Activity likes"
+  (fact " - when activity exists"
+    (fact " - - and there are no likes"
+      (let [ch (d/deferred)
+            command "get-sub-page"
+            user (mock/a-user-exists)
+            activity (mock/an-activity-exists {:user user})
+            model-name "activity"
+            id (str (:_id activity))
+            page-name "likes"
+            request {:channel ch
+                     :format :json
+                     :name command
+                     :args (list model-name id page-name)}]
+        (some-> request parse-command (json/read-str :key-fn keyword)) =>
+        (contains {:totalItems 0})))))
+
 (fact "command 'get-sub-page Users activitites"
   (let [ch (d/deferred)
         command "get-sub-page"

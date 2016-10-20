@@ -13,6 +13,7 @@
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]
+            [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -103,6 +104,7 @@
    #'actions.feed-subscription/index
    #'actions.group/index
    #'actions.group-membership/index
+   #'actions.like/index
    #'actions.picture/index
    #'actions.resource/index
    #'actions.stream/index
@@ -147,6 +149,13 @@
   (merge page
          {:title "Memberships by Group"
           :model "GroupMemberships"
+          :id    (:_id (:item page))}))
+
+(defview #'actions.like/fetch-by-activity :page
+  [request page]
+  (merge page
+         {:title "Likes"
+          :model "activity"
           :id    (:_id (:item page))}))
 
 (defview #'actions.stream/fetch-by-user :page

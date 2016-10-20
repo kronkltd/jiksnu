@@ -209,6 +209,15 @@
     (set-this :activity activity)
     activity))
 
+(defn a-like-exists
+  [& [options]]
+  (let [user (or (:user options) (a-user-exists))
+        activity (or (:activity options) (an-activity-exists {:user user}))
+        params (factory :like {:activity (:_id activity) :user (:_id user)})
+        like (actions.like/create params)]
+    (set-this :like like)
+    like))
+
 (defn there-is-an-activity-by-another
   [modifier]
   (let [user (actions.user/create (factory :local-user))]
