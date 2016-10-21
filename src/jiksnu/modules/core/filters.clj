@@ -8,6 +8,8 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]
+            [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.actions.notification-actions :as actions.notification]
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -35,6 +37,8 @@
    #'actions.feed-source/index
    #'actions.group/index
    #'actions.group-membership/index
+   #'actions.like/index
+   #'actions.notification/index
    #'actions.picture/index
    #'actions.resource/index
    #'actions.stream/index
@@ -50,6 +54,7 @@
    #'actions.group/fetch-by-user
    #'actions.group-membership/fetch-by-group
    #'actions.group-membership/fetch-by-user
+   #'actions.like/fetch-by-activity
    #'actions.stream/fetch-by-user
    #'actions.stream/outbox
    #'actions.stream/user-timeline])

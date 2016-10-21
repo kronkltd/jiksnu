@@ -5,6 +5,7 @@
             [ciste.sections.default :refer [index-block index-line index-section
                                             link-to title uri]]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.album-actions :as actions.album]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -12,6 +13,8 @@
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]
+            [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.actions.notification-actions :as actions.notification]
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -94,9 +97,18 @@
   [#'actions.activity/index
    #'actions.activity/fetch-by-stream
    #'actions.activity/fetch-by-user
+   #'actions.album/index
    #'actions.client/index
+   #'actions.conversation/index
+   #'actions.domain/index
+   #'actions.feed-source/index
+   #'actions.feed-subscription/index
+   #'actions.group/index
    #'actions.group-membership/index
+   #'actions.like/index
+   #'actions.notification/index
    #'actions.picture/index
+   #'actions.resource/index
    #'actions.stream/index
    #'actions.user/index])
 
@@ -118,42 +130,6 @@
      :id (:_id (:item request))
      :body response}))
 
-(defview #'actions.conversation/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
-(defview #'actions.domain/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
-(defview #'actions.feed-source/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
-(defview #'actions.feed-subscription/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
 (defview #'actions.group/fetch-admins :page
   [request {:keys [items] :as page}]
   (let [response (merge page
@@ -170,12 +146,6 @@
           :model "user"
           :id    (:_id (:item page))}))
 
-(defview #'actions.group/index :page
-  [request page]
-  (merge page
-         {:id    (:name request)
-          :title "Groups"}))
-
 (defview #'actions.group-membership/fetch-by-group :page
   [request page]
   (merge page
@@ -183,16 +153,12 @@
           :model "GroupMemberships"
           :id    (:_id (:item page))}))
 
-(defview #'actions.resource/index :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:id (:name request)
-                         :items (map :_id items)})]
-    {:action "page-updated"
-     :body response}))
-
-;; direct-message-timeline
+(defview #'actions.like/fetch-by-activity :page
+  [request page]
+  (merge page
+         {:title "Likes"
+          :model "activity"
+          :id    (:_id (:item page))}))
 
 (defview #'actions.stream/fetch-by-user :page
   [request response]

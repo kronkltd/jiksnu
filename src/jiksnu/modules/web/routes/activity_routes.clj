@@ -63,6 +63,7 @@
   :desc "Collection route for activities"
   :mixins [page-resource]
   :available-formats [:json]
+  :page "activities"
   :allowed-methods [:get :post]
   :available-media-types ["application/json"]
   :methods {:get {:summary "Index Activities"}

@@ -35,6 +35,7 @@
    [{:name "feed-subscriptions"} {:action #'feed-subscription/index}]
    [{:name "group-memberships"}  {:action #'actions.group-membership/index}]
    [{:name "groups"}             {:action #'group/index}]
+   [{:name "likes"}              {:action #'actions.like/index}]
    [{:name "notifications"}      {:action #'actions.notification/index}]
    [{:name "pictures"}           {:action #'actions.picture/index}]
    [{:name "public-timeline"}    {:action #'stream/public-timeline}]

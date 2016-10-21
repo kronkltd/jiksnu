@@ -29,7 +29,8 @@
             [jiksnu.modules.core.actions :as actions]
             [jiksnu.session :refer [current-user-id]]
             [jiksnu.actions.like-actions :as actions.like]
-            [jiksnu.model.like :as model.like]))
+            [jiksnu.model.like :as model.like]
+            [slingshot.slingshot :refer [throw+]]))
 
 (deffilter #'actions/get-model :command
   [action request]
@@ -46,7 +47,10 @@
   [action request]
   (let [[model-name id page-name] (:args request)]
     (if-let [item (actions/get-model model-name id)]
-      (action item page-name))))
+      (action item page-name)
+      (throw+ {:message "Could not find model"
+               :model model-name
+               :id id}))))
 
 (deffilter #'actions/invoke-action :command
   [action request]

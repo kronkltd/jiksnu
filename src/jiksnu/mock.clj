@@ -2,6 +2,7 @@
   (:require [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.album-actions :as actions.album]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -10,6 +11,7 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.actions.notification-actions :as actions.notification]
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.actions.resource-actions :as actions.resource]
@@ -208,11 +210,37 @@
     (set-this :activity activity)
     activity))
 
+(defn a-like-exists
+  [& [options]]
+  (let [user (or (:user options) (a-user-exists))
+        activity (or (:activity options) (an-activity-exists {:user user}))
+        params (factory :like {:activity (:_id activity) :user (:_id user)})
+        like (actions.like/create params)]
+    (set-this :like like)
+    like))
+
+(defn a-notification-exists
+  [& [options]]
+  (let [user (or (:user options) (a-user-exists))
+        activity (or (:activity options) (an-activity-exists {:user user}))
+        params (factory :notification {:activity (:_id activity) :user (:_id user)})
+        item (actions.notification/create params)]
+    (set-this :notification item)
+    item))
+
 (defn there-is-an-activity-by-another
   [modifier]
   (let [user (actions.user/create (factory :local-user))]
     (an-activity-exists {:modifier modifier
                            :user   user})))
+
+(defn an-album-exists
+  [& [options]]
+  (let [user (or (:user options) (a-user-exists options))
+        params (factory :album {:owner (:_id user)})
+        album (actions.album/create params)]
+    (set-this :album album)
+    album))
 
 (defn a-picture-exists
   [& [options]]

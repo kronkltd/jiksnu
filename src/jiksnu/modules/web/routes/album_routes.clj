@@ -55,6 +55,7 @@
   :mixins [page-resource]
   :available-formats [:json]
   :allowed-methods [:get :post]
+  :page "albums"
   :available-media-types ["application/json"]
   :methods {:get {:summary "Index Albums"}
             :post {:summary "Create Album"}}

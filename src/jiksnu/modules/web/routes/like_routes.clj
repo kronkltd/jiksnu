@@ -31,9 +31,6 @@
   :desc "Collection route for likes"
   :mixins [page-resource]
   :page "likes"
-  :available-formats [:json]
-  :allowed-methods [:get :post]
-  :available-media-types ["application/json"]
   :methods {:get {:summary "Index Likes"}
             :post {:summary "Create Like"}}
   ;; :post! likes-api-post
