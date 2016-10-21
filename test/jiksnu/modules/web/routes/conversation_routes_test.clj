@@ -26,6 +26,6 @@
         request (req/request :get url)
         activity (mock/an-activity-exists {:conversation conversation})]
     (let [response (response-for request)]
-      response => (contains {:status 200})
+      response => (contains {:status HttpStatus/SC_OK})
       (let [body (some-> response :body (json/read-str :key-fn keyword))]
         body => (contains {:items (contains (str (:_id activity)))})))))

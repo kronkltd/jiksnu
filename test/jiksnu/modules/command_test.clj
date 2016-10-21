@@ -114,7 +114,6 @@
         request {:channel ch
                  :format :json
                  :name command
-                 :args (list model-name id page-name)}
-        response (parse-command request)]
+                 :args (list model-name id page-name)}]
     (some-> request parse-command (json/read-str :key-fn keyword)) =>
     (contains {:totalItems 1})))
