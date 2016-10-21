@@ -251,3 +251,6 @@
   {:name (fseq :word)
    :user #'user-id
    :public true})
+
+(deffactory :notification
+  {})

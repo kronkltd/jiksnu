@@ -11,6 +11,7 @@
            jiksnu.model.FeedSubscription
            jiksnu.model.Group
            jiksnu.model.Like
+           jiksnu.model.Notification
            jiksnu.model.Picture
            jiksnu.model.RequestToken
            jiksnu.model.Resource
@@ -34,6 +35,9 @@
 
 (fact "#'mock/a-like-exists"
   (mock/a-like-exists) => (partial instance? Like))
+
+(fact "#'mock/a-notification-exists"
+  (mock/a-notification-exists) => (partial instance? Notification))
 
 (fact "#'mock/a-user-exists"
   (fact "without any params"

@@ -60,10 +60,20 @@
             request {:channel ch
                        :name name
                        :format :json
-                       :args args}
-              response (parse-command request)]
+                       :args args}]
         (some-> request parse-command (json/read-str :key-fn keyword)) =>
         map?))))
+
+(fact "command 'get-page notifications'"
+  (let [name "get-page"
+        args '("notifications")
+        ch (d/deferred)
+        request {:name name
+                 :channel ch
+                 :format :json
+                 :args args}]
+    (some-> request parse-command (json/read-str :key-fn keyword)) =>
+    map?))
 
 (fact "command 'get-page streams'"
   (let [name "get-page"
@@ -72,8 +82,7 @@
         request {:name name
                  :channel ch
                  :format :json
-                 :args args}
-        response (parse-command request)]
+                 :args args}]
     (some-> request parse-command (json/read-str :key-fn keyword)) =>
     map?))
 

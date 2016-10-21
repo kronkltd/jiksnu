@@ -11,6 +11,7 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.actions.notification-actions :as actions.notification]
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.actions.resource-actions :as actions.resource]
@@ -217,6 +218,15 @@
         like (actions.like/create params)]
     (set-this :like like)
     like))
+
+(defn a-notification-exists
+  [& [options]]
+  (let [user (or (:user options) (a-user-exists))
+        activity (or (:activity options) (an-activity-exists {:user user}))
+        params (factory :notification {:activity (:_id activity) :user (:_id user)})
+        item (actions.notification/create params)]
+    (set-this :notification item)
+    item))
 
 (defn there-is-an-activity-by-another
   [modifier]

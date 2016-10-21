@@ -30,6 +30,7 @@
 (defresource notifications-api :collection
   :desc "Collection route for notifications"
   :mixins [page-resource]
+  :page "notifications"
   :methods {:get {:summary "Index Notifications"}
             :post {:summary "Create Notification"}}
   :ns 'jiksnu.actions.notification-actions)

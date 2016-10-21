@@ -9,6 +9,7 @@
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.group-membership-actions :as actions.group-membership]
             [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.actions.notification-actions :as actions.notification]
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -37,6 +38,7 @@
    #'actions.group/index
    #'actions.group-membership/index
    #'actions.like/index
+   #'actions.notification/index
    #'actions.picture/index
    #'actions.resource/index
    #'actions.stream/index
