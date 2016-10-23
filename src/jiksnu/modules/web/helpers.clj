@@ -57,7 +57,7 @@
    {"200" {:description (or (get-in r [:methods :get :description])
                             (:description r)
                             "Angular Template")
-           :headers {"Content-Type" {:description "The Content Type"}}}}})
+           :schema {:type "string"}}}})
 
 (defn load-group
   [group]
