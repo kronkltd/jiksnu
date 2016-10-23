@@ -17,9 +17,9 @@
                  [compojure "1.5.1"]
                  [com.cemerick/friend "0.2.3"]
                  [com.getsentry.raven/raven "7.8.0"]
-                 [com.novemberain/monger "3.1.0"]
+                 [com.novemberain/monger "3.1.0" :exclusions [com.google.guava/guava]]
                  [com.novemberain/validateur "2.5.0"]
-                 [com.taoensso/timbre "4.7.4"]
+                 [com.taoensso/timbre "4.8.0-alpha1"]
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
                  [im.chit/gyr "0.3.1" :exclusions [im.chit/purnam]]
@@ -34,8 +34,8 @@
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/octohipster "0.3.0-SNAPSHOT"
                   :exclusions [inflections]]
-                 [org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.8.40"]
+                 [org.clojure/clojure "1.9.0-alpha13"]
+                 [org.clojure/clojurescript "1.9.293"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/tools.reader "1.0.0-beta3"]
                  [org.clojure/data.json "0.2.6"]
@@ -47,7 +47,7 @@
             [lein-annotations "0.1.0" :exclusions [org.clojure/clojure]]
             [lein-checkall "0.1.1" :exclusions [org.clojure/tools.namespace org.clojure/clojure]]
             [lein-cljfmt "0.5.2"  :exclusions [org.clojure/clojure]]
-            [lein-cljsbuild "1.1.2" :exclusions [org.clojure/clojure]]
+            [lein-cljsbuild "1.1.4" :exclusions [org.clojure/clojure]]
             [lein-cloverage "1.0.2" :exclusions [org.clojure/clojure]]
             [lein-less "1.7.5" :exclusions [org.clojure/clojure]]
             [lein-midje "3.1.3" :exclusions [org.clojure/clojure]]
@@ -94,7 +94,7 @@
                                  ;; :verbose true
                                  :pretty-print true}}}}
   :profiles {:dev {:dependencies
-                   [[midje "1.8.3" :exclusions [org.clojure/clojure]]
+                   [[midje "1.9.0-alpha5" :exclusions [org.clojure/clojure]]
                     [org.clojure/tools.nrepl "0.2.12"]
                     [ring-mock "0.1.5"]
                     [slamhound "1.5.5"]]}
