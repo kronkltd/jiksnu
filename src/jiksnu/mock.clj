@@ -25,7 +25,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that set-this set-that this that]]
             [jiksnu.session :as session]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))
 
 (def my-password (ref nil))

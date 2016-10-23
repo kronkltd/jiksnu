@@ -2,13 +2,11 @@
   (:require [ciste.event :as event]
             [clj-time.core :as time]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.channels :as ch]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
-            [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 

@@ -1,15 +1,12 @@
 (ns jiksnu.modules.web.routes.group-membership-routes
   (:require [jiksnu.actions.group-membership-actions :as actions.group-membership]
-            [jiksnu.model.group-membership :as model.group-membership]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter
                                                 item-resource page-resource path]]
             [liberator.representation :refer [as-response ring-response]]
-            [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre]
-            [jiksnu.model.user :as model.user]))
+            [taoensso.timbre :as timbre]))
 
 (defparameter :model.group-membership/id
   :description "The Id of a group membership"

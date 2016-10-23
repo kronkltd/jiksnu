@@ -2,7 +2,6 @@
   (:require [jiksnu.db :refer [_db]]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [net.cgrand.enlive-html :as enlive]
             [validateur.validation :refer [validation-set presence-of acceptance-of]])

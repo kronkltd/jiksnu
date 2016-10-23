@@ -1,7 +1,6 @@
 (ns jiksnu.logger
   (:require [clojure.data.json :as json]
             [jiksnu.sentry :as sentry]
-            [jiksnu.util :as util]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]))
 

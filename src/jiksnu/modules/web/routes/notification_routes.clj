@@ -1,11 +1,8 @@
 (ns jiksnu.modules.web.routes.notification-routes
   (:require [ciste.config :refer [config]]
-            [jiksnu.actions.notification-actions :as actions.notification]
-            [jiksnu.model.notification :as model.notification]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource page-resource path]]
-            [octohipster.mixins :as mixin]))
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource page-resource path]]))
 
 (defgroup jiksnu notifications
   :name "Notifications"

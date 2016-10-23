@@ -3,15 +3,12 @@
             [ciste.event :as event]
             [clojure.set :as set]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
-            [jiksnu.util :as util]
-            [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 

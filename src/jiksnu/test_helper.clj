@@ -3,7 +3,6 @@
             [hiccup.core :as h]
             [jiksnu.db :as db]
             [jiksnu.referrant :as r]
-            [jiksnu.util :as util]
             [midje.sweet :refer [=> =not=> fact future-fact namespace-state-changes throws]]
             [net.cgrand.enlive-html :as enlive]
             [slingshot.slingshot :refer [try+ throw+]]

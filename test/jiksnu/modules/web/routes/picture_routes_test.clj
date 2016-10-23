@@ -1,10 +1,8 @@
 (ns jiksnu.modules.web.routes.picture-routes-test
   (:require [clojure.data.json :as json]
-            [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req])
   (:import (org.apache.http HttpStatus)))

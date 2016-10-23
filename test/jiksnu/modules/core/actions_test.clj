@@ -2,7 +2,6 @@
   (:require [jiksnu.mock :as mock]
             [jiksnu.modules.core.actions :as actions]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all]))
 
 (th/module-test ["jiksnu.modules.core"

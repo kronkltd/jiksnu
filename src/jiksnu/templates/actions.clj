@@ -1,8 +1,6 @@
 (ns jiksnu.templates.actions
   (:require [ciste.event :as event]
-            [jiksnu.channels :as ch]
             [jiksnu.db :refer [_db]]
-            [manifold.bus :as bus]
             [monger.collection :as mc]
             monger.json
             [slingshot.slingshot :refer [throw+]]

@@ -1,16 +1,11 @@
 (ns jiksnu.modules.web.routes.picture-routes
   (:require [ciste.config :refer [config]]
-            [clojure.java.io :as io]
             [jiksnu.actions.picture-actions :as actions.picture]
-            [jiksnu.model.picture :as model.picture]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource
                                                 page-resource path]]
-            [jiksnu.session :as session]
-            [jiksnu.util :as util]
-            [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]))
 
 (defgroup jiksnu pictures

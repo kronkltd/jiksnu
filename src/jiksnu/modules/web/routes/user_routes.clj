@@ -13,7 +13,6 @@
             [jiksnu.modules.web.helpers :refer [angular-resource as-collection-resource
                                                 defparameter get-user item-resource
                                                 page-resource path subpage-resource]]
-            [jiksnu.util :as util]
             [octohipster.mixins :as mixin]
             [taoensso.timbre :as timbre]))
 

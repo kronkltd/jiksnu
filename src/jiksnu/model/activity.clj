@@ -5,7 +5,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [validateur.validation :refer [validation-set presence-of]])

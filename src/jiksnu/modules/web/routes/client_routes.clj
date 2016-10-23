@@ -3,7 +3,6 @@
             [jiksnu.actions.access-token-actions :as actions.access-token]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.request-token-actions :as actions.request-token]
-            [jiksnu.model.client :as model.client]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]

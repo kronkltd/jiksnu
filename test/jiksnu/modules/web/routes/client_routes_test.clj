@@ -10,7 +10,6 @@
             jiksnu.modules.web.routes.client-routes
             [jiksnu.routes-helper :refer [json-response response-for]]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]
             [ring.util.codec :as codec])

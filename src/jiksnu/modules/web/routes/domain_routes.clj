@@ -2,12 +2,10 @@
   (:require [taoensso.timbre :as timbre]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter
-                                                item-resource page-resource path]]
-            [octohipster.mixins :as mixin]))
+                                                item-resource page-resource path]]))
 
 (defparameter :model.domain/id
   :description "The Id of an domain"
