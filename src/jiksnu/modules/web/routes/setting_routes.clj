@@ -11,6 +11,7 @@
 (defresource statusnet :config
   :name        "Config"
   :url         "/config.json"
+  :available-media-types ["application/json"]
   :handle-ok (fn [ctx] nil)
   :description "Config for interop with statusnet")
 

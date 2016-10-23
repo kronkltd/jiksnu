@@ -7,13 +7,17 @@
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource item-resource
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource
                                                 page-resource path]]
             [jiksnu.util :as util]
             [liberator.representation :refer [as-response ring-response]]
             [octohipster.mixins :as mixin]
             [ring.util.codec :as codec]
             [slingshot.slingshot :refer [throw+]]))
+
+(defparameter :model.client/id
+  :description "The Id of a Client"
+  :type "string")
 
 (defgroup jiksnu clients
   :name "Clients"
