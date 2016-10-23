@@ -46,8 +46,8 @@
                (when-let [subscription (model.subscription/fetch-by-id id)]
                  {:data subscription}))))
 
-(defgroup jiksnu ostatus
-  :url "/main"
-  :name "OStatus")
+;; (defgroup jiksnu ostatus
+;;   :url "/main"
+;;   :name "OStatus")
 
-(defresource ostatus :sub)
+;; (defresource ostatus :sub)
