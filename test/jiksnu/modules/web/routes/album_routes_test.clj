@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.album-routes-test
   (:require [clojure.data.json :as json]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]

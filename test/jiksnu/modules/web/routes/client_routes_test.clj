@@ -2,7 +2,6 @@
   (:require [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
             [clojure.string :as string]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model.access-token :as model.access-token]
@@ -34,7 +33,7 @@
     (json-response request) =>
     (contains
      ;; TODO: verify against spec
-     {:status  200
+     {:status  HttpStatus/SC_OK
       :headers (contains
                 {"Content-Type" "application/json"})
       :json    (contains
@@ -62,7 +61,7 @@
                                      (->> (string/split body #"&")
                                           (map #(string/split % #"="))
                                           (into {})))))]
-    response => (contains {:status 200})
+    response => (contains {:status HttpStatus/SC_OK})
     (let [{{secret "oauth_token_secret" token-id "oauth_token"} :body} response]
       (model.request-token/fetch-by-id token-id) =>
       (contains {:secret secret}))))
@@ -84,7 +83,7 @@
                     (assoc-in [:headers "authorization"] authorization-str))
         response (-> (response-for request)
                      (update :body codec/form-decode))]
-    response => (contains {:status 200})
+    response => (contains {:status HttpStatus/SC_OK})
     (let [{{secret "oauth_token_secret" token-id "oauth_token"} :body} response]
       (model.request-token/fetch-by-id token-id) =>
       (contains {:secret secret}))))

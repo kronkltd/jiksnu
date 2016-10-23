@@ -2,7 +2,6 @@
   (:require [ciste.model :as cm]
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
