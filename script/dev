@@ -15,5 +15,5 @@ docker run \
   -e DOMAIN=dev.jiksnu.com \
   -p 8081:8080 \
   -p 7889:7888 \
-  repo.jiksnu.org/kronkltd/jiksnu-dev:feature-material \
+  repo.jiksnu.org/kronkltd/jiksnu-dev \
   script/byobu
