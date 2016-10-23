@@ -8,7 +8,6 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.channels :as ch]
             [jiksnu.db :as db]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.group :as model.group]

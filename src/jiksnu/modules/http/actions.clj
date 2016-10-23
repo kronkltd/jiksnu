@@ -8,7 +8,6 @@
             [clojure.data.json :as json]
             [taoensso.timbre :as timbre]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.channels :as ch]
             [jiksnu.util :as util]
             [manifold.bus :as bus]
             [manifold.stream :as s]

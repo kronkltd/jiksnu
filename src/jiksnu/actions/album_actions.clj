@@ -2,17 +2,12 @@
   (:require [ciste.config :refer [config]]
             [ciste.event :as event]
             [clojure.set :as set]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.channels :as ch]
             [jiksnu.model.album :as model.album]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.album-transforms :as transforms.album]
-            [jiksnu.util :as util]
-            [manifold.bus :as bus]
-            [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre]))
+            [slingshot.slingshot :refer [throw+]]))
 
 (def model-ns 'jiksnu.model.album)
 

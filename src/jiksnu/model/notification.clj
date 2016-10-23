@@ -1,7 +1,6 @@
 (ns jiksnu.model.notification
   (:require [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-_id set-created-time set-updated-time]]
             [jiksnu.validators :refer [type-of]]

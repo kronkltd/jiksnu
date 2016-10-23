@@ -1,11 +1,8 @@
 (ns jiksnu.modules.web.routes.like-routes
   (:require [ciste.config :refer [config]]
-            [jiksnu.actions.like-actions :as actions.like]
-            [jiksnu.model.like :as model.like]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
-            [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource page-resource path]]
-            [octohipster.mixins :as mixin]))
+            [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource page-resource path]]))
 
 (defgroup jiksnu likes
   :name "Likes"

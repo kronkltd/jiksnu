@@ -1,7 +1,5 @@
 (ns jiksnu.actions.notification-actions
-  (:require [clj-time.core :as time]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.notification :as model.notification]
+  (:require [jiksnu.model.notification :as model.notification]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))

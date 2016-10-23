@@ -4,9 +4,7 @@
             [ciste.event :as event]
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
-            [jiksnu.channels :as ch]
             [jiksnu.predicates :as pred]
-            [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
 

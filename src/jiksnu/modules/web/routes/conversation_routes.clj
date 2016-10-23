@@ -4,8 +4,7 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter
                                                 item-resource page-resource path
-                                                subpage-resource]]
-            [octohipster.mixins :as mixin]))
+                                                subpage-resource]]))
 
 (defn get-conversation
   "Gets the item from context by id"

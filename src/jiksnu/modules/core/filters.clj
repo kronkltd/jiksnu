@@ -13,8 +13,7 @@
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.actions.user-actions :as actions.user]
-            [taoensso.timbre :as timbre]))
+            [jiksnu.actions.user-actions :as actions.user]))
 
 (defn parse-page
   [request]

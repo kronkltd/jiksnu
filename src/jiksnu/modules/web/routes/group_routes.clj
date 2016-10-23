@@ -1,13 +1,10 @@
 (ns jiksnu.modules.web.routes.group-routes
   (:require [jiksnu.actions.group-actions :as actions.group]
-            [jiksnu.model.group :as model.group]
-            [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource
                                                 page-resource subpage-resource path]]
             [liberator.representation :refer [as-response ring-response]]
-            [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 

@@ -1,9 +1,7 @@
 (ns jiksnu.config
   (:require jiksnu.app
             [jiksnu.helpers :as helpers]
-            jiksnu.providers
-            [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :as appenders.core])
+            jiksnu.providers)
   (:use-macros [gyr.core :only [def.config]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider

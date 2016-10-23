@@ -1,6 +1,5 @@
 (ns jiksnu.channels
-  (:require [manifold.bus :as bus]
-            [manifold.stream :as s]))
+  (:require [manifold.stream :as s]))
 
 ;; async fetchers
 

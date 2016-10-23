@@ -4,13 +4,11 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.album-actions :as actions.album]
             [jiksnu.actions.picture-actions :as actions.picture]
-            [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
                                                 defparameter item-resource page-resource path
                                                 subpage-resource]]
-            [jiksnu.session :as session]
             [slingshot.slingshot :refer [throw+]]))
 
 (defparameter :model.activity/id
