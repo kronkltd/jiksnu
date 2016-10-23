@@ -1,6 +1,5 @@
 (ns jiksnu.modules.web.routes.subscription-routes-test
   (:require [clj-factory.core :refer [fseq]]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.ops :as ops]
@@ -8,7 +7,8 @@
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req])
+  (:import (org.apache.http HttpStatus)))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
@@ -25,7 +25,7 @@
                            (assoc :params params)
                            response-for)]
           response => map?
-          (:status response) => status/redirect?)))
+          (:status response) => HttpStatus/SC_SEE_OTHER)))
 
     (fact "when authenticated"
       (let [actor (mock/a-user-exists)]
@@ -34,7 +34,7 @@
               (assoc :params params)
               (as-user actor)
               response-for) =>
-          (contains {:status status/redirect?})
+          (contains {:status HttpStatus/SC_SEE_OTHER})
           (provided
            (ops/get-discovered anything) => (d/success-deferred
                                              (model/map->Domain {:_id domain-name}))))))))

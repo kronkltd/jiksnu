@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.routes.like-routes-test
   (:require [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             [jiksnu.model.like :as model.like]
             [jiksnu.routes-helper :refer [as-admin response-for]]

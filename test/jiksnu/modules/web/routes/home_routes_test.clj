@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.routes.home-routes-test
   (:require [ciste.formats :refer [format-as]]
             [ciste.model :as cm]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
@@ -42,7 +41,7 @@
     (let [activity (mock/an-activity-exists)
           url (str "/main/oembed?format=json&url=" (:url activity))]
       (response-for (req/request :get url)) =>
-      (contains {:status status/redirect?
+      (contains {:status HttpStatus/SC_SEE_OTHER
                  :body string?})))
 
   (fact "when the format is xml"

@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.routes.activity-routes-test
   (:require [ciste.sections.default :refer [full-uri]]
             [clj-factory.core :refer [fseq]]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.mock :as mock]
             jiksnu.modules.web.routes.activity-routes
             [jiksnu.routes-helper :refer [as-user json-response response-for]]
