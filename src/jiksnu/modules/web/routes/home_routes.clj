@@ -56,9 +56,9 @@
   :doc {:get {:nickname "settings-page"
               :summary "Settings Page"}})
 
-(defresource root :oembed
-  :name "OEmbed"
-  :url "/main/oembed")
+;; (defresource root :oembed
+;;   :name "OEmbed"
+;;   :url "/main/oembed")
 
 ;; =============================================================================
 

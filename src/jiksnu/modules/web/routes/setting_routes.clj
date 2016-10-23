@@ -11,6 +11,7 @@
 (defresource statusnet :config
   :name        "Config"
   :url         "/config.json"
+  :handle-ok (fn [ctx] nil)
   :description "Config for interop with statusnet")
 
 (defgroup jiksnu settings-api
