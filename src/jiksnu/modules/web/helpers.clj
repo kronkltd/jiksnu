@@ -174,6 +174,11 @@
       (-> {:respond-with-entity? false
            :allowed-methods [:get :put :delete]
            :available-formats [:json :clj]
+           :methods {:get {:summary "Index Item"
+                           :contentType "application/json"
+                           :description "view of an item"
+                           :responses {"200" {:description "Valid response"
+                                              :schema {:type "string"}}}}}
            :exists? :data
            :malformed? item-resource-malformed?
            :delete! item-resource-delete!
