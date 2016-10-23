@@ -4,6 +4,10 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource page-resource path]]))
 
+(defparameter :model.like/id
+  :description "The Id of a Like"
+  :type "string")
+
 (defgroup jiksnu likes
   :name "Likes"
   :url "/main/likes")

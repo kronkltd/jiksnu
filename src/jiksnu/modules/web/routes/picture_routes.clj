@@ -8,6 +8,10 @@
                                                 page-resource path]]
             [slingshot.slingshot :refer [throw+]]))
 
+(defparameter :model.picture/id
+  :description "The Id of a Picture"
+  :type "string")
+
 (defgroup jiksnu pictures
   :name "Pictures"
   :url "/main/pictures")

@@ -80,4 +80,4 @@
   :mixins [subpage-resource]
   :target-model "album"
   :subpage "pictures"
-  :parameters {:_id (path :model.user/id)})
+  :parameters {:_id (path :model.album/id)})

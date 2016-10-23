@@ -7,6 +7,10 @@
                                                 path]]
             [octohipster.mixins :as mixin]))
 
+(defparameter :model.subscription/id
+  :description "The Id of a Subscription"
+  :type "string")
+
 (defgroup jiksnu subscriptions
   :url "/main/subscriptions"
   :name "Subscriptions"

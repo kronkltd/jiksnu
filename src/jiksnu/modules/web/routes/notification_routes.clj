@@ -4,6 +4,10 @@
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource page-resource path]]))
 
+(defparameter :model.notification/id
+  :description "The Id of a Notification"
+  :type "string")
+
 (defgroup jiksnu notifications
   :name "Notifications"
   :url "/main/notifications")
