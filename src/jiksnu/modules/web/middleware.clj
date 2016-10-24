@@ -103,14 +103,14 @@
     (try
       (handler request)
       (catch Exception ex
+        (timbre/error ex "Unhandled error")
         (try
           (let [st (with-out-str (print-stack-trace ex))]
             {:status 500
              :headers {"content-type" "text/plain"}
              :body st})
           (catch Throwable ex
-            ;; FIXME: handle error
-            (timbre/fatalf ex "Error parsing exception: %s")))))))
+            (timbre/fatalf "Error parsing exception: %s" ex)))))))
 
 (defn wrap-response-logging
   [handler]

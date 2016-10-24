@@ -45,4 +45,5 @@
            (handler/site {:session {:store (ms/session-store @_db "session")}})))
       wrap-file-info
       wrap-content-type
-      wrap-not-modified))
+      wrap-not-modified
+      middleware/wrap-stacktrace))
