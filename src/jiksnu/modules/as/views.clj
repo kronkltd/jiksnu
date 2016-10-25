@@ -1,8 +1,16 @@
-(ns jiksnu.modules.as.views.stream-views
+(ns jiksnu.modules.as.views
   (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [show-section index-section]]
+            [ciste.sections.default :refer [index-section show-section]]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.stream-actions :as actions.stream]))
+            [jiksnu.actions.favorite-actions :as actions.favorite]
+            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.actions.user-actions :as actions.user]))
+
+(defview #'actions.favorite/user-list :as
+  [request [user page]]
+  {:body {:title (str (:name user) " Favorites")
+          :items (index-section (:items page) page)}})
 
 ;; (defview #'actions.stream/inbox :as
 ;;   [request [user page]]
@@ -74,3 +82,21 @@
    {:title (str (:name user) " Timeline")
     :items
     (index-section items page)}})
+
+(defview #'actions.subscription/get-subscriptions :as
+  [request [user {:keys [items] :as response}]]
+  {:template false
+   :body {:items (index-section items response)}})
+
+(defview #'actions.subscription/get-subscribers :as
+  [request [user {:keys [items] :as response}]]
+  {:template false
+   :body {:items (index-section items response)}})
+
+(defview #'actions.user/show :as
+  [request user]
+  {:template false
+   :body {:profile (show-section user)
+          :updated (:updated user)
+          :published (:created user)
+          :nickname (:username user)}})

@@ -3,7 +3,7 @@
             [clojure.tools.reader.edn :as edn]
             [hiccup.core :as h]
             [jiksnu.model.user :as model.user]
-            [jiksnu.modules.as.sections.user-sections :refer [format-collection]]
+            [jiksnu.modules.as.helpers :as as.helpers]
             [jiksnu.modules.core.actions :as actions]
             [jiksnu.modules.core.helpers :as core.helpers]
             [jiksnu.modules.http.resources :refer [defresource]]
@@ -211,7 +211,7 @@
                         page (-> (indexer ctx user)
                                  (assoc :objectTypes collection-type)
                                  (update :items #(map fetcher %)))]
-                    {:data (format-collection user page)}))
+                    {:data (as.helpers/format-collection user page)}))
        :new? false
        :parameters {:username (path :model.user/username)}
        :respond-with-entity? true
