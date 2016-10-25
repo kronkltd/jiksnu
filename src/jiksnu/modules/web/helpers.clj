@@ -13,8 +13,9 @@
             [octohipster.mixins :as mixin]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
-  (:import java.io.PushbackReader
-           (java.io FileNotFoundException)))
+  (:import java.io.FileNotFoundException
+           java.io.PushbackReader
+           org.apache.http.HttpStatus))
 
 (def types
   {:json "application/json"
@@ -82,12 +83,12 @@
 
 (defn serve-template
   [{{template-name :*} :params}]
-  (let [path (str "templates/" template-name ".edn")
-        url (io/resource path)
-        reader (PushbackReader. (io/reader url))
-        data (edn/read reader)]
-    {:headers {"Content-Type" "text/html"}
-     :body (h/html data)}))
+  (let [path (str "templates/" template-name ".edn")]
+    (if-let [data (some-> path io/resource io/reader PushbackReader. edn/read)]
+      {:headers {"Content-Type" "text/html"}
+       :body (h/html data)
+       :status HttpStatus/SC_OK}
+      {:status HttpStatus/SC_NOT_FOUND})))
 
 (defn get-handler
   [ctx handler-sym]
