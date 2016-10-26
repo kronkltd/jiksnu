@@ -37,8 +37,7 @@
      (let [val (apply f args)]
        (d/success! d val))
      (catch Throwable ex
-       (timbre/error "op handler error")
-       (timbre/error ex)
+       (timbre/error ex "op handler error")
        (d/error! d ex)))))
 
 (defn async-op

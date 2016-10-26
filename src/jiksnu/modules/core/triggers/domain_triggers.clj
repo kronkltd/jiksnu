@@ -18,7 +18,7 @@
   (try
     (actions.service/get-discovered domain id options)
     (catch Exception ex
-      (timbre/error "Can't discover" ex))))
+      (timbre/error ex "Can't discover"))))
 
 (def handle-pending-get-domain     (ops/op-handler handle-pending-get-domain*))
 (def handle-pending-get-discovered (ops/op-handler handle-pending-get-discovered*))

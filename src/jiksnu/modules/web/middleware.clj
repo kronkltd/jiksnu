@@ -32,10 +32,10 @@
     (try+
      (handler request)
      (catch [:type :authentication] ex
-       (timbre/warn "Auth error" ex)
+       (timbre/warn ex "Auth error")
        (auth-exception ex))
      (catch [:type :authorization] ex
-       (timbre/warn "Auth error" ex)
+       (timbre/warn ex "Auth error")
        (auth-exception ex))
      (catch [:type :permission] ex
        (auth-exception ex))
