@@ -277,26 +277,34 @@
    :send          send
    :unfollow      unfollow})
 
+(defn get-websocket-url
+  "Determine the websocket connection url for this app"
+  [app]
+  (let [$location (.inject app "$location")
+        host (.host $location)
+        secure?  (= (.protocol $location) "https:")
+        scheme (str "ws" (when secure? "s"))
+        port (.port $location)
+        port-suffix (if (or (and secure? (= port 443))
+                            (and (not secure?) (= port 80)))
+                      "" (str ":" port))]
+    (str scheme "://" host port-suffix "/")))
+
 (defn get-websocket-connection
   "Create a websocket connection to the server"
   [app]
   (let [$websocket (.inject app "$websocket")
-        $window (.inject app "$window")]
-    (if-let [location (.-location $window)]
-      (let [host (.-host location)
-            scheme (str "ws" (when (= (.-protocol location) "https:") "s"))
-            websocket-url (str scheme "://" host "/")
-            connection ($websocket websocket-url)]
-        (doto connection
-          (.onMessage (.-handleMessage app))
-          (.onOpen (fn []
-                     (timbre/debug "Websocket connection opened")))
-          (.onClose (fn []
-                      (timbre/debug "Websocket connection closed")
-                      (.reconnect connection)))
-          (.onError (fn []
-                      (timbre/warn "Websocket connection errored")))))
-      (throw (js/Error. "No location available")))))
+        websocket-url (get-websocket-url app)
+        connection ($websocket websocket-url)]
+    (doto connection
+      (.onMessage (.-handleMessage app))
+      (.onOpen (fn []
+                 (timbre/debug "Websocket connection opened")))
+      (.onClose (fn []
+                  (timbre/debug "Websocket connection closed")
+                  (.reconnect connection)))
+      (.onError (fn []
+                  (timbre/warn "Websocket connection errored"))))))
 
 (def.provider jiksnu.app
   []
