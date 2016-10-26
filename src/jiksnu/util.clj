@@ -168,23 +168,6 @@
                     identity identity)
      res#))
 
-(defn vector-namespaces
-  [prefix module-name model-name part-name]
-  [#_(format "%s.%s.%s"
-             prefix module-name part-name)
-   (format "%s.%s.%s.%s-%s"
-           prefix module-name part-name model-name part-name)])
-
-(defn require-module
-  ([prefix module-name]
-   (doseq [model-name registry/model-names]
-     (require-module prefix module-name model-name)))
-  ([prefix module-name model-name]
-   (doseq [part-name registry/part-names]
-     #_(timbre/infof "Loading vector: [%s %s %s]" module-name model-name part-name)
-     (let [namespaces (vector-namespaces prefix module-name model-name part-name)]
-       (require-namespaces namespaces)))))
-
 (defn replace-template
   [template url]
   (string/replace template #"\{uri\}" (codec/url-encode url)))
