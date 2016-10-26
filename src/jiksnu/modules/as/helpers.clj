@@ -1,25 +1,22 @@
-(ns jiksnu.modules.as.sections.activity-sections
+(ns jiksnu.modules.as.helpers
   (:require [ciste.config :refer [config]]
+            [ciste.core :refer [with-context]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri index-section show-section]]
-            [jiksnu.model.activity :as model.activity])
-  (:import jiksnu.model.Activity))
+            [jiksnu.model.domain :as model.domain]))
+
+(def url-pattern       "%s://%s/main/users/%s")
+(def profile-pattern   "%s://%s/api/user/%s/profile")
+(def inbox-pattern     "%s://%s/api/user/%s/inbox")
+(def outbox-pattern    "%s://%s/api/user/%s/feed")
+(def followers-pattern "%s://%s/api/user/%s/followers")
+(def following-pattern "%s://%s/api/user/%s/following")
+(def favorites-pattern "%s://%s/api/user/%s/favorites")
+(def lists-pattern     "%s://%s/api/user/%s/lists/person")
 
 (defn proxy-url
-  [url]
+  [_url]
   "https://%s/api/proxy/PROXYID")
-
-(defsection index-section [Activity :as]
-  [activities page]
-  (let [items (:items page)]
-    {:objectTypes ["activity"]
-     :items (doall (map
-                    (fn [item]
-                      (show-section item page))
-                    items))
-     :totalItems (:totalItems page)}))
-
-;; show-section
 
 (defn parse-object
   [activity]
@@ -65,16 +62,18 @@
      }))
 
 (defn format-to
-  [activity]
+  [_activity]
   [{:id "http://activityschema.org/collection/public"}])
 
 (defn format-cc
-  [activity]
+  [_activity]
   [])
 
 (defn format-generator
-  [activity]
-  {:displayName "Jiksnu" ;; TODO: name of site
+  [_activity]
+  {
+   ;; TODO: name of site
+   :displayName "Jiksnu"
    :objectType "service"
    ;; TODO: service stuff
    })
@@ -84,28 +83,15 @@
   (let [links (:links activity)]
     (merge {} links)))
 
-(defsection show-section [Activity :as]
-  [activity & _]
-  (merge {:verb (:verb activity)
-          :object (parse-object activity)
-          :to (format-to activity)
-          :cc (format-cc activity)
-          :actor (show-section (model.activity/get-author activity))
-          :generator (format-generator activity)
-
-          :updated (:updated activity)
-          :links (format-links activity)
-          :url (full-uri activity)
-          :published (:published activity)
-          :content (:content activity)
-          ;; NB: Id is a uri
-          :id (:id activity)
-          :text (:content activity)
-          :localId (:_id activity)
-          :source (:source activity)}
-         (when (:conversation-uris activity)
-           {:context {:conversations (first (:conversation-uris activity))}})
-         (if-let [geo (:geo activity)]
-           {:location {:type "place"
-                       :latitude (:latitude geo)
-                       :longitude (:longitude geo)}})))
+(defn format-collection
+  [user page]
+  (let [domain (config :domain)
+        scheme (if (some-> domain model.domain/fetch-by-id :secure) "https" "http")]
+    (with-context [:http :as]
+      {:displayName (str "Collections of persons for " (:_id user))
+       :objectTypes [(:objectTypes page "collection")]
+       :url         (format lists-pattern scheme domain (:username user))
+       :links       {:self {:href (format lists-pattern scheme domain (:username user))}}
+       :items       (doall (map show-section (:items page)))
+       :totalItems  (:totalItems page)
+       :author      (show-section user)})))
