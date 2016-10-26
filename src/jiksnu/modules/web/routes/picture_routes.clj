@@ -39,7 +39,7 @@
   :methods {:get {:summary "Index Pictures"}
             :post {:summary "Create Picture"}}
   :available-formats [:json]
-  :post! (fn [{{:keys [params] :as request} :request :as ctx}]
+  :post! (fn [{{:keys [params]} :request :as ctx}]
            (let [username (get-in ctx [:request :session :cemerick.friend/identity :current])]
              (if-let [user (model.user/get-user username)]
                (let [files (:files params)]

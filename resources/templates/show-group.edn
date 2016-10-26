@@ -10,7 +10,7 @@
    [:time "{{item.created}}"]
    ]
   [:p "{{item.updated}}"]
-  [:md-button.md-primary {:ng-click "join()"} "Join"]
+  [:md-button.md-raised.md-primary {:ng-click "join()"} "Join"]
   [:list-group-admins {:item "item"}]
   [:list-group-members {:item "item"}]
   #_

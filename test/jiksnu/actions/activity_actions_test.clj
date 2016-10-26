@@ -112,7 +112,7 @@
         (let [user (mock/a-user-exists)
               author (mock/a-user-exists)
               activity (mock/an-activity-exists {:modifier "private"
-                                                   :user   author})]
+                                                 :user   author})]
           (actions.activity/viewable? activity user)) => falsey))))
 
 (fact "#'actions.activity/edit"
