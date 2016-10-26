@@ -3,7 +3,6 @@
             [clj-factory.core :refer [factory]]
             [clj-time.format :as f]
             [clojure.string :as string]
-            [clojure.data.json :as json]
             [crypto.random :as random]
             [jiksnu.namespace :as ns]
             [jiksnu.registry :as registry]
@@ -15,9 +14,7 @@
             [ring.util.codec :as codec]
             [slingshot.slingshot :refer [try+]]
             [taoensso.timbre :as timbre])
-  (:import clojure.lang.Var
-           java.io.PrintWriter
-           java.net.InetAddress
+  (:import java.net.InetAddress
            java.net.Socket
            java.net.URL
            java.text.SimpleDateFormat
@@ -128,29 +125,6 @@
   (let [formatter (SimpleDateFormat. "EEE, dd MMM yyyy HH:mm:ss 'GMT'")]
     (.setTimeZone formatter (TimeZone/getTimeZone "UTC"))
     (.format formatter date)))
-
-(defn write-json-date
-  ([^Date date ^PrintWriter out]
-   (write-json-date date out false))
-  ([^Date date ^PrintWriter out escape-unicode?]
-   (let [formatted-date (.format (SimpleDateFormat. "yyyy-MM-dd'T'hh:mm:ss'Z'") date)]
-     (.print out (str "\"" formatted-date "\"")))))
-
-(defn write-json-object-id
-  ([id ^PrintWriter out]
-   (write-json-object-id id out false))
-  ([id ^PrintWriter out escape-unicode]
-   (.print out (str "\"" id "\""))))
-
-(defn write-quoted
-  ([o ^PrintWriter out]
-   (write-quoted o out false))
-  ([o ^PrintWriter out escape-unicode]
-   (.print out (str "\"" o "\""))))
-
-(extend Date json/JSONWriter {:-write write-json-date})
-(extend ObjectId json/JSONWriter {:-write write-json-object-id})
-(extend Var json/JSONWriter {:-write write-quoted})
 
 (defn split-uri
   "accepts a uri in the form of username@domain or scheme:username@domain and
