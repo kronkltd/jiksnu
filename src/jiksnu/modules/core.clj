@@ -52,6 +52,25 @@
     (catch Exception ex
       (timbre/error ex "Error in handle-created"))))
 
+(defn bind-handlers!
+  []
+  ;; cascade delete on domain deletion
+  (dosync
+   (alter actions.user/delete-hooks conj #'actions.activity/handle-delete-hook))
+
+  (actions.subscription/setup-delete-hooks)
+
+  (->> (bus/subscribe event/events :activity-posted)
+       (s/consume actions.subscription/handle-follow-activity))
+
+  (->> (bus/subscribe event/events :activity-posted)
+       (s/consume actions.like/handle-like-activity))
+
+  (triggers.domain/init-receivers)
+
+  (->> (bus/subscribe event/events ::templates.model/item-created)
+       (s/consume handle-created)))
+
 (defn start
   []
   ;; (timbre/info "Starting core")
@@ -73,23 +92,7 @@
     (core.filters/register-filters!)
     (core.views/register-views!)
 
-    ;; cascade delete on domain deletion
-    (dosync
-     (alter actions.user/delete-hooks conj #'actions.activity/handle-delete-hook))
-
-    (actions.subscription/setup-delete-hooks)
-
-    (->> (bus/subscribe event/events :activity-posted)
-         (s/consume actions.subscription/handle-follow-activity))
-
-    (->> (bus/subscribe event/events :activity-posted)
-         (s/consume actions.like/handle-like-activity))
-
-    (triggers.domain/init-receivers)
-
-    (->> (bus/subscribe event/events ::templates.model/item-created)
-         (s/consume handle-created))
-
+    ;; TODO: deprecate this
     (doseq [model-name registry/action-group-names]
       (util/require-module "jiksnu.modules" "core" model-name))
 
