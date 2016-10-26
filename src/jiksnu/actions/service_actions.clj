@@ -35,7 +35,7 @@
            (if-let [body (:body response)]
              (cm/string->document body))
            (catch RuntimeException ex
-             (timbre/error "Fetching host meta failed" ex))))))
+             (timbre/error ex "Fetching host meta failed"))))))
    (catch Object ex
      (timbre/error ex))))
 

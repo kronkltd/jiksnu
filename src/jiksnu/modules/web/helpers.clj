@@ -71,7 +71,7 @@
           (core.helpers/load-pages! route-sym)
           (core.helpers/load-sub-pages! route-sym)
           (catch Exception ex
-            (timbre/error "Failed to load routes" ex)
+            (timbre/error ex "Failed to load routes")
             (throw+ ex))))
       (timbre/warnf "Could not require group - %s" group))))
 

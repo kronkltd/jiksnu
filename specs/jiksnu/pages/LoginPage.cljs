@@ -27,7 +27,7 @@
     (try
       (.sendKeys (by-model "username") username)
       (catch js/Exception ex
-        (timbre/error "username error" ex))))
+        (timbre/error ex "username error"))))
 
   (submit [this]
     (timbre/debug "submitting login form")

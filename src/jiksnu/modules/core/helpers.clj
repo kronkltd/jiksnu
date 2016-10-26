@@ -7,7 +7,7 @@
   (try
     (ns-resolve route-sym fn-sym)
     (catch Exception ex
-      (timbre/error ex))))
+      (timbre/error ex "Could not resolve"))))
 
 (defn load-pages!
   [route-sym]

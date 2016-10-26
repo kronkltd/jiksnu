@@ -70,7 +70,7 @@
         (.runBuilderHelpers raven builder)
         (.sendEvent raven (.build builder)))
       (catch Exception ex
-        (timbre/warn "Could not send error to Sentry server" ex)))))
+        (timbre/warn ex "Could not send error to Sentry server")))))
 
 (def raven-appender
   {:enabled? true

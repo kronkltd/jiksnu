@@ -50,7 +50,7 @@
 
       nil)
     (catch Exception ex
-      (timbre/error "Error in handle-created" ex))))
+      (timbre/error ex "Error in handle-created"))))
 
 (defn start
   []

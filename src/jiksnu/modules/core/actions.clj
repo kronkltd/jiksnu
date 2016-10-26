@@ -45,7 +45,7 @@
        ((resolve-routes [@pred/*page-predicates*]
                         @pred/*page-matchers*) request)
        (catch Throwable ex
-         (timbre/error "Error fetching page" ex)))
+         (timbre/error ex "Error fetching page")))
      (throw+ {:message "page not found" :name page-name}))))
 
 (defn get-sub-page-ids
