@@ -17,6 +17,7 @@
    "picture"
    "request-token"
    "resource"
+   "service"
    "stream"
    "subscription"
    "user"

@@ -11,9 +11,15 @@
             [manifold.deferred :as d]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Domain
+           jiksnu.model.Service
            nu.xom.Document))
 
 (th/module-test ["jiksnu.modules.core"])
+
+(fact "#'actions.service/create"
+  (let [domain (mock/a-remote-domain-exists)
+        params (factory :service {:topic (factory/make-uri (:_id domain))})]
+    (actions.service/create params) => (partial instance? Service)))
 
 (fact "#'actions.service/fetch-xrd"
 

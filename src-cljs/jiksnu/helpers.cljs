@@ -58,6 +58,7 @@
    ["indexNotifications"    "/main/notifications"      "IndexNotifications"    :index-notifications]
    ["indexPictures"         "/main/pictures"           "IndexPictures"         :index-pictures]
    ["indexResources"        "/main/resources"          "IndexResources"        :index-resources]
+   ["indexServices"         "/main/services"           "IndexServices"         :index-services]
    ["indexStreams"          "/main/streams"            "IndexStreams"          :index-streams]
    ["indexSubscriptions"    "/main/subscriptions"      "IndexSubscriptions"    :index-subscriptions]
    ["indexUsers"            "/main/users"              "IndexUsers"            :index-users]
@@ -70,6 +71,7 @@
    ["showDomain"            "/main/domains/:_id"       "ShowDomain"            :show-domain]
    ["showGroup"             "/main/groups/:_id"        "ShowGroup"             :show-group]
    ["showLike"              "/main/likes/:_id"         "ShowLike"              :show-like]
+   ["showService"           "/main/services/:_id"      "ShowService"           :show-service]
    ["showStream"            "/main/streams/:_id"       "ShowStream"            :show-stream]
    ["showUser"              "/main/users/:_id"         "ShowUser"              :show-user]
    ["authorizeClient"       "/oauth/authorize"         "AuthorizeClient"       :authorize-client]])

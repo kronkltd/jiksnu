@@ -95,6 +95,7 @@
 (list-directive "Likes"         "likes")
 (list-directive "Notifications" "notifications")
 (list-directive "Pictures"      "pictures")
+(list-directive "Services"      "services")
 (list-directive "Streams"       "streams")
 
 (def.directive jiksnu.navBar []
@@ -127,6 +128,7 @@
 (item-directive "Picture"                "picture")
 (item-directive "PictureMinimal"         "picture-minimal")
 (item-directive "RequestToken"           "request-token")
+(item-directive "Service"                "service")
 (item-directive "StreamMinimal"          "stream-minimal")
 (item-directive "Subscription"           "subscription")
 (item-directive "User"                   "user")

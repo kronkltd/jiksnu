@@ -11,6 +11,7 @@
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.actions.notification-actions :as actions.notification]
             [jiksnu.actions.picture-actions :as actions.picture]
+            [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.request-token-actions :as request-token]
             [jiksnu.actions.resource-actions :as resource]
@@ -41,6 +42,7 @@
    [{:name "public-timeline"}    {:action #'stream/public-timeline}]
    [{:name "request-tokens"}     {:action #'request-token/index}]
    [{:name "resources"}          {:action #'resource/index}]
+   [{:name "services"}           {:action #'actions.service/index}]
    [{:name "streams"}            {:action #'stream/index}]
    [{:name "subscriptions"}      {:action #'subscription/index}]
    [{:name "users"}              {:action #'user/index}]])

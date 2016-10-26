@@ -16,6 +16,7 @@
    "notifications"     "/model/notifications"
    "pictures"          "/model/pictures"
    "resources"         "/model/resources"
+   "services"          "/model/services"
    "streams"           "/model/streams"
    "subscriptions"     "/model/subscriptions"
    "users"             "/model/users"})

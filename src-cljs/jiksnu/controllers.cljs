@@ -208,6 +208,7 @@
 (page-controller Pictures         "pictures")
 (page-controller RequestTokens    "request-tokens")
 (page-controller Resources        "resources")
+(page-controller Services         "services")
 (page-controller Streams          "streams")
 (page-controller Subscriptions    "subscriptions")
 (page-controller Users            "users")
@@ -528,6 +529,10 @@
   [$scope $http $stateParams app RequestTokens]
   (helpers/init-item $scope $stateParams app RequestTokens))
 
+(def.controller jiksnu.ShowServiceController
+  [$scope $http $stateParams app Services]
+  (helpers/init-item $scope $stateParams app Services))
+
 (def.controller jiksnu.ShowStreamController
   [$scope $http $stateParams app Streams]
   (helpers/init-item $scope $stateParams app Streams))
@@ -591,6 +596,8 @@
          ["Albums"        "indexAlbums"]
          ["Notifications" "indexNotifications"]
          ["Pictures"      "indexPictures"]
+         #_
+         ["Services"      "indexServices"]
          #_
          ["Streams"       "indexStreams"]
          ["Users"         "indexUsers"]
