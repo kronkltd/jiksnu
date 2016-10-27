@@ -2,6 +2,16 @@
 
 set -ex
 
+SENTRY_OPTS=""
+
+if [ "$JIKSNU_SENTRY_DSN" ]; then
+  SENTRY_OPTS="$SENTRY_OPTS -e JIKSNU_SENTRY_DSN=$JIKSNU_SENTRY_DSN"
+fi
+
+if [ "$JIKSNU_SENTRY_DSN_CLIENT" ]; then
+  SENTRY_OPTS="$SENTRY_OPTS -e JIKSNU_SENTRY_DSN_CLIENT=$JIKSNU_SENTRY_DSN_CLIENT"
+fi
+
 docker-compose up -d mongo
 
 docker run \
@@ -13,6 +23,7 @@ docker run \
   -v jiksnu-dev-media:/data \
   -e CISTE_LOGGER=jiksnu.logger \
   -e DOMAIN=dev.jiksnu.com \
+  $SENTRY_OPTS \
   -p 8081:8080 \
   -p 7889:7888 \
   repo.jiksnu.org/kronkltd/jiksnu-dev \
