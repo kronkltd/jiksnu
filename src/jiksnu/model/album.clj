@@ -1,6 +1,5 @@
 (ns jiksnu.model.album
-  (:require [jiksnu.db :refer [_db]]
-            [jiksnu.model :as model]
+  (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [validateur.validation :refer [validation-set presence-of]])

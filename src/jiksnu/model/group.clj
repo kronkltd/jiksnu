@@ -1,5 +1,5 @@
 (ns jiksnu.model.group
-  (:require [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
@@ -36,4 +36,4 @@
 
 (defn fetch-by-name
   [name]
-  (maker (mc/find-one-as-map @_db collection-name {:nickname name})))
+  (maker (mc/find-one-as-map (db/get-connection) collection-name {:nickname name})))

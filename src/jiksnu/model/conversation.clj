@@ -1,5 +1,5 @@
 (ns jiksnu.model.conversation
-  (:require [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
@@ -39,4 +39,4 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index @_db {:url 1} {:unique true})))
+    (mc/ensure-index (db/get-connection) {:url 1} {:unique true})))

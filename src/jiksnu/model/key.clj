@@ -1,5 +1,5 @@
 (ns jiksnu.model.key
-  (:require [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.templates.model :as templates.model]
@@ -158,7 +158,7 @@
 (defn get-key-for-user-id
   "Fetch keypair by user id"
   [^ObjectId id]
-  (if-let [key (mc/find-one-as-map @_db collection-name {:userid id})]
+  (if-let [key (mc/find-one-as-map (db/get-connection) collection-name {:userid id})]
     (model/map->Key key)
     (timbre/warnf "Could not find key with id: %s" id)))
 
@@ -175,11 +175,11 @@
    ^String n
    ^String e]
   (if-let [key-pair (get-key-for-user-id user-id)]
-    (mc/save @_db collection-name
+    (mc/save (db/get-connection) collection-name
              (merge key-pair
                     {:n n
                      :e e}))
-    (mc/insert @_db collection-name
+    (mc/insert (db/get-connection) collection-name
                {:n n
                 :e e
                 :userid user-id})))

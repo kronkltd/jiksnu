@@ -3,7 +3,7 @@
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.string :as string]
             [taoensso.timbre :as timbre]
-            [jiksnu.db :refer [_db]]
+            [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
@@ -91,7 +91,7 @@
   "Find a user by username and domain"
   ([username] (get-user username (config :domain)))
   ([username domain]
-   (if-let [user (mc/find-one-as-map @_db collection-name
+   (if-let [user (mc/find-one-as-map (db/get-connection) collection-name
                                      {:username username
                                       :domain domain})]
      (maker user))))
@@ -115,7 +115,7 @@
         merged-user (merge {:admin false}
                            old-user new-user)
         user (maker merged-user)]
-    (mc/update @_db collection-name {:_id (:_id old-user)} (dissoc user :_id))
+    (mc/update (db/get-connection) collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))
 
 ;; TODO: move part of this to domains
@@ -137,6 +137,6 @@
 
 (defn ensure-indexes
   []
-  (mc/ensure-index @_db collection-name {:username 1 :domain 1} {:unique true})
-  ;; (mc/ensure-index @_db collection-name {:id 1} {:unique true})
-  )
+  (mc/ensure-index (db/get-connection) collection-name {:username 1 :domain 1} {:unique true})
+  #_
+  (mc/ensure-index (db/get-connection) collection-name {:id 1} {:unique true}))
