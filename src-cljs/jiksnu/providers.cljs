@@ -282,7 +282,7 @@
   [app]
   (let [$location (.inject app "$location")
         host (.host $location)
-        secure?  (= (.protocol $location) "https:")
+        secure?  (= (.protocol $location) "https")
         scheme (str "ws" (when secure? "s"))
         port (.port $location)
         port-suffix (if (or (and secure? (= port 443))
