@@ -32,4 +32,7 @@ window.Raven.Plugins = {};
 window.Raven.Plugins.Angular = requires.ravenAngular;
 window.requires = requires;
 
+// These are replaced via envify.
+window.sentryDSNClient = process.env.JIKSNU_SENTRY_DSN_CLIENT;
+
 module.exports = requires;
