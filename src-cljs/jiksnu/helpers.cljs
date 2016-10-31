@@ -3,6 +3,22 @@
             [jiksnu.macros :refer-macros [state-hotkey]]
             [taoensso.timbre :as timbre]))
 
+(def initial-plugins
+  ["angular-clipboard"
+   "angularMoment"
+   "btford.markdown"
+   "cfp.hotkeys"
+   "geolocation"
+   "hljs"
+   "js-data"
+   "lfNgMdFileInput"
+   "ngMaterial"
+   "ngMdIcons"
+   "ngSanitize"
+   "ngWebSocket"
+   "ui.router"
+   "ui.select"])
+
 (defn add-states
   [$stateProvider data]
   (doseq [[state uri controller template] data]

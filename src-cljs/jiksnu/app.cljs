@@ -1,25 +1,29 @@
 (ns jiksnu.app
-  (:use-macros [gyr.core :only [def.module]]))
+  (:require [jiksnu.helpers :as helpers]))
 
-(.. js/Raven
-    (config js/sentryDSNClient)
-    (addPlugin (.. js/Raven -Plugins -Angular))
-    (install))
+(defonce plugins (atom #{}))
 
-(def.module jiksnu
-  [angular-clipboard
-   angularMoment
-   btford.markdown
-   cfp.hotkeys
-   geolocation
-   hljs
-   js-data
-   lfNgMdFileInput
-   #_
-   ngRaven
-   ngMaterial
-   ngMdIcons
-   ngSanitize
-   ngWebSocket
-   ui.router
-   ui.select])
+(defn configure-raven-plugin
+  []
+  (when-let [dsn js/sentryDSNClient]
+    (-> js/Raven
+        (.config dsn)
+        (.addPlugin js/Raven.Plugins.Angular)
+        (.install))
+    (swap! plugins conj "ngRaven")))
+
+(defn initialize-plugins!
+  []
+  (apply swap! plugins conj helpers/initial-plugins)
+  (configure-raven-plugin))
+
+(defn get-plugins
+  []
+  (clj->js @plugins))
+
+(defn initialize-module!
+  []
+  (initialize-plugins!)
+  (js/angular.module "jiksnu" (get-plugins)))
+
+(initialize-module!)
