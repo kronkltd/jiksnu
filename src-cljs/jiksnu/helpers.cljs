@@ -38,12 +38,6 @@
          (fn [data]
            (set! (.-page $scope) data))))))
 
-;; TODO: surely this already exists
-(defn hyphen-case
-  [s]
-  (string/lower-case
-   (string/replace s #"([a-z])([A-Z])" "$1-$2")))
-
 (def route-data
   [["avatarPage"            "/main/avatar"             "AvatarPage"            :avatar-page]
    ["home"                  "/"                        "IndexConversations"    :public-timeline]
