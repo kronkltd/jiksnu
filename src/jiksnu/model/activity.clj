@@ -1,6 +1,6 @@
 (ns jiksnu.model.activity
   (:require [clojure.java.io :as io]
-            [jiksnu.db :refer [_db]]
+            [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
@@ -74,11 +74,11 @@
 
 (defn update-record
   [activity]
-  (mc/save @_db collection-name activity))
+  (mc/save (db/get-connection) collection-name activity))
 
 (defn fetch-by-remote-id
   [id]
-  (if-let [item (mc/find-one-as-map @_db collection-name {:id id})]
+  (if-let [item (mc/find-one-as-map (db/get-connection) collection-name {:id id})]
     (maker item)))
 
 (defn parse-pictures
@@ -94,5 +94,5 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index @_db {:id 1} {:unique true})
-    (mc/ensure-index @_db {:conversation 1})))
+    (mc/ensure-index (db/get-connection) {:id 1} {:unique true})
+    (mc/ensure-index (db/get-connection) {:conversation 1})))

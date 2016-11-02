@@ -4,6 +4,7 @@
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.db :as db]
+            [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
   (:import com.mongodb.WriteConcern))
 
@@ -56,3 +57,8 @@
       (dosync
        (ref-set _conn conn)
        (ref-set _db db)))))
+
+(defn get-connection
+  []
+  (or @_db
+      (throw+ {:message "Database connection not set"})))

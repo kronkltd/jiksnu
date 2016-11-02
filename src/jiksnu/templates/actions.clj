@@ -1,6 +1,6 @@
 (ns jiksnu.templates.actions
   (:require [ciste.event :as event]
-            [jiksnu.db :refer [_db]]
+            [jiksnu.db :as db]
             [monger.collection :as mc]
             monger.json
             [slingshot.slingshot :refer [throw+]]
@@ -44,7 +44,7 @@
   [collection-name]
   (fn [item link]
     (event/notify (str collection-name ":linkAdded") {:item item :link link})
-    (mc/update @_db collection-name
+    (mc/update (db/get-connection) collection-name
                (select-keys item #{:_id})
                {:$addToSet {:links link}})
     item))

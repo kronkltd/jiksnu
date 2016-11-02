@@ -5,7 +5,7 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.db :refer [_db]]
+            [jiksnu.db :as db]
             [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.modules.web.core :as core]
             [jiksnu.modules.web.helpers :as helpers]
@@ -42,7 +42,7 @@
            (friend/authenticate auth-config)
            middleware/wrap-authorization-header
            middleware/wrap-authentication-handler
-           (handler/site {:session {:store (ms/session-store @_db "session")}})))
+           (handler/site {:session {:store (ms/session-store (db/get-connection) "session")}})))
       wrap-file-info
       wrap-content-type
       wrap-not-modified

@@ -1,5 +1,5 @@
 (ns jiksnu.model.subscription
-  (:require [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.templates.model :as templates.model]
@@ -33,12 +33,12 @@
 
 (defn find-record
   [args]
-  (model/map->Subscription (mc/find-one-as-map @_db collection-name args)))
+  (model/map->Subscription (mc/find-one-as-map (db/get-connection) collection-name args)))
 
 ;; TODO: use set-field
 (defn confirm
   [subscription]
-  (mc/update @_db collection-name {:_id (:_id subscription)}
+  (mc/update (db/get-connection) collection-name {:_id (:_id subscription)}
              {:$set {:pending false}}))
 
 (defn find-by-users
@@ -49,7 +49,7 @@
 (defn unsubscribe
   [actor target]
   (if-let [subscription (first (find-by-users actor target))]
-    (do (mc/remove @_db collection-name {:to (:_id target) :from (:_id actor)})
+    (do (mc/remove (db/get-connection) collection-name {:to (:_id target) :from (:_id actor)})
         subscription)))
 
 (defn subscribing?
@@ -57,14 +57,14 @@
   [actor target]
   (let [params {:from (:_id actor)
                 :to (:_id target)}]
-    (mc/any? @_db collection-name params)))
+    (mc/any? (db/get-connection) collection-name params)))
 
 (defn subscribed?
   "Does the user have a subscription to the actor"
   [actor target]
   (let [params {:from (:_id target)
                 :to (:_id actor)}]
-    (mc/any? @_db collection-name params)))
+    (mc/any? (db/get-connection) collection-name params)))
 
 (defn get-actor
   [subscription]
