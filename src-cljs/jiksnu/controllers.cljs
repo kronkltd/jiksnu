@@ -269,15 +269,7 @@
             (timbre/info "Submitting album form")
             (let [params (.-album $scope)
                   path "/model/albums"]
-              (.. $http
-                  (post path params)
-                  (then
-                   (fn [r]
-                     (timbre/info "Submitted")
-                     (js/console.log r))
-                   (fn [r]
-                     (timbre/info "Failed")
-                     (js/console.info r)))))))
+              (.post $http path params))))
     (.init $scope)))
 
 (def.controller jiksnu.NewGroupController
@@ -299,13 +291,7 @@
             (timbre/info "Submitting group form")
             (let [params (.-group $scope)
                   path "/model/groups"]
-              (-> (.post $http path params)
-                  (.then (fn [r]
-                           (timbre/info "Submitted")
-                           (js/console.info r))
-                         (fn [r]
-                           (timbre/info "Failed")
-                           (js/console.info r)))))))
+              (.post $http path params))))
     (.init $scope)))
 
 (def.controller jiksnu.NewPictureController
@@ -332,14 +318,7 @@
               (.forEach js/angular params
                         (fn [k v] (.append form-data k v)))
 
-              (-> $http
-                  (.post path form-data options)
-                  (.then (fn [r]
-                           (timbre/info "Submitted")
-                           (js/console.log r))
-                         (fn [r]
-                           (timbre/info "Failed")
-                           (js/console.info r)))))))
+              (.post $http path form-data options))))
 
     (.init $scope)))
 
