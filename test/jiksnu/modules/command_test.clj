@@ -75,6 +75,17 @@
     (some-> request parse-command (json/read-str :key-fn keyword)) =>
     map?))
 
+(fact "command 'get-page services'"
+  (let [name "get-page"
+        args '("services")
+        ch (d/deferred)
+        request {:name name
+                 :channel ch
+                 :format :json
+                 :args args}]
+    (some-> request parse-command (json/read-str :key-fn keyword)) =>
+    map?))
+
 (fact "command 'get-page streams'"
   (let [name "get-page"
         args '("streams")

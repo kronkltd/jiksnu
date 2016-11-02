@@ -12,6 +12,7 @@
             [jiksnu.actions.notification-actions :as actions.notification]
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]))
 
@@ -40,6 +41,7 @@
    #'actions.notification/index
    #'actions.picture/index
    #'actions.resource/index
+   #'actions.service/index
    #'actions.stream/index
    #'actions.stream/public-timeline
    #'actions.user/index])

@@ -15,6 +15,7 @@
             [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
@@ -149,6 +150,12 @@
             (set-this type record)
             record)
           (throw+ (format "could not find %s/create" ns-sym)))))))
+
+(defn a-service-exists
+  ([] (a-service-exists {}))
+  ([options]
+   (let [params (factory :service)]
+     (actions.service/create params))))
 
 (defn a-conversation-exists
   [& [options]]

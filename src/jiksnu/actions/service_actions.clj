@@ -6,8 +6,11 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.service :as model.service]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
+            [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
             [manifold.deferred :as d]
             [manifold.time :as lt]
@@ -19,6 +22,44 @@
 (def model-ns 'jiksnu.model.service)
 
 (defonce pending-discovers (ref {}))
+
+(defonce delete-hooks (ref []))
+
+(defn prepare-delete
+  ([item]
+   (prepare-delete item @delete-hooks))
+  ([item hooks]
+   (if (seq hooks)
+     (recur ((first hooks) item) (rest hooks))
+     item)))
+
+(defn prepare-create
+  [params]
+  (-> params
+      transforms/set-_id
+      transforms/set-updated-time
+      transforms/set-created-time
+      transforms/set-no-links))
+
+(defn create
+  "Create a new service record"
+  ([params]
+   (create params nil))
+  ([params options]
+   (let [params (prepare-create params)]
+     (model.service/create params))))
+
+(def index*
+  (templates.actions/make-indexer model-ns
+                                  :sort-clause {:created -1}))
+
+(defn index
+  [& options]
+  (apply index* options))
+
+(defn delete
+  [source]
+  (model.service/delete source))
 
 (defn fetch-xrd*
   [url]
@@ -38,6 +79,14 @@
              (timbre/error ex "Fetching host meta failed"))))))
    (catch Object ex
      (timbre/error ex))))
+
+(defn delete
+  "Delete the service"
+  [item]
+  (if-let [item (prepare-delete item)]
+    (do (model.service/delete item)
+        item)
+    (throw+ "prepare delete failed")))
 
 (defn fetch-xrd
   "Given a domain and an optional context uri. Attempts to find the xrd document"

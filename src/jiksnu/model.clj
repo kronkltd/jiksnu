@@ -25,6 +25,7 @@
 (defrecord Picture                 [])
 (defrecord RequestToken            [])
 (defrecord Resource                [])
+(defrecord Service                 [])
 (defrecord Stream                  [])
 (defrecord Subscription            [])
 (defrecord User                    [])

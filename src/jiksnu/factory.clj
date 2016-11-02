@@ -247,6 +247,9 @@
   {:user #'user-id
    :activity #'activity-id})
 
+(deffactory :service
+  {})
+
 (defrecordfactory :stream model/map->Stream
   {:name (fseq :word)
    :user #'user-id

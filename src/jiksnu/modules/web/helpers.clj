@@ -131,10 +131,11 @@
 
 (defn item-resource-malformed?
   [ctx]
-  (let [fetcher (get-handler ctx 'fetch-by-id)]
+  (if-let [fetcher (get-handler ctx 'fetch-by-id)]
     (if-let [id (get-in ctx [:request :route-params :_id])]
       [false {:data (fetcher id)}]
-      true)))
+      true)
+    (throw+ {:message "Could not determine fetcher"})))
 
 (defn item-resource-authorized?
   [ctx]

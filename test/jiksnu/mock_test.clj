@@ -15,6 +15,7 @@
            jiksnu.model.Picture
            jiksnu.model.RequestToken
            jiksnu.model.Resource
+           jiksnu.model.Service
            jiksnu.model.Stream
            jiksnu.model.Subscription
            jiksnu.model.User))
@@ -49,6 +50,9 @@
 
 (fact "#'mock/a-feed-source-exists"
   (mock/a-feed-source-exists) => (partial instance? FeedSource))
+
+(fact "#'mock/a-service-exists"
+  (mock/a-service-exists) => (partial instance? Service))
 
 (fact "#'mock/a-conversation-exists"
   (mock/a-conversation-exists) => (partial instance? Conversation))
