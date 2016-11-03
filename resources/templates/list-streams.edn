@@ -7,7 +7,8 @@
   [:div {:layout "column" :layout-align "right" :flex "10"}
    [:md-button.pull-right {:ng-click "refresh()" :aria-label "Refresh"}
     [:ng-md-icon {:icon "loop"}]]]]
- [:form {:ng-submit "addStream()" :name "addStreamForm" :ng-show "formShown" :layout "column"}
+ [:form {:ng-submit "addStream()" :name "addStreamForm"
+         :ng-show "formShown" :layout "column"}
   [:debug {:expr "stream"}]
   [:input {:ng-model "stream.userId" :name "user" :type "hidden"}]
   [:input {:ng-model "stream.name" :name "name" :type "text"}]
@@ -22,6 +23,10 @@
                     :ui-sref "showStream({_id: id})"}
      [:debug {:expr "id"}]
      [:show-stream-minimal {:data-id "{{id}}"}]
-     [:div
-      [:md-button.btn-default {:ng-click "deleteStream(id)" :aria-label "Delete Stream" :ng-show "app.user"}
-       [:ng-md-icon {:icon "delete"}]]]]]]]]
+     [:as-model {:data-model "stream" :data-id "{{id}}"}
+      [:debug {:expr "item"}]
+      [:debug {:expr "$parent.item"}]
+      [:div {:ng-show "isOwner($parent.item)"}
+       [:md-button.md-secondary {:ng-click "deleteStream(id)"
+                                 :aria-label "Delete Stream"}
+        [:ng-md-icon {:icon "delete"}]]]]]]]]]

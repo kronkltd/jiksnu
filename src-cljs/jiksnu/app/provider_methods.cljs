@@ -30,8 +30,9 @@
   [$http activity & [pictures]]
   (let [path "/model/activities"
         form-data (js/FormData.)]
-    (.forEach
-     js/angular activity
+
+    (js/angular.forEach
+     activity
      (fn [v k]
        (timbre/debugf "Adding parameter: %s => %s" k v)
        (.append form-data k v)))
@@ -143,7 +144,7 @@
 
 (defmethod handle-action "error"
   [app data]
-  (let [message #js {:message (or (some-> data .-message edn/read-string :msg) "Error")}]
+  (let [message #js {:message (or (some-> data .-message reader/read-string :msg) "Error")}]
     (.. app
         (inject "$mdToast")
         (showSimple message))))
@@ -154,6 +155,10 @@
     (.. app
         (inject "$mdToast")
         (showSimple message))))
+
+(defmethod handle-action "page-add"
+  [app data]
+  (update-page app data))
 
 (defmethod handle-action :default
   [app data]
