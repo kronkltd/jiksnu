@@ -28,4 +28,4 @@
   (initialize-plugins!)
   (js/angular.module "jiksnu" (get-plugins)))
 
-(initialize-module!)
+(defonce jiksnu (initialize-module!))

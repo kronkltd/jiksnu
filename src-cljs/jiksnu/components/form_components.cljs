@@ -1,10 +1,9 @@
 (ns jiksnu.components.form-components
-  (:require jiksnu.app
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.controller]]))
+            [taoensso.timbre :as timbre]))
 
-(def.controller jiksnu.NewAlbumController
+(defn NewAlbumController
   [$scope app $http]
   (let [default-form #js {}]
     (set! (.-init $scope) #(.reset $scope))
@@ -19,7 +18,11 @@
               (.post $http path params))))
     (.init $scope)))
 
-(def.controller jiksnu.NewGroupController
+(set! (.-$inject NewAlbumController) #js ["$scope" "app" "$http"])
+
+(.controller jiksnu "NewAlbumController" NewAlbumController)
+
+(defn NewGroupController
   [$scope app $http]
   (let [default-form #js {}]
 
@@ -44,7 +47,11 @@
               (.post $http path params))))
     (.init $scope)))
 
-(def.controller jiksnu.NewPictureController
+(set! (.-$inject NewGroupController) #js ["$scope" "app" "$http"])
+
+(.controller jiksnu "NewGroupController" NewGroupController)
+
+(defn NewPictureController
   [$scope app $http]
   (let [default-form #js {}
         path "/model/pictures"]
@@ -73,7 +80,11 @@
 
     (.init $scope)))
 
-(def.controller jiksnu.NewPostController
+(set! (.-$inject NewPictureController) #js ["$scope" "app" "$http"])
+
+(.controller jiksnu "NewPictureController" NewPictureController)
+
+(defn NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Streams Users]
   #_
   (timbre/debug "Loading New Post Controller")
@@ -139,7 +150,13 @@
             (.fetchStreams $scope))))
   (.reset $scope))
 
-(def.controller jiksnu.NewStreamController
+(set! (.-$inject NewPostController)
+      #js ["$scope" "$rootScope" "geolocation" "app"
+           "pageService" "subpageService" "$filter" "Streams" "Users"])
+
+(.controller jiksnu "NewPostController" NewPostController)
+
+(defn NewStreamController
   [$scope $rootScope app]
   (set! (.-app $scope) app)
   (set! (.-stream $scope) #js {})
@@ -152,3 +169,7 @@
                 (then (fn [stream]
                         (timbre/info "Added Stream" stream)
                         (.refresh app))))))))
+
+(set! (.-$inject NewStreamController)  #js ["$scope" "$rootScope" "app"])
+
+(.controller jiksnu "NewStreamController" NewStreamController)
