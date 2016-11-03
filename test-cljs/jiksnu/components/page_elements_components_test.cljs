@@ -1,6 +1,6 @@
-(ns jiksnu.controllers-test
+(ns jiksnu.components.page-element-components-test
   (:require jiksnu.app
-            jiksnu.controllers
+            jiksnu.components.page-element-components
             [taoensso.timbre :as timbre])
   (:use-macros [purnam.test :only [describe it is beforeEach]]))
 
@@ -18,7 +18,7 @@
 (declare $httpBackend)
 (def $controller (atom nil))
 
-(describe {:doc "jiksnu.controllers"}
+(describe {:doc "jiksnu.components.page-element-components"}
   (beforeEach (js/module "jiksnu"))
 
   (js/beforeEach (fn [] (js/installPromiseMatchers)))
@@ -93,59 +93,4 @@
       (it "should bind the app service to app2"
         (set! (.-foo app) "bar")
         (@$controller controller-name injections)
-        (is $scope.app2.foo "bar"))))
-
-  (let [controller-name "NewGroupController"]
-    (describe {:doc controller-name}
-      (beforeEach
-       (timbre/info "Set up controller"))
-
-      (describe {:doc ".submit"}
-        (it "Should send the form"
-          (@$controller controller-name injections)
-          (.submit $scope)))))
-
-  (let [controller-name "ListStreamsController"]
-    (describe {:doc controller-name}
-      (beforeEach
-       (let [user #js {:_id "foo"}]
-         (set! (.-user $scope) user)))
-
-      (describe {:doc ".addStream"}
-        (it "sends an add-stream notice to the server"
-          (let [stream-name "bar"
-                params #js {:name stream-name}]
-            ;; TODO: Just mock app.addStream
-            (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [201])))
-            (@$controller controller-name injections)
-            (set! (.-stream $scope) params)
-            (let [p (.addStream $scope)]
-              (.$apply $scope)
-              (.flush $httpBackend)
-              (.. (js/expect p) (toBeResolved))))))
-
-      (describe {:doc ".delete"})))
-
-  (let [controller-name "ShowConversationController"]
-    (describe {:doc controller-name}
-      (beforeEach
-       (set! (.-id $scope) "1")
-       (set! (.-init $scope)
-             (fn [id]
-               (timbre/info "mocked init")
-               (set! (.-item $scope) #js {:id "1"})
-               (set! (.-loaded $scope) true))))
-
-      (describe {:doc ".deleteRecord"}
-        (it "sends a delete action"
-          (@$controller controller-name injections)
-          (.. (js/spyOn app "invokeAction") -and (returnValue ($q #(%))))
-          (.. $httpBackend
-              (expectGET (str "conversations/" (.-id $scope)))
-              (respond (constantly (clj->js [201 {:items []}]))))
-
-          (let [item (.-item $scope)
-                p (.deleteRecord $scope item)]
-            (.$apply $scope)
-            (.. (js/expect p) (toBeResolved))
-            (.. (js/expect (.-invokeAction app)) (toHaveBeenCalled))))))))
+        (is $scope.app2.foo "bar")))))
