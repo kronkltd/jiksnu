@@ -5,19 +5,14 @@
   (:use-macros [gyr.core :only [def.service]]))
 
 (def.service jiksnu.pageService
-  [$q $http]
-
+  [$http]
   (let [service #js {}]
     (set! (.-fetch service)
           (fn [page-name]
-            (let [d (.defer $q)]
-              (if-let [url (get registry/page-mappings page-name)]
-                (-> $http
-                    (.get url)
-                    (.success #(.resolve d %))
-                    (.error #(.reject d)))
-                (throw (str "page mapping not defined: " page-name)))
-              (.-promise d))))
+            (if-let [url (get registry/page-mappings page-name)]
+              ;; TODO: cache the page response here and you if-modified for updates
+              (.get $http url)
+              (throw (str "page mapping not defined: " page-name)))))
     service))
 
 (def.service jiksnu.subpageService
