@@ -17,7 +17,9 @@
   [:div {:ng-if "!$parent.loaded"} [:spinner]]
   [:div {:ng-if "$parent.loaded"}
    [:md-list
-    [:md-list-item {:ng-repeat "id in $parent.$parent.page.items" :ui-sref "showStream({_id: id})"}
+    [:md-list-item {:aria-label "show stream"
+                    :ng-repeat "id in $parent.$parent.page.items"
+                    :ui-sref "showStream({_id: id})"}
      [:debug {:expr "id"}]
      [:show-stream-minimal {:data-id "{{id}}"}]
      [:div

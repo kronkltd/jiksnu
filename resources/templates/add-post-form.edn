@@ -74,7 +74,7 @@
       [:as-model {:model "stream" :data-id "{{id}}"}
        "{{$parent.item.name}}"]]]
 
-    [:md-select {:name "privacy" :ng-model "activity.privacy"}
+    [:md-select {:name "privacy" :ng-model "activity.privacy" :aria-label "privacy"}
      [:option {:value "public"} "Public"]
      [:option {:value "group"} "Group"]
      [:option {:value "custom"} "Custom"]
