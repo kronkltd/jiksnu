@@ -25,7 +25,7 @@ docker run \
   -e DOMAIN=dev.jiksnu.com \
   $SENTRY_OPTS \
   -p 8081:8080 \
-  -p 7889:7888 \
+  -p 7888:7888 \
   -p 9876:9876 \
   repo.jiksnu.org/kronkltd/jiksnu-dev \
   script/byobu
