@@ -1,6 +1,6 @@
 (ns jiksnu.controllers
   (:require jiksnu.app
-            jiksnu.models
+            jiksnu.factories
             [jiksnu.helpers :as helpers]
             jiksnu.services
             [taoensso.timbre :as timbre])
