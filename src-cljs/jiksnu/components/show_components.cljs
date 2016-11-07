@@ -1,11 +1,12 @@
 (ns jiksnu.components.show-components
-  (:require jiksnu.app
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
+            [jiksnu.macros :refer-macros [item-directive]]
             [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.controller]]))
+  (:use-macros [gyr.core :only [def.controller def.directive]]))
 
-(def.controller jiksnu.ShowActivityController
-  [$scope $stateParams Activities app $rootScope]
+(defn ShowActivityController
+  [$scope $stateParams app Activities]
   (set! (.-app $scope) app)
 
   (set! (.-likeActivity $scope)
@@ -16,44 +17,76 @@
 
   (helpers/init-item $scope $stateParams app Activities))
 
-(def.controller jiksnu.ShowAlbumController
+(set! (.-$inject ShowActivityController) #js ["$scope" "$stateParams" "app" "Activities"])
+(.controller jiksnu "ShowActivityController" ShowActivityController)
+(item-directive "Activity"               "activity")
+
+(defn ShowAlbumController
   [$scope $stateParams app Albums]
   (set! (.-loaded $scope) false)
   (helpers/init-item $scope $stateParams app Albums))
 
-(def.controller jiksnu.ShowAlbumMinimalController
+(set! (.-$inject ShowAlbumController) #js ["$scope" "$stateParams" "app" "Albums"])
+(.controller jiksnu "ShowAlbumController" ShowAlbumController)
+(item-directive "Album"                  "album")
+
+(defn ShowAlbumMinimalController
   [$scope $stateParams app Albums]
   (set! (.-loaded $scope) false)
   (helpers/init-item $scope $stateParams app Albums))
 
-(def.controller jiksnu.ShowDomainController
+(set! (.-$inject ShowAlbumMinimalController) #js ["$scope" "$stateParams" "app" "Albums"])
+(.controller jiksnu "ShowAlbumMinimalController" ShowAlbumMinimalController)
+(item-directive "AlbumMinimal"           "album-minimal")
+
+(defn ShowClientController
+  [$scope $stateParams app Clients]
+  (helpers/init-item $scope $stateParams app Clients))
+
+(set! (.-$inject ShowClientController) #js ["$scope" "$stateParams" "app"  "Clients"])
+(.controller jiksnu "ShowClientController" ShowClientController)
+(item-directive "Client"                 "client")
+
+(defn ShowClientMinimalController
+  [$scope $stateParams app Clients]
+  (helpers/init-item $scope $stateParams app Clients))
+
+(set! (.-$inject ShowClientMinimalController) #js ["$scope" "$stateParams" "app" "Clients"])
+(.controller jiksnu "ShowClientMinimalController" ShowClientMinimalController)
+(item-directive "ClientMinimal"          "client-minimal")
+
+(defn ShowConversationController
+  [$scope $stateParams app Conversations]
+  (helpers/init-item $scope $stateParams app Conversations)
+  (set! (.-app $scope) app))
+
+(set! (.-$inject ShowConversationController) #js ["$scope" "$stateParams" "app" "Conversations"])
+(.controller jiksnu "ShowConversationController" ShowConversationController)
+(item-directive "Conversation"           "conversation")
+
+(defn ShowDomainController
   [$scope $stateParams app Domains]
   (set! (.-loaded $scope) false)
   (helpers/init-item $scope $stateParams app Domains))
 
-(def.controller jiksnu.ShowClientController
-  [$scope $stateParams app Clients]
-  (helpers/init-item $scope $stateParams app Clients))
+(set! (.-$inject ShowDomainController) #js ["$scope" "$stateParams" "Albums" "app"])
+(.controller jiksnu "ShowDomainController" ShowDomainController)
+(item-directive "Domain"           "domain")
 
-(def.controller jiksnu.ShowClientMinimalController
-  [$scope $stateParams app Clients]
-  (helpers/init-item $scope $stateParams app Clients))
-
-(def.controller jiksnu.ShowConversationController
-  [$scope $stateParams Conversations app $rootScope]
-  (helpers/init-item $scope $stateParams app Conversations)
-  (set! (.-app $scope) app))
-
-(def.controller jiksnu.ShowFollowersMinimalController
+(defn ShowFollowersMinimalController
   [$scope $stateParams app Subscriptions]
   (helpers/init-item $scope $stateParams app Subscriptions))
 
-(def.controller jiksnu.ShowFollowingMinimalController
+(item-directive "FollowersMinimal"       "followers-minimal")
+
+(defn ShowFollowingMinimalController
   [$scope $stateParams app Subscriptions]
   (helpers/init-item $scope $stateParams app Subscriptions))
 
-(def.controller jiksnu.ShowGroupController
-  [$scope $http $stateParams app Groups]
+(item-directive "FollowingMinimal"       "following-minimal")
+
+(defn ShowGroupController
+  [$scope $stateParams app Groups]
   (timbre/debug "loading ShowGroupController")
   (set! (.-join $scope)
         (fn []
@@ -62,47 +95,73 @@
             (.invokeAction app "group" "join" id))))
   (helpers/init-item $scope $stateParams app Groups))
 
-(def.controller jiksnu.ShowGroupMinimalController
+(item-directive "Group"                  "group")
+
+(defn ShowGroupMinimalController
   [$scope $stateParams app Groups]
   (helpers/init-item $scope $stateParams app Groups))
 
-(def.controller jiksnu.ShowGroupMembershipMinimalController
+(item-directive "GroupMinimal"           "group-minimal")
+
+(defn ShowGroupMembershipController
   [$scope $stateParams app GroupMemberships]
   (helpers/init-item $scope $stateParams app GroupMemberships))
 
-(def.controller jiksnu.ShowLikeController
+(item-directive "GroupMembership" "group-membership")
+
+(defn ShowGroupMembershipMinimalController
+  [$scope $stateParams app GroupMemberships]
+  (helpers/init-item $scope $stateParams app GroupMemberships))
+
+(item-directive "GroupMembershipMinimal" "group-membership-minimal")
+
+(defn ShowLikeController
   [$scope $stateParams app Likes]
   (helpers/init-item $scope $stateParams app Likes))
 
-(def.controller jiksnu.ShowLikedByController
+(item-directive "Like"                   "like")
+
+(defn ShowLikedByController
   [$scope $stateParams app Likes]
   (helpers/init-item $scope $stateParams app Likes))
 
-(def.controller jiksnu.ShowNotificationController
+(item-directive "LikedBy"                "liked-by")
+
+(defn ShowNotificationController
   [$scope $stateParams app Notifications]
   (helpers/init-item $scope $stateParams app Notifications))
 
-(def.controller jiksnu.ShowPictureController
+(item-directive "Notification"           "notification")
+
+(defn ShowPictureController
   [$scope $stateParams app Pictures]
   (helpers/init-item $scope $stateParams app Pictures))
 
-(def.controller jiksnu.ShowPictureMinimalController
+(item-directive "Picture"                "picture")
+
+(defn ShowPictureMinimalController
   [$scope $stateParams app Pictures]
   (helpers/init-item $scope $stateParams app Pictures))
 
-(def.controller jiksnu.ShowRequestTokenController
-  [$scope $http $stateParams app RequestTokens]
+(item-directive "PictureMinimal"         "picture-minimal")
+
+(defn ShowRequestTokenController
+  [$scope $stateParams app RequestTokens]
   (helpers/init-item $scope $stateParams app RequestTokens))
 
-(def.controller jiksnu.ShowServiceController
-  [$scope $http $stateParams app Services]
+(item-directive "RequestToken"           "request-token")
+
+(defn ShowServiceController
+  [$scope $stateParams app Services]
   (helpers/init-item $scope $stateParams app Services))
 
-(def.controller jiksnu.ShowStreamController
-  [$scope $http $stateParams app Streams]
+(item-directive "Service"                "service")
+
+(defn ShowStreamController
+  [$scope $stateParams app Streams]
   (helpers/init-item $scope $stateParams app Streams))
 
-(def.controller jiksnu.ShowStreamMinimalController
+(defn ShowStreamMinimalController
   [$scope $stateParams app Streams]
   (helpers/init-item $scope $stateParams app Streams)
   (set! (.-toggle $scope)
@@ -111,11 +170,15 @@
             (set! (.-formShown $scope) shown?)
             (set! (.-btnLabel $scope) (if shown? "-" "+"))))))
 
-(def.controller jiksnu.ShowSubscriptionController
+(item-directive "StreamMinimal"          "stream-minimal")
+
+(defn ShowSubscriptionController
   [$scope $stateParams app Subscriptions]
   (helpers/init-item $scope $stateParams app Subscriptions))
 
-(def.controller jiksnu.ShowUserController
+(item-directive "Subscription"           "subscription")
+
+(defn ShowUserController
   [$scope $stateParams Users]
   (set! (.-init $scope)
         (fn [id]
@@ -131,7 +194,9 @@
                    (str "acct:" username "@" domain))))]
     (.init $scope id)))
 
-(def.controller jiksnu.ShowUserMinimalController
+(item-directive "User"                   "user")
+
+(defn ShowUserMinimalController
   [$scope $stateParams Users]
   (set! (.-init $scope)
         (fn [id]
@@ -148,3 +213,5 @@
                  (when-let [domain (.-domain $stateParams)]
                    (str "acct:" username "@" domain))))]
     (.init $scope id)))
+
+(item-directive "UserMinimal"            "user-minimal")

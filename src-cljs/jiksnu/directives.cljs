@@ -82,30 +82,6 @@
    :scope true
    :templateUrl "/templates/navbar-section"})
 
-(item-directive "Activity"               "activity")
-(item-directive "Album"                  "album")
-(item-directive "AlbumMinimal"           "album-minimal")
-(item-directive "Client"                 "client")
-(item-directive "ClientMinimal"          "client-minimal")
-(item-directive "Conversation"           "conversation")
-(item-directive "Group"                  "group")
-(item-directive "GroupMembership"        "group-membership")
-(item-directive "GroupMembershipMinimal" "group-membership-minimal")
-(item-directive "GroupMinimal"           "group-minimal")
-(item-directive "FollowersMinimal"       "followers-minimal")
-(item-directive "FollowingMinimal"       "following-minimal")
-(item-directive "Like"                   "like")
-(item-directive "LikedBy"                "liked-by")
-(item-directive "Notification"           "notification")
-(item-directive "Picture"                "picture")
-(item-directive "PictureMinimal"         "picture-minimal")
-(item-directive "RequestToken"           "request-token")
-(item-directive "Service"                "service")
-(item-directive "StreamMinimal"          "stream-minimal")
-(item-directive "Subscription"           "subscription")
-(item-directive "User"                   "user")
-(item-directive "UserMinimal"            "user-minimal")
-
 (def.directive jiksnu.sidenav []
   #js
   {:templateUrl "/templates/sidenav"
