@@ -1,6 +1,7 @@
 (ns jiksnu.components.page-element-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
+            [jiksnu.registry :as registry]
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.controller def.directive]]))
 
@@ -131,7 +132,7 @@
    :templateUrl "/templates/follow-button"})
 
 (defn swagger-url
-  [protocol host port]
+  [protocol hostname port]
   (let [secure? (= protocol "https")
         default-port? (or (and secure?       (= port 443))
                           (and (not secure?) (= port 80)))]
@@ -147,7 +148,7 @@
             (let [protocol (.protocol $location)
                   hostname (.host $location)
                   port (.port $location)]
-              (swagger-url protocol host port))))
+              (swagger-url protocol hostname port))))
     (set! (.-apiUrl $scope) (str "/vendor/swagger-ui/dist/index.html?url=" (.getSwaggerUrl $scope)))
     (set! (.-$mdSidenav $scope) $mdSidenav)
     (set! (.-logout $scope) (.-logout app))))
@@ -190,84 +191,58 @@
    :scope true
    :templateUrl "/templates/navbar-section"})
 
-(def.controller jiksnu.SidenavController
+(defn SidenavController
   [$scope app]
-  (let [route-data
-        [["Home"          "home"]
-         ["Activities"    "indexActivities"]
-         #_
-         ["Domains"       "indexDomains"]
-         ["Groups"        "indexGroups"]
-         ["Likes"         "indexLikes"]
-         ["Albums"        "indexAlbums"]
-         ["Notifications" "indexNotifications"]
-         ["Pictures"      "indexPictures"]
-         #_
-         ["Services"      "indexServices"]
-         #_
-         ["Streams"       "indexStreams"]
-         ["Users"         "indexUsers"]
-         #_
-         ["Settings"      "settingsPage"]
-         #_
-         ["Profile"       "profile"]]]
 
-    (set! (.-app $scope) app)
+  (set! (.-app $scope) app)
 
-    (set! (.-items $scope)
-          (clj->js
-           (map (fn [[label ref]] {:label label :ref ref}) route-data)))))
+  (set! (.-items $scope)
+        (clj->js
+         (map (fn [[label ref]] {:label label :ref ref}) registry/sidenav-data))))
 
-(def.directive jiksnu.sidenav []
-  #js
+(.component
+ jiksnu "sidenav"
+ #js
   {:templateUrl "/templates/sidenav"
-   :controller "SidenavController"})
+   :controller #js ["$scope" "app" SidenavController]})
 
 (def.controller jiksnu.SubpageController
   [$scope subpageService $rootScope]
   (set! (.-loaded $scope) false)
   (if-let [subpage (.-subpage $scope)]
     (do
-      ;; (timbre/debug "initialize subpage controller" subpage)
       (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
 
-      ;; (.$on $scope refresh-followers
-      ;;       (fn []
-      ;;         (timbre/debug "received refresh event")
-      ;;         (.refresh $scope)))
+      #_
+      (.$on $scope refresh-followers (fn [] (.refresh $scope)))
 
-      ;; (.$on $rootScope refresh-followers
-      ;;       (fn []
-      ;;         (timbre/debug "received refresh event on root")
-      ;;         (.refresh $scope)))
+      #_
+      (.$on $rootScope refresh-followers (fn [] (.refresh $scope)))
 
-      (.$on $scope "refresh-page"
-            (fn []
-              (timbre/debug "received refresh event on subpage scope")
-              (.refresh $scope)))
+      (.$on $scope "refresh-page" (fn [] (.refresh $scope)))
 
       (set! (.-init $scope)
             (fn [item]
               (if item
-                (let [model-name (.. item -constructor -name)]
+                (let [model-name (.. item -constructor -name)
+                      id (.-_id item)]
                   (set! (.-item $scope) item)
                   (set! (.-loaded $scope) false)
                   (set! (.-loading $scope) true)
-                  (timbre/debugf "Refreshing subpage: %s(%s)=>%s"
-                                 model-name (.-_id item) subpage)
+                  (timbre/debugf "Refreshing subpage: %s(%s)=>%s" model-name id subpage)
                   (-> (.fetch subpageService item subpage)
-                      (.then (fn [page]
-                               (set! (.-errored $scope) false)
-                               (set! (.-loaded $scope) true)
-                               (set! (.-loading $scope) false)
-                               (set! (.-page $scope) page)
-                               page)
-                             (fn [page]
-                               (timbre/errorf "Failed to load subpage. %s(%s)=>%s"
-                                              model-name (.-_id item) subpage)
-                               (set! (.-errored $scope) true)
-                               (set! (.-loading $scope) false)
-                               page))))
+                      (.then
+                       (fn [page]
+                         (set! (.-errored $scope) false)
+                         (set! (.-loaded $scope) true)
+                         (set! (.-loading $scope) false)
+                         (set! (.-page $scope) page)
+                         page)
+                       (fn [page]
+                         (timbre/errorf "Failed to load subpage. %s(%s)=>%s" model-name id subpage)
+                         (set! (.-errored $scope) true)
+                         (set! (.-loading $scope) false)
+                         page))))
                 (throw (str "parent item not bound for subpage: " subpage)))))
       (.refresh $scope))
     (throw "Subpage not specified")))

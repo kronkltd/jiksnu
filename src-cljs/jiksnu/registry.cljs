@@ -92,3 +92,23 @@
    ["g l" "indexLikes"            "Go to Likes"]
    ["g s" "indexStreams"          "Go to Streams"]
    ["g u" "indexUsers"            "Go to Users"]])
+
+(def sidenav-data
+  [["Home"          "home"]
+   ["Activities"    "indexActivities"]
+   #_
+   ["Domains"       "indexDomains"]
+   ["Groups"        "indexGroups"]
+   ["Likes"         "indexLikes"]
+   ["Albums"        "indexAlbums"]
+   ["Notifications" "indexNotifications"]
+   ["Pictures"      "indexPictures"]
+   #_
+   ["Services"      "indexServices"]
+   #_
+   ["Streams"       "indexStreams"]
+   ["Users"         "indexUsers"]
+   #_
+   ["Settings"      "settingsPage"]
+   #_
+   ["Profile"       "profile"]])
