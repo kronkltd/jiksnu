@@ -1,47 +1,74 @@
 (ns jiksnu.components.list-components
-  (:require jiksnu.app
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.controller]]))
 
-(def.controller jiksnu.ListActivitiesController
+(defn ListActivitiesController
   [$scope app Users]
   (helpers/init-subpage $scope app Users "activities"))
 
-(def.controller jiksnu.ListAlbumsController
+(set! (.-$inject ListActivitiesController) #js ["$scope" "app" "Users"])
+(.controller jiksnu "ListActivitiesController" ListActivitiesController)
+
+(defn ListAlbumsController
   [$scope app Users]
   (helpers/init-subpage $scope app Users "albums"))
 
-(def.controller jiksnu.ListFollowersController
+(set! (.-$inject ListAlbumsController) #js ["$scope" "app" "Users"])
+(.controller jiksnu "ListAlbumsController" ListAlbumsController)
+
+(defn ListFollowersController
   [$scope app Users]
   (helpers/init-subpage $scope app Users "followers"))
 
-(def.controller jiksnu.ListFollowingController
+(set! (.-$inject ListFollowersController) #js ["$scope" "app" "Users"])
+(.controller jiksnu "ListFollowersController" ListFollowersController)
+
+(defn ListFollowingController
   [$scope app Users]
   (helpers/init-subpage $scope app Users "following"))
 
-(def.controller jiksnu.ListGroupsController
+(set! (.-$inject ListFollowingController) #js ["$scope" "app" "Users"])
+(.controller jiksnu "ListFollowingController" ListFollowingController)
+
+(defn ListGroupsController
   [$scope app Users]
   (helpers/init-subpage $scope app Users "groups"))
 
-(def.controller jiksnu.ListGroupAdminsController
+(set! (.-$inject ListGroupsController) #js ["$scope" "app" "Users"])
+(.controller jiksnu "ListGroupsController" ListGroupsController)
+
+(defn ListGroupAdminsController
   [$scope app Groups]
   (helpers/init-subpage $scope app Groups "admins"))
 
-(def.controller jiksnu.ListGroupMembersController
+(set! (.-$inject ListGroupAdminsController) #js ["$scope" "app" "Groups"])
+(.controller jiksnu "ListGroupAdminsController" ListGroupAdminsController)
+
+(defn ListGroupMembersController
   [$scope app Groups]
   (helpers/init-subpage $scope app Groups "members"))
 
-(def.controller jiksnu.ListNotificationsController
+(set! (.-$inject ListGroupMembersController) #js ["$scope" "app" "Groups"])
+(.controller jiksnu "ListGroupMembersController" ListGroupMembersController)
+
+(defn ListNotificationsController
   [$scope app Users]
   (helpers/init-subpage $scope app Users "notifications"))
 
-(def.controller jiksnu.ListPicturesController
+(set! (.-$inject ListNotificationsController) #js ["$scope" "app" "Users"])
+(.controller jiksnu "ListNotificationsController" ListNotificationsController)
+
+(defn ListPicturesController
   [$scope app Albums]
   (helpers/init-subpage $scope app Albums "pictures"))
 
-(def.controller jiksnu.ListStreamsController
-  [$scope app app Users]
+(set! (.-$inject ListPicturesController) #js ["$scope" "app" "Albums"])
+(.controller jiksnu "ListPicturesController" ListPicturesController)
+
+(defn ListStreamsController
+  [$scope app Users]
 
   (.$watch $scope
            (.-formShown $scope)
@@ -65,3 +92,6 @@
 
   (helpers/init-subpage $scope app Users "streams")
   (.updateLabel $scope))
+
+(set! (.-$inject ListStreamsController) #js ["$scope" "app" "Users"])
+(.controller jiksnu "ListStreamsController" ListStreamsController)
