@@ -69,7 +69,7 @@
   (set! (.-loaded $scope) false)
   (helpers/init-item $scope $stateParams app Domains))
 
-(set! (.-$inject ShowDomainController) #js ["$scope" "$stateParams" "Albums" "app"])
+(set! (.-$inject ShowDomainController) #js ["$scope" "$stateParams" "app" "Domains"])
 (.controller jiksnu "ShowDomainController" ShowDomainController)
 (item-directive "Domain"           "domain")
 
@@ -77,12 +77,16 @@
   [$scope $stateParams app Subscriptions]
   (helpers/init-item $scope $stateParams app Subscriptions))
 
+(set! (.-$inject ShowFollowersMinimalController) #js ["$scope" "$stateParams" "app" "Subscriptions"])
+(.controller jiksnu "ShowFollowersMinimalController" ShowFollowersMinimalController)
 (item-directive "FollowersMinimal"       "followers-minimal")
 
 (defn ShowFollowingMinimalController
   [$scope $stateParams app Subscriptions]
   (helpers/init-item $scope $stateParams app Subscriptions))
 
+(set! (.-$inject ShowFollowingMinimalController) #js ["$scope" "$stateParams" "app" "Subscriptions"])
+(.controller jiksnu "ShowFollowingMinimalController" ShowFollowingMinimalController)
 (item-directive "FollowingMinimal"       "following-minimal")
 
 (defn ShowGroupController
@@ -95,71 +99,97 @@
             (.invokeAction app "group" "join" id))))
   (helpers/init-item $scope $stateParams app Groups))
 
+(set! (.-$inject ShowGroupController) #js ["$scope" "$stateParams" "app" "Groups"])
+(.controller jiksnu "ShowGroupController" ShowGroupController)
 (item-directive "Group"                  "group")
 
 (defn ShowGroupMinimalController
   [$scope $stateParams app Groups]
   (helpers/init-item $scope $stateParams app Groups))
 
+(set! (.-$inject ShowGroupMinimalController) #js ["$scope" "$stateParams" "app" "Groups"])
+(.controller jiksnu "ShowGroupMinimalController" ShowGroupMinimalController)
 (item-directive "GroupMinimal"           "group-minimal")
 
 (defn ShowGroupMembershipController
   [$scope $stateParams app GroupMemberships]
   (helpers/init-item $scope $stateParams app GroupMemberships))
 
+(set! (.-$inject ShowGroupMembershipController) #js ["$scope" "$stateParams" "app" "GroupMemberships"])
+(.controller jiksnu "ShowGroupMembershipController" ShowGroupMembershipController)
 (item-directive "GroupMembership" "group-membership")
 
 (defn ShowGroupMembershipMinimalController
   [$scope $stateParams app GroupMemberships]
   (helpers/init-item $scope $stateParams app GroupMemberships))
 
+(set! (.-$inject ShowGroupMembershipMinimalController) #js ["$scope" "$stateParams" "app" "GroupMemberships"])
+(.controller jiksnu "ShowGroupMembershipMinimalController" ShowGroupMembershipMinimalController)
 (item-directive "GroupMembershipMinimal" "group-membership-minimal")
 
 (defn ShowLikeController
   [$scope $stateParams app Likes]
   (helpers/init-item $scope $stateParams app Likes))
 
+(set! (.-$inject ShowLikeController) #js ["$scope" "$stateParams" "app" "Likes"])
+(.controller jiksnu "ShowLikeController" ShowLikeController)
 (item-directive "Like"                   "like")
 
 (defn ShowLikedByController
   [$scope $stateParams app Likes]
   (helpers/init-item $scope $stateParams app Likes))
 
+(set! (.-$inject ShowLikedByController) #js ["$scope" "$stateParams" "app" "Likes"])
+(.controller jiksnu "ShowLikedByController" ShowLikedByController)
 (item-directive "LikedBy"                "liked-by")
 
 (defn ShowNotificationController
   [$scope $stateParams app Notifications]
   (helpers/init-item $scope $stateParams app Notifications))
 
+(set! (.-$inject ShowNotificationController) #js ["$scope" "$stateParams" "app" "Notifications"])
+(.controller jiksnu "ShowNotificationController" ShowNotificationController)
 (item-directive "Notification"           "notification")
 
 (defn ShowPictureController
   [$scope $stateParams app Pictures]
   (helpers/init-item $scope $stateParams app Pictures))
 
+(set! (.-$inject ShowPictureController) #js ["$scope" "$stateParams" "app" "Pictures"])
+(.controller jiksnu "ShowPictureController" ShowPictureController)
 (item-directive "Picture"                "picture")
 
 (defn ShowPictureMinimalController
   [$scope $stateParams app Pictures]
   (helpers/init-item $scope $stateParams app Pictures))
 
+(set! (.-$inject ShowPictureMinimalController) #js ["$scope" "$stateParams" "app" "Pictures"])
+(.controller jiksnu "ShowPictureMinimalController" ShowPictureMinimalController)
 (item-directive "PictureMinimal"         "picture-minimal")
 
 (defn ShowRequestTokenController
   [$scope $stateParams app RequestTokens]
   (helpers/init-item $scope $stateParams app RequestTokens))
 
+(set! (.-$inject ShowRequestTokenController) #js ["$scope" "$stateParams" "app" "RequestToken"])
+(.controller jiksnu "ShowRequestTokenController" ShowRequestTokenController)
 (item-directive "RequestToken"           "request-token")
 
 (defn ShowServiceController
   [$scope $stateParams app Services]
   (helpers/init-item $scope $stateParams app Services))
 
+(set! (.-$inject ShowServiceController) #js ["$scope" "$stateParams" "app" "Services"])
+(.controller jiksnu "ShowServiceController" ShowServiceController)
 (item-directive "Service"                "service")
 
 (defn ShowStreamController
   [$scope $stateParams app Streams]
   (helpers/init-item $scope $stateParams app Streams))
+
+(set! (.-$inject ShowStreamController) #js ["$scope" "$stateParams" "app" "Streams"])
+(.controller jiksnu "ShowStreamController" ShowStreamController)
+(item-directive "Stream"          "stream")
 
 (defn ShowStreamMinimalController
   [$scope $stateParams app Streams]
@@ -170,16 +200,20 @@
             (set! (.-formShown $scope) shown?)
             (set! (.-btnLabel $scope) (if shown? "-" "+"))))))
 
+(set! (.-$inject ShowStreamMinimalController) #js ["$scope" "$stateParams" "app" "Streams"])
+(.controller jiksnu "ShowStreamMinimalController" ShowStreamMinimalController)
 (item-directive "StreamMinimal"          "stream-minimal")
 
 (defn ShowSubscriptionController
   [$scope $stateParams app Subscriptions]
   (helpers/init-item $scope $stateParams app Subscriptions))
 
+(set! (.-$inject ShowSubscriptionController) #js ["$scope" "$stateParams" "app" "Subscriptions"])
+(.controller jiksnu "ShowSubscriptionController" ShowSubscriptionController)
 (item-directive "Subscription"           "subscription")
 
 (defn ShowUserController
-  [$scope $stateParams Users]
+  [$scope $stateParams app Users]
   (set! (.-init $scope)
         (fn [id]
           (set! (.-loaded $scope) false)
@@ -194,10 +228,12 @@
                    (str "acct:" username "@" domain))))]
     (.init $scope id)))
 
+(set! (.-$inject ShowUserController) #js ["$scope" "$stateParams" "app" "Users"])
+(.controller jiksnu "ShowUserController" ShowUserController)
 (item-directive "User"                   "user")
 
 (defn ShowUserMinimalController
-  [$scope $stateParams Users]
+  [$scope $stateParams app Users]
   (set! (.-init $scope)
         (fn [id]
           (timbre/infof "init minimal user - %s" id)
@@ -214,4 +250,6 @@
                    (str "acct:" username "@" domain))))]
     (.init $scope id)))
 
+(set! (.-$inject ShowUserMinimalController) #js ["$scope" "$stateParams" "app" "Users"])
+(.controller jiksnu "ShowUserMinimalController" ShowUserMinimalController)
 (item-directive "UserMinimal"            "user-minimal")
