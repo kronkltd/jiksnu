@@ -172,13 +172,9 @@
   (set! (.-init $scope)
         (fn [d]
           (when (.-loaded $scope)
-            #_
-            (timbre/debug "Running navbarcontroller watcher")
             (set! (.-app $scope) d)
             (-> (.getUser app)
                 (.then (fn [user]
-                         #_
-                         (timbre/debug "setting app user")
                          (set! (.-user app) user)))))))
 
   (set! (.-toggleSidenav $scope) (fn [] (.toggle ($mdSidenav "left"))))
