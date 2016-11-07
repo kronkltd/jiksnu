@@ -1,8 +1,8 @@
 (ns jiksnu.components.page-element-components
-  (:require jiksnu.app
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
             [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.controller]]))
+  (:use-macros [gyr.core :only [def.controller def.directive]]))
 
 (def.controller jiksnu.AppController [])
 
@@ -16,11 +16,25 @@
             (.find DS collection-name id)))
     (.init $scope (.-id $scope))))
 
+(def.directive jiksnu.asModel []
+  #js
+  {:controller "AsModelController"
+   :template "<span ng-transclude></span>"
+   :scope #js {:id "@" :model "@"}
+   :transclude true})
+
 (def.controller jiksnu.DebugController [$scope $filter app]
   (set! (.-visible $scope) #(.. app -data -debug))
 
   (set! (.-formattedCode $scope)
         #(($filter "json") (.-expr $scope))))
+
+(def.directive jiksnu.debug []
+  #js
+  {:controller "DebugController"
+   :scope #js {:expr "=expr"
+               :exprText "@expr"}
+   :templateUrl "/templates/debug"})
 
 (def.controller jiksnu.DisplayAvatarController
   [$scope Users]
@@ -33,6 +47,12 @@
             (.bindOne Users id $scope "user")
             (.find Users id))))
   (.init $scope))
+
+(def.directive jiksnu.displayAvatar []
+  #js
+  {:controller "DisplayAvatarController"
+   :scope #js {:id "@" :size "@"}
+   :templateUrl "/templates/display-avatar"})
 
 (def.controller jiksnu.FollowButtonController
   [$scope app $q $rootScope Subscriptions]
@@ -103,6 +123,13 @@
            (fn [data old-data] (.init $scope)))
   (.$on $scope helpers/refresh-followers (.-init $scope)))
 
+(def.directive jiksnu.followButton
+  []
+  #js
+  {:controller "FollowButtonController"
+   :scope #js {:item "="}
+   :templateUrl "/templates/follow-button"})
+
 (def.controller jiksnu.MainLayoutController
   [$location $mdSidenav $scope app]
   (let [protocol (.protocol $location)
@@ -118,6 +145,11 @@
                "/api-docs.json"))
     (set! (.-$mdSidenav $scope) $mdSidenav)
     (set! (.-logout $scope) (.-logout app))))
+
+(def.directive jiksnu.mainLayout []
+  #js
+  {:templateUrl "/templates/main-layout"
+   :controller "MainLayoutController"})
 
 (def.controller jiksnu.NavBarController
   [$mdSidenav $rootScope $scope $state app hotkeys]
@@ -150,6 +182,12 @@
   (-> (.fetchStatus app)
       (.then (fn [] (set! (.-loaded $scope) true)))))
 
+(def.directive jiksnu.navBar []
+  #js
+  {:controller "NavBarController"
+   :scope true
+   :templateUrl "/templates/navbar-section"})
+
 (def.controller jiksnu.SidenavController
   [$scope app]
   (let [route-data
@@ -177,6 +215,11 @@
     (set! (.-items $scope)
           (clj->js
            (map (fn [[label ref]] {:label label :ref ref}) route-data)))))
+
+(def.directive jiksnu.sidenav []
+  #js
+  {:templateUrl "/templates/sidenav"
+   :controller "SidenavController"})
 
 (def.controller jiksnu.SubpageController
   [$scope subpageService $rootScope]
@@ -226,3 +269,10 @@
                 (throw (str "parent item not bound for subpage: " subpage)))))
       (.refresh $scope))
     (throw "Subpage not specified")))
+
+(def.directive jiksnu.subpage []
+  #js
+  {:scope #js {:subpage "@name" :item "=item"}
+   :template "<div ng-transclude></div>"
+   :transclude true
+   :controller "SubpageController"})
