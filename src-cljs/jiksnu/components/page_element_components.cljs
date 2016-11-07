@@ -130,26 +130,32 @@
    :scope #js {:item "="}
    :templateUrl "/templates/follow-button"})
 
-(def.controller jiksnu.MainLayoutController
-  [$location $mdSidenav $scope app]
-  (let [protocol (.protocol $location)
-        hostname (.host $location)
-        port (.port $location)
-        secure? (= protocol "https")
+(defn swagger-url
+  [protocol host port]
+  (let [secure? (= protocol "https")
         default-port? (or (and secure?       (= port 443))
                           (and (not secure?) (= port 80)))]
-    (set! (.-apiUrl $scope)
-          (str "/vendor/swagger-ui/dist/index.html?url="
-               protocol "://" hostname
-               (when-not default-port? (str ":" port))
-               "/api-docs.json"))
+    (str protocol "://" hostname
+         (when-not default-port? (str ":" port))
+         "/api-docs.json")))
+
+(defn MainLayoutController
+  [$location $mdSidenav $scope app]
+  (let []
+    (set! (.-getSwaggerUrl $scope)
+          (fn []
+            (let [protocol (.protocol $location)
+                  hostname (.host $location)
+                  port (.port $location)]
+              (swagger-url protocol host port))))
+    (set! (.-apiUrl $scope) (str "/vendor/swagger-ui/dist/index.html?url=" (.getSwaggerUrl $scope)))
     (set! (.-$mdSidenav $scope) $mdSidenav)
     (set! (.-logout $scope) (.-logout app))))
 
-(def.directive jiksnu.mainLayout []
-  #js
-  {:templateUrl "/templates/main-layout"
-   :controller "MainLayoutController"})
+(.component
+ jiksnu "mainLayout"
+ #js {:templateUrl "/templates/main-layout"
+      :controller #js ["$location" "$mdSidenav" "$scope" "app" MainLayoutController]})
 
 (def.controller jiksnu.NavBarController
   [$mdSidenav $rootScope $scope $state app hotkeys]
