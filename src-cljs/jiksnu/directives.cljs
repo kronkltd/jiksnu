@@ -3,40 +3,6 @@
             [jiksnu.macros :refer-macros [list-directive item-directive]])
   (:use-macros [gyr.core :only [def.directive]]))
 
-(def.directive jiksnu.addAlbumForm
-  []
-  #js
-  {:controller "NewAlbumController"
-   :scope true
-   :templateUrl "/templates/add-album-form"})
-
-(def.directive jiksnu.addGroupForm
-  []
-  #js
-  {:controller "NewGroupController"
-   :scope true
-   :templateUrl "/templates/add-group-form"})
-
-(def.directive jiksnu.addPictureForm
-  []
-  #js
-  {:controller "NewPictureController"
-   :scope true
-   :templateUrl "/templates/add-picture-form"})
-
-(def.directive jiksnu.addPostForm
-  []
-  #js
-  {:controller "NewPostController"
-   :scope true
-   :templateUrl "/templates/add-post-form"})
-
-(def.directive jiksnu.addStreamForm []
-  #js
-  {:controller "NewStreamController"
-   :scope true
-   :templateUrl "/templates/add-stream-form"})
-
 (def.directive jiksnu.asModel []
   #js
   {:controller "AsModelController"

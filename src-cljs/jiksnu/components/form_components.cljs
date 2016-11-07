@@ -22,6 +22,13 @@
 
 (.controller jiksnu "NewAlbumController" NewAlbumController)
 
+(def.directive jiksnu.addAlbumForm
+  []
+  #js
+  {:controller "NewAlbumController"
+   :scope true
+   :templateUrl "/templates/add-album-form"})
+
 (defn NewGroupController
   [$scope app $http]
   (let [default-form #js {}]
@@ -50,6 +57,13 @@
 (set! (.-$inject NewGroupController) #js ["$scope" "app" "$http"])
 
 (.controller jiksnu "NewGroupController" NewGroupController)
+
+(def.directive jiksnu.addGroupForm
+  []
+  #js
+  {:controller "NewGroupController"
+   :scope true
+   :templateUrl "/templates/add-group-form"})
 
 (defn NewPictureController
   [$scope app $http]
@@ -83,6 +97,13 @@
 (set! (.-$inject NewPictureController) #js ["$scope" "app" "$http"])
 
 (.controller jiksnu "NewPictureController" NewPictureController)
+
+(def.directive jiksnu.addPictureForm
+  []
+  #js
+  {:controller "NewPictureController"
+   :scope true
+   :templateUrl "/templates/add-picture-form"})
 
 (defn NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Streams Users]
@@ -156,6 +177,13 @@
 
 (.controller jiksnu "NewPostController" NewPostController)
 
+(def.directive jiksnu.addPostForm
+  []
+  #js
+  {:controller "NewPostController"
+   :scope true
+   :templateUrl "/templates/add-post-form"})
+
 (defn NewStreamController
   [$scope $rootScope app]
   (set! (.-app $scope) app)
@@ -173,3 +201,9 @@
 (set! (.-$inject NewStreamController)  #js ["$scope" "$rootScope" "app"])
 
 (.controller jiksnu "NewStreamController" NewStreamController)
+
+(def.directive jiksnu.addStreamForm []
+  #js
+  {:controller "NewStreamController"
+   :scope true
+   :templateUrl "/templates/add-stream-form"})
