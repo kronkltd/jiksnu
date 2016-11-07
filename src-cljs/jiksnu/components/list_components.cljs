@@ -10,6 +10,7 @@
 
 (set! (.-$inject ListActivitiesController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListActivitiesController" ListActivitiesController)
+(list-directive "Activities"    "activities")
 
 (defn ListAlbumsController
   [$scope app Users]
@@ -17,6 +18,7 @@
 
 (set! (.-$inject ListAlbumsController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListAlbumsController" ListAlbumsController)
+(list-directive "Albums"        "albums")
 
 (defn ListFollowersController
   [$scope app Users]
@@ -24,6 +26,7 @@
 
 (set! (.-$inject ListFollowersController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListFollowersController" ListFollowersController)
+(list-directive "Followers"     "followers")
 
 (defn ListFollowingController
   [$scope app Users]
@@ -31,6 +34,7 @@
 
 (set! (.-$inject ListFollowingController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListFollowingController" ListFollowingController)
+(list-directive "Following"     "following")
 
 (defn ListGroupsController
   [$scope app Users]
@@ -38,6 +42,7 @@
 
 (set! (.-$inject ListGroupsController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListGroupsController" ListGroupsController)
+(list-directive "Groups"        "groups")
 
 (defn ListGroupAdminsController
   [$scope app Groups]
@@ -45,6 +50,7 @@
 
 (set! (.-$inject ListGroupAdminsController) #js ["$scope" "app" "Groups"])
 (.controller jiksnu "ListGroupAdminsController" ListGroupAdminsController)
+(list-directive "GroupAdmins"   "group-admins")
 
 (defn ListGroupMembersController
   [$scope app Groups]
@@ -52,6 +58,15 @@
 
 (set! (.-$inject ListGroupMembersController) #js ["$scope" "app" "Groups"])
 (.controller jiksnu "ListGroupMembersController" ListGroupMembersController)
+(list-directive "GroupMembers"  "group-members")
+
+(defn ListLikesController
+  [$scope app Users]
+  (helpers/init-subpage $scope app Users "likes"))
+
+(set! (.-$inject ListLikesController) #js ["$scope" "app" "Users"])
+(.controller jiksnu "ListLikesController" ListLikesController)
+(list-directive "Likes" "likes")
 
 (defn ListNotificationsController
   [$scope app Users]
@@ -59,6 +74,7 @@
 
 (set! (.-$inject ListNotificationsController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListNotificationsController" ListNotificationsController)
+(list-directive "Notifications" "notifications")
 
 (defn ListPicturesController
   [$scope app Albums]
@@ -66,6 +82,7 @@
 
 (set! (.-$inject ListPicturesController) #js ["$scope" "app" "Albums"])
 (.controller jiksnu "ListPicturesController" ListPicturesController)
+(list-directive "Pictures"      "pictures")
 
 (defn ListStreamsController
   [$scope app Users]
@@ -95,3 +112,4 @@
 
 (set! (.-$inject ListStreamsController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListStreamsController" ListStreamsController)
+(list-directive "Streams"       "streams")

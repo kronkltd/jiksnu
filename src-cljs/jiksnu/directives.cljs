@@ -76,19 +76,6 @@
    :scope true
    :templateUrl "/templates/left-column-section"})
 
-(list-directive "Activities"    "activities")
-(list-directive "Albums"        "albums")
-(list-directive "Followers"     "followers")
-(list-directive "Following"     "following")
-(list-directive "Groups"        "groups")
-(list-directive "GroupAdmins"   "group-admins")
-(list-directive "GroupMembers"  "group-members")
-(list-directive "Likes"         "likes")
-(list-directive "Notifications" "notifications")
-(list-directive "Pictures"      "pictures")
-(list-directive "Services"      "services")
-(list-directive "Streams"       "streams")
-
 (def.directive jiksnu.navBar []
   #js
   {:controller "NavBarController"
