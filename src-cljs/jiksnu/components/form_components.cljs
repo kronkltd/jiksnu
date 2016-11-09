@@ -58,6 +58,7 @@
         path "/model/pictures"]
     (set! (.-init $scope) #(.reset $scope))
     (set! (.-reset $scope) #(set! (.-album $scope) default-form))
+    (set! (.-app $scope) app)
 
     (set! (.-submit $scope)
           (fn []
@@ -79,15 +80,10 @@
 
     (.init $scope)))
 
-(set! (.-$inject NewPictureController) #js ["$scope" "app" "$http"])
-
-(.controller jiksnu "NewPictureController" NewPictureController)
-
-(def.directive jiksnu.addPictureForm
-  []
-  #js {:controller "NewPictureController"
-       :scope true
-       :templateUrl "/templates/add-picture-form"})
+(.component
+ jiksnu "addPictureForm"
+ #js {:controller #js ["$scope" "app" "$http" NewPictureController]
+      :templateUrl "/templates/add-picture-form"})
 
 (defn NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Streams Users]
