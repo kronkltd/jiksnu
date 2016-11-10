@@ -1,8 +1,7 @@
 (ns jiksnu.components.form-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.directive]]))
+            [taoensso.timbre :as timbre]))
 
 (defn NewAlbumController
   [$scope app $http]
@@ -17,15 +16,11 @@
               (.post $http path params))))
     (.init $scope)))
 
-(set! (.-$inject NewAlbumController) #js ["$scope" "app" "$http"])
-
-(.controller jiksnu "NewAlbumController" NewAlbumController)
-
 (.component
  jiksnu "addAlbumForm"
  #js {:bindings #js {}
       :templateUrl "/templates/add-album-form"
-      :controller NewAlbumController})
+      :controller #js ["$scope" "app" "$http" NewAlbumController]})
 
 (defn NewGroupController
   [$scope app $http]
@@ -46,11 +41,10 @@
 
 (.controller jiksnu "NewGroupController" NewGroupController)
 
-(def.directive jiksnu.addGroupForm
-  []
-  #js {:controller "NewGroupController"
-       :scope true
-       :templateUrl "/templates/add-group-form"})
+(.component
+ jiksnu "addGroupForm"
+ #js {:controller #js ["$scope" "app" "$http" NewGroupController]
+      :templateUrl "/templates/add-group-form"})
 
 (defn NewPictureController
   [$scope app $http]
@@ -153,7 +147,6 @@
  #js {:controller #js ["$scope" "$rootScope" "geolocation" "app"
                        "pageService" "subpageService" "$filter" "Streams" "Users"
                        NewPostController]
-      :scope true
       :templateUrl "/templates/add-post-form"})
 
 (defn NewStreamController
@@ -170,11 +163,7 @@
                         (timbre/info "Added Stream" stream)
                         (.refresh app))))))))
 
-(set! (.-$inject NewStreamController)  #js ["$scope" "$rootScope" "app"])
-
-(.controller jiksnu "NewStreamController" NewStreamController)
-
-(def.directive jiksnu.addStreamForm []
-  #js {:controller "NewStreamController"
-       :scope true
-       :templateUrl "/templates/add-stream-form"})
+(.component
+ jiksnu "addStreamForm"
+ #js {:controller #js ["$scope" "$rootScope" "app" NewStreamController]
+      :templateUrl "/templates/add-stream-form"})
