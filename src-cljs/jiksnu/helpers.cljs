@@ -3,6 +3,7 @@
             [hiccups.runtime :as hiccupsrt]
             [inflections.core :as inf]
             [jiksnu.registry :as registry]
+            jiksnu.services
             [taoensso.timbre :as timbre])
   (:require-macros [hiccups.core :as hiccups :refer [html]]))
 
