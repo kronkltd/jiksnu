@@ -30,7 +30,7 @@
   (timbre/info "Location: " $location)
   (timbre/info "State Params: " $stateParams)
   (set! (.-id $scope) (aget (.search $location) "oauth_token"))
-  (helpers/init-item $scope $stateParams app RequestTokens))
+  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app RequestTokens)))
 
 (.component
  jiksnu "authorizeClient"
