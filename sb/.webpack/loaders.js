@@ -1,21 +1,13 @@
 module.exports = [
   {
-    test: /sb\/.*\.js$/,
-    exclude: [/node_modules/, /target/],
+    test: /\.js$/,
+    exclude: [/node_modules/],
     loader: 'babel',
     query: {
       presets: ["es2015", "stage-0"],
       plugins: ["transform-runtime"]
     }
   },
-  {
-    test: /target\/resources\/public\/cljs-none\/goog\/base/,
-    loaders: [
-      'imports?this=>{goog:{}}&goog=>this.goog',
-      'exports?goog',
-    ]
-  },
-
   {
     test: /\.js$/,
     exclude: [/node_modules/],

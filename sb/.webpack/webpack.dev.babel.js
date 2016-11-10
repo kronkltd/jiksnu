@@ -2,17 +2,17 @@ var loaders = require("./loaders");
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var webpack = require('webpack');
 var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var pathUtil = require('path');
-
-console.log("Dirname: ", __dirname);
 
 module.exports = {
   entry: {
     app: [
+      'webpack/hot/dev-server',
+      'webpack-hot-middleware/client?noInfo=true',
       './sb/index.js'
     ],
     stories: [
+      'webpack/hot/dev-server',
+      'webpack-hot-middleware/client?noInfo=true',
       './sb/stories'
     ]
   },
@@ -22,12 +22,10 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    modulesDirectories: ['node_modules', 'target/resources/public/cljs-none'],
     root: __dirname,
     extensions: ['', '.js', '.json']
   },
   resolveLoader: {
-    root: pathUtil.join(__dirname, '../..'),
     modulesDirectories: ["node_modules"]
   },
   // devtool: "source-map",
@@ -35,29 +33,10 @@ module.exports = {
     new CopyWebpackPlugin([
       { from: './sb/.static/preview.html', to: 'preview.html' },
       { from: './sb/.static/index.html', to: 'index.html' }
-    ])
-    // ,
-    // new webpack.HotModuleReplacementPlugin()
-    , new webpack.ProvidePlugin({
-      goog: 'goog/base'
-    })
+    ]),
+    new webpack.HotModuleReplacementPlugin()
   ],
-  closureLoader: {
-    paths: [
-      __dirname + '../../node_modules/google-closure-library/closure/goog',
-      __dirname + '/target/resources/public/cljs-none'
-    ],
-    es6mode: true,
-    watch: true
-  },
   module: {
     loaders: loaders
-  },
-  devServer: {
-    contentBase: './build',
-    noInfo: true,
-    inline: true,
-    historyApiFallback: true
-  },
-  devtool: 'source-map'
+  }
 };
