@@ -1,0 +1,9 @@
+.welcome__card {
+    max-width: 320px;
+    background: #fff;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.45);
+    border-radius: 2px;
+    padding: 16px;
+    margin: 0 auto;
+    font-family: monospace;
+}

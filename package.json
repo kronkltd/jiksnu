@@ -62,10 +62,18 @@
     "protractor-cucumber-framework": "^0.6.0",
     "swagger-ui": "2.2.3",
     "watchify": "^3.7.0",
-    "wscat": "^1.0.1"
+    "wscat": "^1.0.1",
+    "ui-storybook": "^1.0.5",
+    "ng-annotate-loader": "0.0.10",
+    "webpack-hot-middleware": "2.13.0"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/kronkltd/jiksnu.git"
+  },
+  "scripts": {
+    "sb": "node ./sb/.webpack/server.js --NODE_ENV=dev",
+    "sb-build": "webpack --config ./sb/.webpack/webpack.build.babel.js --NODE_ENV=production",
+    "sb-publish": "node sb/.script/ghpages.js"
   }
 }
