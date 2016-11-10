@@ -1,24 +1,33 @@
 (ns jiksnu.components.index-components
-  (:require jiksnu.app
-            [jiksnu.helpers :as helpers]
-            [jiksnu.macros :refer-macros [page-controller]])
-  (:use-macros [gyr.core :only [def.controller]]))
+  (:require [inflections.core :as inf]
+            [jiksnu.app :refer [jiksnu]]
+            [jiksnu.helpers :as helpers]))
+
+(defn page-controller
+  [module page-name]
+  (.controller
+   module (str "Index" (inf/camel-case page-name) "Controller")
+   #js ["$scope" "$rootScope" "app" "pageService" "subpageService"
+        (fn [$scope $rootScope app pageService subpageService]
+          (helpers/init-page $scope $rootScope app page-name)
+          (set! (.-refresh $scope) (fn [] (.init $scope)))
+          (.init $scope))]))
 
 ;; TODO: Auto register for each defined page
-(page-controller Activities       "activities")
-(page-controller Albums           "albums")
-(page-controller Clients          "clients")
-(page-controller Conversations    "conversations")
-(page-controller Domains          "domains")
-(page-controller FeedSources      "feed-sources")
-(page-controller Groups           "groups")
-(page-controller GroupMemberships "group-memberships")
-(page-controller Likes            "likes")
-(page-controller Notifications    "notifications")
-(page-controller Pictures         "pictures")
-(page-controller RequestTokens    "request-tokens")
-(page-controller Resources        "resources")
-(page-controller Services         "services")
-(page-controller Streams          "streams")
-(page-controller Subscriptions    "subscriptions")
-(page-controller Users            "users")
+(page-controller jiksnu "activities")
+(page-controller jiksnu "albums")
+(page-controller jiksnu "clients")
+(page-controller jiksnu "conversations")
+(page-controller jiksnu "domains")
+(page-controller jiksnu "feed-sources")
+(page-controller jiksnu "groups")
+(page-controller jiksnu "group-memberships")
+(page-controller jiksnu "likes")
+(page-controller jiksnu "notifications")
+(page-controller jiksnu "pictures")
+(page-controller jiksnu "request-tokens")
+(page-controller jiksnu "resources")
+(page-controller jiksnu "services")
+(page-controller jiksnu "streams")
+(page-controller jiksnu "subscriptions")
+(page-controller jiksnu "users")
