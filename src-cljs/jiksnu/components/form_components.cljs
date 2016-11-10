@@ -87,7 +87,6 @@
 
 (defn NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Streams Users]
-  #_(timbre/debug "Loading New Post Controller")
   (helpers/init-subpage $scope app Users "streams")
   (set! (.-addStream $scope)
         (fn [id]
@@ -149,17 +148,13 @@
             (.fetchStreams $scope))))
   (.reset $scope))
 
-(set! (.-$inject NewPostController)
-      #js ["$scope" "$rootScope" "geolocation" "app"
-           "pageService" "subpageService" "$filter" "Streams" "Users"])
-
-(.controller jiksnu "NewPostController" NewPostController)
-
-(def.directive jiksnu.addPostForm
-  []
-  #js {:controller "NewPostController"
-       :scope true
-       :templateUrl "/templates/add-post-form"})
+(.component
+ jiksnu "addPostForm"
+ #js {:controller #js ["$scope" "$rootScope" "geolocation" "app"
+                       "pageService" "subpageService" "$filter" "Streams" "Users"
+                       NewPostController]
+      :scope true
+      :templateUrl "/templates/add-post-form"})
 
 (defn NewStreamController
   [$scope $rootScope app]
