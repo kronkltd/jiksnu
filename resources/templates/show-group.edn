@@ -1,6 +1,6 @@
 [:div {:title "show-group"}
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
   [:debug {:expr "item"}]
   [:h2 "{{item.name}}"]
   [:p "{{item.homepage}}"]

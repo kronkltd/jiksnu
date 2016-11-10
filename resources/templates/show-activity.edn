@@ -1,5 +1,5 @@
-([:div {:ng-if "!loaded"} [:spinner]]
- [:md-card {:ng-if "loaded" :flex ""}
+([:div {:ng-hide "loaded"} [:spinner]]
+ [:md-card {:ng-show "loaded" :flex ""}
   [:md-card-header
    [:md-card-avatar
     [:display-avatar {:data-id "{{item.author}}" :size "40"}]]
@@ -15,11 +15,11 @@
    [:span.md-headline "{{item.title}}"]
    #_
    [:debug {:expr "item" :layout "column" :flex ""}]
-   [:md-list {:ng-if "item.mentioned"}
+   [:md-list {:ng-show "item.mentioned"}
     [:md-list-item {:ng-repeat "user in item.mentioned"}
      [:i.icon-chevron-right]
      [:link-to {:data-id "{{user.id}}"}]]]
-   [:md-list {:ng-if "item.streams.length > 0"}
+   [:md-list {:ng-show "item.streams.length > 0"}
     [:md-list-item {:ng-repeat "id in item.streams"}
      [:show-stream-minimal {:data-id "{{id}}"}]]]
    [:div.entry-content
@@ -34,15 +34,15 @@
    [:p
     [:span.posted
      "{{item.verb}}ed a {{item.object.type}} "
-     [:span {:ng-if "!item.public"}
+     [:span {:ng-hide "item.public"}
       "privately "]
      [:time {:datetime "{{item.published}}" :title "{{item.published}}" :property "dc:published"}
       [:a {:ui-sref "showActivity(item)"}
        [:span {:am-time-ago "item.published" :am-preprocess "utc"}]]]
      " "
-     [:span {:ng-if "item.source"}
+     [:span {:ng-show "item.source"}
       "using {{item.source}} "]
-     [:span {:ng-if "item.geo.latitude && item.geo.longitude"}
+     [:span {:ng-show "item.geo.latitude && item.geo.longitude"}
       "near ("
       [:abbr {:title "{{item.geo.latitude}}"}
        "{{item.geo.latitude | number:2}}"]
@@ -50,7 +50,7 @@
       [:arrr {:title "{{item.geo.longitude}}"}
        "{{item.geo.longitude | number:2}}"]
       ") "]
-     [:span {:ng-if "!item.local"}
+     [:span {:ng-hide "item.local"}
       "via a "
       [:a {:href "{{item.service}}"}
        "foreign service"]

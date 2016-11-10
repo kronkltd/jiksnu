@@ -1,6 +1,6 @@
 [:span {:title "show-user-minimal"}
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
   [:debug {:expr "item"}]
   [:display-avatar {:data-id "{{item._id}}"}]
   [:a {:ui-sref "showUser(item)"}

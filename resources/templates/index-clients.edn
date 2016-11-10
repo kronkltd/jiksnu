@@ -5,8 +5,8 @@
   [:div {:layout "column" :flex "10" :layout-align "right"}
    [:md-button {:ng-click "refresh()" :aria-label "Refresh"}
     [:ng-md-icon {:icon "loop"}]]]]
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
   [:debug {:expr "page"}]
   [:md-list.list-unstyled
    [:md-list-item {:ng-repeat "id in page.items"}

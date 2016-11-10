@@ -4,8 +4,8 @@
   [:div {:layout-align "end"}
    [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh" :layout-align "start end"}
     [:ng-md-icon {:icon "loop"}]]]]
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
   [:debug {:expr "page"}]
   [:md-list
    [:md-list-item {:ng-repeat "id in page.items" :ui-sref "showGroup({_id: id})"

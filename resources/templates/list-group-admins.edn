@@ -6,8 +6,8 @@
    [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh"}
     [:ng-md-icon {:icon "loop"}]]]]
  [:debug {:expr "$parent.page"}]
- [:div {:ng-if "!$parent.loaded"} [:spinner]]
- [:div {:ng-if "$parent.loaded"}
+ [:div {:ng-hide "$parent.loaded"} [:spinner]]
+ [:div {:ng-show "$parent.loaded"}
   [:md-list
    [:md-list-item {:ng-repeat "id in $parent.$parent.page.items"}
     [:debug {:expr "id"}]
