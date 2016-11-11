@@ -1,7 +1,10 @@
 module.exports = [
   {
-    test: /target\/.*\.js/,
-    loader: 'closure-loader'
+    test: /target\/resources\/public\/cljs-none\/goog\/base/,
+    loaders: [
+      'imports?this=>{goog:{}}&goog=>this.goog',
+      'exports?goog',
+    ]
   },
 
   {
