@@ -12,3 +12,6 @@ if (module.hot) {
 let overview = sb.section('Welcome section');
 overview.story('SB demo component')
   .add('Hello text', '<sb-welcome></sb-welcome>');
+
+overview.story('Show User')
+  .add("Show user", '<show-user></show-user>');

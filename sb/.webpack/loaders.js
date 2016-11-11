@@ -1,7 +1,12 @@
 module.exports = [
   {
-    test: /\.js$/,
-    exclude: [/node_modules/],
+    test: /target\/.*\.js/,
+    loader: 'closure-loader'
+  },
+
+  {
+    test: /sb\/.*\.js$/,
+    exclude: [/node_modules/, /target/],
     loader: 'babel',
     query: {
       presets: ["es2015", "stage-0"],
