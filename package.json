@@ -42,6 +42,7 @@
     "browserify": "^13.1.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
+    "closure-loader": "^0.1.13",
     "cucumber": "^1.2.1",
     "cukefarm": "^3.0.1",
     "es6-promise": "^4.1.0",
@@ -60,12 +61,14 @@
     "protractor": "^4.0.2",
     "protractor-console": "^2.0.0",
     "protractor-cucumber-framework": "^0.6.0",
+    "ng-annotate-loader": "0.0.10",
     "swagger-ui": "2.2.3",
     "watchify": "^3.7.0",
     "wscat": "^1.0.1",
     "ui-storybook": "^1.0.5",
-    "ng-annotate-loader": "0.0.10",
-    "webpack-hot-middleware": "2.13.0"
+    "watchify": "^3.7.0",
+    "webpack-hot-middleware": "2.13.0",
+    "wscat": "^1.0.1"
   },
   "repository": {
     "type": "git",

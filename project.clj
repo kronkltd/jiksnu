@@ -93,6 +93,7 @@
                                  :optimizations :none
                                  :main "jiksnu.main"
                                  :asset-path "cljs-none"
+                                 :language-out :ecmascript5
                                  :pretty-print true}}
                :main {:source-paths ["src-cljs"]
                       :notify-command ["notify-send"]
