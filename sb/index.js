@@ -3,11 +3,8 @@ import 'ui-storybook/helpers/ng';
 
 // Demo module. Remove this.
 import welcome from './welcome/welcome';
-import 'goog/base';
-// import 'goog/string';
 // import '../target/resources/public/cljs-none/goog/base.js';
-import 'jiksnu.js';
-import 'jiksnu/main';
+import '../target/resources/public/cljs-none/jiksnu.js';
 
 // Support for hot module reload
 // Remove this to turn off auto reload
@@ -18,9 +15,8 @@ import 'jiksnu/main';
 // Import your app here and then add it to the module below
 const mainModule = angular.module('sb', [
   'helper',
-  'welcome'
-  // ,
-  // 'jiksnu'
+  'welcome',
+  'jiksnu'
 ]);
 
 // If we have old app remove it
