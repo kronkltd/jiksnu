@@ -102,7 +102,6 @@
                       :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
                                  :output-dir "target/resources/public/cljs"
                                  :source-map "target/resources/public/cljs/jiksnu.js.map"
-                                 :preloads [devtools.preload]
                                  ;; :main "jiksnu.app"
                                  :optimizations :simple
                                  :asset-path "cljs"

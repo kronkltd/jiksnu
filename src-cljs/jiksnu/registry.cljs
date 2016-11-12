@@ -5,7 +5,7 @@
 (def initial-plugins
   ["angular-clipboard"
    "angularMoment"
-   "btford.markdown"
+   ;; "btford.markdown"
    "cfp.hotkeys"
    "geolocation"
    "hljs"
