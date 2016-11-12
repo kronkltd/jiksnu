@@ -9,7 +9,8 @@
   :resource-paths ["resources" "target/resources" "node_modules"]
   :test-paths ["test" "test-cljs" "specs"]
   :cucumber-glue-paths ["specs"]
-  :dependencies [[cider/cider-nrepl "0.15.0"]
+  :dependencies [[binaryage/devtools "0.8.3"]
+                 [cider/cider-nrepl "0.15.0"]
                  [ciste "0.6.0-SNAPSHOT"
                   :exclusions [ring/ring-core
                                org.clojure/clojure
@@ -94,12 +95,14 @@
                                  :main "jiksnu.main"
                                  :asset-path "cljs-none"
                                  :language-out :ecmascript5
+                                 :preloads [devtools.preload]
                                  :pretty-print true}}
                :main {:source-paths ["src-cljs"]
                       :notify-command ["notify-send"]
                       :compiler {:output-to "target/resources/public/cljs/jiksnu.js"
                                  :output-dir "target/resources/public/cljs"
                                  :source-map "target/resources/public/cljs/jiksnu.js.map"
+                                 :preloads [devtools.preload]
                                  ;; :main "jiksnu.app"
                                  :optimizations :simple
                                  :asset-path "cljs"
