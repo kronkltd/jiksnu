@@ -57,7 +57,8 @@
    (alter connections #(assoc-in % [user-id connection-id] response-channel)))
   (log-connections))
 
-(defaction alert-all
+(defn alert-all
+  "Send a notice to all connected clients"
   [message]
   (doseq [ch (all-channels)]
     (let [response (json/write-str {:action "add notice" :message message})]
@@ -77,8 +78,10 @@
     (deregister-connection! status)))
 
 (defn connect
+  "Connection handler for websocket connections"
   [request ch]
   ;; (trace/trace :websocket:connections:established 1)
+  ;; TODO: use session methods to determine actor
   (let [user-id (:current friend/*identity*)
         connection-id (util/new-id)
         status {::user-id user-id ::connection-id connection-id}
