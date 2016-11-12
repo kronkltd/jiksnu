@@ -13,7 +13,7 @@
 
   (-> $mdThemingProvider
       (.theme "default")
-      (.primaryPalette "blue"))
+      (.primaryPalette "green"))
 
   (js/angular.extend (.-defaults DSProvider)
                      #js {:idAttribute "_id"
