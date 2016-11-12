@@ -1,8 +1,8 @@
 (ns jiksnu.components.show-components-test
   (:require jiksnu.main
             jiksnu.components.show-components
-            [taoensso.timbre :as timbre])
-  (:use-macros [purnam.test :only [describe it is beforeEach]]))
+            [purnam.test :refer-macros [describe it is beforeEach]]
+            [taoensso.timbre :as timbre]))
 
 (timbre/set-level! :debug)
 

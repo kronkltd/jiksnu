@@ -1,8 +1,8 @@
 (ns jiksnu.components.list-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.controller]]))
+            [jiksnu.macros :refer-macros [list-directive]])
+  (:use-macros [gyr.core :only [def.controller def.directive]]))
 
 (defn ListActivitiesController
   [$scope app Users]
