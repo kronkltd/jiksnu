@@ -112,21 +112,24 @@
                                         (.-name collection) (.-_id item) subpage)
                          (set! (.-errored $scope) true))))))))
 
-(defn init-page
-  [$scope $rootScope app page-type]
-  (.$on $rootScope "updateCollection" (fn [] (.init $scope)))
-  (set! (.-loaded $scope) false)
-  (set! (.-init $scope)
-        (fn []
-          (let [Pages (.inject app "Pages")
-                pageService (.inject app "pageService")]
-            (timbre/debugf "Loading page: %s" page-type)
-            (set! (.-loaded $scope) false)
-            (-> pageService
-                (.fetch page-type)
-                (.then (fn [page]
-                         (timbre/debugf "Page loaded: %s" page-type)
-                         (set! (.-_id page) page-type)
-                         (.inject Pages page)
-                         (set! (.-page $scope) page)
-                         (set! (.-loaded $scope) true))))))))
+(defn page-controller
+  [module page-name]
+  (.controller
+   module (str "Index" (inf/camel-case page-name) "Controller")
+   #js ["$scope" "$rootScope" "app" "pageService" "Pages"
+        (fn [$scope $rootScope app pageService Pages]
+          (set! (.-loaded $scope) false)
+          (set! (.-refresh $scope) #(.init $scope))
+          (set! (.-init $scope)
+                (fn []
+                  (timbre/debugf "Initializing page controller: %s" page-name)
+                  (set! (.-loaded $scope) false)
+                  (-> pageService
+                      (.fetch page-name)
+                      (.then (fn [page]
+                               (set! (.-_id page) page-name)
+                               (.inject Pages page)
+                               (set! (.-page $scope) page)
+                               (set! (.-loaded $scope) true))))))
+          (.$on $rootScope "updateCollection" #(.init $scope))
+          (.init $scope))]))
