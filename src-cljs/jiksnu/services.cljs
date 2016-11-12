@@ -1,10 +1,11 @@
 (ns jiksnu.services
-  (:require jiksnu.app
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.registry :as registry]
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.service]]))
 
-(def.service jiksnu.pageService
+(defn pageService
+  "Angular service for retrieving pages"
   [$http]
   (let [service #js {}]
     (set! (.-fetch service)
@@ -15,9 +16,12 @@
               (throw (str "page mapping not defined: " page-name)))))
     service))
 
-(def.service jiksnu.subpageService
-  [$q $http]
+(set! (.-$inject pageService) #js ["$http"])
+(.service jiksnu "pageService" pageService)
 
+(defn subpageService
+  "Angular service for retrieving subpages"
+  [$q $http]
   (let [service #js {}]
     (set! (.-fetch service)
           (fn [parent page-name]
@@ -34,3 +38,6 @@
                 (throw (str "Could not find subpage mapping for model "
                             (type parent) " with label " page-name))))))
     service))
+
+(set! (.-$inject subpageService) #js ["$q" "$http"])
+(.service jiksnu "subpageService" subpageService)
