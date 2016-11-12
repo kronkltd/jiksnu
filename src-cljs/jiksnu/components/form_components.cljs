@@ -1,7 +1,8 @@
 (ns jiksnu.components.form-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:use-macros [gyr.core :only [def.directive]]))
 
 (defn NewAlbumController
   [$scope app $http]
@@ -22,12 +23,12 @@
 
 (.controller jiksnu "NewAlbumController" NewAlbumController)
 
-(def.directive jiksnu.addAlbumForm
-  []
-  #js
-  {:controller "NewAlbumController"
-   :scope true
-   :templateUrl "/templates/add-album-form"})
+(.component
+ jiksnu "addAlbumForm"
+ #js
+ {:bindings #js {}
+  :templateUrl "/templates/add-album-form"
+  :controller NewAlbumController})
 
 (defn NewGroupController
   [$scope app $http]
