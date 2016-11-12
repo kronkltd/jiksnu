@@ -1,10 +1,5 @@
 module.exports = [
   {
-    test: /target\/.*\.js/,
-    loader: 'closure-loader'
-  },
-
-  {
     test: /sb\/.*\.js$/,
     exclude: [/node_modules/, /target/],
     loader: 'babel',
@@ -13,6 +8,14 @@ module.exports = [
       plugins: ["transform-runtime"]
     }
   },
+  {
+    test: /target\/resources\/public\/cljs-none\/goog\/base/,
+    loaders: [
+      'imports?this=>{goog:{}}&goog=>this.goog',
+      'exports?goog',
+    ]
+  },
+
   {
     test: /\.js$/,
     exclude: [/node_modules/],

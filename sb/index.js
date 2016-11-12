@@ -3,8 +3,11 @@ import 'ui-storybook/helpers/ng';
 
 // Demo module. Remove this.
 import welcome from './welcome/welcome';
+import 'goog/base';
+// import 'goog/string';
 // import '../target/resources/public/cljs-none/goog/base.js';
-import '../target/resources/public/cljs-none/jiksnu.js';
+import 'jiksnu.js';
+import 'jiksnu/main';
 
 // Support for hot module reload
 // Remove this to turn off auto reload
