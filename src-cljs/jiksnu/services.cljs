@@ -12,7 +12,8 @@
           (fn [page-name]
             (if-let [url (get registry/page-mappings page-name)]
               ;; TODO: cache the page response here and you if-modified for updates
-              (.get $http url)
+              (-> (.get $http url)
+                  (.then (fn [response] (.-data response))))
               (throw (str "page mapping not defined: " page-name)))))
     service))
 
