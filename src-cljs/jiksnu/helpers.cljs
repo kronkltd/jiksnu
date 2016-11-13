@@ -119,7 +119,9 @@
    #js ["$scope" "$rootScope" "app" "pageService" "Pages"
         (fn [$scope $rootScope app pageService Pages]
           (set! (.-loaded $scope) false)
+          (set! (.-page $scope) #js {:items #js []})
           (set! (.-refresh $scope) #(.init $scope))
+          (set! (.-getItems $scope) (fn [] (or (some-> $scope .-page .-items) #js [])))
           (set! (.-init $scope)
                 (fn []
                   (timbre/debugf "Initializing page controller: %s" page-name)

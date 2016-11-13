@@ -7,6 +7,6 @@
  [:debug {:expr "page"}]
  [:div {:ng-hide "loaded"} [:spinner]]
  [:div {:ng-show "loaded"}
-  [:div {:ng-repeat "id in page.items"}
+  [:div {:ng-repeat "id in getItems()"}
    [:debug {:expr "id"}]
    [:show-activity {:data-id "{{id}}"}]]])
