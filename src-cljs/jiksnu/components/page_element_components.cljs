@@ -3,8 +3,7 @@
             [jiksnu.helpers :as helpers]
             [jiksnu.registry :as registry]
             jiksnu.services
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.controller def.directive]]))
+            [taoensso.timbre :as timbre]))
 
 (.controller jiksnu "AppController" #js [(fn [])])
 
@@ -210,41 +209,48 @@
  jiksnu "spinner"
  #js {:templateUrl "/templates/spinner"})
 
-(def.controller jiksnu.SubpageController
-  [$scope subpageService $rootScope]
+(defn SubpageController
+  [$ctrl $scope subpageService $rootScope]
   (set! (.-loaded $scope) false)
-  (if-let [subpage (.-subpage $scope)]
-    (do
-      (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
-      (.$on $scope "refresh-page" (fn [] (.refresh $scope)))
+  (let [subpage (or (some-> $ctrl .-subpage) (throw "Subpage not specified"))]
+    (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
 
-      (set! (.-init $scope)
-            (fn [item]
-              (if item
-                (let [model-name (.. item -constructor -name)
-                      id (.-_id item)]
-                  (set! (.-item $scope) item)
-                  (set! (.-loaded $scope) false)
-                  (set! (.-loading $scope) true)
-                  (timbre/debugf "Refreshing subpage: %s(%s)=>%s" model-name id subpage)
-                  (-> (.fetch subpageService item subpage)
-                      (.then
-                       (fn [page]
-                         (set! (.-errored $scope) false)
-                         (set! (.-loaded $scope) true)
-                         (set! (.-loading $scope) false)
-                         (set! (.-page $scope) page)
-                         page)
-                       (fn [page]
-                         (timbre/errorf "Failed to load subpage. %s(%s)=>%s" model-name id subpage)
-                         (set! (.-errored $scope) true)
-                         (set! (.-loading $scope) false)
-                         page)))))))
-      (.refresh $scope))
-    (throw "Subpage not specified")))
+    (set! (.-$onChanges $ctrl)
+          (fn [changes]
+            (when-let [item (some-> changes .-item .-currentValue)]
+              (.init $scope item))))
+    (.$on $scope "refresh-page" (fn [] (.refresh $scope)))
 
-(def.directive jiksnu.subpage []
-  #js {:scope #js {:subpage "@name" :item "=item"}
-       :template "<div ng-transclude></div>"
-       :transclude true
-       :controller "SubpageController"})
+    (set! (.-init $scope)
+          (fn [item]
+            (if item
+              (let [model-name (.. item -constructor -name)
+                    id (.-_id item)]
+                (set! (.-item $scope) item)
+                (set! (.-loaded $scope) false)
+                (set! (.-loading $scope) true)
+                (timbre/debugf "Refreshing subpage: %s(%s)=>%s" model-name id subpage)
+                (-> (.fetch subpageService item subpage)
+                    (.then
+                     (fn [page]
+                       (set! (.-errored $scope) false)
+                       (set! (.-loaded $scope) true)
+                       (set! (.-loading $scope) false)
+                       (set! (.-page $scope) page)
+                       page)
+                     (fn [page]
+                       (timbre/errorf "Failed to load subpage. %s(%s)=>%s" model-name id subpage)
+                       (set! (.-errored $scope) true)
+                       (set! (.-loading $scope) false)
+                       page)))))))
+    (.refresh $scope)))
+
+(.component
+ jiksnu "subpage"
+ #js {:bindings #js {:subpage "@name" :item "<"}
+      :template "<div ng-transclude></div>"
+      :transclude true
+      :controller
+      #js ["$scope" "subpageService" "$rootScope"
+           (fn [$scope subpageService $rootScope]
+             (this-as $ctrl (SubpageController $ctrl $scope subpageService $rootScope)))]})

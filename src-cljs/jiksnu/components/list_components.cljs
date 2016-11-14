@@ -6,7 +6,7 @@
 
 (defn ListActivitiesController
   [$scope app Users]
-  (helpers/init-subpage $scope app Users "activities"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "activities")))
 
 (set! (.-$inject ListActivitiesController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListActivitiesController" ListActivitiesController)
@@ -14,7 +14,7 @@
 
 (defn ListAlbumsController
   [$scope app Users]
-  (helpers/init-subpage $scope app Users "albums"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "albums")))
 
 (set! (.-$inject ListAlbumsController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListAlbumsController" ListAlbumsController)
@@ -22,7 +22,7 @@
 
 (defn ListFollowersController
   [$scope app Users]
-  (helpers/init-subpage $scope app Users "followers"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "followers")))
 
 (set! (.-$inject ListFollowersController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListFollowersController" ListFollowersController)
@@ -30,7 +30,7 @@
 
 (defn ListFollowingController
   [$scope app Users]
-  (helpers/init-subpage $scope app Users "following"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "following")))
 
 (set! (.-$inject ListFollowingController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListFollowingController" ListFollowingController)
@@ -38,7 +38,7 @@
 
 (defn ListGroupsController
   [$scope app Users]
-  (helpers/init-subpage $scope app Users "groups"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "groups")))
 
 (set! (.-$inject ListGroupsController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListGroupsController" ListGroupsController)
@@ -46,7 +46,7 @@
 
 (defn ListGroupAdminsController
   [$scope app Groups]
-  (helpers/init-subpage $scope app Groups "admins"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Groups "admins")))
 
 (set! (.-$inject ListGroupAdminsController) #js ["$scope" "app" "Groups"])
 (.controller jiksnu "ListGroupAdminsController" ListGroupAdminsController)
@@ -54,7 +54,7 @@
 
 (defn ListGroupMembersController
   [$scope app Groups]
-  (helpers/init-subpage $scope app Groups "members"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Groups "members")))
 
 (set! (.-$inject ListGroupMembersController) #js ["$scope" "app" "Groups"])
 (.controller jiksnu "ListGroupMembersController" ListGroupMembersController)
@@ -62,7 +62,7 @@
 
 (defn ListLikesController
   [$scope app Users]
-  (helpers/init-subpage $scope app Users "likes"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "likes")))
 
 (set! (.-$inject ListLikesController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListLikesController" ListLikesController)
@@ -70,7 +70,7 @@
 
 (defn ListNotificationsController
   [$scope app Users]
-  (helpers/init-subpage $scope app Users "notifications"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "notifications")))
 
 (set! (.-$inject ListNotificationsController) #js ["$scope" "app" "Users"])
 (.controller jiksnu "ListNotificationsController" ListNotificationsController)
@@ -78,7 +78,7 @@
 
 (defn ListPicturesController
   [$scope app Albums]
-  (helpers/init-subpage $scope app Albums "pictures"))
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Albums "pictures")))
 
 (set! (.-$inject ListPicturesController) #js ["$scope" "app" "Albums"])
 (.controller jiksnu "ListPicturesController" ListPicturesController)
@@ -107,7 +107,7 @@
           (set! (.-btnLabel $scope)
                 (if (.-formShown $scope) "-" "+"))))
 
-  (helpers/init-subpage $scope app Users "streams")
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "streams"))
   (.updateLabel $scope))
 
 (set! (.-$inject ListStreamsController) #js ["$scope" "app" "Users"])
