@@ -7,6 +7,3 @@
   #js {:controller "LeftColumnController"
        :scope true
        :templateUrl "/templates/left-column-section"})
-
-(def.directive jiksnu.spinner []
-  #js {:templateUrl "/templates/spinner"})

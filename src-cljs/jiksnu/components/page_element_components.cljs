@@ -207,6 +207,10 @@
  #js {:templateUrl "/templates/sidenav"
       :controller #js ["$scope" "app" SidenavController]})
 
+(.component
+ jiksnu "spinner"
+ #js {:templateUrl "/templates/spinner"})
+
 (def.controller jiksnu.SubpageController
   [$scope subpageService $rootScope]
   (set! (.-loaded $scope) false)
