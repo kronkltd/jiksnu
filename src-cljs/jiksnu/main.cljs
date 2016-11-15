@@ -6,7 +6,6 @@
             jiksnu.components.page-element-components
             jiksnu.components.show-components
             jiksnu.components.state-components
-            jiksnu.directives
             jiksnu.helpers
             jiksnu.providers
             jiksnu.services))
