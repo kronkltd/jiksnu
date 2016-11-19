@@ -1,60 +1,7 @@
 version: '2'
 services:
-  dnsdock:
-    image: duck1123/dnsdock
-    command: -verbose=true -environment="dev" -nameserver="8.8.4.4:53"
-    environment:
-      VIRTUAL_HOST: "dns.docker"
-      VIRTUAL_PORT: "80"
-    ports:
-      - 172.17.42.1:53:53/udp
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  jiksnu-integration:
-    image: repo.jiksnu.org/kronkltd/jiksnu:dev
-    depends_on:
-      - mongo
-    environment:
-      JIKSNU_DB_NAME: "jiksnu-integration"
-      VIRTUAL_HOST: "jiksnu-integration.docker"
-    volumes:
-      - .:/app
-
-  karma:
-    build:
-      dockerfile: docker/karma/Dockerfile
-      context: .
-    image: repo.jiksnu.org/kronkltd/jiksnu-karma
-    environment:
-      NOTIFY_SEND_URL: "http://172.17.0.1:12345"
-      VIRTUAL_HOST: "karma.docker"
-      VIRTUAL_PORT: "9876"
-    volumes:
-      - .:/app
-
   mongo:
     image: mongo
-
-  mongoexpress:
-    image: mongo-express
-    depends_on:
-      - mongo
-    environment:
-      VIRTUAL_HOST: "mongo.docker"
-
-  proxy:
-    image: jwilder/nginx-proxy
-    environment:
-      DNSDOCK_ALIAS: "dns.docker,etcd-viewer.docker,grafana.docker,jiksnu.docker,jiksnu-integration.docker,kibana.docker,mongo.docker,phpmyadmin.docker,pump.docker,rabbit.docker,redis-commander.docker,selenium.docker,sentry.docker,shipyard.docker"
-      DEFAULT_HOST: jiksnu.docker
-    ports:
-      - "80:80"
-    volumes:
-      - ./data/nginx/conf.d:/etc/nginx/conf.d
-      - ./data/nginx/vhost.d:/etc/nginx/vhost.d
-      - ./data/nginx/certs:/etc/nginx/certs:ro
-      - /var/run/docker.sock:/tmp/docker.sock:ro
 
   web:
     build: .
@@ -65,36 +12,6 @@ services:
       JIKSNU_DB_NAME: "jiksnu_docker"
       VIRTUAL_HOST: "jiksnu.docker"
       DOMAIN: jiksnu.docker
-
-  web-dev:
-    build:
-      context: .
-      dockerfile: docker/web-dev/Dockerfile
-    image: repo.jiksnu.org/kronkltd/jiksnu-dev
-    depends_on:
-      - mongo
-      - proxy
-    environment:
-      CISTE_LOGGER: jiksnu.logger
-      HTTP_PORT: 80
-      JIKSNU_DB_NAME: jiksnu_docker
-      VIRTUAL_HOST: jiksnu.docker
-      DOMAIN: jiksnu.docker
-    ports:
-      - "7888:7888"
-      - "9876:9876"
-    volumes:
-      - .:/app
-
-  webdriver:
-    image: elgalu/selenium
-    environment:
-      VNC_PASSWORD: "hunter2"
-      NOVNC: "true"
-      VIRTUAL_HOST: "selenium.docker"
-      VIRTUAL_PORT: "6080"
-    expose:
-      - "26080"
 
 volumes:
   mongo-data:
