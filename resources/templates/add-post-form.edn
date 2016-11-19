@@ -35,6 +35,7 @@
       [:ng-md-icon {:icon "add_box"}]
       [:p "Location"]
       [:md-switch.md-secondary {:ng-model "form.add.location"}]]
+     #_
      [:md-list-item
       [:ng-md-icon {:icon "add_box"}]
       [:p "Links"]
