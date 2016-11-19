@@ -42,6 +42,7 @@
 (defresource clients-api :collection
   :mixins [page-resource]
   :available-formats [:json]
+  :page "clients"
   :ns 'jiksnu.actions.client-actions)
 
 (defresource clients-api :item
