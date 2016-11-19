@@ -432,11 +432,6 @@
                        (-> (.fetchStatus app)
                            (.then #(.go app "home")))))))))
 
-(def.controller jiksnu.RightColumnController
-  [$scope app]
-  (.$watch $scope #(.-data app) #(set! (.-app $scope) %))
-  (set! (.-foo $scope) "bar"))
-
 (def.controller jiksnu.SettingsPageController [])
 
 (def.controller jiksnu.ShowActivityController
@@ -660,6 +655,3 @@
                 (throw (str "parent item not bound for subpage: " subpage)))))
       (.refresh $scope))
     (throw "Subpage not specified")))
-
-(def.controller jiksnu.SubscribersWidgetController
-  [$scope])

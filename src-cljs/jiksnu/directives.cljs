@@ -37,9 +37,6 @@
    :scope true
    :templateUrl "/templates/add-stream-form"})
 
-(def.directive jiksnu.addWatcherForm []
-  #js {})
-
 (def.directive jiksnu.asModel []
   #js
   {:controller "AsModelController"
@@ -66,12 +63,6 @@
   {:controller "FollowButtonController"
    :scope #js {:item "="}
    :templateUrl "/templates/follow-button"})
-
-(def.directive jiksnu.groupsWidget
-  []
-  #js
-  {:scope true
-   :templateUrl "/templates/groups-widget"})
 
 (def.directive jiksnu.mainLayout []
   #js
@@ -103,12 +94,6 @@
   {:controller "NavBarController"
    :scope true
    :templateUrl "/templates/navbar-section"})
-
-(def.directive jiksnu.rightColumn []
-  #js
-  {:controller "RightColumnController"
-   :scope true
-   :templateUrl "/templates/right-column-section"})
 
 (item-directive "Activity"               "activity")
 (item-directive "Album"                  "album")
@@ -143,25 +128,9 @@
   #js
   {:templateUrl "/templates/spinner"})
 
-(def.directive jiksnu.streamsWidget []
-  #js
-  {})
-
 (def.directive jiksnu.subpage []
   #js
   {:scope #js {:subpage "@name" :item "=item"}
    :template "<div ng-transclude></div>"
    :transclude true
    :controller "SubpageController"})
-
-(def.directive jiksnu.subscribersWidget []
-  #js
-  {:templateUrl "/templates/subscribers-widget"
-   :scope true
-   :controller "SubscribersWidgetController"})
-
-(def.directive jiksnu.subscriptionsWidget
-  []
-  #js
-  {:templateUrl "/templates/subscriptions-widget"
-   :scope true})

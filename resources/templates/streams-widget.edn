@@ -1,6 +1,0 @@
-[:div
- [:h3 "Streams {{page.totalRecords}}"]
- [:ul
-  [:li {:ng-repeat "stream in streams"}
-   "{{stream.name}}"]]
- [:add-stream-form]]

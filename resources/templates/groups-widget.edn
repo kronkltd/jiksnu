@@ -1,7 +1,0 @@
-[:div.groups
- [:h3
-  [:a {:href "/users/{{user.id}}/groups"} "Groups"]
-  " {{page.totalRecords}}"]
- [:ul
-  [:li {:ng-repeat "group in groups"}
-   [:link-to {:data-id "{{group.id}}" :data-model "Group"}]]]]
