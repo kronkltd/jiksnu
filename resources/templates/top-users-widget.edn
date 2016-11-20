@@ -1,4 +1,0 @@
-[:div
- [:p "Users with most posts"]
- [:ul
-  [:li [:a {:href "#"} "#"]]]]

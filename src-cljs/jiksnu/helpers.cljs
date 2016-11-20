@@ -1,6 +1,5 @@
 (ns jiksnu.helpers
   (:require [clojure.string :as string]
-            [jiksnu.macros :refer-macros [state-hotkey]]
             [taoensso.timbre :as timbre]))
 
 (def initial-plugins
@@ -38,12 +37,6 @@
          (fn [data]
            (set! (.-page $scope) data))))))
 
-;; TODO: surely this already exists
-(defn hyphen-case
-  [s]
-  (string/lower-case
-   (string/replace s #"([a-z])([A-Z])" "$1-$2")))
-
 (def route-data
   [["avatarPage"            "/main/avatar"             "AvatarPage"            :avatar-page]
    ["home"                  "/"                        "IndexConversations"    :public-timeline]
@@ -76,20 +69,26 @@
    ["showUser"              "/main/users/:_id"         "ShowUser"              :show-user]
    ["authorizeClient"       "/oauth/authorize"         "AuthorizeClient"       :authorize-client]])
 
+(def hotkey-data
+  [["g a" "indexActivities"       "Go to Activities"]
+   ["g b" "indexAlbums"           "Go to Albums"]
+   ["g c" "indexClients"          "Go to Clients"]
+   ["g d" "indexDomains"          "Go to Domains"]
+   ["g g" "indexGroups"           "Go to Groups"]
+   ["g m" "indexGroupMemberships" "Go to Group Memberships"]
+   ["g n" "indexNotifications"    "Go to Notifications"]
+   ["g p" "indexPictures"         "Go to Pictures"]
+   ["g h" "home"                  "Go to Home"]
+   ["g l" "indexLikes"            "Go to Likes"]
+   ["g s" "indexStreams"          "Go to Streams"]
+   ["g u" "indexUsers"            "Go to Users"]])
+
 (defn setup-hotkeys
   [hotkeys $state]
-  (state-hotkey "g a" "indexActivities"       "Go to Activities")
-  (state-hotkey "g b" "indexAlbums"           "Go to Albums")
-  (state-hotkey "g c" "indexClients"          "Go to Clients")
-  (state-hotkey "g d" "indexDomains"          "Go to Domains")
-  (state-hotkey "g g" "indexGroups"           "Go to Groups")
-  (state-hotkey "g m" "indexGroupMemberships" "Go to Group Memberships")
-  (state-hotkey "g n" "indexNotifications"    "Go to Notifications")
-  (state-hotkey "g p" "indexPictures"         "Go to Pictures")
-  (state-hotkey "g h" "home"                  "Go to Home")
-  (state-hotkey "g l" "indexLikes"            "Go to Likes")
-  (state-hotkey "g s" "indexStreams"          "Go to Streams")
-  (state-hotkey "g u" "indexUsers"            "Go to Users"))
+  (doseq [[combo state description] hotkey-data]
+    (.add hotkeys #js {:combo combo
+                       :description description
+                       :callback #(.go $state state)})))
 
 (defn fetch-sub-page
   [item subpageService subpage]

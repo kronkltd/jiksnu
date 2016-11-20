@@ -120,6 +120,7 @@
     "Employees of "
     "Ex-lovers of "
     "The Sacred order of "
+    "The Secret Society for "
     ""
     "The Heralds of the Imminent Arrival of "]))
 

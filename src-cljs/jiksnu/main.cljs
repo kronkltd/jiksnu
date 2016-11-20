@@ -3,6 +3,5 @@
             jiksnu.controllers
             jiksnu.directives
             jiksnu.helpers
-            jiksnu.models
             jiksnu.providers
             jiksnu.services))
