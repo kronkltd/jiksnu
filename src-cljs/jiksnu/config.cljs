@@ -1,7 +1,8 @@
 (ns jiksnu.config
   (:require jiksnu.app
             [jiksnu.helpers :as helpers]
-            jiksnu.providers)
+            jiksnu.providers
+            [jiksnu.registry :as registry])
   (:use-macros [gyr.core :only [def.config]]))
 
 (def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
@@ -25,4 +26,4 @@
   (-> $locationProvider
       (.hashPrefix "!")
       (.html5Mode true))
-  (helpers/add-states $stateProvider helpers/route-data))
+  (helpers/add-states $stateProvider registry/route-data))

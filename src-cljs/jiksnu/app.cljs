@@ -1,5 +1,7 @@
 (ns jiksnu.app
-  (:require [jiksnu.helpers :as helpers]))
+  (:require [jiksnu.registry :as registry]
+            [jiksnu.helpers :as helpers]
+            [taoensso.timbre :as timbre]))
 
 (defonce plugins (atom #{}))
 
@@ -14,7 +16,7 @@
 
 (defn initialize-plugins!
   []
-  (apply swap! plugins conj helpers/initial-plugins)
+  (apply swap! plugins conj registry/initial-plugins)
   (configure-raven-plugin))
 
 (defn get-plugins
