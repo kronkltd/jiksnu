@@ -2,7 +2,6 @@
   (:require [cemerick.friend :as friend]
             [cemerick.friend.workflows :as workflows]
             [compojure.core :refer [GET routes]]
-            [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.db :as db]
@@ -12,9 +11,7 @@
             [jiksnu.modules.web.middleware :as middleware]
             [liberator.dev :refer [wrap-trace]]
             [org.httpkit.server :as server]
-            [ring.middleware.content-type :refer [wrap-content-type]]
-            [ring.middleware.file-info :refer [wrap-file-info]]
-            [ring.middleware.not-modified :refer [wrap-not-modified]]
+            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [monger.ring.session-store :as ms]))
 
 (def auth-config
@@ -29,6 +26,11 @@
     (server/with-channel request channel
       (http.actions/connect request channel))))
 
+(def site-options
+  (-> site-defaults
+      (assoc-in [:security :anti-forgery] false)
+      (assoc-in [:session :store] (ms/session-store (db/get-connection) "session"))))
+
 (def app
   (-> (routes
        (route/resources "/")
@@ -42,8 +44,5 @@
            (friend/authenticate auth-config)
            middleware/wrap-authorization-header
            middleware/wrap-authentication-handler
-           (handler/site {:session {:store (ms/session-store (db/get-connection) "session")}})))
-      wrap-file-info
-      wrap-content-type
-      wrap-not-modified
+           (wrap-defaults site-options)))
       middleware/wrap-stacktrace))
