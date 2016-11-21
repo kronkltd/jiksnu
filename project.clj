@@ -41,6 +41,7 @@
                  [org.clojure/data.json "0.2.6"]
                  [org.slf4j/slf4j-log4j12 "1.7.21"]
                  [ring "1.5.0"]
+                 [ring/ring-defaults "0.2.1"]
                  [slingshot "0.12.2"]]
   :cljfmt {:indents {#".*fact.*" [[:inner 0]]}}
   :plugins [[codox "0.8.13" :exclusions [org.clojure/clojure]]
