@@ -45,6 +45,7 @@
     "cucumber": "^1.2.1",
     "cukefarm": "^3.0.1",
     "es6-promise": "^4.1.0",
+    "jasmine-core": "^2.5.2",
     "jasmine-promise-matchers": "^2.0.2",
     "karma": "^1.1.2",
     "karma-browserify": "^5.1.0",
@@ -62,6 +63,7 @@
     "protractor-cucumber-framework": "^0.6.0",
     "swagger-ui": "2.2.3",
     "watchify": "^3.7.0",
+    "ws": "^1.1.1",
     "wscat": "^1.0.1"
   },
   "repository": {
