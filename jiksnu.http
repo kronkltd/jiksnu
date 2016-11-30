@@ -1,0 +1,53 @@
+# -*- restclient -*-
+
+# The base domain for all requests
+:scheme = http
+:domain = localhost
+:port = 8081
+:base = :scheme://:domain::port
+
+:albumId = 57c4a893ead82a003260d89f
+:pictureId = 583e486fadbe1d078c665e1b
+
+# The id of a user
+:userId = user-1@:domain
+
+## HTML Template pages
+
+# Main
+GET :base/
+
+# Main (head)
+HEAD :base/
+
+# Status
+GET :base/status
+
+# Index Albums
+GET :base/model/albums
+
+# Get Album
+GET :base/model/albums/:albumId
+
+
+# Index Conversations
+GET :base/model/conversations
+
+# Index Pictures
+GET :base/model/pictures
+
+# Head Picture
+# TODO: Implement head
+HEAD :base/model/pictures/:pictureId
+Accept: application/edn
+
+# Get Picture (JSON)
+GET :base/model/pictures/:pictureId
+Accept: application/json
+
+# Index Users
+GET http://jiksnu.com/model/users
+
+# Get Users
+GET :base/model/users/:userId
+
