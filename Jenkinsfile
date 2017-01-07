@@ -70,9 +70,9 @@ stage('Build Dev Image') {
             devImage = docker.build("${org}/${project}-dev:${env.BRANCH_TAG}",
                                     "-f docker/web-dev/Dockerfile .")
 
-            docker.withRegistry(repoPath, repoCreds) {
-                devImage.push()
-            }
+//            docker.withRegistry(repoPath, repoCreds) {
+//                devImage.push()
+//            }
         }
     }
 }
@@ -121,9 +121,9 @@ stage('Build Run Image') {
 
             mainImage = docker.build("${org}/${project}:${env.BRANCH_TAG}")
 
-            docker.withRegistry(repoPath, repoCreds) {
-                mainImage.push()
-            }
+//            docker.withRegistry(repoPath, repoCreds) {
+//                mainImage.push()
+//            }
         }
     }
 }
