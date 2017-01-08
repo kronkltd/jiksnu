@@ -198,8 +198,8 @@
 
     (js/console.info "pictures" pictures)
 
-    (.forEach
-     js/angular activity
+    (js/angular.forEach
+     activity
      (fn [v k]
        (timbre/debugf "Adding parameter: %s => %s" k v)
        (.append form-data k v)))
