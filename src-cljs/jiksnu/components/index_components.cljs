@@ -1,7 +1,9 @@
 (ns jiksnu.components.index-components
   (:require [inflections.core :as inf]
             [jiksnu.app :refer [jiksnu]]
-            [jiksnu.helpers :as helpers]))
+            [jiksnu.helpers :as helpers]
+            [taoensso.timbre :as timbre]))
+
 
 (defn page-controller
   [module page-name]
@@ -12,7 +14,12 @@
           (helpers/init-page $scope $rootScope app page-name)
           (set! (.-app $scope) app)
           (set! (.-refresh $scope) (fn [] (.init $scope)))
-          (.init $scope))]))
+          (.init $scope))])
+  (.component
+   module (str "index" (inf/camel-case page-name))
+   #js {:templateUrl (str "/templates/index-" (inf/dasherize page-name))
+        :controller (str "Index" (inf/camel-case page-name) "Controller")
+        :bindings #js {:id "@" :item "="}}))
 
 ;; TODO: Auto register for each defined page
 (page-controller jiksnu "activities")
