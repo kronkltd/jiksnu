@@ -8,10 +8,10 @@
 (defn add-stream
   "Create a stream with the given name"
   [app stream-name]
-  (.. app
-      (inject "$http")
-      (post "/model/streams" #js {:name stream-name})
-      (then #(.-data %))))
+  (let [$http (.inject app "$http")
+        params #js {:name stream-name}]
+    (->  (.post $http "/model/streams" params)
+         (.then #(.-data %)))))
 
 (defn connect
   "Establish a websocket connection"

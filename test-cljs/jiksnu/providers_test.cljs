@@ -1,11 +1,18 @@
 (ns jiksnu.providers-test
-  (:require jiksnu.main
+  (:require [cljs.test :refer-macros [async deftest is testing]]
+            jiksnu.main
+            [jiksnu.providers :as providers]
             [taoensso.timbre :as timbre]))
 
 (declare app)
 (declare $httpBackend)
 (declare $q)
 (declare $rootScope)
+
+(deftest test-add-stream
+  (let [app nil
+        stream-name ""]
+    (is (providers/add-stream app stream-name) nil)))
 
 (defn valid-login-response
   [method url data headers params]
