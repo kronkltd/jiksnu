@@ -5,7 +5,7 @@
   [:div {:flex "10" :layout "column" :layout-align "right"}
    [:md-button {:ng-click "refresh()" :aria-label "Refresh"}
     [:ng-md-icon {:icon "loop"}]]]]
- [:subpage {:name "albums" :item "item" :title "list-albums albums-subpage"}
+ [:subpage {:name "albums" :item "$ctrl.item" :title "list-albums albums-subpage"}
   [:debug {:expr "$parent.page"}]
   [:div {:ng-hide "$parent.loaded"} [:spinner]]
   [:div {:ng-show "$parent.loaded"}

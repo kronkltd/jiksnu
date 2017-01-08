@@ -2,7 +2,7 @@
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:debug {:expr "item"}]
-  [:subpage {:name "activities" :item "item" :title "show-conversation activity-subpage"}
+  [:subpage {:name "activities" :item "$ctrl.item" :title "show-conversation activity-subpage"}
    [:div {:ng-if "!loaded"} [:spinner]]
    [:div {:ng-if "loaded"}
     [:debug {:expr "$parent.$parent.page"}]

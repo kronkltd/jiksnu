@@ -1,4 +1,4 @@
-([:subpage {:name "members" :item "item"}
+([:subpage {:name "members" :item "$ctrl.item"}
   [:div.title-section {:layout "row" :flex ""}
    [:div {:flex ""}
     [:h3.md-subhead {:layout-padding ""}
