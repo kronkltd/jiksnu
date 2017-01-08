@@ -134,4 +134,9 @@
                                (set! (.-page $scope) page)
                                (set! (.-loaded $scope) true))))))
           (.$on $rootScope "updateCollection" #(.init $scope))
-          (.init $scope))]))
+          (.init $scope))])
+  (.component
+   module (str "index" (inf/camel-case page-name))
+   #js {:bindings #js {:id "<"}
+        :templateUrl (str "/templates/index-" page-name)
+        :controller controller-name}))
