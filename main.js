@@ -1,7 +1,6 @@
 var requires = {
   angular: require('angular'),
   angularClipboard: require('angular-clipboard'),
-  angularFileUpload: require('angular-file-upload'),
   angularGeolocation: require('angularjs-geolocation'),
   angularHighlightjs: require('angular-highlightjs'),
   angularHotkeys: require('angular-hotkeys'),
