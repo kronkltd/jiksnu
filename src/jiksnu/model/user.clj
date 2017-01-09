@@ -23,15 +23,15 @@
 
 (def create-validators
   (validation-set
-    (type-of :_id String)
+   (type-of :_id String)
     ;; (type-of :username  String)
     ;; (type-of :domain    String)
     ;; ;; (acceptance-of :url          :accept string?)
     ;; ;; (presence-of   :update-source)
     ;; (presence-of   :avatarUrl)
     ;; (acceptance-of :local         :accept (partial instance? Boolean))
-    (type-of :created DateTime)
-    (type-of :updated DateTime)))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
@@ -137,5 +137,4 @@
 (defn ensure-indexes
   []
   (mc/ensure-index (db/get-connection) collection-name {:username 1 :domain 1} {:unique true})
-  #_
-  (mc/ensure-index (db/get-connection) collection-name {:id 1} {:unique true}))
+  #_(mc/ensure-index (db/get-connection) collection-name {:id 1} {:unique true}))

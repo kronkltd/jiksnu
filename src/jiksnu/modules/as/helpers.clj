@@ -52,14 +52,13 @@
                :proxyUrl (proxy-url (:id object))}
      :liked false
 
+     ;; "published" (:published object)
+     ;; "updated" (:updated object)
      :tags (map
             (fn [tag]
               {:name tag
                :type "http://activityschema.org/object/hashtag"})
-            (:tags activity))
-     ;; "published" (:published object)
-     ;; "updated" (:updated object)
-     }))
+            (:tags activity))}))
 
 (defn format-to
   [_activity]
@@ -71,12 +70,10 @@
 
 (defn format-generator
   [_activity]
-  {
-   ;; TODO: name of site
-   :displayName "Jiksnu"
-   :objectType "service"
-   ;; TODO: service stuff
-   })
+  ;; TODO: service stuff
+  ;; TODO: name of site
+  {:displayName "Jiksnu"
+   :objectType "service"})
 
 (defn format-links
   [activity]

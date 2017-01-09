@@ -65,7 +65,6 @@
   (let [route-sym (symbol (format "jiksnu.modules.web.routes.%s-routes" group))]
     (if (try (require route-sym) true (catch FileNotFoundException _ nil))
       (do
-        #_
         (timbre/with-context {:sym (str route-sym)}
           (timbre/debugf "Loading route group - %s" route-sym))
         (try
@@ -113,7 +112,6 @@
 (defn subpage-exists?
   [{{:keys [subpage target target-model]} :resource
     {{id :_id} :route-params} :request :as ctx}]
-  #_
   (timbre/infof "fetching subpage - %s(%s)" target-model subpage)
   (when-let [item (actions/get-model (target-model) id)]
     {:data (actions/get-sub-page item (subpage))}))

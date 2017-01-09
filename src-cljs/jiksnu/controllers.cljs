@@ -584,22 +584,17 @@
   (let [route-data
         [["Home"          "home"]
          ["Activities"    "indexActivities"]
-         #_
-         ["Domains"       "indexDomains"]
+         #_["Domains"       "indexDomains"]
          ["Groups"        "indexGroups"]
          ["Likes"         "indexLikes"]
          ["Albums"        "indexAlbums"]
          ["Notifications" "indexNotifications"]
          ["Pictures"      "indexPictures"]
-         #_
-         ["Services"      "indexServices"]
-         #_
-         ["Streams"       "indexStreams"]
+         #_["Services"      "indexServices"]
+         #_["Streams"       "indexStreams"]
          ["Users"         "indexUsers"]
-         #_
-         ["Settings"      "settingsPage"]
-         #_
-         ["Profile"       "profile"]]]
+         #_["Settings"      "settingsPage"]
+         #_["Profile"       "profile"]]]
 
     (set! (.-app $scope) app)
 

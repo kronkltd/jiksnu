@@ -9,9 +9,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that set-this]]
             [midje.sweet :refer :all]
-            [slingshot.slingshot :refer [throw+ try+]])
-  ;; (:import org.openqa.selenium.ElementNotVisibleException)
-  )
+            [slingshot.slingshot :refer [throw+ try+]]))
 
 ;(defn do-click-button
 ;  [class-name]
