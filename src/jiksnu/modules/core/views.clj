@@ -77,7 +77,6 @@
    [:statuses {:type "array"}
     (map index-line (index-section activities))]})
 
-
 (defview #'actions.stream/home-timeline :xml
   [request activities]
   {:body (index-section activities)})
@@ -91,8 +90,6 @@
   [request [user activities]]
   {:body (index-block activities)
    :template :false})
-
-
 
 (def index-views
   [#'actions.activity/index
@@ -113,7 +110,6 @@
    #'actions.service/index
    #'actions.stream/index
    #'actions.user/index])
-
 
 (defn register-views!
   []

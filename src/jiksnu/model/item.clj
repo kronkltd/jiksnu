@@ -27,4 +27,4 @@
 (defn push
   [user activity]
   (let [params {:user (:_id user) :activity (:_id activity)}]
-   (mc/insert (db/get-connection) collection-name params)))
+    (mc/insert (db/get-connection) collection-name params)))

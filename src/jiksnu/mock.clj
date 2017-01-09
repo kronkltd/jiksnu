@@ -238,7 +238,7 @@
   [modifier]
   (let [user (actions.user/create (factory :local-user))]
     (an-activity-exists {:modifier modifier
-                           :user   user})))
+                         :user   user})))
 
 (defn an-album-exists
   [& [options]]
@@ -321,7 +321,7 @@
         params (factory :activity {:author (:_id user)})]
     (actions.activity/post params)
     #_(an-activity-exists {:modifier "public"
-                             :user   user})))
+                           :user   user})))
 
 (defn user-has-a-stream
   [& options]

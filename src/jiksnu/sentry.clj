@@ -7,36 +7,43 @@
            com.getsentry.raven.event.EventBuilder
            com.getsentry.raven.event.interfaces.ExceptionInterface))
 
-(describe-config [:jiksnu :sentry :dsn]
-  String
-  "Private DSN from sentry server")
+(describe-config
+ [:jiksnu :sentry :dsn]
+ String
+ "Private DSN from sentry server")
 
-(describe-config [:jiksnu :sentry :key]
-  String
-  "Sentry access key")
+(describe-config
+ [:jiksnu :sentry :key]
+ String
+ "Sentry access key")
 
-(describe-config [:jiksnu :sentry :secret]
-  String
-  "Sentry secret")
+(describe-config
+ [:jiksnu :sentry :secret]
+ String
+ "Sentry secret")
 
-(describe-config [:jiksnu :sentry :scheme]
-  String
-  "Sentry server scheme"
-  :default "http")
+(describe-config
+ [:jiksnu :sentry :scheme]
+ String
+ "Sentry server scheme"
+ :default "http")
 
-(describe-config [:jiksnu :sentry :host]
-  String
-  "Hostname of the Sentry server"
-  :default "localhost")
+(describe-config
+ [:jiksnu :sentry :host]
+ String
+ "Hostname of the Sentry server"
+ :default "localhost")
 
-(describe-config [:jiksnu :sentry :port]
-  Integer
-  "Port of the Sentry server"
-  :default 80)
+(describe-config
+ [:jiksnu :sentry :port]
+ Integer
+ "Port of the Sentry server"
+ :default 80)
 
-(describe-config [:jiksnu :sentry :project]
-  Integer
-  "Sentry project number")
+(describe-config
+ [:jiksnu :sentry :project]
+ Integer
+ "Sentry project number")
 
 (defn get-dsn
   "Returns a DSN for connecting to a Sentry server from configuration parts"

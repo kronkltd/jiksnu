@@ -17,10 +17,7 @@
   (let [url "/model/activities"
         request (req/request :get url)]
     (let [response (response-for request)]
-      response => (contains
-                   {:status HttpStatus/SC_OK})
-
-
+      response => (contains {:status HttpStatus/SC_OK})
       (some-> response :body (json/read-str :key-fn keyword)) =>
       (contains {:items empty?}))))
 
