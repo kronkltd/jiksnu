@@ -6,35 +6,11 @@
   [:p "{{item.homepage}}"]
   [:p "{{item.location}}"]
   [:p "{{item.aliases}}"]
-  [:p "Created: "
-   [:time "{{item.created}}"]
-   ]
-  [:p "{{item.updated}}"]
+  [:p "Created: " [:time "{{item.created}}"]]
+  [:p "Updated: " [:time "{{item.updated}}"]]
   [:md-button.md-raised.md-primary {:ng-click "join()"} "Join"]
   [:list-group-admins {:item "item"}]
   [:list-group-members {:item "item"}]
-  #_
-  [:div
-   [:h3 "Admins {{item.admins.length}}"]
-   [:div
-    [:form {:name "addAdmin" :ng-submit "addAdmin()"}
-     [:input {:ng-model "id"}]
-     [:input.btn.btn-default {:type "submit"}]]]
-   [:ul
-    [:li {:ng-repeat "user in item.admins"}
-     [:a {:ui-sref "showUser({_id: user})"}
-      "{{user}}"]]]]
-  #_
-  [:div
-   [:h3 "Members {{item.members.length}}"]
-   [:div
-    [:form {:name "addMember" :ng-submit "addMember()"}
-     [:input {:ng-model "id"}]
-     [:input.btn.btn-default {:type "submit"}]]]
-   [:ul
-    [:li {:ng-repeat "user in item.members"}
-     [:a {:ui-sref "showUser({_id: user})"}
-      "{{user}}"]]]]
-  [:div.action-buttons
-   [:md-button {:ng-click "deleteRecord()" :aria-label "Delete Group" :ng-show "app.user"}
+  [:div.action-buttons {:ng-show "app.user"}
+   [:md-button {:ng-click "deleteRecord()" :aria-label "Delete Group"}
     [:ng-md-icon {:icon "delete"}]]]]]
