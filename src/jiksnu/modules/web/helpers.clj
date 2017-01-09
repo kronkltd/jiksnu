@@ -154,6 +154,7 @@
 (defn page-resource
   "route mixin for paths that operate on a page"
   [{action-ns :ns :as resource}]
+  (require action-ns)
   (if-let [action-sym (ns-resolve action-ns 'index)]
     (-> {:allowed-methods [:get :post :delete]
          :available-formats [:json]
