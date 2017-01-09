@@ -7,7 +7,9 @@
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]]))
+            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]])
+  (:import (org.joda.time DateTime)
+           (org.bson.types ObjectId)))
 
 (def collection-name "services")
 (def maker           #'model/map->Service)
@@ -19,12 +21,11 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id        String)
-   ;; (type-of :created    DateTime)
-   ;; (type-of :updated    DateTime)
+   (type-of :_id ObjectId)
    ;; (type-of :local      Boolean)
    ;; (type-of :discovered Boolean)
-))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

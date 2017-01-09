@@ -4,7 +4,9 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [validateur.validation :refer [validation-set presence-of]]))
+            [validateur.validation :refer [validation-set presence-of]])
+  (:import (org.bson.types ObjectId)
+           (org.joda.time DateTime)))
 
 (def collection-name "groups")
 (def maker           #'model/map->Group)
@@ -12,14 +14,13 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id     ObjectId)
+   (type-of :_id ObjectId)
    ;; (type-of :name    String)
-   ;; (type-of :created DateTime)
-   ;; (type-of :updated DateTime)
 
    ;; (presence-of :members)
    ;; (presence-of :admins)
-))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

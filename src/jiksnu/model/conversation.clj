@@ -6,7 +6,9 @@
             [monger.collection :as mc]
             [validateur.validation :refer [acceptance-of
                                            presence-of
-                                           validation-set]]))
+                                           validation-set]])
+  (:import (org.joda.time DateTime)
+           (org.bson.types ObjectId)))
 
 (def collection-name "conversations")
 (def maker #'model/map->Conversation)
@@ -14,14 +16,13 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id           ObjectId)
+   (type-of :_id ObjectId)
    ;; ;; (type-of :url           String)
-   ;; (type-of :created       DateTime)
-   ;; (type-of :updated       DateTime)
    ;; (type-of :domain        String)
    ;; (type-of :local         Boolean)
    ;; ;; (type-of :update-source ObjectId)
-   ))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

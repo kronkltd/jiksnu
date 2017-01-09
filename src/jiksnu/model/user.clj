@@ -14,7 +14,8 @@
             [monger.collection :as mc]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [acceptance-of validation-set presence-of]])
-  (:import jiksnu.model.User))
+  (:import jiksnu.model.User
+           (org.joda.time DateTime)))
 
 (def collection-name "users")
 (def default-page-size 20)
@@ -22,17 +23,15 @@
 
 (def create-validators
   (validation-set
-   ;; ;; (presence-of   :_id)
-   ;; (type-of :_id       String)
-   ;; (type-of :username  String)
-   ;; (type-of :domain    String)
-   ;; ;; (acceptance-of :url          :accept string?)
-   ;; (presence-of   :created)
-   ;; (presence-of   :updated)
-   ;; ;; (presence-of   :update-source)
-   ;; (presence-of   :avatarUrl)
-   ;; (acceptance-of :local         :accept (partial instance? Boolean))
-))
+    (type-of :_id String)
+    ;; (type-of :username  String)
+    ;; (type-of :domain    String)
+    ;; ;; (acceptance-of :url          :accept string?)
+    ;; ;; (presence-of   :update-source)
+    ;; (presence-of   :avatarUrl)
+    ;; (acceptance-of :local         :accept (partial instance? Boolean))
+    (type-of :created DateTime)
+    (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

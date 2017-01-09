@@ -4,7 +4,9 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]]))
+            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]])
+  (:import (org.joda.time DateTime)
+           (org.bson.types ObjectId)))
 
 (def collection-name "feed_subscriptions")
 (def maker           #'model/map->FeedSubscription)
@@ -12,14 +14,13 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id      ObjectId)
+   (type-of :_id ObjectId)
    ;; (type-of :url      String)
    ;; (type-of :callback String)
    ;; (type-of :domain   String)
    ;; (type-of :local    Boolean)
-   ;; (type-of :created  DateTime)
-   ;; (type-of :updated  DateTime)
-))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

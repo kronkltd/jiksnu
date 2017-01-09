@@ -4,7 +4,9 @@
             [jiksnu.transforms :refer [set-_id set-created-time
                                        set-updated-time]]
             [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set presence-of]]))
+            [validateur.validation :refer [validation-set presence-of]])
+  (:import (org.bson.types ObjectId)
+           (org.joda.time DateTime)))
 
 (def collection-name "group_memberships")
 (def maker           #'model/map->GroupMembership)
@@ -12,10 +14,9 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id     ObjectId)
-   ;; (type-of :created DateTime)
-   ;; (type-of :updated DateTime)
-   ))
+   (type-of :_id ObjectId)
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
