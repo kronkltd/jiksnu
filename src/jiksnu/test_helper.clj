@@ -43,7 +43,7 @@
   ([modules]
    (try+
     (start-application! modules)
-    (db/drop-all! )
+    (db/drop-all!)
     (dosync
      (ref-set r/this {})
      (ref-set r/that {}))

@@ -21,10 +21,9 @@
           transforms/set-updated-time
           transforms/set-created-time
           ;; transforms.conversation/set-url
-          transforms.conversation/set-domain
-          transforms/set-local
           ;; transforms.conversation/set-update-source
-          ))
+          transforms.conversation/set-domain
+          transforms/set-local))
 
 (defn prepare-delete
   ([item]

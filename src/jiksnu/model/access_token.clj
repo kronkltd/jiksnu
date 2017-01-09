@@ -2,7 +2,8 @@
   (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set]]))
+            [validateur.validation :refer [validation-set]])
+  (:import (org.joda.time DateTime)))
 
 (def collection-name "access-tokens")
 (def maker           #'model/map->AccessToken)
@@ -10,14 +11,13 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id           String)
-   ;; (type-of :client        String)
-   ;; (type-of :request-token String)
+   (type-of :_id String)
+   (type-of :client String)
+   (type-of :request-token String)
    ;; ;; (type-of :user          String)
    ;; (type-of :secret        String)
-   ;; (type-of :created       DateTime)
-   ;; (type-of :updated       DateTime)
-   ))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

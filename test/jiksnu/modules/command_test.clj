@@ -58,9 +58,9 @@
       (let [client (mock/a-client-exists)
             ch (d/deferred)
             request {:channel ch
-                       :name name
-                       :format :json
-                       :args args}]
+                     :name name
+                     :format :json
+                     :args args}]
         (some-> request parse-command (json/read-str :key-fn keyword)) =>
         map?))))
 

@@ -32,8 +32,7 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id           ObjectId)
-))
+   (type-of :_id ObjectId)))
 
 (def ^KeyFactory key-factory (KeyFactory/getInstance "RSA"))
 (def ^KeyPairGenerator keypair-generator (KeyPairGenerator/getInstance "RSA"))

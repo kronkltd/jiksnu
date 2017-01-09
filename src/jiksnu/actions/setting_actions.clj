@@ -5,46 +5,56 @@
   []
   nil)
 
-(describe-config [:site :broughtBy :name]
-  String
-  "The name of the organization running this service")
+(describe-config
+ [:site :broughtBy :name]
+ String
+ "The name of the organization running this service")
 
-(describe-config [:site :broughtBy :url]
-  String
-  "The url of the organization running this service")
+(describe-config
+ [:site :broughtBy :url]
+ String
+ "The url of the organization running this service")
 
-(describe-config [:site :closed]
-  Boolean
-  "Can new users register?"
-  :default true)
+(describe-config
+ [:site :closed]
+ Boolean
+ "Can new users register?"
+ :default true)
 
-(describe-config [:site :default :language]
-  String
-  "The default language to use")
+(describe-config
+ [:site :default :language]
+ String
+ "The default language to use")
 
-(describe-config [:site :default :timezone]
-  String
-  "The default timezone of this server")
+(describe-config
+ [:site :default :timezone]
+ String
+ "The default timezone of this server")
 
-(describe-config [:site :email]
-  String
-  "The email address of the administrator")
+(describe-config
+ [:site :email]
+ String
+ "The email address of the administrator")
 
-(describe-config [:site :inviteOnly]
-  Boolean
-  "Can users invite new users")
+(describe-config
+ [:site :inviteOnly]
+ Boolean
+ "Can users invite new users")
 
-(describe-config [:site :limit :text]
-  Number
-  "The maximum length of post to accept. (-1 = unlimited)")
+(describe-config
+ [:site :limit :text]
+ Number
+ "The maximum length of post to accept. (-1 = unlimited)")
 
-(describe-config [:site :name]
-  String
-  "The name of the service")
+(describe-config
+ [:site :name]
+ String
+ "The name of the service")
 
-(describe-config [:site :private]
-  Boolean
-  "Can unauthenticated users view this site?")
+(describe-config
+ [:site :private]
+ Boolean
+ "Can unauthenticated users view this site?")
 
 (defn config-output
   []

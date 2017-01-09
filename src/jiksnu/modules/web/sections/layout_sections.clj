@@ -60,8 +60,7 @@
     [:base {:href "/"}]
     [:title {:property "dc:title"} (config :site :name)]
     (style-section)
-    #_
-    (links-section request response)]
+    #_(links-section request response)]
    [:body
     [:main-layout]
     [:script {:type "text/javascript"} "var CLOSURE_NO_DEPS = true;"]

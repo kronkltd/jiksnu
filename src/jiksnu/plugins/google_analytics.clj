@@ -2,9 +2,10 @@
   (:use [ciste.config :only [describe-config]])
   (:require [jiksnu.modules.web.sections.layout-sections :as sections.layout]))
 
-(describe-config [::account-id]
-  String
-  "Your Google Analytics account ID.")
+(describe-config
+ [::account-id]
+ String
+ "Your Google Analytics account ID.")
 
 (defn scripts-section
   [request response]

@@ -168,7 +168,7 @@
         data ($httpParamSerializerJQLike #js {:username username :password password})
         opts #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}}]
     ;; (timbre/infof "Logging in user. %s:%s" username password)
-    (-> (.post $http"/main/login" data opts)
+    (-> (.post $http "/main/login" data opts)
         (.then (fn [response]
                  (let [status (.-status response)]
                    ;; TODO: Find a cljs version of this check

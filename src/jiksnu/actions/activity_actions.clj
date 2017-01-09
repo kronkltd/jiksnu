@@ -137,12 +137,11 @@
   ([activity]
    (viewable? activity (session/current-user)))
   ([activity user]
+   ;; TODO: Group membership and acl
    (or (:public activity)
        (and user
             (or (= (:author activity) (:_id user))
-                (:admin user)))
-       ;; TODO: Group membership and acl
-       )))
+                (:admin user))))))
 
 (defn show
   "Show an activity"

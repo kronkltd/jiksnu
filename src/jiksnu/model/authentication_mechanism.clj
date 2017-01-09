@@ -8,7 +8,9 @@
             [validateur.validation :refer [acceptance-of
                                            presence-of
                                            valid?
-                                           validation-set]]))
+                                           validation-set]])
+  (:import (org.bson.types ObjectId)
+           (org.joda.time DateTime)))
 
 (def collection-name "authentication_mechanisms")
 
@@ -16,12 +18,11 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id        ObjectId)
-   ;; ;; (type-of :created    DateTime)
-   ;; ;; (type-of :updated    DateTime)
+   (type-of :_id ObjectId)
    ;; ;; (type-of :local      Boolean)
    ;; ;; (type-of :discovered Boolean)
-   ))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (defn fetch-by-id
   [id]

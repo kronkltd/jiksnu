@@ -33,6 +33,6 @@
 
 (defn get-link
   ([item rel]
-    (get-link item rel nil))
+   (get-link item rel nil))
   ([item rel content-type]
    (first (util/rel-filter rel (:links item) content-type))))

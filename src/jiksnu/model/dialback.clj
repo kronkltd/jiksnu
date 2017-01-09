@@ -2,24 +2,24 @@
   (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set presence-of]]))
+            [validateur.validation :refer [validation-set presence-of]])
+  (:import (org.bson.types ObjectId)
+           (org.joda.time DateTime)))
 
 (defonce page-size 20)
 (def collection-name "dialbacks")
 (def maker model/map->Dialback)
 
+;; TODO: optional fields
+;; :host      String
+;; :webfinger String
+;; TODO: webfinger and host are mutually exclusive
 (def create-validators
   (validation-set
-   ;; (type-of :_id                   ObjectId)
-   ;; (type-of :token                 String)
-   ;; (type-of :date               DateTime)
-   ;; (type-of :url                  String)
-
-   ;; TODO: optional fields
-   ;; :host      String
-   ;; :webfinger String
-   ;; TODO: webfinger and host are mutually exclusive
-   ))
+   (type-of :_id ObjectId)
+   (type-of :token String)
+   (type-of :date DateTime)
+   (type-of :url String)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

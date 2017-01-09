@@ -10,13 +10,12 @@
   ([opts data]
    (let [{:keys [instant level ?err_ varargs_
                  output-fn config appender]} data
-         out-data {
-                   ;; :err (force ?err_)
-                   :level level
+         out-data {:level level
                    :file (:?file data)
                    :instant instant
                    :message (force (:msg_ data))
                    :varargs (:varargs_ data)
+                   ;; :err (force ?err_)
                    ;; :keys (keys data)
                    :line (:?line data)
                    :ns (:?ns-str data)

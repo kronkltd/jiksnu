@@ -163,9 +163,8 @@
    (fn [_]
      (let [domain (model.domain/fetch-by-id (:_id domain))]
        (util/safe-task (discover-webfinger domain url))
-       ;; (util/safe-task (discover-onesocialweb domain url))
-       ;; (util/safe-task (discover-statusnet-config domain url))
-       ))))
+       #_(util/safe-task (discover-onesocialweb domain url))
+       #_(util/safe-task (discover-statusnet-config domain url))))))
 
 (defn discover
   [^Domain domain url]

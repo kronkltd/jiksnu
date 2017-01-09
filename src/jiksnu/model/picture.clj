@@ -16,9 +16,8 @@
    (presence-of :_id)
    (presence-of :created)
    (presence-of :updated)
-   (type-of :user String)
    ;; (presence-of :activity)
-   ))
+   (type-of :user String)))
 
 (defn prepare
   [record]
