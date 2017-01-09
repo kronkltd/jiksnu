@@ -53,6 +53,7 @@
                       (returnValue "foo"))])
         (timbre/spy (.connect app))))
 
+    #_
     (describe {:doc ".follow"}
       (describe {:doc "when not authenticated"}
         (it "should be rejected"
@@ -89,6 +90,7 @@
             (.$digest $rootScope)
             (.. (js/expect p) (toBeResolved))))))
 
+    #_
     (describe {:doc ".login"}
       (describe {:doc "with valid credentials"}
         (it "returns successfully"
