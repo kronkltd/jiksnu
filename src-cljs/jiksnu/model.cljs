@@ -1,39 +1,38 @@
-(ns jiksnu.model)
+(ns jiksnu.model
+  (:require [inflections.core :as inf]))
 
 (defn deserializer
-  [resource-name data]
+  "Parses a page response into a js-data format"
+  [_resource-name data]
   (if-let [items (.-items (.-data data))]
     items
     (.-data data)))
 
-;; (def.factory jiksnu.$exceptionHandler
-;;   []
-;;   (fn [exception cause]
-;;     (throw exception)))
-
 (defn define-resource
-  [DS resource-name endpoint resource-class]
-  (.defineResource
-   DS
-   #js
-   {:name resource-name
-    :endpoint endpoint
-    :methods #js {:getType (constantly resource-class)}}))
+  "Creates a js-data resource with then given name"
+  ([DS resource-name]
+   (define-resource DS resource-name (inf/plural resource-name)))
+  ([DS resource-name endpoint]
+   (define-resource DS resource-name endpoint (inf/camel-case resource-name)))
+  ([DS resource-name endpoint resource-class]
+   (let [methods #js {:getType (constantly resource-class)}
+         options #js {:name resource-name :endpoint endpoint :methods methods}]
+     (.defineResource DS options))))
 
-(defn Activities       [DS] (define-resource DS "activity"         "activities"        "Activity"))
-(defn Albums           [DS] (define-resource DS "album"            "albums"            "Album"))
-(defn Clients          [DS] (define-resource DS "client"           "clients"           "Client"))
-(defn Domains          [DS] (define-resource DS "domain"           "domains"           "Domain"))
-(defn Followings       [DS] (define-resource DS "following"        "followings"        "Following"))
-(defn Groups           [DS] (define-resource DS "group"            "groups"            "Group"))
-(defn GroupMemberships [DS] (define-resource DS "group-membership" "group-memberships" "GroupMembership"))
-(defn Likes            [DS] (define-resource DS "like"             "likes"             "Like"))
-(defn Notifications    [DS] (define-resource DS "notification"     "notifications"     "Notification"))
-(defn Pages            [DS] (define-resource DS "page"             "pages"             "Page"))
-(defn Pictures         [DS] (define-resource DS "picture"          "pictures"          "Picture"))
-(defn RequestTokens    [DS] (define-resource DS "request-token"    "request-tokens"    "RequestToken"))
-(defn Streams          [DS] (define-resource DS "stream"           "streams"           "Stream"))
-(defn Subscriptions    [DS] (define-resource DS "subscription"     "subscriptions"     "Subscription"))
+(defn Activities       [DS] (define-resource DS "activity"))
+(defn Albums           [DS] (define-resource DS "album"))
+(defn Clients          [DS] (define-resource DS "client"))
+(defn Domains          [DS] (define-resource DS "domain"))
+(defn Followings       [DS] (define-resource DS "following"))
+(defn Groups           [DS] (define-resource DS "group"))
+(defn GroupMemberships [DS] (define-resource DS "group-membership"))
+(defn Likes            [DS] (define-resource DS "like"))
+(defn Notifications    [DS] (define-resource DS "notification"))
+(defn Pages            [DS] (define-resource DS "page"))
+(defn Pictures         [DS] (define-resource DS "picture"))
+(defn RequestTokens    [DS] (define-resource DS "request-token"))
+(defn Streams          [DS] (define-resource DS "stream"))
+(defn Subscriptions    [DS] (define-resource DS "subscription"))
 
 (defn Conversations
   [DS subpageService]
