@@ -1,5 +1,5 @@
 (ns jiksnu.components.show-components-test
-  (:require jiksnu.app
+  (:require jiksnu.main
             jiksnu.components.show-components
             [taoensso.timbre :as timbre])
   (:use-macros [purnam.test :only [describe it is beforeEach]]))

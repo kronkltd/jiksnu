@@ -1,5 +1,5 @@
 (ns jiksnu.components.list-components-test
-  (:require jiksnu.app
+  (:require jiksnu.main
             jiksnu.factories
             jiksnu.components.list-components
             [taoensso.timbre :as timbre])
