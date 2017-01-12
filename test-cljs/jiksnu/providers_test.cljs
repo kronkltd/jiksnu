@@ -1,5 +1,5 @@
 (ns jiksnu.providers-test
-  (:require jiksnu.providers
+  (:require jiksnu.main
             [purnam.test :refer-macros [beforeEach describe is it]]
             [taoensso.timbre :as timbre]))
 

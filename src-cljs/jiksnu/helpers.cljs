@@ -3,6 +3,8 @@
             [taoensso.timbre :as timbre]
             [jiksnu.registry :as registry]))
 
+(def refresh-followers "refresh-followers")
+
 (defn add-states
   [$stateProvider data]
   (doseq [[state uri controller template] data]
@@ -12,6 +14,10 @@
              :url uri
              :controller (str controller "Controller")
              :templateUrl (str "/templates/" (name template))})))
+
+(defn get-toggle-fn
+  [$scope]
+  (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
 
 (defn fetch-page
   [$scope $http url]
