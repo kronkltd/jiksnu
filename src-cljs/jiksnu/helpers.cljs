@@ -9,11 +9,10 @@
   [$stateProvider data]
   (doseq [[state uri controller template] data]
     (.state $stateProvider
-            #js
-            {:name state
-             :url uri
-             :controller (str controller "Controller")
-             :templateUrl (str "/templates/" (name template))})))
+            #js {:name state
+                 :url uri
+                 :controller (str controller "Controller")
+                 :templateUrl (str "/templates/" (name template))})))
 
 (defn get-toggle-fn
   [$scope]

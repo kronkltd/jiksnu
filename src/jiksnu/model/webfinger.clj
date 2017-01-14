@@ -111,9 +111,8 @@
         get-identifiers
         (keep (comp first util/split-uri))
         first)
-   (catch Throwable _
-     ;; FIXME: Handle errors
-     )))
+   ;; FIXME: Handle errors
+   (catch Throwable _)))
 
 ;; takes a document
 (defn get-username-from-xrd

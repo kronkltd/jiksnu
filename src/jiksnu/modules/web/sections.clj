@@ -47,9 +47,8 @@
         target (:target options)]
     [:a (merge
          {:title title
-          :class (string/join " " [(str action "-button")])
           ;; :data-model model
-          }
+          :class (string/join " " [(str action "-button")])}
          {:href "#"
           :data-action action}
          (if target

@@ -20,10 +20,9 @@
   (dosync
    (alter (get-groups site-var) conj group-var)))
 
+;; TODO: implement
 (defn get-resource
-  [group-var resource-name]
-  ;; TODO: implement
-  )
+  [group-var resource-name])
 
 (defn get-resources
   [group-var]

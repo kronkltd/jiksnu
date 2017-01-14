@@ -4,11 +4,9 @@
   (:use-macros [gyr.core :only [def.directive]]))
 
 (def.directive jiksnu.leftColumn []
-  #js
-  {:controller "LeftColumnController"
-   :scope true
-   :templateUrl "/templates/left-column-section"})
+  #js {:controller "LeftColumnController"
+       :scope true
+       :templateUrl "/templates/left-column-section"})
 
 (def.directive jiksnu.spinner []
-  #js
-  {:templateUrl "/templates/spinner"})
+  #js {:templateUrl "/templates/spinner"})
