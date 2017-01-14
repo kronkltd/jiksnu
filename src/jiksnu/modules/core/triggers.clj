@@ -190,8 +190,7 @@
 (defn bind-handlers!
   []
 
-  #_
-  (s/consume add-link-trigger                            ch/resource-links-added)
+  #_(s/consume add-link-trigger                            ch/resource-links-added)
 
   (s/consume handle-get-conversation                     ch/pending-get-conversation)
   (s/consume enqueue-create-local                        ch/pending-create-conversations)
@@ -217,22 +216,15 @@
 
   ;; Create events for each created conversation
   ;; TODO: listen to trace probe
-  #_
-  (s/connect
-   (s/filter filter-conversation-create ciste.core/*actions*)
-   ch/posted-conversations)
+  #_(s/connect
+     (s/filter filter-conversation-create ciste.core/*actions*)
+     ch/posted-conversations)
 
   ;; Create events for each created activity
-  #_
-  (s/connect
-   (s/filter filter-activity-create ciste.core/*actions*)
-   ch/posted-activities)
+  #_(s/connect
+     (s/filter filter-activity-create ciste.core/*actions*)
+     ch/posted-activities);; cascade delete on domain deletion
+  #_(dosync
+     (alter actions.user/delete-hooks conj #'actions.activity/handle-delete-hook))
 
-
-  ;; cascade delete on domain deletion
-  #_
-  (dosync
-   (alter actions.user/delete-hooks conj #'actions.activity/handle-delete-hook))
-
-  #_
-  (actions.subscription/setup-delete-hooks))
+  #_(actions.subscription/setup-delete-hooks))

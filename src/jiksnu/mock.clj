@@ -98,9 +98,8 @@
         source (or (:source options)
                    (get-that :feed-source)
                    (a-feed-source-exists {:domain domain}))
-        params (factory :user
-                        {:domain (:_id domain)
-                         :update-source (:_id source)})
+        params {:domain (:_id domain) :update-source (:_id source)}
+        params (factory :user params)
         user (or (model.user/fetch-by-id (str "acct:" (:username params) "@" (:domain params)))
                  (actions.user/create params))]
     (model.user/set-field! user :discovered true)
@@ -201,18 +200,18 @@
                          (a-conversation-exists {:domain domain
                                                  :source source}))
         url (fseq :uri)
+        params {:author (:_id user)
+                :id url
+                :update-source (:_id source)
+                :verb "post"
+                :conversation (:_id conversation)
+                :streams [(:_id stream)]
+                :published (time/now)
+                ;; :local true
+                :public (= modifier "public")}
         activity (session/with-user user
                    (actions.activity/create
-                    (factory :activity
-                             {:author (:_id user)
-                              :id url
-                              :update-source (:_id source)
-                              :verb "post"
-                              :conversation (:_id conversation)
-                              :streams [(:_id stream)]
-                              :published (time/now)
-                              ;; :local true
-                              :public (= modifier "public")})))]
+                    (factory :activity params)))]
     (set-this :activity activity)
     activity))
 
@@ -263,11 +262,8 @@
   (let [domain (or (:domain options)
                    (get-this :domain)
                    (a-domain-exists (select-keys options #{:local})))
-        feed-subscription (actions.feed-subscription/create
-                           (factory :feed-subscription
-                                    {:domain (:_id domain)
-                                     :local (:local domain)})
-                           {})]
+        params (factory :feed-subscription {:domain (:_id domain) :local (:local domain)})
+        feed-subscription (actions.feed-subscription/create params {})]
     (set-this :feed-subscription feed-subscription)
     feed-subscription))
 

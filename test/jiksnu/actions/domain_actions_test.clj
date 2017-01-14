@@ -15,12 +15,7 @@
       (model.domain/drop!)
       (let [options (actions.domain/prepare-create {:_id (fseq :domain)})]
         (actions.domain/create options) =>
-        (partial instance? Domain)
-        ))
-    ;; TODO: already exists
-    )
-  ;; TODO: invalid options
-  )
+        (partial instance? Domain)))))
 
 (fact "#'actions.domain/delete"
 

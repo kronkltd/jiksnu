@@ -164,19 +164,16 @@
 
         (fact "when the domain has an xrd endpoint"
           (db/drop-all!)
-          (let [domain (actions.domain/find-or-create
-                         (factory :domain
-                           {:_id         domain-name
-                            :xrdTemplate xrd-template
-                            :discovered  true}))]
+          (let [params {:_id         domain-name
+                        :xrdTemplate xrd-template
+                        :discovered  true}
+                domain (actions.domain/find-or-create
+                        (factory :domain params))]
             (model.domain/set-field! domain :xrdTemplate xrd-template)
             (actions.domain/add-link domain {:rel "xrd" :template xrd-template})
 
             (fact "when the username can be determined"
-              (actions.user/find-or-create params) => (partial instance? User)
-
-              #_(provided
-                  (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd})))))))
+              (actions.user/find-or-create params) => (partial instance? User))))))
 
     (fact "when given an acct uri uri"
       (db/drop-all!)

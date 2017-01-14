@@ -27,9 +27,8 @@
      (try
        ((resolve-routes [@pred/*page-predicates*]
                         @pred/*page-matchers*) request)
-       (catch Throwable ex
-         ;; FIXME: Handle error
-         ))
+       ;; FIXME: Handle error
+       (catch Throwable ex))
      (throw+ "page not found"))))
 
 (defn get-page

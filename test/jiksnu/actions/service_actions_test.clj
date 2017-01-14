@@ -152,9 +152,7 @@
 
              (actions.service/fetch-xrd* hm-bare-s) => nil
              (actions.service/fetch-xrd* hm1-s)     => nil
-             (actions.service/fetch-xrd* hm2-s)     => nil
-             ;; (actions.service/fetch-xrd* hm-bare-s) => nil
-             ))
+             (actions.service/fetch-xrd* hm2-s)     => nil))
 
           (fact "and one of the subpaths has a host meta"
             ;; FIXME: this isn't being checked

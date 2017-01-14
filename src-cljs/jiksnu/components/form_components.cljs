@@ -12,8 +12,6 @@
 
     (set! (.-submit $scope)
           (fn []
-            #_
-            (timbre/info "Submitting album form")
             (let [params (.-album $scope)
                   path "/model/albums"]
               (.post $http path params))))
@@ -25,31 +23,20 @@
 
 (.component
  jiksnu "addAlbumForm"
- #js
- {:bindings #js {}
-  :templateUrl "/templates/add-album-form"
-  :controller NewAlbumController})
+ #js {:bindings #js {}
+      :templateUrl "/templates/add-album-form"
+      :controller NewAlbumController})
 
 (defn NewGroupController
   [$scope app $http]
   (let [default-form #js {}]
 
-    (set! (.-init $scope)
-          (fn []
-            #_
-            (timbre/debug "init NewGroupController")
-            (.reset $scope)))
+    (set! (.-init $scope) (fn [] (.reset $scope)))
 
-    (set! (.-reset $scope)
-          (fn []
-            #_
-            (timbre/info "reset")
-            (set! (.-form $scope) default-form)))
+    (set! (.-reset $scope) (fn [] (set! (.-form $scope) default-form)))
 
     (set! (.-submit $scope)
           (fn []
-            #_
-            (timbre/info "Submitting group form")
             (let [params (.-group $scope)
                   path "/model/groups"]
               (.post $http path params))))
@@ -61,10 +48,9 @@
 
 (def.directive jiksnu.addGroupForm
   []
-  #js
-  {:controller "NewGroupController"
-   :scope true
-   :templateUrl "/templates/add-group-form"})
+  #js {:controller "NewGroupController"
+       :scope true
+       :templateUrl "/templates/add-group-form"})
 
 (defn NewPictureController
   [$scope app $http]
@@ -75,8 +61,6 @@
 
     (set! (.-submit $scope)
           (fn []
-            #_
-            (timbre/info "Submitting picture form")
             ;; TODO: Use the model
             (let [params (.-album $scope)
                   form-data (js/FormData. params)
@@ -101,15 +85,13 @@
 
 (def.directive jiksnu.addPictureForm
   []
-  #js
-  {:controller "NewPictureController"
-   :scope true
-   :templateUrl "/templates/add-picture-form"})
+  #js {:controller "NewPictureController"
+       :scope true
+       :templateUrl "/templates/add-picture-form"})
 
 (defn NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Streams Users]
-  #_
-  (timbre/debug "Loading New Post Controller")
+  #_(timbre/debug "Loading New Post Controller")
   (helpers/init-subpage $scope app Users "streams")
   (set! (.-addStream $scope)
         (fn [id]
@@ -128,8 +110,7 @@
   (set! (.-visible $scope) (fn [] (and (.enabled $scope) app.user)))
   (set! (.-fetchStreams $scope)
         (fn []
-          #_
-          (timbre/debug "fetching streams")
+          #_(timbre/debug "fetching streams")
           (.. app
               (getUser)
               (then (fn [user]
@@ -180,10 +161,9 @@
 
 (def.directive jiksnu.addPostForm
   []
-  #js
-  {:controller "NewPostController"
-   :scope true
-   :templateUrl "/templates/add-post-form"})
+  #js {:controller "NewPostController"
+       :scope true
+       :templateUrl "/templates/add-post-form"})
 
 (defn NewStreamController
   [$scope $rootScope app]
@@ -204,7 +184,6 @@
 (.controller jiksnu "NewStreamController" NewStreamController)
 
 (def.directive jiksnu.addStreamForm []
-  #js
-  {:controller "NewStreamController"
-   :scope true
-   :templateUrl "/templates/add-stream-form"})
+  #js {:controller "NewStreamController"
+       :scope true
+       :templateUrl "/templates/add-stream-form"})

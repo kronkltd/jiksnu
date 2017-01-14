@@ -308,21 +308,18 @@
 
 (def.provider jiksnu.app
   []
-  #js
-  {:$get
-   #js
-   ["$injector"
-    (fn [$injector]
-      (timbre/debug "creating app service")
-      (let [app #js {:inject (.-get $injector)}]
-        (doseq [[n f] app-methods]
-          (aset app (name n) (partial f app)))
+  (let [f (fn [$injector]
+            (timbre/debug "creating app service")
+            (let [app #js {:inject (.-get $injector)}]
+              (doseq [[n f] app-methods]
+                (aset app (name n) (partial f app)))
 
-        (set! (.-connection app) (get-websocket-connection app))
-        (set! (.-data app)       #js {})
+              (set! (.-connection app) (get-websocket-connection app))
+              (set! (.-data app)       #js {})
 
-        ;; Bind to window for easy debugging
-        (set! (.-app js/window) app)
+              ;; Bind to window for easy debugging
+              (set! (.-app js/window) app)
 
-        ;; return the app
-        app))]})
+              ;; return the app
+              app))]
+    (clj->js {:$get ["$injector" f]})))

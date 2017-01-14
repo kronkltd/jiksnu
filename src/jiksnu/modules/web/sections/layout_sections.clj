@@ -66,10 +66,9 @@
     [:script {:type "text/javascript"} "var CLOSURE_NO_DEPS = true;"]
     (p/include-js "/main.js" "/cljs/jiksnu.js")
     (map #(% request response) @scripts-section-hook)
-    #_
-    (when-let [dsn (config* :sentry :dsn :client)]
-      [:script {:type "text/javascript"}
-       (str "SENTRY_DSN_CLIENT=\"" dsn "\"")])]))
+    #_(when-let [dsn (config* :sentry :dsn :client)]
+        [:script {:type "text/javascript"}
+         (str "SENTRY_DSN_CLIENT=\"" dsn "\"")])]))
 
 (defmethod apply-template :html
   [request response]

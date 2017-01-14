@@ -18,11 +18,10 @@
     (.init $scope (.-id $scope))))
 
 (def.directive jiksnu.asModel []
-  #js
-  {:controller "AsModelController"
-   :template "<span ng-transclude></span>"
-   :scope #js {:id "@" :model "@"}
-   :transclude true})
+  #js {:controller "AsModelController"
+       :template "<span ng-transclude></span>"
+       :scope #js {:id "@" :model "@"}
+       :transclude true})
 
 (def.controller jiksnu.DebugController [$scope $filter app]
   (set! (.-visible $scope) #(.. app -data -debug))
@@ -31,11 +30,10 @@
         #(($filter "json") (.-expr $scope))))
 
 (def.directive jiksnu.debug []
-  #js
-  {:controller "DebugController"
-   :scope #js {:expr "=expr"
-               :exprText "@expr"}
-   :templateUrl "/templates/debug"})
+  #js {:controller "DebugController"
+       :scope #js {:expr "=expr"
+                   :exprText "@expr"}
+       :templateUrl "/templates/debug"})
 
 (def.controller jiksnu.DisplayAvatarController
   [$scope Users]
@@ -50,10 +48,9 @@
   (.init $scope))
 
 (def.directive jiksnu.displayAvatar []
-  #js
-  {:controller "DisplayAvatarController"
-   :scope #js {:id "@" :size "@"}
-   :templateUrl "/templates/display-avatar"})
+  #js {:controller "DisplayAvatarController"
+       :scope #js {:id "@" :size "@"}
+       :templateUrl "/templates/display-avatar"})
 
 (def.controller jiksnu.FollowButtonController
   [$scope app $q $rootScope Subscriptions]
@@ -86,28 +83,19 @@
            (fn [resolve reject]
              (if-let [user (.-item $scope)]
                (let [user-id (.-_id user)]
-                 #_
-                 (timbre/debug "Checking if following")
                  (.. app
                      (getUser)
                      (then #(some-> % .getFollowing))
                      (then (fn [page]
-                             #_
-                             (timbre/debug "Got page")
                              (when page
                                (->> (.-items page)
                                     (map (.-find Subscriptions))
                                     clj->js
                                     (.all $q)))))
                      (then (fn [subscriptions]
-                             #_
-                             (timbre/debug "got subscriptions")
                              (some #(#{user-id} (.-to %)) subscriptions)))
                      (then resolve)))
-               (do
-                 #_
-                 (timbre/warn "No item bound to scope")
-                 (reject)))))))
+               (reject))))))
 
   (set! (.-submit $scope)
         (fn []
@@ -126,10 +114,9 @@
 
 (def.directive jiksnu.followButton
   []
-  #js
-  {:controller "FollowButtonController"
-   :scope #js {:item "="}
-   :templateUrl "/templates/follow-button"})
+  #js {:controller "FollowButtonController"
+       :scope #js {:item "="}
+       :templateUrl "/templates/follow-button"})
 
 (defn swagger-url
   [protocol hostname port]
@@ -186,10 +173,9 @@
       (.then (fn [] (set! (.-loaded $scope) true)))))
 
 (def.directive jiksnu.navBar []
-  #js
-  {:controller "NavBarController"
-   :scope true
-   :templateUrl "/templates/navbar-section"})
+  #js {:controller "NavBarController"
+       :scope true
+       :templateUrl "/templates/navbar-section"})
 
 (defn SidenavController
   [$scope app]
@@ -212,13 +198,6 @@
   (if-let [subpage (.-subpage $scope)]
     (do
       (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
-
-      #_
-      (.$on $scope refresh-followers (fn [] (.refresh $scope)))
-
-      #_
-      (.$on $rootScope refresh-followers (fn [] (.refresh $scope)))
-
       (.$on $scope "refresh-page" (fn [] (.refresh $scope)))
 
       (set! (.-init $scope)
@@ -248,8 +227,7 @@
     (throw "Subpage not specified")))
 
 (def.directive jiksnu.subpage []
-  #js
-  {:scope #js {:subpage "@name" :item "=item"}
-   :template "<div ng-transclude></div>"
-   :transclude true
-   :controller "SubpageController"})
+  #js {:scope #js {:subpage "@name" :item "=item"}
+       :template "<div ng-transclude></div>"
+       :transclude true
+       :controller "SubpageController"})

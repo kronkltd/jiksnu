@@ -84,15 +84,12 @@
            [:place]))
    [:contributors]
    [:entities
-    [:user_mentions
-     ;; TODO: list mentions
-     ]
-    [:urls
-     ;; TODO: list urls
-     ]
-    [:hashtags
-     ;; TODO: list hashtags
-     ]]])
+    ;; TODO: list mentions
+    [:user_mentions]
+    ;; TODO: list urls
+    [:urls]
+    ;; TODO: list hashtags
+    [:hashtags]]])
 
 (defsection show-section [Domain :jrd]
   [item & [page]]
