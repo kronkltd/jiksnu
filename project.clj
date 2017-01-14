@@ -124,9 +124,9 @@
                                 {:karma
                                  {:source-paths ["src-cljs" "test-cljs"]
                                   :notify-command ["notify-send"]
-                                  :compiler {:output-to "target/karma-test.js"
-                                             :output-dir "target/karma"
-                                             :optimizations :simple
+                                  :compiler {:output-to "target/karma-cljs/karma-test.js"
+                                             :output-dir "target/karma-cljs"
+                                             :optimizations :none
                                              ;; Fix for $q's use of 'finally'
                                              :language-in :ecmascript5
                                              :pretty-print true}}}}}}
