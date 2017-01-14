@@ -1,7 +1,8 @@
 (ns jiksnu.components.form-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:use-macros [gyr.core :only [def.directive]]))
 
 (defn NewAlbumController
   [$scope app $http]
@@ -21,6 +22,13 @@
 (set! (.-$inject NewAlbumController) #js ["$scope" "app" "$http"])
 
 (.controller jiksnu "NewAlbumController" NewAlbumController)
+
+(.component
+ jiksnu "addAlbumForm"
+ #js
+ {:bindings #js {}
+  :templateUrl "/templates/add-album-form"
+  :controller NewAlbumController})
 
 (defn NewGroupController
   [$scope app $http]
@@ -50,6 +58,13 @@
 (set! (.-$inject NewGroupController) #js ["$scope" "app" "$http"])
 
 (.controller jiksnu "NewGroupController" NewGroupController)
+
+(def.directive jiksnu.addGroupForm
+  []
+  #js
+  {:controller "NewGroupController"
+   :scope true
+   :templateUrl "/templates/add-group-form"})
 
 (defn NewPictureController
   [$scope app $http]
@@ -83,6 +98,13 @@
 (set! (.-$inject NewPictureController) #js ["$scope" "app" "$http"])
 
 (.controller jiksnu "NewPictureController" NewPictureController)
+
+(def.directive jiksnu.addPictureForm
+  []
+  #js
+  {:controller "NewPictureController"
+   :scope true
+   :templateUrl "/templates/add-picture-form"})
 
 (defn NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Streams Users]
@@ -156,6 +178,13 @@
 
 (.controller jiksnu "NewPostController" NewPostController)
 
+(def.directive jiksnu.addPostForm
+  []
+  #js
+  {:controller "NewPostController"
+   :scope true
+   :templateUrl "/templates/add-post-form"})
+
 (defn NewStreamController
   [$scope $rootScope app]
   (set! (.-app $scope) app)
@@ -173,3 +202,9 @@
 (set! (.-$inject NewStreamController)  #js ["$scope" "$rootScope" "app"])
 
 (.controller jiksnu "NewStreamController" NewStreamController)
+
+(def.directive jiksnu.addStreamForm []
+  #js
+  {:controller "NewStreamController"
+   :scope true
+   :templateUrl "/templates/add-stream-form"})

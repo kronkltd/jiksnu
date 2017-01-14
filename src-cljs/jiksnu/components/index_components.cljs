@@ -1,9 +1,8 @@
 (ns jiksnu.components.index-components
   (:require jiksnu.app
             [jiksnu.helpers :as helpers]
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.controller]]
-               [jiksnu.macros :only [page-controller]]))
+            [jiksnu.macros :refer-macros [page-controller]])
+  (:use-macros [gyr.core :only [def.controller]]))
 
 ;; TODO: Auto register for each defined page
 (page-controller Activities       "activities")

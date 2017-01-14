@@ -60,12 +60,13 @@
     [:base {:href "/"}]
     [:title {:property "dc:title"} (config :site :name)]
     (style-section)
-    #_(links-section request response)]
+    (links-section request response)]
    [:body
     [:main-layout]
     [:script {:type "text/javascript"} "var CLOSURE_NO_DEPS = true;"]
     (p/include-js "/main.js" "/cljs/jiksnu.js")
     (map #(% request response) @scripts-section-hook)
+    #_
     (when-let [dsn (config* :sentry :dsn :client)]
       [:script {:type "text/javascript"}
        (str "SENTRY_DSN_CLIENT=\"" dsn "\"")])]))
