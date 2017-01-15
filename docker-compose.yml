@@ -5,7 +5,7 @@ services:
 
   web:
     build: .
-    image: repo.jiksnu.org/kronkltd/jiksnu
+    image: kronkltd/jiksnu
     depends_on:
       - mongo
     environment:

@@ -3,7 +3,7 @@
 set -e
 set -x
 
-docker build -t repo.jiksnu.org/kronkltd/jiksnu-base      docker/jiksnu-base/
-docker build -t repo.jiksnu.org/kronkltd/jiksnu-ruby-base docker/jiksnu-ruby-base/
+docker build -t kronkltd/jiksnu-base      docker/jiksnu-base/
+docker build -t kronkltd/jiksnu-ruby-base docker/jiksnu-ruby-base/
 docker-compose build web
 docker-compose build web-dev
