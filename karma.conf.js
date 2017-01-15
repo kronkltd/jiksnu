@@ -18,10 +18,10 @@ module.exports = function(config) {
       vendorBase + "/jasmine-promise-matchers/dist/jasmine-promise-matchers.js",
       "test.js",
       {pattern: vendorBase + "/**/*", included: false},
-      {pattern: "main.js", included: false},
-      "target/resources/public/cljs-none/goog/base.js",
-      "target/resources/public/cljs-none/jiksnu.js",
-      {pattern: "target/resources/public/**/*", included: false},
+      {pattern: "target/karma-cljs/**/*", included: false, watched: true},
+      {pattern: "target/karma-cljs/goog/base.js", watched: true},
+      {pattern: "target/karma-cljs/karma-test.js", included: true, watched: true},
+      {pattern: "main.js", included: false, watched: true},
       "test-runner.js"
     ],
 
@@ -30,23 +30,28 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress',
-                // "html",
-                // "coverage",
-                "junit", 'notify-send'],
+    reporters: [
+      // 'progress',
+      'htmlDetailed',
+      'kjhtml',
+      'nested',
+      "junit",
+      'notify-send'
+    ],
 
     junitReporter: {
       outputDir: "target/karma"
     },
 
-
     plugins: [
       'karma-browserify',
+      'karma-coverage',
       'karma-jasmine',                      // Required plugin
-      'karma-chrome-launcher',              // Launches Chrome
-      'karma-phantomjs-launcher',           // Launches PhantomJS
       'karma-html-detailed-reporter',
+      'karma-phantomjs-launcher',           // Launches PhantomJS
+      'karma-jasmine-html-reporter',
       'karma-junit-reporter',
+      'karma-nested-reporter',
       'karma-notify-send-reporter'
     ],
 
@@ -63,7 +68,7 @@ module.exports = function(config) {
     //     dir: "target/coverage/"
     // },
 
-    autoWatchBatchDelay: 2000,
+    autoWatchBatchDelay: 5000,
 
     // web server port
     port: 9876,
