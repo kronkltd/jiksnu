@@ -8,6 +8,7 @@ features
 .git
 .idea
 logs
+target
 timbre-spit.log
 Vagrantfile
 .vagrant
