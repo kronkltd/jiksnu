@@ -5,5 +5,5 @@ set -x
 
 docker build -t kronkltd/jiksnu-dev -f docker/web-dev/Dockerfile .
 # docker build -t kronkltd/jiksnu-ruby-base docker/jiksnu-ruby-base/
+sigil -p -f Dockerfile.tmpl > Dockerfile
 docker-compose build web
-docker-compose build web-dev
