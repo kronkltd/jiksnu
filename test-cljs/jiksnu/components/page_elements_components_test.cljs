@@ -47,7 +47,7 @@
             (it "should return false"
               (@$controller controller-name injections)
               (set! (.-item $scope) #js {:_id item-id})
-              (.. (js/expect (.isActor $scope)) (toBe false))))
+              (.. (js/expect (.isActor $scope)) toBeFalsy)))
           (describe {:doc "When authenticated"}
             (describe {:doc "As another user"}
               (it "should return false"
@@ -55,14 +55,14 @@
                 (set! (.-domain (.-data app)) "example.com")
                 (set! (.-user (.-data app)) "bar")
                 (set! (.-item $scope) #js {:_id item-id})
-                (.. (js/expect (.isActor $scope)) (toBe false))))
+                (.. (js/expect (.isActor $scope)) toBeFalsy)))
             (describe {:doc "As the actor"}
               (it "should return true"
                 (@$controller controller-name injections)
                 (set! (.-domain (.-data app)) "example.com")
                 (set! (.-user (.-data app)) "foo")
                 (set! (.-item $scope) #js {:_id item-id})
-                (.. (js/expect (.isActor $scope)) (toBe true))))))
+                (.. (js/expect (.isActor $scope)) toBeTruthy)))))
         (describe {:doc ".isFollowing"}
           (describe {:doc "when not authenticated"}
             (it "should resolve to falsey"
@@ -88,7 +88,7 @@
               mock-response #js {:then mock-then}]
           (set! (.-fetchStatus app) (constantly mock-response))
           (@$controller controller-name injections)
-          (.. (js/expect (.-loaded $scope)) (toBe true))))
+          (.. (js/expect (.-loaded $scope)) toBeTruthy)))
 
       (it "should bind the app service to app2"
         (set! (.-foo app) "bar")
