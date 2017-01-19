@@ -49,13 +49,15 @@
         username (:current (friend/identity request))
         id (str "acct:" username "@" (config :domain))
         params (assoc params :author id)]
-    (if-let [album-id (first (:items (actions.album/fetch-by-user {:_id id} "* uploads")))]
-      (let [picture-ids (map (fn [file]
-                               (:_id (actions.picture/upload id album-id file)))
-                             (:pictures params))
-            params (assoc params :pictures picture-ids)]
-        (actions.activity/post params))
-      (throw+ {:message "Could not determine default photo album"}))))
+    (if (:pictures params)
+      (if-let [album-id (first (:items (actions.album/fetch-by-user {:_id id} "* uploads")))]
+        (let [picture-ids (map (fn [file]
+                                 (:_id (actions.picture/upload id album-id file)))
+                               (:pictures params))
+              params (assoc params :pictures picture-ids)]
+          (actions.activity/post params))
+        (throw+ {:message "Could not determine default photo album"}))
+      (actions.activity/post params))))
 
 (defresource activities-api :collection
   :desc "Collection route for activities"
