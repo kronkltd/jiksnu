@@ -180,6 +180,7 @@
 (defn SidenavController
   [$scope app]
 
+  (set! (.-logout $scope) (.-logout app))
   (set! (.-app $scope) app)
 
   (set! (.-items $scope)
