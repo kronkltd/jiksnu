@@ -1,19 +1,6 @@
 (ns jiksnu.macros
   (:use [gyr.core :only [def.controller]]))
 
-(defmacro page-controller
-  [klass-name collection-name]
-  (let [controller-sym (symbol (str "jiksnu.Index" klass-name "Controller"))]
-    (list 'def.controller controller-sym
-          ['$scope '$rootScope 'app 'pageService 'subpageService]
-          (list 'helpers/init-page
-                '$scope '$rootScope 'app collection-name)
-          (list 'set!
-                (list '.-refresh '$scope)
-                (list 'fn []
-                      (list '.init '$scope)))
-          (list '.init '$scope))))
-
 (defmacro list-directive
   [klass-name subpage]
   (let [Controller-sym (symbol (str "jiksnu.list" klass-name))]

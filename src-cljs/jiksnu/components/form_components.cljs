@@ -1,8 +1,7 @@
 (ns jiksnu.components.form-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.directive]]))
+            [taoensso.timbre :as timbre]))
 
 (defn NewAlbumController
   [$scope app $http]
@@ -17,15 +16,11 @@
               (.post $http path params))))
     (.init $scope)))
 
-(set! (.-$inject NewAlbumController) #js ["$scope" "app" "$http"])
-
-(.controller jiksnu "NewAlbumController" NewAlbumController)
-
 (.component
  jiksnu "addAlbumForm"
  #js {:bindings #js {}
       :templateUrl "/templates/add-album-form"
-      :controller NewAlbumController})
+      :controller #js ["$scope" "app" "$http" NewAlbumController]})
 
 (defn NewGroupController
   [$scope app $http]
@@ -46,11 +41,10 @@
 
 (.controller jiksnu "NewGroupController" NewGroupController)
 
-(def.directive jiksnu.addGroupForm
-  []
-  #js {:controller "NewGroupController"
-       :scope true
-       :templateUrl "/templates/add-group-form"})
+(.component
+ jiksnu "addGroupForm"
+ #js {:controller #js ["$scope" "app" "$http" NewGroupController]
+      :templateUrl "/templates/add-group-form"})
 
 (defn NewPictureController
   [$scope app $http]
@@ -58,6 +52,7 @@
         path "/model/pictures"]
     (set! (.-init $scope) #(.reset $scope))
     (set! (.-reset $scope) #(set! (.-album $scope) default-form))
+    (set! (.-app $scope) app)
 
     (set! (.-submit $scope)
           (fn []
@@ -79,19 +74,13 @@
 
     (.init $scope)))
 
-(set! (.-$inject NewPictureController) #js ["$scope" "app" "$http"])
-
-(.controller jiksnu "NewPictureController" NewPictureController)
-
-(def.directive jiksnu.addPictureForm
-  []
-  #js {:controller "NewPictureController"
-       :scope true
-       :templateUrl "/templates/add-picture-form"})
+(.component
+ jiksnu "addPictureForm"
+ #js {:controller #js ["$scope" "app" "$http" NewPictureController]
+      :templateUrl "/templates/add-picture-form"})
 
 (defn NewPostController
   [$scope $rootScope geolocation app pageService subpageService $filter Streams Users]
-  #_(timbre/debug "Loading New Post Controller")
   (helpers/init-subpage $scope app Users "streams")
   (set! (.-addStream $scope)
         (fn [id]
@@ -153,17 +142,12 @@
             (.fetchStreams $scope))))
   (.reset $scope))
 
-(set! (.-$inject NewPostController)
-      #js ["$scope" "$rootScope" "geolocation" "app"
-           "pageService" "subpageService" "$filter" "Streams" "Users"])
-
-(.controller jiksnu "NewPostController" NewPostController)
-
-(def.directive jiksnu.addPostForm
-  []
-  #js {:controller "NewPostController"
-       :scope true
-       :templateUrl "/templates/add-post-form"})
+(.component
+ jiksnu "addPostForm"
+ #js {:controller #js ["$scope" "$rootScope" "geolocation" "app"
+                       "pageService" "subpageService" "$filter" "Streams" "Users"
+                       NewPostController]
+      :templateUrl "/templates/add-post-form"})
 
 (defn NewStreamController
   [$scope $rootScope app]
@@ -179,11 +163,7 @@
                         (timbre/info "Added Stream" stream)
                         (.refresh app))))))))
 
-(set! (.-$inject NewStreamController)  #js ["$scope" "$rootScope" "app"])
-
-(.controller jiksnu "NewStreamController" NewStreamController)
-
-(def.directive jiksnu.addStreamForm []
-  #js {:controller "NewStreamController"
-       :scope true
-       :templateUrl "/templates/add-stream-form"})
+(.component
+ jiksnu "addStreamForm"
+ #js {:controller #js ["$scope" "$rootScope" "app" NewStreamController]
+      :templateUrl "/templates/add-stream-form"})

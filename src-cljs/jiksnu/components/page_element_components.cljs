@@ -39,7 +39,6 @@
   [$scope Users]
   (set! (.-init $scope)
         (fn []
-          (js/console.log "Scope" $scope)
           (when-let [id (.-id $scope)]
             ;; (timbre/debugf "Displaying avatar for %s" id)
             (set! (.-size $scope) (or (.-size $scope) 32))
@@ -59,10 +58,8 @@
 
   (set! (.-isActor $scope)
         (fn []
-          (if-let [item-id (.-_id (.-item $scope))]
-            (set! (.-authenticated $scope)
-                  (or (-> app .getUserId (= item-id)) false))
-            (throw "No item bound to scope"))))
+          (set! (.-authenticated $scope)
+                (some-> app .getUserId (= (some-> $scope .-item .-_id))))))
 
   (set! (.-init $scope)
         (fn []
