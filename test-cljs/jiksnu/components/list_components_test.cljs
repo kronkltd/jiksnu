@@ -2,7 +2,6 @@
   (:require jiksnu.main
             jiksnu.factories
             jiksnu.components.list-components
-            [purnam.test :refer-macros [describe it is beforeEach]]
             [taoensso.timbre :as timbre]))
 
 (timbre/set-level! :debug)
@@ -19,44 +18,49 @@
 (declare $httpBackend)
 (def $controller (atom nil))
 
-(describe {:doc "jiksnu.components.list-components"}
-  (beforeEach (js/module "jiksnu"))
+(js/describe "jiksnu.components.list-components"
+  (fn []
+    (js/beforeEach (fn [] (js/module "jiksnu")))
 
-  (js/beforeEach (fn [] (js/installPromiseMatchers)))
+    (js/beforeEach (fn [] (js/installPromiseMatchers)))
 
-  (beforeEach
-   (js/inject
-    #js ["$controller" "$rootScope" "$q"
-         "app" "$httpBackend"
-         (fn [_$controller_ _$rootScope_ _$q_ _app_ _$httpBackend_]
-           (reset! $controller _$controller_)
-           (set! app _app_)
-           (set! $rootScope _$rootScope_)
-           (set! $scope (.$new $rootScope))
-           (set! $q _$q_)
-           (set! $httpBackend _$httpBackend_)
-           (doto $httpBackend
-             (.. (whenGET #"/templates/.*") (respond "<div></div>"))
-             (.. (whenGET #"/model/.*")     (respond "{}")))
-           (set! injections #js {:$scope $scope :app app}))]))
+    (js/beforeEach
+     (fn []
+       (js/inject
+        #js ["$controller" "$rootScope" "$q"
+             "app" "$httpBackend"
+             (fn [_$controller_ _$rootScope_ _$q_ _app_ _$httpBackend_]
+               (reset! $controller _$controller_)
+               (set! app _app_)
+               (set! $rootScope _$rootScope_)
+               (set! $scope (.$new $rootScope))
+               (set! $q _$q_)
+               (set! $httpBackend _$httpBackend_)
+               (doto $httpBackend
+                 (.. (whenGET #"/templates/.*") (respond "<div></div>"))
+                 (.. (whenGET #"/model/.*")     (respond "{}")))
+               (set! injections #js {:$scope $scope :app app}))])))
 
-  (let [controller-name "ListStreamsController"]
-    (describe {:doc controller-name}
-      (beforeEach
-       (let [user #js {:_id "foo"}]
-         (set! (.-user $scope) user)))
+    (let [controller-name "ListStreamsController"]
+      (js/describe controller-name
+        (fn []
+          (js/beforeEach
+           (fn []
+             (let [user #js {:_id "foo"}]
+               (set! (.-user $scope) user))))
 
-      (describe {:doc ".addStream"}
-        (it "sends an add-stream notice to the server"
-          (let [stream-name "bar"
-                params #js {:name stream-name}]
-            ;; TODO: Just mock app.addStream
-            (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [201])))
-            (@$controller controller-name injections)
-            (set! (.-stream $scope) params)
-            (let [p (.addStream $scope)]
-              (.$apply $scope)
-              (.flush $httpBackend)
-              (.. (js/expect p) (toBeResolved))))))
+          (js/describe ".addStream"
+            (fn []
+              (js/it "sends an add-stream notice to the server"
+                (fn []
 
-      (describe {:doc ".delete"}))))
+                  (let [stream-name "bar"
+                        params #js {:name stream-name}]
+                    ;; TODO: Just mock app.addStream
+                    (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [201])))
+                    (@$controller controller-name injections)
+                    (set! (.-stream $scope) params)
+                    (let [p (.addStream $scope)]
+                      (.$apply $scope)
+                      (.flush $httpBackend)
+                      (.. (js/expect p) (toBeResolved)))))))))))))
