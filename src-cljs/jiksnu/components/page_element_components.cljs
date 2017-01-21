@@ -219,8 +219,7 @@
                          (timbre/errorf "Failed to load subpage. %s(%s)=>%s" model-name id subpage)
                          (set! (.-errored $scope) true)
                          (set! (.-loading $scope) false)
-                         page))))
-                (throw (str "parent item not bound for subpage: " subpage)))))
+                         page)))))))
       (.refresh $scope))
     (throw "Subpage not specified")))
 
