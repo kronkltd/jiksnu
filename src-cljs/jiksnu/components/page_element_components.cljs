@@ -58,10 +58,8 @@
 
   (set! (.-isActor $scope)
         (fn []
-          (if-let [item-id (.-_id (.-item $scope))]
-            (set! (.-authenticated $scope)
-                  (or (-> app .getUserId (= item-id)) false))
-            (throw "No item bound to scope"))))
+          (set! (.-authenticated $scope)
+                (some-> app .getUserId (= (some-> $scope .-item .-_id))))))
 
   (set! (.-init $scope)
         (fn []
