@@ -10,6 +10,7 @@
    #js ["$scope" "$rootScope" "app" "pageService" "subpageService"
         (fn [$scope $rootScope app pageService subpageService]
           (helpers/init-page $scope $rootScope app page-name)
+          (set! (.-app $scope) app)
           (set! (.-refresh $scope) (fn [] (.init $scope)))
           (.init $scope))]))
 
