@@ -46,9 +46,10 @@
   (set! (.-init $scope)
         (fn [id]
           (set! (.-loaded $scope) false)
-          (.bindOne collection id $scope "item")
-          (-> (.find collection id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
+          (when id
+            (.bindOne collection id $scope "item")
+            (-> (.find collection id)
+                (.then (fn [_] (set! (.-loaded $scope) true)))))))
   (set! (.-loaded $scope) false)
   (set! (.-loading $scope) false)
   (set! (.-errored $scope) false)
