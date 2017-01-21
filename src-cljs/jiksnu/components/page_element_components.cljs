@@ -39,7 +39,6 @@
   [$scope Users]
   (set! (.-init $scope)
         (fn []
-          (js/console.log "Scope" $scope)
           (when-let [id (.-id $scope)]
             ;; (timbre/debugf "Displaying avatar for %s" id)
             (set! (.-size $scope) (or (.-size $scope) 32))
