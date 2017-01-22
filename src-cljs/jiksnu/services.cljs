@@ -1,8 +1,7 @@
 (ns jiksnu.services
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.registry :as registry]
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.service]]))
+            [taoensso.timbre :as timbre]))
 
 (defn fetch-page
   [$http page-name]
