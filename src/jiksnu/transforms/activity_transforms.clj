@@ -227,13 +227,11 @@
 
 (defn set-streams
   [activity]
-  (let [streams (->> activity
-                     :streams
+  (let [streams (->> (-> activity :streams (string/split #","))
                      (mapv (fn [stream]
                              (if (seq stream)
                                (if (string? stream)
                                  (ObjectId. stream)
                                  stream)
-                               (throw+ {:message "Invalid stream"
-                                        :stream stream})))))]
+                               (throw+ {:message "Invalid stream" :stream stream})))))]
     (assoc activity :streams streams)))
