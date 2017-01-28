@@ -7,7 +7,7 @@
 
 (defn configure-raven-plugin
   []
-  (when-let [dsn js/sentryDSNClient]
+  (when-let [dsn (some-> js/window .-sentryDSNClient)]
     (-> js/Raven
         (.config dsn)
         (.addPlugin js/Raven.Plugins.Angular)

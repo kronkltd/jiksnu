@@ -37,13 +37,9 @@
     "lf-ng-md-file-input": "^1.4.8",
     "moment": "^2.11.1",
     "phantomjs-prebuilt": "^2.1.7",
-    "protractor": "^4.0.2",
-    "protractor-cucumber-framework": "^0.6.0",
     "raven-js": "^3.0.4",
     "showdown": "^0.3.4",
-    "swagger-ui": "2.2.3",
     "ui-select": "^0.19.4",
-    "underscore": "1.8.3",
     "utf-8-validate": "2.0.0"
   },
   "devDependencies": {
@@ -66,7 +62,10 @@
     "karma-nested-reporter": "^0.1.4",
     "karma-notify-send-reporter": "^0.0.3",
     "karma-phantomjs-launcher": "^1.0.0",
+    "protractor": "^4.0.2",
     "protractor-console": "^2.0.0",
+    "protractor-cucumber-framework": "^0.6.0",
+    "swagger-ui": "2.2.3",
     "watchify": "^3.7.0",
     "wscat": "^1.0.1"
   },

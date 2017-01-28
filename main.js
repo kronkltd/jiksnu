@@ -19,20 +19,16 @@ var requires = {
   lfNgMdFileInput: require('lf-ng-md-file-input'),
   jquery: require('jquery'),
   jsDataAngular: require('js-data-angular'),
-  raven: require('raven-js'),
-  ravenAngular: require('raven-js/dist/plugins/angular.js'),
-  showdown: require('showdown'),
-  uiSelect: require('ui-select'),
-  underscore: require('underscore')
+  uiSelect: require('ui-select')
 };
-
-window.Showdown = requires.showdown;
-window.Raven = requires.raven;
-window.Raven.Plugins = {};
-window.Raven.Plugins.Angular = requires.ravenAngular;
-window.requires = requires;
 
 // These are replaced via envify.
 window.sentryDSNClient = process.env.JIKSNU_SENTRY_DSN_CLIENT;
+
+if (typeof window.sentryDSNClient != undefined) {
+  requires.raven = window.Raven = require('raven-js');
+  window.Raven.Plugins = {};
+  requires.ravenAngular = window.Raven.Plugins.Angular = require('raven-js/dist/plugins/angular.js');
+}
 
 module.exports = requires;

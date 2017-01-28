@@ -63,9 +63,7 @@
 
 (defn raven-formatter
   "Sends error logging to a Sentry server"
-  [{:keys [instant level ?err_ varargs_
-           output-fn config appender]
-    :as data}]
+  [{:keys [?err_] :as data}]
   (when-let [^Exception e (force ?err_)]
     (try
       (let [^Raven raven (RavenFactory/ravenInstance ^String (get-dsn))
