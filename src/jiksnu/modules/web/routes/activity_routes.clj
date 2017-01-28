@@ -43,21 +43,28 @@
   :name "Activity Models"
   :url "/model/activities")
 
+(def default-album "* uploads")
+
+(defn get-default-album
+  [id]
+  (or (first (:items (actions.album/fetch-by-user {:_id id} default-album)))
+      (throw+ {:message "Could not determine default photo album"})))
+
+(defn process-pictures
+  [{id :author pictures :pictures :as params}]
+  (if-let [picture-ids (when pictures
+                         (if-let [album-id (get-default-album id)]
+                           (map #(:_id (actions.picture/upload id album-id %)) pictures)))]
+    (assoc params :pictures picture-ids)
+    (dissoc params :pictures)))
+
 (defn activities-api-post
   [ctx]
   (let [{{params :params :as request} :request} ctx
         username (:current (friend/identity request))
         id (str "acct:" username "@" (config :domain))
-        params (assoc params :author id)]
-    (if (:pictures params)
-      (if-let [album-id (first (:items (actions.album/fetch-by-user {:_id id} "* uploads")))]
-        (let [picture-ids (map (fn [file]
-                                 (:_id (actions.picture/upload id album-id file)))
-                               (:pictures params))
-              params (assoc params :pictures picture-ids)]
-          (actions.activity/post params))
-        (throw+ {:message "Could not determine default photo album"}))
-      (actions.activity/post params))))
+        params (-> params (assoc :author id) process-pictures)]
+    (actions.activity/post params)))
 
 (defresource activities-api :collection
   :desc "Collection route for activities"
