@@ -225,13 +225,18 @@
                     "unknown verb")]
       (assoc activity :content content))))
 
+(defn format-id-list
+  "Convert a string containing a csv of ids to a seq of objectids"
+  [id-list]
+  (mapv (fn [stream]
+          (if (seq stream)
+            (if (string? stream) (ObjectId. stream) stream)
+            #_
+            (throw+ {:message "Invalid stream" :stream stream})))
+        (string/split id-list #",")))
+
 (defn set-streams
   [activity]
-  (let [streams (->> (-> activity :streams (string/split #","))
-                     (mapv (fn [stream]
-                             (if (seq stream)
-                               (if (string? stream)
-                                 (ObjectId. stream)
-                                 stream)
-                               (throw+ {:message "Invalid stream" :stream stream})))))]
-    (assoc activity :streams streams)))
+  (if-let [streams (:streams activity)]
+    (update activity :streams format-id-list)
+    (dissoc activity :streams)))
