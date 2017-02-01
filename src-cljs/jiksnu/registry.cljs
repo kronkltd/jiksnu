@@ -1,5 +1,7 @@
 (ns jiksnu.registry)
 
+(def pallete-color (or (some-> js/window .-themeColor) "blue"))
+
 (def initial-plugins
   ["angular-clipboard"
    "angularMoment"
