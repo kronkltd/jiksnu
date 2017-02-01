@@ -34,6 +34,7 @@
     "js-data": "^2.9.0",
     "js-data-angular": "^3.2.1",
     "js-data-http": "^2.2.2",
+    "less": "^2.7.2",
     "lf-ng-md-file-input": "^1.4.8",
     "moment": "^2.11.1",
     "phantomjs-prebuilt": "^2.1.7",

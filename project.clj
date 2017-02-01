@@ -51,7 +51,6 @@
             [lein-cljfmt "0.5.2"  :exclusions [org.clojure/clojure]]
             [lein-cljsbuild "1.1.4" :exclusions [org.clojure/clojure]]
             [lein-cloverage "1.0.2" :exclusions [org.clojure/clojure]]
-            [lein-less "1.7.5" :exclusions [org.clojure/clojure]]
             [lein-midje "3.1.3" :exclusions [org.clojure/clojure]]
             [lein-shell "0.4.0" :exclusions [org.clojure/clojure]]]
   :hiera {:ignore-ns #{"jiksnu.channels" "jiksnu.db" "jiksnu.factory" "jiksnu.mock"
@@ -130,8 +129,6 @@
                                              ;; Fix for $q's use of 'finally'
                                              :language-in :ecmascript5
                                              :pretty-print true}}}}}}
-  :less {:source-paths ["less"]
-         :target-path  "target/resources/public/css"}
   :filespecs [{:type :path :path "ciste.clj"}]
   ;; :repositories [["snapshots" {:url "http://repo.jiksnu.org/repository/maven-snapshots/"
   ;;                              :username [:gpg :env/repo_username]
