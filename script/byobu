@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 byobu new-session -d -s dev
 
