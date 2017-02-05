@@ -1,18 +1,23 @@
 (ns jiksnu.helpers
   (:require [clojure.string :as string]
-            [taoensso.timbre :as timbre]
-            [jiksnu.registry :as registry]))
+            [hiccups.runtime :as hiccupsrt]
+            [inflections.core :as inf]
+            [jiksnu.registry :as registry]
+            [taoensso.timbre :as timbre])
+  (:require-macros [hiccups.core :as hiccups :refer [html]]))
 
 (def refresh-followers "refresh-followers")
 
 (defn add-states
   [$stateProvider data]
-  (doseq [[state uri controller template] data]
+  (doseq [[state uri template] data]
     (.state $stateProvider
             #js {:name state
                  :url uri
-                 :controller (str controller "Controller")
-                 :templateUrl (str "/templates/" (name template))})))
+                 :controller #js ["$scope" "$stateParams"
+                                  (fn [$scope $stateParams]
+                                    (set! (.-$stateParams $scope) $stateParams))]
+                 :template (html template)})))
 
 (defn get-toggle-fn
   [$scope]
@@ -46,9 +51,10 @@
   (set! (.-init $scope)
         (fn [id]
           (set! (.-loaded $scope) false)
-          (.bindOne collection id $scope "item")
-          (-> (.find collection id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
+          (when id
+            (.bindOne collection id $scope "item")
+            (-> (.find collection id)
+                (.then (fn [_] (set! (.-loaded $scope) true)))))))
   (set! (.-loaded $scope) false)
   (set! (.-loading $scope) false)
   (set! (.-errored $scope) false)
