@@ -1,13 +1,12 @@
 (ns jiksnu.config
-  (:require jiksnu.app
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
             jiksnu.providers
-            [jiksnu.registry :as registry])
-  (:use-macros [gyr.core :only [def.config]]))
+            [jiksnu.registry :as registry]))
 
-(def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
-                    appProvider DSProvider DSHttpAdapterProvider
-                    hljsServiceProvider $mdThemingProvider]
+(defn jiksnu-config
+  [$stateProvider $urlRouterProvider $locationProvider appProvider DSProvider
+   DSHttpAdapterProvider hljsServiceProvider $mdThemingProvider]
 
   (.setOptions hljsServiceProvider #js {:tabReplace "  "})
 
@@ -27,3 +26,9 @@
       (.hashPrefix "!")
       (.html5Mode true))
   (helpers/add-states $stateProvider registry/route-data))
+
+(.config
+ jiksnu
+ #js ["$stateProvider" "$urlRouterProvider" "$locationProvider"
+      "appProvider" "DSProvider" "DSHttpAdapterProvider"
+      "hljsServiceProvider" "$mdThemingProvider" jiksnu-config])
