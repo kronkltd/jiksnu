@@ -2,25 +2,25 @@
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
   [:md-content.vcard.user-full {:layout "row" :flex ""}
-   [:debug {:expr "user"}]
+   [:debug {:expr "item"}]
    [:div
-    [:display-avatar {:data-id "{{user._id}}"  :data-size "96"}]]
+    [:display-avatar {:data-id "{{item._id}}"  :data-size "96"}]]
    [:p
-    [:span.nickname.fn.n "{{user.name}}"]
-    " ({{user.username}}@{{user.domain}})"]
+    [:span.nickname.fn.n "{{item.name}}"]
+    " ({{item.username}}@{{item.domain}})"]
    [:div.adr
-    [:p.locality "{{user.location}}"]]
-   [:p.note "{{user.bio}}"]
-   [:follow-button {:item "user"}]
-   [:link-to {:data-id "{{user.updateSource}}" :data-model "FeedSource"}]
-   [:p [:a {:href "{{user.id}}"} "{{user.id}}"]]
-   [:p [:a.url {:rel "me" :href "{{user.url}}"} "{{user.url}}"]]
+    [:p.locality "{{item.location}}"]]
+   [:p.note "{{item.bio}}"]
+   [:follow-button {:item "item"}]
+   [:link-to {:data-id "{{item.updateSource}}" :data-model "FeedSource"}]
+   [:p [:a {:href "{{item.id}}"} "{{item.id}}"]]
+   [:p [:a.url {:rel "me" :href "{{item.url}}"} "{{item.url}}"]]
    [:div.action-buttons
     [:md-button {:ng-click "deleteRecord()" :aria-label "Delete User" :ng-show "app.user"}
      [:ng-md-icon {:icon "delete"}]]]]
-  [:list-streams   {:item "user" :layout "row" :flex ""}]
-  [:list-followers {:item "user" :layout "row" :flex ""}]
-  [:list-following {:item "user" :layout "row" :flex ""}]
-  [:list-groups    {:item "user" :layout "row" :flex ""}]
-  [:list-albums    {:item "user" :layout "row" :flex ""}]
-  [:list-activities {:item "user" :layout "row" :flex ""}]]]
+  [:list-streams   {:item "item" :layout "row" :flex ""}]
+  [:list-followers {:item "item" :layout "row" :flex ""}]
+  [:list-following {:item "item" :layout "row" :flex ""}]
+  [:list-groups    {:item "item" :layout "row" :flex ""}]
+  [:list-albums    {:item "item" :layout "row" :flex ""}]
+  [:list-activities {:item "item" :layout "row" :flex ""}]]]

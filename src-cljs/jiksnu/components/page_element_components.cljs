@@ -46,9 +46,10 @@
         (fn []
           (set! (.-size $scope) (or (.-size $ctrl) 32))
           (when-let [id (.-id $ctrl)]
-            (timbre/debugf "Displaying avatar for %s" id)
-            (.bindOne Users id $scope "user")
-            (.find Users id))))
+            (when (seq id)
+              (timbre/debugf "Displaying avatar for %s" id)
+              (.bindOne Users id $scope "user")
+              (.find Users id)))))
   (.init $scope))
 
 (.component
