@@ -2,12 +2,13 @@
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
             [jiksnu.registry :as registry]
+            jiksnu.services
             [taoensso.timbre :as timbre])
   (:use-macros [gyr.core :only [def.controller def.directive]]))
 
-(def.controller jiksnu.AppController [])
+(.controller jiksnu "AppController" #js [(fn [])])
 
-(def.controller jiksnu.AsModelController
+(defn AsModelController
   [$scope DS]
   (let [collection-name (.-model $scope)]
     (set! (.-init $scope)
@@ -17,41 +18,50 @@
             (.find DS collection-name id)))
     (.init $scope (.-id $scope))))
 
-(def.directive jiksnu.asModel []
-  #js {:controller "AsModelController"
-       :template "<span ng-transclude></span>"
-       :scope #js {:id "@" :model "@"}
-       :transclude true})
+(.component
+ jiksnu "asModel"
+ #js {:bindings #js {:id "<" :model "@"}
+      :controller #js ["$scope" "DS" AsModelController]
+      :template "<span ng-transclude></span>"
+      :transclude true})
 
-(def.controller jiksnu.DebugController [$scope $filter app]
+(defn DebugController
+  [$scope $filter app]
   (set! (.-visible $scope) #(.. app -data -debug))
 
   (set! (.-formattedCode $scope)
         #(($filter "json") (.-expr $scope))))
 
-(def.directive jiksnu.debug []
-  #js {:controller "DebugController"
-       :scope #js {:expr "=expr"
-                   :exprText "@expr"}
-       :templateUrl "/templates/debug"})
+(.component
+ jiksnu "debug"
+ #js {:scope #js {:expr "=expr"
+                  :exprText "@expr"}
+      :templateUrl "/templates/debug"
+      :controller #js ["$scope" "$filter" "app" DebugController]})
 
-(def.controller jiksnu.DisplayAvatarController
-  [$scope Users]
+(defn DisplayAvatarController
+  [$ctrl $scope Users]
+  (set! (.-$onChanges $ctrl) #(when (.-id %) (.init $scope)))
   (set! (.-init $scope)
         (fn []
-          (when-let [id (.-id $scope)]
-            ;; (timbre/debugf "Displaying avatar for %s" id)
-            (set! (.-size $scope) (or (.-size $scope) 32))
-            (.bindOne Users id $scope "user")
-            (.find Users id))))
+          (set! (.-size $scope) (or (.-size $ctrl) 32))
+          (when-let [id (.-id $ctrl)]
+            (when (seq id)
+              (timbre/debugf "Displaying avatar for %s" id)
+              (.bindOne Users id $scope "user")
+              (.find Users id)))))
   (.init $scope))
 
-(def.directive jiksnu.displayAvatar []
-  #js {:controller "DisplayAvatarController"
-       :scope #js {:id "@" :size "@"}
-       :templateUrl "/templates/display-avatar"})
+(.component
+ jiksnu "displayAvatar"
+ #js {:bindings #js {:id "@" :size "@"}
+      :controller #js ["$scope" "Users"
+                       (fn [$scope Users]
+                         (this-as $ctrl
+                           (DisplayAvatarController $ctrl $scope Users)))]
+      :templateUrl "/templates/display-avatar"})
 
-(def.controller jiksnu.FollowButtonController
+(defn FollowButtonController
   [$scope app $q $rootScope Subscriptions]
   (set! (.-app $scope) app)
   (set! (.-loaded $scope) false)
@@ -109,11 +119,15 @@
            (fn [data old-data] (.init $scope)))
   (.$on $scope helpers/refresh-followers (.-init $scope)))
 
-(def.directive jiksnu.followButton
-  []
-  #js {:controller "FollowButtonController"
-       :scope #js {:item "="}
-       :templateUrl "/templates/follow-button"})
+(.controller
+ jiksnu "FollowButtonController"
+ #js ["$scope" "app" "$q" "$rootScope" "Subscriptions" FollowButtonController])
+
+(.component
+ jiksnu "followButton"
+ #js {:controller "FollowButtonController"
+      :bindings #js {:item "<"}
+      :templateUrl "/templates/follow-button"})
 
 (defn swagger-url
   [protocol hostname port]
@@ -142,7 +156,7 @@
  #js {:templateUrl "/templates/main-layout"
       :controller #js ["$location" "$mdSidenav" "$scope" "app" MainLayoutController]})
 
-(def.controller jiksnu.NavBarController
+(defn NavBarController
   [$mdSidenav $rootScope $scope $state app hotkeys]
   (set! (.-app2 $scope) app)
   (set! (.-loaded $scope) false)
@@ -169,10 +183,14 @@
   (-> (.fetchStatus app)
       (.then (fn [] (set! (.-loaded $scope) true)))))
 
-(def.directive jiksnu.navBar []
-  #js {:controller "NavBarController"
-       :scope true
-       :templateUrl "/templates/navbar-section"})
+(.controller
+ jiksnu "NavBarController"
+ #js ["$mdSidenav" "$rootScope" "$scope" "$state" "app" "hotkeys" NavBarController])
+
+(.component
+ jiksnu "navBar"
+ #js {:controller "NavBarController"
+      :templateUrl "/templates/navbar-section"})
 
 (defn SidenavController
   [$scope app]
@@ -186,9 +204,12 @@
 
 (.component
  jiksnu "sidenav"
- #js
-  {:templateUrl "/templates/sidenav"
-   :controller #js ["$scope" "app" SidenavController]})
+ #js {:templateUrl "/templates/sidenav"
+      :controller #js ["$scope" "app" SidenavController]})
+
+(.component
+ jiksnu "spinner"
+ #js {:templateUrl "/templates/spinner"})
 
 (def.controller jiksnu.SubpageController
   [$scope subpageService $rootScope]

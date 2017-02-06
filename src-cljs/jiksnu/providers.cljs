@@ -1,8 +1,7 @@
 (ns jiksnu.providers
   (:require [cljs.reader :as reader]
-            jiksnu.app
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.provider]]))
+            [jiksnu.app :refer [jiksnu]]
+            [taoensso.timbre :as timbre]))
 
 (declare update-page)
 
@@ -199,8 +198,8 @@
 
     (js/console.info "pictures" pictures)
 
-    (.forEach
-     js/angular activity
+    (js/angular.forEach
+     activity
      (fn [v k]
        (timbre/debugf "Adding parameter: %s => %s" k v)
        (.append form-data k v)))
@@ -306,7 +305,7 @@
       (.onError (fn []
                   (timbre/warn "Websocket connection errored"))))))
 
-(def.provider jiksnu.app
+(defn app
   []
   (let [f (fn [$injector]
             (timbre/debug "creating app service")
@@ -323,3 +322,5 @@
               ;; return the app
               app))]
     (clj->js {:$get ["$injector" f]})))
+
+(.provider jiksnu "app" app)

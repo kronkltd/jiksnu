@@ -214,19 +214,7 @@
 
 (defn ShowUserController
   [$scope $stateParams app Users]
-  (set! (.-init $scope)
-        (fn [id]
-          (set! (.-loaded $scope) false)
-          (.bindOne Users id $scope "user")
-          (-> (.find Users id)
-              (.then (fn [_] (set! (.-loaded $scope) true))))))
-
-  (let [id (or (.-id $scope)
-               (.-_id $stateParams)
-               (when-let [username (.-username $stateParams)]
-                 (when-let [domain (.-domain $stateParams)]
-                   (str "acct:" username "@" domain))))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Users))
 
 (set! (.-$inject ShowUserController) #js ["$scope" "$stateParams" "app" "Users"])
 (.controller jiksnu "ShowUserController" ShowUserController)
@@ -234,21 +222,7 @@
 
 (defn ShowUserMinimalController
   [$scope $stateParams app Users]
-  (set! (.-init $scope)
-        (fn [id]
-          (timbre/infof "init minimal user - %s" id)
-          (when id
-            (set! (.-loaded $scope) false)
-            (.bindOne Users id $scope "item")
-            (-> (.find Users id)
-                (.then (fn [_] (set! (.-loaded $scope) true)))))))
-
-  (let [id (or (.-id $scope)
-               (.-_id $stateParams)
-               (when-let [username (.-username $stateParams)]
-                 (when-let [domain (.-domain $stateParams)]
-                   (str "acct:" username "@" domain))))]
-    (.init $scope id)))
+  (helpers/init-item $scope $stateParams app Users))
 
 (set! (.-$inject ShowUserMinimalController) #js ["$scope" "$stateParams" "app" "Users"])
 (.controller jiksnu "ShowUserMinimalController" ShowUserMinimalController)

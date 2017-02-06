@@ -67,7 +67,7 @@
             (-> (.invokeAction app (.-name collection) "delete" id)
                 (.then (fn [] (.refresh app)))))))
 
-  (let [id (or (.-id $scope) (.-_id $stateParams))]
+  (let [id (.-id $scope)]
     (.init $scope id)))
 
 (defn init-subpage

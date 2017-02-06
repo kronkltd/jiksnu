@@ -1,12 +1,16 @@
 (ns jiksnu.components.state-components
-  (:require jiksnu.app
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.controller]]))
+            [taoensso.timbre :as timbre]))
 
-(def.controller jiksnu.AvatarPageController [])
+(defn AvatarPageController [])
 
-(def.controller jiksnu.LoginPageController
+(.component
+ jiksnu "avatarPage"
+ #js {:controller #js [AvatarPageController]
+      :templateUrl "/templates/avatar-page"})
+
+(defn LoginPageController
   [$scope $state app $mdToast]
   (set! (.-login $scope)
         (fn []
@@ -16,16 +20,31 @@
                 (.then (fn [r] (.go $state "home"))
                        (fn [e] (.showSimple $mdToast "login failed"))))))))
 
-(def.controller jiksnu.AuthorizeClientController
+(.component
+ jiksnu "loginPage"
+ #js {:controller #js ["$scope" "$state" "app" "$mdToast" LoginPageController]
+      :templateUrl "/templates/login-page"})
+
+(defn AuthorizeClientController
   [$location $scope $stateParams app RequestTokens]
   (timbre/info "Location: " $location)
   (timbre/info "State Params: " $stateParams)
   (set! (.-id $scope) (aget (.search $location) "oauth_token"))
   (helpers/init-item $scope $stateParams app RequestTokens))
 
-(def.controller jiksnu.LogoutController [])
+(.component
+ jiksnu "authorizeClient"
+ #js {:controller #js ["$location" "$scope" "$stateParams" "app" "RequestTokens"
+                       AuthorizeClientController]
+      :templateUrl "/templates/authorize-client"})
 
-(def.controller jiksnu.RegisterPageController
+(defn LogoutController [])
+
+(.controller
+ jiksnu "LogoutController"
+ #js [LogoutController])
+
+(defn RegisterPageController
   [app $scope]
   (set! (.-register $scope)
         (fn []
@@ -36,4 +55,14 @@
                        (-> (.fetchStatus app)
                            (.then #(.go app "home")))))))))
 
-(def.controller jiksnu.SettingsPageController [])
+(.component
+ jiksnu "registerPage"
+ #js {:controller #js ["app" "$scope" RegisterPageController]
+      :templateUrl "/templates/register-page"})
+
+(defn SettingsPageController [])
+
+(.component
+ jiksnu "settingsPage"
+ #js {:controller #js [SettingsPageController]
+      :templateUrl "/templates/settings-page"})
