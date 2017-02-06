@@ -57,8 +57,7 @@
  #js {:bindings #js {:id "@" :size "@"}
       :controller #js ["$scope" "Users"
                        (fn [$scope Users]
-                         (this-as $ctrl
-                           (DisplayAvatarController $ctrl $scope Users)))]
+                         (this-as $ctrl (DisplayAvatarController $ctrl $scope Users)))]
       :templateUrl "/templates/display-avatar"})
 
 (defn FollowButtonController

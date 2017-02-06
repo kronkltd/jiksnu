@@ -8,7 +8,6 @@
 (defn add-stream
   "Create a stream with the given name"
   [app stream-name]
-  (timbre/info "Creating Stream")
   (.. app
       (inject "$http")
       (post "/model/streams" #js {:name stream-name})
@@ -30,12 +29,10 @@
 (defn fetch-status
   "Fetch the status from the server"
   [app]
-  (timbre/debug "fetching app status")
   (.. app
       (inject "$http")
       (get "/status")
       (then (fn [response]
-              (timbre/debug "setting app status")
               (set! (.-data app) (.-data response))))))
 
 (defn follow
