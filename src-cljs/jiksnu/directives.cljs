@@ -1,6 +1,5 @@
 (ns jiksnu.directives
-  (:require jiksnu.app
-            [jiksnu.macros :refer-macros [list-directive item-directive]])
+  (:require jiksnu.app)
   (:use-macros [gyr.core :only [def.directive]]))
 
 (def.directive jiksnu.leftColumn []

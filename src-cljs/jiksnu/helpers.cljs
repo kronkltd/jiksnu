@@ -47,7 +47,7 @@
       (.then #(aset item subpage (.-body %)))))
 
 (defn init-item
-  [$scope $stateParams app collection]
+  [$ctrl $scope $stateParams app collection]
   (set! (.-init $scope)
         (fn [id]
           (set! (.-loaded $scope) false)
@@ -55,6 +55,13 @@
             (.bindOne collection id $scope "item")
             (-> (.find collection id)
                 (.then (fn [_] (set! (.-loaded $scope) true)))))))
+
+  (set! (.-$onChanges $ctrl)
+        (fn [changes]
+          (when-let [id (some-> changes .-id .-currentValue)]
+            (timbre/debugf "Item controller binding changed - %s" (.-name collection))
+            (.init $scope id))))
+
   (set! (.-loaded $scope) false)
   (set! (.-loading $scope) false)
   (set! (.-errored $scope) false)
@@ -66,45 +73,44 @@
             (-> (.invokeAction app (.-name collection) "delete" id)
                 (.then (fn [] (.refresh app)))))))
 
-  (let [id (.-id $scope)]
+  (let [id (.-id $ctrl)]
     (.init $scope id)))
 
 (defn init-subpage
-  [$scope app collection subpage]
-  (let []
-    (set! (.-app $scope) app)
-    (set! (.-loaded $scope) false)
-    (set! (.-loading $scope) false)
-    (set! (.-errored $scope) false)
-    (set! (.-formShown $scope) false)
-    (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  [$ctrl $scope app collection subpage]
+  (set! (.-app $scope) app)
+  (set! (.-loaded $scope) false)
+  (set! (.-loading $scope) false)
+  (set! (.-errored $scope) false)
+  (set! (.-formShown $scope) false)
+  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
 
-    (.$watch $scope
-             #(.-item $scope)
-             (fn [item old-item]
-               (when (not= item old-item)
-                 (if item
-                   (.init $scope item subpage)
-                   (timbre/warn "item is nil")))))
+  (.$watch $scope
+           #(.-item $scope)
+           (fn [item old-item]
+             (when (not= item old-item)
+               (if item
+                 (.init $scope item subpage)
+                 (timbre/warn "item is nil")))))
 
-    (set! (.-refresh $scope) (fn [] (.$broadcast $scope "refresh-page")))
+  (set! (.-refresh $scope) (fn [] (.$broadcast $scope "refresh-page")))
 
-    (set! (.-init $scope)
-          (fn [item]
-            (let [subpageService (.inject app "subpageService")]
-              (timbre/debugf "init subpage %s(%s)=>%s" (.-name collection) (.-_id item) subpage)
-              (set! (.-item $scope) item)
-              (set! (.-loaded $scope) false)
-              (-> (.fetch subpageService item subpage)
-                  (.then (fn [page]
-                           (timbre/debugf "Subpage resolved - %s(%s)=>%s"
-                                          (.-name collection) (.-_id item) subpage)
-                           (set! (.-loaded $scope) true)
-                           (aset item subpage page))
-                         (fn [page]
-                           (timbre/debugf "Subpage errored - %s(%s)=>%s"
-                                          (.-name collection) (.-_id item) subpage)
-                           (set! (.-errored $scope) true)))))))))
+  (set! (.-init $scope)
+        (fn [item]
+          (let [subpageService (.inject app "subpageService")]
+            (timbre/debugf "init subpage %s(%s)=>%s" (.-name collection) (.-_id item) subpage)
+            (set! (.-item $scope) item)
+            (set! (.-loaded $scope) false)
+            (-> (.fetch subpageService item subpage)
+                (.then (fn [page]
+                         (timbre/debugf "Subpage resolved - %s(%s)=>%s"
+                                        (.-name collection) (.-_id item) subpage)
+                         (set! (.-loaded $scope) true)
+                         (aset item subpage page))
+                       (fn [page]
+                         (timbre/debugf "Subpage errored - %s(%s)=>%s"
+                                        (.-name collection) (.-_id item) subpage)
+                         (set! (.-errored $scope) true))))))))
 
 (defn init-page
   [$scope $rootScope app page-type]

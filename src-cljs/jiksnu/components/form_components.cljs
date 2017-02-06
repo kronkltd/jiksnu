@@ -81,7 +81,7 @@
 
 (defn NewPostController
   [$scope geolocation app Users]
-  (helpers/init-subpage $scope app Users "streams")
+  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "streams"))
   (set! (.-addStream $scope)
         (fn [id]
           (timbre/debug "adding stream" id)
