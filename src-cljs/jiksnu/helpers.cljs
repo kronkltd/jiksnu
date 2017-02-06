@@ -139,4 +139,4 @@
    module (str "index" (inf/camel-case page-name))
    #js {:bindings #js {:id "<"}
         :templateUrl (str "/templates/index-" page-name)
-        :controller controller-name}))
+        :controller (str "Index" (inf/camel-case page-name) "Controller")}))
