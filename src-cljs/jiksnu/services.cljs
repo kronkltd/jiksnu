@@ -16,7 +16,7 @@
   (let [type (.getType parent)]
     (when-let [mapping-fn (get-in registry/subpage-mappings [type page-name])]
       (let [url (mapping-fn parent)]
-        (-> (.get $http url )
+        (-> (.get $http url)
             (.then (fn [response] (.-data response))))))))
 
 (defn pageService

@@ -109,7 +109,6 @@
                 (@$controller controller-name injections)
                 (.. (js/expect (.-loaded $scope)) toBeTruthy))))
 
-
           (js/it "should bind the app service to app2"
             (fn []
               (set! (.-foo app) "bar")

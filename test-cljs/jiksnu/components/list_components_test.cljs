@@ -53,7 +53,6 @@
             (fn []
               (js/it "sends an add-stream notice to the server"
                 (fn []
-
                   (let [stream-name "bar"
                         params #js {:name stream-name}]
                     ;; TODO: Just mock app.addStream

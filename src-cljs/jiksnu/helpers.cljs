@@ -63,7 +63,6 @@
   (set! (.-deleteRecord $scope)
         (fn [item]
           (let [id (.-id $scope)]
-            ;; (timbre/debugf "deleting record: %s(%s)" (.getType item) id)
             (-> (.invokeAction app (.-name collection) "delete" id)
                 (.then (fn [] (.refresh app)))))))
 

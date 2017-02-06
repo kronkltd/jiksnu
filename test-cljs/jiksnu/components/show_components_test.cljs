@@ -25,20 +25,20 @@
 
     (js/beforeEach
      (fn []
-      (js/inject
-       #js ["$controller" "$rootScope" "$q"
-            "app" "$httpBackend"
-            (fn [_$controller_ _$rootScope_ _$q_ _app_ _$httpBackend_]
-              (reset! $controller _$controller_)
-              (set! app _app_)
-              (set! $rootScope _$rootScope_)
-              (set! $scope (.$new $rootScope))
-              (set! $q _$q_)
-              (set! $httpBackend _$httpBackend_)
-              (doto $httpBackend
-                (.. (whenGET #"/templates/.*") (respond "<div></div>"))
-                (.. (whenGET #"/model/.*")     (respond "{}")))
-              (set! injections #js {:$scope $scope :app app}))])))
+       (js/inject
+        #js ["$controller" "$rootScope" "$q"
+             "app" "$httpBackend"
+             (fn [_$controller_ _$rootScope_ _$q_ _app_ _$httpBackend_]
+               (reset! $controller _$controller_)
+               (set! app _app_)
+               (set! $rootScope _$rootScope_)
+               (set! $scope (.$new $rootScope))
+               (set! $q _$q_)
+               (set! $httpBackend _$httpBackend_)
+               (doto $httpBackend
+                 (.. (whenGET #"/templates/.*") (respond "<div></div>"))
+                 (.. (whenGET #"/model/.*")     (respond "{}")))
+               (set! injections #js {:$scope $scope :app app}))])))
 
     (let [controller-name "ShowConversationController"]
       (js/describe controller-name
