@@ -25,18 +25,26 @@
       :transclude true})
 
 (defn DebugController
-  [$scope $filter app]
+  [$ctrl $scope $filter app]
   (set! (.-visible $scope) #(.. app -data -debug))
-
-  (set! (.-formattedCode $scope)
-        #(($filter "json") (.-expr $scope))))
+  (set! (.-$onChanges $ctrl) #(do
+                                (js/console.debug "change expr: " %)
+                                (when (.-id %) (.init $scope))))
+  (set! (.-init $scope)
+        (fn []
+          (timbre/debugf "Debugging expr: %s" (js/JSON.stringify (.-expr $ctrl)))
+          (set! (.-formattedCode $scope)
+                #(($filter "json") (.-expr $ctrl)))))
+  (.init $scope))
 
 (.component
  jiksnu "debug"
- #js {:scope #js {:expr "=expr"
-                  :exprText "@expr"}
+ #js {:bindings #js {:expr "=expr" :exprText "@expr"}
       :templateUrl "/templates/debug"
-      :controller #js ["$scope" "$filter" "app" DebugController]})
+      :controller
+      #js ["$scope" "$filter" "app"
+           (fn [$scope $filter app]
+             (this-as $ctrl (DebugController $ctrl $scope $filter app)))]})
 
 (defn DisplayAvatarController
   [$ctrl $scope Users]
