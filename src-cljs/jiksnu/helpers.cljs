@@ -52,16 +52,18 @@
   (set! (.-init $scope)
         (fn [id]
           (set! (.-loaded $scope) false)
-          (when id
-            (.bindOne collection id $scope "item")
-            (-> (.find collection id)
-                (.then (fn [_] (set! (.-loaded $scope) true)))))))
+          (let [id (.-id $ctrl)]
+            (when (seq id)
+              (timbre/debugf "Binding item id: %s" id)
+              (.bindOne collection id $scope "item")
+              (-> (.find collection id)
+                  (.then (fn [_] (set! (.-loaded $scope) true))))))))
 
   (set! (.-$onChanges $ctrl)
         (fn [changes]
           (when-let [id (some-> changes .-id .-currentValue)]
             (timbre/debugf "Item controller binding changed - %s" (.-name collection))
-            (.init $scope id))))
+            (.init $scope))))
 
   (set! (.-loaded $scope) false)
   (set! (.-loading $scope) false)
@@ -74,8 +76,7 @@
             (-> (.invokeAction app (.-name collection) "delete" id)
                 (.then (fn [] (.refresh app)))))))
 
-  (let [id (.-id $ctrl)]
-    (.init $scope id)))
+  (.init $scope))
 
 (defn init-subpage
   [$ctrl $scope app collection subpage]
