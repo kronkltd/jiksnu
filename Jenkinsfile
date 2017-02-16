@@ -3,154 +3,121 @@
 def org = 'kronkltd'
 def project = 'jiksnu'
 
-def repo = 'repo.jiksnu.org/'
-def repoCreds = '8bb2c76c-133c-4c19-9df1-20745c31ac38'
-def repoPath = "https://${repo}"
-
+def repo, repoCreds, repoPath
 def clojureImage, devImage, err, mainImage, mongoContainer
 
-def pushImages = false
+def pushImages = true
 def integrationTests = false
 
-// Set build properties
-properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']],
-            [$class: 'GithubProjectProperty', displayName: 'Jiksnu', projectUrlStr: "https://github.com/${org}/${project}/"]]);
-
-stage('Prepare Environment') {
-    node('docker') {
-        step([$class: 'WsCleanup'])
-
-        // Set current git commit
-        checkout scm
-
-        env.BUILD_TAG = env.BUILD_TAG.replaceAll('%2F', '-')
-
-        def isPR = false
-
-        if (env.CHANGE_ID) {
-            echo "PR build detected due to change id"
-            isPR = true
-        }
-
-        if (env.BRANCH_NAME == 'develop') {
-            env.BRANCH_TAG = 'latest'
-        } else if (env.BRANCH_NAME == 'master') {
-            // TODO: Parse version numbers
-            env.BRANCH_TAG = 'stable'
-        } else {
-            env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
-        }
-
-        // Print Environment
-        sh 'env | sort'
-    }
-}
-
-stage('Build Dev Image') {
-    node('docker') {
-        ansiColor('xterm') {
-            devImage = docker.build("${org}/${project}-dev:${env.BRANCH_TAG}",
-                                    "-f docker/web-dev/Dockerfile .")
-            if (pushImages) {
-                docker.withRegistry(repoPath, repoCreds) {
-                    devImage.push()
-                }
-            }
-        }
-    }
-}
-
-stage('Unit Tests') {
-    node('docker') {
-        try {
-            mongoContainer = docker.image('mongo').run("--name ${env.BUILD_TAG}-mongo")
-
-            devImage.inside(["--link ${mongoContainer.id}:mongo",
-                             "--name ${env.BUILD_TAG}-dev"].join(' ')) {
+node('docker') {
+    ansiColor('xterm') {
+        timestamps {
+            stage('Init') {
+                // Set current git commit
                 checkout scm
 
-                ansiColor('xterm') {
-                    timestamps {
-                        sh 'script/cibuild'
+                env.BUILD_TAG = env.BUILD_TAG.replaceAll('%2F', '-')
+                repo = env.JENKINS_DOCKER_REGISTRY_HOST
+                repoCreds = '8bb2c76c-133c-4c19-9df1-20745c31ac38'
+                repoPath = "https://${repo}"
+
+                properties([[$class: 'BuildDiscarderProperty',
+                               strategy: [$class: 'LogRotator', numToKeepStr: '5']]]);
+
+                if (env.BRANCH_NAME == 'develop') {
+                    env.BRANCH_TAG = 'latest'
+                } else if (env.BRANCH_NAME == 'master') {
+                    // TODO: Parse version numbers
+                    env.BRANCH_TAG = 'stable'
+                } else {
+                    env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
+                }
+
+                // Print Environment
+                sh 'env | sort'
+            }
+
+            stage('Build Dev Image') {
+                devImage = docker.build("${org}/${project}-dev:${env.BRANCH_TAG}",
+                                        "-f docker/web-dev/Dockerfile .")
+                if (pushImages) {
+                    docker.withRegistry(repoPath) {
+                        devImage.push()
                     }
                 }
             }
 
-            junit 'target/surefire-reports/TEST-*.xml'
-        } catch (caughtError) {
-            err = caughtError
-        } finally {
-            mongoContainer.stop()
+            stage('Unit Tests') {
+                try {
+                    mongoContainer = docker.image('mongo').run("--name ${env.BUILD_TAG}-mongo")
 
-            if (err) {
-                throw err
-            }
-        }
-    }
-}
+                    devImage.inside(["--link ${mongoContainer.id}:mongo",
+                                     "--name ${env.BUILD_TAG}-dev"].join(' ')) {
+                        sh 'script/cibuild'
+                    }
 
-stage('Build Jars') {
-    node('docker') {
-        devImage.inside("--name ${env.BUILD_TAG}-jars") {
-            checkout scm
-            sh 'lein install'
-            sh 'lein uberjar'
-            archive 'target/*jar'
-        }
-    }
-}
+                    junit 'target/surefire-reports/TEST-*.xml'
+                } catch (caughtError) {
+                    err = caughtError
+                } finally {
+                    mongoContainer.stop()
 
-stage('Build Run Image') {
-    node('docker') {
-        ansiColor('xterm') {
-            sh "sigil -f Dockerfile.tmpl -p > Dockerfile"
-
-            mainImage = docker.build("${org}/${project}:${env.BRANCH_TAG}")
-
-            if (pushImages) {
-                docker.withRegistry(repoPath, repoCreds) {
-                    mainImage.push()
+                    if (err) {
+                        throw err
+                    }
                 }
             }
-        }
-    }
-}
 
-stage('Generate Reports') {
-    node('docker') {
-        devImage.inside("--name ${env.BUILD_TAG}-reports") {
-            checkout scm
-
-            ansiColor('xterm') {
-                sh 'lein doc'
+            stage('Build Jars') {
+                devImage.inside("--name ${env.BUILD_TAG}-jars") {
+                    sh 'lein install'
+                    sh 'lein uberjar'
+                    archive 'target/*jar'
+                }
             }
 
-            step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
-            step([$class: 'TasksPublisher', high: 'FIXME', normal: 'TODO', pattern: '**/*.clj,**/*.cljs'])
-        }
-    }
-}
+            stage('Build Run Image') {
+                sh "sigil -f Dockerfile.tmpl -p > Dockerfile"
 
-if (integrationTests) {
-    stage('Integration tests') {
-        node('docker') {
-            try {
-                sh 'docker-compose up -d webdriver'
-                sh 'docker-compose up -d jiksnu-integration'
+                mainImage = docker.build("${org}/${project}:${env.BRANCH_TAG}")
 
-                sh "docker inspect workspace_jiksnu-integration_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_host"
-                env.JIKSNU_HOST = readFile('jiksnu_host').trim()
+                if (pushImages) {
+                    docker.withRegistry(repoPath) {
+                        mainImage.push()
+                    }
+                }
+            }
 
-                sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
-                sh 'docker-compose run --rm web-dev script/protractor'
-            } catch (caughtError) {
-                err = caughtError
-            } finally {
-                sh 'docker-compose stop'
-                sh 'docker-compose rm -f'
+            stage('Generate Reports') {
+                devImage.inside("--name ${env.BUILD_TAG}-reports") {
+                    sh 'lein doc'
 
-                if (err) {
-                    throw err
+                    step([$class: 'JavadocArchiver', javadocDir: 'doc', keepAll: true])
+                    step([$class: 'TasksPublisher', high: 'FIXME', normal: 'TODO', pattern: '**/*.clj,**/*.cljs'])
+                }
+            }
+
+            if (integrationTests) {
+                stage('Integration tests') {
+                    try {
+                        sh 'docker-compose up -d webdriver'
+                        sh 'docker-compose up -d jiksnu-integration'
+
+                        sh "docker inspect workspace_jiksnu-integration_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_host"
+                        env.JIKSNU_HOST = readFile('jiksnu_host').trim()
+
+                        sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
+                        sh 'docker-compose run --rm web-dev script/protractor'
+                    } catch (caughtError) {
+                        err = caughtError
+                    } finally {
+                        sh 'docker-compose stop'
+                        sh 'docker-compose rm -f'
+
+                        if (err) {
+                            throw err
+                        }
+                    }
                 }
             }
         }
