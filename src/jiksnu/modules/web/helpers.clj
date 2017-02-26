@@ -112,7 +112,7 @@
 (defn subpage-exists?
   [{{:keys [subpage target target-model]} :resource
     {{id :_id} :route-params} :request :as ctx}]
-  (timbre/infof "fetching subpage - %s(%s)" target-model subpage)
+  ;; (timbre/infof "fetching subpage - %s(%s, %s)" (target-model) (subpage) id)
   (when-let [item (actions/get-model (target-model) id)]
     {:data (actions/get-sub-page item (subpage))}))
 
