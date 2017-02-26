@@ -2,4 +2,6 @@
 
 set -e
 
+script/check-connections
+
 script/update

@@ -4,6 +4,8 @@ set -e
 
 printenv | sort
 
+script/check-connections
+
 script/update
 
 echo ">> Running"

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+[ -z "$JIKSNU_DB_HOST" ] && (\
+    >&2 echo "Environment variable JIKSNU_DB_HOST has not been defined"; \
+    exit 1)
+
+nc -z $JIKSNU_DB_HOST 27017 2>/dev/null || \
+  (echo "Unable to contact MongoDB server at ${JIKSNU_DB_HOST}"; \
+   exit 1)
+
