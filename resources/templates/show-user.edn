@@ -1,6 +1,6 @@
 [:div {:title "show-user"}
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
   [:md-content.vcard.user-full {:layout "row" :flex ""}
    [:debug {:expr "item"}]
    [:div

@@ -1,4 +1,4 @@
-[:div {:ng-if "user.links"}
+[:div {:ng-show "user.links"}
  [:h3 "Links"]
  [:table.table
   [:thead

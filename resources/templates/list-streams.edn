@@ -12,7 +12,7 @@
   [:input {:ng-model "stream.userId" :name "user" :type "hidden"}]
   [:input {:ng-model "stream.name" :name "name" :type "text"}]
   [:input.btn.btn-default {:type "submit"}]]
- [:subpage {:name "streams" :item "item"}
+ [:subpage {:name "streams" :item "$ctrl.item"}
   [:debug {:expr "$parent.page"}]
   [:div {:ng-if "!$parent.loaded"} [:spinner]]
   [:div {:ng-if "$parent.loaded"}

@@ -5,10 +5,10 @@
   [:div  {:layout "column" :flex "10" :layout-align "right"}
    [:md-button {:ng-click "refresh()" :aria-label "Refresh"}
     [:ng-md-icon {:icon "loop"}]]]]
- [:subpage {:name "groups" :item "item"}
+ [:subpage {:name "groups" :item "$ctrl.item"}
   [:debug {:expr "$parent.page"}]
-  [:div {:ng-if "!$parent.loaded"} [:spinner]]
-  [:div {:ng-if "$parent.loaded"}
+  [:div {:ng-hide "$parent.loaded"} [:spinner]]
+  [:div {:ng-show "$parent.loaded"}
    [:md-list
     [:md-list-item {:ng-repeat "id in $parent.$parent.page.items"}
      [:debug {:expr "id"}]

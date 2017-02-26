@@ -3,6 +3,7 @@
             [hiccups.runtime :as hiccupsrt]
             [inflections.core :as inf]
             [jiksnu.registry :as registry]
+            jiksnu.services
             [taoensso.timbre :as timbre])
   (:require-macros [hiccups.core :as hiccups :refer [html]]))
 
@@ -51,16 +52,18 @@
   (set! (.-init $scope)
         (fn [id]
           (set! (.-loaded $scope) false)
-          (when id
-            (.bindOne collection id $scope "item")
-            (-> (.find collection id)
-                (.then (fn [_] (set! (.-loaded $scope) true)))))))
+          (let [id (.-id $ctrl)]
+            (when (seq id)
+              (timbre/debugf "Binding item id: %s" id)
+              (.bindOne collection id $scope "item")
+              (-> (.find collection id)
+                  (.then (fn [_] (set! (.-loaded $scope) true))))))))
 
   (set! (.-$onChanges $ctrl)
         (fn [changes]
           (when-let [id (some-> changes .-id .-currentValue)]
             (timbre/debugf "Item controller binding changed - %s" (.-name collection))
-            (.init $scope id))))
+            (.init $scope))))
 
   (set! (.-loaded $scope) false)
   (set! (.-loading $scope) false)
@@ -73,8 +76,7 @@
             (-> (.invokeAction app (.-name collection) "delete" id)
                 (.then (fn [] (.refresh app)))))))
 
-  (let [id (.-id $ctrl)]
-    (.init $scope id)))
+  (.init $scope))
 
 (defn init-subpage
   [$ctrl $scope app collection subpage]
@@ -112,21 +114,31 @@
                                         (.-name collection) (.-_id item) subpage)
                          (set! (.-errored $scope) true))))))))
 
-(defn init-page
-  [$scope $rootScope app page-type]
-  (.$on $rootScope "updateCollection" (fn [] (.init $scope)))
-  (set! (.-loaded $scope) false)
-  (set! (.-init $scope)
-        (fn []
-          (let [Pages (.inject app "Pages")
-                pageService (.inject app "pageService")]
-            (timbre/debugf "Loading page: %s" page-type)
-            (set! (.-loaded $scope) false)
-            (-> pageService
-                (.fetch page-type)
-                (.then (fn [page]
-                         (timbre/debugf "Page loaded: %s" page-type)
-                         (set! (.-_id page) page-type)
-                         (.inject Pages page)
-                         (set! (.-page $scope) page)
-                         (set! (.-loaded $scope) true))))))))
+(defn page-controller
+  [module page-name]
+  (.controller
+   module (str "Index" (inf/camel-case page-name) "Controller")
+   #js ["$scope" "$rootScope" "app" "pageService" "Pages"
+        (fn [$scope $rootScope app pageService Pages]
+          (set! (.-loaded $scope) false)
+          (set! (.-page $scope) #js {:items #js []})
+          (set! (.-refresh $scope) #(.init $scope))
+          (set! (.-getItems $scope) (fn [] (or (some-> $scope .-page .-items) #js [])))
+          (set! (.-init $scope)
+                (fn []
+                  (timbre/debugf "Initializing page controller: %s" page-name)
+                  (set! (.-loaded $scope) false)
+                  (-> pageService
+                      (.fetch page-name)
+                      (.then (fn [page]
+                               (set! (.-_id page) page-name)
+                               (.inject Pages page)
+                               (set! (.-page $scope) page)
+                               (set! (.-loaded $scope) true))))))
+          (.$on $rootScope "updateCollection" #(.init $scope))
+          (.init $scope))])
+  (.component
+   module (str "index" (inf/camel-case page-name))
+   #js {:bindings #js {:id "<"}
+        :templateUrl (str "/templates/index-" page-name)
+        :controller (str "Index" (inf/camel-case page-name) "Controller")}))

@@ -80,8 +80,8 @@
       :templateUrl "/templates/add-picture-form"})
 
 (defn NewPostController
-  [$scope geolocation app Users]
-  (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "streams"))
+  [$ctrl $scope geolocation app Users]
+  (helpers/init-subpage $ctrl $scope app Users "streams")
   (set! (.-addStream $scope)
         (fn [id]
           (timbre/debug "adding stream" id)
@@ -95,8 +95,8 @@
                                     :geo #js {:latitude nil
                                               :longitude nil}
                                     :content ""})
-  (set! (.-enabled $scope) (fn [] (.-data app)))
-  (set! (.-visible $scope) (fn [] (and (.enabled $scope) app.user)))
+  (set! (.-enabled $ctrl)  (fn [] (.-data app)))
+  (set! (.-visible $scope) (fn [] (and (.enabled $ctrl) app.user)))
   (set! (.-fetchStreams $scope)
         (fn []
           #_(timbre/debug "fetching streams")
@@ -144,9 +144,10 @@
 
 (.component
  jiksnu "addPostForm"
- #js {:controller #js ["$scope" "$rootScope" "geolocation" "app"
-                       "pageService" "subpageService" "$filter" "Streams" "Users"
-                       NewPostController]
+ #js {:controller
+      #js ["$scope" "geolocation" "app" "Users"
+           (fn [$scope geolocation app Users]
+             (this-as $ctrl (NewPostController $ctrl $scope geolocation app Users)))]
       :templateUrl "/templates/add-post-form"})
 
 (defn NewStreamController

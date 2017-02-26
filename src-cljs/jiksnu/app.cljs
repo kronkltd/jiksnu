@@ -1,6 +1,5 @@
 (ns jiksnu.app
   (:require [jiksnu.registry :as registry]
-            [jiksnu.helpers :as helpers]
             [taoensso.timbre :as timbre]))
 
 (defonce plugins (atom #{}))

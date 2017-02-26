@@ -1,88 +1,78 @@
 (ns jiksnu.components.list-components
-  (:require [jiksnu.app :refer [jiksnu]]
-            [jiksnu.helpers :as helpers]
-            [jiksnu.macros :refer-macros [list-directive]])
-  (:use-macros [gyr.core :only [def.controller def.directive]]))
+  (:require [inflections.core :as inf]
+            [jiksnu.app :refer [jiksnu]]
+            [jiksnu.helpers :as helpers]))
+
+(defn list-directive
+  [subpage controller]
+  (let [component-name (str "list" (inf/camel-case subpage))
+        controller-name (str "List" (inf/camel-case subpage) "Controller")]
+    (.controller jiksnu controller-name controller)
+    (.component
+     jiksnu component-name
+     #js {:bindings #js {:id "<" :item "="}
+          :templateUrl (str "/templates/list-" subpage)
+          :controller controller})))
 
 (defn ListActivitiesController
   [$scope app Users]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "activities")))
 
-(set! (.-$inject ListActivitiesController) #js ["$scope" "app" "Users"])
-(.controller jiksnu "ListActivitiesController" ListActivitiesController)
-(list-directive "Activities"    "activities")
+(list-directive "activities" #js ["$scope" "app" "Users" ListActivitiesController])
 
 (defn ListAlbumsController
   [$scope app Users]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "albums")))
 
-(set! (.-$inject ListAlbumsController) #js ["$scope" "app" "Users"])
-(.controller jiksnu "ListAlbumsController" ListAlbumsController)
-(list-directive "Albums"        "albums")
+(list-directive "albums" #js ["$scope" "app" "Users" ListAlbumsController])
 
 (defn ListFollowersController
   [$scope app Users]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "followers")))
 
-(set! (.-$inject ListFollowersController) #js ["$scope" "app" "Users"])
-(.controller jiksnu "ListFollowersController" ListFollowersController)
-(list-directive "Followers"     "followers")
+(list-directive "followers" #js ["$scope" "app" "Users" ListFollowersController])
 
 (defn ListFollowingController
   [$scope app Users]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "following")))
 
-(set! (.-$inject ListFollowingController) #js ["$scope" "app" "Users"])
-(.controller jiksnu "ListFollowingController" ListFollowingController)
-(list-directive "Following"     "following")
+(list-directive "following" #js ["$scope" "app" "Users" ListFollowingController])
 
 (defn ListGroupsController
   [$scope app Users]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "groups")))
 
-(set! (.-$inject ListGroupsController) #js ["$scope" "app" "Users"])
-(.controller jiksnu "ListGroupsController" ListGroupsController)
-(list-directive "Groups"        "groups")
+(list-directive "groups" #js ["$scope" "app" "Users" ListGroupsController])
 
 (defn ListGroupAdminsController
   [$scope app Groups]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Groups "admins")))
 
-(set! (.-$inject ListGroupAdminsController) #js ["$scope" "app" "Groups"])
-(.controller jiksnu "ListGroupAdminsController" ListGroupAdminsController)
-(list-directive "GroupAdmins"   "group-admins")
+(list-directive "group-admins" #js ["$scope" "app" "Groups" ListGroupAdminsController])
 
 (defn ListGroupMembersController
   [$scope app Groups]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Groups "members")))
 
-(set! (.-$inject ListGroupMembersController) #js ["$scope" "app" "Groups"])
-(.controller jiksnu "ListGroupMembersController" ListGroupMembersController)
-(list-directive "GroupMembers"  "group-members")
+(list-directive "group-members" #js ["$scope" "app" "Groups" ListGroupMembersController])
 
 (defn ListLikesController
   [$scope app Users]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "likes")))
 
-(set! (.-$inject ListLikesController) #js ["$scope" "app" "Users"])
-(.controller jiksnu "ListLikesController" ListLikesController)
-(list-directive "Likes" "likes")
+(list-directive "likes" #js ["$scope" "app" "Users" ListLikesController])
 
 (defn ListNotificationsController
   [$scope app Users]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "notifications")))
 
-(set! (.-$inject ListNotificationsController) #js ["$scope" "app" "Users"])
-(.controller jiksnu "ListNotificationsController" ListNotificationsController)
-(list-directive "Notifications" "notifications")
+(list-directive "notifications" #js ["$scope" "app" "Users" ListNotificationsController])
 
 (defn ListPicturesController
   [$scope app Albums]
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Albums "pictures")))
 
-(set! (.-$inject ListPicturesController) #js ["$scope" "app" "Albums"])
-(.controller jiksnu "ListPicturesController" ListPicturesController)
-(list-directive "Pictures"      "pictures")
+(list-directive "pictures" #js ["$scope" "app" "Albums" ListPicturesController])
 
 (defn ListStreamsController
   [$scope app Users]
@@ -110,6 +100,4 @@
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "streams"))
   (.updateLabel $scope))
 
-(set! (.-$inject ListStreamsController) #js ["$scope" "app" "Users"])
-(.controller jiksnu "ListStreamsController" ListStreamsController)
-(list-directive "Streams"       "streams")
+(list-directive "streams" #js ["$scope" "app" "Users" ListStreamsController])

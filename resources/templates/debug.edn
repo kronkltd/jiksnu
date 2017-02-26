@@ -1,4 +1,4 @@
-[:div.debug-section {:ng-if "visible()"}
+[:div.debug-section {:ng-show "visible()"}
  [:p.debug-label {:ng-click "isCollapsed = !isCollapsed"}
   ;; [:i {:ng-class "{isCollapsed: "}]
   "{{state}} {{exprText}}"]
