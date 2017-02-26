@@ -37,5 +37,5 @@ docker run \
   -p 8081:8080 \
   -p 7888:7888 \
   -p 9876:9876 \
-  kronkltd/jiksnu-dev \
+  registry.kronkltd.net/kronkltd/jiksnu-dev \
   script/byobu
