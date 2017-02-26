@@ -4,6 +4,7 @@
             [jiksnu.modules.core.model.like :as model.like]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
+            [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))
 
 (def model-ns 'jiksnu.modules.core.model.like)
@@ -53,7 +54,7 @@
 
 (defn handle-like-activity
   [activity]
-  (let [{:keys [verb]} activity]
+  (let [{:keys [verb]} (util/inspect activity)]
     (condp = verb
       "like"
       (let [author (:author activity)]
