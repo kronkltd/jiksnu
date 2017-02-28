@@ -2,6 +2,7 @@
 --ignore-dir=config
 --ignore-dir=cookbooks
 --ignore-dir=data
+--ignore-dir=doc
 --ignore-dir=logs
 --ignore-dir=node_modules
 --ignore-dir=site-cookbooks
