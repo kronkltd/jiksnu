@@ -82,7 +82,8 @@
                       :compiler {:output-to "target/resources/public/cljs-none/jiksnu.js"
                                  :output-dir "target/resources/public/cljs-none"
                                  :optimizations :none
-                                 :asset-path "base/target/resources/public/cljs-none"
+                                 :main "jiksnu.main"
+                                 :asset-path "cljs-none"
                                  :pretty-print true}}
                :main {:source-paths ["src-cljs"]
                       :notify-command ["notify-send"]
