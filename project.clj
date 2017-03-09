@@ -50,6 +50,7 @@
             [lein-cljfmt "0.5.2"  :exclusions [org.clojure/clojure]]
             [lein-cljsbuild "1.1.4" :exclusions [org.clojure/clojure]]
             [lein-cloverage "1.0.2" :exclusions [org.clojure/clojure]]
+            [lein-figwheel "0.5.8"]
             [lein-midje "3.1.3" :exclusions [org.clojure/clojure]]
             [lein-shell "0.4.0" :exclusions [org.clojure/clojure]]]
   :hiera {:ignore-ns #{"jiksnu.channels" "jiksnu.db" "jiksnu.factory" "jiksnu.mock"
@@ -95,6 +96,8 @@
                                  :pretty-print true}}}}
   :profiles {:dev {:dependencies
                    [[midje "1.9.0-alpha5" :exclusions [org.clojure/clojure]]
+                    [figwheel-sidecar "0.5.8"]
+                    [com.cemerick/piggieback "0.2.1"]
                     [org.clojure/tools.nrepl "0.2.12"]
                     [ring-mock "0.1.5"]
                     [slamhound "1.5.5"]]}
