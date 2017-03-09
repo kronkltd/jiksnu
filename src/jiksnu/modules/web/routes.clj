@@ -44,5 +44,6 @@
            (friend/authenticate auth-config)
            middleware/wrap-authorization-header
            middleware/wrap-authentication-handler
+           middleware/wrap-debug-param
            (wrap-defaults site-options)))
       middleware/wrap-stacktrace))
