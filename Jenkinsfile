@@ -38,12 +38,10 @@ node('docker') {
             }
 
             stage('Build Dev Image') {
-                devImage = docker.build("${org}/${project}-dev:${env.BRANCH_TAG}",
+                devImage = docker.build("${repo}/${org}/${project}:${env.BRANCH_TAG}-dev",
                                         "-f docker/web-dev/Dockerfile .")
                 if (pushImages) {
-                    docker.withRegistry(repoPath) {
-                        devImage.push()
-                    }
+                    devImage.push()
                 }
             }
 
@@ -79,12 +77,10 @@ node('docker') {
             stage('Build Run Image') {
                 sh "sigil -f Dockerfile.tmpl -p > Dockerfile"
 
-                mainImage = docker.build("${org}/${project}:${env.BRANCH_TAG}")
+                mainImage = docker.build("${repo}/${org}/${project}:${env.BRANCH_TAG}")
 
                 if (pushImages) {
-                    docker.withRegistry(repoPath) {
-                        mainImage.push()
-                    }
+                    mainImage.push()
                 }
             }
 
