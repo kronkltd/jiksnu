@@ -125,3 +125,9 @@
       (let [response (handler request)]
         (.finish tracer)
         response))))
+
+(defn wrap-debug-param
+  [handler]
+  (fn [request]
+    (let [debug (boolean (get-in request [:cookies "XDEBUG_SESSION"]))]
+      (handler (assoc request :debug debug)))))

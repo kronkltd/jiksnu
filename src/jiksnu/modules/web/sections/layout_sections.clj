@@ -63,8 +63,9 @@
     (links-section request response)]
    [:body
     [:main-layout]
-    [:script {:type "text/javascript"} "var CLOSURE_NO_DEPS = true;"]
-    (p/include-js "/main.js" "/cljs/jiksnu.js")
+    (when-not (or (config* :jiksnu :script :debug) (:debug request))
+      [:script {:type "text/javascript"} "var CLOSURE_NO_DEPS = true;"])
+    (p/include-js "/main.js" (if (or (config* :jiksnu :script :debug) (:debug request)) "/cljs-none/jiksnu.js" "/cljs/jiksnu.js"))
     (map #(% request response) @scripts-section-hook)]))
 
 (defmethod apply-template :html

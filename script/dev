@@ -33,7 +33,9 @@ docker run \
   -v jiksnu-dev-media:/data \
   -e CISTE_LOGGER=jiksnu.logger \
   -e DOMAIN=dev.jiksnu.com \
+  -e JIKSNU_SCRIPT_DEBUG=true \
   $INHERITED_OPTS \
+  -p 3449:3449 \
   -p 8081:8080 \
   -p 7888:7888 \
   -p 9876:9876 \

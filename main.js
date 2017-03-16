@@ -1,6 +1,3 @@
-window.jQuery = require('jquery');
-window.$ = window.jQuery;
-
 var requires = {
   angular: require('angular'),
   angularClipboard: require('angular-clipboard'),

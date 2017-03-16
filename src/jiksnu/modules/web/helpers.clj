@@ -37,8 +37,8 @@
   (merge (get-parameter k) {:in "path"}))
 
 (defn index
-  [_]
-  (sections.layout/page-template-content {} {}))
+  [ctx]
+  (sections.layout/page-template-content (:request ctx) {}))
 
 (defn angular-resource-handle-ok
   [{{method :request-method} :request
