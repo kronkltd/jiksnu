@@ -95,6 +95,10 @@
   (set! $scope.formShown false)
   (set! $scope.toggle (fn [] (set! $scope.formShown (not $scope.formShown))))
 
+  (set! (.-$onChanges $ctrl)
+        (fn [changes]
+          (js/console.log "subpage changes" (.-name collection) subpage changes)))
+
   (.$watch $scope
            #(.-item $scope)
            (fn [item old-item]
