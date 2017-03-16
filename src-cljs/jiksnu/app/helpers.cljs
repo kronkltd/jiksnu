@@ -128,29 +128,33 @@
 
 (defn page-controller
   [module page-name]
-  (.controller
-   module (str "Index" (inf/camel-case page-name) "Controller")
-   #js ["$scope" "$rootScope" "app" "pageService" "Pages"
-        (fn [$scope $rootScope app pageService Pages]
-          (set! $scope.loaded   false)
-          (set! $scope.page     #js {:items #js []})
-          (set! $scope.refresh  #(.init $scope))
-          (set! $scope.getItems (fn [] (or (some-> $scope .-page .-items) #js [])))
-          (set! $scope.init
-                (fn []
-                  (timbre/debugf "Initializing page controller: %s" page-name)
-                  (set! $scope.loaded false)
-                  (-> pageService
-                      (.fetch page-name)
-                      (.then (fn [page]
-                               (set! page._id page-name)
-                               (.inject Pages page)
-                               (set! $scope.page   page)
-                               (set! $scope.loaded true))))))
-          (.$on $rootScope "updateCollection" $scope.init)
-          (.init $scope))])
-  (.component
-   module (str "index" (inf/camel-case page-name))
-   #js {:bindings #js {:id "<"}
-        :templateUrl (str "/templates/index-" page-name)
-        :controller (str "Index" (inf/camel-case page-name) "Controller")}))
+  (let [controller-name (str "Index" (inf/camel-case page-name) "Controller")
+        component-name (str "index" (inf/camel-case page-name))]
+    (timbre/debugf "Defining controller: %s => %s" page-name controller-name)
+    (.controller
+     module controller-name
+     #js ["$scope" "$rootScope" "app" "pageService" "Pages"
+          (fn [$scope $rootScope app pageService Pages]
+            (set! $scope.loaded   false)
+            (set! $scope.page     #js {:items #js []})
+            (set! $scope.refresh  (fn [] (.init $scope)))
+            (set! $scope.getItems (fn [] (or (some-> $scope .-page .-items) #js [])))
+            (set! $scope.init
+                  (fn []
+                    (timbre/debugf "Initializing page controller: %s" page-name)
+                    (set! $scope.loaded false)
+                    (-> pageService
+                        (.fetch page-name)
+                        (.then (fn [page]
+                                 (timbre/debugf "Page loaded: %s" page-name)
+                                 (set! page._id page-name)
+                                 (.inject Pages page)
+                                 (set! $scope.page   page)
+                                 (set! $scope.loaded true))))))
+            (.$on $rootScope "updateCollection" (fn [] (.init $scope)))
+            (.init $scope))])
+    (.component
+     module component-name
+     #js {:bindings #js {:id "<"}
+          :templateUrl (str "/templates/index-" page-name)
+          :controller controller-name})))
