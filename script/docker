@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# This is the entrypoint for docker run images.
+# This command shouldn't be run directly.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
 if nc -z "elk" 9200 2>/dev/null; then
   curl -XPUT 'http://elk:9200/_template/filebeat?pretty' -d@/etc/filebeat/filebeat.template.json
   /etc/init.d/filebeat start

@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
+# Ensure that all required dependencies are available.
+# This command is invoked by other top-level commands.
+
 set -e
+
+cd "$(dirname "$0")/.."
 
 echo ">> Ensuring dependencies are downloaded"
 lein deps

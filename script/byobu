@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
+# Launch a byobu session with common development processes pre-loaded
+# This command is invoked by the script/dev command. And should not be run directly.
+
 byobu new-session -d -s dev
 
+# Add additional commands here
 byobu new-window -t dev:1 -n "Server" "script/server"
 byobu new-window -t dev:2 -n "Watch" "script/watch-cljs"
 
