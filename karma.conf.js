@@ -44,8 +44,9 @@ module.exports = function(config) {
 
     plugins: [
       'karma-browserify',
-      'karma-coverage',
+      // 'karma-coverage',
       'karma-jasmine',                      // Required plugin
+      // 'karma-html-detailed-reporter',
       'karma-html-live-reporter',
       'karma-phantomjs-launcher',           // Launches PhantomJS
       'karma-jasmine-html-reporter',
@@ -67,7 +68,7 @@ module.exports = function(config) {
       defaultTab: 'summary', // 'summary' or 'failures': a tab to start with
 
       // only show one suite and fail log at a time, with keyboard navigation
-      focusMode: true,
+      focusMode: true
     },
 
     // coverageReporter: {
