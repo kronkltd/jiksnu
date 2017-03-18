@@ -4,8 +4,5 @@ set -e
 
 script/bootstrap
 
-script/compile-less
-script/cljs
-
-lein compile
-script/browserify
+script/update-webdriver
+script/compile

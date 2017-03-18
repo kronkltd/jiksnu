@@ -3,5 +3,5 @@
 set -e
 
 script/setup
-script/midje
-script/karma
+script/test-clojure
+script/test-javascript

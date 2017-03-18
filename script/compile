@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+script/compile-less
+script/compile-clojure
+script/compile-javascript

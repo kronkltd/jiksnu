@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-echo ">> Compiling CLJS"
-lein with-profile +e2e,+test cljsbuild once
-# lein cljsbuild once

@@ -2,6 +2,10 @@
 
 set -e
 
+echo ">> Compiling CLJS"
+lein with-profile +e2e,+test cljsbuild once
+# lein cljsbuild once
+
 echo ">> Gathering Client JS libraries"
 ./node_modules/.bin/browserify \
   main.js \
