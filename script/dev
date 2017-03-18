@@ -2,8 +2,27 @@
 
 set -e
 
+cd "$(dirname "$0")/.."
+
+command -v docker >/dev/null 2>&1 || { \
+    echo >&2 "Docker is not available. This command should be run from outside a container."; \
+    exit 1; \
+}
+
+DOCKER_REGISTRY_HOST=${DOCKER_REGISTRY_HOST:-registry.kronkltd.net}
+
+if [ -z "DOCKER_REGISTRY_HOST" ]; then
+  DOCKER_PREGISTRY_PREFIX=""
+else
+    DOCKER_REGISTRY_PREFIX="${DOCKER_REGISTRY_HOST}/"
+fi
+
+BRANCH_TAG=${BRANCH_TAG:-latest}
+DEV_IMAGE_TAG="${DOCKER_REGISTRY_PREFIX}kronkltd/jiksnu:${BRANCH_TAG}-dev"
 INHERITED_OPTS=""
 
+
+# TODO: abstract this pattern
 if [ "$JIKSNU_SENTRY_DSN" ]; then
   INHERITED_OPTS="$INHERITED_OPTS -e JIKSNU_SENTRY_DSN=$JIKSNU_SENTRY_DSN"
 fi
@@ -23,6 +42,7 @@ fi
 docker-compose up -d mongo
 
 docker rm -f jiksnu-dev || true
+docker pull $DEV_IMAGE_TAG || script/build-docker
 
 docker run \
   --rm \
@@ -39,5 +59,5 @@ docker run \
   -p 8081:8080 \
   -p 7888:7888 \
   -p 9876:9876 \
-  registry.kronkltd.net/kronkltd/jiksnu-dev \
+  $DEV_IMAGE_TAG \
   script/byobu

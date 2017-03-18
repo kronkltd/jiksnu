@@ -8,7 +8,7 @@ set -e
 cd "$(dirname "$0")/.."
 
 command -v docker >/dev/null 2>&1 || { \
-    echo >&2 "Docker is not available. This command should be run from outside a container.'"; \
+    echo >&2 "Docker is not available. This command should be run from outside a container."; \
     exit 1; \
 }
 
