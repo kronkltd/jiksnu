@@ -6,7 +6,7 @@
 
 (def child-process (nodejs/require "child_process"))
 (def JSData (nodejs/require "js-data"))
-(def HttpAdapter (.-HttpAdapter (nodejs/require "js-data-http-node")))
+(def HttpAdapter (.-HttpAdapter (nodejs/require "js-data-http")))
 (timbre/infof "Base Path: %s" base-path)
 (def http-adapter (HttpAdapter. #js {:basePath base-path}))
 
