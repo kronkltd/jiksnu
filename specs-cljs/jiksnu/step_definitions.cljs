@@ -51,6 +51,10 @@
    (.click (js/$ ".logout-button"))
    (next))
 
+ (Given #"^I am not logged in$" [next]
+   (timbre/info "Logging out")
+   (next))
+
  (Given #"^that user posts an activity$" [next]
 
    (.click (element (by-css "#placeholderInput")))
