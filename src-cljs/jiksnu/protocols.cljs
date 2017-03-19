@@ -12,6 +12,7 @@
   (get-websocket-url [this])
   (go                [this state])
   (handle-message    [this message])
+  (inject            [this])
   (login             [this username password])
   (logout            [this])
   (ping              [this])
