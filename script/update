@@ -2,7 +2,8 @@
 
 set -e
 
-script/bootstrap
-
-script/update-webdriver
-script/compile
+if [ -z "$UPDATED" ]; then
+  script/bootstrap
+  script/update-webdriver
+  script/compile
+fi

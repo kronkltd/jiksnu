@@ -4,7 +4,7 @@ def org = 'kronkltd'
 def project = 'jiksnu'
 
 def repo, repoCreds, repoPath
-def clojureImage, devImage, err, mainImage, mongoContainer
+def dbImage, devImage, err, mainImage, mongoContainer
 
 def pushImages = true
 def integrationTests = false
@@ -33,6 +33,8 @@ node('docker') {
                     env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
                 }
 
+                dbImage = docker.image('mongo')
+
                 // Print Environment
                 sh 'env | sort'
             }
@@ -47,7 +49,7 @@ node('docker') {
 
             stage('Unit Tests') {
                 try {
-                    mongoContainer = docker.image('mongo').run("--name ${env.BUILD_TAG}-mongo")
+                    mongoContainer = dbImage.run("--name ${env.BUILD_TAG}-mongo")
 
                     devImage.inside(["--link ${mongoContainer.id}:mongo",
                                      "--name ${env.BUILD_TAG}-dev"].join(' ')) {
@@ -71,6 +73,7 @@ node('docker') {
                     sh 'lein install'
                     sh 'lein uberjar'
                     archive 'target/*jar'
+                    stash name: 'jars', includes: 'target/*.jar'
                 }
             }
 
@@ -95,20 +98,18 @@ node('docker') {
 
             if (integrationTests) {
                 stage('Integration tests') {
+                    def integrationContainer
+
                     try {
-                        sh 'docker-compose up -d webdriver'
-                        sh 'docker-compose up -d jiksnu-integration'
+                        integrationContainer = mainImage.run()
 
-                        sh "docker inspect workspace_jiksnu-integration_1 | jq -r '.[].NetworkSettings.Networks.workspace_default.IPAddress' | tee jiksnu_host"
-                        env.JIKSNU_HOST = readFile('jiksnu_host').trim()
-
-                        sh "until \$(curl --output /dev/null --silent --fail http://${env.JIKSNU_HOST}/status); do echo '.'; sleep 5; done"
-                        sh 'docker-compose run --rm web-dev script/protractor'
+                        mainImage.inside {
+                            sh 'script/test-integration'
+                        }
                     } catch (caughtError) {
                         err = caughtError
                     } finally {
-                        sh 'docker-compose stop'
-                        sh 'docker-compose rm -f'
+                        integrationContainer.stop()
 
                         if (err) {
                             throw err

@@ -3,5 +3,6 @@
 set -e
 
 script/setup
+UPDATED=1
 script/test-clojure
 script/test-javascript
