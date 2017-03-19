@@ -117,6 +117,16 @@
                     (.. (js/expect p) (toBeResolvedWith user))
                     (.. (js/expect (.-find Users)) (toHaveBeenCalledWith id))))))))))
 
+    (js/describe "fetch-status"
+      (fn []
+        (js/it "Should request the status page"
+          (fn []
+            (let [data #js {}]
+              (.. $httpBackend (expectGET "/status") (respond data))
+              (let [p (methods/fetch-status $http)]
+                (.$digest $rootScope)
+                (.. (js/expect p) (toBeResolved data))))))))
+
     (js/describe "follow"
       (fn []
         (js/describe "when not passing an invalid object"

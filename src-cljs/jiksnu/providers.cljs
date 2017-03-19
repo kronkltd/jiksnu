@@ -51,6 +51,11 @@
     (let [$http (.inject app "$http")]
       (methods/add-stream $http stream-name)))
 
+  (fetch-status [app]
+    (let [$http (.inject app "$http")]
+      (-> (methods/fetch-status $http)
+          (.then (fn [data] (set! (.-data app) data))))))
+
   (follow [app target]
     (let [$q (.inject app "$q")
           $http (.inject app "$http")]

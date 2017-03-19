@@ -2,6 +2,7 @@
 
 (defprotocol AppProtocol
   (add-stream        [this stream-name])
+  (fetch-status      [this])
   (follow            [this target])
   (get-user          [this])
   (get-user-id       [this])

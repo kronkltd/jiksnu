@@ -53,7 +53,7 @@
               (.then (fn [data]
                        ;; Should we copy the whole data object?
                        (set! (.. app -data -user) (.. data -data -user))
-                       (-> (.fetchStatus app)
+                       (-> (p/fetch-status app)
                            (.then #(p/go app "home")))))))))
 
 (.component

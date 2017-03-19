@@ -90,12 +90,6 @@
     (let [controller-name "NavBarController"]
       (js/describe controller-name
         (fn []
-          (js/beforeEach
-           (fn []
-             (let [mock-then (fn [f] #_(f))
-                   mock-response #js {:then mock-then}]
-               (set! (.-fetchStatus app) (constantly mock-response)))))
-
           (js/it "should be unloaded by default"
             (fn []
               (@$controller controller-name injections)
@@ -103,11 +97,15 @@
 
           (js/it "should call fetchStatus"
             (fn []
-              (let [mock-then (fn [f] (f))
-                    mock-response #js {:then mock-then}]
-                (set! (.-fetchStatus app) (constantly mock-response))
-                (@$controller controller-name injections)
-                (.. (js/expect (.-loaded $scope)) toBeTruthy))))
+              (-> (.expectGET $httpBackend "/status")
+                  (.respond (constantly #js [200 #js {:username "foo"}])))
+
+              (@$controller controller-name injections)
+
+              (.$digest $rootScope)
+              (.flush $httpBackend)
+
+              (-> (js/expect $scope.loaded) .toBeTruthy)))
 
           (js/it "should bind the app service to app2"
             (fn []

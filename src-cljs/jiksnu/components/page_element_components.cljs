@@ -165,30 +165,29 @@
 
 (defn NavBarController
   [$mdSidenav $rootScope $scope $state app hotkeys]
-  (set! (.-app2 $scope) app)
-  (set! (.-loaded $scope) false)
-  (set! (.-logout $scope) (.-logout app))
-  (set! (.-navbarCollapsed $scope) true)
+  (set! $scope.app2            app)
+  (set! $scope.loaded          false)
+  (set! $scope.logout          app.logout)
+  (set! $scope.navbarCollapsed true)
 
   (helpers/setup-hotkeys hotkeys $state)
 
   (.$on $rootScope "$stateChangeSuccess"
         (fn [] (.close ($mdSidenav "left"))))
 
-  (set! (.-init $scope)
-        (fn [d]
-          (when (.-loaded $scope)
-            (set! (.-app $scope) d)
+  (set! $scope.init
+        (fn [auth-data]
+          (when $scope.loaded
+            (set! $scope.app auth-data)
             (-> (p/get-user app)
-                (.then (fn [user]
-                         (set! (.-user app) user)))))))
+                (.then (fn [user] (set! app.user user)))))))
 
-  (set! (.-toggleSidenav $scope) (fn [] (.toggle ($mdSidenav "left"))))
+  (set! $scope.toggleSidenav (fn [] (.toggle ($mdSidenav "left"))))
 
-  (.$watch $scope #(.-data app) (.-init $scope))
+  (.$watch $scope #(.-data app) $scope.init)
 
-  (-> (.fetchStatus app)
-      (.then (fn [] (set! (.-loaded $scope) true)))))
+  (-> (p/fetch-status app)
+      (.then (fn [] (set! $scope.loaded true)))))
 
 (.controller
  jiksnu "NavBarController"
