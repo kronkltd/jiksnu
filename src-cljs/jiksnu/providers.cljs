@@ -1,6 +1,7 @@
 (ns jiksnu.providers
   (:require [cljs.reader :as reader]
             [jiksnu.app :refer [jiksnu]]
+            [jiksnu.protocols :refer [AppProtocol]]
             [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))
 
@@ -63,11 +64,16 @@
       (.onError (fn []
                   (timbre/warn "Websocket connection errored"))))))
 
+(deftype AppProvider
+    [inject]
+
+  AppProtocol)
+
 (defn app
   []
   (let [f (fn [$injector]
             (timbre/debug "creating app service")
-            (let [app #js {:inject (.-get $injector)}]
+            (let [app (AppProvider. (.-get $injector))]
               (doseq [[n f] app-methods]
                 (aset app (name n) (partial f app)))
 
