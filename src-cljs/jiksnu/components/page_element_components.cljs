@@ -76,7 +76,7 @@
   (set! (.-isActor $scope)
         (fn []
           (set! (.-authenticated $scope)
-                (some-> app .getUserId (= (some-> $scope .-item .-_id))))))
+                (some-> app p/get-user-id (= (some-> $scope .-item .-_id))))))
 
   (set! (.-init $scope)
         (fn []
@@ -97,18 +97,17 @@
            (fn [resolve reject]
              (if-let [user (.-item $scope)]
                (let [user-id (.-_id user)]
-                 (.. app
-                     (getUser)
-                     (then #(some-> % .getFollowing))
-                     (then (fn [page]
-                             (when page
-                               (->> (.-items page)
-                                    (map (.-find Subscriptions))
-                                    clj->js
-                                    (.all $q)))))
-                     (then (fn [subscriptions]
-                             (some #(#{user-id} (.-to %)) subscriptions)))
-                     (then resolve)))
+                 (-> (p/get-user app)
+                     (.then #(some-> % .getFollowing))
+                     (.then (fn [page]
+                              (when page
+                                (->> (.-items page)
+                                     (map (.-find Subscriptions))
+                                     clj->js
+                                     (.all $q)))))
+                     (.then (fn [subscriptions]
+                              (some #(#{user-id} (.-to %)) subscriptions)))
+                     (.then resolve)))
                (reject))))))
 
   (set! (.-submit $scope)
@@ -116,7 +115,7 @@
           (let [item (.-item $scope)]
             (-> (if (.-following $scope)
                   (p/unfollow app item)
-                  (.follow app item))
+                  (p/follow app item))
                 (.then (fn []
                          (.init $scope)
                          (.$broadcast $rootScope helpers/refresh-followers)))))))

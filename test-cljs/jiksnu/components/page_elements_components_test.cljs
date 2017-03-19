@@ -1,6 +1,7 @@
 (ns jiksnu.components.page-element-components-test
   (:require jiksnu.main
             jiksnu.components.page-element-components
+            [jiksnu.protocols :as p]
             [taoensso.timbre :as timbre]))
 
 (timbre/set-level! :debug)
