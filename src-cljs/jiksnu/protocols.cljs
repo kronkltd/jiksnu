@@ -11,6 +11,7 @@
   (get-user-id       [this])
   (get-websocket-url [this])
   (go                [this state])
+  (handle-message    [this message])
   (login             [this username password])
   (logout            [this])
   (ping              [this])

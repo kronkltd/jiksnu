@@ -33,7 +33,7 @@
         websocket-url (p/get-websocket-url app)
         connection ($websocket websocket-url)]
     (doto connection
-      (.onMessage (.-handleMessage app))
+      (.onMessage (partial p/handle-message app))
       (.onOpen (fn []
                  (timbre/debug "Websocket connection opened")))
       (.onClose (fn []
@@ -81,6 +81,8 @@
   (go [app state]
       (let [$state (.inject app "$state")]
         (methods/go $state state)))
+
+  (handle-message [app message])
 
   (login [app username password]
     (let [$http (.inject app "$http")
