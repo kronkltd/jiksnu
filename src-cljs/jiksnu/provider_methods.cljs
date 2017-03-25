@@ -31,9 +31,6 @@
   [$http activity & [pictures]]
   (let [path "/model/activities"
         form-data (js/FormData.)]
-
-    (js/console.info "pictures" pictures)
-
     (.forEach
      js/angular activity
      (fn [v k]
@@ -41,7 +38,6 @@
        (.append form-data k v)))
 
     (doseq [picture pictures]
-      (js/console.info "Picture" picture)
       (.append form-data "pictures[]" picture))
 
     (timbre/infof "Posting Activity - %s" (js/JSON.stringify activity))
