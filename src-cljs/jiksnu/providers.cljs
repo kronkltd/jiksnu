@@ -35,24 +35,11 @@
    :send          methods/send
    :unfollow      methods/unfollow})
 
-(defn get-websocket-url
-  "Determine the websocket connection url for this app"
-  [app]
-  (let [$location (.inject app "$location")
-        host (.host $location)
-        secure?  (= (.protocol $location) "https")
-        scheme (str "ws" (when secure? "s"))
-        port (.port $location)
-        port-suffix (if (or (and secure? (= port 443))
-                            (and (not secure?) (= port 80)))
-                      "" (str ":" port))]
-    (str scheme "://" host port-suffix "/")))
-
 (defn get-websocket-connection
   "Create a websocket connection to the server"
   [app]
   (let [$websocket (.inject app "$websocket")
-        websocket-url (get-websocket-url app)
+        websocket-url (p/get-websocket-url app)
         connection ($websocket websocket-url)]
     (doto connection
       (.onMessage (.-handleMessage app))
@@ -71,7 +58,11 @@
 
   (add-stream [app stream-name]
     (let [$http (.inject app "$http")]
-      (methods/add-stream $http stream-name))))
+      (methods/add-stream $http stream-name)))
+
+  (get-websocket-url [app]
+    (let [$location (.inject app "$location")]
+      (methods/get-websocket-url $location))))
 
 (defn app
   []

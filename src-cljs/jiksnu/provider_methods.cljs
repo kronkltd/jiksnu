@@ -1,5 +1,6 @@
 (ns jiksnu.provider-methods
   (:require [clojure.tools.reader.edn :as edn]
+            [jiksnu.protocols :as p]
             [taoensso.timbre :as timbre]))
 
 (defn add-stream
@@ -85,6 +86,18 @@
     (do
       (timbre/warn "Attempted to get user id, but data not loaded")
       nil)))
+
+(defn get-websocket-url
+  "Determine the websocket connection url for this app"
+  [$location]
+  (let [host (.host $location)
+        secure?  (= (.protocol $location) "https")
+        scheme (str "ws" (when secure? "s"))
+        port (.port $location)
+        port-suffix (if (or (and secure? (= port 443))
+                            (and (not secure?) (= port 80)))
+                      "" (str ":" port))]
+    (str scheme "://" host port-suffix "/")))
 
 (defn go
   "Navigate to the named state"
