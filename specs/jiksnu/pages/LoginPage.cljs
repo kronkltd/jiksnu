@@ -1,6 +1,6 @@
 (ns jiksnu.pages.LoginPage
   (:require [jiksnu.helpers.page-helpers :refer [by-css by-model]]
-            [jiksnu.protocols :refer [get Page]]
+            [jiksnu.spec.protocols :refer [Page] :as sp]
             [taoensso.timbre :as timbre]))
 
 (defprotocol LoginPageProto
