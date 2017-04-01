@@ -2,5 +2,7 @@
 
 set -e
 
+script/await-connections
+
 CISTE_ENV=test
 script/test

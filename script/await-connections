@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+MAX_TRIES=${MAX_TRIES:-15}
+COUNTER=0
+
+echo ">> Waiting for external services"
+
+until script/check-connections || [ ${COUNTER} -eq ${MAX_TRIES} ]; do
+    echo "Waiting on connections. n=${COUNTER}"
+    sleep $(( COUNTER++ ))
+done
+
+echo ". conected"
