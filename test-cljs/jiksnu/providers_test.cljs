@@ -2,6 +2,7 @@
   (:require [cljs.test :refer-macros [async deftest is testing]]
             jiksnu.main
             [jiksnu.provider-methods :as methods]
+            [jiksnu.providers :as providers]
             [taoensso.timbre :as timbre]))
 
 (declare app)
@@ -37,6 +38,13 @@
                  (.. (whenGET #"/model/.*")     (respond "{}"))))])))
 
     (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
+
+    (js/describe "get-websocket-connection"
+      (fn []
+        (js/it "should return a websocket connection"
+          (fn []
+            (let [response (providers/get-websocket-connection app)]
+              (timbre/spy response))))))
 
     (js/describe "app"
       (fn []
