@@ -21,6 +21,14 @@
   [method url data headers params]
   #js [200 nil data "OK"])
 
+(defn valid-login-response
+  [method url data headers params]
+  #js [204 nil #js {} "No-Content"])
+
+(defn invalid-login-response
+  [method url data headers params]
+  #js [409 nil #js {} "Unauthenticated"])
+
 (defn update-auth-data!
   ([]
    (set! auth-data #js {:user username :domain domain})
@@ -72,6 +80,35 @@
               (let [p (methods/add-stream $http stream-name)]
                 (.flush $httpBackend)
                 (-> (js/expect p) (.toBeResolvedWith stream-name))))))))
+
+    (js/describe "login"
+      (fn []
+        (js/describe "with valid credentials"
+          (fn []
+            (js/it "returns successfully"
+              (fn []
+                (doto $httpBackend
+                  (.. (expectPOST "/main/login") (respond valid-login-response))
+                  (.. (whenGET "/status")        (respond #js {})))
+                (let [username "test"
+                      password "test"
+                      p (methods/login $http $httpParamSerializerJQLike username password)]
+                  (.flush $httpBackend)
+                  (.$digest $rootScope)
+                  (.. (js/expect p) (toBeResolvedWith true)))))))
+
+        (js/describe "with invalid credentials"
+          (fn []
+            (js/it "is rejected"
+              (fn []
+                (doto $httpBackend
+                  (.. (expectPOST "/main/login") (respond invalid-login-response)))
+                (let [username "test"
+                      password "test"
+                      p (methods/login $http $httpParamSerializerJQLike username password)]
+                  (.flush $httpBackend)
+                  (.$digest $rootScope)
+                  (.. (js/expect p) (toBeRejected)))))))))
 
     (js/describe "post"
       (fn []

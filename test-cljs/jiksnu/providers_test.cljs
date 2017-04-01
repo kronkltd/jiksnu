@@ -93,32 +93,4 @@
                   (.. (js/spyOn app "send") -and (returnValue ($q #(%))) )
                   (let [p (.invokeAction app model-name action-name id)]
                     (.$digest $rootScope)
-                    (.. (js/expect p) (toBeResolved))))))))
-
-        (js/describe ".login"
-          (fn []
-            (js/describe "with valid credentials"
-              (fn []
-                (js/it "returns successfully"
-                  (fn []
-                    (doto $httpBackend
-                      (.. (expectPOST "/main/login") (respond valid-login-response))
-                      (.. (whenGET "/status")        (respond #js {})))
-                    (let [username "test"
-                          password "test"
-                          p (.login app username password)]
-                      (.flush $httpBackend)
-                      (.$digest $rootScope)
-                      (.. (js/expect p) (toBeResolvedWith true)))))))
-            (js/describe "with invalid credentials"
-              (fn []
-                (js/it "is rejected"
-                  (fn []
-                    (doto $httpBackend
-                      (.. (expectPOST "/main/login") (respond invalid-login-response)))
-                    (let [username "test"
-                          password "test"
-                          p (.login app username password)]
-                      (.flush $httpBackend)
-                      (.$digest $rootScope)
-                      (.. (js/expect p) (toBeRejected)))))))))))))
+                    (.. (js/expect p) (toBeResolved))))))))))))

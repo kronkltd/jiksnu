@@ -189,21 +189,21 @@
                  "\"")]
     (.send app msg)))
 
+;; TODO: Find a cljs version of this check
+(defn response-ok?
+  [response]
+  (let [status (.-status response)]
+    (and (<= 200 status) (> 299 status))))
+
 (defn login
   "Authenticate session"
-  [app username password]
-  (let [$http (.inject app "$http")
-        $httpParamSerializerJQLike (.inject app "$httpParamSerializerJQLike")
-        data ($httpParamSerializerJQLike #js {:username username :password password})
+  [$http $httpParamSerializerJQLike username password]
+  (let [data ($httpParamSerializerJQLike #js {:username username :password password})
         opts #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}}]
     ;; (timbre/infof "Logging in user. %s:%s" username password)
-    (-> (.post $http"/main/login" data opts)
-        (.then (fn [response]
-                 (let [status (.-status response)]
-                   ;; TODO: Find a cljs version of this check
-                   (when (and (<= 200 status) (> 299 status))
-                     (.fetchStatus app)
-                     true)))))))
+    (-> $http
+        (.post "/main/login" data opts)
+        (.then response-ok?))))
 
 (defn logout
   "Log out the authenticated user"

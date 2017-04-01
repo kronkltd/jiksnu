@@ -55,6 +55,12 @@
     (let [$location (.inject app "$location")]
       (methods/get-websocket-url $location)))
 
+  (login [app username password]
+    (let [$http (.inject app "$http")
+          $httpParamSerializerJQLike (.inject app "$httpParamSerializerJQLike")]
+      (-> (methods/login $http $httpParamSerializerJQLike username password)
+          (.then (fn [] (.fetchStatus app))))))
+
   (register [app params]
     (let [$http (.inject app "$http")]
       (methods/register $http params)))
