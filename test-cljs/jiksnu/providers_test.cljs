@@ -1,7 +1,7 @@
 (ns jiksnu.providers-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
             jiksnu.main
-            [jiksnu.providers :as providers]
+            [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))
 
 (declare app)
@@ -12,7 +12,7 @@
 (deftest test-add-stream
   (let [app nil
         stream-name ""]
-    (is (providers/add-stream app stream-name) nil)))
+    (is (methods/add-stream app stream-name) nil)))
 
 (defn valid-login-response
   [method url data headers params]
