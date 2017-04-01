@@ -81,6 +81,15 @@
                 (.flush $httpBackend)
                 (-> (js/expect p) (.toBeResolvedWith stream-name))))))))
 
+    (js/describe "connect"
+      (fn []
+        (js/it "should open a websocket connection"
+          (fn []
+            (let [spy (.. (js/spyOn app "send")
+                          -and
+                          (returnValue "foo"))])
+            (timbre/spy (.connect app))))))
+
     (js/describe "get-user"
       (fn []
         (js/describe "when not authenticated"
