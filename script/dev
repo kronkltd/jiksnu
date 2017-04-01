@@ -44,6 +44,13 @@ docker-compose up -d mongo
 docker rm -f jiksnu-dev || true
 docker pull $DEV_IMAGE_TAG || script/build-docker
 
+
+if [ -z "$@" ]; then
+  ENTRYPOINT="script/entrypoint-dev"
+else
+    ENTRYPOINT="script/$@"
+fi
+
 docker run \
   --rm \
   --name jiksnu-dev \
@@ -60,4 +67,4 @@ docker run \
   -p 7888:7888 \
   -p 9876:9876 \
   $DEV_IMAGE_TAG \
-  script/byobu
+  ${ENTRYPOINT?}

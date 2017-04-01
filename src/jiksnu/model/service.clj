@@ -36,10 +36,6 @@
 (def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
 
-(defn get-link
-  [item rel content-type]
-  (first (util/rel-filter rel (:links item) content-type)))
-
 ;; TODO: add the links to the list
 (defn add-links
   [service links]

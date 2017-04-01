@@ -7,6 +7,7 @@
 --ignore-dir=node_modules
 --ignore-dir=site-cookbooks
 --ignore-dir=target
+--ignore-dir=_reports
 --ignore-dir=roles
 --ignore-dir=tmp
 --ignore-dir=volumes
