@@ -14,6 +14,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
+            [jiksnu.metrics :as metrics]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
@@ -30,9 +31,7 @@
             [manifold.deferred :as d]
             [manifold.stream :as s]
             [slingshot.slingshot :refer [throw+]]
-            [taoensso.timbre :as timbre])
-  (:import kamon.Kamon
-           kamon.trace.Tracer))
+            [taoensso.timbre :as timbre]))
 
 (defn filter-activity-create
   [item]
@@ -158,7 +157,7 @@
 (defn handle-created
   [{:keys [collection-name event item] :as data}]
   (timbre/debugf "%s(%s)=>%s" collection-name (:_id item) event)
-  (.increment (.counter (Kamon/metrics) "records-created"))
+  (metrics/increment-counter! :records-created)
   (try
     (condp = collection-name
       "activities" (when (= (:verb item) "join")

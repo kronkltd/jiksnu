@@ -3,13 +3,13 @@
             [taoensso.timbre :as timbre]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
+            [jiksnu.metrics :as metrics]
             [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.session :refer [with-user-id]]
             [slingshot.slingshot :refer [try+]])
-  (:import javax.security.auth.login.LoginException
-           kamon.Kamon))
+  (:import javax.security.auth.login.LoginException))
 
 (defn wrap-user-binding
   [handler]
@@ -115,16 +115,14 @@
 (defn wrap-response-logging
   [handler]
   (fn [request]
-    (let [tracer (.newContext (Kamon/tracer) "http-request")]
-      (.increment (.counter (Kamon/metrics) "request-handled"))
+    (metrics/with-trace :http-request
+      (metrics/increment-counter! :request-handled)
       (timbre/with-context {:request (-> request
                                          (dissoc :async-channel)
                                          (dissoc :body)
                                          (dissoc :cemerick.friend/auth-config))}
         (timbre/debugf "%s %s" (:request-method request) (:uri request)))
-      (let [response (handler request)]
-        (.finish tracer)
-        response))))
+      (handler request))))
 
 (defn wrap-debug-param
   [handler]
