@@ -25,6 +25,19 @@
    :send          p/send
    :unfollow      p/unfollow})
 
+(defn get-websocket-url
+  "Determine the websocket connection url for this app"
+  [app]
+  (let [$location (.inject app "$location")
+        host (.host $location)
+        secure?  (= (.protocol $location) "https")
+        scheme (str "ws" (when secure? "s"))
+        port (.port $location)
+        port-suffix (if (or (and secure? (= port 443))
+                            (and (not secure?) (= port 80)))
+                      "" (str ":" port))]
+    (str scheme "://" host port-suffix "/")))
+
 (defn get-websocket-connection
   "Create a websocket connection to the server"
   [app]
