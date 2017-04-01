@@ -1,4 +1,4 @@
-#!groovy
+#!/usr/bin/env groovy
 
 def org = 'kronkltd'
 def project = 'jiksnu'
@@ -6,7 +6,6 @@ def project = 'jiksnu'
 def repo, repoCreds, repoPath
 def dbImage, devImage, err, mainImage, mongoContainer
 
-def pushImages = true
 def integrationTests = false
 
 node('docker') {
@@ -17,12 +16,7 @@ node('docker') {
                 checkout scm
 
                 env.BUILD_TAG = env.BUILD_TAG.replaceAll('%2F', '-')
-                repo = env.JENKINS_DOCKER_REGISTRY_HOST
-                repoCreds = '8bb2c76c-133c-4c19-9df1-20745c31ac38'
-                repoPath = "https://${repo}"
-
-                properties([[$class: 'BuildDiscarderProperty',
-                               strategy: [$class: 'LogRotator', numToKeepStr: '5']]]);
+                repo = "${env.DOCKER_REGISTRY_HOST}/"
 
                 if (env.BRANCH_NAME == 'develop') {
                     env.BRANCH_TAG = 'latest'
@@ -34,17 +28,18 @@ node('docker') {
                 }
 
                 dbImage = docker.image('mongo')
+                dbImage.pull()
 
                 // Print Environment
                 sh 'env | sort'
             }
 
-            stage('Build Dev Image') {
-                devImage = docker.build("${repo}/${org}/${project}:${env.BRANCH_TAG}-dev",
-                                        "-f docker/web-dev/Dockerfile .")
-                if (pushImages) {
-                    devImage.push()
-                }
+            stage('Dev Image') {
+                devImage = docker.build("${repo}${org}/${project}:${env.BRANCH_TAG}-dev",
+                                        ['-f docker/web-dev/Dockerfile',
+                                         "--label net.kronkltd.built-by=${env.BUILD_TAG}",
+                                         '.'].join(' '))
+                devImage.push()
             }
 
             stage('Unit Tests') {
@@ -77,14 +72,13 @@ node('docker') {
                 }
             }
 
-            stage('Build Run Image') {
+            stage('Production Image') {
                 sh "sigil -f Dockerfile.tmpl -p > Dockerfile"
 
-                mainImage = docker.build("${repo}/${org}/${project}:${env.BRANCH_TAG}")
-
-                if (pushImages) {
-                    mainImage.push()
-                }
+                mainImage = docker.build("${repo}${org}/${project}:${env.BRANCH_TAG}",
+                                         ["--label net.kronkltd.built-by=${env.BUILD_TAG}",
+                                          '.'].join(' '))
+                mainImage.push()
             }
 
             stage('Generate Reports') {
@@ -97,7 +91,7 @@ node('docker') {
             }
 
             if (integrationTests) {
-                stage('Integration tests') {
+                stage('Integration Tests') {
                     def integrationContainer
 
                     try {
