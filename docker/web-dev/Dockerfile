@@ -84,4 +84,4 @@ ENTRYPOINT []
 
 # CMD ["/usr/bin/supervisord"]
 
-CMD [ "script/docker" ]
+CMD [ "script/entrypoint-run" ]

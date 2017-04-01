@@ -46,7 +46,7 @@ docker pull $DEV_IMAGE_TAG || script/build-docker
 
 
 if [ -z "$@" ]; then
-  ENTRYPOINT="script/byobu"
+  ENTRYPOINT="script/entrypoint-dev"
 else
     ENTRYPOINT="script/$@"
 fi
