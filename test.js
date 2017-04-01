@@ -1,3 +1,4 @@
+require('es6-promise');
 require('./main.js');
 require('angular-mocks');
 require('jasmine');
