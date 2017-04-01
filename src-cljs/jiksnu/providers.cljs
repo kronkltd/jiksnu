@@ -58,6 +58,10 @@
     (let [$location (.inject app "$location")]
       (methods/get-websocket-url $location)))
 
+  (go [app state]
+      (let [$state (.inject app "$state")]
+        (methods/go $state state)))
+
   (login [app username password]
     (let [$http (.inject app "$http")
           $httpParamSerializerJQLike (.inject app "$httpParamSerializerJQLike")]

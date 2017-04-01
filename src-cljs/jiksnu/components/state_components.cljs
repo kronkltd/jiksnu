@@ -54,7 +54,7 @@
                        ;; Should we copy the whole data object?
                        (set! (.. app -data -user) (.. data -data -user))
                        (-> (.fetchStatus app)
-                           (.then #(.go app "home")))))))))
+                           (.then #(p/go app "home")))))))))
 
 (.component
  jiksnu "registerPage"

@@ -124,10 +124,8 @@
 
 (defn go
   "Navigate to the named state"
-  [app state]
-  (.. app
-      (inject "$state")
-      (go state)))
+  [$state state]
+  (.go $state state))
 
 (defmulti handle-action
   "Handler action response notifications"

@@ -4,6 +4,7 @@
   (add-stream        [this stream-name])
   (get-user-id       [this])
   (get-websocket-url [this])
+  (go                [this state])
   (login             [this username password])
   (post              [this activity pictures])
   (register          [this params])
