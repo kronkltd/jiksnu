@@ -7,8 +7,8 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-echo ">> Ensuring dependencies are downloaded"
+echo ">> Updating java dependencies"
 lein deps
 
-echo ">> Installing from NPM"
-npm install
+echo ">> Updating javascript dependencies"
+npm update --dev
