@@ -9,8 +9,8 @@
 (def -main (fn [] nil))
 (set! *main-cli-fn* -main) ;; this is required
 
-(def base-domain "jiksnu-integration.docker")
-(def base-port 80)
+(def base-domain "jiksnu-dev")
+(def base-port 8080)
 (def base-path (str "http://" base-domain (when (not= base-port 80) (str ":" base-port))))
 
 (def element js/element)
