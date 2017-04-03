@@ -1,7 +1,10 @@
 (ns jiksnu.providers
-  (:require [jiksnu.app :refer [jiksnu]]
+  (:require [cljs.reader :as reader]
+            [inflections.core :as inf]
+            [jiksnu.app :refer [jiksnu models]]
             [jiksnu.protocols :refer [AppProtocol] :as p]
             [jiksnu.provider-methods :as methods]
+            [jiksnu.registry :as registry]
             [taoensso.timbre :as timbre]))
 
 (def app-methods
@@ -122,7 +125,9 @@
 (defn app
   []
   (let [f (fn [$injector]
-            (let [app (AppProvider. (.-get $injector))]
+            (timbre/debug "creating app service")
+            (let [$inject (.-get $injector)
+                  app (AppProvider. $inject)]
               (doseq [[n f] app-methods]
                 (aset app (name n) (partial f app)))
 
@@ -131,6 +136,10 @@
 
               ;; Bind to window for easy debugging
               (set! (.-app js/window) app)
+
+              (doseq [[k _] registry/page-mappings]
+                (let [model-name (inf/camel-case k)]
+                  (swap! models assoc model-name ($inject model-name))))
 
               ;; return the app
               app))]

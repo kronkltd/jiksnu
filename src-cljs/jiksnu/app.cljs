@@ -2,6 +2,7 @@
   (:require [jiksnu.registry :as registry]))
 
 (defonce plugins (atom #{}))
+(defonce models  (atom {}))
 
 (defn configure-raven-plugin
   []
