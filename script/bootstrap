@@ -11,4 +11,4 @@ echo ">> Updating java dependencies"
 lein deps
 
 echo ">> Updating javascript dependencies"
-npm update --dev
+npm update -q --dev
