@@ -23,6 +23,7 @@
 (defn Albums           [DS] (define-resource DS "album"))
 (defn Clients          [DS] (define-resource DS "client"))
 (defn Domains          [DS] (define-resource DS "domain"))
+(defn FeedSources      [DS] (define-resource DS "feed-source"))
 (defn Followings       [DS] (define-resource DS "following"))
 (defn Groups           [DS] (define-resource DS "group"))
 (defn GroupMemberships [DS] (define-resource DS "group-membership"))
@@ -31,7 +32,9 @@
 (defn Pages            [DS] (define-resource DS "page"))
 (defn Pictures         [DS] (define-resource DS "picture"))
 (defn RequestTokens    [DS] (define-resource DS "request-token"))
+(defn Resources        [DS] (define-resource DS "resources"))
 (defn Streams          [DS] (define-resource DS "stream"))
+(defn Services         [DS] (define-resource DS "services"))
 (defn Subscriptions    [DS] (define-resource DS "subscription"))
 
 (defn Conversations
