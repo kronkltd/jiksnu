@@ -15,13 +15,15 @@ var requires = {
   highlight: require('highlight.js'),
   lfNgMdFileInput: require('lf-ng-md-file-input'),
   jquery: require('jquery'),
+  JSData: require('js-data'),
   jsDataAngular: require('js-data-angular'),
   uiSelect: require('ui-select')
 };
 
 // These are replaced via envify.
-window.sentryDSNClient = process.env.JIKSNU_SENTRY_DSN_CLIENT;
-window.themeColor = process.env.JIKSNU_THEME_COLOR;
+sentryDSNClient = process.env.JIKSNU_SENTRY_DSN_CLIENT;
+themeColor = process.env.JIKSNU_THEME_COLOR;
+JSData = requires.JSData;
 
 if (typeof window.sentryDSNClient != undefined) {
   requires.raven = window.Raven = require('raven-js');
