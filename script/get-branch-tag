@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+git rev-parse --abbrev-ref HEAD | \
+    sed -e 's/\//-/g' | \
+    sed -e 's/develop/latest/' | \
+    sed -e 's/master/stable/'

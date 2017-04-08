@@ -60,18 +60,16 @@ RUN chown -R ${uid}:${gid} ${JIKSNU_HOME}
 
 USER ${user}
 
-RUN script/bootstrap
-
 ### Add application
 ADD . ${JIKSNU_HOME}/
+
+RUN script/bootstrap
 
 USER root
 
 RUN chown -R ${uid}:${gid} ${JIKSNU_HOME}
 
 USER ${user}
-
-RUN script/update
 
 # Expose Karma port
 EXPOSE 9876
