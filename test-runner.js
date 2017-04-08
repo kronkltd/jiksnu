@@ -4,3 +4,4 @@ goog.require("jiksnu.components.list_components_test");
 goog.require("jiksnu.components.page_element_components_test");
 goog.require("jiksnu.components.show_components_test");
 goog.require("jiksnu.providers_test");
+goog.require("jiksnu.provider_methods_test");
