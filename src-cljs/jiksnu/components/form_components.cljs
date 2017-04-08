@@ -1,6 +1,7 @@
 (ns jiksnu.components.form-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
+            [jiksnu.protocols :as p]
             [taoensso.timbre :as timbre]))
 
 (defn NewAlbumController
@@ -158,11 +159,10 @@
         (fn []
           (let [stream-name (.-name (.-stream $scope))]
             (set! (.-name $scope) "")
-            (.. app
-                (addStream stream-name)
-                (then (fn [stream]
-                        (timbre/info "Added Stream" stream)
-                        (.refresh app))))))))
+            (-> (p/add-stream app stream-name)
+                (.then (fn [stream]
+                         (timbre/info "Added Stream" stream)
+                         (.refresh app))))))))
 
 (.component
  jiksnu "addStreamForm"

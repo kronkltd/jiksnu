@@ -4,12 +4,13 @@
 
 (defn add-stream
   "Create a stream with the given name"
-  [app stream-name]
+  [$http stream-name]
   (timbre/info "Creating Stream")
-  (.. app
-      (inject "$http")
-      (post "/model/streams" #js {:name stream-name})
-      (then #(.-data %))))
+  (let [body #js {:name stream-name}]
+    (-> (.post $http "/model/streams" body)
+        (.then (fn [response]
+                 (timbre/debugf "Response: %s" (js/JSON.stringify response))
+                 (.-data response))))))
 
 (defn connect
   "Establish a websocket connection"

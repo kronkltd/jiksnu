@@ -9,11 +9,6 @@
 (declare $q)
 (declare $rootScope)
 
-(deftest test-add-stream
-  (let [app nil
-        stream-name ""]
-    (is (methods/add-stream app stream-name) nil)))
-
 (defn valid-login-response
   [method url data headers params]
   #js [204 nil #js {} "No-Content"])
@@ -45,18 +40,6 @@
 
     (js/describe "app"
       (fn []
-        (js/describe ".addStream"
-          (fn []
-            (js/it "should add the stream"
-              (fn []
-                (let [stream-name "foo"]
-                  ;; route: streams-api/collection :post
-                  (doto $httpBackend
-                    (.. (expectPOST "/model/streams") (respond (constantly #js [200 stream-name]))))
-                  (let [p (.addStream app stream-name)]
-                    (.flush $httpBackend)
-                    (.. (js/expect p) (toBeResolvedWith stream-name))))))))
-
         (js/describe ".connect"
           (fn []
             (js/it "should open a websocket connection"

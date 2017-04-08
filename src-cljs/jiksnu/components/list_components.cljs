@@ -1,7 +1,8 @@
 (ns jiksnu.components.list-components
   (:require [inflections.core :as inf]
             [jiksnu.app :refer [jiksnu]]
-            [jiksnu.helpers :as helpers]))
+            [jiksnu.helpers :as helpers]
+            [jiksnu.protocols :as p]))
 
 (defn list-directive
   [subpage controller]
@@ -89,7 +90,7 @@
   (set! (.-addStream $scope)
         (fn []
           (if-let [stream-name (.. $scope -stream -name)]
-            (.addStream app stream-name)
+            (p/add-stream app stream-name)
             (throw (js/Error. "Could not determine stream name")))))
 
   (set! (.-updateLabel $scope)

@@ -1,7 +1,7 @@
 (ns jiksnu.providers
   (:require [cljs.reader :as reader]
             [jiksnu.app :refer [jiksnu]]
-            [jiksnu.protocols :refer [AppProtocol]]
+            [jiksnu.protocols :refer [AppProtocol] :as p]
             [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))
 
@@ -15,7 +15,7 @@
     (.showSimple $mdToast "Adding to page")))
 
 (def app-methods
-  {:addStream     methods/add-stream
+  {:addStream     p/add-stream
    :connect       methods/connect
    :deleteStream  methods/delete-stream
    :fetchStatus   methods/fetch-status
@@ -67,7 +67,11 @@
 (deftype AppProvider
     [inject]
 
-  AppProtocol)
+  AppProtocol
+
+  (add-stream [app stream-name]
+    (let [$http (.inject app "$http")]
+      (methods/add-stream $http stream-name))))
 
 (defn app
   []

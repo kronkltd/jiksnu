@@ -54,4 +54,17 @@
                  (.. (whenGET #"/templates/.*") (respond "<div></div>"))
                  (.. (whenGET #"/model/.*")     (respond "{}"))))])))
 
-    (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))))
+    (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
+
+    (js/describe "add-stream"
+      (fn []
+        (js/it "should add the stream"
+          (fn []
+            (let [stream-name "foo"]
+              ;; route: streams-api/collection :post
+              (-> (.expectPOST $httpBackend "/model/streams")
+                  (.respond (constantly #js [200 stream-name])))
+
+              (let [p (methods/add-stream $http stream-name)]
+                (.flush $httpBackend)
+                (-> (js/expect p) (.toBeResolvedWith stream-name))))))))))
