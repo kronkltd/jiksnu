@@ -31,7 +31,7 @@
    :ping          methods/ping
    :post          methods/post
    :refresh       methods/refresh
-   :register      methods/register
+   :register      p/register
    :send          methods/send
    :unfollow      methods/unfollow})
 
@@ -63,6 +63,10 @@
   (get-websocket-url [app]
     (let [$location (.inject app "$location")]
       (methods/get-websocket-url $location))))
+
+  (register [app params]
+    (let [$http (.inject app "$http")]
+      (methods/register $http params))))
 
 (defn app
   []

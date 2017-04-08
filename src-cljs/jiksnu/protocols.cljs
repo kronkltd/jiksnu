@@ -2,4 +2,5 @@
 
 (defprotocol AppProtocol
   (add-stream        [this stream-name])
-  (get-websocket-url [this]))
+  (get-websocket-url [this])
+  (register          [this params]))

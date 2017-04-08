@@ -228,16 +228,15 @@
 
 (defn register
   "Register a new user"
-  [app params]
+  [$http params]
   (timbre/debugf "Registering - %s" (.-reg params))
-   (let [$http (.inject app "$http")
-         params #js {:method "post"
-                     :url    "/main/register"
-                     :data   (.-reg params)}]
-     (-> ($http params)
-         (.then (fn [data]
-                  (timbre/debug "Response" data)
-                  data)))))
+  (let [params #js {:method "post"
+                    :url    "/main/register"
+                    :data   (.-reg params)}]
+    (-> ($http params)
+        (.then (fn [data]
+                 (timbre/debug "Response" data)
+                 data)))))
 
 (defn send
   "Send a command over the websocket connection"
