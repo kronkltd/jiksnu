@@ -72,6 +72,17 @@
                               (returnValue "foo"))])
                 (timbre/spy (.connect app))))))
 
+        (js/describe ".follow"
+          (fn []
+            (js/describe "when not authenticated"
+              (fn []
+                (js/it "should be rejected"
+                  (fn []
+                    (let [target nil
+                          p (.follow app target)]
+                      (.$digest $rootScope)
+                      (-> (js/expect p) .toBeRejected))))))))
+
         (js/describe ".invokeAction"
           (fn []
             (js/it "sends a message"

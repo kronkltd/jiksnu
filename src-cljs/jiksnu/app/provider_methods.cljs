@@ -58,13 +58,15 @@
 (defn follow
   "Follow the target user"
   [$q $http target]
-  (timbre/debug "follow" target)
+  (timbre/debug "follow:" target)
   (if target
     (let [object  #js {:id target._id}
           activity #js {:verb "follow" :object object}]
       (post $http activity))
     (do (timbre/warn "No target")
-        ($q (fn [_ reject] (reject))))))
+        ($q (fn [_ reject]
+              (timbre/info "q fn")
+              (reject))))))
 
 (defn get-user-id
   "Returns the authenticated user id from app data"
