@@ -18,9 +18,9 @@ module.exports = function(config) {
       vendorBase + "/jasmine-promise-matchers/dist/jasmine-promise-matchers.js",
       "test.js",
       {pattern: vendorBase + "/**/*", included: false},
-      {pattern: "target/karma-cljs/**/*", included: false, watched: true},
       {pattern: "target/karma-cljs/goog/base.js", watched: true},
       {pattern: "target/karma-cljs/karma-test.js", included: true, watched: true},
+      {pattern: "target/karma-cljs/**/*", included: false, watched: true},
       {pattern: "main.js", included: false, watched: true},
       "test-runner.js"
     ],
