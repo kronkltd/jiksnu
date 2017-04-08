@@ -1,10 +1,10 @@
 (ns jiksnu.app-test
-  (:require jiksnu.app
-            purnam.test)
-  (:use-macros [purnam.test :only [it is describe]]))
+  (:require jiksnu.app))
 
 (def a (atom 0))
 
-(describe {:doc "simple test"}
-  (it "does the needful"
-    (is (+ 2 2)  4)))
+(js/describe "simple test"
+  (fn []
+    (js/it "does the needful"
+      (fn []
+        (-> (js/expect (+ 2 2)) (.toBe 4))))))

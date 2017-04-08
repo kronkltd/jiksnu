@@ -55,6 +55,10 @@
   [n]
   (str (fseq :givenName) " " (fseq :surname)))
 
+(defseq :album-name
+  [n]
+  (fseq :name))
+
 (defseq :password
   [n]
   "hunter2")
@@ -86,7 +90,7 @@
 (defn make-uri
   [domain & [path]]
   (let [path (or path (fseq :path))]
-   (str "http://" domain path)))
+    (str "http://" domain path)))
 
 (defseq :uri
   [n]
@@ -116,6 +120,7 @@
     "Employees of "
     "Ex-lovers of "
     "The Sacred order of "
+    "The Secret Society for "
     ""
     "The Heralds of the Imminent Arrival of "]))
 
@@ -188,7 +193,7 @@
 
 (defrecordfactory :local-user model/map->User
   (assoc (factory :user {:domain (config :domain)})
-    :local true))
+         :local true))
 
 (defrecordfactory :conversation model/map->Conversation
   {:url (fseq :uri)})
@@ -196,35 +201,31 @@
 (defrecordfactory :resource model/map->Resource
   {:_id (fseq :uri)})
 
+(defrecordfactory :album model/map->Album
+  {:name (fseq :album-name)})
+
 (defrecordfactory :activity model/map->Activity
-  {
-   :title (fseq :title)
+  {:title (fseq :title)
    :content (fseq :content)
    ;; :published (time/now)
    ;; :url (fseq :uri)
-   :author #'user-id
    ;; :verb "post"
-   })
+   :author #'user-id})
 
 (defrecordfactory :full-activity model/map->Activity
-  {
-   :title (fseq :title)
+  {:title (fseq :title)
    :content (fseq :content)
    :published (time/now)
    :url (fseq :uri)
    :author #'user-id
-   :verb "post"
-   })
+   :verb "post"})
 
 (defrecordfactory :client model/map->Client
-  {:_id (fseq :word)}
-  )
+  {:_id (fseq :word)})
 
 (defrecordfactory :request-token model/map->RequestToken
   {:_id (fseq :word)
-   :callback (fseq :uri)
-   }
-  )
+   :callback (fseq :uri)})
 
 (defrecordfactory :subscription model/map->Subscription
   {:to #'user-id
@@ -247,7 +248,13 @@
   {:user #'user-id
    :activity #'activity-id})
 
+(deffactory :service
+  {})
+
 (defrecordfactory :stream model/map->Stream
   {:name (fseq :word)
    :user #'user-id
    :public true})
+
+(deffactory :notification
+  {})

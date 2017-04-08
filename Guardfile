@@ -39,8 +39,9 @@ guard 'livereload' do
 end
 
 guard :shell do
-  watch(%r{specs/.+\.cljs?}) do
-    `lein with-profile e2e cljsbuild once`
+  watch(%r{less/[^.].+\.less}) do
+    `script/compile-less`
+    `notify-send "CSS updated"`
   end
 end
 
@@ -57,5 +58,7 @@ group :e2e do
 
     # Page templates
     watch(%r{resources/templates/.+\.edn}) {run_protractor}
-  end
+
+    watch(%r{target/specs/.+\.js}) {run_protractor}
+end
 end

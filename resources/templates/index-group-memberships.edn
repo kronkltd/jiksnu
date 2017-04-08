@@ -1,11 +1,13 @@
-[:div {:title "index-group-memberships"}
- [:h1
-  [:span "Group Memberships"]
-  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
+([:div.title-section {:layout "row" :flex ""}
+  [:div {:flex ""}
+   [:h1.md-headline {:layout-padding ""} "Group Memberships"]]
+  [:div {:layout-align "end"}
+   [:div {:layout-align "end end" :flex ""}
+    [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh"}
+     [:ng-md-icon {:icon "loop"}]]]]]
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
   [:debug {:expr "page"}]
-  [:ul.list-unstyled
-   [:li {:ng-repeat "id in page.items"}
-    [:debug {:expr "id"}]
-    [:show-group-membership-minimal {:data-id "{{id}}"}]]]]]
+  [:div {:ng-repeat "id in page.items"}
+   [:debug {:expr "id"}]
+   [:show-group-membership-minimal {:data-id "{{id}}"}]]])

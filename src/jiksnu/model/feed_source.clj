@@ -1,5 +1,5 @@
 (ns jiksnu.model.feed-source
-  (:require [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
@@ -20,8 +20,7 @@
    (type-of :local   Boolean)
    (type-of :status  String)
    (type-of :created DateTime)
-   (type-of :updated DateTime)
-))
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
@@ -35,7 +34,7 @@
 
 (defn find-record
   [options & _]
-  (if-let [item (mc/find-one-as-map @_db collection-name options)]
+  (if-let [item (mc/find-one-as-map (db/get-connection) collection-name options)]
     (maker item)))
 
 (defn fetch-by-topic
@@ -51,4 +50,4 @@
 
 (defn ensure-indexes
   []
-  (mc/ensure-index @_db collection-name {:topic 1} {:unique true}))
+  (mc/ensure-index (db/get-connection) collection-name {:topic 1} {:unique true}))

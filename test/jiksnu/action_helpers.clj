@@ -10,8 +10,7 @@
 (def default-sleep-time (time/seconds 5))
 
 (def page-names
-  {
-   "home"                           "/"
+  {"home"                           "/"
    "login"                          "/main/login"
    "ostatus sub"                    "/main/ostatussub"
    "host-meta"                      "/.well-known/host-meta"
@@ -56,7 +55,7 @@
 (defn fetch-page
   [method path]
   ;; TODO: Handle non-GET case
-  (let [response (client/get (expand-url path)) ]
+  (let [response (client/get (expand-url path))]
     (dosync
      (ref-set current-page response))))
 

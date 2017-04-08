@@ -1,11 +1,14 @@
 (ns jiksnu.actions.domain-actions
   (:require [ciste.config :refer [config]]
+            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util])
   (:import jiksnu.model.Domain))
+
+(def model-ns 'jiksnu.model.domain)
 
 (defonce delete-hooks (ref []))
 
@@ -31,9 +34,7 @@
 ;; FIXME: this is always hitting the else branch
 (defn add-link
   [item link]
-  (if-let [existing-link (model.domain/get-link item
-                                                (:rel link)
-                                                (:type link))]
+  (if (model/get-link item (:rel link) (:type link))
     item
     (add-link* item link)))
 
@@ -52,8 +53,7 @@
 
 (defn host-meta
   [ctx]
-  nil
-  )
+  nil)
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.domain
@@ -62,30 +62,6 @@
 (defn index
   [& options]
   (apply index* options))
-
-(defn ping
-  [domain]
-  true)
-
-;; Occurs if the ping request caused an error
-(defn ping-error
-  [domain]
-  (model.domain/set-field! domain :xmpp false)
-  false)
-
-(defn set-xmpp
-  [domain value]
-  (model.domain/set-field! domain :xmpp false))
-
-(defn ping-response
-  [domain]
-  {:pre [(instance? Domain domain)]}
-  (set-xmpp domain true))
-
-;; (defn count
-;;   [ctx]
-;;   1
-;;   )
 
 (defn create
   [params]

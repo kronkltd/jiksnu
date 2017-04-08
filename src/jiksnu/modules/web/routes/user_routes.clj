@@ -1,20 +1,17 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [cemerick.friend :as friend]
             [ciste.core :refer [with-context]]
-            [ciste.sections.default :refer [index-section show-section show-section-minimal]]
+            [ciste.sections.default :refer [index-section show-section]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.modules.as.sections.user-sections :refer [format-collection]]
-            jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource as-collection-resource
-                                                defparameter get-user page-resource path
-                                                subpage-resource]]
-            [jiksnu.util :as util]
+                                                defparameter get-user item-resource
+                                                page-resource path subpage-resource]]
             [octohipster.mixins :as mixin]
             [taoensso.timbre :as timbre]))
 
@@ -54,7 +51,6 @@
   :name "Pump API"
   :description "User api matching pump.io spec")
 
-
 (defresource user-pump-api :user-info
   :url "/{username}"
   :name "user info"
@@ -88,11 +84,11 @@
   :fetcher (fn [id] (model.activity/fetch-by-id id))
   :post! (fn [ctx]
            (timbre/info "receiving post")
-           (let [request (util/inspect (:request ctx))]
+           (let [request (:request ctx)]
              (if-let [author (model.user/get-user (:current (friend/identity request)))]
-               (let [params (-> (:params (util/inspect (:request ctx)))
+               (let [params (-> (:params (:request ctx))
                                 (assoc :author (:_id author)))]
-                 (util/inspect (actions.activity/post (util/inspect params))))))))
+                 (actions.activity/post params))))))
 
 (defresource user-pump-api :feed-major
   :url "/{username}/feed/major"
@@ -100,7 +96,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :feed-minor
   :url "/{username}/feed/minor"
@@ -108,7 +104,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :followers
   :url "/{username}/followers"
@@ -116,8 +112,7 @@
   :mixins [as-collection-resource]
   :collection-type "person"
   :indexer (fn [ctx user] (nth (actions.subscription/get-subscribers user) 1))
-  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id
-                            :from model.user/fetch-by-id)))
+  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id :from model.user/fetch-by-id)))
 
 (defresource user-pump-api :following
   :url "/{username}/following"
@@ -125,8 +120,7 @@
   :mixins [as-collection-resource]
   :collection-type "person"
   :indexer (fn [ctx user] (nth (actions.subscription/get-subscriptions user) 1))
-  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id
-                            :to model.user/fetch-by-id)))
+  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id :to model.user/fetch-by-id)))
 
 (defresource user-pump-api :inbox-direct-major
   :url "/{username}/inbox/direct/major"
@@ -134,7 +128,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :inbox-direct-minor
   :url "/{username}/inbox/direct/minor"
@@ -142,7 +136,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :inbox
   :url "/{username}/inbox"
@@ -150,7 +144,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :inbox-major
   :url "/{username}/inbox/major"
@@ -158,7 +152,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :inbox-minor
   :url "/{username}/inbox/minor"
@@ -226,21 +220,16 @@
 
 (defresource users-api :collection
   :mixins [page-resource]
-  :available-formats [:json]
+  :page "users"
   :ns 'jiksnu.actions.user-actions)
 
 (defresource users-api :item
   :url "/{_id}"
   :name "user routes"
+  :ns 'jiksnu.actions.user-actions
   :description "Resource routes for single User"
-  :mixins [mixin/item-resource]
-  :parameters {:_id (path :model.user/id)}
-  :available-media-types ["application/json"]
-  :presenter (partial into {})
-  :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)]
-               (when-let [user (model.user/fetch-by-id id)]
-                 {:data user}))))
+  :mixins [item-resource]
+  :parameters {:_id (path :model.user/id)})
 
 (defresource users-api :activities
   :url "/{_id}/activities"
@@ -249,8 +238,16 @@
   :mixins [subpage-resource]
   :target-model "user"
   :subpage "activities"
-  :parameters {:_id (path :model.user/id)}
-  :available-formats [:json])
+  :parameters {:_id (path :model.user/id)})
+
+(defresource users-api :albums
+  :url "/{_id}/albums"
+  :name "user albums"
+  :description "Albums of {{username}}"
+  :mixins [subpage-resource]
+  :target-model "user"
+  :subpage "albums"
+  :parameters {:_id (path :model.user/id)})
 
 (defresource users-api :groups
   :url "/{_id}/groups"
@@ -259,8 +256,7 @@
   :mixins [subpage-resource]
   :target-model "user"
   :subpage "groups"
-  :parameters  {:_id (path :model.user/id)}
-  :available-formats [:json])
+  :parameters  {:_id (path :model.user/id)})
 
 (defresource users-api :followers
   :url "/{_id}/followers"
@@ -291,6 +287,4 @@
   :mixins [subpage-resource]
   :target-model "user"
   :subpage "streams"
-  :parameters {:_id (path :model.user/id)}
-  :available-media-types ["application/json"]
-  :available-formats [:json])
+  :parameters {:_id (path :model.user/id)})

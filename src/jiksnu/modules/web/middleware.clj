@@ -3,15 +3,13 @@
             [taoensso.timbre :as timbre]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
+            [jiksnu.metrics :as metrics]
             [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.session :refer [with-user-id]]
-            [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+]])
-  (:import javax.security.auth.login.LoginException
-           kamon.Kamon
-           kamon.trace.Tracer))
+  (:import javax.security.auth.login.LoginException))
 
 (defn wrap-user-binding
   [handler]
@@ -22,7 +20,7 @@
         (handler request)))))
 
 (defn auth-exception
-  [ex]
+  [_]
   {:status 401
    :template false
    :flash "You must be logged in to do that."
@@ -73,19 +71,19 @@
     (let [request
           (or
            (if-let [authorization (get-in request [:headers "authorization"])]
-             (let [[type parts] (parse-authorization-header (util/inspect authorization))]
+             (let [[type parts] (parse-authorization-header authorization)]
                (if (unparsed-types type)
                  request
                  (let [client (some-> parts (get "oauth_consumer_key") model.client/fetch-by-id)
                        token  (some-> parts (get "oauth_token") model.access-token/fetch-by-id)]
                    (merge request
-                                {:authorization-type type
-                                 :authorization-parts parts}
-                                (when client
-                                  {:authorization-client client})
-                                (when token
-                                  {:access-token token}))))))
-              request)]
+                          {:authorization-type type
+                           :authorization-parts parts}
+                          (when client
+                            {:authorization-client client})
+                          (when token
+                            {:access-token token}))))))
+           request)]
       (handler request))))
 
 (defn wrap-oauth-user-binding
@@ -105,29 +103,29 @@
     (try
       (handler request)
       (catch Exception ex
+        (timbre/error ex "Unhandled error")
         (try
           (let [st (with-out-str (print-stack-trace ex))]
             {:status 500
              :headers {"content-type" "text/plain"}
              :body st})
           (catch Throwable ex
-            ;; FIXME: handle error
-            (timbre/fatalf ex "Error parsing exception: %s")))))))
-
-(defn default-html-mode
-  []
-  (config :htmlOnly))
+            (timbre/fatalf "Error parsing exception: %s" ex)))))))
 
 (defn wrap-response-logging
   [handler]
   (fn [request]
-    (let [tracer (.newContext (Kamon/tracer) "http-request")]
-      (.increment (.counter (Kamon/metrics) "request-handled"))
+    (metrics/with-trace :http-request
+      (metrics/increment-counter! :request-handled)
       (timbre/with-context {:request (-> request
                                          (dissoc :async-channel)
                                          (dissoc :body)
                                          (dissoc :cemerick.friend/auth-config))}
-        (timbre/debug "http request"))
-      (let [response (handler request)]
-        (.finish tracer)
-        response))))
+        (timbre/debugf "%s %s" (:request-method request) (:uri request)))
+      (handler request))))
+
+(defn wrap-debug-param
+  [handler]
+  (fn [request]
+    (let [debug (boolean (get-in request [:cookies "XDEBUG_SESSION"]))]
+      (handler (assoc request :debug debug)))))

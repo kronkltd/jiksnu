@@ -13,8 +13,4 @@
     (fact "and the group does not already exist"
       (model.group/drop!)
       (let [params (factory :group)]
-        (actions.group/create params) => #(instance? Group %)))
-    ;; TODO: already exists
-    )
-  ;; TODO: invalid options
-  )
+        (actions.group/create params) => #(instance? Group %)))))

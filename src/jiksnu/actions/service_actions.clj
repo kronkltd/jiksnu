@@ -6,16 +6,60 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.service :as model.service]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
+            [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
             [manifold.deferred :as d]
             [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre])
-  (:import jiksnu.model.Domain))
+  (:import jiksnu.model.Domain
+           (org.apache.http HttpStatus)))
+
+(def model-ns 'jiksnu.model.service)
 
 (defonce pending-discovers (ref {}))
+
+(defonce delete-hooks (ref []))
+
+(defn prepare-delete
+  ([item]
+   (prepare-delete item @delete-hooks))
+  ([item hooks]
+   (if (seq hooks)
+     (recur ((first hooks) item) (rest hooks))
+     item)))
+
+(defn prepare-create
+  [params]
+  (-> params
+      transforms/set-_id
+      transforms/set-updated-time
+      transforms/set-created-time
+      transforms/set-no-links))
+
+(defn create
+  "Create a new service record"
+  ([params]
+   (create params nil))
+  ([params options]
+   (let [params (prepare-create params)]
+     (model.service/create params))))
+
+(def index*
+  (templates.actions/make-indexer model-ns
+                                  :sort-clause {:created -1}))
+
+(defn index
+  [& options]
+  (apply index* options))
+
+(defn delete
+  [source]
+  (model.service/delete source))
 
 (defn fetch-xrd*
   [url]
@@ -27,14 +71,22 @@
                     (fn [_] (timbre/error "Fetching xrd caused error")))
 
      (let [response @res]
-       (when (= 200 (:status response))
+       (when (= (:status response) HttpStatus/SC_OK)
          (try
            (if-let [body (:body response)]
              (cm/string->document body))
            (catch RuntimeException ex
-             (timbre/error "Fetching host meta failed" ex))))))
+             (timbre/error ex "Fetching host meta failed"))))))
    (catch Object ex
      (timbre/error ex))))
+
+(defn delete
+  "Delete the service"
+  [item]
+  (if-let [item (prepare-delete item)]
+    (do (model.service/delete item)
+        item)
+    (throw+ "prepare delete failed")))
 
 (defn fetch-xrd
   "Given a domain and an optional context uri. Attempts to find the xrd document"
@@ -55,9 +107,9 @@
   "Fetch service's statusnet config. blocks"
   [domain url]
   (let [url (model.domain/statusnet-url domain)]
-   (when-let [response (actions.resource/fetch url)]
-     (when-let [sconfig (json/read-str (:body @response))]
-       (model.domain/set-field! domain :statusnet-config sconfig)))))
+    (when-let [response (actions.resource/fetch url)]
+      (when-let [sconfig (json/read-str (:body @response))]
+        (model.domain/set-field! domain :statusnet-config sconfig)))))
 
 (defn discover-capabilities
   [domain & [url]]
@@ -111,9 +163,8 @@
    (fn [_]
      (let [domain (model.domain/fetch-by-id (:_id domain))]
        (util/safe-task (discover-webfinger domain url))
-       ;; (util/safe-task (discover-onesocialweb domain url))
-       ;; (util/safe-task (discover-statusnet-config domain url))
-       ))))
+       #_(util/safe-task (discover-onesocialweb domain url))
+       #_(util/safe-task (discover-statusnet-config domain url))))))
 
 (defn discover
   [^Domain domain url]

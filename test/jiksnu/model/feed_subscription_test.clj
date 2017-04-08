@@ -48,14 +48,14 @@
   (fact "when given valid params"
     (let [params (actions.feed-subscription/prepare-create
                   (factory :feed-subscription {:local false}))]
-      (create params)) =>
+      (create params) =>
       (every-checker
        (partial instance? FeedSubscription)
        (contains
         {:_id     (partial instance? ObjectId)
          :created (partial instance? DateTime)
          :updated (partial instance? DateTime)
-         :url     string?})))
+         :url     string?}))))
 
   (fact "when given invalid params"
     (create {}) => (throws RuntimeException)))

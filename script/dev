@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+command -v docker >/dev/null 2>&1 || { \
+    echo >&2 "Docker is not available. This command should be run from outside a container."; \
+    exit 1; \
+}
+
+DOCKER_REGISTRY_HOST=${DOCKER_REGISTRY_HOST:-registry.kronkltd.net}
+
+if [ -z "DOCKER_REGISTRY_HOST" ]; then
+  DOCKER_PREGISTRY_PREFIX=""
+else
+    DOCKER_REGISTRY_PREFIX="${DOCKER_REGISTRY_HOST}/"
+fi
+
+BRANCH_TAG=${BRANCH_TAG:-latest}
+DEV_IMAGE_TAG="${DOCKER_REGISTRY_PREFIX}kronkltd/jiksnu:${BRANCH_TAG}-dev"
+INHERITED_OPTS=""
+
+
+# TODO: abstract this pattern
+if [ "$JIKSNU_SENTRY_DSN" ]; then
+  INHERITED_OPTS="$INHERITED_OPTS -e JIKSNU_SENTRY_DSN=$JIKSNU_SENTRY_DSN"
+fi
+
+if [ "$JIKSNU_SENTRY_DSN_CLIENT" ]; then
+  INHERITED_OPTS="$INHERITED_OPTS -e JIKSNU_SENTRY_DSN_CLIENT=$JIKSNU_SENTRY_DSN_CLIENT"
+fi
+
+if [ "$JIKSNU_THEME_COLOR" ]; then
+  INHERITED_OPTS="$INHERITED_OPTS -e JIKSNU_THEME_COLOR=$JIKSNU_THEME_COLOR"
+fi
+
+if [ "$NOTIFY_SEND_URL" ]; then
+  INHERITED_OPTS="$INHERITED_OPTS -e NOTIFY_SEND_URL=$NOTIFY_SEND_URL"
+fi
+
+docker-compose up -d mongo
+
+docker rm -f jiksnu-dev || true
+docker pull $DEV_IMAGE_TAG || script/build-docker
+
+
+if [ -z "$@" ]; then
+  ENTRYPOINT="script/entrypoint-dev"
+else
+    ENTRYPOINT="script/$@"
+fi
+
+docker run \
+  --rm \
+  --name jiksnu-dev \
+  -it \
+  --net jiksnu_default \
+  -v ${PWD}:/app \
+  -v jiksnu-dev-media:/data \
+  -e CISTE_LOGGER=jiksnu.logger \
+  -e DOMAIN=dev.jiksnu.com \
+  -e JIKSNU_SCRIPT_DEBUG=true \
+  $INHERITED_OPTS \
+  -p 3449:3449 \
+  -p 8081:8080 \
+  -p 7888:7888 \
+  -p 9876:9876 \
+  $DEV_IMAGE_TAG \
+  ${ENTRYPOINT?}

@@ -4,30 +4,35 @@
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.db :as db]
+            [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
   (:import com.mongodb.WriteConcern))
 
 (def _db (ref nil))
 (def _conn (ref nil))
 
-(describe-config [:jiksnu :db :host]
-  String
-  "The mongodb host"
-  :default "localhost")
+(describe-config
+ [:jiksnu :db :host]
+ String
+ "The mongodb host"
+ :default "localhost")
 
-(describe-config [:jiksnu :db :name]
-  String
-  "The mongodb collection"
-  :default "jiksnu")
+(describe-config
+ [:jiksnu :db :name]
+ String
+ "The mongodb collection"
+ :default "jiksnu")
 
-(describe-config [:jiksnu :db :port]
-  Integer
-  "The mongodb port"
-  :default 27017)
+(describe-config
+ [:jiksnu :db :port]
+ Integer
+ "The mongodb port"
+ :default 27017)
 
-(describe-config [:jiksnu :db :url]
-  String
-  "The mongodb connection info as a uri")
+(describe-config
+ [:jiksnu :db :url]
+ String
+ "The mongodb connection info as a uri")
 
 ;; Database functions
 
@@ -56,3 +61,8 @@
       (dosync
        (ref-set _conn conn)
        (ref-set _db db)))))
+
+(defn get-connection
+  []
+  (or @_db
+      (throw+ {:message "Database connection not set"})))

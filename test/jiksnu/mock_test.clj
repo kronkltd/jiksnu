@@ -3,14 +3,19 @@
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
   (:import jiksnu.model.Activity
+           jiksnu.model.Album
            jiksnu.model.Client
            jiksnu.model.Conversation
            jiksnu.model.Domain
            jiksnu.model.FeedSource
            jiksnu.model.FeedSubscription
            jiksnu.model.Group
+           jiksnu.model.Like
+           jiksnu.model.Notification
+           jiksnu.model.Picture
            jiksnu.model.RequestToken
            jiksnu.model.Resource
+           jiksnu.model.Service
            jiksnu.model.Stream
            jiksnu.model.Subscription
            jiksnu.model.User))
@@ -29,6 +34,12 @@
 (fact "#'mock/a-client-exists"
   (mock/a-client-exists) => (partial instance? Client))
 
+(fact "#'mock/a-like-exists"
+  (mock/a-like-exists) => (partial instance? Like))
+
+(fact "#'mock/a-notification-exists"
+  (mock/a-notification-exists) => (partial instance? Notification))
+
 (fact "#'mock/a-user-exists"
   (fact "without any params"
     (mock/a-user-exists) => (partial instance? User)))
@@ -39,6 +50,9 @@
 
 (fact "#'mock/a-feed-source-exists"
   (mock/a-feed-source-exists) => (partial instance? FeedSource))
+
+(fact "#'mock/a-service-exists"
+  (mock/a-service-exists) => (partial instance? Service))
 
 (fact "#'mock/a-conversation-exists"
   (mock/a-conversation-exists) => (partial instance? Conversation))
@@ -52,5 +66,11 @@
 (fact "#'mock/a-group-exists"
   (mock/a-group-exists) => (partial instance? Group))
 
+(fact "#'mock/an-album-exists"
+  (mock/an-album-exists) => (partial instance? Album))
+
 (fact "#'mock/a-request-token-exists"
   (mock/a-request-token-exists) => (partial instance? RequestToken))
+
+(fact "#'mock/a-picture-exists"
+  (mock/a-picture-exists) => (partial instance? Picture))

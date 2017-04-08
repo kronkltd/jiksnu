@@ -1,5 +1,4 @@
-[:a.url {:ui-sref "showUser(user)"
-         :title "acct:{{user.username}}@{{user.domain}}"}
+[:a.url {:ui-sref "showUser(user)" :title "{{user._id}}"}
  [:img
   {:width "{{size}}"
    :height "{{size}}"

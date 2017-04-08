@@ -1,10 +1,14 @@
-[:div
- [:h3 "Following" [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
- [:subpage {:name "following" :item "item"}
+[:div {:title "list-following" :layout "column" :flex ""}
+ [:section {:layout "rox" :flex ""}
+  [:h3 {:layout "column" :flex ""} "Following"]
+  [:div {:layout "column" :flex ""}]
+  [:div  {:layout "column" :flex "10" :layout-align "right"}
+   [:md-button {:ng-click "refresh()" :aria-label "Refresh"}
+    [:ng-md-icon {:icon "loop"}]]]]
+ [:subpage {:name "following" :item "$ctrl.item"}
   [:debug {:expr "$parent.page"}]
   [:div {:ng-if "!$parent.loaded"} [:spinner]]
-  [:div {:ng-if "$parent.loaded"}
-   [:ul
-    [:li {:ng-repeat "id in $parent.$parent.page.items"}
-     [:debug {:expr "id"}]
-     [:show-following-minimal {:data-id "{{id}}"}]]]]]]
+  [:md-list {:ng-if "$parent.loaded"}
+   [:md-list-item {:ng-repeat "id in $parent.$parent.page.items"}
+    [:debug {:expr "id"}]
+    [:show-following-minimal {:data-id "{{id}}"}]]]]]

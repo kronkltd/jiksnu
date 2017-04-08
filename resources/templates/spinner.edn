@@ -1,7 +1,1 @@
-[:img {:src "/wheel.svg"}]
-#_[:object
- {:type "image/svg+xml"
-  :data "/wheel.svg"
-  }
- "Loading"
- ]
+[:md-progress-circular {:md-mode "indeterminate"}]

@@ -2,7 +2,9 @@
   (:require [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set presence-of]]))
+            [validateur.validation :refer [validation-set presence-of]])
+  (:import (org.bson.types ObjectId)
+           (org.joda.time DateTime)))
 
 (defonce page-size 20)
 (def collection-name "streams")
@@ -10,19 +12,13 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id                   ObjectId)
-   ;; (type-of :name                 String)
-
-   ;; ;; (type-of :local                 Boolean)
+   (type-of :_id ObjectId)
+   (type-of :name String)
+   ;; (type-of :local Boolean)
    ;; ;; (type-of :public                Boolean)
-
-   ;; (type-of :user                  String)
-
-   ;; (presence-of :created)
-   ;; ;; (type-of :created               DateTime)
-   ;; (presence-of :updated)
-   ;; ;; (type-of :updated               DateTime)
-   ))
+   (type-of :owner String)
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

@@ -6,7 +6,8 @@
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import nu.xom.Document))
+  (:import nu.xom.Document
+           (org.apache.http HttpStatus)))
 
 (th/module-test ["jiksnu.modules.core"])
 
@@ -18,17 +19,17 @@
     (fact "when the url points to a valid XRD document"
       (actions.webfinger/fetch-host-meta url) => (partial instance? Document)
       (provided
-        (ops/update-resource url) => (ref {:status 200
-                                       :body "<XRD/>"})))
+       (ops/update-resource url) => (ref {:status HttpStatus/SC_OK
+                                          :body   "<XRD/>"})))
     (fact "when the url does not point to a valid XRD document"
       (actions.webfinger/fetch-host-meta url) => (throws RuntimeException)
       (provided
-        (ops/update-resource url) => (ref {:status 404
-                                           :body "<html><body><p>Not Found</p></body></html>"})))))
+       (ops/update-resource url) => (ref {:status HttpStatus/SC_NOT_FOUND
+                                          :body "<html><body><p>Not Found</p></body></html>"})))))
 
 (fact "#'actions.webfinger/host-meta"
   (let [domain (config :domain)
         response (actions.webfinger/host-meta)]
     response => map?
     (:host response) => domain
-    (count (:links response)) => (partial >= 1)))
+    (count (:links response)) => (partial <= 1)))

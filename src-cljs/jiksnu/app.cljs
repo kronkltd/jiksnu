@@ -1,29 +1,30 @@
 (ns jiksnu.app
-  (:use-macros [gyr.core :only [def.module]]))
+  (:require [jiksnu.registry :as registry]
+            [taoensso.timbre :as timbre]))
 
-(def sentry-dsn-client "http://68981c8a90cb4f079bc84dff62851d16@sentry.docker/2")
+(defonce plugins (atom #{}))
 
-(.. js/Raven
-    (config sentry-dsn-client)
-    (addPlugin (.. js/Raven -Plugins -Angular))
-    (install))
+(defn configure-raven-plugin
+  []
+  (when-let [dsn (some-> js/window .-sentryDSNClient)]
+    (-> js/Raven
+        (.config dsn)
+        (.addPlugin js/Raven.Plugins.Angular)
+        (.install))
+    (swap! plugins conj "ngRaven")))
 
-(def.module jiksnu
-  [
-   angular-clipboard
-   angularFileUpload
-   angularMoment
-   btford.markdown
-   geolocation
-   datatables
-   hljs
-   js-data
-   ngRaven
-   ngSanitize
-   ngWebSocket
-   cfp.hotkeys
-   ui.bootstrap
-   ui-notification
-   ui.router
-   ui.select
-   ])
+(defn initialize-plugins!
+  []
+  (apply swap! plugins conj registry/initial-plugins)
+  (configure-raven-plugin))
+
+(defn get-plugins
+  []
+  (clj->js @plugins))
+
+(defn initialize-module!
+  []
+  (initialize-plugins!)
+  (js/angular.module "jiksnu" (get-plugins)))
+
+(defonce jiksnu (initialize-module!))

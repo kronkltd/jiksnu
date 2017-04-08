@@ -1,3 +1,4 @@
+_reports
 *.log
 .classpath
 .gems
@@ -15,10 +16,10 @@
 certs
 checkouts*
 cookbooks
-config
 data
 deps.txt
 doc
+Dockerfile
 dump
 init-script
 jiksnu.iml

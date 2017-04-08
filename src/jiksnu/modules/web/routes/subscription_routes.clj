@@ -1,13 +1,15 @@
 (ns jiksnu.modules.web.routes.subscription-routes
   (:require [ciste.core :refer [with-context]]
-            [ciste.sections.default :refer [index-section show-section]]
             [jiksnu.model.subscription :as model.subscription]
-            jiksnu.modules.core.views.stream-views
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource
-                                                path subpage-resource]]
+                                                path]]
             [octohipster.mixins :as mixin]))
+
+(defparameter :model.subscription/id
+  :description "The Id of a Subscription"
+  :type "string")
 
 (defgroup jiksnu subscriptions
   :url "/main/subscriptions"
@@ -48,8 +50,8 @@
                (when-let [subscription (model.subscription/fetch-by-id id)]
                  {:data subscription}))))
 
-(defgroup jiksnu ostatus
-  :url "/main"
-  :name "OStatus")
+;; (defgroup jiksnu ostatus
+;;   :url "/main"
+;;   :name "OStatus")
 
-(defresource ostatus :sub)
+;; (defresource ostatus :sub)

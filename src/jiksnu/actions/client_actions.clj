@@ -8,11 +8,11 @@
             [jiksnu.transforms.client-transforms :as transforms.client]
             [slingshot.slingshot :refer [throw+]]))
 
-(def model-sym 'jiksnu.model.client)
+(def model-ns 'jiksnu.model.client)
 
-(def create-fn (ns-resolve (the-ns model-sym) 'create))
-(def delete-fn (ns-resolve (the-ns model-sym) 'delete))
-(def fetch-fn  (ns-resolve (the-ns model-sym) 'fetch-by-id))
+(def create-fn (ns-resolve (the-ns model-ns) 'create))
+(def delete-fn (ns-resolve (the-ns model-ns) 'delete))
+(def fetch-fn  (ns-resolve (the-ns model-ns) 'fetch-by-id))
 
 (defonce delete-hooks (ref []))
 
@@ -28,11 +28,11 @@
 
 (defn prepare-delete
   ([item]
-     (prepare-delete item @delete-hooks))
+   (prepare-delete item @delete-hooks))
   ([item hooks]
-     (if (seq hooks)
-       (recur ((first hooks) item) (rest hooks))
-       item)))
+   (if (seq hooks)
+     (recur ((first hooks) item) (rest hooks))
+     item)))
 
 (defn delete
   [item]
@@ -44,7 +44,7 @@
   item)
 
 (def index*
-  (templates.actions/make-indexer model-sym :sort-clause {:created 1}))
+  (templates.actions/make-indexer model-ns :sort-clause {:created 1}))
 
 (defn index
   [& options]

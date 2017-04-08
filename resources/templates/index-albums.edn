@@ -1,0 +1,14 @@
+([:div.title-section {:layout "row" :flex ""}
+  [:div {:flex ""}
+   [:h1.md-headline {:layout-padding ""} "Albums"]]
+  [:div {:layout-align "end"}
+   [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh" :layout-align "start end"}
+    [:ng-md-icon {:icon "loop"}]]]]
+ [:debug {:expr "page"}]
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
+  [:md-list
+   [:md-list-item {:ng-repeat "id in page.items"}
+    [:debug {:expr "id"}]
+    [:show-album-minimal {:data-id "{{id}}"}]]]]
+ [:add-album-form {:ng-show "app.user"}])

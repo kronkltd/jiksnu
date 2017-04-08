@@ -35,20 +35,20 @@
 
 (facts "#'jiksnu.model.feed-source/create"
   (fact " when given valid parameters"
-    (model.feed-source/create {:_id (util/make-id)
-                               :topic (fseq :uri)
-                               :domain (fseq :domain)
-                               :local false
-                               :updated (time/now)
-                               :created (time/now)
-                               :status "none"
-                               }) =>
-    (every-checker
-     (partial instance? FeedSource)
-     (contains
-      {:_id     (partial instance? ObjectId)
-       :created (partial instance? DateTime)
-       :topic   string?})))
+    (let [params {:_id (util/make-id)
+                  :topic (fseq :uri)
+                  :domain (fseq :domain)
+                  :local false
+                  :updated (time/now)
+                  :created (time/now)
+                  :status "none"}]
+      (model.feed-source/create params) =>
+      (every-checker
+       (partial instance? FeedSource)
+       (contains
+        {:_id     (partial instance? ObjectId)
+         :created (partial instance? DateTime)
+         :topic   string?}))))
 
   (fact " when given invalid parameters"
     (model.feed-source/create .params.) => (throws RuntimeException)

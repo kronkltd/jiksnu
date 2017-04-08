@@ -1,24 +1,18 @@
 (ns jiksnu.config
-  (:require jiksnu.app
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
             jiksnu.providers
-            [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :as appenders.core])
-  (:use-macros [gyr.core :only [def.config]]))
+            [jiksnu.registry :as registry]))
 
-(def.config jiksnu [$stateProvider $urlRouterProvider $locationProvider
-                    appProvider DSProvider DSHttpAdapterProvider
-                    hljsServiceProvider NotificationProvider
-                    uiSelectConfig]
-
-
-  ;; (timbre/merge-config!
-  ;;  {:appenders {:console (appenders.core/console-appender {:raw-output? true})}}
-  ;;  )
+(defn jiksnu-config
+  [$stateProvider $urlRouterProvider $locationProvider appProvider DSProvider
+   DSHttpAdapterProvider hljsServiceProvider $mdThemingProvider]
 
   (.setOptions hljsServiceProvider #js {:tabReplace "  "})
 
-  (set! (.-theme uiSelectConfig) "bootstrap")
+  (-> $mdThemingProvider
+      (.theme "default")
+      (.primaryPalette registry/pallete-color))
 
   (js/angular.extend (.-defaults DSProvider)
                      #js {:idAttribute "_id"
@@ -27,10 +21,14 @@
   (js/angular.extend (.-defaults DSHttpAdapterProvider)
                      #js {:log false})
 
-  (.setOptions NotificationProvider #js {:startTop 20})
-
   (.otherwise $urlRouterProvider "/")
   (-> $locationProvider
       (.hashPrefix "!")
       (.html5Mode true))
-  (helpers/add-states $stateProvider helpers/states))
+  (helpers/add-states $stateProvider registry/route-data))
+
+(.config
+ jiksnu
+ #js ["$stateProvider" "$urlRouterProvider" "$locationProvider"
+      "appProvider" "DSProvider" "DSHttpAdapterProvider"
+      "hljsServiceProvider" "$mdThemingProvider" jiksnu-config])

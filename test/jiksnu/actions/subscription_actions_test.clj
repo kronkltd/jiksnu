@@ -21,7 +21,7 @@
           subscribee (mock/a-user-exists)]
       (session/with-user user
         (actions.subscription/subscribe user subscribee)) =>
-        (partial instance? Subscription))))
+      (partial instance? Subscription))))
 
 (fact "#'actions.subscription/ostatussub-submit"
   (let [actor (mock/a-user-exists)
@@ -58,12 +58,13 @@
           actor (model.subscription/get-actor subscription)]
       (let [response (actions.subscription/get-subscriptions actor)]
         (first response) => actor
-        (first (next response)) => (contains
-                              {:totalItems pos?
-                               :items
-                               (every-checker
-                                (has every? (partial instance? ObjectId))
-                                (contains (:_id subscription)))})))))
+        (first (next response)) =>
+        (contains
+         {:totalItems pos?
+          :items
+          (every-checker
+           (has every? (partial instance? ObjectId))
+           (contains (:_id subscription)))})))))
 
 (fact "#'jiksnu.actions.subscription-actions/unsubscribe"
   (let [actor (mock/a-user-exists)

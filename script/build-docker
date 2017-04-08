@@ -1,9 +1,38 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+# Build the docker image(s) for this project.
+# This command should be run from a docker host
 
 set -e
-set -x
 
-docker build -t jiksnu-base      docker/jiksnu-base/
-docker build -t jiksnu-ruby-base docker/jiksnu-ruby-base/
+cd "$(dirname "$0")/.."
+
+command -v docker >/dev/null 2>&1 || { \
+    echo >&2 "Docker is not available. This command should be run from outside a container."; \
+    exit 1; \
+}
+
+DOCKER_REGISTRY_HOST=${DOCKER_REGISTRY_HOST:-registry.kronkltd.net}
+
+if [ -z "DOCKER_REGISTRY_HOST" ]; then
+  DOCKER_PREGISTRY_PREFIX=""
+else
+    DOCKER_REGISTRY_PREFIX="${DOCKER_REGISTRY_HOST}/"
+fi
+
+BRANCH_TAG=${BRANCH_TAG:-latest}
+DEV_IMAGE_TAG="${DOCKER_REGISTRY_PREFIX}kronkltd/jiksnu:${BRANCH_TAG}-dev"
+PRODUCTION_IMAGE_TAG="${DOCKER_REGISTRY_PREFIX}kronkltd/jiksnu:${BRANCH_TAG}"
+
+echo ">> Pulling Existing Image(s)"
+docker pull $DEV_IMAGE_TAG || \
+  echo >&2 "Could not find existing image ($DEV_IMAGE_TAG). Building anyway."
+docker pull $PRODUCTION_IMAGE_TAG || \
+  echo >&2 "Could not find existing image ($PRODUCTION_IMAGE_TAG). Building anyway."
+
+echo ">> Building New Image(s)"
+echo "- $DEV_IMAGE_TAG"
+docker build -t $DEV_IMAGE_TAG -f docker/web-dev/Dockerfile .
+echo "- $PRODUCTION_IMAGE_TAG"
+sigil -p -f Dockerfile.tmpl > Dockerfile
 docker-compose build web
-docker-compose build web-dev

@@ -5,6 +5,7 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]
+            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
@@ -20,6 +21,8 @@
   (:import java.net.URI
            jiksnu.model.User
            nu.xom.Document))
+
+(def model-ns 'jiksnu.model.user)
 
 ;; hooks
 
@@ -79,10 +82,9 @@
     ;; TODO: this should be calling a key action
     (model.key/set-armored-key (:_id user) n e)))
 
-
 (defn get-user-meta
   "Returns an enlive document for the user's xrd file"
-  [user & [options]]
+  [user & [_options]]
   (if-let [url (get-user-meta-uri user)]
     (let [response @(ops/update-resource url)]
       (if-let [body (:body response)]
@@ -99,9 +101,7 @@
 
 (defn add-link
   [user link]
-  (if-let [existing-link (model.user/get-link user
-                                              (:rel link)
-                                              (:type link))]
+  (if-let [_existing-link (model/get-link user (:rel link) (:type link))]
     user
     (add-link* user link)))
 
@@ -146,7 +146,7 @@
     {:links (model.webfinger/get-links doc)}))
 
 (defn process-xrd
-  [user xrd & [options]]
+  [user xrd & [_options]]
   (timbre/info "processing xrd")
   (let [links (concat (:links user) (:links xrd))]
     (assoc user :links links)))
@@ -179,7 +179,7 @@
         params)))
 
 (defn get-username-from-http-uri
-  [{id :_id username :username :as params} & [options]]
+  [{id :_id :as params} & [options]]
   (if-let [username (some-> id URI. .getUserInfo)]
     (do
       (timbre/debugf "Username from uri: %s" username)
@@ -198,7 +198,7 @@
                     (merge params {:url id :_id acct-id})))
                 (do
                   (timbre/debug "Does not have a username from xrd")
-                  (when-let [profile-link (:href (model.user/get-link params "self"))]
+                  (when-let [profile-link (:href (model/get-link params "self"))]
                     (let [response @(ops/update-resource profile-link {})
                           body (:body response)
                           profile (json/read-str body :key-fn keyword)
@@ -230,30 +230,29 @@
 (defn find-or-create
   [{id :_id
     :keys [username domain]
-    :as params} & [options]]
-  (let [id (:_id params)]
-    (or (when id
-          (or (model.user/fetch-by-id id)
-              (do
-                (timbre/debug "user not found by id")
-                (or (let [[uid did] (util/split-uri id)]
-                      (model.user/get-user uid did))
-                    (do
-                      (timbre/debug "user not found by acct id")
-                      (first (model.user/fetch-all {:url id})))))))
-        (do
-          (timbre/debug "user not found by url")
-          (let [params (if id
-                         (get-username params)
-                         params)]
-            (or (when (and username domain)
-                  (model.user/get-user username domain))
-                (create params)))))))
+    :as params} & [_options]]
+  (or (when id
+        (or (model.user/fetch-by-id id)
+            (do
+              (timbre/debug "user not found by id")
+              (or (let [[uid did] (util/split-uri id)]
+                    (model.user/get-user uid did))
+                  (do
+                    (timbre/debug "user not found by acct id")
+                    (first (model.user/fetch-all {:url id})))))))
+      (do
+        (timbre/debug "user not found by url")
+        (let [params (if id
+                       (get-username params)
+                       params)]
+          (or (when (and username domain)
+                (model.user/get-user username domain))
+              (create params))))))
 
 (defn update-record
   "Update the user's activities and information."
   [^User user _]
-  (if-let [source-id (:update-source user)]
+  (if-let [_source-id (:update-source user)]
     (do
       #_(invoke-action "feed-source" "update" (str source-id))
       nil)
@@ -283,11 +282,11 @@
 
 (defn register
   "Register a new user"
-  [{:keys [username password email name location bio] :as options}]
+  [{:keys [username password email name location bio]}]
   ;; TODO: should we check reg-enabled here?
   ;; verify submission.
   (if (and username password)
-    (if-let [user (model.user/get-user username)]
+    (if-let [_user (model.user/get-user username)]
       (throw+ {:type :conflict
                :msg "user already exists"
                :username username})

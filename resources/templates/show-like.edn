@@ -1,8 +1,8 @@
 [:div.well {:title "show-like"}
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
   [:debug {:expr "item"}]
   [:p "User: " [:show-user-minimal {:data-id "{{item.user}}"}]]
   [:p "To: " [:show-activity {:data-id "{{item.activity}}"}]]
-  [:button.btn {:ng-click "deleteRecord(item)"} "Delete Like"]]
- ]
+  [:div.action-buttons {:ng-show "app.user"}
+   [:md-button {:ng-click "deleteRecord(item)"} "Delete Like"]]]]

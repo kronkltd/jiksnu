@@ -4,22 +4,23 @@
             [jiksnu.transforms :as transforms])
   (:import jiksnu.model.User))
 
+(def model-ns 'jiksnu.model.key)
+
 (defn prepare-create
   [user]
   (-> user
       transforms/set-_id
       transforms/set-updated-time
       transforms/set-created-time
-      ;; transforms.user/set-domain
-      ;; transforms.user/set-id
-      ;; transforms.user/set-url
-      ;; transforms.user/set-local
-      ;; transforms.user/assert-unique
-      ;; transforms.user/set-update-source
-      ;; transforms.user/set-discovered
-      ;; transforms.user/set-avatar-url
-      ;; transforms/set-no-links
-      ))
+      #_transforms.user/set-domain
+      #_transforms.user/set-id
+      #_transforms.user/set-url
+      #_transforms.user/set-local
+      #_transforms.user/assert-unique
+      #_transforms.user/set-update-source
+      #_transforms.user/set-discovered
+      #_transforms.user/set-avatar-url
+      #_transforms/set-no-links))
 
 (defn create
   "Create a new key record"

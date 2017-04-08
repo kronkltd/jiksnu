@@ -1,0 +1,10 @@
+([:p "Add Picture"]
+ [:div {:ng-if "app.user"}
+  [:debug {:expr "picture"}]
+  [:form {:ng-submit "submit()"}
+   [:div
+    [:lf-ng-md-file-input
+     {:lf-files "$parent.files" :multiple "" :aria-label "fileupload" :preview ""}]]
+   [:div
+    [:input.md-button.md-primary {:type "submit"}]
+    [:md-button {:ng-click "reset()"} "Reset"]]]])

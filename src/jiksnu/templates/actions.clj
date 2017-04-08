@@ -1,7 +1,6 @@
 (ns jiksnu.templates.actions
-  (:require [jiksnu.channels :as ch]
-            [jiksnu.db :refer [_db]]
-            [manifold.bus :as bus]
+  (:require [ciste.event :as event]
+            [jiksnu.db :as db]
             [monger.collection :as mc]
             monger.json
             [slingshot.slingshot :refer [throw+]]
@@ -32,7 +31,7 @@
     `(do (require ~namespace-sym)
          (let [ns-ns# (the-ns ~namespace-sym)]
            (if-let [count-fn# (ns-resolve ns-ns# (symbol "count-records"))]
-             (if-let [fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all" ))]
+             (if-let [fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all"))]
                (make-indexer*
                 {:sort-clause (get ~options :sort-clause {:updated -1})
                  :page-size (get ~options :page-size 20)
@@ -44,10 +43,10 @@
 (defn make-add-link*
   [collection-name]
   (fn [item link]
-    (bus/publish! ch/events (str collection-name ":linkAdded") [item link])
-    (mc/update @_db collection-name
-      (select-keys item #{:_id})
-      {:$addToSet {:links link}})
+    (event/notify (str collection-name ":linkAdded") {:item item :link link})
+    (mc/update (db/get-connection) collection-name
+               (select-keys item #{:_id})
+               {:$addToSet {:links link}})
     item))
 
 (defn make-delete

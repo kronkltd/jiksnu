@@ -1,12 +1,14 @@
 (ns jiksnu.model.conversation
-  (:require [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [validateur.validation :refer [acceptance-of
                                            presence-of
-                                           validation-set]]))
+                                           validation-set]])
+  (:import (org.joda.time DateTime)
+           (org.bson.types ObjectId)))
 
 (def collection-name "conversations")
 (def maker #'model/map->Conversation)
@@ -14,14 +16,13 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id           ObjectId)
+   (type-of :_id ObjectId)
    ;; ;; (type-of :url           String)
-   ;; (type-of :created       DateTime)
-   ;; (type-of :updated       DateTime)
    ;; (type-of :domain        String)
    ;; (type-of :local         Boolean)
    ;; ;; (type-of :update-source ObjectId)
-   ))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
@@ -39,4 +40,4 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index @_db {:url 1} {:unique true})))
+    (mc/ensure-index (db/get-connection) {:url 1} {:unique true})))

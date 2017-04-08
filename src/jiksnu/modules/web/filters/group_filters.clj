@@ -49,10 +49,6 @@
                         (when name (model.group/fetch-by-name name)))]
       (action item))))
 
-(deffilter #'actions.group/new-page :http
-  [action request]
-  (action))
-
 (deffilter #'actions.group/show :http
   [action request]
   (let [{{:keys [id name]} :params} request]

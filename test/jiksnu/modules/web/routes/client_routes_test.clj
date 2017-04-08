@@ -2,7 +2,6 @@
   (:require [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
             [clojure.string :as string]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model.access-token :as model.access-token]
@@ -11,10 +10,10 @@
             jiksnu.modules.web.routes.client-routes
             [jiksnu.routes-helper :refer [json-response response-for]]
             [jiksnu.test-helper :as th]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]
-            [ring.util.codec :as codec]))
+            [ring.util.codec :as codec])
+  (:import (org.apache.http HttpStatus)))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
@@ -29,11 +28,11 @@
                 :registration_access_token (fseq :word)}
         request (-> (req/request :post "/api/client/register")
                     (req/content-type "application/json")
-                    (req/body (json/json-str params)))]
+                    (req/body (json/write-str params)))]
     (json-response request) =>
     (contains
      ;; TODO: verify against spec
-     {:status  200
+     {:status  HttpStatus/SC_OK
       :headers (contains
                 {"Content-Type" "application/json"})
       :json    (contains
@@ -58,10 +57,10 @@
                     (assoc-in [:headers "authorization"] authorization-str))
         response (-> (response-for request)
                      (update :body (fn [body]
-                                     (->> (string/split (util/inspect body) #"&")
+                                     (->> (string/split body #"&")
                                           (map #(string/split % #"="))
                                           (into {})))))]
-    response => (contains {:status 200})
+    response => (contains {:status HttpStatus/SC_OK})
     (let [{{secret "oauth_token_secret" token-id "oauth_token"} :body} response]
       (model.request-token/fetch-by-id token-id) =>
       (contains {:secret secret}))))
@@ -83,15 +82,15 @@
                     (assoc-in [:headers "authorization"] authorization-str))
         response (-> (response-for request)
                      (update :body codec/form-decode))]
-    response => (contains {:status 200})
+    response => (contains {:status HttpStatus/SC_OK})
     (let [{{secret "oauth_token_secret" token-id "oauth_token"} :body} response]
       (model.request-token/fetch-by-id token-id) =>
       (contains {:secret secret}))))
 
 (fact "route: oauth/access-token :get"
   (fact "when given valid params"
-    (let [client (util/inspect (mock/a-client-exists))
-          request-token (util/inspect (mock/a-request-token-exists {:client client}))
+    (let [client (mock/a-client-exists)
+          request-token (mock/a-request-token-exists {:client client})
           url "/oauth/access_token"
           auth-params {"oauth_consumer_key" (:_id client)
                        "oauth_token" (:_id request-token)
@@ -108,7 +107,7 @@
           response (-> (response-for request)
                        (update :body codec/form-decode))]
 
-      response => (contains {:status status/success?})
+      response => (contains {:status HttpStatus/SC_OK})
 
       (let [id (get-in response [:body "oauth_token"])
             secret (get-in response [:body "oauth_token_secret"])]
@@ -133,7 +132,7 @@
           response (-> (response-for request)
                        (update :body codec/form-decode))]
 
-      response => (contains {:status status/success?})
+      response => (contains {:status HttpStatus/SC_OK})
 
       (let [id (get-in response [:body "oauth_token"])
             secret (get-in response [:body "oauth_token_secret"])]
@@ -149,4 +148,4 @@
           (let [response (-> (req/request :get url)
                              (as-user actor)
                              response-for)]
-            (:status response) => status/success?))))))
+            (:status response) => HttpStatus/SC_OK))))))

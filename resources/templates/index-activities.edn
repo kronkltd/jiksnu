@@ -1,10 +1,12 @@
-[:div {:title "index-activities"}
- [:h1
-  [:span "Activities"]
-  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
+([:div.title-section {:layout "row" :flex ""}
+  [:div {:flex ""}
+   [:h1.md-headline {:layout-padding ""} "Activities"]]
+  [:div {:layout-align "end" :layout "row"}
+   [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh" :layout-align "start end"}
+    [:ng-md-icon {:icon "loop"}]]]]
  [:debug {:expr "page"}]
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
-  [:div {:ng-repeat "id in page.items"}
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
+  [:div {:ng-repeat "id in getItems()"}
    [:debug {:expr "id"}]
-   [:show-activity {:data-id "{{id}}"}]]]]
+   [:show-activity {:data-id "{{id}}"}]]])

@@ -41,12 +41,9 @@
 (defn setup-testing
   ([] (setup-testing nil))
   ([modules]
-   (timbre/debugf "setup testing - %s" modules)
    (try+
-    (start-application! :test modules)
-    ;; (loader/register-module "jiksnu.modules.core")
-
-    (db/drop-all! )
+    (start-application! modules)
+    (db/drop-all!)
     (dosync
      (ref-set r/this {})
      (ref-set r/that {}))
@@ -58,7 +55,6 @@
 
 (defn stop-testing
   []
-  (timbre/debug "stop-testing")
   (try+
    ;; (stop-application!)
    (catch Object ex
@@ -72,11 +68,10 @@
     [(before :facts (setup-testing ~modules))
      (after :facts (stop-testing))]))
 
-
 (defmacro test-environment-fixture
   [& body]
   `(try+
-    (timbre/info "wrapping testing fixture")
+    (timbre/debug "wrapping testing fixture")
     (setup-testing)
     ;; (fact (do ~@body) =not=> (throws))
     ~@body

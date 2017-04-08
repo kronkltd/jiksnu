@@ -34,12 +34,11 @@
   [f]
   (fn [[d args]]
     (try+
-      (let [val (apply f args)]
-        (d/success! d val))
-      (catch Throwable ex
-        (timbre/error "op handler error")
-        (timbre/error ex)
-        (d/error! d ex)))))
+     (let [val (apply f args)]
+       (d/success! d val))
+     (catch Throwable ex
+       (timbre/error ex "op handler error")
+       (d/error! d ex)))))
 
 (defn async-op
   "Takes a stream and a set of arguments, inserts a deferred and the params, returns the deferred"

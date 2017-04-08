@@ -1,6 +1,6 @@
 (ns jiksnu.model.domain
   (:require [ciste.config :refer [config]]
-            [jiksnu.db :refer [_db]]
+            [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-updated-time set-created-time]]
@@ -35,15 +35,11 @@
 (def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
 
-(defn get-link
-  [item rel content-type]
-  (first (util/rel-filter rel (:links item) content-type)))
-
 ;; TODO: add the links to the list
 (defn add-links
   [domain links]
   ;; TODO: This should push only if the link is not yet there
-  (mc/update @_db collection-name
+  (mc/update (db/get-connection) collection-name
              (select-keys domain #{:_id})
              {:$pushAll {:links links}}))
 

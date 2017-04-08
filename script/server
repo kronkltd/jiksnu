@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -e
 
-printenv
+printenv | sort
+
+script/check-connections
 
 script/update
 

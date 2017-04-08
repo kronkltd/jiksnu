@@ -16,9 +16,7 @@
             [manifold.stream :as s]
             [manifold.time :as time]
             [midje.sweet :refer :all]
-            [slingshot.slingshot :refer [throw+ try+]])
-  ;; (:import org.openqa.selenium.NoSuchElementException)
-  )
+            [slingshot.slingshot :refer [throw+ try+]]))
 
 ;(defchecker has-match?
 ;  [selector]

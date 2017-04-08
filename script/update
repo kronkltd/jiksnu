@@ -1,12 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -e
 
-script/bootstrap
-
-echo ">> Compiling Less"
-lein less once
-
-echo ">> Compiling CLJS"
-# lein with-profile +e2e,+test cljsbuild once
-lein cljsbuild once
+if [ -z "$UPDATED" ]; then
+  script/bootstrap
+  script/update-webdriver
+  script/compile
+fi

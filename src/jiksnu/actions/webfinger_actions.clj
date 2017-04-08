@@ -7,7 +7,8 @@
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
-  (:import nu.xom.Document))
+  (:import nu.xom.Document
+           (org.apache.http HttpStatus)))
 
 (defn fetch-host-meta
   [url]
@@ -16,26 +17,34 @@
   (timbre/infof "fetching host meta: %s" url)
   (or (try
         (let [response @(ops/update-resource url)]
-          (when (= 200 (:status response))
+          (when (= (:status response) HttpStatus/SC_OK)
             (cm/string->document (:body response))))
         (catch RuntimeException ex))
       (throw+ {:msg "Could not fetch host meta"
                :type :fetch-error})))
 
-(defn get-xrd-template
-  []
-  (let [domain (actions.domain/current-domain)]
-    ;; TODO: Check ssl mode
-    (format "http://%s/main/xrd?uri={uri}" (:_id domain))))
-
-;; TODO: show domain, format :jrd
 (defn host-meta
   ([] (host-meta (actions.domain/current-domain)))
   ([domain]
-   (let [template (get-xrd-template)
-         links [{:template template
-                 :rel "lrdd"
-                 :title "Resource Descriptor"}]]
+   (let [prefix (str "http://" (:_id domain))
+         links [{:rel "lrdd"
+                 :type "application/xrd+xml"
+                 :template (str prefix "/main/xrd?uri={uri}")}
+                {:rel "lrdd"
+                 :type "application/json"
+                 :template (str prefix "/.well-known/webfinger?resource={uri}")}
+                {:rel "registration_endpoint"
+                 :href (str prefix "/api/client/register")}
+                {:rel "http://apinamespace.org/oauth/request_token"
+                 :href (str prefix "/oauth/request_token")}
+                {:rel "http://apinamespace.org/oauth/authorize"
+                 :href (str prefix "/oauth/authorize")}
+                {:rel "http://apinamespace.org/oauth/access_token"
+                 :href (str prefix "/oauth/access_token")}
+                {:rel "dialback"
+                 :href (str prefix "/api/dialback")}
+                {:rel "http://apinamespace.org/activitypub/whoami"
+                 :href (str prefix "/api/whoami")}]]
      {:host (:_id domain)
       :links links})))
 
@@ -45,7 +54,7 @@
   [uri]
   (->> uri
        util/split-uri
-       (apply model.user/get-user )))
+       (apply model.user/get-user)))
 
 (defn set-source-from-xrd
   [user xrd]

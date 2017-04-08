@@ -1,15 +1,16 @@
 (ns jiksnu.actions.conversation-actions
-  (:require [clj-time.core :as time]
+  (:require [ciste.event :as event]
+            [clj-time.core :as time]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.channels :as ch]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
-            [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
+
+(def model-ns 'jiksnu.model.conversation)
 
 (defonce delete-hooks (ref []))
 
@@ -20,10 +21,9 @@
           transforms/set-updated-time
           transforms/set-created-time
           ;; transforms.conversation/set-url
-          transforms.conversation/set-domain
-          transforms/set-local
           ;; transforms.conversation/set-update-source
-          ))
+          transforms.conversation/set-domain
+          transforms/set-local))
 
 (defn prepare-delete
   ([item]
@@ -37,7 +37,7 @@
   [params]
   (if-let [conversation (prepare-create params)]
     (let [conversation (model.conversation/create conversation)]
-      (bus/publish! ch/events :conversation-created conversation)
+      (event/notify :conversation-created conversation)
       conversation)
     (throw+ "Could not prepare conversation")))
 
@@ -96,7 +96,7 @@
 (defn add-activity
   [conversation activity]
   (when-not (:parent activity)
-    (bus/publish! ch/events ":conversations:parent:set" [conversation activity])
+    (event/notify ":conversations:parent:set" [conversation activity])
     (model.conversation/set-field! conversation :parent (:_id activity)))
   #_(let [lu (:lastUpdated conversation)
           c (:published activity)]

@@ -4,6 +4,7 @@
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
+            [jiksnu.model :as model]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
@@ -18,16 +19,17 @@
   (:import jiksnu.model.Resource
            org.joda.time.DateTime))
 
+(def model-ns 'jiksnu.model.resource)
+
 (defkey ::resource-realized
   "Whenever a resource is realized, this event is fired"
   :schema {:item "Resource"
            :response "Map"})
 
 (defkey ::resource-updated
-  "Whenever a resource is updated"
-  )
+  "Whenever a resource is updated")
 
-(def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
+(def user-agent "Jiksnu Resource Fetcher (http://github.com/kronkltd/jiksnu)")
 
 (defonce delete-hooks (ref []))
 
@@ -81,7 +83,7 @@
     (throw+ "Could not delete resource")))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.resource
+  (templates.actions/make-indexer model-ns
                                   :sort-clause {:updated -1}))
 
 (defn index
@@ -90,9 +92,7 @@
 
 (defn add-link
   [item link]
-  (if-let [existing-link (model.resource/get-link item
-                                                  (:rel link)
-                                                  (:type link))]
+  (if-let [existing-link (model/get-link item (:rel link) (:type link))]
     item
     (add-link* item link)))
 

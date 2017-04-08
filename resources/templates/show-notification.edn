@@ -1,0 +1,12 @@
+[:div {:title "show-notification"}
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div  {:ng-show "loaded"}
+  [:debug {:expr "item"}]
+  [:show-activity {:data-id "{{item.activity}}"}]
+  [:md-list.buttons {:ng-show "app.user"}
+   [:md-list-item
+    [:md-button {:ng-click "deleteRecord(item)" :aria-label "Delete Notification"}
+     [:ng-md-icon {:icon "delete"}]]]
+   [:md-list-item
+    [:md-button {:ng-click "refresh()" :aria-label "Refresh"}
+     [:ng-md-icon {:icon "loop"}]]]]]]

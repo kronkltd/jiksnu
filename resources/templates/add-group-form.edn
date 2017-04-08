@@ -1,32 +1,23 @@
-[:form.well.form-horizontal {:method "post"
-                             :name "groupForm"
-                             :ng-submit "submit()"
-                             }
+[:form {:method "post" :name "groupForm" :ng-submit "submit()" :layout "row"
+        :layout-align "center" :layout-padding "" :flex "50"}
  [:debug {:expr "groupForm"}]
  [:debug {:expr "group"}]
- [:fieldset
-  [:legend "Add a Group"]
-  [:div.control-group
-   [:label {:for "name"} "name"]
-   [:div.controls
-    [:input {:type "text" :ng-model "group.name"}]]]
-  [:div.control-group
-   [:label {:for "fullname"} "Full Name"]
-   [:div.controls
-    [:input {:type "text" :ng-model "group.fullname"}]]]
-  [:div.control-group
-   [:label {:for "homepage"} "Homepage"]
-   [:div.controls
-    [:input {:type "text" :ng-model "group.homepage"}]]]
-  [:div.control-group
-   [:label {:for "description"} "Description"]
-   [:div.controls
-    [:textarea {:name "description"}]]]
-  [:div.control-group
-   [:label {:for "location"} "Location"]
-   [:div.controls
-    [:input {:type "text" :ng-model "group.location"}]]]
-  [:div.controls
-   [:input.btn.btn-primary {:type "submit" :value "Add"}]
-   [:button.btn {:ng-click "reset()"} "Reset"
-   ]]]]
+ [:md-content
+  [:md-input-container.md-block
+   [:label "name"]
+   [:input {:type "text" :ng-model "group.name"}]]
+  [:md-input-container.md-block
+   [:label "Full Name"]
+   [:input {:type "text" :ng-model "group.fullname"}]]
+  [:md-input-container.md-block
+   [:label "Homepage"]
+   [:input {:type "text" :ng-model "group.homepage"}]]
+  [:md-input-container.md-block
+   [:label "Description"]
+   [:textarea {:name "description"}]]
+  [:md-input-container.md-block
+   [:label "Location"]
+   [:input {:type "text" :ng-model "group.location"}]]
+  [:md-input-container
+   [:input.md-button.md-raised.md-primary {:type "submit" :value "Add"}]
+   [:md-button.md-raised {:ng-click "reset()"} "Reset"]]]]

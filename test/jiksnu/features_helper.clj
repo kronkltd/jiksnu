@@ -1,12 +1,11 @@
 (ns jiksnu.features-helper
-  (:require
-    ;[clj-webdriver.taxi :as taxi]
-            [taoensso.timbre :as timbre]
+  (:require #_[clj-webdriver.taxi :as taxi]
             [jiksnu.db :as db]
             jiksnu.factory
             [jiksnu.mock :refer [my-password]]
             [jiksnu.referrant :refer [this that set-this set-that]]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [slingshot.slingshot :refer [throw+ try+]]
+            [taoensso.timbre :as timbre]))
 
 ;; (def server (atom nil))
 ;; (defonce loaded (atom false))

@@ -1,4 +1,8 @@
+compose:
+  mongo:
+    image: mongo
+
 build:
-  image: clojure
+  image: kronkltd/jiksnu:dev
   commands:
-    - whoami
+    - script/cibuild

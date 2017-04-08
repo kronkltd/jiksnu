@@ -3,7 +3,7 @@
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.string :as string]
             [taoensso.timbre :as timbre]
-            [jiksnu.db :refer [_db]]
+            [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
@@ -14,7 +14,8 @@
             [monger.collection :as mc]
             [slingshot.slingshot :refer [throw+]]
             [validateur.validation :refer [acceptance-of validation-set presence-of]])
-  (:import jiksnu.model.User))
+  (:import jiksnu.model.User
+           (org.joda.time DateTime)))
 
 (def collection-name "users")
 (def default-page-size 20)
@@ -22,17 +23,15 @@
 
 (def create-validators
   (validation-set
-   ;; ;; (presence-of   :_id)
-   ;; (type-of :_id       String)
-   ;; (type-of :username  String)
-   ;; (type-of :domain    String)
-   ;; ;; (acceptance-of :url          :accept string?)
-   ;; (presence-of   :created)
-   ;; (presence-of   :updated)
-   ;; ;; (presence-of   :update-source)
-   ;; (presence-of   :avatarUrl)
-   ;; (acceptance-of :local         :accept (partial instance? Boolean))
-))
+   (type-of :_id String)
+    ;; (type-of :username  String)
+    ;; (type-of :domain    String)
+    ;; ;; (acceptance-of :url          :accept string?)
+    ;; ;; (presence-of   :update-source)
+    ;; (presence-of   :avatarUrl)
+    ;; (acceptance-of :local         :accept (partial instance? Boolean))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
@@ -46,7 +45,7 @@
 (defn get-uri
   ([^User user] (get-uri user true))
   ([^User user use-scheme?]
-     (str (when use-scheme? "acct:") (:username user) "@" (:domain user))))
+   (str (when use-scheme? "acct:") (:username user) "@" (:domain user))))
 
 (defn image-link
   [user]
@@ -87,20 +86,14 @@
         (str (:first-name user) " " (:last-name user)))
       (get-uri user)))
 
-(defn get-link
-  ([user rel]
-     (get-link user rel nil))
-  ([user rel content-type]
-     (first (util/rel-filter rel (:links user) content-type))))
-
 (defn get-user
   "Find a user by username and domain"
   ([username] (get-user username (config :domain)))
   ([username domain]
-     (if-let [user (mc/find-one-as-map @_db collection-name
-                                       {:username username
-                                        :domain domain})]
-       (maker user))))
+   (if-let [user (mc/find-one-as-map (db/get-connection) collection-name
+                                     {:username username
+                                      :domain domain})]
+     (maker user))))
 
 (defn fetch-by-uri
   "Fetch user by their acct uri"
@@ -110,10 +103,9 @@
       (get-user username domain-name))))
 
 (defn fetch-by-domain
-  ([domain] (fetch-by-domain domain {}))
+  ([domain] (fetch-by-domain domain {:limit 20}))
   ([domain options]
-     (fetch-all {:domain (:_id domain)}
-                #_{:limit 20})))
+   (fetch-all {:domain (:_id domain)} options)))
 
 (defn update-record
   [^User new-user]
@@ -122,14 +114,14 @@
         merged-user (merge {:admin false}
                            old-user new-user)
         user (maker merged-user)]
-    (mc/update @_db collection-name {:_id (:_id old-user)} (dissoc user :_id))
+    (mc/update (db/get-connection) collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))
 
 ;; TODO: move part of this to domains
 (defn user-meta-uri
   [^User user]
   (if-let [domain (get-domain user)]
-    (if-let [lrdd-link (get-link domain "lrdd" nil)]
+    (if-let [lrdd-link (model/get-link domain "lrdd" nil)]
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user)))
       (throw+ "could not find lrdd link"))
@@ -138,12 +130,11 @@
 ;; TODO: This should check for an associated source
 (defn feed-link-uri
   [^User user]
-  (if-let [link (or (get-link user ns/updates-from "application/atom+xml")
-                    (get-link user ns/updates-from nil))]
+  (if-let [link (or (model/get-link user ns/updates-from "application/atom+xml")
+                    (model/get-link user ns/updates-from nil))]
     (:href link)))
 
 (defn ensure-indexes
   []
-  (mc/ensure-index @_db collection-name {:username 1 :domain 1} {:unique true})
-  ;; (mc/ensure-index @_db collection-name {:id 1} {:unique true})
-  )
+  (mc/ensure-index (db/get-connection) collection-name {:username 1 :domain 1} {:unique true})
+  #_(mc/ensure-index (db/get-connection) collection-name {:id 1} {:unique true}))

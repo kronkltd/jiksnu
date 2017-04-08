@@ -1,17 +1,16 @@
-(ns jiksnu.pages.HomePage)
+(ns jiksnu.pages.HomePage
+  (:require [taoensso.timbre :as timbre]))
 
 (defn HomePage
   [])
 
-(set! (.-get (.-prototype HomePage))
-      (fn [] (.get js/browser "/")))
+(set! (.. HomePage -prototype -get)
+      #(.get js/browser "/"))
 
-(set! (.-waitForLoaded (.-prototype HomePage))
+(set! (.. HomePage -prototype -waitForLoaded)
       (fn []
-        (this-as
-         this
-         (.wait
-          js/browser
-          (fn []
-            (js/console.log "Waiting for loaded")
-            true)))))
+        (.wait
+         js/browser
+         (fn []
+           (timbre/info "Waiting for loaded")
+           true))))

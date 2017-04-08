@@ -86,11 +86,6 @@
 (facts "#'display-name"
   (display-name .user.) => string?)
 
-(facts "#'get-link"
-  (let [user (factory :user {:links [{:rel "foo" :href "bar"}]})]
-    (get-link user "foo" nil) => (contains {:href "bar"})
-    (get-link user "baz" nil) => nil))
-
 (facts "#'get-user"
   (fact "when the user is found"
     (let [user (mock/a-user-exists)

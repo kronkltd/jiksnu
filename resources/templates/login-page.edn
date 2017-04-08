@@ -1,21 +1,11 @@
-[:div.col-xs-6.col-xs-offset-3
- [:form {:ng-submit "login()" :name "loginForm"}
-  [:h2.text-center "Please Sign In"]
-  [:div.form-group
-   [:label.sr-only {:for "username"} "Username"]
-   [:input.form-control
-    {:type "text"
-     :name "username"
-     :ng-model "username"
-     :placeholder "username"}]]
-  [:div.form-group
-   [:label.sr-only {:for "password"} "Password"]
-   [:input.form-control
-    {:type "password"
-     :name "password"
-     :ng-model "password"
-     :placeholder "password"
-     }]]
-  [:input.btn.btn-custom.btn-lg.btn-block
-   {:type "submit"}]]
- ]
+[:div {:layout "row" :flex "" :layout-align "center"}
+ [:form {:ng-submit "login()" :name "loginForm" :layout "column" :flex "35"}
+  [:div {:flex "" :layout "row" :layout-align "center"}
+   [:h1.md-heading "Sign In"]]
+  [:md-input-container.md-block {:flex ""}
+   [:label "Username"]
+   [:input {:type "text" :name "username" :ng-model "username"}]]
+  [:md-input-container.md-block {:flex ""}
+   [:label "Password"]
+   [:input {:type "password" :name "password" :ng-model "password"}]]
+  [:input.md-button.md-raised.md-primary.loginLink {:type "submit"}]]]

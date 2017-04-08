@@ -1,0 +1,14 @@
+[:subpage {:name "members" :item "$ctrl.item"}
+ [:div.title-section {:layout "row" :flex ""}
+  [:div {:flex ""}
+   [:h3.md-subhead {:layout-padding ""} "Admins: {{$parent.page.totalItems}}"]]
+  [:div {:layout-align "center" :layout "column"}
+   [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh"}
+    [:ng-md-icon {:icon "loop"}]]]]
+ [:debug {:expr "$parent.page"}]
+ [:div {:ng-hide "$parent.loaded"} [:spinner]]
+ [:div {:ng-show "$parent.loaded"}
+  [:md-list
+   [:md-list-item {:ng-repeat "id in $parent.page.items"}
+    [:debug {:expr "id"}]
+    [:show-group-membership-minimal {:data-id "{{id}}"}]]]]]

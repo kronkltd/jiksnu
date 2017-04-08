@@ -1,5 +1,5 @@
 (ns jiksnu.model.key
-  (:require [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.templates.model :as templates.model]
@@ -32,9 +32,7 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id           ObjectId)
-))
-
+   (type-of :_id ObjectId)))
 
 (def ^KeyFactory key-factory (KeyFactory/getInstance "RSA"))
 (def ^KeyPairGenerator keypair-generator (KeyPairGenerator/getInstance "RSA"))
@@ -78,7 +76,6 @@
 (defn private-spec
   [^KeyPair keypair]
   (.getKeySpec key-factory (private-key keypair) RSAPrivateKeySpec))
-
 
 ;; Base64 functions
 
@@ -160,7 +157,7 @@
 (defn get-key-for-user-id
   "Fetch keypair by user id"
   [^ObjectId id]
-  (if-let [key (mc/find-one-as-map @_db collection-name {:userid id})]
+  (if-let [key (mc/find-one-as-map (db/get-connection) collection-name {:userid id})]
     (model/map->Key key)
     (timbre/warnf "Could not find key with id: %s" id)))
 
@@ -177,11 +174,11 @@
    ^String n
    ^String e]
   (if-let [key-pair (get-key-for-user-id user-id)]
-    (mc/save @_db collection-name
+    (mc/save (db/get-connection) collection-name
              (merge key-pair
                     {:n n
                      :e e}))
-    (mc/insert @_db collection-name
+    (mc/insert (db/get-connection) collection-name
                {:n n
                 :e e
                 :userid user-id})))
@@ -196,7 +193,7 @@
 
 (defn sign
   "Signs the data with the private key and returns the result"
-  [ ^"[B" data ^PrivateKey priv-key]
+  [^"[B" data ^PrivateKey priv-key]
   (let [^Signature sig (Signature/getInstance "SHA256withRSA")]
     (doto sig
       (.initSign priv-key)

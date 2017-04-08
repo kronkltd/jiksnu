@@ -2,10 +2,13 @@
   (:require [ciste.filters :refer [deffilter]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.album-actions :as actions.album]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.actions.notification-actions :as actions.notification]
+            [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.site-actions :as actions.site]
@@ -13,17 +16,21 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.album :as model.album]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.notification :as model.notification]
+            [jiksnu.model.picture :as model.picture]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.actions :as actions]
             [jiksnu.session :refer [current-user-id]]
             [jiksnu.actions.like-actions :as actions.like]
-            [jiksnu.model.like :as model.like]))
+            [jiksnu.model.like :as model.like]
+            [slingshot.slingshot :refer [throw+]]))
 
 (deffilter #'actions/get-model :command
   [action request]
@@ -40,7 +47,10 @@
   [action request]
   (let [[model-name id page-name] (:args request)]
     (if-let [item (actions/get-model model-name id)]
-      (action item page-name))))
+      (action item page-name)
+      (throw+ {:message "Could not find model"
+               :model model-name
+               :id id}))))
 
 (deffilter #'actions/invoke-action :command
   [action request]
@@ -49,6 +59,11 @@
 (deffilter #'actions.activity/delete :command
   [action id]
   (let [item (model.activity/fetch-by-id id)]
+    (action item)))
+
+(deffilter #'actions.album/delete :command
+  [action id]
+  (when-let [item (model.album/fetch-by-id id)]
     (action item)))
 
 (deffilter #'actions.auth/login :command
@@ -120,6 +135,16 @@
   (let [item (model.like/fetch-by-id id)]
     (action item)))
 
+(deffilter #'actions.notification/delete :command
+  [action id]
+  (when-let [item (model.notification/fetch-by-id id)]
+    (action item)))
+
+(deffilter #'actions.picture/delete :command
+  [action id]
+  (when-let [item (model.picture/fetch-by-id id)]
+    (action item)))
+
 (deffilter #'actions.resource/delete :command
   [action id]
   (when-let [item (model.resource/fetch-by-id id)]
@@ -146,10 +171,6 @@
     (first (action item))))
 
 (deffilter #'actions.site/get-config :command
-  [action request]
-  (apply action (:args request)))
-
-(deffilter #'actions.site/get-environment :command
   [action request]
   (apply action (:args request)))
 

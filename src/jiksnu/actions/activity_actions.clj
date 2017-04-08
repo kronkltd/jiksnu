@@ -1,15 +1,14 @@
 (ns jiksnu.actions.activity-actions
   (:require [ciste.config :refer [config]]
+            [ciste.event :as event]
             [clojure.set :as set]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.channels :as ch]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
-            [jiksnu.util :as util]
-            [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 
@@ -20,16 +19,15 @@
     (or (session/is-admin?)
         (= actor-id author))))
 
+(def model-ns 'jiksnu.model.activity)
 (def add-link* (templates.actions/make-add-link* model.activity/collection-name))
-(def index*    (templates.actions/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
+(def index*    (templates.actions/make-indexer model-ns :sort-clause {:updated 1}))
 (def delete    (templates.actions/make-delete model.activity/delete can-delete?))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link
   [item link]
-  (if-let [existing-link (model.activity/get-link item
-                                                  (:rel link)
-                                                  (:type link))]
+  (if-let [existing-link (model/get-link item (:rel link) (:type link))]
     item
     (add-link* item link)))
 
@@ -108,13 +106,10 @@
   "Post a new activity"
   [activity]
   ;; TODO: validate user
-  (if-let [prepared-post (-> (util/inspect activity)
-                             prepare-post
-                             (dissoc :pictures))]
-
+  (if-let [prepared-post (prepare-post activity)]
     (do (-> activity :pictures model.activity/parse-pictures)
-        (let [created-activity (create (util/inspect prepared-post))]
-          (bus/publish! ch/events :activity-posted created-activity)
+        (let [created-activity (create prepared-post)]
+          (event/notify :activity-posted created-activity)
           created-activity))
     (throw+ "error preparing")))
 
@@ -140,14 +135,13 @@
 
 (defn viewable?
   ([activity]
-     (viewable? activity (session/current-user)))
+   (viewable? activity (session/current-user)))
   ([activity user]
-     (or (:public activity)
-         (and user
-              (or (= (:author activity) (:_id user))
-                  (:admin user)))
-         ;; TODO: Group membership and acl
-         )))
+   ;; TODO: Group membership and acl
+   (or (:public activity)
+       (and user
+            (or (= (:author activity) (:_id user))
+                (:admin user))))))
 
 (defn show
   "Show an activity"
@@ -240,7 +234,7 @@
 
 (defn fetch-by-user
   ([user]
-    (fetch-by-user user nil))
+   (fetch-by-user user nil))
   ([user options]
    (index {:author (:_id user)} options)))
 

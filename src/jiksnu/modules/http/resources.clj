@@ -20,10 +20,9 @@
   (dosync
    (alter (get-groups site-var) conj group-var)))
 
+;; TODO: implement
 (defn get-resource
-  [group-var resource-name]
-  ;; TODO: implement
-  )
+  [group-var resource-name])
 
 (defn get-resources
   [group-var]
@@ -32,7 +31,7 @@
 
 (defn add-resource!
   [group-var resource-name resource]
-  ;; (timbre/debugf "adding resource %s(%s)" group-var resource-name)
+  ;; (timbre/debugf "adding resource %s(%s)" (:name (meta group-var)) resource-name)
   (dosync
    (alter (get-resources group-var) assoc resource-name resource)))
 
@@ -42,12 +41,17 @@
     (var-get (ns-resolve (:ns m) (symbol (str (:name m) "-routes"))))))
 
 (defn init-site-reloading!
-  [f]
-  (add-watch
-   resources
-   :site (fn [k r os ns]
-           (timbre/debug "refreshing site")
-           (f))))
+  "Initialize reloading for the var site"
+  [site]
+  (let [{site-ns :ns site-name :name} (meta site)
+        groups-var (ns-resolve site-ns (symbol (str site-name "-groups")))
+        groups @(var-get groups-var)
+        init-var (ns-resolve site-ns (symbol (str site-name "-init")))]
+    (doseq [group-var groups]
+      (let [{group-ns :ns group-name :name} (meta group-var)
+            resources-var (ns-resolve group-ns (symbol (str group-name "-resources")))
+            resources (var-get resources-var)]
+        (add-watch resources :site (fn [k r os ns] (timbre/debug "refreshing site") (init-var)))))))
 
 (defn update-groups
   [groups]
@@ -62,7 +66,7 @@
 
 (defmacro defresource
   [group resource-name & {:as options}]
-  #_(timbre/debugf "defining resource: %s(%s) =>" group resource-name)
+  #_(timbre/debugf "defining resource: %s(%s)" group resource-name)
   `(add-resource! (var ~group) ~resource-name (octo/resource ~(assoc options :name resource-name))))
 
 (defmacro defgroup
@@ -85,7 +89,8 @@
     `(do
        (def ~site-name ~options)
        (declare ~route-sym)
-       (defonce ~group-sym (ref []))
+       (declare ~resource-sym)
+       (defonce ~group-sym (ref #{}))
        (def ~init-sym (fn []
                         (let [groups# (update-groups @~group-sym)
                               body# (assoc ~options :groups groups#)]

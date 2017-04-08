@@ -1,19 +1,17 @@
 (ns jiksnu.providers
   (:require [cljs.reader :as reader]
-            jiksnu.app
-            [taoensso.timbre :as timbre])
-  (:use-macros [gyr.core :only [def.provider]]))
+            [jiksnu.app :refer [jiksnu]]
+            [taoensso.timbre :as timbre]))
 
 (declare update-page)
 
 (defn add-stream
   "Create a stream with the given name"
   [app stream-name]
-  (timbre/info "Creating Stream")
-  (.. app
-      (inject "$http")
-      (post "/model/streams" #js {:name stream-name})
-      (then #(.-data %))))
+  (let [$http (.inject app "$http")
+        params #js {:name stream-name}]
+    (->  (.post $http "/model/streams" params)
+         (.then #(.-data %)))))
 
 (defn connect
   "Establish a websocket connection"
@@ -31,12 +29,10 @@
 (defn fetch-status
   "Fetch the status from the server"
   [app]
-  (timbre/debug "fetching app status")
   (.. app
       (inject "$http")
       (get "/status")
       (then (fn [response]
-              (timbre/debug "setting app status")
               (set! (.-data app) (.-data response))))))
 
 (defn follow
@@ -105,8 +101,8 @@
   [app data]
   (let [message (.-content (.-body data))]
     (.. app
-        (inject app "Notification")
-        (success message))))
+        (inject "$mdToast")
+        (showSimple message))))
 
 (defmethod handle-action "page-add"
   [app data]
@@ -116,39 +112,37 @@
   [app data]
   (let [message #js {:message (or (some-> data .-message reader/read-string :msg) "Error")}]
     (.. app
-        (inject "Notification")
-        (error message))))
+        (inject "$mdToast")
+        (showSimple message))))
 
 (defmethod handle-action "delete"
   [app data]
-  (let [message (str "Unknown action type: " (.-action data))]
+  (let [message (str "Deleted item: " (js/JSON.stringify (.-action data)))]
     (.. app
-        (inject "Notification")
-        (warning message))))
+        (inject "$mdToast")
+        (showSimple message))))
 
 (defmethod handle-action :default
   [app data]
   (let [message (str "Unknown message: " (.stringify js/JSON data))]
     (.. app
-        (inject "Notification")
-        (warning message))))
+        (inject "$mdToast")
+        (showSimple message))))
 
 (defn on-connection-established
-  [app data]
-  )
+  [app data])
 
 (defn handle-message
   "Handler for incoming messages from websocket connection"
   [app message]
-  (let [Notification (.inject app "Notification")
+  (let [$mdToast (.inject app "$mdToast")
         data-str (.-data message)
         data (js/JSON.parse data-str)]
-    (js/console.log message)
     (timbre/debugf "Received Message - %s" data-str)
     (cond
-      (.-connection data) (.success Notification "connected")
+      ;; (.-connection data) (.success Notification "connected")
       (.-action data)     (handle-action app data)
-      :default            (.warning Notification (str "Unknown message: " data-str)))))
+      :default            nil #_(.warning Notification (str "Unknown message: " data-str)))))
 
 (defn invoke-action
   [app model-name action-name id]
@@ -166,10 +160,11 @@
   "Authenticate session"
   [app username password]
   (let [$http (.inject app "$http")
-        data (js/$.param #js {:username username :password password})
+        $httpParamSerializerJQLike (.inject app "$httpParamSerializerJQLike")
+        data ($httpParamSerializerJQLike #js {:username username :password password})
         opts #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}}]
-    (timbre/infof "Logging in user. %s:%s" username password)
-    (-> (.post $http"/main/login" data opts)
+    ;; (timbre/infof "Logging in user. %s:%s" username password)
+    (-> (.post $http "/main/login" data opts)
         (.then (fn [response]
                  (let [status (.-status response)]
                    ;; TODO: Find a cljs version of this check
@@ -193,10 +188,27 @@
 
 (defn post
   "Create a new activity"
-  [app activity]
-  (let [$http (.inject app "$http")]
-    (timbre/infof "Posting Activity - %s" activity)
-    (.post $http "/model/activities" activity)))
+  [app activity & [pictures]]
+  (let [path "/model/activities"
+        $http (.inject app "$http")
+        form-data (js/FormData.)]
+
+    (js/console.info "pictures" pictures)
+
+    (js/angular.forEach
+     activity
+     (fn [v k]
+       (timbre/debugf "Adding parameter: %s => %s" k v)
+       (.append form-data k v)))
+
+    (doseq [picture pictures]
+      (js/console.info "Picture" picture)
+      (.append form-data "pictures[]" picture))
+
+    (timbre/infof "Posting Activity - %s" (js/JSON.stringify activity))
+    (.post $http path form-data
+           #js {:transformRequest (.-identity js/angular)
+                :headers #js {"Content-Type" js/undefined}})))
 
 (defn refresh
   "Send a signal for collections to refresh themselves"
@@ -234,12 +246,14 @@
 (defn update-page
   "Notify a page update"
   [app message]
-  (let [Notification (.inject app "Notification")]
-    (.info Notification "Adding to page")))
+  (let [$mdToast (.inject app "$mdToast")
+        Pages (.inject app "Pages")
+        conversation-page (.get Pages "conversations")]
+    (.unshift (.-items conversation-page) (.-body message))
+    (.showSimple $mdToast "Adding to page")))
 
 (def app-methods
-  {
-   :addStream     add-stream
+  {:addStream     add-stream
    :connect       connect
    :deleteStream  delete-stream
    :fetchStatus   fetch-status
@@ -257,47 +271,53 @@
    :refresh       refresh
    :register      register
    :send          send
-   :unfollow      unfollow
-   })
+   :unfollow      unfollow})
+
+(defn get-websocket-url
+  "Determine the websocket connection url for this app"
+  [app]
+  (let [$location (.inject app "$location")
+        host (.host $location)
+        secure?  (= (.protocol $location) "https")
+        scheme (str "ws" (when secure? "s"))
+        port (.port $location)
+        port-suffix (if (or (and secure? (= port 443))
+                            (and (not secure?) (= port 80)))
+                      "" (str ":" port))]
+    (str scheme "://" host port-suffix "/")))
 
 (defn get-websocket-connection
   "Create a websocket connection to the server"
   [app]
   (let [$websocket (.inject app "$websocket")
-        $window (.inject app "$window")]
-    (if-let [location (.-location $window)]
-      (let [host (.-host location)
-            scheme (str "ws" (when (= (.-protocol location) "https:") "s"))
-            websocket-url (str scheme "://" host "/")
-            connection ($websocket websocket-url)]
-        (doto connection
-          (.onMessage (.-handleMessage app))
-          (.onOpen (fn []
-                     (timbre/debug "Websocket connection opened")))
-          (.onClose (fn []
-                      (timbre/debug "Websocket connection closed")
-                      (.reconnect connection)))
-          (.onError (fn []
-                      (timbre/warn "Websocket connection errored")))))
-      (throw (js/Error. "No location available")))))
+        websocket-url (get-websocket-url app)
+        connection ($websocket websocket-url)]
+    (doto connection
+      (.onMessage (.-handleMessage app))
+      (.onOpen (fn []
+                 (timbre/debug "Websocket connection opened")))
+      (.onClose (fn []
+                  (timbre/debug "Websocket connection closed")
+                  (.reconnect connection)))
+      (.onError (fn []
+                  (timbre/warn "Websocket connection errored"))))))
 
-(def.provider jiksnu.app
+(defn app
   []
-  #js
-  {:$get
-   #js
-   ["$injector"
-    (fn [$injector]
-      (timbre/debug "creating app service")
-      (let [app #js {:inject (.-get $injector)}]
-        (doseq [[n f] app-methods]
-          (aset app (name n) (partial f app)))
+  (let [f (fn [$injector]
+            (timbre/debug "creating app service")
+            (let [app #js {:inject (.-get $injector)}]
+              (doseq [[n f] app-methods]
+                (aset app (name n) (partial f app)))
 
-        (set! (.-connection app) (get-websocket-connection app))
-        (set! (.-data app)       #js {})
+              (set! (.-connection app) (get-websocket-connection app))
+              (set! (.-data app)       #js {})
 
-        ;; Bind to window for easy debugging
-        (set! (.-app js/window) app)
+              ;; Bind to window for easy debugging
+              (set! (.-app js/window) app)
 
-        ;; return the app
-        app))]})
+              ;; return the app
+              app))]
+    (clj->js {:$get ["$injector" f]})))
+
+(.provider jiksnu "app" app)

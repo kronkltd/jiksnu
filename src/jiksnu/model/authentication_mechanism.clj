@@ -1,5 +1,5 @@
 (ns jiksnu.model.authentication-mechanism
-  (:require [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
@@ -8,7 +8,9 @@
             [validateur.validation :refer [acceptance-of
                                            presence-of
                                            valid?
-                                           validation-set]]))
+                                           validation-set]])
+  (:import (org.bson.types ObjectId)
+           (org.joda.time DateTime)))
 
 (def collection-name "authentication_mechanisms")
 
@@ -16,17 +18,16 @@
 
 (def create-validators
   (validation-set
-   ;; (type-of :_id        ObjectId)
-   ;; ;; (type-of :created    DateTime)
-   ;; ;; (type-of :updated    DateTime)
+   (type-of :_id ObjectId)
    ;; ;; (type-of :local      Boolean)
    ;; ;; (type-of :discovered Boolean)
-   ))
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (defn fetch-by-id
   [id]
   (let [id (if (string? id) (util/make-id id) id)]
-    (if-let [item (mc/find-map-by-id @_db collection-name id)]
+    (if-let [item (mc/find-map-by-id (db/get-connection) collection-name id)]
       (model/map->AuthenticationMechanism item))))
 
 (def create        (templates.model/make-create collection-name #'fetch-by-id #'create-validators))
@@ -36,7 +37,7 @@
   ([params] (fetch-all params {}))
   ([params options]
    (map model/map->AuthenticationMechanism
-        (mc/find-maps @_db collection-name params))))
+        (mc/find-maps (db/get-connection) collection-name params))))
 
 (defn fetch-by-user
   [user & options]

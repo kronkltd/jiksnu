@@ -1,11 +1,15 @@
-[:div {:title "index-users"}
- [:h1
-  [:span "Users"]
-  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
+([:div.title-section {:layout "row" :flex ""}
+  [:div {:flex ""}
+   [:h1.md-headline {:layout-padding ""} "Users"]]
+  [:div {:layout-align "end"}
+   [:div {:layout-align "end end" :flex ""}
+    [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh"}
+     [:ng-md-icon {:icon "loop"}]]]]]
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
   [:debug {:expr "page"}]
-  [:ul.list-unstyled
-   [:li {:ng-repeat "id in page.items" :title "index-users repeat"}
-    [:debug {:expr "id"}]
-    [:show-user-minimal {:data-id "{{id}}"}]]]]]
+  [:md-list {:flex ""}
+   [:md-list-item {:ng-repeat "id in page.items" :title "index-users repeat"}
+    [:div.md-list-item-text
+     [:debug {:expr "id"}]
+     [:show-user-minimal {:data-id "{{id}}"}]]]]])

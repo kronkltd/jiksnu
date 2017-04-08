@@ -1,20 +1,17 @@
 (ns jiksnu.helpers.http-helpers
   (:require [cljs.nodejs :as nodejs]
             [clojure.string :as string]
+            [jiksnu.helpers.page-helpers :refer [base-domain base-path]]
             [taoensso.timbre :as timbre]))
 
+(def child-process (nodejs/require "child_process"))
 (def JSData (nodejs/require "js-data"))
-(def HttpAdapter (nodejs/require "js-data-http-node"))
-;; (var store (.DS JSData))
-;; (.registerAdapter store "http" (DSHttpAdapter.) #js {:default true})
-
-(def http-client (nodejs/require "request"))
-(def BASE_URL "http://localhost:8080")
-(def http-adapter (HttpAdapter.))
-
-;; (set! (.-window js/GLOBAL) #js {})
+(def HttpAdapter (.-HttpAdapter (nodejs/require "js-data-http-node")))
+(timbre/infof "Base Path: %s" base-path)
+(def http-adapter (HttpAdapter. #js {:basePath base-path}))
 
 (defn get-cookie-map
+  "Returns the cookie data from a response map"
   [response]
   (if-let [set-cookie-string (first (aget (.-headers response) "set-cookie"))]
     (->> (string/split set-cookie-string #";")
@@ -27,43 +24,57 @@
   ([] (authenticate nil))
   ([cookie]
    (let [d (.defer (.-promise js/protractor))
-         url (str BASE_URL "/main/login")
          data #js {:username "test"
                    :password "test"}]
      #_(.fulfill d true)
      ;; js/debugger
-     (-> (.GET http-adapter url)
-         (.then (fn [data]
-                  (js/console.log "data" data)
-                  (if (#{200 303} (.-status data))
-                    (.fulfill d data)
-                    (.reject d data)))))
+     (.. http-adapter
+         (GET "/main/login")
+         (then (fn [data]
+                 (js/console.log "data" data)
+                 (if (#{200 303} (.-status data))
+                   (.fulfill d data)
+                   (.reject d data)))))
      (.-promise d))))
+
+(defn get-fortune
+  []
+  (let [d (.defer (.-promise js/protractor))]
+    (.exec child-process "/usr/games/fortune" #js {}
+           (fn [err stdout stderr]
+             (if err
+               (.reject d)
+               (.fulfill d (string/replace stdout #"\n" "\n\n")))))
+    (.-promise d)))
 
 (defn an-activity-exists
   "Create a mock activity"
   []
-  (let [d (.defer (.-promise js/protractor))
-        activity #js {:content "foo"}
-        url (str BASE_URL "/model/activities")]
-    (-> http-adapter
-        (.POST url activity #js {:auth #js {:username "test" :password "test"}})
-        (.then (fn [response]
-                 (let [status-code (.-status response)]
-                   (timbre/debugf "Status Code: %s" status-code)
-                   (if (#{200 201} status-code)
-                     (.fulfill d response)
-                     (.reject d response))))))
+  (let [d (.defer (.-promise js/protractor))]
+    (.. (get-fortune)
+        (then (fn [text]
+                (timbre/infof "Text: %s" text)
+                (let [activity #js {:content text}
+                      url (str base-path "/model/activities")
+                      data #js {:auth #js {:username "test" :password "test"}}]
+                  (.POST http-adapter url activity data))))
+        (then (fn [response]
+                (let [status-code (.-status response)]
+                  (timbre/debugf "Status Code: %s" status-code)
+                  (if (#{200 201} status-code)
+                    (.fulfill d response)
+                    (.reject d response))))))
     (.-promise d)))
 
 (defn user-exists?
   "Queries the server to see if a user exists with that name"
   [username]
   (let [d (.defer (.-promise js/protractor))
-        url (str BASE_URL "/api/user/" username)
-        callback (fn [error response body]
-                   (if (and (not error) (= (.-statusCode response) 200))
-                     (.fulfill d true)
-                     (.reject d #js {:error error :response response})))]
-    (http-client url callback)
+        url (str "/api/user/" username)]
+    (.. http-adapter
+        (GET url)
+        (then (fn [response]
+                (if (= (.-statusCode response) 200)
+                  (.fulfill d true)
+                  (.reject d #js {:response response})))))
     (.-promise d)))

@@ -1,69 +1,77 @@
-[:div {:title "show-activity"}
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div  {:ng-if "loaded"}
-  [:debug {:expr "item"}]
-  [:article.hentry.media
-   [:div.media-left
-    [:display-avatar {:data-id "{{item.author}}" :size "80"}]]
-   [:div.media-body
-    [:p
+([:div {:ng-hide "loaded"} [:spinner]]
+ [:md-card {:ng-show "loaded" :flex ""}
+  [:md-card-header
+   [:md-card-avatar
+    [:display-avatar {:data-id "{{item.author}}" :size "40"}]]
+   [:md-card-header-text
+    [:span.md-title
      [:a {:ui-sref "showUser({_id: item.author})"}
-      "{{item.author}}"]]
-    [:h3.media-heading "{{item.title}}"]
-    [:ul.unstyled {:ng-if "item.mentioned"}
-     [:li {:ng-repeat "user in item.mentioned"}
-      [:i.icon-chevron-right]
-      [:link-to {:data-id "{{user.id}}"}]]]
-    [:ul
-     [:li {:ng-repeat "id in item.streams"}
-      [:show-stream-minimal {:data-id "{{id}}"}]]]
-
-    [:div.entry-content
-     [:div {:btf-markdown "item.content"}]]
+      "{{item.author}}"]]]]
+  #_
+  [:md-card-title
+   [:md-card-title-text
+    [:span.md-headline "{{item.title}}"]]]
+  [:md-card-content
+   [:span.md-headline "{{item.title}}"]
+   #_
+   [:debug {:expr "item" :layout "column" :flex ""}]
+   [:md-list {:ng-show "item.mentioned"}
+    [:md-list-item {:ng-repeat "user in item.mentioned"}
+     [:i.icon-chevron-right]
+     [:link-to {:data-id "{{user.id}}"}]]]
+   [:md-list {:ng-show "item.streams.length > 0"}
+    [:md-list-item {:ng-repeat "id in item.streams"}
+     [:show-stream-minimal {:data-id "{{id}}"}]]]
+   [:div.entry-content
     [:div
-     [:span.posted
-      "{{item.verb}}ed a {{item.object.type}} "
-      [:span {:ng-if "!item.public"}
-       "privately "]
-      [:time {:datetime "{{item.published}}"
-              :title "{{item.published}}"
-              :property "dc:published"}
-       [:a {:ui-sref "showActivity(item)"}
-        [:span {:am-time-ago "item.published"
-                :am-preprocess "utc"}]]]
-      " "
-      [:span {:ng-if "item.source"}
-       "using {{item.source}}"
-       " "]
-      [:span {:ng-if "item.geo.latitude && item.geo.longitude"}
-       "near ("
-       [:abbr {:title "{{item.geo.latitude}}"}
-        "{{item.geo.latitude | number:2}}"]
-       ", "
-       [:arrr {:title "{{item.geo.longitude}}"}
-        "{{item.geo.longitude | number:2}}"]
-       ") "]
-      [:span {:ng-if "!item.local"}
-       "via a "
-       [:a {:href "{{item.service}}"}
-        "foreign service"]
-       " "]
-      #_[:a {:href "/main/conversations/{{item.conversation}}"}
-         "in context"]]]
-    [:subpage {:name "likes" :item "item"}
-     [:debug {:expr "$parent.page"}]
-     [:div {:ng-if "!$parent.loaded"} [:spinner]]
-     [:div {:ng-if "$parent.loaded"}
-      [:div {:ng-show "$parent.$parent.page.totalItems > 0"}
-       [:ul.list-unstyled
-        [:li {:ng-repeat "id in $parent.$parent.page.items"}
-         [:debug {:expr "id"}]
-         [:show-liked-by {:data-id "{{id}}"}]]]]]]
-    [:div {:ng-if "app.user"}
-     [:ul.buttons
-      [:li
-       [:button.btn {:ng-click "likeActivity(item)"} "Like"]]
-      [:li
-       [:button.btn {:ng-click "deleteRecord(item)"} "Delete Activity"]]
-      [:li
-       [:button.btn {:ng-click "refresh()"} "Refresh"]]]]]]]]
+     #_
+     {:btf-markdown "item.content"}
+     "{{item.content}}"]]
+   [:md-list {:ng-if "item.pictures.length > 0"}
+    [:md-list-item {:ng-repeat "id in item.pictures"}
+     [:debug {:expr "id"}]
+     [:show-picture-minimal {:data-id "{{id}}"}]]]
+   [:p
+    [:span.posted
+     "{{item.verb}}ed a {{item.object.type}} "
+     [:span {:ng-hide "item.public"}
+      "privately "]
+     [:time {:datetime "{{item.published}}" :title "{{item.published}}" :property "dc:published"}
+      [:a {:ui-sref "showActivity(item)"}
+       [:span {:am-time-ago "item.published" :am-preprocess "utc"}]]]
+     " "
+     [:span {:ng-show "item.source"}
+      "using {{item.source}} "]
+     [:span {:ng-show "item.geo.latitude && item.geo.longitude"}
+      "near ("
+      [:abbr {:title "{{item.geo.latitude}}"}
+       "{{item.geo.latitude | number:2}}"]
+      ", "
+      [:arrr {:title "{{item.geo.longitude}}"}
+       "{{item.geo.longitude | number:2}}"]
+      ") "]
+     [:span {:ng-hide "item.local"}
+      "via a "
+      [:a {:href "{{item.service}}"}
+       "foreign service"]
+      " "]
+     #_
+     [:a {:href "/main/conversations/{{item.conversation}}"}
+      "in context"]]]
+   [:subpage {:name "likes" :item "item"}
+    [:debug {:expr "$parent.page"}]
+    [:div {:ng-if "!$parent.loaded"} [:spinner]]
+    [:div {:ng-if "$parent.loaded"}
+     [:div {:ng-show "$parent.$parent.page.totalItems > 0"}
+      [:p "Liked by {{$parent.$parent.page.totalItems}} people"]
+      [:md-list
+       [:md-list-item {:ng-repeat "id in $parent.$parent.page.items"}
+        [:debug {:expr "id"}]
+        [:show-liked-by {:data-id "{{id}}"}]]]]]]]
+  [:md-card-actions {:layout "row" :layout-align "start center" :ng-if "app.user"}
+   [:md-button.md-icon-button {:ng-click "likeActivity(item)" :aria-label "Like Activity"}
+    [:ng-md-icon.md-icon-button {:icon "favorite_border"}]]
+   [:md-button.md-icon-button {:ng-click "deleteRecord(item)" :aria-label "Delete Activity"}
+    [:ng-md-icon {:icon "delete"}]]
+   [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh"}
+    [:ng-md-icon {:icon "loop"}]]]])

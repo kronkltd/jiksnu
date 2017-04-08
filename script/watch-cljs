@@ -1,5 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -e
 
-lein -o with-profile +test cljsbuild auto
+lein with-profile +test,+e2e cljsbuild auto

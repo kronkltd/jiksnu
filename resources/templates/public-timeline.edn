@@ -1,8 +1,12 @@
-[:div.conversations
- #_[:debug {:expr "page"}]
- [:div {:ng-if "!loaded"} [:spinner]]
- [:div {:ng-if "loaded"}
-  [:button.btn {:ng-click "refresh()"} "Refresh"]
-  [:div.conversation-section {:ng-repeat "id in page.items"}
+([:div.title-section {:layout "row" :flex ""}
+  [:div {:flex ""}
+   [:h1.md-display-1 {:layout-padding ""} "Conversations"]]
+  [:div {:layout-align "center" :layout "column"}
+   [:md-button.md-icon-button {:ng-click "refresh()" :aria-label "Refresh"}
+    [:ng-md-icon {:icon "loop"}]]]]
+ [:debug {:expr "page"}]
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
+  [:div {:ng-repeat "id in page.items"}
    [:debug {:expr "id"}]
-   [:show-conversation {:data-id "{{id}}"}]]]]
+   [:show-conversation {:data-id "{{id}}"}]]])

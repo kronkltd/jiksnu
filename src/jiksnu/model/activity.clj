@@ -1,11 +1,10 @@
 (ns jiksnu.model.activity
   (:require [clojure.java.io :as io]
-            [jiksnu.db :refer [_db]]
+            [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [validateur.validation :refer [validation-set presence-of]])
@@ -38,8 +37,7 @@
    ;; (presence-of :published)
    (type-of :published             DateTime)
    ;; (presence-of :updated)
-   (type-of :updated               DateTime)
-   ))
+   (type-of :updated               DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
@@ -62,10 +60,6 @@
              {:author (:_id user)}]})
     {:public true}))
 
-(defn get-link
-  [user rel content-type]
-  (first (util/rel-filter rel (:links user) content-type)))
-
 (defn get-author
   "Returns the user that is the author of this activity"
   [activity]
@@ -80,11 +74,11 @@
 
 (defn update-record
   [activity]
-  (mc/save @_db collection-name activity))
+  (mc/save (db/get-connection) collection-name activity))
 
 (defn fetch-by-remote-id
   [id]
-  (if-let [item (mc/find-one-as-map @_db collection-name {:id id})]
+  (if-let [item (mc/find-one-as-map (db/get-connection) collection-name {:id id})]
     (maker item)))
 
 (defn parse-pictures
@@ -100,5 +94,5 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index @_db {:id 1} {:unique true})
-    (mc/ensure-index @_db {:conversation 1})))
+    (mc/ensure-index (db/get-connection) {:id 1} {:unique true})
+    (mc/ensure-index (db/get-connection) {:conversation 1})))

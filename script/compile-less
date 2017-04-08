@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo ">> Compiling Less"
+./node_modules/.bin/lessc less/*.less target/resources/public/css/standard.css

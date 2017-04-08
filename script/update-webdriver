@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo ">> Updating browser testing support"
+./node_modules/.bin/webdriver-manager update >/dev/null

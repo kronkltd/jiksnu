@@ -1,0 +1,15 @@
+[:div.well
+ [:debug {:expr "item"}]
+ [:div {:ng-hide "loaded"} [:spinner]]
+ [:div {:ng-show "loaded"}
+  [:p [:a {:ui-sref "showAlbum(item)"} "{{item.name}}"]]
+  [:show-user-minimal {:data-id "{{item.owner}}"}]
+  [:p "{{item.owner}}"]
+  ;; [:link-to {:data-id "{{item.owner}}"}]
+  [:div {:ng-show "app.user"}
+   [:md-list
+    [:md-list-item
+     [:md-button {:ng-click "deleteRecord(item)" :aria-label "Delete Album"}
+      [:ng-md-icon {:icon "delete"}]]]]]
+  [:add-picture-form]
+  [:list-pictures {:item "item"}]]]

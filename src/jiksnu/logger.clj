@@ -1,34 +1,21 @@
 (ns jiksnu.logger
-  (:require [ciste.config :refer [config config* describe-config]]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
+            [jiksnu.sentry :as sentry]
+            jiksnu.serializers
             [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :refer [println-appender spit-appender]])
-  (:import com.getsentry.raven.Raven
-           com.getsentry.raven.RavenFactory
-           com.getsentry.raven.event.Event$Level
-           com.getsentry.raven.event.EventBuilder
-           com.getsentry.raven.event.interfaces.ExceptionInterface))
-
-(describe-config [:sentry :dsn]
-  String
-  "Private DSN from sentry server")
-
-(def ^Raven raven
-  (when-let [dsn (config* :sentry :dsn)]
-    (RavenFactory/ravenInstance ^String dsn)))
+            [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]))
 
 (defn json-formatter
   ([data] (json-formatter nil data))
   ([opts data]
    (let [{:keys [instant level ?err_ varargs_
                  output-fn config appender]} data
-         out-data {
-                   ;; :err (force ?err_)
-                   :level level
+         out-data {:level level
                    :file (:?file data)
                    :instant instant
                    :message (force (:msg_ data))
                    :varargs (:varargs_ data)
+                   ;; :err (force ?err_)
                    ;; :keys (keys data)
                    :line (:?line data)
                    :ns (:?ns-str data)
@@ -37,30 +24,10 @@
      (->> out-data
           (map (fn [[k v]] (when v [k v])))
           (into {})
-          json/json-str))))
+          json/write-str))))
 
-(defn raven-formatter
-  [{:keys [instant level ?err_ varargs_
-           output-fn config appender]
-    :as data}]
-  (when-let [^Exception e (force ?err_)]
-    (when raven
-      (let [^EventBuilder builder (.. (EventBuilder.)
-                                      (withMessage (.getMessage e))
-                                      (withLevel Event$Level/ERROR)
-                                      (withLogger ^String (:?ns-str data))
-                                      (withSentryInterface (ExceptionInterface. e)))]
-        (.runBuilderHelpers raven builder)
-        (.sendEvent raven (.build builder))))))
-
-(def json-appender (assoc (spit-appender {:fname "logs/timbre-spit.log"})
-                          :output-fn json-formatter))
-(def raven-appender {:enabled? true
-                     :async? false
-                     :min-level nil
-                     :rate-limit nil
-                     :output-fn :inherit
-                     :fn raven-formatter})
+(def json-appender (-> (spit-appender {:fname "logs/timbre-spit.log"})
+                       (assoc :output-fn json-formatter)))
 (def stdout-appender (println-appender {:stream :auto}))
 
 (defn set-logger
@@ -68,21 +35,20 @@
   (timbre/set-config!
    {:level :debug
     :ns-whitelist []
-    :ns-blacklist [
-                   ;; "ciste.commands"
-                   ;; "ciste.config"
-                   ;; "ciste.loader"
+    :ns-blacklist ["ciste.commands"
+                   "ciste.config"
+                   "ciste.loader"
                    ;; "ciste.initializer"
-                   ;; "ciste.runner"
-                   ;; "ciste.service"
+                   "ciste.runner"
+                   "ciste.service"
                    ;; "ring.logger.timbre"
-                   ;; "jiksnu.db"
+                   "jiksnu.db"
                    ;; "jiksnu.modules.http.actions"
                    ;; "jiksnu.modules.web.helpers"
-                   ]
+                   "jiksnu.test-helper"]
     :middleware []
     :timestamp-opts timbre/default-timestamp-opts
     :appenders
     {:spit json-appender
-     :raven raven-appender
+     :raven sentry/raven-appender
      :println stdout-appender}}))

@@ -14,7 +14,10 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.stream-transforms :as transforms.stream]
             [slingshot.slingshot :refer [throw+ try+]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:import (org.apache.http HttpStatus)))
+
+(def model-ns 'jiksnu.model.stream)
 
 ;; hooks
 
@@ -45,7 +48,7 @@
     (model.stream/create params)))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.stream
+  (templates.actions/make-indexer model-ns
                                   :sort-clause {:modified 1}))
 
 (defn index
@@ -95,9 +98,9 @@
   [message]
   (if-let [records (:records message)]
     (with-context [:http :as]
-      (->> records
-           show-section
-           json/json-str))))
+      (-> records
+          show-section
+          (json/read-str :key-fn keyword)))))
 
 (defn format-message-html
   [message]
@@ -114,7 +117,6 @@
 (defn outbox
   [user]
   (user-timeline user))
-
 
 (defn group-timeline
   [group]
@@ -138,15 +140,14 @@
             (s/map format-message)
             (s/map (fn [m] (str m "\r\n"))))
        stream)
-      {:status 200
+      {:status  HttpStatus/SC_OK
        :headers {"content-type" "application/json"}
-       :body stream}))
+       :body    stream}))
 
 (defn format-event
   [m]
-  (str (json/json-str
-        {:body {:action "activity-created"
-                :body m}
+  (str (json/write-str
+        {:body {:action "activity-created" :body m}
          :event "stream-add"
          :stream "public"})
        "\r\n"))
@@ -162,11 +163,11 @@
                  :args (process-args args)}]
     (session/with-user (:auth request)
       (try+
-       (or (:body (parse-command request))
+       (or (parse-command request)
            (throw+ "no command found"))
        (catch Object ex
          ;; FIXME: handle error
-         (json/json-str
+         (json/write-str
           {:action "error"
            :name (:name request)
            :args (:args request)

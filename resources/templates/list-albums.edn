@@ -1,0 +1,15 @@
+[:div {:layout "column" :flex ""}
+ [:section {:layout "row" :flex ""}
+  [:h3 {:layout "column" :flex ""} "Albums"]
+  [:div {:layout "column" :flex ""}]
+  [:div {:flex "10" :layout "column" :layout-align "right"}
+   [:md-button {:ng-click "refresh()" :aria-label "Refresh"}
+    [:ng-md-icon {:icon "loop"}]]]]
+ [:subpage {:name "albums" :item "$ctrl.item" :title "list-albums albums-subpage"}
+  [:debug {:expr "$parent.page"}]
+  [:div {:ng-hide "$parent.loaded"} [:spinner]]
+  [:div {:ng-show "$parent.loaded"}
+   [:md-list
+    [:md-list-item {:ng-repeat "id in $parent.$parent.page.items"}
+     [:debug {:expr "id"}]
+     [:show-album-minimal {:data-id "{{id}}"}]]]]]]

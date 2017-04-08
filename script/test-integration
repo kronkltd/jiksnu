@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+script/update
+UPDATED=1
+
+script/protractor

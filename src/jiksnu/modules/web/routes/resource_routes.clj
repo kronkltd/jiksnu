@@ -34,5 +34,6 @@
 
 (defresource resources-api :collection
   :mixins [page-resource]
+  :page "resources"
   :available-formats [:json]
   :ns 'jiksnu.actions.resource-actions)

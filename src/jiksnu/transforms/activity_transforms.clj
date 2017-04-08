@@ -70,7 +70,7 @@
 
 (defn set-tags
   [activity]
-  (let [tags (:tags activity )]
+  (let [tags (:tags activity)]
     (if (string? tags)
       (if (and tags (not= tags ""))
         (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
@@ -158,10 +158,10 @@
                           ;; FIXME: Handle error
                           nil))
                       #_(try
-                        (actions.group/find-or-create {:url url})
-                        (catch RuntimeException ex
-                          ;; FIXME: Handle error
-                          nil)))]
+                          (actions.group/find-or-create {:url url})
+                          (catch RuntimeException ex
+                            ;; FIXME: Handle error
+                            nil)))]
         (:_id actor))
       (:_id (actions.user/find-or-create {:_id url})))))
 
@@ -231,7 +231,7 @@
                      :streams
                      (mapv (fn [stream]
                              (if (seq stream)
-                               (if (string? (util/inspect stream))
+                               (if (string? stream)
                                  (ObjectId. stream)
                                  stream)
                                (throw+ {:message "Invalid stream"

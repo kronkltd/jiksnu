@@ -14,13 +14,13 @@
 
 (facts "create"
   (let [params {:_id test-url}]
-    (actions.resource/create params)) =>
+    (actions.resource/create params) =>
     (every-checker
      #(instance? Resource %)
      (contains {:_id test-url
                 :updated #(instance? DateTime %)
                 :created #(instance? DateTime %)
-                :local   #(instance? Boolean %)})))
+                :local   #(instance? Boolean %)}))))
 
 (facts "update"
   (fact "when the resource exists"
@@ -28,4 +28,4 @@
     (let [resource (actions.resource/create {:_id test-url})]
       (actions.resource/update-record resource) => resource
       (provided
-        (client/get test-url anything anything) => true))))
+       (client/get test-url anything anything) => true))))

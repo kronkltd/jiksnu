@@ -28,6 +28,6 @@
     (-> (req/request :post "/main/push/hub")
         (assoc :params params)
         response-for) =>
-        (contains {:status 204})
-        (provided
-          (actions.pubsub/verify-subscribe-sync anything anything) => true)))
+    (contains {:status 204})
+    (provided
+     (actions.pubsub/verify-subscribe-sync anything anything) => true)))

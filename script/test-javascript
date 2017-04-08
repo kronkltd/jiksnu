@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+script/update
+UPDATED=1
+
+echo ">> Running Karma Tests"
+node_modules/.bin/karma start --single-run

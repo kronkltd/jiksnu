@@ -59,5 +59,4 @@
 
     (count (fetch-all)) => 20
 
-
     (count (fetch-all {} {:page 2})) => 5))

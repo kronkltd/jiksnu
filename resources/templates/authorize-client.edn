@@ -3,17 +3,18 @@
  [:debug {:expr "id"}]
  [:debug {:expr "item"}]
  [:show-request-token {:data-id "{{id}}"}]
- [:form {:name "authorizeForm" :ng-submit "submit()"}
+ [:form {:name "authorizeForm" :action "" :method "post" :flex "" :layout "column"}
   [:debug {:expr "authorizeForm"}]
   [:div
-   [:label "Token Id"]
-   [:input {:disabled "" :ng-model "id"}]]
+   [:md-input-container
+    [:label "Token Id"]
+    [:input {:type "text" :disabled "" :ng-model "id"}]]]
   [:div
-   [:label "Verifier"]
-   [:input {:ng-model "item.verifier"}]
-   [:button {:clipboard "" :text "item.verifier"} "Copy"]]
+   [:md-input-container
+    [:label "Verifier"]
+    [:input {:type "text" :ng-model "item.verifier"}]]
+   [:md-button.md-icon-button {:clipboard "" :text "item.verifier"}
+    [:ng-md-icon {:icon "content_copy"}]]]
   [:div
-   [:button.btn.btn-success "Approve"]
-   [:button.btn.btn-danger "Deny"]
-   ]]
- ]
+   [:input.md-button.md-primary.md-raised {:type "submit" :value "Approve"}]
+   [:md-button.md-warn.md-raised "Deny"]]]]

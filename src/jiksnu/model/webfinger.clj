@@ -16,7 +16,7 @@
 (defn host-meta
   [^Domain domain]
   [:XRD {"xmlns" ns/xrd
-          "xmlns:hm" ns/host-meta}
+         "xmlns:hm" ns/host-meta}
    [:hm:Host domain]
    [:Link {:rel "lrdd"
            :template (str "http://" domain "/main/xrd?uri={uri}")}
@@ -28,10 +28,10 @@
   {:post [(or (nil? %) (string? %))]}
   (let [query-str (format "//xrd:Link[@rel = '%s']" ns/updates-from)]
     (-> xrd
-         (cm/query query-str mappings)
-         util/force-coll
-         (->> (keep #(.getAttributeValue ^Element % "href")))
-         first)))
+        (cm/query query-str mappings)
+        util/force-coll
+        (->> (keep #(.getAttributeValue ^Element % "href")))
+        first)))
 
 (defn get-feed-source-from-xrd
   [^Document xrd]
@@ -72,12 +72,28 @@
         (:properties link))])
     (:links lrdd))])
 
+(defn parse-link
+  [^Element link]
+  (let [rel (.getAttributeValue link "rel")
+        template (.getAttributeValue link "template")
+        href (.getAttributeValue link "href")
+        type (.getAttributeValue link "type")
+        lang (.getAttributeValue link "lang")
+        title (if-let [title-element (.getFirstChildElement link "Title" ns/xrd)]
+                (.getValue title-element))]
+    (merge (when rel {:rel rel})
+           (when template {:template template})
+           (when href {:href href})
+           (when type {:type type})
+           (when title {:title title})
+           (when lang {:lang lang}))))
+
 (defn get-links
   [^Document xrd]
   (let [root (.getRootElement xrd)]
     (->> (cm/query root "//xrd:Link" mappings)
          util/force-coll
-         (map util/parse-link))))
+         (map parse-link))))
 
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
@@ -91,13 +107,12 @@
 (defn get-username-from-identifiers
   [^Document xrd]
   (try+
-    (->> xrd
-         get-identifiers
-         (keep (comp first util/split-uri))
-         first)
-    (catch Throwable _
-      ;; FIXME: Handle errors
-      )))
+   (->> xrd
+        get-identifiers
+        (keep (comp first util/split-uri))
+        first)
+   ;; FIXME: Handle errors
+   (catch Throwable _)))
 
 ;; takes a document
 (defn get-username-from-xrd

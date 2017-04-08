@@ -1,10 +1,10 @@
 (ns jiksnu.modules.admin.routes.subscription-routes-test
-  (:require [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.mock :as mock]
+  (:require [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-admin response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
-            [ring.mock.request :as req]))
+            [ring.mock.request :as req])
+  (:import (org.apache.http HttpStatus)))
 
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.admin"])
@@ -21,4 +21,4 @@
         response => map?)
 
       (fact "returns a successful response"
-        (:status response) => status/redirect?))))
+        (:status response) => HttpStatus/SC_SEE_OTHER))))

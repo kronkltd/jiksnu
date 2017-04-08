@@ -2,13 +2,13 @@
   (:require [cemerick.friend :as friend]
             [ciste.config :refer [config]]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.model.activity :as model.activity]
+            [jiksnu.actions.album-actions :as actions.album]
+            [jiksnu.actions.picture-actions :as actions.picture]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
-                                                defparameter page-resource path
+                                                defparameter item-resource page-resource path
                                                 subpage-resource]]
-            [jiksnu.session :as session]
             [slingshot.slingshot :refer [throw+]]))
 
 (defparameter :model.activity/id
@@ -45,17 +45,25 @@
 
 (defn activities-api-post
   [ctx]
-  (let [{{params :params
-          :as request} :request} ctx
+  (let [{{params :params :as request} :request} ctx
         username (:current (friend/identity request))
         id (str "acct:" username "@" (config :domain))
         params (assoc params :author id)]
-    (actions.activity/post params)))
+    (if (:pictures params)
+      (if-let [album-id (first (:items (actions.album/fetch-by-user {:_id id} "* uploads")))]
+        (let [picture-ids (map (fn [file]
+                                 (:_id (actions.picture/upload id album-id file)))
+                               (:pictures params))
+              params (assoc params :pictures picture-ids)]
+          (actions.activity/post params))
+        (throw+ {:message "Could not determine default photo album"}))
+      (actions.activity/post params))))
 
 (defresource activities-api :collection
   :desc "Collection route for activities"
   :mixins [page-resource]
   :available-formats [:json]
+  :page "activities"
   :allowed-methods [:get :post]
   :available-media-types ["application/json"]
   :methods {:get {:summary "Index Activities"}
@@ -71,28 +79,9 @@
   :methods {:get {:summary "Show Activity"}
             :delete {:summary "Delete Activity"
                      :authenticated true}}
-  :mixins [ciste-resource]
-  :available-media-types ["application/json"]
-  :available-formats [:json]
-  ;; :presenter (partial into {})
-  :authorized? (fn [ctx]
-                 (if (#{:delete} (get-in ctx [:request :request-method]))
-                   (not (nil? (session/current-user-id)))
-                   ctx))
-  :allowed-methods [:get :delete]
-  :exists? (fn [ctx]
-             (let [id (get-in ctx [:request :route-params :_id])
-                   activity (model.activity/fetch-by-id id)]
-               {:data activity}))
-  ;; :put!    #'actions.activity/update-record
-  :delete! (fn [ctx]
-             ;; (try+
-              (actions.activity/delete (:data ctx))
-              ;; (catch Object ex
-              ;;   (timbre/error ex "Delete Error")
-              ;;   )
-             ;; )
-  ))
+  :mixins [item-resource]
+  :target-model "activity"
+  :ns 'jiksnu.actions.activity-actions)
 
 (defresource activities-api :likes
   :url "/{_id}/likes"
@@ -101,5 +90,4 @@
   :mixins [subpage-resource]
   :target-model "activity"
   :subpage "likes"
-  :parameters  {:_id (path :model.activity/id)}
-  :available-formats [:json])
+  :parameters {:_id (path :model.activity/id)})

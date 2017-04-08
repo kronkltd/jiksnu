@@ -1,5 +1,5 @@
 (ns jiksnu.model.item
-  (:require [jiksnu.db :refer [_db]]
+  (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
@@ -26,5 +26,5 @@
 
 (defn push
   [user activity]
-  (mc/insert @_db collection-name {:user (:_id user)
-                              :activity (:_id activity)}))
+  (let [params {:user (:_id user) :activity (:_id activity)}]
+    (mc/insert (db/get-connection) collection-name params)))

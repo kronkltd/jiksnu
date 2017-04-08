@@ -1,31 +1,8 @@
 (ns jiksnu.registry)
 
-(def model-names
-  [
-   "access-token"
-   "activity"
-   "authentication-mechanism"
-   "client"
-   "conversation"
-   "dialback"
-   "domain"
-   "feed-source"
-   "feed-subscription"
-   "group"
-   "group-membership"
-   "item"
-   "key"
-   "like"
-   "request-token"
-   "resource"
-   "subscription"
-   "user"
-   ]
-  )
-
 (def action-group-names
-  [
-   "activity"
+  ["activity"
+   "album"
    "auth"
    "client"
    "conversation"
@@ -36,30 +13,12 @@
    "home"
    "page"
    "like"
+   "notification"
+   "picture"
    "request-token"
    "resource"
+   "service"
    "stream"
    "subscription"
    "user"
-   "setting"
-   ])
-
-(def module-names
-  [
-   "admin"
-   "atom"
-   "as"
-   "command"
-   "json"
-   "rdf"
-   "core"
-   "web"
-   ])
-
-(def part-names
-  [
-   "filters"
-   "sections"
-   "triggers"
-   "views"
-   "routes"])
+   "setting"])

@@ -1,11 +1,10 @@
 (ns jiksnu.modules.core.actions
   (:require [ciste.commands :refer [add-command!]]
             [ciste.core :refer [with-format with-serialization]]
+            [ciste.event :as event]
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
-            [jiksnu.channels :as ch]
             [jiksnu.predicates :as pred]
-            [manifold.bus :as bus]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
 
@@ -28,12 +27,12 @@
      (try
        ((resolve-routes [@pred/*page-predicates*]
                         @pred/*page-matchers*) request)
-       (catch Throwable ex
-         ;; FIXME: Handle error
-         ))
+       ;; FIXME: Handle error
+       (catch Throwable ex))
      (throw+ "page not found"))))
 
 (defn get-page
+  "Retrieve a named page"
   [page-name & args]
   (timbre/debugf "Getting page: %s" page-name)
   (let [request {:format :page
@@ -45,8 +44,7 @@
        ((resolve-routes [@pred/*page-predicates*]
                         @pred/*page-matchers*) request)
        (catch Throwable ex
-         ;; FIXME: Handle error
-         ))
+         (timbre/error ex "Error fetching page")))
      (throw+ {:message "page not found" :name page-name}))))
 
 (defn get-sub-page-ids
@@ -76,7 +74,7 @@
                  :args args}
         route-handler (resolve-routes [@pred/*sub-page-predicates*]
                                       @pred/*sub-page-matchers*)]
-    (or (:body (route-handler request))
+    (or (route-handler request)
         (throw+ {:action "error"
                  :page page-name
                  :item item
@@ -86,7 +84,7 @@
 (defn invoke-action
   [model-name action-name id & [options]]
   (try+
-    (timbre/infof "Invoking Action. %s(%s) => %s" model-name id action-name)
+   (timbre/infof "Invoking Action. %s(%s) => %s" model-name id action-name)
    (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
      (require action-ns)
 
@@ -99,11 +97,11 @@
                        :action action-name
                        :id id
                        :body body}]
-         (bus/publish! ch/events ":actions:invoked" response)
+         (event/notify ":actions:invoked" response)
          response)
        (do
          (timbre/warnf "could not find action for: %s(%s) => %s"
-                    model-name id action-name)
+                       model-name id action-name)
          (throw+ {:msg (format "action not found: %s" action-name)}))))
    (catch RuntimeException ex
      (timbre/error ex "Actions error")

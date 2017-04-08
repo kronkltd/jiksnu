@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.core
-  (:require [jiksnu.modules.http.resources :refer [defsite groups resources update-groups]]
+  (:require [jiksnu.modules.http.resources :refer [defsite]]
             [octohipster.documenters.schema :refer [schema-doc schema-root-doc]]
             [octohipster.documenters.swagger :refer [swagger-doc]]))
 

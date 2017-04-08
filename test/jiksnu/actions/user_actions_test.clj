@@ -1,6 +1,5 @@
 (ns jiksnu.actions.user-actions-test
   (:require [ciste.config :refer [config]]
-            [ciste.sections.default :refer [show-section]]
             [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
             [hiccup.core :as h]
@@ -66,8 +65,8 @@
                 params {:_id uri}]
             (actions.user/get-username params) => (contains {:username username})
             (provided
-              (actions.user/discover-user-xrd anything anything) =>
-              {:username username})))))
+             (actions.user/discover-user-xrd anything anything) =>
+             {:username username})))))
 
     (fact "when given an acct uri"
       (let [uri (str "acct:" username "@" domain-name)
@@ -141,17 +140,17 @@
             profile-url (format "https://%s/api/user/%s/profile" domain-name username)
             links [{:href profile-url :rel "self"}]
             mock-xrd (mock-user-meta username domain-name uri source-link)
-            mock-jrd (json/json-str {:links links})
-            mock-profile (json/json-str {:preferredUsername username})
+            mock-jrd (json/write-str {:links links})
+            mock-profile (json/write-str {:preferredUsername username})
             xrd-url (util/replace-template xrd-template uri)
             jrd-url (util/replace-template jrd-template uri)]
 
         (fact "when the domain has a jrd endpoint"
           (db/drop-all!)
           (let [domain-params (factory :domain
-                                       {:_id domain-name
-                                        :jrdTemplate jrd-template
-                                        :discovered true})
+                                {:_id domain-name
+                                 :jrdTemplate jrd-template
+                                 :discovered true})
                 domain (actions.domain/find-or-create domain-params)]
 
             (actions.domain/add-link domain {:rel "jrd" :template jrd-template})
@@ -159,27 +158,22 @@
             (fact "when the username can be determined"
               (actions.user/find-or-create params) => (partial instance? User)
               (provided
-                (actions.user/get-username params) => {:domain domain-name
-                                                       :_id uri
-                                                       :username username}))))
+               (actions.user/get-username params) => {:domain domain-name
+                                                      :_id uri
+                                                      :username username}))))
 
         (fact "when the domain has an xrd endpoint"
           (db/drop-all!)
-          (let [domain (actions.domain/find-or-create
-                        (factory :domain
-                                 {:_id domain-name
-                                  :xrdTemplate xrd-template
-                                  :discovered true}))]
+          (let [params {:_id         domain-name
+                        :xrdTemplate xrd-template
+                        :discovered  true}
+                domain (actions.domain/find-or-create
+                        (factory :domain params))]
             (model.domain/set-field! domain :xrdTemplate xrd-template)
             (actions.domain/add-link domain {:rel "xrd" :template xrd-template})
 
-
             (fact "when the username can be determined"
-              (actions.user/find-or-create params) => (partial instance? User)
-
-              #_(provided
-                 (ops/update-resource xrd-url anything) => (d/success-deferred {:body mock-xrd}))
-              )))))
+              (actions.user/find-or-create params) => (partial instance? User))))))
 
     (fact "when given an acct uri uri"
       (db/drop-all!)

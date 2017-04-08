@@ -27,4 +27,4 @@
               url (:url conversation)]
           (set-update-source conversation) => (contains {:update-source .id.})
           (provided
-            (actions.feed-source/discover-source anything) => {:_id .id.}))))))
+           (actions.feed-source/discover-source anything) => {:_id .id.}))))))

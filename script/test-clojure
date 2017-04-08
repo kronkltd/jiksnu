@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+script/update
+UPDATED=1
+
+echo ">> Running Midje Tests"
+echo $*
+lein midje :config test.midje.clj $*

@@ -1,0 +1,5 @@
+[:div {:title "show-picture"}
+ [:div {:ng-if "!loaded"} [:spinner]]
+ [:div {:ng-if "loaded"}
+  [:debug {:expr "item"}]
+  [:img {:ng-src "/assets/{{item._id}}.jpg" :alt "{{item.filename}}" :style "max-width: 100%"}]]]

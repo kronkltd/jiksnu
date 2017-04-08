@@ -1,11 +1,14 @@
 [:div {:title "index-subscriptions"}
- [:h1
-  [:span "Subscriptions"]
-  [:button.btn.pull-right {:ng-click "refresh()"} "Refresh"]]
+ [:section {:layout "row" :flex ""}
+  [:h1 {:layout "column" :flex ""} "Subscriptions"]
+  [:div {:layout "column" :flex ""}]
+  [:div {:layout "column" :flex "10" :layout-align "right"}
+   [:md-button {:ng-click "refresh()" :aria-label "Refresh"}
+    [:ng-md-icon {:icon "loop"}]]]]
  [:debug {:expr "page"}]
  [:div {:ng-if "!loaded"} [:spinner]]
  [:div {:ng-if "loaded"}
-  [:ul.list-unstyled
-   [:li {:ng-repeat "id in page.items" :title "index-subscriptions repeat"}
+  [:md-list.list-unstyled
+   [:md-list-item {:ng-repeat "id in page.items" :title "index-subscriptions repeat"}
     [:debug {:expr "id"}]
     [:show-subscription {:data-id "{{id}}"}]]]]]

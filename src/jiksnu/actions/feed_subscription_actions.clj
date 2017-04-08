@@ -5,6 +5,8 @@
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))
 
+(def model-ns 'jiksnu.model.feed-subscription)
+
 (defn prepare-create
   [item]
   (-> item
@@ -34,7 +36,7 @@
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.feed-subscription
-                          :sort-clause {:_id 1}))
+                                  :sort-clause {:_id 1}))
 
 (defn index
   [& options]

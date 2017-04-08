@@ -10,6 +10,6 @@
   (fact "when the activity exists"
     (fact "and there are no comments"
       (let [actor (mock/a-user-exists)
-            activity (mock/there-is-an-activity)
+            activity (mock/an-activity-exists)
             [_ comments] (fetch-comments activity)]
         comments => empty?))))

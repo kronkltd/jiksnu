@@ -1,12 +1,14 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+# Ensure that all required dependencies are available.
+# This command is invoked by other top-level commands.
 
 set -e
 
-echo ">> Ensuring dependencies are downloaded"
+cd "$(dirname "$0")/.."
+
+echo ">> Updating java dependencies"
 lein deps
 
-echo ">> Installing from NPM"
-npm install
-
-echo ">> installing from Bower"
-./node_modules/.bin/bower --allow-root install
+echo ">> Updating javascript dependencies"
+npm update -q --dev
