@@ -4,5 +4,8 @@ set -e
 
 script/await-connections
 
-CISTE_ENV=test
+script/setup
+export UPDATED=1
+
+export CISTE_ENV=test
 script/test

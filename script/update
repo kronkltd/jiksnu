@@ -2,8 +2,6 @@
 
 set -e
 
-if [ -z "$UPDATED" ]; then
+if [ -z "${UPDATED}" ]; then
   script/bootstrap
-  script/update-webdriver
-  script/compile
 fi
