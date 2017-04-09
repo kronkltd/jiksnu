@@ -5,15 +5,6 @@
             [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))
 
-(defn update-page-
-  "Notify a page update"
-  [app message]
-  (let [$mdToast (.inject app "$mdToast")
-        Pages (.inject app "Pages")
-        conversation-page (.get Pages "conversations")]
-    (.unshift (.-items conversation-page) (.-body message))
-    (.showSimple $mdToast "Adding to page")))
-
 (def app-methods
   {:addStream     p/add-stream
    :connect       methods/connect
@@ -62,11 +53,16 @@
 
   (get-websocket-url [app]
     (let [$location (.inject app "$location")]
-      (methods/get-websocket-url $location))))
+      (methods/get-websocket-url $location)))
 
   (register [app params]
     (let [$http (.inject app "$http")]
-      (methods/register $http params))))
+      (methods/register $http params)))
+
+  (update-page [app message]
+    (let [$mdToast (.inject app "$mdToast")
+          Pages (.inject app "Pages")]
+      (methods/update-page $mdToast Pages message))))
 
 (defn app
   []
@@ -90,4 +86,4 @@
 
 (defmethod methods/handle-action "page-add"
   [app data]
-  (update-page- app data))
+  (p/update-page app data))

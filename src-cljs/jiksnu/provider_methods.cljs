@@ -251,3 +251,10 @@
   (let [object #js {:id (.-_id target)}
         activity #js {:verb "unfollow" :object object}]
     (.post app activity)))
+
+(defn update-page
+  "Notify a page update"
+  [$mdToast Pages message]
+  (let [conversation-page (.get Pages "conversations")]
+    (.unshift (.-items conversation-page) (.-body message))
+    (.showSimple $mdToast "Adding to page")))
