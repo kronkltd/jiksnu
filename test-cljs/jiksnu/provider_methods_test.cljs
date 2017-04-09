@@ -117,6 +117,17 @@
                     (.. (js/expect p) (toBeResolvedWith user))
                     (.. (js/expect (.-find Users)) (toHaveBeenCalledWith id))))))))))
 
+    (js/describe "follow"
+      (fn []
+        (js/describe "when not passing an invalid object"
+          (fn []
+            (js/it "should be rejected"
+              (fn []
+                (let [target nil
+                      p (methods/follow $q $http target)]
+                  (.$digest $rootScope)
+                  (.. (js/expect p) (toBeRejected)))))))))
+
     (js/describe "login"
       (fn []
         (js/describe "with valid credentials"

@@ -2,6 +2,7 @@
 
 (defprotocol AppProtocol
   (add-stream        [this stream-name])
+  (follow            [this target])
   (get-user          [this])
   (get-user-id       [this])
   (get-websocket-url [this])

@@ -51,6 +51,11 @@
     (let [$http (.inject app "$http")]
       (methods/add-stream $http stream-name)))
 
+  (follow [app target]
+    (let [$q (.inject app "$q")
+          $http (.inject app "$http")]
+     (methods/follow $q $http target)))
+
   (get-user [app]
     (let [$q (.inject app "$q")
           Users (.inject app "Users")

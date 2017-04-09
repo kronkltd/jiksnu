@@ -62,15 +62,14 @@
 
 (defn follow
   "Follow the target user"
-  [app target]
+  [$q $http target]
   (timbre/debug "follow" target)
   (if target
     (let [object  #js {:id (.-_id target)}
           activity #js {:verb "follow" :object object}]
-      (.post app activity))
-    (let [$q (.inject app "$q")]
-      (timbre/warn "No target")
-      ($q (fn [_ reject] (reject))))))
+      (post $http activity))
+    (do (timbre/warn "No target")
+        ($q (fn [_ reject] (reject))))))
 
 (defn following?
   "Is the currently authenticated user following the target user"
