@@ -13,6 +13,7 @@
   (login             [this username password])
   (ping              [this])
   (post              [this activity pictures])
+  (refresh           [this])
   (register          [this params])
   (send              [this command])
   (update-page       [this message])
