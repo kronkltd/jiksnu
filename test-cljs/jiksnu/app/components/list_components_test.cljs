@@ -54,7 +54,9 @@
                   (let [stream-name "bar"
                         params #js {:name stream-name}]
                     ;; TODO: Just mock app.addStream
-                    (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [201])))
+                    (-> (.expectPOST $httpBackend "/model/streams")
+                        (.respond (constantly #js [201])))
+
                     (@$controller controller-name injections)
                     (set! $scope.stream params)
                     (let [p (.addStream $scope)]
