@@ -8,6 +8,7 @@ byobu new-session -d -s dev
 # Add additional commands here
 byobu new-window -t dev:1 -n "Server" "script/server"
 byobu new-window -t dev:2 -n "cljs" "script/watch-cljs"
+byobu new-window -t dev:3 -n "karma" "script/watch-karma"
 
 byobu select-window -t dev:1
 
