@@ -59,6 +59,10 @@
     (let [$http (.inject app "$http")]
       (methods/register $http params)))
 
+  (send [app command]
+    (let [connection (.-connection app)]
+      (methods/send connection command)))
+
   (unfollow [app target]
     (methods/unfollow app target))
 
