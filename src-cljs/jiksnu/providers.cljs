@@ -12,7 +12,7 @@
    :fetchStatus   methods/fetch-status
    :follow        methods/follow
    :getUser       methods/get-user
-   :getUserId     methods/get-user-id
+   :getUserId     p/get-user-id
    :go            methods/go
    :handleMessage methods/handle-message
    :invokeAction  methods/invoke-action
@@ -50,6 +50,9 @@
   (add-stream [app stream-name]
     (let [$http (.inject app "$http")]
       (methods/add-stream $http stream-name)))
+
+  (get-user-id [app]
+    (methods/get-user-id (.-data app)))
 
   (get-websocket-url [app]
     (let [$location (.inject app "$location")]

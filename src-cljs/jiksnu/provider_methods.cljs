@@ -95,8 +95,8 @@
 
 (defn get-user-id
   "Returns the authenticated user id from app data"
-  [app]
-  (if-let [data (.-data app)]
+  [data]
+  (if data
     (if-let [username (.-user data)]
       (if-let [domain (.-domain data)]
         (str "acct:" username "@" domain)
