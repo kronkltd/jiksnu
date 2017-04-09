@@ -51,6 +51,10 @@
     (let [$http (.inject app "$http")]
       (methods/add-stream $http stream-name)))
 
+  (delete-stream [app target-id]
+    (let [$http (.inject app "$http")]
+      (methods/delete-stream $http target-id)))
+
   (fetch-status [app]
     (let [$http (.inject app "$http")]
       (-> (methods/fetch-status $http)

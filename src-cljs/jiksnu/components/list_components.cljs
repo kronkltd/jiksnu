@@ -85,7 +85,7 @@
 
   (set! (.-deleteStream $scope)
         (fn [item]
-          (.deleteStream app item)))
+          (p/delete-stream app item)))
 
   (set! (.-addStream $scope)
         (fn []

@@ -64,7 +64,8 @@
                (set! Users _Users_)
                (doto $httpBackend
                  (.. (whenGET #"/templates/.*") (respond "<div></div>"))
-                 (.. (whenGET #"/model/.*")     (respond "{}"))))])))
+                 (.. (whenGET #"/model/.*")     (respond #js {}))
+                 (.. (whenGET "/status")        (respond #js {}))))])))
 
     (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
 
@@ -89,6 +90,18 @@
                           -and
                           (returnValue "foo"))])
             (timbre/spy (.connect app))))))
+
+    (js/describe "delete-stream"
+      (fn []
+        (js/it "resolves"
+          (fn []
+            (doto $httpBackend
+              (.. (expectPOST "/model/activities") (respond valid-login-response)))
+
+            (let [target-id "foo"
+                  p (methods/delete-stream $http target-id)]
+              (.$digest $rootScope)
+              (.. (js/expect p) (toBeResolved)))))))
 
     (js/describe "get-user"
       (fn []

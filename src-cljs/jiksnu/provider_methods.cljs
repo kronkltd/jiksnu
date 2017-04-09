@@ -18,14 +18,6 @@
   [app]
   (.send app "connect"))
 
-(defn delete-stream
-  "Delete the stream matching the id"
-  [app id]
-  (timbre/info "Deleting stream" id)
-  (let [activity #js {:action "delete"
-                      :object #js {:id id}}]
-    (.post app activity)))
-
 (defn fetch-status
   "Fetch the status from the server"
   [$http]
@@ -56,6 +48,14 @@
     (.post $http path form-data
            #js {:transformRequest (.-identity js/angular)
                 :headers #js {"Content-Type" js/undefined}})))
+
+(defn delete-stream
+  "Delete the stream matching the id"
+  [$http target-id]
+  (timbre/info "Deleting stream" target-id)
+  (let [activity #js {:action "delete"
+                      :object #js {:id target-id}}]
+    (post $http activity)))
 
 (defn follow
   "Follow the target user"
