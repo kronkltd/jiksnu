@@ -210,8 +210,8 @@
 
 (defn ping
   "Send a ping command"
-  [app]
-  (.send app "ping"))
+  [connection]
+  (p/send connection "ping"))
 
 (defn refresh
   "Send a signal for collections to refresh themselves"

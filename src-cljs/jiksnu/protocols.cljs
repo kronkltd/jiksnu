@@ -11,6 +11,7 @@
   (get-websocket-url [this])
   (go                [this state])
   (login             [this username password])
+  (ping              [this])
   (post              [this activity pictures])
   (register          [this params])
   (send              [this command])
