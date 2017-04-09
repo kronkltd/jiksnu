@@ -32,8 +32,7 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: [
       // 'progress',
-      'htmlDetailed',
-      'kjhtml',
+      'live-html',
       'nested',
       "junit",
       'notify-send'
@@ -47,7 +46,7 @@ module.exports = function(config) {
       'karma-browserify',
       'karma-coverage',
       'karma-jasmine',                      // Required plugin
-      'karma-html-detailed-reporter',
+      'karma-html-live-reporter',
       'karma-phantomjs-launcher',           // Launches PhantomJS
       'karma-jasmine-html-reporter',
       'karma-junit-reporter',
@@ -61,6 +60,14 @@ module.exports = function(config) {
 
     browserify: {
       debug: true
+    },
+
+    htmlLiveReporter: {
+      colorScheme: 'jasmine', // light 'jasmine' or dark 'earthborn' scheme
+      defaultTab: 'summary', // 'summary' or 'failures': a tab to start with
+
+      // only show one suite and fail log at a time, with keyboard navigation
+      focusMode: true,
     },
 
     // coverageReporter: {
