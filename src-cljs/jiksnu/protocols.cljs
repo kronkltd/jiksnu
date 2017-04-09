@@ -5,4 +5,5 @@
   (get-websocket-url [this])
   (post              [this activity pictures])
   (register          [this params])
-  (update-page       [this message]))
+  (update-page       [this message])
+  (unfollow          [this target]))

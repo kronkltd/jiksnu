@@ -24,7 +24,7 @@
    :refresh       methods/refresh
    :register      p/register
    :send          methods/send
-   :unfollow      methods/unfollow})
+   :unfollow      p/unfollow})
 
 (defn get-websocket-connection
   "Create a websocket connection to the server"
@@ -58,6 +58,9 @@
   (register [app params]
     (let [$http (.inject app "$http")]
       (methods/register $http params)))
+
+  (unfollow [app target]
+    (methods/unfollow app target))
 
   (update-page [app message]
     (let [$mdToast (.inject app "$mdToast")

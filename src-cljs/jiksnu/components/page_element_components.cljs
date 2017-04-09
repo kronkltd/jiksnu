@@ -1,6 +1,7 @@
 (ns jiksnu.components.page-element-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
+            [jiksnu.protocols :as p]
             [jiksnu.registry :as registry]
             jiksnu.services
             [taoensso.timbre :as timbre]))
@@ -114,7 +115,7 @@
         (fn []
           (let [item (.-item $scope)]
             (-> (if (.-following $scope)
-                  (.unfollow app item)
+                  (p/unfollow app item)
                   (.follow app item))
                 (.then (fn []
                          (.init $scope)
