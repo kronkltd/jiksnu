@@ -26,6 +26,14 @@
       (.get "/status")
       (.then (fn [response] (.-data response)))))
 
+(defn delete-stream
+  "Delete the stream matching the id"
+  [$http target-id]
+  (timbre/info "Deleting stream" target-id)
+  (let [activity #js {:action "delete"
+                      :object #js {:id target-id}}]
+    (post $http activity)))
+
 (defn post
   "Create a new activity"
   [$http activity & [pictures]]
@@ -51,14 +59,6 @@
                #js {:transformRequest js/angular.identity
                     :headers #js {"Content-Type" js/undefined}})
         (.then (fn [response] (some-> response .-data .-_id ))))))
-
-(defn delete-stream
-  "Delete the stream matching the id"
-  [$http target-id]
-  (timbre/info "Deleting stream" target-id)
-  (let [activity #js {:action "delete"
-                      :object #js {:id target-id}}]
-    (post $http activity)))
 
 (defn follow
   "Follow the target user"
