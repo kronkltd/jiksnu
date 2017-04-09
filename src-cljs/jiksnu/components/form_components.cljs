@@ -129,7 +129,7 @@
           (js/console.info "Scope: " $scope)
           (let [activity (.-activity $scope)
                 pictures (map #(.-lfFile %) (.-files $scope))]
-            (-> (.post app activity pictures)
+            (-> (p/post app activity pictures)
                 (.then (fn []
                          (.reset $scope)
                          (.toggle $scope)

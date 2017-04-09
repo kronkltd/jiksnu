@@ -17,6 +17,10 @@
 (declare auth-id)
 (declare auth-user)
 
+(defn activity-submit-response
+  [method url data headers params]
+  #js [200 nil data "OK"])
+
 (defn update-auth-data!
   ([]
    (set! auth-data #js {:user username :domain domain})
@@ -67,4 +71,17 @@
 
               (let [p (methods/add-stream $http stream-name)]
                 (.flush $httpBackend)
-                (-> (js/expect p) (.toBeResolvedWith stream-name))))))))))
+                (-> (js/expect p) (.toBeResolvedWith stream-name))))))))
+
+    (js/describe "post"
+      (fn []
+        (js/it "should submit the activity"
+          (fn []
+            (-> $httpBackend
+                (.expectPOST #"/model/activities")
+                (.respond activity-submit-response))
+
+            (let [activity #js {}
+                  pictures nil
+                  p (methods/post $http activity pictures)]
+              (-> (js/expect p) (.toBeResolved)))))))))

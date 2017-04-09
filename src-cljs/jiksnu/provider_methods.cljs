@@ -37,6 +37,29 @@
               (timbre/debug "setting app status")
               (set! (.-data app) (.-data response))))))
 
+(defn post
+  "Create a new activity"
+  [$http activity & [pictures]]
+  (let [path "/model/activities"
+        form-data (js/FormData.)]
+
+    (js/console.info "pictures" pictures)
+
+    (.forEach
+     js/angular activity
+     (fn [v k]
+       (timbre/debugf "Adding parameter: %s => %s" k v)
+       (.append form-data k v)))
+
+    (doseq [picture pictures]
+      (js/console.info "Picture" picture)
+      (.append form-data "pictures[]" picture))
+
+    (timbre/infof "Posting Activity - %s" (js/JSON.stringify activity))
+    (.post $http path form-data
+           #js {:transformRequest (.-identity js/angular)
+                :headers #js {"Content-Type" js/undefined}})))
+
 (defn follow
   "Follow the target user"
   [app target]
@@ -195,30 +218,6 @@
   "Send a ping command"
   [app]
   (.send app "ping"))
-
-(defn post
-  "Create a new activity"
-  [app activity & [pictures]]
-  (let [path "/model/activities"
-        $http (.inject app "$http")
-        form-data (js/FormData.)]
-
-    (js/console.info "pictures" pictures)
-
-    (.forEach
-     js/angular activity
-     (fn [v k]
-       (timbre/debugf "Adding parameter: %s => %s" k v)
-       (.append form-data k v)))
-
-    (doseq [picture pictures]
-      (js/console.info "Picture" picture)
-      (.append form-data "pictures[]" picture))
-
-    (timbre/infof "Posting Activity - %s" (js/JSON.stringify activity))
-    (.post $http path form-data
-           #js {:transformRequest (.-identity js/angular)
-                :headers #js {"Content-Type" js/undefined}})))
 
 (defn refresh
   "Send a signal for collections to refresh themselves"
