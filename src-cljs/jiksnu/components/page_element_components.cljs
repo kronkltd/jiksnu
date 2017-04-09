@@ -156,7 +156,7 @@
               (swagger-url protocol hostname port))))
     (set! (.-apiUrl $scope) (str "/vendor/swagger-ui/dist/index.html?url=" (.getSwaggerUrl $scope)))
     (set! (.-$mdSidenav $scope) $mdSidenav)
-    (set! (.-logout $scope) (.-logout app))))
+    (set! (.-logout $scope) #(p/logout app))))
 
 (.component
  jiksnu "mainLayout"
@@ -167,6 +167,7 @@
   [$mdSidenav $rootScope $scope $state app hotkeys]
   (set! $scope.app2            app)
   (set! $scope.loaded          false)
+  (set! $scope.logout          #(p/logout app))
   (set! $scope.logout          app.logout)
   (set! $scope.navbarCollapsed true)
 
@@ -201,7 +202,7 @@
 (defn SidenavController
   [$scope app]
 
-  (set! (.-logout $scope) (.-logout app))
+  (set! (.-logout $scope) #(p/logout app))
   (set! (.-app $scope) app)
 
   (set! (.-items $scope)

@@ -88,6 +88,8 @@
       (-> (methods/login $http $httpParamSerializerJQLike username password)
           (.then (fn [] (.fetchStatus app))))))
 
+  (logout [app])
+
   (register [app params]
     (let [$http (.inject app "$http")]
       (methods/register $http params)))
