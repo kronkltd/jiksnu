@@ -151,6 +151,31 @@
                   (.$digest $rootScope)
                   (.. (js/expect p) (toBeRejected)))))))))
 
+    (js/describe "following?"
+      (fn []
+        (let [username "foo"
+              domain "example.com"
+              data #js {:user username :domain domain}]
+          (js/describe "when the is nil"
+            (fn []
+              (js/it "should be rejected"
+                (fn []
+                  (let [target nil
+                        p (methods/following? $q Users data target)]
+                    (.. (js/expect p) (toBeRejected)))))))
+
+          (js/xdescribe "when the user is following the target"
+            (fn []
+              (js/it "should return truthy"
+                (fn []
+                  (let [target #js {:_id "acct:bar@example.com"}
+                        p (methods/following? $q Users data target)]
+
+                    (.. (js/expect p) (toBeResolvedWith true)))))))
+
+          (js/describe "when the user is not following the target"
+            (fn [])))))
+
     (js/describe "login"
       (fn []
         (js/describe "with valid credentials"

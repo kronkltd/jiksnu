@@ -5,6 +5,7 @@
   (delete-stream     [this target-id])
   (fetch-status      [this])
   (follow            [this target])
+  (following?        [this target])
   (get-user          [this])
   (get-user-id       [this])
   (get-websocket-url [this])
