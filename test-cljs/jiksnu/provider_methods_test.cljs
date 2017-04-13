@@ -185,9 +185,11 @@
                 (doto $httpBackend
                   (.. (expectPOST "/main/login") (respond valid-login-response))
                   (.. (whenGET "/status")        (respond #js {})))
-                (let [username "test"
-                      password "test"
-                      p (methods/login $http $httpParamSerializerJQLike username password)]
+                (let [auth-username "test"
+                      auth-password "test"
+                      p (methods/login
+                         $http $httpParamSerializerJQLike
+                         auth-username auth-password)]
                   (.flush $httpBackend)
                   (.$digest $rootScope)
                   (.. (js/expect p) (toBeResolvedWith true)))))))
@@ -198,9 +200,10 @@
               (fn []
                 (doto $httpBackend
                   (.. (expectPOST "/main/login") (respond invalid-login-response)))
-                (let [username "test"
-                      password "test"
-                      p (methods/login $http $httpParamSerializerJQLike username password)]
+                (let [auth-username "test"
+                      auth-password "test"
+                      p (methods/login $http $httpParamSerializerJQLike
+                                       auth-username auth-password)]
                   (.flush $httpBackend)
                   (.$digest $rootScope)
                   (.. (js/expect p) (toBeRejected)))))))))
