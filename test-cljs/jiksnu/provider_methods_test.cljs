@@ -114,18 +114,19 @@
           (fn []
             (js/it "resolves to nil"
               (fn []
-                (.. (js/spyOn app "getUserId") -and (returnValue nil))
-                (let [auth-data #js {}
-                      p (methods/get-user $q Users auth-data)]
+                (let [p (methods/get-user $q Users auth-data)]
                   (.$digest $rootScope)
 
                   (-> (js/expect p) (.toBeResolvedWith nil)))))))
 
         (js/describe "when authenticated"
           (fn []
+            (js/beforeEach
+             (fn []
+               (update-auth-data! "foo")))
+
             (js/it "returns that user"
               (fn []
-                (update-auth-data! "foo")
                 (let [user-url (str "/model/users/" auth-id)]
 
                   (-> (.expectGET $httpBackend user-url)
