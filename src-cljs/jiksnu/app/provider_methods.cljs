@@ -137,31 +137,27 @@
 
 (defmethod handle-action "like"
   [app data]
-  (let [message (.-content (.-body data))]
-    (.. app
-        (inject "$mdToast")
-        (showSimple message))))
+  (let [message (some-> data .-body .-content)
+        $mdToast (.inject app "$mdToast")]
+    (.showSimple $mdToast message)))
 
 (defmethod handle-action "error"
   [app data]
-  (let [message #js {:message (or (some-> data .-message edn/read-string :msg) "Error")}]
-    (.. app
-        (inject "$mdToast")
-        (showSimple message))))
+  (let [message #js {:message (or (some-> data .-message edn/read-string :msg) "Error")}
+        $mdToast (.inject app "$mdToast")]
+    (.showSimple $mdToast message)))
 
 (defmethod handle-action "delete"
   [app data]
-  (let [message (str "Deleted item: " (js/JSON.stringify data.action))]
-    (.. app
-        (inject "$mdToast")
-        (showSimple message))))
+  (let [message (str "Deleted item: " (js/JSON.stringify data.action))
+        $mdToast (.inject app "$mdToast")]
+    (.showSimple $mdToast message)))
 
 (defmethod handle-action :default
   [app data]
-  (let [message (str "Unknown message: " (js/JSON.stringify data))]
-    (.. app
-        (inject "$mdToast")
-        (showSimple message))))
+  (let [message (str "Unknown message: " (js/JSON.stringify data))
+        $mdToast (.inject app "$mdToast")]
+    (.showSimple $mdToast message)))
 
 (defn on-connection-established
   [app data])
@@ -190,8 +186,7 @@
   (let [data ($httpParamSerializerJQLike #js {:username username :password password})
         opts #js {:headers #js {"Content-Type" "application/x-www-form-urlencoded"}}]
     ;; (timbre/infof "Logging in user. %s:%s" username password)
-    (-> $http
-        (.post "/main/login" data opts)
+    (-> (.post $http "/main/login" data opts)
         (.then response-ok?))))
 
 (defn logout
