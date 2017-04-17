@@ -71,10 +71,10 @@
                         (js/it "should return true"
                           (fn []
                             (@$controller controller-name injections)
-                            (set! (.-domain (.-data app)) "example.com")
-                            (set! (.-user (.-data app)) "foo")
-                            (set! (.-item $scope) #js {:_id item-id})
-                            (.. (js/expect (.isActor $scope)) toBeTruthy)))))))))
+                            (set! app.data.domain "example.com")
+                            (set! app.data.user "foo")
+                            (set! $scope.item #js {:_id item-id})
+                            (-> (js/expect ($scope.isActor)) .toBeTruthy)))))))))
             (js/describe ".isFollowing"
               (fn []
                 (js/describe "when not authenticated"
