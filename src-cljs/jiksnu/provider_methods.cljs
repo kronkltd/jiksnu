@@ -81,18 +81,6 @@
                 (timbre/debugf "following?: %s" response)
                 response)))))
 
-(defn get-user
-  "Return the authenticated user"
-  [app]
-  (let [$q (.inject app "$q")
-        Users (.inject app "Users")]
-    ($q (fn [resolve reject]
-          (let [id (.getUserId app)]
-            (timbre/debugf "getting user: %s" id)
-            (if id
-              (resolve (.find Users id))
-              (resolve ($q #(% nil)))))))))
-
 (defn get-user-id
   "Returns the authenticated user id from app data"
   [data]
@@ -109,6 +97,15 @@
     (do
       (timbre/warn "Attempted to get user id, but data not loaded")
       nil)))
+
+(defn get-user
+  "Return a promise that will be resolved with the authenticated user"
+  [$q Users data]
+  (let [id (get-user-id data)]
+    (timbre/debugf "getting user: %s" id)
+    (if id
+      (.find Users id)
+      ($q #(% nil)))))
 
 (defn get-websocket-url
   "Determine the websocket connection url for this app"

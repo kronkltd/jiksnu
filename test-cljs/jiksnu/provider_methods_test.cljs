@@ -81,6 +81,33 @@
                 (.flush $httpBackend)
                 (-> (js/expect p) (.toBeResolvedWith stream-name))))))))
 
+    (js/describe "get-user"
+      (fn []
+        (js/describe "when not authenticated"
+          (fn []
+            (js/it "resolves to nil"
+              (fn []
+                (.. (js/spyOn app "getUserId") -and (returnValue nil))
+                (let [auth-data #js {}
+                      p (methods/get-user $q Users auth-data)]
+                  (.$digest $rootScope)
+                  (.. (js/expect p) (toBeResolvedWith nil)))))))
+
+        (js/describe "when authenticated"
+          (fn []
+            (js/it "returns that user"
+              (fn []
+                (let [username "foo"
+                      domain "example.com"
+                      data #js {:user username :domain domain}
+                      id (str "acct:" username "@" domain)
+                      user #js {:_id id}]
+                  (.. (js/spyOn Users "find") -and (returnValue ($q #(% user))))
+                  (let [p (methods/get-user $q Users data)]
+                    (.$digest $rootScope)
+                    (.. (js/expect p) (toBeResolvedWith user))
+                    (.. (js/expect (.-find Users)) (toHaveBeenCalledWith id))))))))))
+
     (js/describe "login"
       (fn []
         (js/describe "with valid credentials"

@@ -59,30 +59,6 @@
                       (.$digest $rootScope)
                       (.. (js/expect p) (toBeRejected)))))))))
 
-        (js/describe ".getUser"
-          (fn []
-            (js/describe "when not authenticated"
-              (fn []
-                (js/it "resolves to nil"
-                  (fn []
-                    (.. (js/spyOn app "getUserId") -and (returnValue nil))
-                    (let [p (.getUser app)]
-                      (.$digest $rootScope)
-                      (.. (js/expect p) (toBeResolvedWith nil)))))))
-            (js/describe "when authenticated"
-              (fn []
-                (js/it "returns that user"
-                  (fn []
-                    (let [Users (.inject app "Users")
-                          id "acct:foo@example.com"
-                          user #js {:_id id}]
-                      (.. (js/spyOn app   "getUserId") -and (returnValue id))
-                      (.. (js/spyOn Users "find")      -and (returnValue ($q #(% user))))
-                      (let [p (.getUser app)]
-                        (.$digest $rootScope)
-                        (.. (js/expect p) (toBeResolvedWith user))
-                        (.. (js/expect (.-find Users)) (toHaveBeenCalledWith id))))))))))
-
         (js/describe ".invokeAction"
           (fn []
             (js/it "sends a message"

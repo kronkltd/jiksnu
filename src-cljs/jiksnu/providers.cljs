@@ -11,7 +11,7 @@
    :deleteStream  methods/delete-stream
    :fetchStatus   methods/fetch-status
    :follow        methods/follow
-   :getUser       methods/get-user
+   :getUser       p/get-user
    :getUserId     p/get-user-id
    :go            methods/go
    :handleMessage methods/handle-message
@@ -50,6 +50,12 @@
   (add-stream [app stream-name]
     (let [$http (.inject app "$http")]
       (methods/add-stream $http stream-name)))
+
+  (get-user [app]
+    (let [$q (.inject app "$q")
+          Users (.inject app "Users")
+          data app.data]
+      (methods/get-user $q Users data)))
 
   (get-user-id [app]
     (methods/get-user-id (.-data app)))

@@ -179,7 +179,7 @@
         (fn [d]
           (when (.-loaded $scope)
             (set! (.-app $scope) d)
-            (-> (.getUser app)
+            (-> (p/get-user app)
                 (.then (fn [user]
                          (set! (.-user app) user)))))))
 

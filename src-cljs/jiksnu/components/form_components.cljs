@@ -101,14 +101,13 @@
   (set! (.-fetchStreams $scope)
         (fn []
           #_(timbre/debug "fetching streams")
-          (.. app
-              (getUser)
-              (then (fn [user]
-                      (timbre/debugf "Got User - %s" user)
-                      (.getStreams user)))
-              (then (fn [streams]
-                      (timbre/debugf "Got Streams - %s" streams)
-                      (set! (.-streams $scope) streams))))))
+          (-> (p/get-user app)
+              (.then (fn [user]
+                       (timbre/debugf "Got User - %s" user)
+                       (.getStreams user)))
+              (.then (fn [streams]
+                       (timbre/debugf "Got Streams - %s" streams)
+                       (set! (.-streams $scope) streams))))))
   (set! (.-form $scope) #js {:shown false})
   (set! (.-getLocation $scope)
         (fn []
