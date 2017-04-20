@@ -21,10 +21,12 @@
                  :template (html template)})))
 
 (defn get-toggle-fn
+  "Returns a function capable of toggling a component's form"
   [$scope]
   (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
 
 (defn fetch-page
+  "Fetch the url and put assign its response to the scope"
   [$scope $http url]
   (fn []
     (-> $http
@@ -34,6 +36,7 @@
            (set! (.-page $scope) data))))))
 
 (defn setup-hotkeys
+  "register all hotkeys"
   [hotkeys $state]
   (doseq [[combo state description] registry/hotkey-data]
     (.add hotkeys #js {:combo combo
@@ -41,6 +44,7 @@
                        :callback #(.go $state state)})))
 
 (defn fetch-sub-page
+  "Load an item's subpage"
   [item subpageService subpage]
   (timbre/debugf "Fetching subpage: %s -> %s" (.-_id item) subpage)
   (-> subpageService
@@ -48,6 +52,7 @@
       (.then #(aset item subpage (.-body %)))))
 
 (defn init-item
+  "Common initialization for an item component"
   [$ctrl $scope $stateParams app collection]
   (set! $scope.init
         (fn [id]
@@ -79,6 +84,7 @@
   (.init $scope))
 
 (defn init-subpage
+  "Common initialization for a subpage component"
   [$ctrl $scope app collection subpage]
   (set! $scope.app app)
   (set! $scope.loaded false)
