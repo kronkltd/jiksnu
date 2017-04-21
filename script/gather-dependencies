@@ -7,6 +7,9 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-script/gather-dependencies
-script/update-webdriver
-script/compile
+echo ">> Updating java dependencies"
+lein deps
+
+echo ">> Updating javascript dependencies"
+npm install -q
+
