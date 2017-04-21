@@ -1,6 +1,7 @@
 (ns jiksnu.components.state-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
+            [jiksnu.protocols :as p]
             [taoensso.timbre :as timbre]))
 
 (defn AvatarPageController [])
@@ -48,12 +49,12 @@
   [app $scope]
   (set! (.-register $scope)
         (fn []
-          (-> (.register app $scope)
+          (-> (p/register app $scope)
               (.then (fn [data]
                        ;; Should we copy the whole data object?
                        (set! (.. app -data -user) (.. data -data -user))
                        (-> (.fetchStatus app)
-                           (.then #(.go app "home")))))))))
+                           (.then #(p/go app "home")))))))))
 
 (.component
  jiksnu "registerPage"

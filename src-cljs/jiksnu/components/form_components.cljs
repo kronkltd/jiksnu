@@ -1,6 +1,7 @@
 (ns jiksnu.components.form-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
+            [jiksnu.protocols :as p]
             [taoensso.timbre :as timbre]))
 
 (defn NewAlbumController
@@ -100,14 +101,13 @@
   (set! (.-fetchStreams $scope)
         (fn []
           #_(timbre/debug "fetching streams")
-          (.. app
-              (getUser)
-              (then (fn [user]
-                      (timbre/debugf "Got User - %s" user)
-                      (.getStreams user)))
-              (then (fn [streams]
-                      (timbre/debugf "Got Streams - %s" streams)
-                      (set! (.-streams $scope) streams))))))
+          (-> (p/get-user app)
+              (.then (fn [user]
+                       (timbre/debugf "Got User - %s" user)
+                       (.getStreams user)))
+              (.then (fn [streams]
+                       (timbre/debugf "Got Streams - %s" streams)
+                       (set! (.-streams $scope) streams))))))
   (set! (.-form $scope) #js {:shown false})
   (set! (.-getLocation $scope)
         (fn []
@@ -128,7 +128,7 @@
           (js/console.info "Scope: " $scope)
           (let [activity (.-activity $scope)
                 pictures (map #(.-lfFile %) (.-files $scope))]
-            (-> (.post app activity pictures)
+            (-> (p/post app activity pictures)
                 (.then (fn []
                          (.reset $scope)
                          (.toggle $scope)
@@ -158,11 +158,10 @@
         (fn []
           (let [stream-name (.-name (.-stream $scope))]
             (set! (.-name $scope) "")
-            (.. app
-                (addStream stream-name)
-                (then (fn [stream]
-                        (timbre/info "Added Stream" stream)
-                        (.refresh app))))))))
+            (-> (p/add-stream app stream-name)
+                (.then (fn [stream]
+                         (timbre/info "Added Stream" stream)
+                         (.refresh app))))))))
 
 (.component
  jiksnu "addStreamForm"
