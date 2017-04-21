@@ -53,30 +53,26 @@ RUN set -x \
 # Add Supervisor config
 COPY docker/web-dev/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-ADD script ${JIKSNU_HOME}/script
-ADD package.json project.clj ${JIKSNU_HOME}/
-
-RUN chown -R ${uid}:${gid} ${JIKSNU_HOME}
-
-USER ${user}
-
-### Add application
-ADD . ${JIKSNU_HOME}/
-
-RUN script/bootstrap
-
-USER root
-
-RUN chown -R ${uid}:${gid} ${JIKSNU_HOME}
-
-USER ${user}
-
 # Expose Karma port
 EXPOSE 9876
 # Expose nRepl port
 EXPOSE 7888
 # Expose HTTP port
 EXPOSE 8080
+
+RUN chown -R ${uid}:${gid} ${JIKSNU_HOME}
+
+USER ${user}
+
+ADD script ${JIKSNU_HOME}/script
+ADD package.json project.clj ${JIKSNU_HOME}/
+
+RUN script/gather-dependencies
+
+### Add application
+ADD . ${JIKSNU_HOME}/
+
+RUN script/bootstrap
 
 ENTRYPOINT []
 
