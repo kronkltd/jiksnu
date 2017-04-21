@@ -53,6 +53,8 @@ RUN set -x \
 # Add Supervisor config
 COPY docker/web-dev/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+RUN npm install -g yarn
+
 # Expose Karma port
 EXPOSE 9876
 # Expose nRepl port
@@ -65,7 +67,7 @@ RUN chown -R ${uid}:${gid} ${JIKSNU_HOME}
 USER ${user}
 
 ADD script ${JIKSNU_HOME}/script
-ADD package.json project.clj ${JIKSNU_HOME}/
+ADD package.json project.clj .yarnclean yarn.lock ${JIKSNU_HOME}/
 
 RUN script/gather-dependencies
 

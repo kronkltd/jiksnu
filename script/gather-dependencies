@@ -11,5 +11,4 @@ echo ">> Updating java dependencies"
 lein deps
 
 echo ">> Updating javascript dependencies"
-npm install -q
-
+yarn
