@@ -19,7 +19,6 @@ cookbooks
 data
 deps.txt
 doc
-Dockerfile
 dump
 init-script
 jiksnu.iml

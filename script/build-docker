@@ -45,7 +45,6 @@ docker pull ${IMAGE_TAG?} || \
 
 echo ">> Building New Image(s)"
 echo "- ${DEV_IMAGE_TAG?}"
-docker build -t ${DEV_IMAGE_TAG?} -f docker/web-dev/Dockerfile .
-echo "- ${IMAGE_TAG?}"
-sigil -p -f Dockerfile.tmpl > Dockerfile
-docker-compose build web
+docker build -t ${DEV_IMAGE_TAG?} .
+# echo "- ${IMAGE_TAG?}"
+# docker build -t ${IMAGE_TAG?} -f Dockerfile.run .

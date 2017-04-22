@@ -1,8 +1,0 @@
-compose:
-  mongo:
-    image: mongo
-
-build:
-  image: kronkltd/jiksnu:dev
-  commands:
-    - script/cibuild

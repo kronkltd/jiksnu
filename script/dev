@@ -49,8 +49,9 @@ fi
 docker-compose up -d mongo
 
 docker rm -f jiksnu-dev || true
-docker pull ${DEV_IMAGE_TAG?} || script/build-docker
-
+docker pull ${DEV_IMAGE_TAG?} || \
+  ! [ -z "$(docker images -q ${DEV_IMAGE_TAG?})" ] || \
+    script/build-docker
 
 if [ -z "$@" ]; then
   ENTRYPOINT="script/entrypoint-dev"
