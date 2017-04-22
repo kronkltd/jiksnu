@@ -2,16 +2,18 @@ version: '2'
 services:
   mongo:
     image: mongo
+    ports:
+      - "27017:27017"
 
   web:
-    build: .
-    image: kronkltd/jiksnu
+    image: registry.kronkltd.net/kronkltd/jiksnu:feature-entrypoint
     depends_on:
       - mongo
     environment:
       JIKSNU_DB_NAME: "jiksnu_docker"
-      VIRTUAL_HOST: "jiksnu.docker"
-      DOMAIN: jiksnu.docker
+      DOMAIN: jiksnu.localtest.me
+    ports:
+      - "8080:8080"
 
 volumes:
   mongo-data:
