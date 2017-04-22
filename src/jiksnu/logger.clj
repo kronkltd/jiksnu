@@ -2,6 +2,7 @@
   (:require [clojure.data.json :as json]
             [jiksnu.sentry :as sentry]
             jiksnu.serializers
+            [puget.printer :as puget]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]))
 
@@ -28,6 +29,10 @@
 
 (def json-appender (-> (spit-appender {:fname "logs/timbre-spit.log"})
                        (assoc :output-fn json-formatter)))
+(def json-stdout-appender (-> (println-appender {:stream :auto})
+                              (assoc :output-fn json-formatter)))
+(def pretty-stdout-appender (-> (println-appender {:stream :auto})
+                                (assoc :output-fn (comp puget/cprint-str #(dissoc % :config)))))
 (def stdout-appender (println-appender {:stream :auto}))
 
 (defn set-logger
