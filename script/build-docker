@@ -46,5 +46,10 @@ docker pull ${IMAGE_TAG?} || \
 echo ">> Building New Image(s)"
 echo "- ${DEV_IMAGE_TAG?}"
 docker build -t ${DEV_IMAGE_TAG?} .
-# echo "- ${IMAGE_TAG?}"
-# docker build -t ${IMAGE_TAG?} -f Dockerfile.run .
+
+if [ -f "jiksnu.jar" ]; then
+  echo "- ${IMAGE_TAG?}"
+  docker build -t ${IMAGE_TAG?} -f Dockerfile.run .
+else
+  echo >&2 "Production jar not found. Skipping production build. Run script/compile"
+fi
