@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -ex
+
+export JIKSNU_DB_HOST=${JIKSNU_DB_HOST:-mongo}

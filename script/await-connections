@@ -5,6 +5,8 @@ set -e
 MAX_TRIES=${MAX_TRIES:-15}
 COUNTER=0
 
+. script/set-defaults
+
 echo ">> Waiting for external services"
 
 until script/check-connections || [ ${COUNTER} -eq ${MAX_TRIES} ]; do
