@@ -2,6 +2,13 @@ FROM openjdk:8
 
 MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 
+# Install dependencies
+RUN set -x \
+    && apt-get update \
+    && apt-get install -y \
+       netcat \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY jiksnu.jar /app/jiksnu.jar
 
 ### Set start script
