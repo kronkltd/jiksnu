@@ -12,4 +12,4 @@ RUN set -x \
 COPY jiksnu.jar /app/jiksnu.jar
 
 ### Set start script
-CMD [ 'script/entrypoint-run' ]
+ENTRYPOINT [ "script/entrypoint-run" ]
