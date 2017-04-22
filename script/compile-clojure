@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-lein compile
+lein install
+lein uberjar

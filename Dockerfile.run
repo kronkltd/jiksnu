@@ -1,0 +1,8 @@
+FROM openjdk:8
+
+MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
+
+COPY jiksnu.jar /app/jiksnu.jar
+
+### Set start script
+CMD [ 'script/entrypoint-run' ]
