@@ -7,6 +7,4 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-script/await-connections
-
-java -jar jiksnu.jar
+lein with-profile +uberjar run

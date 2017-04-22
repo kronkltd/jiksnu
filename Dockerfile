@@ -60,4 +60,4 @@ RUN script/bootstrap \
 USER ${user}
 
 ENTRYPOINT []
-CMD [ "script/entrypoint-run" ]
+CMD [ "script/entrypoint-run-dev" ]
