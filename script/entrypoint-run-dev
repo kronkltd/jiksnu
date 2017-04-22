@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# This is the entrypoint for docker run images.
+# This command shouldn't be run directly.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+lein with-profile +uberjar run
