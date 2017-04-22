@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Compile and package all artifacts
+
+set -e
+
+cd "$(dirname "$0")/.."
+
 script/compile-less
 script/compile-clojure
 script/compile-javascript

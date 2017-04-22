@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Ensure that all required dependencies are available.
-# This command is invoked by other top-level commands.
+# Ensure that all required operations that do not rely on external services have been performed.
+# This command is typically invoked by other top-level commands. (eg. update)
 
 set -e
 

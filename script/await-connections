@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Wait until all required external services have been initialized and are available
+
 set -e
 
 MAX_TRIES=${MAX_TRIES:-15}
@@ -14,4 +16,8 @@ until script/check-connections || [ ${COUNTER} -eq ${MAX_TRIES} ]; do
     sleep $(( COUNTER++ ))
 done
 
-echo ". conected"
+if [ ${COUNTER} -eq ${MAX_TRIES} ]; then
+  exit 1
+fi
+
+echo ". connected"

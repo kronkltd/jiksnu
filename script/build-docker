@@ -12,36 +12,9 @@ command -v docker >/dev/null 2>&1 || { \
     exit 1; \
 }
 
-DOCKER_REGISTRY_HOST=${DOCKER_REGISTRY_HOST:-registry.kronkltd.net}
+. script/set-defaults
 
-if [ -z "DOCKER_REGISTRY_HOST" ]; then
-  DOCKER_PREGISTRY_PREFIX=""
-else
-    DOCKER_REGISTRY_PREFIX="${DOCKER_REGISTRY_HOST}/"
-fi
-
-ORG=${ORG:-kronkltd}
-PROJECT=${PROJECT:-jiksnu}
-REPOSITORY_NAME=${REPOSITORY_NAME:-${ORG?}/${PROJECT?}}
-
-BRANCH_TAG=${BRANCH_TAG:-$(script/get-branch-tag)}
-IMAGE_TAG="${DOCKER_REGISTRY_PREFIX?}${REPOSITORY_NAME?}:${BRANCH_TAG?}"
-
-DEV_BRANCH_TAG=${DEV_BRANCH_TAG:-${BRANCH_TAG?}-dev}
-DEV_IMAGE_TAG="${DOCKER_REGISTRY_PREFIX?}${REPOSITORY_NAME?}:${DEV_BRANCH_TAG?}"
-
-LATEST_IMAGE_TAG="${DOCKER_REGISTRY_PREFIX?}${REPOSITORY_NAME?}:latest"
-LATEST_DEV_IMAGE_TAG="${DOCKER_REGISTRY_PREFIX?}${REPOSITORY_NAME?}:latest-dev"
-
-echo ">> Pulling Existing Image(s)"
-docker pull ${LATEST_IMAGE_TAG?} || \
-  echo >&2 "Could not find existing image (${LATEST_IMAGE_TAG?}). Building anyway."
-docker pull ${LATEST_DEV_IMAGE_TAG?} || \
-  echo >&2 "Could not find existing image (${LATEST_DEV_IMAGE_TAG?}). Building anyway."
-docker pull ${DEV_IMAGE_TAG?} || \
-  echo >&2 "Could not find existing image (${DEV_IMAGE_TAG?}). Building anyway."
-docker pull ${IMAGE_TAG?} || \
-  echo >&2 "Could not find existing image (${IMAGE_TAG?}). Building anyway."
+script/pull-docker
 
 echo ">> Building New Image(s)"
 echo "- ${DEV_IMAGE_TAG?}"

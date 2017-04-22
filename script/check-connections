@@ -12,10 +12,7 @@ command -v nc >/dev/null 2>&1 || { \
   exit 1; \
 }
 
-[ -z "${JIKSNU_DB_HOST}" ] && (\
-    >&2 echo "Environment variable JIKSNU_DB_HOST has not been defined"; \
-    exit 1)
+. script/set-defaults
 
-nc -z ${JIKSNU_DB_HOST?} 27017 2>/dev/null || \
-  (echo "Unable to contact MongoDB server at ${JIKSNU_DB_HOST?}"; \
-   exit 1)
+nc -z ${JIKSNU_DB_HOST?} ${JIKSNU_DB_PORT?} 2>/dev/null || \
+  (echo "Unable to contact MongoDB server at ${JIKSNU_DB_HOST?}:${JIKSNU_DB_PORT?}"; exit 1)

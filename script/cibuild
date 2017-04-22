@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
+# Reset environment and run tests
+
 set -e
 
-script/await-connections
+cd "$(dirname "$0")/.."
 
 script/setup
 export UPDATED=1

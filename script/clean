@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
+# Clean all previously compiled resources
+
 set -e
+
+cd "$(dirname "$0")/.."
 
 echo ">> Cleaning"
 lein clean

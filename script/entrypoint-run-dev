@@ -7,4 +7,6 @@ set -e
 
 cd "$(dirname "$0")/.."
 
+. script/set-defaults
+
 lein with-profile +uberjar run

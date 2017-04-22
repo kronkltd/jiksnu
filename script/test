@@ -2,7 +2,7 @@
 
 set -e
 
-script/setup
+script/update
 UPDATED=1
 script/test-clojure
 script/test-javascript

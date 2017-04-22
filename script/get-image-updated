@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Test if the deployed image for a branch is newer than the image installed locally.
+# This script will fail if the image is missing in either the remote repository or locally.
+# This script will fail if the local image is newer. (has been build via build-docker)
+
+set -e
+
+. script/set-defaults
+
+manifesturl="https://${DOCKER_REGISTRY_HOST?}/v2/${REPOSITORY_NAME?}/manifests/${DEV_BRANCH_TAG?}"
+
+# Get creation time of local image
+localtime=$(docker inspect ${DEV_IMAGE_TAG?} 2>/dev/null | \
+                 jq -r '.[0].Created // ""')
+# echo "Local Time: ${localtime}"
+
+# Get creation time of remote image
+remotetime=$(curl -q -X GET ${manifesturl} 2>/dev/null | \
+                    jq -r '[.history[]] | map(.v1Compatibility|fromjson|.created)|sort|reverse|.[0]' 2>/dev/null || echo "")
+# echo "Remote Time: ${remotetime}"
+
+if [ -z "${localtime}" ]; then
+  echo "Image '${DEV_IMAGE_TAG?}' does not exist locally"
+  exit 1;
+else
+    if [ -z "${remotetime}" ]; then
+      echo "Image '${DEV_IMAGE_TAG?}' has not been deployed to remote repository"
+      exit 0;
+    else
+        # parse date strings as integers
+        localint=$(date -d ${remotetime} +%s)
+        remoteint=$(date -d ${localtime} +%s)
+
+        # echo "localint: ${localint}"
+        # echo "remoteint: ${remoteint}"
+
+        # Test if remote image is newer
+        if [ "${remoteint}" -gt "${localint}" ]; then
+          echo "Image '${DEV_IMAGE_TAG?}' is newer in remote repository"
+          exit 1;
+        else
+            echo "The local '${DEV_IMAGE_TAG?}' image is the same or newer than the one deployed to the remote repository."
+            exit 0;
+        fi
+    fi
+fi
