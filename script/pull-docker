@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+. script/set-defaults
+
+echo ">> Pulling Existing Image(s)"
+docker pull ${LATEST_IMAGE_TAG?} || \
+  echo >&2 "Could not find existing image (${LATEST_IMAGE_TAG?}). Building anyway."
+docker pull ${LATEST_DEV_IMAGE_TAG?} || \
+  echo >&2 "Could not find existing image (${LATEST_DEV_IMAGE_TAG?}). Building anyway."
+docker pull ${DEV_IMAGE_TAG?} || \
+  echo >&2 "Could not find existing image (${DEV_IMAGE_TAG?}). Building anyway."
+docker pull ${IMAGE_TAG?} || \
+  echo >&2 "Could not find existing image (${IMAGE_TAG?}). Building anyway."

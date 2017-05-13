@@ -1,5 +1,41 @@
 #!/usr/bin/env bash
 
-set -ex
+# Expose default configuration as environment variables
 
+set -e
+
+# Load all config values from .env file
+if [ -f .env ]; then
+  while read LINE; do
+      LINE=$(echo "$LINE" | grep -v '^#' | cat)
+      if [ ! -z "$LINE" ]; then
+        export "$LINE"
+      fi
+  done < .env
+fi
+
+# Environment variables related to docker images
+export DOCKER_REGISTRY_HOST=${DOCKER_REGISTRY_HOST:-registry.kronkltd.net}
+
+if [ -z "DOCKER_REGISTRY_HOST" ]; then
+  export DOCKER_PREGISTRY_PREFIX=""
+else
+    export DOCKER_REGISTRY_PREFIX="${DOCKER_REGISTRY_HOST}/"
+fi
+
+export ORG=${ORG:-kronkltd}
+export PROJECT=${PROJECT:-jiksnu}
+export REPOSITORY_NAME=${REPOSITORY_NAME:-${ORG?}/${PROJECT?}}
+export REPOSITORY_PATH=${REPOSITORY_PATH:-${DOCKER_REGISTRY_PREFIX?}${REPOSITORY_NAME?}}
+export BRANCH_TAG=${BRANCH_TAG:-$(script/get-branch-tag)}
+export DEV_BRANCH_TAG=${DEV_BRANCH_TAG:-${BRANCH_TAG?}-dev}
+export IMAGE_TAG=${IMAGE_TAG:-${REPOSITORY_PATH?}:${BRANCH_TAG?}}
+export DEV_IMAGE_TAG=${DEV_IMAGE_TAG:-${REPOSITORY_PATH?}:${DEV_BRANCH_TAG?}}
+export LATEST_IMAGE_TAG=${LATEST_IMAGE_TAG:-${REPOSITORY_PATH?}:latest}
+export LATEST_DEV_IMAGE_TAG=${LATEST_DEV_IMAGE_TAG:-${LATEST_IMAGE_TAG?}-dev}
+export NETWORK_PREFIX=${NETWORK_PREFIX:-${PROJECT?}}
+export NETWORK_NAME=${NETWORK_NAME:-${NETWORK_PREFIX?}_default}
+
+# Database variables
 export JIKSNU_DB_HOST=${JIKSNU_DB_HOST:-mongo}
+export JIKSNU_DB_PORT=${JIKSNU_DB_PORT:-27017}

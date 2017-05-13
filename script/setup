@@ -2,6 +2,6 @@
 
 set -e
 
-script/check-connections
+script/await-connections
 
 script/update

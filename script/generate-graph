@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+outfile=target/scripts.dot
+
+echo "digraph G {" > $outfile
+
+files=script\/*
+
+for file in $files; do
+    scriptname=$(echo $file | sed 's/script\/\(.*\)/\1/' | sed 's/-/_/g')
+    mapfile -t matches < <( grep "^[^#]*script\/[[:alpha:]]\+" $file )
+
+    for match in "${matches[@]}"; do
+        target=$(echo $match | sed 's/^.*script\/\([[:alpha:]\-]\+\).*/\1/' | sed 's/-/_/g')
+        echo "    ${scriptname} -> ${target};" >> $outfile
+    done
+done
+
+echo "}" >> $outfile
+
+dot -Tpng -o target/scripts.png $outfile

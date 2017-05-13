@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Launch a docker container designed for development and attach to it.
+# This script will launch all required dependencies and shut them down when the entrypoint script exits.
+
 set -e
 
 cd "$(dirname "$0")/.."
@@ -9,71 +12,68 @@ command -v docker >/dev/null 2>&1 || { \
     exit 1; \
 }
 
-DOCKER_REGISTRY_HOST=${DOCKER_REGISTRY_HOST:-registry.kronkltd.net}
+. script/set-defaults
 
-if [ -z "DOCKER_REGISTRY_HOST" ]; then
-  DOCKER_PREGISTRY_PREFIX=""
-else
-    DOCKER_REGISTRY_PREFIX="${DOCKER_REGISTRY_HOST}/"
+CONTAINER_NAME=${CONTAINER_NAME:-${PROJECT?}-dev}
+
+passthroughVars=(
+    "JIKSNU_SENTRY_DSN"
+    "JIKSNU_SENTRY_DSN_CLIENT"
+    "JIKSNU_THEME_COLOR"
+    "NOTIFY_SEND_URL"
+)
+
+# Passthrough variables if defined
+for varName in "${passthroughVars[@]}"; do
+    varVal=$(echo "\$${varName}" | envsubst)
+
+    if [ ! -z "${varVal}" ]; then
+      CONTAINER_OPTIONS="${CONTAINER_OPTIONS} -e $varName=$varVal"
+    fi
+done
+
+# Stop pervious container, if running
+docker rm -f ${CONTAINER_NAME?} 2>/dev/null || true
+
+if ! script/get-image-updated; then
+  docker pull ${DEV_IMAGE_TAG?} || script/build-docker
 fi
 
-ORG=${ORG:-kronkltd}
-PROJECT=${PROJECT:-jiksnu}
-REPOSITORY_NAME=${REPOSITORY_NAME:-${ORG?}/${PROJECT?}}
-
-BRANCH_TAG=${BRANCH_TAG:-$(script/get-branch-tag)}
-IMAGE_TAG="${DOCKER_REGISTRY_PREFIX?}${REPOSITORY_NAME?}:${BRANCH_TAG?}"
-
-DEV_BRANCH_TAG=${DEV_BRANCH_TAG:-${BRANCH_TAG?}-dev}
-DEV_IMAGE_TAG="${DOCKER_REGISTRY_PREFIX?}${REPOSITORY_NAME?}:${DEV_BRANCH_TAG?}"
-
-INHERITED_OPTS=""
-
-# TODO: abstract this pattern
-if [ "${JIKSNU_SENTRY_DSN}" ]; then
-  INHERITED_OPTS="${INHERITED_OPTS} -e JIKSNU_SENTRY_DSN=${JIKSNU_SENTRY_DSN}"
-fi
-
-if [ "${JIKSNU_SENTRY_DSN_CLIENT}" ]; then
-  INHERITED_OPTS="${INHERITED_OPTS} -e JIKSNU_SENTRY_DSN_CLIENT=${JIKSNU_SENTRY_DSN_CLIENT}"
-fi
-
-if [ "${JIKSNU_THEME_COLOR}" ]; then
-  INHERITED_OPTS="${INHERITED_OPTS} -e JIKSNU_THEME_COLOR=${JIKSNU_THEME_COLOR}"
-fi
-
-if [ "${NOTIFY_SEND_URL}" ]; then
-  INHERITED_OPTS="${INHERITED_OPTS} -e NOTIFY_SEND_URL=${NOTIFY_SEND_URL}"
-fi
-
+# Run service dependencies
 docker-compose up -d mongo
 
-docker rm -f jiksnu-dev || true
-docker pull ${DEV_IMAGE_TAG?} || \
-  ! [ -z "$(docker images -q ${DEV_IMAGE_TAG?})" ] || \
-    script/build-docker
-
-if [ -z "$@" ]; then
+# If given a parameter, take that parameter as the name of a script and run that script.
+# Otherwise, run the default dev entrypoint
+if [ -z "$1" ]; then
   ENTRYPOINT="script/entrypoint-dev"
 else
     ENTRYPOINT="script/$@"
+
+    if ! command -v "script/$1" >/dev/null 2>&1; then
+      ENTRYPOINT=$@
+    fi
 fi
+
+# -e CISTE_LOGGER=jiksnu.logger \
+# -e DOMAIN=localhost \
+# -e JIKSNU_SCRIPT_DEBUG=true \
 
 docker run \
   --rm \
-  --name jiksnu-dev \
+  --name ${CONTAINER_NAME?} \
   -it \
-  --net jiksnu_default \
-  -v ${PWD}:/app \
-  -v jiksnu-dev-media:/data \
-  -e CISTE_LOGGER=jiksnu.logger \
-  -e DOMAIN=localhost \
-  -e JIKSNU_SCRIPT_DEBUG=true \
-  ${INHERITED_OPTS?} \
   -p 3449:3449 \
   -p 5060:5060 \
-  -p 8081:8080 \
   -p 7888:7888 \
+  -p 8081:8080 \
   -p 9876:9876 \
+  -v ${PWD}:/app \
+  -v jiksnu-dev-media:/data \
+  --net ${NETWORK_NAME?} \
+  ${CONTAINER_OPTIONS?} \
   ${DEV_IMAGE_TAG?} \
   ${ENTRYPOINT?}
+
+if [ -z "${PERSIST_SERVICE_DEPENDENCIES:-}" ]; then
+  docker-compose stop
+fi

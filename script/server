@@ -4,7 +4,7 @@ set -e
 
 printenv | sort
 
-script/check-connections
+script/await-connections
 
 script/update
 
