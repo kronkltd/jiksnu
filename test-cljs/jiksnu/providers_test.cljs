@@ -40,6 +40,15 @@
 
     (js/describe "app"
       (fn []
+        (js/describe ".connect"
+          (fn []
+            (js/it "should open a websocket connection"
+              (fn []
+                (let [spy (.. (js/spyOn app "send")
+                              -and
+                              (returnValue "foo"))])
+                (timbre/spy (.connect app))))))
+
         (js/describe ".invokeAction"
           (fn []
             (js/it "sends a message"
