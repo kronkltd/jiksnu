@@ -29,6 +29,13 @@
   [method url data headers params]
   #js [409 nil #js {} "Unauthenticated"])
 
+(defn activity-submit-response
+  [activity-id]
+  (fn [method url data headers params]
+    (let [body #js {:_id activity-id}
+          headers #js {"Content-Type" "application/json"}]
+      #js [200 body headers "OK"])))
+
 (defn update-auth-data!
   ([]
    (set! auth-data #js {:user username :domain domain})
@@ -210,13 +217,16 @@
 
     (js/describe "post"
       (fn []
-        (js/it "should submit the activity"
+        (js/it "should return the id of the posted entry"
           (fn []
-            (-> $httpBackend
-                (.expectPOST #"/model/activities")
-                (.respond activity-submit-response))
-
-            (let [activity #js {}
+            (let [activity-id "58cd9980f8dfa1002f2e1642"
+                  activity #js {:_id activity-id :content "foo"}
                   pictures nil
                   p (methods/post $http activity pictures)]
-              (-> (js/expect p) (.toBeResolved)))))))))
+
+              (-> $httpBackend
+                  (.expectPOST #"/model/activities")
+                  (.respond (activity-submit-response activity-id)))
+
+              (.$digest $rootScope)
+              (.. (js/expect p) (toBeResolvedWith activity-id)))))))))

@@ -45,9 +45,12 @@
       (.append form-data "pictures[]" picture))
 
     (timbre/infof "Posting Activity - %s" (js/JSON.stringify activity))
-    (.post $http path form-data
-           #js {:transformRequest (.-identity js/angular)
-                :headers #js {"Content-Type" js/undefined}})))
+
+    (-> $http
+        (.post path form-data
+               #js {:transformRequest js/angular.identity
+                    :headers #js {"Content-Type" js/undefined}})
+        (.then (fn [response] (some-> response .-data .-_id ))))))
 
 (defn delete-stream
   "Delete the stream matching the id"

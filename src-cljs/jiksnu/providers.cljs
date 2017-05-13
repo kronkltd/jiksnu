@@ -92,6 +92,10 @@
 
   (logout [app])
 
+  (post [app activity & [pictures]]
+    (let [$http (.inject app "$http")]
+      (methods/post $http activity pictures)))
+
   (register [app params]
     (let [$http (.inject app "$http")]
       (methods/register $http params)))
