@@ -1,5 +1,6 @@
 (ns jiksnu.provider-methods-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
+            jiksnu.main
             [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))
 
@@ -16,10 +17,6 @@
 (declare auth-data)
 (declare auth-id)
 (declare auth-user)
-
-(defn activity-submit-response
-  [method url data headers params]
-  #js [200 nil data "OK"])
 
 (defn valid-login-response
   [method url data headers params]
@@ -171,7 +168,7 @@
                         p (methods/following? $q Users data target)]
                     (.. (js/expect p) (toBeRejected)))))))
 
-          (js/xdescribe "when the user is following the target"
+          (js/describe "when the user is following the target"
             (fn []
               (js/it "should return truthy"
                 (fn []

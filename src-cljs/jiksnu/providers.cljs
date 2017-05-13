@@ -69,6 +69,7 @@
     (let [$q (.inject app "$q")
           Users (.inject app "Users")
           data app.data]
+      (timbre/debugf "app.data: %s" (js/JSON.stringify data))
       (methods/get-user $q Users data)))
 
   (get-user-id [app]
@@ -92,7 +93,7 @@
 
   (logout [app])
 
-  (post [app activity & [pictures]]
+  (post [app activity pictures]
     (let [$http (.inject app "$http")]
       (methods/post $http activity pictures)))
 
