@@ -5,5 +5,7 @@ set -e
 script/update
 UPDATED=1
 
+script/compile-javascript
+
 echo ">> Running Karma Tests"
 node_modules/.bin/karma start --single-run
