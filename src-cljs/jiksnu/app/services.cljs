@@ -1,5 +1,5 @@
 (ns jiksnu.app.services
-  (:require [jiksnu.app :refer [jiksnu]]
+  (:require [jiksnu.app :as a]
             [jiksnu.registry :as registry]))
 
 (defn fetch-page
@@ -28,5 +28,5 @@
   [$http]
   #js {:fetch #(fetch-sub-page $http %1 %2)})
 
-(.service jiksnu "pageService" #js ["$http" pageService])
-(.service jiksnu "subpageService" #js ["$http" subpageService])
+(.service a/jiksnu "pageService" #js ["$http" pageService])
+(.service a/jiksnu "subpageService" #js ["$http" subpageService])
