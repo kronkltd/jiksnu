@@ -101,13 +101,21 @@
   "Is the currently authenticated user following the target user"
   [$q Users data target]
   (if target
-    (-> (get-user $q Users data)
-        (.then (fn [user]
-                 (timbre/debugf "User: %s" user)
-                 (let [response (and user target (= (.-_id user) (.-_id target)))]
-                   (timbre/debugf "following?: %s" response)
-                   response))))
-    ($q (fn [_ reject] (reject)))))
+       (-> (get-user $q Users data)
+           (.then (fn [user]
+                    (if user
+                      (if (= (.-_id user) (.-_id target))
+                       (do
+                         (timbre/info "target is user")
+                         nil)
+                       (do
+                         (timbre/info "TODO: Do check")
+                         true))
+                      (do
+                        (timbre/info "Not authenticated")
+                        nil)
+                      ))))
+       ($q (fn [_ reject] (reject)))))
 
 (defn get-websocket-url
   "Determine the websocket connection url for this app"

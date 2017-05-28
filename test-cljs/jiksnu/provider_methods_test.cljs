@@ -67,11 +67,7 @@
                (set! $httpParamSerializerJQLike _$httpParamSerializerJQLike_)
                (set! $q _$q_)
                (set! $rootScope _$rootScope_)
-               (set! Users _Users_)
-               (doto $httpBackend
-                 (.. (whenGET #"/templates/.*") (respond "<div></div>"))
-                 (.. (whenGET #"/model/.*")     (respond #js {}))
-                 (.. (whenGET "/status")        (respond #js {}))))])))
+               (set! Users _Users_))])))
 
     (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
 
@@ -130,6 +126,9 @@
                       data #js {:user username :domain domain}
                       id (str "acct:" username "@" domain)
                       user #js {:_id id}]
+                  (-> $httpBackend
+                      (.expectGET (str "/model/users/" id))
+                      (.respond user))
                   (.. (js/spyOn Users "find") -and (returnValue ($q #(% user))))
                   (let [p (methods/get-user $q Users data)]
                     (.$digest $rootScope)
@@ -161,7 +160,8 @@
       (fn []
         (let [username "foo"
               domain "example.com"
-              data #js {:user username :domain domain}]
+              data #js {:user username :domain domain}
+              user-id (str "acct:" username "@" domain)]
 
           (js/describe "when the is nil"
             (fn []
@@ -175,10 +175,11 @@
             (fn []
               (js/it "should return truthy"
                 (fn []
-
+                  (-> $httpBackend
+                      (.expectGET (str "/model/users/" user-id))
+                      (.respond 200 #js {:_id user-id}))
                   (let [target #js {:_id "acct:bar@example.com"}
                         p (methods/following? $q Users data target)]
-
                     (.. (js/expect p) (toBeResolvedWith true)))))))
 
           (js/describe "when the user is not following the target"

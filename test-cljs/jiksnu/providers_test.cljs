@@ -98,12 +98,14 @@
                     (let [Users (.inject app "Users")
                           id "acct:foo@example.com"
                           user #js {:_id id}]
-                      (update-auth-data! "foo" "bar")
+                      (update-auth-data! "foo" "example.com")
                       (set! app.data auth-data)
+                      (-> $httpBackend
+                          (.expectGET (str "/model/users/" id))
+                          (.respond user))
                       (let [p (.getUser app)]
                         (.$digest $rootScope)
-                        (.. (js/expect p) (toBeResolvedWith user))
-                        (.. (js/expect (.-find Users)) (toHaveBeenCalledWith id))))))))))
+                        (.. (js/expect p) (toBeResolvedWith user))))))))))
 
         (js/describe ".invokeAction"
           (fn []
