@@ -61,6 +61,7 @@
 
     (js/it "does the needful"
       (fn []
-        (let [collection-ref (Users DS subpageService)]
-          (let [response (.find collection-ref nil)]
-            (timbre/infof "response: %s" response)))))))
+        (let [id "acct:test@example.com"
+              user (.createInstance Users #js {:_id id})]
+          (let [user2 (.find Users id)]
+            (timbre/infof "user2: %s" (js/JSON.stringify user2))))))))
