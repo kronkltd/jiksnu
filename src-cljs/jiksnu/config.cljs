@@ -2,7 +2,8 @@
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.helpers :as helpers]
             jiksnu.providers
-            [jiksnu.registry :as registry]))
+            [jiksnu.registry :as registry]
+            [taoensso.timbre :as timbre]))
 
 (defn jiksnu-config
   [$stateProvider $urlRouterProvider $locationProvider appProvider DSProvider
