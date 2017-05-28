@@ -211,11 +211,6 @@
                  (set! (.-user app) nil)
                  (.fetchStatus app))))))
 
-(defn ping
-  "Send a ping command"
-  [connection]
-  (p/send connection "ping"))
-
 (defn refresh
   "Send a signal for collections to refresh themselves"
   [app]
@@ -239,6 +234,11 @@
   [connection command]
   (timbre/debugf "Sending command: %s" command)
   (.send connection command))
+
+(defn ping
+  "Send a ping command"
+  [connection]
+  (send connection "ping"))
 
 (defn unfollow
   "Remove a subscription to target"
