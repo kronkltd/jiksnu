@@ -134,7 +134,7 @@
 
                   (let [p (methods/get-user $q Users auth-data)]
                     (.$digest $rootScope)
-                    (.. (js/expect p) (toBeResolvedWith auth-user))
+                    (-> (js/expect p) (.toBeResolvedWith auth-user))
                     (.. (js/expect (.-find Users)) (toHaveBeenCalledWith auth-id))))))))))
 
     (js/describe "fetch-status"

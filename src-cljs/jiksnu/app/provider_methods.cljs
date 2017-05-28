@@ -92,7 +92,7 @@
     (timbre/debugf "getting user: %s" id)
     (if id
       (.find Users id)
-      ($q #(% nil)))))
+      ($q (fn [resolve reject] (resolve "foo"))))))
 
 (defn following?
   "Is the currently authenticated user following the target user"
