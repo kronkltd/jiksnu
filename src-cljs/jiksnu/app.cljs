@@ -4,7 +4,9 @@
             [jiksnu.modules.core.model :as model]
             [taoensso.timbre :as timbre]))
 
-(defonce jiksnu (loader/initialize-module!))
+(defonce models  (atom {}))
+
+(defonce jiksnu (loader/initialize-module! plugins))
 
 (.provider jiksnu "app" providers/app)
 
