@@ -116,7 +116,6 @@
 (defn app
   []
   (let [f (fn [$injector]
-            (timbre/debug "creating app service")
             (let [app (AppProvider. (.-get $injector))]
               (doseq [[n f] app-methods]
                 (aset app (name n) (partial f app)))
