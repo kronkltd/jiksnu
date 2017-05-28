@@ -162,6 +162,7 @@
         (let [username "foo"
               domain "example.com"
               data #js {:user username :domain domain}]
+
           (js/describe "when the is nil"
             (fn []
               (js/it "should be rejected"
@@ -174,6 +175,7 @@
             (fn []
               (js/it "should return truthy"
                 (fn []
+
                   (let [target #js {:_id "acct:bar@example.com"}
                         p (methods/following? $q Users data target)]
 
