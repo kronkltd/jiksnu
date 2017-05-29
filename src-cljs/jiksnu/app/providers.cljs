@@ -84,7 +84,7 @@
   (get-user [app]
     (let [$q    (.inject app "$q")
           Users (.inject app "Users")
-          data app.data]
+          data  app.data]
       (timbre/debugf "app.data: %s" (js/JSON.stringify data))
       (methods/get-user $q Users data)))
 
