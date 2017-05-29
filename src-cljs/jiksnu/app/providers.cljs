@@ -10,7 +10,7 @@
 (def app-methods
   {:connect       methods/connect
    :fetchStatus   p/fetch-status
-   :follow        methods/follow
+   :follow        p/follow
    :getUserId     p/get-user-id
    :go            p/go
    :handleMessage methods/handle-message
