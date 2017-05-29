@@ -21,6 +21,7 @@
 (declare auth-data)
 (declare auth-id)
 (declare auth-user)
+(declare Users)
 
 (defn update-auth-data!
   ([]
@@ -43,15 +44,17 @@
     (js/beforeEach
      (fn []
        (js/inject
-        #js ["app" "$httpBackend" "$q" "$rootScope"
-             (fn [_app_ _$httpBackend_ _$q_ _$rootScope_]
+        #js ["app" "$httpBackend" "$q" "$rootScope" "Users"
+             (fn [_app_ _$httpBackend_ _$q_ _$rootScope_
+                  _Users_]
                (set! app _app_)
                (set! $httpBackend _$httpBackend_)
                (set! $q _$q_)
                (set! $rootScope _$rootScope_)
+               (set! Users _Users_)
                (doto $httpBackend
                  (.. (whenGET #"/templates/.*") (respond "<div></div>"))
-                 (.. (whenGET #"/model/.*")     (respond "{}"))))])))
+                 #_(.. (whenGET #"/model/.*")     (respond "{}"))))])))
 
     (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
 
