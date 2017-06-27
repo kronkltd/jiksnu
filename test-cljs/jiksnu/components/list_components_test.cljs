@@ -1,7 +1,5 @@
 (ns jiksnu.components.list-components-test
-  (:require jiksnu.main
-            jiksnu.factories
-            jiksnu.components.list-components
+  (:require jiksnu.components.list-components
             [taoensso.timbre :as timbre]))
 
 (timbre/set-level! :debug)

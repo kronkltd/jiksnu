@@ -33,7 +33,7 @@
         websocket-url (p/get-websocket-url app)
         connection ($websocket websocket-url)]
     (doto connection
-      (.onMessage (.-handleMessage app))
+      (.onMessage (partial p/handle-message app))
       (.onOpen (fn []
                  (timbre/debug "Websocket connection opened")))
       (.onClose (fn []
@@ -51,6 +51,15 @@
     (let [$http (.inject app "$http")]
       (methods/add-stream $http stream-name)))
 
+  (delete-stream [app target-id]
+    (let [$http (.inject app "$http")]
+      (methods/delete-stream $http target-id)))
+
+  (fetch-status [app]
+    (let [$http (.inject app "$http")]
+      (-> (methods/fetch-status $http)
+          (.then (fn [data] (set! (.-data app) data))))))
+
   (follow [app target]
     (let [$q (.inject app "$q")
           $http (.inject app "$http")]
@@ -60,6 +69,7 @@
     (let [$q (.inject app "$q")
           Users (.inject app "Users")
           data app.data]
+      (timbre/debugf "app.data: %s" (js/JSON.stringify data))
       (methods/get-user $q Users data)))
 
   (get-user-id [app]
@@ -73,11 +83,19 @@
       (let [$state (.inject app "$state")]
         (methods/go $state state)))
 
+  (handle-message [app message])
+
   (login [app username password]
     (let [$http (.inject app "$http")
           $httpParamSerializerJQLike (.inject app "$httpParamSerializerJQLike")]
       (-> (methods/login $http $httpParamSerializerJQLike username password)
           (.then (fn [] (.fetchStatus app))))))
+
+  (logout [app])
+
+  (post [app activity pictures]
+    (let [$http (.inject app "$http")]
+      (methods/post $http activity pictures)))
 
   (register [app params]
     (let [$http (.inject app "$http")]
@@ -98,7 +116,6 @@
 (defn app
   []
   (let [f (fn [$injector]
-            (timbre/debug "creating app service")
             (let [app (AppProvider. (.-get $injector))]
               (doseq [[n f] app-methods]
                 (aset app (name n) (partial f app)))

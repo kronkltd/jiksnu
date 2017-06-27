@@ -18,24 +18,13 @@
   [app]
   (.send app "connect"))
 
-(defn delete-stream
-  "Delete the stream matching the id"
-  [app id]
-  (timbre/info "Deleting stream" id)
-  (let [activity #js {:action "delete"
-                      :object #js {:id id}}]
-    (.post app activity)))
-
 (defn fetch-status
   "Fetch the status from the server"
-  [app]
+  [$http]
   (timbre/debug "fetching app status")
-  (.. app
-      (inject "$http")
-      (get "/status")
-      (then (fn [response]
-              (timbre/debug "setting app status")
-              (set! (.-data app) (.-data response))))))
+  (-> $http
+      (.get "/status")
+      (.then (fn [response] (.-data response)))))
 
 (defn post
   "Create a new activity"
@@ -56,9 +45,20 @@
       (.append form-data "pictures[]" picture))
 
     (timbre/infof "Posting Activity - %s" (js/JSON.stringify activity))
-    (.post $http path form-data
-           #js {:transformRequest (.-identity js/angular)
-                :headers #js {"Content-Type" js/undefined}})))
+
+    (-> $http
+        (.post path form-data
+               #js {:transformRequest js/angular.identity
+                    :headers #js {"Content-Type" js/undefined}})
+        (.then (fn [response] (some-> response .-data .-_id ))))))
+
+(defn delete-stream
+  "Delete the stream matching the id"
+  [$http target-id]
+  (timbre/info "Deleting stream" target-id)
+  (let [activity #js {:action "delete"
+                      :object #js {:id target-id}}]
+    (post $http activity)))
 
 (defn follow
   "Follow the target user"
@@ -70,15 +70,6 @@
       (post $http activity))
     (do (timbre/warn "No target")
         ($q (fn [_ reject] (reject))))))
-
-(defn following?
-  "Is the currently authenticated user following the target user"
-  [app target]
-  (.. app getUser
-      (then (fn [user]
-              (let [response (= (.-_id user) (.-_id target))]
-                (timbre/debugf "following?: %s" response)
-                response)))))
 
 (defn get-user-id
   "Returns the authenticated user id from app data"
@@ -105,6 +96,26 @@
     (if id
       (.find Users id)
       ($q #(% nil)))))
+
+(defn following?
+  "Is the currently authenticated user following the target user"
+  [$q Users data target]
+  (if target
+       (-> (get-user $q Users data)
+           (.then (fn [user]
+                    (if user
+                      (if (= (.-_id user) (.-_id target))
+                       (do
+                         (timbre/info "target is user")
+                         nil)
+                       (do
+                         (timbre/info "TODO: Do check")
+                         true))
+                      (do
+                        (timbre/info "Not authenticated")
+                        nil)
+                      ))))
+       ($q (fn [_ reject] (reject)))))
 
 (defn get-websocket-url
   "Determine the websocket connection url for this app"
@@ -208,11 +219,6 @@
                  (set! (.-user app) nil)
                  (.fetchStatus app))))))
 
-(defn ping
-  "Send a ping command"
-  [app]
-  (.send app "ping"))
-
 (defn refresh
   "Send a signal for collections to refresh themselves"
   [app]
@@ -236,6 +242,11 @@
   [connection command]
   (timbre/debugf "Sending command: %s" command)
   (.send connection command))
+
+(defn ping
+  "Send a ping command"
+  [connection]
+  (send connection "ping"))
 
 (defn unfollow
   "Remove a subscription to target"

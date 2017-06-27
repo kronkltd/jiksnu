@@ -1,5 +1,6 @@
 (ns jiksnu.model
-  (:require [inflections.core :as inf]))
+  (:require [inflections.core :as inf]
+            [jiksnu.app :refer [jiksnu]]))
 
 (defn deserializer
   "Parses a page response into a js-data format"
@@ -23,6 +24,7 @@
 (defn Albums           [DS] (define-resource DS "album"))
 (defn Clients          [DS] (define-resource DS "client"))
 (defn Domains          [DS] (define-resource DS "domain"))
+(defn FeedSources      [DS] (define-resource DS "feed-source"))
 (defn Followings       [DS] (define-resource DS "following"))
 (defn Groups           [DS] (define-resource DS "group"))
 (defn GroupMemberships [DS] (define-resource DS "group-membership"))
@@ -31,7 +33,9 @@
 (defn Pages            [DS] (define-resource DS "page"))
 (defn Pictures         [DS] (define-resource DS "picture"))
 (defn RequestTokens    [DS] (define-resource DS "request-token"))
+(defn Resources        [DS] (define-resource DS "resources"))
 (defn Streams          [DS] (define-resource DS "stream"))
+(defn Services         [DS] (define-resource DS "services"))
 (defn Subscriptions    [DS] (define-resource DS "subscription"))
 
 (defn Conversations
@@ -60,3 +64,24 @@
       :getFollowing (fn [] (this-as item (.fetch subpageService item "following")))
       :getGroups    (fn [] (this-as item (.fetch subpageService item "groups")))
       :getStreams   (fn [] (this-as item (.fetch subpageService item "streams")))}})))
+
+(-> jiksnu
+    (.factory "Activities"       #js ["DS" Activities])
+    (.factory "Albums"           #js ["DS" Albums])
+    (.factory "Clients"          #js ["DS" Clients])
+    (.factory "Conversations"    #js ["DS" "subpageService" Conversations])
+    (.factory "Domains"          #js ["DS" Domains])
+    (.factory "FeedSources"      #js ["DS" FeedSources])
+    (.factory "Followings"       #js ["DS" Followings])
+    (.factory "Groups"           #js ["DS" Groups])
+    (.factory "GroupMemberships" #js ["DS" GroupMemberships])
+    (.factory "Likes"            #js ["DS" Likes])
+    (.factory "Notifications"    #js ["DS" Notifications])
+    (.factory "Pages"            #js ["DS" Pages])
+    (.factory "Pictures"         #js ["DS" Pictures])
+    (.factory "RequestTokens"    #js ["DS" RequestTokens])
+    (.factory "Resources"        #js ["DS" Resources])
+    (.factory "Services"         #js ["DS" Services])
+    (.factory "Streams"          #js ["DS" Streams])
+    (.factory "Subscriptions"    #js ["DS" Subscriptions])
+    (.factory "Users"            #js ["DS" "subpageService" Users]))

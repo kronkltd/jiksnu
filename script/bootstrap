@@ -9,4 +9,3 @@ cd "$(dirname "$0")/.."
 
 script/gather-dependencies
 script/update-webdriver
-script/compile

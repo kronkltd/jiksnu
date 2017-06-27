@@ -1,5 +1,8 @@
 (ns jiksnu.provider-methods-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
+            jiksnu.config
+            jiksnu.main
+            jiksnu.model
             [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))
 
@@ -17,10 +20,6 @@
 (declare auth-id)
 (declare auth-user)
 
-(defn activity-submit-response
-  [method url data headers params]
-  #js [200 nil data "OK"])
-
 (defn valid-login-response
   [method url data headers params]
   #js [204 nil #js {} "No-Content"])
@@ -28,6 +27,13 @@
 (defn invalid-login-response
   [method url data headers params]
   #js [409 nil #js {} "Unauthenticated"])
+
+(defn activity-submit-response
+  [activity-id]
+  (fn [method url data headers params]
+    (let [body #js {:_id activity-id}
+          headers #js {"Content-Type" "application/json"}]
+      #js [200 body headers "OK"])))
 
 (defn update-auth-data!
   ([]
@@ -61,10 +67,7 @@
                (set! $httpParamSerializerJQLike _$httpParamSerializerJQLike_)
                (set! $q _$q_)
                (set! $rootScope _$rootScope_)
-               (set! Users _Users_)
-               (doto $httpBackend
-                 (.. (whenGET #"/templates/.*") (respond "<div></div>"))
-                 (.. (whenGET #"/model/.*")     (respond "{}"))))])))
+               (set! Users _Users_))])))
 
     (js/afterEach (fn [] (.verifyNoOutstandingRequest $httpBackend)))
 
@@ -90,6 +93,18 @@
                           (returnValue "foo"))])
             (timbre/spy (.connect app))))))
 
+    (js/describe "delete-stream"
+      (fn []
+        (js/it "resolves"
+          (fn []
+            (doto $httpBackend
+              (.. (expectPOST "/model/activities") (respond valid-login-response)))
+
+            (let [target-id "foo"
+                  p (methods/delete-stream $http target-id)]
+              (.$digest $rootScope)
+              (.. (js/expect p) (toBeResolved)))))))
+
     (js/describe "get-user"
       (fn []
         (js/describe "when not authenticated"
@@ -111,11 +126,24 @@
                       data #js {:user username :domain domain}
                       id (str "acct:" username "@" domain)
                       user #js {:_id id}]
+                  (-> $httpBackend
+                      (.expectGET (str "/model/users/" id))
+                      (.respond user))
                   (.. (js/spyOn Users "find") -and (returnValue ($q #(% user))))
                   (let [p (methods/get-user $q Users data)]
                     (.$digest $rootScope)
                     (.. (js/expect p) (toBeResolvedWith user))
                     (.. (js/expect (.-find Users)) (toHaveBeenCalledWith id))))))))))
+
+    (js/describe "fetch-status"
+      (fn []
+        (js/it "Should request the status page"
+          (fn []
+            (let [data #js {}]
+              (.. $httpBackend (expectGET "/status") (respond data))
+              (let [p (methods/fetch-status $http)]
+                (.$digest $rootScope)
+                (.. (js/expect p) (toBeResolved data))))))))
 
     (js/describe "follow"
       (fn []
@@ -128,6 +156,35 @@
                   (.$digest $rootScope)
                   (.. (js/expect p) (toBeRejected)))))))))
 
+    (js/describe "following?"
+      (fn []
+        (let [username "foo"
+              domain "example.com"
+              data #js {:user username :domain domain}
+              user-id (str "acct:" username "@" domain)]
+
+          (js/describe "when the is nil"
+            (fn []
+              (js/it "should be rejected"
+                (fn []
+                  (let [target nil
+                        p (methods/following? $q Users data target)]
+                    (.. (js/expect p) (toBeRejected)))))))
+
+          (js/describe "when the user is following the target"
+            (fn []
+              (js/it "should return truthy"
+                (fn []
+                  (-> $httpBackend
+                      (.expectGET (str "/model/users/" user-id))
+                      (.respond 200 #js {:_id user-id}))
+                  (let [target #js {:_id "acct:bar@example.com"}
+                        p (methods/following? $q Users data target)]
+                    (.. (js/expect p) (toBeResolvedWith true)))))))
+
+          (js/describe "when the user is not following the target"
+            (fn [])))))
+
     (js/describe "login"
       (fn []
         (js/describe "with valid credentials"
@@ -137,9 +194,11 @@
                 (doto $httpBackend
                   (.. (expectPOST "/main/login") (respond valid-login-response))
                   (.. (whenGET "/status")        (respond #js {})))
-                (let [username "test"
-                      password "test"
-                      p (methods/login $http $httpParamSerializerJQLike username password)]
+                (let [auth-username "test"
+                      auth-password "test"
+                      p (methods/login
+                         $http $httpParamSerializerJQLike
+                         auth-username auth-password)]
                   (.flush $httpBackend)
                   (.$digest $rootScope)
                   (.. (js/expect p) (toBeResolvedWith true)))))))
@@ -150,22 +209,26 @@
               (fn []
                 (doto $httpBackend
                   (.. (expectPOST "/main/login") (respond invalid-login-response)))
-                (let [username "test"
-                      password "test"
-                      p (methods/login $http $httpParamSerializerJQLike username password)]
+                (let [auth-username "test"
+                      auth-password "test"
+                      p (methods/login $http $httpParamSerializerJQLike
+                                       auth-username auth-password)]
                   (.flush $httpBackend)
                   (.$digest $rootScope)
                   (.. (js/expect p) (toBeRejected)))))))))
 
     (js/describe "post"
       (fn []
-        (js/it "should submit the activity"
+        (js/it "should return the id of the posted entry"
           (fn []
-            (-> $httpBackend
-                (.expectPOST #"/model/activities")
-                (.respond activity-submit-response))
-
-            (let [activity #js {}
+            (let [activity-id "58cd9980f8dfa1002f2e1642"
+                  activity #js {:_id activity-id :content "foo"}
                   pictures nil
                   p (methods/post $http activity pictures)]
-              (-> (js/expect p) (.toBeResolved)))))))))
+
+              (-> $httpBackend
+                  (.expectPOST #"/model/activities")
+                  (.respond (activity-submit-response activity-id)))
+
+              (.$digest $rootScope)
+              (.. (js/expect p) (toBeResolvedWith activity-id)))))))))

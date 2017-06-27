@@ -23,6 +23,8 @@ passthroughVars=(
     "NOTIFY_SEND_URL"
 )
 
+CONTAINER_OPTIONS="${CONTAINER_OPTIONS}"
+
 # Passthrough variables if defined
 for varName in "${passthroughVars[@]}"; do
     varVal=$(echo "\$${varName}" | envsubst)
