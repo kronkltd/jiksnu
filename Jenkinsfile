@@ -45,6 +45,8 @@ node('docker') {
           mongoContainer ->
             devImage.inside(["--link ${mongoContainer.id}:mongo",
                              "--name ${env.BUILD_TAG}-dev"].join(' ')) {
+              sh 'script/update'
+              sh 'script/compile'
               sh 'script/cibuild'
             }
         }
