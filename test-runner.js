@@ -1,3 +1,5 @@
+/*global goog*/
+
 goog.require("jiksnu.app_test");
 goog.require("jiksnu.components.form_components_test");
 goog.require("jiksnu.components.list_components_test");
