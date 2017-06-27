@@ -14,7 +14,7 @@
                                org.clojure/tools.reader
                                org.clojure/clojurescript
                                xerces/xercesImpl]]
-                 [ciste/ciste-incubator "0.1.0-SNAPSHOT" :exclusions [ciste ciste/ciste-core]]
+                 [ciste/ciste-incubator "0.1.0-20170109.012825-2" :exclusions [ciste ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [clj-time "0.13.0"]
                  [clj-http "3.5.0"]
@@ -31,8 +31,8 @@
                  [liberator "0.14.1"]
                  [manifold "0.1.6"]
                  [mvxcvi/puget "1.0.1"]
-                 [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
-                 [net.kronkltd/octohipster "0.3.0-SNAPSHOT"
+                 [net.kronkltd/clj-gravatar "0.1.0-20120321.005702-1"]
+                 [net.kronkltd/octohipster "0.3.0-20151001.045924-2"
                   :exclusions [inflections]]
                  [org.clojure/clojure "1.9.0-alpha13"]
                  [org.clojure/clojurescript "1.9.521"]
