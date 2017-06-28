@@ -1,7 +1,6 @@
 (ns jiksnu.app.config
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.app.helpers :as helpers]
-            jiksnu.app.providers
             [jiksnu.registry :as registry]
             [taoensso.timbre :as timbre]))
 

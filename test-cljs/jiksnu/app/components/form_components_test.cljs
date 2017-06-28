@@ -1,6 +1,5 @@
 (ns jiksnu.app.components.form-components-test
   (:require jiksnu.app.components.form-components
-            jiksnu.main
             [taoensso.timbre :as timbre]))
 
 (timbre/set-level! :debug)

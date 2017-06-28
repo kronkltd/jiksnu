@@ -1,10 +1,11 @@
 (ns jiksnu.app.providers
   (:require [inflections.core :as inf]
-            [jiksnu.app :refer [jiksnu models]]
             [jiksnu.app.protocols :refer [AppProtocol] :as p]
             [jiksnu.app.provider-methods :as methods]
             [jiksnu.registry :as registry]
             [taoensso.timbre :as timbre]))
+
+(defonce models  (atom {}))
 
 (def app-methods
   {:connect       methods/connect
@@ -150,5 +151,3 @@
               ;; return the app
               app))]
     (clj->js {:$get ["$injector" f]})))
-
-(.provider jiksnu "app" app)

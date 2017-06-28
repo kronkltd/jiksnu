@@ -6,8 +6,6 @@
             [jiksnu.registry :as registry]
             [taoensso.timbre :as timbre]))
 
-(.controller jiksnu "AppController" #js [(fn [])])
-
 (defn AsModelController
   [$scope DS]
   (let [collection-name $scope.model]
