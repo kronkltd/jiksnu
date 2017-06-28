@@ -75,14 +75,14 @@
           (.then (fn [data] (set! (.-data app) data))))))
 
   (follow [app target]
-    (let [$q (.inject app "$q")
+    (let [$q    (.inject app "$q")
           $http (.inject app "$http")]
       (methods/follow $q $http target)))
 
   (following? [app target])
 
   (get-user [app]
-    (let [$q (.inject app "$q")
+    (let [$q    (.inject app "$q")
           Users (.inject app "Users")
           data app.data]
       (timbre/debugf "app.data: %s" (js/JSON.stringify data))
