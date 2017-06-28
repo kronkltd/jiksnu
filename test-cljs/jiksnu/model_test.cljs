@@ -39,14 +39,14 @@
                (set! Users _Users_)
                #_(doto $httpBackend
                  (.. (whenGET #"/templates/.*") (respond "<div></div>"))
-                 (.. (whenGET #"/model/.*")     (respond #js {}))
                  (.. (whenGET "/status")        (respond #js {}))))])))
 
     (js/it "does the needful"
       (fn []
-        (let [id "acct:test@example.com"]
-
-          (.createInstance Users #js {:_id id})
-
-          (let [user2 (.find Users id)]
-            (timbre/infof "user2: %s" (js/JSON.stringify user2))))))))
+        (let [id "acct:test@example.com"
+              user (.createInstance Users #js {:_id id})]
+          (-> (.expectGET $httpBackend #"/model/.*")
+              (.respond user))
+          (let [p (.find Users id)]
+            (.$digest $rootScope)
+            (-> (js/expect p) (.toBeResolvedWith user))))))))
