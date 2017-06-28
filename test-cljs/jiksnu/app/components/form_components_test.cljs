@@ -47,4 +47,5 @@
               (js/it "Should send the form"
                 (fn []
                   (@$controller controller-name injections)
+                  #_
                   (.submit $scope))))))))))
