@@ -98,20 +98,19 @@
   "Is the currently authenticated user following the target user"
   [$q Users data target]
   (if target
-       (-> (get-user $q Users data)
-           (.then (fn [user]
-                    (if user
-                      (if (= user._id target._id)
-                       (do
-                         (timbre/info "target is user")
-                         nil)
-                       (do
-                         (timbre/info "TODO: Do check")
-                         true))
-                      (do
-                        (timbre/info "Not authenticated")
-                        nil)
-                      ))))
+    (-> (get-user $q Users data)
+        (.then (fn [user]
+                 (if user
+                   (if (= (.-_id user) (.-_id target))
+                     (do
+                       (timbre/info "target is user")
+                       nil)
+                     (do
+                       (timbre/info "TODO: Do check")
+                       true))
+                   (do
+                     (timbre/info "Not authenticated")
+                     nil)))))
        ($q (fn [_ reject] (reject)))))
 
 (defn get-websocket-url
