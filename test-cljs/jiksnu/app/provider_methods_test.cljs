@@ -161,7 +161,11 @@
       (fn []
         (js/describe "when authenticated"
           (fn []
-            (js/beforeEach (fn [] (update-auth-data! "foo")))
+            (js/beforeEach
+             (fn []
+               (update-auth-data! "foo")
+               (-> (.whenGET $httpBackend (str "/model/users/" auth-id))
+                   (.respond auth-user))))
 
             (js/describe "when the target is nil"
               (fn []
@@ -176,64 +180,65 @@
                 (let [target-username "bar"
                       target-domain "example.com"
                       target-id (str "acct:" target-username "@" target-domain)
-                      target #js {:_id target-id}]
+                      target #js {:_id target-id}
+                      target-url (str "/model/users/" target-id)]
 
                   (js/it "should return truthy"
                     (fn []
-                      (-> $httpBackend
-                          (.expectGET (str "/model/users/" auth-id))
-                          (.respond 200 auth-user))
+                      (-> (.expectGET $httpBackend target-url)
+                          (.respond target))
 
                       (let [p (methods/following? $q Users auth-data target)]
-                        (-> (js/expect p) (.toBeResolvedWith true))))))))))))
+                        (.$digest $rootScope)
+                        (-> (js/expect p) (.toBeResolvedWith true)))))))))))
 
-    (js/describe "login"
-      (fn []
-        (js/describe "with valid credentials"
-          (fn []
-            (js/it "returns successfully"
-              (fn []
-                (-> (.expectPOST $httpBackend "/main/login")
-                    (.respond valid-login-response))
+      (js/describe "login"
+        (fn []
+          (js/describe "with valid credentials"
+            (fn []
+              (js/it "returns successfully"
+                (fn []
+                  (-> (.expectPOST $httpBackend "/main/login")
+                      (.respond valid-login-response))
 
-                (->  (.whenGET $httpBackend "/status")
-                     (.respond auth-data))
+                  (->  (.whenGET $httpBackend "/status")
+                       (.respond auth-data))
 
-                (let [auth-username "test"
-                      auth-password "test"
-                      p (methods/login
-                         $http $httpParamSerializerJQLike
-                         auth-username auth-password)]
-                  (.flush $httpBackend)
-                  (.$digest $rootScope)
-                  (-> (js/expect p) (.toBeResolvedWith true)))))))
+                  (let [auth-username "test"
+                        auth-password "test"
+                        p (methods/login
+                           $http $httpParamSerializerJQLike
+                           auth-username auth-password)]
+                    (.flush $httpBackend)
+                    (.$digest $rootScope)
+                    (-> (js/expect p) (.toBeResolvedWith true)))))))
 
-        (js/describe "with invalid credentials"
-          (fn []
-            (js/it "is rejected"
-              (fn []
-                (-> (.expectPOST $httpBackend "/main/login")
-                    (.respond invalid-login-response))
+          (js/describe "with invalid credentials"
+            (fn []
+              (js/it "is rejected"
+                (fn []
+                  (-> (.expectPOST $httpBackend "/main/login")
+                      (.respond invalid-login-response))
 
-                (let [auth-username "test"
-                      auth-password "test"
-                      p (methods/login $http $httpParamSerializerJQLike
-                                       auth-username auth-password)]
-                  (.flush $httpBackend)
-                  (.$digest $rootScope)
-                  (-> (js/expect p) (.toBeRejected)))))))))
+                  (let [auth-username "test"
+                        auth-password "test"
+                        p (methods/login $http $httpParamSerializerJQLike
+                                         auth-username auth-password)]
+                    (.flush $httpBackend)
+                    (.$digest $rootScope)
+                    (-> (js/expect p) (.toBeRejected)))))))))
 
-    (js/describe "post"
-      (fn []
-        (js/it "should return the id of the posted entry"
-          (fn []
-            (let [activity-id "58cd9980f8dfa1002f2e1642"
-                  activity #js {:_id activity-id :content "foo"}
-                  pictures nil
-                  p (methods/post $http activity pictures)]
+      (js/describe "post"
+        (fn []
+          (js/it "should return the id of the posted entry"
+            (fn []
+              (let [activity-id "58cd9980f8dfa1002f2e1642"
+                    activity #js {:_id activity-id :content "foo"}
+                    pictures nil
+                    p (methods/post $http activity pictures)]
 
-              (-> (.expectPOST $httpBackend "/model/activities")
-                  (.respond (activity-submit-response activity-id)))
+                (-> (.expectPOST $httpBackend "/model/activities")
+                    (.respond (activity-submit-response activity-id)))
 
-              (.$digest $rootScope)
-              (-> (js/expect p) (.toBeResolvedWith activity-id)))))))))
+                (.$digest $rootScope)
+                (-> (js/expect p) (.toBeResolvedWith activity-id)))))))))
