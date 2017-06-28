@@ -65,7 +65,7 @@
   [$q $http target]
   (timbre/debug "follow" target)
   (if target
-    (let [object  #js {:id (.-_id target)}
+    (let [object  #js {:id target._id}
           activity #js {:verb "follow" :object object}]
       (post $http activity))
     (do (timbre/warn "No target")
@@ -75,8 +75,8 @@
   "Returns the authenticated user id from app data"
   [data]
   (if data
-    (if-let [username (.-user data)]
-      (if-let [domain (.-domain data)]
+    (if-let [username data.user]
+      (if-let [domain data.domain]
         (str "acct:" username "@" domain)
         (do
           (timbre/warn "No domain")
@@ -136,7 +136,7 @@
 
 (defmulti handle-action
   "Handler action response notifications"
-  (fn [app data] (.-action data))
+  (fn [app data] data.action)
   :default :default)
 
 (defmethod handle-action "like"
@@ -179,7 +179,7 @@
     (timbre/debugf "Received Message - %s" data-str)
     (cond
       ;; (.-connection data) (.success Notification "connected")
-      (.-action data)     (handle-action app data)
+      data.action         (handle-action app data)
       :default            nil #_(.warning Notification (str "Unknown message: " data-str)))))
 
 (defn invoke-action
@@ -216,7 +216,7 @@
   (let [$http (.inject app "$http")]
     (-> (.post $http "/main/logout")
         (.then (fn [data]
-                 (set! (.-user app) nil)
+                 (set! app.user nil)
                  (.fetchStatus app))))))
 
 (defn refresh
@@ -228,7 +228,7 @@
 (defn register
   "Register a new user"
   [$http params]
-  (timbre/debugf "Registering - %s" (.-reg params))
+  (timbre/debugf "Registering - %s" params.reg)
   (let [params #js {:method "post"
                     :url    "/main/register"
                     :data   (.-reg params)}]

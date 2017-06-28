@@ -94,7 +94,7 @@
           (js/it "should be unloaded by default"
             (fn []
               (@$controller controller-name injections)
-              (.. (js/expect (.-loaded $scope)) toBeFalsy)))
+              (-> (js/expect $scope.loaded) .toBeFalsy)))
 
           (js/it "should call fetchStatus"
             (fn []
