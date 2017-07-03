@@ -17,14 +17,6 @@
 (declare username)
 (declare Users)
 
-(defn valid-login-response
-  [method url data headers params]
-  #js [204 nil #js {} "No-Content"])
-
-(defn invalid-login-response
-  [method url data headers params]
-  #js [409 nil #js {} "Unauthenticated"])
-
 (declare auth-data)
 (declare auth-id)
 (declare auth-user)
