@@ -1,6 +1,5 @@
 (ns jiksnu.providers
-  (:require [cljs.reader :as reader]
-            [jiksnu.app :refer [jiksnu]]
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.protocols :refer [AppProtocol] :as p]
             [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))
@@ -11,7 +10,6 @@
    :deleteStream  methods/delete-stream
    :fetchStatus   methods/fetch-status
    :follow        methods/follow
-   :getUser       p/get-user
    :getUserId     p/get-user-id
    :go            methods/go
    :handleMessage methods/handle-message
@@ -51,6 +49,8 @@
     (let [$http (.inject app "$http")]
       (methods/add-stream $http stream-name)))
 
+  (connect [app])
+
   (delete-stream [app target-id]
     (let [$http (.inject app "$http")]
       (methods/delete-stream $http target-id)))
@@ -64,6 +64,8 @@
     (let [$q (.inject app "$q")
           $http (.inject app "$http")]
      (methods/follow $q $http target)))
+
+  (following? [app target])
 
   (get-user [app]
     (let [$q (.inject app "$q")
@@ -83,7 +85,11 @@
       (let [$state (.inject app "$state")]
         (methods/go $state state)))
 
+  (handle-action [app data])
+
   (handle-message [app message])
+
+  (inject [app atom])
 
   (login [app username password]
     (let [$http (.inject app "$http")

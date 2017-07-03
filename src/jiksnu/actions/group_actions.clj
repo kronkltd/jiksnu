@@ -5,8 +5,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.group-transforms :as transforms.group]
             [jiksnu.templates.actions :as templates.actions]
-            [slingshot.slingshot :refer [throw+]])
-  (:import jiksnu.model.Group))
+            [slingshot.slingshot :refer [throw+]]))
 
 (def model-ns 'jiksnu.model.group)
 

@@ -1,7 +1,6 @@
 (ns jiksnu.providers-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
             jiksnu.main
-            [jiksnu.provider-methods :as methods]
             [jiksnu.providers :as providers]
             [taoensso.timbre :as timbre]))
 
@@ -17,14 +16,6 @@
 (def domain "example.com")
 (declare username)
 (declare Users)
-
-(defn valid-login-response
-  [method url data headers params]
-  #js [204 nil #js {} "No-Content"])
-
-(defn invalid-login-response
-  [method url data headers params]
-  #js [409 nil #js {} "Unauthenticated"])
 
 (declare auth-data)
 (declare auth-id)
@@ -81,32 +72,6 @@
                               (returnValue "foo"))])
                 (timbre/spy (.connect app))))))
 
-        (js/describe ".getUser"
-          (fn []
-            (js/describe "when not authenticated"
-              (fn []
-                (js/it "resolves to nil"
-                  (fn []
-                    (.. (js/spyOn app "getUserId") -and (returnValue nil))
-                    (let [p (.getUser app)]
-                      (.$digest $rootScope)
-                      (.. (js/expect p) (toBeResolvedWith nil)))))))
-            (js/describe "when authenticated"
-              (fn []
-                (js/it "returns that user"
-                  (fn []
-                    (let [Users (.inject app "Users")
-                          id "acct:foo@example.com"
-                          user #js {:_id id}]
-                      (update-auth-data! "foo" "example.com")
-                      (set! app.data auth-data)
-                      (-> $httpBackend
-                          (.expectGET (str "/model/users/" id))
-                          (.respond user))
-                      (let [p (.getUser app)]
-                        (.$digest $rootScope)
-                        (.. (js/expect p) (toBeResolvedWith user))))))))))
-
         (js/describe ".invokeAction"
           (fn []
             (js/it "sends a message"
@@ -114,7 +79,7 @@
                 (let [model-name "user"
                       action-name "delete"
                       id "acct:user@example.com"]
-                  (.. (js/spyOn app "send") -and (returnValue ($q #(%))) )
+                  (-> (js/spyOn app "send") .-and (.returnValue ($q #(%))))
                   (let [p (.invokeAction app model-name action-name id)]
                     (.$digest $rootScope)
-                    (.. (js/expect p) (toBeResolved))))))))))))
+                    (-> (js/expect p) (.toBeResolved))))))))))))

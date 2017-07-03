@@ -13,39 +13,39 @@
 (declare Users)
 (declare $httpBackend)
 (declare $httpParamSerializerJQLike)
-(declare username)
-(def domain "example.com")
 
 (declare auth-data)
 (declare auth-id)
 (declare auth-user)
+(declare auth-username)
+(def auth-domain "example.com")
 
 (defn valid-login-response
-  [method url data headers params]
+  [_method _url _data _headers _params]
   #js [204 nil #js {} "No-Content"])
 
 (defn invalid-login-response
-  [method url data headers params]
+  [_method _url _data _headers _params]
   #js [409 nil #js {} "Unauthenticated"])
 
 (defn activity-submit-response
   [activity-id]
-  (fn [method url data headers params]
+  (fn [_method _url _data _headers _params]
     (let [body #js {:_id activity-id}
           headers #js {"Content-Type" "application/json"}]
       #js [200 body headers "OK"])))
 
 (defn update-auth-data!
   ([]
-   (set! auth-data #js {:user username :domain domain})
-   (set! auth-id (str "acct:" username "@" domain))
-   (set! auth-user #js {:_id auth-id}))
-  ([_username_]
-   (set! username _username_)
+   (set! auth-data #js {:user auth-username :domain auth-domain})
+   (set! auth-id (str "acct:" auth-username "@" auth-domain))
+   (set! auth-user #js {:_id auth-id :username auth-username :domain auth-domain}))
+  ([new-username]
+   (set! auth-username new-username)
    (update-auth-data!))
-  ([_username_ _domain_]
-   (set! domain _domain_)
-   (update-auth-data! _username_)))
+  ([new-username new-domain]
+   (set! auth-domain new-domain)
+   (update-auth-data! new-username)))
 
 (js/describe "jiksnu.provider-methods"
   (fn []
@@ -95,15 +95,18 @@
 
     (js/describe "delete-stream"
       (fn []
-        (js/it "resolves"
+        (js/describe "when given a valid id"
           (fn []
-            (doto $httpBackend
-              (.. (expectPOST "/model/activities") (respond valid-login-response)))
+            (js/it "resolves its promise"
+              (fn []
 
-            (let [target-id "foo"
-                  p (methods/delete-stream $http target-id)]
-              (.$digest $rootScope)
-              (.. (js/expect p) (toBeResolved)))))))
+                (-> (.expectPOST $httpBackend "/model/activities")
+                    (.respond valid-login-response))
+
+                (let [target-id "foo"
+                      p (methods/delete-stream $http target-id)]
+                  (.$digest $rootScope)
+                  (.. (js/expect p) (toBeResolved)))))))))
 
     (js/describe "get-user"
       (fn []
@@ -111,79 +114,81 @@
           (fn []
             (js/it "resolves to nil"
               (fn []
-                (.. (js/spyOn app "getUserId") -and (returnValue nil))
-                (let [auth-data #js {}
-                      p (methods/get-user $q Users auth-data)]
+                (let [p (methods/get-user $q Users auth-data)]
                   (.$digest $rootScope)
-                  (.. (js/expect p) (toBeResolvedWith nil)))))))
+
+                  (-> (js/expect p) (.toBeResolvedWith nil)))))))
 
         (js/describe "when authenticated"
           (fn []
+            (js/beforeEach
+             (fn []
+               (update-auth-data! "foo")))
+
             (js/it "returns that user"
               (fn []
-                (let [username "foo"
-                      domain "example.com"
-                      data #js {:user username :domain domain}
-                      id (str "acct:" username "@" domain)
-                      user #js {:_id id}]
-                  (-> $httpBackend
-                      (.expectGET (str "/model/users/" id))
-                      (.respond user))
-                  (.. (js/spyOn Users "find") -and (returnValue ($q #(% user))))
-                  (let [p (methods/get-user $q Users data)]
+                (let [user-url (str "/model/users/" auth-id)]
+
+                  (-> (.expectGET $httpBackend user-url)
+                      (.respond auth-user))
+
+                  (.. (js/spyOn Users "find") -and (returnValue ($q #(% auth-user))))
+
+                  (let [p (methods/get-user $q Users auth-data)]
                     (.$digest $rootScope)
-                    (.. (js/expect p) (toBeResolvedWith user))
-                    (.. (js/expect (.-find Users)) (toHaveBeenCalledWith id))))))))))
+                    (.. (js/expect p) (toBeResolvedWith auth-user))
+                    (.. (js/expect (.-find Users)) (toHaveBeenCalledWith auth-id))))))))))
 
     (js/describe "fetch-status"
       (fn []
         (js/it "Should request the status page"
           (fn []
-            (let [data #js {}]
-              (.. $httpBackend (expectGET "/status") (respond data))
-              (let [p (methods/fetch-status $http)]
-                (.$digest $rootScope)
-                (.. (js/expect p) (toBeResolved data))))))))
+            (-> (.expectGET $httpBackend "/status") (.respond auth-data))
+
+            (let [p (methods/fetch-status $http)]
+              (.$digest $rootScope)
+              (-> (js/expect p) (.toBeResolved auth-data)))))))
 
     (js/describe "follow"
       (fn []
-        (js/describe "when not passing an invalid object"
-          (fn []
-            (js/it "should be rejected"
-              (fn []
-                (let [target nil
-                      p (methods/follow $q $http target)]
-                  (.$digest $rootScope)
-                  (.. (js/expect p) (toBeRejected)))))))))
-
-    (js/describe "following?"
-      (fn []
-        (let [username "foo"
-              domain "example.com"
-              data #js {:user username :domain domain}
-              user-id (str "acct:" username "@" domain)]
-
-          (js/describe "when the is nil"
+        (js/describe "when passing an invalid target user"
+          (let [target nil]
             (fn []
               (js/it "should be rejected"
                 (fn []
-                  (let [target nil
-                        p (methods/following? $q Users data target)]
-                    (.. (js/expect p) (toBeRejected)))))))
+                  (let [p (methods/follow $q $http target)]
+                    (.$digest $rootScope)
+                    (-> (js/expect p) (.toBeRejected))))))))))
 
-          (js/describe "when the user is following the target"
-            (fn []
-              (js/it "should return truthy"
-                (fn []
-                  (-> $httpBackend
-                      (.expectGET (str "/model/users/" user-id))
-                      (.respond 200 #js {:_id user-id}))
-                  (let [target #js {:_id "acct:bar@example.com"}
-                        p (methods/following? $q Users data target)]
-                    (.. (js/expect p) (toBeResolvedWith true)))))))
+    (js/describe "following?"
+      (fn []
+        (js/describe "when authenticated"
+          (fn []
+            (js/beforeEach (fn [] (update-auth-data! "foo")))
 
-          (js/describe "when the user is not following the target"
-            (fn [])))))
+            (js/describe "when the target is nil"
+              (fn []
+                (let [target nil]
+                  (js/it "should be rejected"
+                    (fn []
+                      (let [p (methods/following? $q Users auth-data target)]
+                        (-> (js/expect p) (.toBeRejected))))))))
+
+            (js/describe "when the user is following the target"
+              (fn []
+                (let [target-username "bar"
+                      target-domain "example.com"
+                      target-id (str "acct:" target-username "@" target-domain)
+                      target #js {:_id target-id}]
+
+                  (js/it "should return truthy"
+                    (fn []
+                      (-> $httpBackend
+                          (.expectGET (str "/model/users/" auth-id))
+                          (.respond 200 auth-user))
+
+                      (let [p (methods/following? $q Users auth-data target)]
+                        (-> (js/expect p) (.toBeResolvedWith true))))))))))))
 
     (js/describe "login"
       (fn []
@@ -191,9 +196,12 @@
           (fn []
             (js/it "returns successfully"
               (fn []
-                (doto $httpBackend
-                  (.. (expectPOST "/main/login") (respond valid-login-response))
-                  (.. (whenGET "/status")        (respond #js {})))
+                (-> (.expectPOST $httpBackend "/main/login")
+                    (.respond valid-login-response))
+
+                (->  (.whenGET $httpBackend "/status")
+                     (.respond auth-data))
+
                 (let [auth-username "test"
                       auth-password "test"
                       p (methods/login
@@ -201,21 +209,22 @@
                          auth-username auth-password)]
                   (.flush $httpBackend)
                   (.$digest $rootScope)
-                  (.. (js/expect p) (toBeResolvedWith true)))))))
+                  (-> (js/expect p) (.toBeResolvedWith true)))))))
 
         (js/describe "with invalid credentials"
           (fn []
             (js/it "is rejected"
               (fn []
-                (doto $httpBackend
-                  (.. (expectPOST "/main/login") (respond invalid-login-response)))
+                (-> (.expectPOST $httpBackend "/main/login")
+                    (.respond invalid-login-response))
+
                 (let [auth-username "test"
                       auth-password "test"
                       p (methods/login $http $httpParamSerializerJQLike
                                        auth-username auth-password)]
                   (.flush $httpBackend)
                   (.$digest $rootScope)
-                  (.. (js/expect p) (toBeRejected)))))))))
+                  (-> (js/expect p) (.toBeRejected)))))))))
 
     (js/describe "post"
       (fn []
@@ -226,9 +235,8 @@
                   pictures nil
                   p (methods/post $http activity pictures)]
 
-              (-> $httpBackend
-                  (.expectPOST #"/model/activities")
+              (-> (.expectPOST $httpBackend "/model/activities")
                   (.respond (activity-submit-response activity-id)))
 
               (.$digest $rootScope)
-              (.. (js/expect p) (toBeResolvedWith activity-id)))))))))
+              (-> (js/expect p) (.toBeResolvedWith activity-id)))))))))

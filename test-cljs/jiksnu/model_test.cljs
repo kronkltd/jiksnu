@@ -2,7 +2,6 @@
   (:require [cljs.test :refer-macros [async deftest is testing]]
             jiksnu.config
             jiksnu.main
-            [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))
 
 (declare $http)
