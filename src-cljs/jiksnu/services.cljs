@@ -1,7 +1,6 @@
 (ns jiksnu.services
   (:require [jiksnu.app :refer [jiksnu]]
-            [jiksnu.registry :as registry]
-            [taoensso.timbre :as timbre]))
+            [jiksnu.registry :as registry]))
 
 (defn fetch-page
   [$http page-name]
