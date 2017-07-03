@@ -1,8 +1,6 @@
 (ns jiksnu.model.service-test
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.mock :as mock]
-            [jiksnu.factory :as factory]
-            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.service :as model.service]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]

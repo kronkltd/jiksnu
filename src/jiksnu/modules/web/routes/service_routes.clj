@@ -1,14 +1,10 @@
 (ns jiksnu.modules.web.routes.service-routes
   (:require [taoensso.timbre :as timbre]
             [jiksnu.actions.service-actions :as actions.service]
-            [jiksnu.actions.webfinger-actions :as actions.webfinger]
-            [jiksnu.model.service :as model.service]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter
-                                                item-resource page-resource path]]
-            [jiksnu.util :as util]
-            [octohipster.mixins :as mixin]))
+                                                item-resource page-resource path]]))
 
 (defparameter :model.service/id
   :description "The Id of an service"

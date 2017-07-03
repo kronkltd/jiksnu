@@ -19,7 +19,6 @@
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.group :as model.group]
-            [jiksnu.model.group-membership :as model.group-membership]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]

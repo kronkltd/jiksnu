@@ -1,6 +1,5 @@
 (ns jiksnu.step-definitions
-  (:require [cljs.nodejs :as nodejs]
-            [jiksnu.helpers.action-helpers :as helpers.action]
+  (:require [jiksnu.helpers.action-helpers :as helpers.action]
             [jiksnu.helpers.http-helpers :as helpers.http]
             [jiksnu.helpers.page-helpers :as page-helpers
              :refer [by-css by-model current-page element expect]]

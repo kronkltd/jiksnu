@@ -4,8 +4,6 @@
             [clj-time.format :as f]
             [clojure.string :as string]
             [crypto.random :as random]
-            [jiksnu.namespace :as ns]
-            [jiksnu.registry :as registry]
             [manifold.deferred :as d]
             monger.joda-time
             monger.json

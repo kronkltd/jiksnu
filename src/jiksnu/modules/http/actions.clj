@@ -43,7 +43,7 @@
 
 (defn deregister-connection!
   "Adds a connection to the registry"
-  [{:keys [::user-id ::connection-id] :as status}]
+  [{:keys [::user-id ::connection-id]}]
   (let [stream (get-in @connections [user-id connection-id])]
     (timbre/debugf "deregistering connection %s(%s) => %s" user-id connection-id stream)
 
@@ -52,7 +52,7 @@
   (log-connections))
 
 (defn register-connection!
-  [{:keys [::user-id ::connection-id] :as status} response-channel]
+  [{:keys [::user-id ::connection-id]} response-channel]
   (dosync
    (alter connections #(assoc-in % [user-id connection-id] response-channel)))
   (log-connections))
@@ -70,7 +70,7 @@
     (server/send! ch resp)))
 
 (defn handle-closed
-  [channel status message]
+  [_channel status _message]
   (let [user-id (::user-id status)
         connection-id (::connection-id status)]
     (timbre/with-context status

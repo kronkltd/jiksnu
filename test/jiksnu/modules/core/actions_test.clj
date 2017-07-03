@@ -40,7 +40,7 @@
     (let [user (mock/a-user-exists)
           page-name "activities"
           m 1]
-      (dotimes [n m] (mock/an-activity-exists :user user))
+      (dotimes [_ m] (mock/an-activity-exists :user user))
 
       (actions/get-sub-page user page-name) =>
       (contains {:totalItems m}))))

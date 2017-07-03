@@ -1,6 +1,5 @@
 (ns jiksnu.app.providers
-  (:require [cljs.reader :as reader]
-            [inflections.core :as inf]
+  (:require [inflections.core :as inf]
             [jiksnu.app :refer [jiksnu models]]
             [jiksnu.app.protocols :refer [AppProtocol] :as p]
             [jiksnu.app.provider-methods :as methods]

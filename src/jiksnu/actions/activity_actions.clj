@@ -27,7 +27,7 @@
 ;; FIXME: this is always hitting the else branch
 (defn add-link
   [item link]
-  (if-let [existing-link (model/get-link item (:rel link) (:type link))]
+  (if (model/get-link item (:rel link) (:type link))
     item
     (add-link* item link)))
 

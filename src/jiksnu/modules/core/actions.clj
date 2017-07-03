@@ -28,7 +28,7 @@
        ((resolve-routes [@pred/*page-predicates*]
                         @pred/*page-matchers*) request)
        ;; FIXME: Handle error
-       (catch Throwable ex))
+       (catch Throwable _ex))
      (throw+ "page not found"))))
 
 (defn get-page
@@ -82,7 +82,7 @@
                  :message "sub page not found"}))))
 
 (defn invoke-action
-  [model-name action-name id & [options]]
+  [model-name action-name id & [_options]]
   (try+
    (timbre/infof "Invoking Action. %s(%s) => %s" model-name id action-name)
    (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
