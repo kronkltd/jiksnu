@@ -1,6 +1,5 @@
 (ns jiksnu.providers
-  (:require [cljs.reader :as reader]
-            [jiksnu.app :refer [jiksnu]]
+  (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.protocols :refer [AppProtocol] :as p]
             [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))

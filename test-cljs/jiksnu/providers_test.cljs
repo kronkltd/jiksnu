@@ -1,7 +1,6 @@
 (ns jiksnu.providers-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
             jiksnu.main
-            [jiksnu.provider-methods :as methods]
             [jiksnu.providers :as providers]
             [taoensso.timbre :as timbre]))
 
