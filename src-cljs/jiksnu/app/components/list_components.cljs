@@ -2,7 +2,7 @@
   (:require [inflections.core :as inf]
             [jiksnu.app :refer [jiksnu]]
             [jiksnu.app.helpers :as helpers]
-            [jiksnu.protocols :as p]))
+            [jiksnu.app.protocols :as p]))
 
 (defn list-directive
   [subpage controller]

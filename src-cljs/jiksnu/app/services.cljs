@@ -1,4 +1,4 @@
-(ns jiksnu.services
+(ns jiksnu.app.services
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.registry :as registry]))
 

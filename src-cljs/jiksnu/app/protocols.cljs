@@ -1,4 +1,4 @@
-(ns jiksnu.protocols)
+(ns jiksnu.app.protocols)
 
 (defprotocol AppProtocol
   (add-stream        [this stream-name])

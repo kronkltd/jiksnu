@@ -1,7 +1,7 @@
-(ns jiksnu.providers-test
+(ns jiksnu.app.providers-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
+            [jiksnu.app.providers :as providers]
             jiksnu.main
-            [jiksnu.providers :as providers]
             [taoensso.timbre :as timbre]))
 
 (declare $http)
@@ -33,7 +33,7 @@
    (set! domain _domain_)
    (update-auth-data! _username_)))
 
-(js/describe "jiksnu.providers"
+(js/describe "jiksnu.app.providers"
   (fn []
     (js/beforeEach (fn [] (js/module "jiksnu")))
 

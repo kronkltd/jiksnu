@@ -7,6 +7,6 @@
             jiksnu.app.components.state-components
             jiksnu.app.config
             jiksnu.app.helpers
-            jiksnu.model
-            jiksnu.providers
-            jiksnu.services))
+            jiksnu.app.providers
+            jiksnu.app.services
+            jiksnu.model))

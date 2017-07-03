@@ -2,8 +2,8 @@
   (:require [clojure.string :as string]
             [hiccups.runtime :as hiccupsrt]
             [inflections.core :as inf]
+            jiksnu.app.services
             [jiksnu.registry :as registry]
-            jiksnu.services
             [taoensso.timbre :as timbre])
   (:require-macros [hiccups.core :as hiccups :refer [html]]))
 

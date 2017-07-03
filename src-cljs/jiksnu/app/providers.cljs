@@ -1,9 +1,9 @@
-(ns jiksnu.providers
+(ns jiksnu.app.providers
   (:require [cljs.reader :as reader]
             [inflections.core :as inf]
             [jiksnu.app :refer [jiksnu models]]
-            [jiksnu.protocols :refer [AppProtocol] :as p]
-            [jiksnu.provider-methods :as methods]
+            [jiksnu.app.protocols :refer [AppProtocol] :as p]
+            [jiksnu.app.provider-methods :as methods]
             [jiksnu.registry :as registry]
             [taoensso.timbre :as timbre]))
 
