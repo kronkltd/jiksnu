@@ -65,7 +65,7 @@
   (follow [app target]
     (let [$q (.inject app "$q")
           $http (.inject app "$http")]
-     (methods/follow $q $http target)))
+      (methods/follow $q $http target)))
 
   (following? [app target])
 
@@ -145,4 +145,3 @@
     (clj->js {:$get ["$injector" f]})))
 
 (.provider jiksnu "app" app)
-
