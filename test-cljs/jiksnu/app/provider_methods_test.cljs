@@ -1,9 +1,7 @@
 (ns jiksnu.app.provider-methods-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
-            jiksnu.app.config
             [jiksnu.app.provider-methods :as methods]
             jiksnu.main
-            jiksnu.model
             [taoensso.timbre :as timbre]))
 
 (declare $http)
