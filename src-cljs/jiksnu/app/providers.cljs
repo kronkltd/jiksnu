@@ -147,6 +147,3 @@
 
 (.provider jiksnu "app" app)
 
-(defmethod methods/handle-action "page-add"
-  [app data]
-  (p/update-page app data))

@@ -1,5 +1,6 @@
 (ns jiksnu.main
-  (:require jiksnu.app.components.form-components
+  (:require jiksnu.app.actions
+            jiksnu.app.components.form-components
             jiksnu.app.components.index-components
             jiksnu.app.components.list-components
             jiksnu.app.components.page-element-components
