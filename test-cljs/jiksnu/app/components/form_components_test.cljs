@@ -1,6 +1,6 @@
-(ns jiksnu.components.show-components-test
-  (:require jiksnu.main
-            jiksnu.components.show-components
+(ns jiksnu.app.components.form-components-test
+  (:require jiksnu.app.components.form-components
+            jiksnu.main
             [taoensso.timbre :as timbre]))
 
 (timbre/set-level! :debug)
@@ -17,7 +17,7 @@
 (declare $httpBackend)
 (def $controller (atom nil))
 
-(js/describe "jiksnu.components.show-components"
+(js/describe "jiksnu.app.components.form-components"
   (fn []
     (js/beforeEach (fn [] (js/module "jiksnu")))
 
@@ -40,30 +40,12 @@
                  (.. (whenGET #"/model/.*")     (respond "{}")))
                (set! injections #js {:$scope $scope :app app}))])))
 
-    (let [controller-name "ShowConversationController"]
+    (let [controller-name "NewGroupController"]
       (js/describe controller-name
         (fn []
-          (js/beforeEach
-           (fn []
-             (set! (.-id $scope) "1")
-             (set! (.-init $scope)
-                   (fn [id]
-                     (timbre/info "mocked init")
-                     (set! (.-item $scope) #js {:id "1"})
-                     (set! (.-loaded $scope) true)))))
-
-          (js/describe ".deleteRecord"
+          (js/describe ".submit"
             (fn []
-              (js/it "sends a delete action"
+              (js/it "Should send the form"
                 (fn []
                   (@$controller controller-name injections)
-                  (.. (js/spyOn app "invokeAction") -and (returnValue ($q #(%))))
-                  (.. $httpBackend
-                      (expectGET (str "conversations/" (.-id $scope)))
-                      (respond (constantly (clj->js [201 {:items []}]))))
-
-                  (let [item (.-item $scope)
-                        p (.deleteRecord $scope item)]
-                    (.$apply $scope)
-                    (.. (js/expect p) (toBeResolved))
-                    (.. (js/expect (.-invokeAction app)) (toHaveBeenCalled))))))))))))
+                  (.submit $scope))))))))))

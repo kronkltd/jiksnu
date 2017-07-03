@@ -1,4 +1,4 @@
-(ns jiksnu.helpers
+(ns jiksnu.app.helpers
   (:require [clojure.string :as string]
             [hiccups.runtime :as hiccupsrt]
             [inflections.core :as inf]

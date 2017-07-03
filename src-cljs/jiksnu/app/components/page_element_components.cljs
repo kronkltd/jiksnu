@@ -1,6 +1,6 @@
-(ns jiksnu.components.page-element-components
+(ns jiksnu.app.components.page-element-components
   (:require [jiksnu.app :refer [jiksnu]]
-            [jiksnu.helpers :as helpers]
+            [jiksnu.app.helpers :as helpers]
             [jiksnu.protocols :as p]
             [jiksnu.registry :as registry]
             jiksnu.services

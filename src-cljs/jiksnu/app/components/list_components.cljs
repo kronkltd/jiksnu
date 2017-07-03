@@ -1,7 +1,7 @@
-(ns jiksnu.components.list-components
+(ns jiksnu.app.components.list-components
   (:require [inflections.core :as inf]
             [jiksnu.app :refer [jiksnu]]
-            [jiksnu.helpers :as helpers]
+            [jiksnu.app.helpers :as helpers]
             [jiksnu.protocols :as p]))
 
 (defn list-directive

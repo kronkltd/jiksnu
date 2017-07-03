@@ -1,6 +1,6 @@
 (ns jiksnu.provider-methods-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
-            jiksnu.config
+            jiksnu.app.config
             jiksnu.main
             jiksnu.model
             [jiksnu.provider-methods :as methods]

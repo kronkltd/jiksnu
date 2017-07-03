@@ -1,6 +1,6 @@
-(ns jiksnu.components.form-components
+(ns jiksnu.app.components.form-components
   (:require [jiksnu.app :refer [jiksnu]]
-            [jiksnu.helpers :as helpers]
+            [jiksnu.app.helpers :as helpers]
             [jiksnu.protocols :as p]
             [taoensso.timbre :as timbre]))
 
