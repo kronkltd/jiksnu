@@ -79,7 +79,7 @@
                 (let [model-name "user"
                       action-name "delete"
                       id "acct:user@example.com"]
-                  (.. (js/spyOn app "send") -and (returnValue ($q #(%))) )
+                  (-> (js/spyOn app "send") .-and (.returnValue ($q #(%))))
                   (let [p (.invokeAction app model-name action-name id)]
                     (.$digest $rootScope)
-                    (.. (js/expect p) (toBeResolved))))))))))))
+                    (-> (js/expect p) (.toBeResolved))))))))))))
