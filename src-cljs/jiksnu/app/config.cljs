@@ -6,7 +6,7 @@
             [taoensso.timbre :as timbre]))
 
 (defn jiksnu-config
-  [$stateProvider $urlRouterProvider $locationProvider appProvider DSProvider
+  [$stateProvider $urlRouterProvider $locationProvider DSProvider
    DSHttpAdapterProvider hljsServiceProvider $mdThemingProvider]
 
   (.setOptions hljsServiceProvider #js {:tabReplace "  "})
