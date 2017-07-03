@@ -5,8 +5,7 @@
             [monger.collection :as mc]
             [monger.query :as mq]
             monger.json
-            [slingshot.slingshot :refer [throw+]])
-  (:import com.mongodb.DB))
+            [slingshot.slingshot :refer [throw+]]))
 
 (defkey ::collection-counted
   "when a collection is counted")

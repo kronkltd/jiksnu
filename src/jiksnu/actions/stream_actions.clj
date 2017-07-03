@@ -14,8 +14,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.stream-transforms :as transforms.stream]
             [slingshot.slingshot :refer [throw+ try+]]
-            [taoensso.timbre :as timbre])
-  (:import (org.apache.http HttpStatus)))
+            [taoensso.timbre :as timbre]))
 
 (def model-ns 'jiksnu.model.stream)
 

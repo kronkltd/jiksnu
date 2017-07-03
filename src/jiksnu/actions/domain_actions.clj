@@ -5,8 +5,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
-            [jiksnu.util :as util])
-  (:import jiksnu.model.Domain))
+            [jiksnu.util :as util]))
 
 (def model-ns 'jiksnu.model.domain)
 

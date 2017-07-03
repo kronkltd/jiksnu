@@ -23,8 +23,7 @@
            (java.util TimeZone)
            (java.net InetSocketAddress)
            (org.bson.types ObjectId)
-           (org.joda.time DateTime)
-           (nu.xom Element)))
+           (org.joda.time DateTime)))
 
 (defn new-id
   []
