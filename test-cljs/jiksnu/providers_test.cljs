@@ -72,32 +72,6 @@
                               (returnValue "foo"))])
                 (timbre/spy (.connect app))))))
 
-        (js/describe ".getUser"
-          (fn []
-            (js/describe "when not authenticated"
-              (fn []
-                (js/it "resolves to nil"
-                  (fn []
-                    (.. (js/spyOn app "getUserId") -and (returnValue nil))
-                    (let [p (.getUser app)]
-                      (.$digest $rootScope)
-                      (.. (js/expect p) (toBeResolvedWith nil)))))))
-            (js/describe "when authenticated"
-              (fn []
-                (js/it "returns that user"
-                  (fn []
-                    (let [Users (.inject app "Users")
-                          id "acct:foo@example.com"
-                          user #js {:_id id}]
-                      (update-auth-data! "foo" "example.com")
-                      (set! app.data auth-data)
-                      (-> $httpBackend
-                          (.expectGET (str "/model/users/" id))
-                          (.respond user))
-                      (let [p (.getUser app)]
-                        (.$digest $rootScope)
-                        (.. (js/expect p) (toBeResolvedWith user))))))))))
-
         (js/describe ".invokeAction"
           (fn []
             (js/it "sends a message"

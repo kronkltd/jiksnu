@@ -10,7 +10,6 @@
    :deleteStream  methods/delete-stream
    :fetchStatus   methods/fetch-status
    :follow        methods/follow
-   :getUser       p/get-user
    :getUserId     p/get-user-id
    :go            methods/go
    :handleMessage methods/handle-message
