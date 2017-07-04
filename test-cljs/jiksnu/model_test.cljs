@@ -1,16 +1,9 @@
 (ns jiksnu.model-test
-  (:require [cljs.test :refer-macros [async deftest is testing]]
-            jiksnu.app.config
-            jiksnu.main
+  (:require jiksnu.main
             [taoensso.timbre :as timbre]))
 
-(declare $http)
-(declare $q)
-(declare $rootScope)
-(declare app)
 (declare Users)
 (declare $httpBackend)
-(declare $httpParamSerializerJQLike)
 (declare username)
 (def domain "example.com")
 
@@ -40,27 +33,20 @@
        (js/module "jiksnu")
        (js/installPromiseMatchers)
        (js/inject
-        #js ["app" "$http" "$httpBackend" "$httpParamSerializerJQLike" "$q" "$rootScope"
-             "Users"
-             (fn [_app_ _$http_ _$httpBackend_ _$httpParamSerializerJQLike_
-                  _$q_ _$rootScope_ _Users_]
+        #js ["$httpBackend" "Users"
+             (fn [_$httpBackend_ _Users_]
                (update-auth-data! nil "example.com")
-
-               (set! app _app_)
-               (set! $http _$http_)
-               (set! $httpBackend _$httpBackend_)
-               (set! $httpParamSerializerJQLike _$httpParamSerializerJQLike_)
-               (set! $q _$q_)
-               (set! $rootScope _$rootScope_)
                (set! Users _Users_)
-               (doto $httpBackend
+               #_(doto $httpBackend
                  (.. (whenGET #"/templates/.*") (respond "<div></div>"))
                  (.. (whenGET #"/model/.*")     (respond #js {}))
                  (.. (whenGET "/status")        (respond #js {}))))])))
 
     (js/it "does the needful"
       (fn []
-        (let [id "acct:test@example.com"
-              user (.createInstance Users #js {:_id id})]
+        (let [id "acct:test@example.com"]
+
+          (.createInstance Users #js {:_id id})
+
           (let [user2 (.find Users id)]
             (timbre/infof "user2: %s" (js/JSON.stringify user2))))))))
