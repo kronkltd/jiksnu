@@ -48,8 +48,4 @@
      :deserialize deserializer
      :methods
      {:getType      (constantly "User")
-      :getSubpage   (fn [page-name] (this-as item (.fetch subpageService item page-name)))
-      :getFollowers (fn [] (this-as item (.fetch subpageService item "followers")))
-      :getFollowing (fn [] (this-as item (.fetch subpageService item "following")))
-      :getGroups    (fn [] (this-as item (.fetch subpageService item "groups")))
-      :getStreams   (fn [] (this-as item (.fetch subpageService item "streams")))}})))
+      :getFollowing (fn [] (this-as item (.fetch subpageService item "following")))}})))

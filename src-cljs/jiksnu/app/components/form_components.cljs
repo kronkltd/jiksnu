@@ -81,83 +81,90 @@
       :templateUrl "/templates/add-picture-form"})
 
 (defn NewPostController
-  [$ctrl $scope geolocation app Users]
+  [$ctrl $scope geolocation app Users subpageService]
   (helpers/init-subpage $ctrl $scope app Users "streams")
-  (set! (.-addStream $scope)
+  (set! $scope.app         app)
+  (set! $scope.defaultForm #js {:source "web"
+                                :privacy "public"
+                                :title ""
+                                :geo #js {:latitude nil
+                                          :longitude nil}
+                                :content ""})
+  (set! $ctrl.enabled      (fn [] app.data))
+  (set! $scope.visible     (fn [] (and (.enabled $ctrl) app.user)))
+  (set! $scope.form        #js {:shown false})
+
+  (set! $scope.addStream
         (fn [id]
           (timbre/debug "adding stream" id)
           (let [streams (.. $scope -activity -streams)]
             (if (not-any? (partial = id) streams)
               (.push streams id)))))
-  (set! (.-app $scope) app)
-  (set! (.-defaultForm $scope) #js {:source "web"
-                                    :privacy "public"
-                                    :title ""
-                                    :geo #js {:latitude nil
-                                              :longitude nil}
-                                    :content ""})
-  (set! (.-enabled $ctrl)  (fn [] (.-data app)))
-  (set! (.-visible $scope) (fn [] (and (.enabled $ctrl) app.user)))
-  (set! (.-fetchStreams $scope)
+
+  (set! $scope.fetchStreams
         (fn []
           #_(timbre/debug "fetching streams")
           (-> (proto/get-user app)
               (.then (fn [user]
                        (timbre/debugf "Got User - %s" user)
-                       (.getStreams user)))
+                       (.fetch subpageService user "streams")))
               (.then (fn [streams]
                        (timbre/debugf "Got Streams - %s" streams)
-                       (set! (.-streams $scope) streams))))))
-  (set! (.-form $scope) #js {:shown false})
-  (set! (.-getLocation $scope)
+                       (set! $scope.streams streams))))))
+
+  (set! $scope.getLocation
         (fn []
           (.. geolocation
               (getLocation)
               (then (fn [data]
                       (let [geo (.. $scope -activity -geo)
-                            coords (.-coords data)]
-                        (set! (.-latitude geo) (.-latitude coords))
-                        (set! (.-longitude geo) (.-longitude coords))))
+                            coords data.coords]
+                        (set! geo.latitude  coords.latitude)
+                        (set! geo.longitude coords.longitude)))
                     (fn [data] (timbre/errorf "Location error: %s" data))))))
-  (set! (.-reset $scope)
+
+  (set! $scope.reset
         (fn []
-          (set! (.-activity $scope) (.-defaultForm $scope))
-          (set! (.. $scope -activity -streams) #js [])))
-  (set! (.-submit $scope)
+          (set! $scope.activity         $scope.defaultForm)
+          (set! $scope.activity.streams #js [])))
+
+  (set! $scope.submit
         (fn []
           (js/console.info "Scope: " $scope)
-          (let [activity (.-activity $scope)
-                pictures (map #(.-lfFile %) (.-files $scope))]
+          (let [activity $scope.activity
+                pictures (map #(.-lfFile %) $scope.files)]
             (-> (proto/post app activity pictures)
                 (.then (fn []
                          (.reset $scope)
                          (.toggle $scope)
                          (.refresh app)))))))
-  (set! (.-toggle $scope)
+
+  (set! $scope.toggle
         (fn []
           (timbre/debug "Toggling New Post form")
-          (set! (.. $scope -form -shown) (not (.. $scope -form -shown)))
-          (when (.. $scope -form -shown)
+          (set! $scope.form.shown (not (.. $scope -form -shown)))
+          (when $scope.form.shown
             (.getLocation $scope)
             (.fetchStreams $scope))))
+
   (.reset $scope))
 
 (.component
  jiksnu "addPostForm"
  #js {:controller
-      #js ["$scope" "geolocation" "app" "Users"
-           (fn [$scope geolocation app Users]
-             (this-as $ctrl (NewPostController $ctrl $scope geolocation app Users)))]
+      #js ["$scope" "geolocation" "app" "Users" "subpageService"
+           (fn [$scope geolocation app Users subpageService]
+             (this-as $ctrl (NewPostController $ctrl $scope geolocation app Users subpageService)))]
       :templateUrl "/templates/add-post-form"})
 
 (defn NewStreamController
   [$scope app]
-  (set! (.-app $scope) app)
-  (set! (.-stream $scope) #js {})
-  (set! (.-submit $scope)
+  (set! $scope.app    app)
+  (set! $scope.stream #js {})
+  (set! $scope.submit
         (fn []
           (let [stream-name (.-name (.-stream $scope))]
-            (set! (.-name $scope) "")
+            (set! $scope.name "")
             (-> (proto/add-stream app stream-name)
                 (.then (fn [stream]
                          (timbre/info "Added Stream" stream)
