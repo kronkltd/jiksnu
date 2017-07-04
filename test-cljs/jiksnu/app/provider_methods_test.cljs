@@ -1,9 +1,7 @@
-(ns jiksnu.provider-methods-test
+(ns jiksnu.app.provider-methods-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
-            jiksnu.config
+            [jiksnu.app.provider-methods :as methods]
             jiksnu.main
-            jiksnu.model
-            [jiksnu.provider-methods :as methods]
             [taoensso.timbre :as timbre]))
 
 (declare $http)
@@ -47,7 +45,7 @@
    (set! auth-domain new-domain)
    (update-auth-data! new-username)))
 
-(js/describe "jiksnu.provider-methods"
+(js/describe "jiksnu.app.provider-methods"
   (fn []
 
     (js/beforeEach

@@ -53,7 +53,7 @@
   @(promise))
 
 (defn fetch-page
-  [method path]
+  [_method path]
   ;; TODO: Handle non-GET case
   (let [response (client/get (expand-url path))]
     (dosync

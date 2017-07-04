@@ -63,12 +63,8 @@
 (defn get-access-token
   [params]
   (timbre/info "getting access token")
-  (let [{nonce        "oauth_nonce"
-         consumer-key "oauth_consumer_key"
-         timestamp    "oauth_timestamp"
-         signature    "oauth_signature"
+  (let [{consumer-key "oauth_consumer_key"
          signature-method "oauth_signature_method"
-         verifier     "oauth_verifier"
          token        "oauth_token"
          version      "oauth_version"} params]
     (if (= version "1.0")

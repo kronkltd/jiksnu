@@ -1,9 +1,9 @@
-(ns jiksnu.services-test
-  (:require [jiksnu.services :as services]))
+(ns jiksnu.app.services-test
+  (:require [jiksnu.app.services :as services]))
 
 (declare $http)
 
-(js/describe "jiksnu.services"
+(js/describe "jiksnu.app.services"
   (fn []
 
     (js/describe "pageService"

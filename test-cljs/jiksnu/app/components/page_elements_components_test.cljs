@@ -1,7 +1,6 @@
-(ns jiksnu.components.page-element-components-test
+(ns jiksnu.app.components.page-element-components-test
   (:require jiksnu.main
-            jiksnu.components.page-element-components
-            [jiksnu.protocols :as p]
+            jiksnu.app.components.page-element-components
             [taoensso.timbre :as timbre]))
 
 (timbre/set-level! :debug)
@@ -18,7 +17,7 @@
 (declare $httpBackend)
 (def $controller (atom nil))
 
-(js/describe "jiksnu.components.page-element-components"
+(js/describe "jiksnu.app.components.page-element-components"
   (fn []
     (js/beforeEach
      (fn []

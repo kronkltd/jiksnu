@@ -1,9 +1,9 @@
-(ns jiksnu.components.page-element-components
+(ns jiksnu.app.components.page-element-components
   (:require [jiksnu.app :refer [jiksnu]]
-            [jiksnu.helpers :as helpers]
-            [jiksnu.protocols :as p]
+            [jiksnu.app.helpers :as helpers]
+            [jiksnu.app.protocols :as p]
+            jiksnu.app.services
             [jiksnu.registry :as registry]
-            jiksnu.services
             [taoensso.timbre :as timbre]))
 
 (.controller jiksnu "AppController" #js [(fn [])])

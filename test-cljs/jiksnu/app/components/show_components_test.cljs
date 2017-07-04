@@ -1,6 +1,6 @@
-(ns jiksnu.components.form-components-test
-  (:require jiksnu.main
-            jiksnu.components.form-components
+(ns jiksnu.app.components.show-components-test
+  (:require jiksnu.app.components.show-components
+            jiksnu.main
             [taoensso.timbre :as timbre]))
 
 (timbre/set-level! :debug)
@@ -17,7 +17,7 @@
 (declare $httpBackend)
 (def $controller (atom nil))
 
-(js/describe "jiksnu.components.form-components"
+(js/describe "jiksnu.app.components.show-components"
   (fn []
     (js/beforeEach (fn [] (js/module "jiksnu")))
 
@@ -40,12 +40,30 @@
                  (.. (whenGET #"/model/.*")     (respond "{}")))
                (set! injections #js {:$scope $scope :app app}))])))
 
-    (let [controller-name "NewGroupController"]
+    (let [controller-name "ShowConversationController"]
       (js/describe controller-name
         (fn []
-          (js/describe ".submit"
+          (js/beforeEach
+           (fn []
+             (set! (.-id $scope) "1")
+             (set! (.-init $scope)
+                   (fn [id]
+                     (timbre/info "mocked init")
+                     (set! (.-item $scope) #js {:id "1"})
+                     (set! (.-loaded $scope) true)))))
+
+          (js/describe ".deleteRecord"
             (fn []
-              (js/it "Should send the form"
+              (js/it "sends a delete action"
                 (fn []
                   (@$controller controller-name injections)
-                  (.submit $scope))))))))))
+                  (.. (js/spyOn app "invokeAction") -and (returnValue ($q #(%))))
+                  (.. $httpBackend
+                      (expectGET (str "conversations/" (.-id $scope)))
+                      (respond (constantly (clj->js [201 {:items []}]))))
+
+                  (let [item (.-item $scope)
+                        p (.deleteRecord $scope item)]
+                    (.$apply $scope)
+                    (.. (js/expect p) (toBeResolved))
+                    (.. (js/expect (.-invokeAction app)) (toHaveBeenCalled))))))))))))

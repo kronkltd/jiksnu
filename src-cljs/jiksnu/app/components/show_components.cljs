@@ -1,7 +1,7 @@
-(ns jiksnu.components.show-components
+(ns jiksnu.app.components.show-components
   (:require [inflections.core :as inf]
             [jiksnu.app :refer [jiksnu]]
-            [jiksnu.helpers :as helpers]
+            [jiksnu.app.helpers :as helpers]
             [taoensso.timbre :as timbre]))
 
 (defn item-directive

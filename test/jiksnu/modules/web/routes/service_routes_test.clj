@@ -6,7 +6,6 @@
             jiksnu.modules.web.routes.service-routes
             [jiksnu.test-helper :as th]
             [jiksnu.routes-helper :refer [as-user response-for]]
-            [jiksnu.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as req])
   (:import (org.apache.http HttpStatus)))

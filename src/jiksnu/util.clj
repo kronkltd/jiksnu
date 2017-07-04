@@ -4,8 +4,6 @@
             [clj-time.format :as f]
             [clojure.string :as string]
             [crypto.random :as random]
-            [jiksnu.namespace :as ns]
-            [jiksnu.registry :as registry]
             [manifold.deferred :as d]
             monger.joda-time
             monger.json
@@ -23,8 +21,7 @@
            (java.util TimeZone)
            (java.net InetSocketAddress)
            (org.bson.types ObjectId)
-           (org.joda.time DateTime)
-           (nu.xom Element)))
+           (org.joda.time DateTime)))
 
 (defn new-id
   []

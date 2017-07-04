@@ -1,6 +1,5 @@
-(ns jiksnu.provider-methods
+(ns jiksnu.app.provider-methods
   (:require [clojure.tools.reader.edn :as edn]
-            [jiksnu.protocols :as p]
             [taoensso.timbre :as timbre]))
 
 (defn add-stream

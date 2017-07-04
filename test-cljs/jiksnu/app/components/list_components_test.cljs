@@ -1,5 +1,5 @@
-(ns jiksnu.components.list-components-test
-  (:require jiksnu.components.list-components
+(ns jiksnu.app.components.list-components-test
+  (:require jiksnu.app.components.list-components
             [taoensso.timbre :as timbre]))
 
 (timbre/set-level! :debug)
@@ -16,7 +16,7 @@
 (declare $httpBackend)
 (def $controller (atom nil))
 
-(js/describe "jiksnu.components.list-components"
+(js/describe "jiksnu.app.components.list-components"
   (fn []
     (js/beforeEach (fn [] (js/module "jiksnu")))
 

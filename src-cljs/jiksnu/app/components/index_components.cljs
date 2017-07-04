@@ -1,6 +1,6 @@
-(ns jiksnu.components.index-components
+(ns jiksnu.app.components.index-components
   (:require [jiksnu.app :refer [jiksnu]]
-            [jiksnu.helpers :as helpers]
+            [jiksnu.app.helpers :as helpers]
             [jiksnu.registry :as registry]))
 
 (doseq [[page-name] registry/page-mappings]

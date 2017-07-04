@@ -1,6 +1,6 @@
 (ns jiksnu.model-test
   (:require [cljs.test :refer-macros [async deftest is testing]]
-            jiksnu.config
+            jiksnu.app.config
             jiksnu.main
             [taoensso.timbre :as timbre]))
 

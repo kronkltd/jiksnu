@@ -1,9 +1,9 @@
-(ns jiksnu.helpers
+(ns jiksnu.app.helpers
   (:require [clojure.string :as string]
             [hiccups.runtime :as hiccupsrt]
             [inflections.core :as inf]
+            jiksnu.app.services
             [jiksnu.registry :as registry]
-            jiksnu.services
             [taoensso.timbre :as timbre])
   (:require-macros [hiccups.core :as hiccups :refer [html]]))
 
@@ -21,10 +21,12 @@
                  :template (html template)})))
 
 (defn get-toggle-fn
+  "Returns a function capable of toggling a component's form"
   [$scope]
   (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
 
 (defn fetch-page
+  "Fetch the url and put assign its response to the scope"
   [$scope $http url]
   (fn []
     (-> $http
@@ -34,6 +36,7 @@
            (set! (.-page $scope) data))))))
 
 (defn setup-hotkeys
+  "register all hotkeys"
   [hotkeys $state]
   (doseq [[combo state description] registry/hotkey-data]
     (.add hotkeys #js {:combo combo
@@ -41,6 +44,7 @@
                        :callback #(.go $state state)})))
 
 (defn fetch-sub-page
+  "Load an item's subpage"
   [item subpageService subpage]
   (timbre/debugf "Fetching subpage: %s -> %s" (.-_id item) subpage)
   (-> subpageService
@@ -48,8 +52,9 @@
       (.then #(aset item subpage (.-body %)))))
 
 (defn init-item
+  "Common initialization for an item component"
   [$ctrl $scope $stateParams app collection]
-  (set! (.-init $scope)
+  (set! $scope.init
         (fn [id]
           (set! (.-loaded $scope) false)
           (let [id (.-id $ctrl)]
@@ -59,18 +64,18 @@
               (-> (.find collection id)
                   (.then (fn [_] (set! (.-loaded $scope) true))))))))
 
-  (set! (.-$onChanges $ctrl)
+  (set! $ctrl.$onChanges
         (fn [changes]
           (when-let [id (some-> changes .-id .-currentValue)]
             (timbre/debugf "Item controller binding changed - %s" (.-name collection))
             (.init $scope))))
 
-  (set! (.-loaded $scope) false)
-  (set! (.-loading $scope) false)
-  (set! (.-errored $scope) false)
-  (set! (.-app $scope) app)
-  (set! (.-refresh $scope) (fn [] (.init $scope (.-id $scope))))
-  (set! (.-deleteRecord $scope)
+  (set! $scope.loaded false)
+  (set! $scope.loading false)
+  (set! $scope.errored false)
+  (set! $scope.app app)
+  (set! $scope.refresh (fn [] (.init $scope (.-id $scope))))
+  (set! $scope.deleteRecord
         (fn [item]
           (let [id (.-id $scope)]
             (-> (.invokeAction app (.-name collection) "delete" id)
@@ -79,13 +84,14 @@
   (.init $scope))
 
 (defn init-subpage
+  "Common initialization for a subpage component"
   [$ctrl $scope app collection subpage]
-  (set! (.-app $scope) app)
-  (set! (.-loaded $scope) false)
-  (set! (.-loading $scope) false)
-  (set! (.-errored $scope) false)
-  (set! (.-formShown $scope) false)
-  (set! (.-toggle $scope) (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! $scope.app app)
+  (set! $scope.loaded false)
+  (set! $scope.loading false)
+  (set! $scope.errored false)
+  (set! $scope.formShown false)
+  (set! $scope.toggle (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
 
   (.$watch $scope
            #(.-item $scope)
@@ -95,9 +101,9 @@
                  (.init $scope item subpage)
                  (timbre/warn "item is nil")))))
 
-  (set! (.-refresh $scope) (fn [] (.$broadcast $scope "refresh-page")))
+  (set! $scope.refresh (fn [] (.$broadcast $scope "refresh-page")))
 
-  (set! (.-init $scope)
+  (set! $scope.init
         (fn [item]
           (let [subpageService (.inject app "subpageService")]
             (timbre/debugf "init subpage %s(%s)=>%s" (.-name collection) (.-_id item) subpage)
@@ -120,22 +126,22 @@
    module (str "Index" (inf/camel-case page-name) "Controller")
    #js ["$scope" "$rootScope" "app" "pageService" "Pages"
         (fn [$scope $rootScope app pageService Pages]
-          (set! (.-loaded $scope) false)
-          (set! (.-page $scope) #js {:items #js []})
-          (set! (.-refresh $scope) #(.init $scope))
-          (set! (.-getItems $scope) (fn [] (or (some-> $scope .-page .-items) #js [])))
-          (set! (.-init $scope)
+          (set! $scope.loaded   false)
+          (set! $scope.page     #js {:items #js []})
+          (set! $scope.refresh  #(.init $scope))
+          (set! $scope.getItems (fn [] (or (some-> $scope .-page .-items) #js [])))
+          (set! $scope.init
                 (fn []
                   (timbre/debugf "Initializing page controller: %s" page-name)
-                  (set! (.-loaded $scope) false)
+                  (set! $scope.loaded false)
                   (-> pageService
                       (.fetch page-name)
                       (.then (fn [page]
-                               (set! (.-_id page) page-name)
+                               (set! page._id page-name)
                                (.inject Pages page)
-                               (set! (.-page $scope) page)
-                               (set! (.-loaded $scope) true))))))
-          (.$on $rootScope "updateCollection" #(.init $scope))
+                               (set! $scope.page   page)
+                               (set! $scope.loaded true))))))
+          (.$on $rootScope "updateCollection" $scope.init)
           (.init $scope))])
   (.component
    module (str "index" (inf/camel-case page-name))

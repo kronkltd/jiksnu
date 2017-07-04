@@ -1,12 +1,13 @@
 (ns jiksnu.main
-  (:require jiksnu.config
-            jiksnu.components.form-components
-            jiksnu.components.index-components
-            jiksnu.components.list-components
-            jiksnu.components.page-element-components
-            jiksnu.components.show-components
-            jiksnu.components.state-components
-            jiksnu.helpers
-            jiksnu.model
-            jiksnu.providers
-            jiksnu.services))
+  (:require jiksnu.app.actions
+            jiksnu.app.components.form-components
+            jiksnu.app.components.index-components
+            jiksnu.app.components.list-components
+            jiksnu.app.components.page-element-components
+            jiksnu.app.components.show-components
+            jiksnu.app.components.state-components
+            jiksnu.app.config
+            jiksnu.app.helpers
+            jiksnu.app.model
+            jiksnu.app.providers
+            jiksnu.app.services))
