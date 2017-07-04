@@ -7,8 +7,7 @@
             [taoensso.timbre :as timbre]))
 
 (def app-methods
-  {:addStream     p/add-stream
-   :connect       methods/connect
+  {:connect       methods/connect
    :deleteStream  methods/delete-stream
    :fetchStatus   methods/fetch-status
    :follow        methods/follow
