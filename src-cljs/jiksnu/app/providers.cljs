@@ -13,7 +13,7 @@
    :getUserId     p/get-user-id
    :go            methods/go
    :handleMessage methods/handle-message
-   :invokeAction  methods/invoke-action
+   :invokeAction  p/invoke-action
    :isFollowing   methods/following?
    :login         methods/login
    :logout        methods/logout
@@ -90,6 +90,10 @@
   (handle-message [app message])
 
   (inject [app atom])
+
+  (invoke-action [app collection-name action-name id]
+    (let [connection (.-connection app)]
+      (methods/invoke-action connection collection-name action-name id)))
 
   (login [app username password]
     (let [$http (.inject app "$http")

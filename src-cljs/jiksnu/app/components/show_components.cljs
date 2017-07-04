@@ -2,6 +2,7 @@
   (:require [inflections.core :as inf]
             [jiksnu.app :refer [jiksnu]]
             [jiksnu.app.helpers :as helpers]
+            [jiksnu.app.protocols :as proto]
             [taoensso.timbre :as timbre]))
 
 (defn item-directive
@@ -19,8 +20,7 @@
   [$scope $stateParams app Activities]
   (set! (.-likeActivity $scope)
         (fn [activity]
-          (-> app
-              (.invokeAction "activity" "like" (.-id $scope))
+          (-> (proto/invoke-action app "activity" "like" $scope.id)
               (.then (fn [] (.refresh $scope))))))
   (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Activities)))
 
@@ -62,7 +62,7 @@
         (fn []
           (timbre/info "Joining group")
           (let [id (.-_id (.-item $scope))]
-            (.invokeAction app "group" "join" id))))
+            (proto/invoke-action app "group" "join" id))))
   (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Groups)))
 
 (defn ShowGroupMinimalController

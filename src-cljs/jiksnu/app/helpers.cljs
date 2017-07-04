@@ -2,6 +2,7 @@
   (:require [clojure.string :as string]
             [hiccups.runtime :as hiccupsrt]
             [inflections.core :as inf]
+            [jiksnu.app.protocols :as proto]
             jiksnu.app.services
             [jiksnu.registry :as registry]
             [taoensso.timbre :as timbre])
@@ -78,7 +79,7 @@
   (set! $scope.deleteRecord
         (fn [item]
           (let [id $scope.id]
-            (-> (.invokeAction app collection.name "delete" id)
+            (-> (proto/invoke-action app collection.name "delete" id)
                 (.then (fn [] (.refresh app)))))))
 
   (.init $scope))

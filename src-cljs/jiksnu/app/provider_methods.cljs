@@ -177,18 +177,6 @@
       data.action         (handle-action app data)
       :default            nil #_(.warning Notification (str "Unknown message: " data-str)))))
 
-(defn invoke-action
-  [app model-name action-name id]
-  (timbre/debugf "Invoking Action. %s(%s)=>%s" model-name id action-name)
-  (let [msg (str "invoke-action \""
-                 model-name
-                 "\", \""
-                 action-name
-                 "\", \""
-                 id
-                 "\"")]
-    (.send app msg)))
-
 ;; TODO: Find a cljs version of this check
 (defn response-ok?
   [response]
@@ -237,6 +225,18 @@
   [connection command]
   (timbre/debugf "Sending command: %s" command)
   (.send connection command))
+
+(defn invoke-action
+  [connection model-name action-name id]
+  (timbre/debugf "Invoking Action. %s(%s)=>%s" model-name id action-name)
+  (let [msg (str "invoke-action \""
+                 model-name
+                 "\", \""
+                 action-name
+                 "\", \""
+                 id
+                 "\"")]
+    (send connection msg)))
 
 (defn ping
   "Send a ping command"
