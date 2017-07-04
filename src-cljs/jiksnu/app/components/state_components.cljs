@@ -17,7 +17,7 @@
         (fn []
           (let [username $scope.username
                 password $scope.password]
-            (-> (.login app username password)
+            (-> (proto/login app username password)
                 (.then (fn [_] (.go $state "home"))
                        (fn [_] (.showSimple $mdToast "login failed"))))))))
 
