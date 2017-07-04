@@ -24,10 +24,10 @@
   (.executeAsyncScript
    js/browser
    (fn [callback]
-     (.. js/app fetchStatus
-         (then (fn [data]
-                 (js/console.log "data" data)
-                 (callback (.-data js/app))))))))
+     (-> (.fetchStatus js/app)
+         (.then (fn [data]
+                  (js/console.log "data" data)
+                  (callback (.-data js/app))))))))
 
 (defn get-username
   "Retrieve the logged in username from then app service"

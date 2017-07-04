@@ -1,7 +1,7 @@
 (ns jiksnu.app.components.state-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.app.helpers :as helpers]
-            [jiksnu.app.protocols :as p]
+            [jiksnu.app.protocols :as proto]
             [taoensso.timbre :as timbre]))
 
 (defn AvatarPageController [])
@@ -18,8 +18,8 @@
           (let [username $scope.username
                 password $scope.password]
             (-> (.login app username password)
-                (.then (fn [r] (.go $state "home"))
-                       (fn [e] (.showSimple $mdToast "login failed"))))))))
+                (.then (fn [_] (.go $state "home"))
+                       (fn [_] (.showSimple $mdToast "login failed"))))))))
 
 (.component
  jiksnu "loginPage"
@@ -49,12 +49,12 @@
   [app $scope]
   (set! $scope.register
         (fn []
-          (-> (p/register app $scope)
+          (-> (proto/register app $scope)
               (.then (fn [data]
-                       ;; Should we copy the whole data object?
-                       (set! (.. app -data -user) (.. data -data -user))
-                       (-> (p/fetch-status app)
-                           (.then #(p/go app "home")))))))))
+                        ;; Should we copy the whole data object?
+                        (set! app.data.user (.. data -data -user))
+                        (-> (proto/fetch-status app)
+                            (.then #(proto/go app "home")))))))))
 
 (.component
  jiksnu "registerPage"

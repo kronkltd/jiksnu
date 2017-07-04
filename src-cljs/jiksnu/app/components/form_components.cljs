@@ -1,7 +1,7 @@
 (ns jiksnu.app.components.form-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.app.helpers :as helpers]
-            [jiksnu.app.protocols :as p]
+            [jiksnu.app.protocols :as proto]
             [taoensso.timbre :as timbre]))
 
 (defn NewAlbumController
@@ -101,7 +101,7 @@
   (set! (.-fetchStreams $scope)
         (fn []
           #_(timbre/debug "fetching streams")
-          (-> (p/get-user app)
+          (-> (proto/get-user app)
               (.then (fn [user]
                        (timbre/debugf "Got User - %s" user)
                        (.getStreams user)))
@@ -128,7 +128,7 @@
           (js/console.info "Scope: " $scope)
           (let [activity (.-activity $scope)
                 pictures (map #(.-lfFile %) (.-files $scope))]
-            (-> (p/post app activity pictures)
+            (-> (proto/post app activity pictures)
                 (.then (fn []
                          (.reset $scope)
                          (.toggle $scope)
@@ -158,7 +158,7 @@
         (fn []
           (let [stream-name (.-name (.-stream $scope))]
             (set! (.-name $scope) "")
-            (-> (p/add-stream app stream-name)
+            (-> (proto/add-stream app stream-name)
                 (.then (fn [stream]
                          (timbre/info "Added Stream" stream)
                          (.refresh app))))))))
