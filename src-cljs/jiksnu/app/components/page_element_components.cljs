@@ -10,13 +10,13 @@
 
 (defn AsModelController
   [$scope DS]
-  (let [collection-name (.-model $scope)]
-    (set! (.-init $scope)
+  (let [collection-name $scope.model]
+    (set! $scope.init
           (fn [id]
             (timbre/debugf "init as model %s(%s)" collection-name id)
             (.bindOne DS collection-name id $scope "item")
             (.find DS collection-name id)))
-    (.init $scope (.-id $scope))))
+    (.init $scope $scope.id)))
 
 (.component
  jiksnu "asModel"
@@ -27,15 +27,14 @@
 
 (defn DebugController
   [$ctrl $scope $filter app]
-  (set! (.-visible $scope) #(.. app -data -debug))
-  (set! (.-$onChanges $ctrl) #(do
-                                (js/console.debug "change expr: " %)
-                                (when (.-id %) (.init $scope))))
-  (set! (.-init $scope)
+  (set! $scope.visible #(.. app -data -debug))
+  (set! $ctrl.$onChanges #(do
+                            (js/console.debug "change expr: " %)
+                            (when (.-id %) (.init $scope))))
+  (set! $scope.init
         (fn []
-          (timbre/debugf "Debugging expr: %s" (js/JSON.stringify (.-expr $ctrl)))
-          (set! (.-formattedCode $scope)
-                #(($filter "json") (.-expr $ctrl)))))
+          (timbre/debugf "Debugging expr: %s" (js/JSON.stringify $ctrl.expr))
+          (set! $scope.formattedCode #(($filter "json") $ctrl.expr))))
   (.init $scope))
 
 (.component
@@ -49,11 +48,11 @@
 
 (defn DisplayAvatarController
   [$ctrl $scope Users]
-  (set! (.-$onChanges $ctrl) #(when (.-id %) (.init $scope)))
-  (set! (.-init $scope)
+  (set! $ctrl.$onChanges #(when (.-id %) (.init $scope)))
+  (set! $scope.init
         (fn []
-          (set! (.-size $scope) (or (.-size $ctrl) 32))
-          (when-let [id (.-id $ctrl)]
+          (set! $scope.size (or $ctrl.size 32))
+          (when-let [id $ctrl.id]
             (when (seq id)
               (timbre/debugf "Displaying avatar for %s" id)
               (.bindOne Users id $scope "user")
@@ -70,39 +69,39 @@
 
 (defn FollowButtonController
   [$scope app $q $rootScope Subscriptions]
-  (set! (.-app $scope) app)
-  (set! (.-loaded $scope) false)
+  (set! $scope.app app)
+  (set! $scope.loaded false)
 
-  (set! (.-isActor $scope)
+  (set! $scope.isActor
         (fn []
           (set! (.-authenticated $scope)
                 (some-> app p/get-user-id (= (some-> $scope .-item .-_id))))))
 
-  (set! (.-init $scope)
+  (set! $scope.init
         (fn []
           (let [actor (.isActor $scope)]
-            (set! (.-actor $scope) actor)
+            (set! $scope.actor actor)
             (when-not actor
               (-> (.isFollowing $scope)
                   (.then (fn [following]
                            (when following (.log following "info"))
-                           (set! (.-following $scope) following)
-                           (set! (.-followLabel $scope)
-                                 (if (.-following $scope) "Unfollow" "Follow"))
-                           (set! (.-loaded $scope) true))))))))
+                           (set! $scope.following following)
+                           (set! $scope.followLabel
+                                 (if $scope.following "Unfollow" "Follow"))
+                           (set! $scope.loaded true))))))))
 
-  (set! (.-isFollowing $scope)
+  (set! $scope.isFollowing
         (fn []
           ($q
            (fn [resolve reject]
-             (if-let [user (.-item $scope)]
-               (let [user-id (.-_id user)]
+             (if-let [user $scope.item]
+               (let [user-id user._id]
                  (-> (p/get-user app)
                      (.then #(some-> % .getFollowing))
                      (.then (fn [page]
                               (when page
-                                (->> (.-items page)
-                                     (map (.-find Subscriptions))
+                                (->> page.items
+                                     (map Subscriptions.find)
                                      clj->js
                                      (.all $q)))))
                      (.then (fn [subscriptions]
@@ -112,8 +111,8 @@
 
   (set! (.-submit $scope)
         (fn []
-          (let [item (.-item $scope)]
-            (-> (if (.-following $scope)
+          (let [item $scope.item]
+            (-> (if $scope.following
                   (p/unfollow app item)
                   (p/follow app item))
                 (.then (fn []
@@ -121,9 +120,9 @@
                          (.$broadcast $rootScope helpers/refresh-followers)))))))
 
   (.$watch $scope
-           (fn [] (.-data app))
+           (fn [] app.data)
            (fn [data old-data] (.init $scope)))
-  (.$on $scope helpers/refresh-followers (.-init $scope)))
+  (.$on $scope helpers/refresh-followers $scope.init))
 
 (.controller
  jiksnu "FollowButtonController"
@@ -147,15 +146,15 @@
 (defn MainLayoutController
   [$location $mdSidenav $scope app]
   (let []
-    (set! (.-getSwaggerUrl $scope)
+    (set! $scope.getSwaggerUrl
           (fn []
             (let [protocol (.protocol $location)
                   hostname (.host $location)
                   port (.port $location)]
               (swagger-url protocol hostname port))))
-    (set! (.-apiUrl $scope) (str "/vendor/swagger-ui/dist/index.html?url=" (.getSwaggerUrl $scope)))
-    (set! (.-$mdSidenav $scope) $mdSidenav)
-    (set! (.-logout $scope) #(p/logout app))))
+    (set! $scope.apiUrl (str "/vendor/swagger-ui/dist/index.html?url=" (.getSwaggerUrl $scope)))
+    (set! $scope.$mdSidenav $mdSidenav)
+    (set! $scope.logout #(p/logout app))))
 
 (.component
  jiksnu "mainLayout"
@@ -200,11 +199,10 @@
 
 (defn SidenavController
   [$scope app]
+  (set! $scope.logout #(p/logout app))
+  (set! $scope.app    app)
 
-  (set! (.-logout $scope) #(p/logout app))
-  (set! (.-app $scope) app)
-
-  (set! (.-items $scope)
+  (set! $scope.items
         (clj->js
          (map (fn [[label ref]] {:label label :ref ref}) registry/sidenav-data))))
 
@@ -219,37 +217,37 @@
 
 (defn SubpageController
   [$ctrl $scope subpageService $rootScope]
-  (set! (.-loaded $scope) false)
+  (set! $scope.loaded false)
   (let [subpage (or (some-> $ctrl .-subpage) (throw "Subpage not specified"))]
-    (set! (.-refresh $scope) (fn [] (.init $scope (.-item $scope))))
+    (set! $scope.refresh (fn [] (.init $scope $scope.item)))
 
-    (set! (.-$onChanges $ctrl)
+    (set! $ctrl.$onChanges
           (fn [changes]
             (when-let [item (some-> changes .-item .-currentValue)]
               (.init $scope item))))
     (.$on $scope "refresh-page" (fn [] (.refresh $scope)))
 
-    (set! (.-init $scope)
+    (set! $scope.init
           (fn [item]
             (if item
               (let [model-name (.. item -constructor -name)
                     id (.-_id item)]
-                (set! (.-item $scope) item)
-                (set! (.-loaded $scope) false)
-                (set! (.-loading $scope) true)
+                (set! $scope.item    item)
+                (set! $scope.loaded  false)
+                (set! $scope.loading true)
                 (timbre/debugf "Refreshing subpage: %s(%s)=>%s" model-name id subpage)
                 (-> (.fetch subpageService item subpage)
                     (.then
                      (fn [page]
-                       (set! (.-errored $scope) false)
-                       (set! (.-loaded $scope) true)
-                       (set! (.-loading $scope) false)
-                       (set! (.-page $scope) page)
+                       (set! $scope.errored false)
+                       (set! $scope.loaded  true)
+                       (set! $scope.loading false)
+                       (set! $scope.page    page)
                        page)
                      (fn [page]
                        (timbre/errorf "Failed to load subpage. %s(%s)=>%s" model-name id subpage)
-                       (set! (.-errored $scope) true)
-                       (set! (.-loading $scope) false)
+                       (set! $scope.errored true)
+                       (set! $scope.loading false)
                        page)))))))
     (.refresh $scope)))
 

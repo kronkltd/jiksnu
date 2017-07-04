@@ -45,12 +45,12 @@
         (fn []
           (js/beforeEach
            (fn []
-             (set! (.-id $scope) "1")
-             (set! (.-init $scope)
+             (set! $scope.id  "1")
+             (set! $scope.init
                    (fn [id]
                      (timbre/info "mocked init")
-                     (set! (.-item $scope) #js {:id "1"})
-                     (set! (.-loaded $scope) true)))))
+                     (set! $scope.item #js {:id "1"})
+                     (set! $scope.loaded true)))))
 
           (js/describe ".deleteRecord"
             (fn []

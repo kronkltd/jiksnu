@@ -53,7 +53,7 @@
                     (js/it "should return false"
                       (fn []
                         (@$controller controller-name injections)
-                        (set! (.-item $scope) #js {:_id item-id})
+                        (set! $scope.item #js {:_id item-id})
                         (.. (js/expect (.isActor $scope)) toBeFalsy)))))
                 (js/describe "When authenticated"
                   (fn []
@@ -62,9 +62,9 @@
                         (js/it "should return false"
                           (fn []
                             (@$controller controller-name injections)
-                            (set! (.-domain (.-data app)) "example.com")
-                            (set! (.-user (.-data app)) "bar")
-                            (set! (.-item $scope) #js {:_id item-id})
+                            (set! app.data.domain "example.com")
+                            (set! app.data.user   "bar")
+                            (set! $scope.item      #js {:_id item-id})
                             (.. (js/expect (.isActor $scope)) toBeFalsy)))))
                     (js/describe "As the actor"
                       (fn []
@@ -72,8 +72,8 @@
                           (fn []
                             (@$controller controller-name injections)
                             (set! app.data.domain "example.com")
-                            (set! app.data.user "foo")
-                            (set! $scope.item #js {:_id item-id})
+                            (set! app.data.user   "foo")
+                            (set! $scope.item     #js {:_id item-id})
                             (-> (js/expect ($scope.isActor)) .toBeTruthy)))))))))
             (js/describe ".isFollowing"
               (fn []
@@ -109,6 +109,6 @@
 
           (js/it "should bind the app service to app2"
             (fn []
-              (set! (.-foo app) "bar")
+              (set! app.foo "bar")
               (@$controller controller-name injections)
               (.. (js/expect (some-> $scope .-app2 .-foo)) (toBe "bar")))))))))

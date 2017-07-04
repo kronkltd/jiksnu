@@ -78,25 +78,23 @@
 (defn ListStreamsController
   [$scope app Users]
 
-  (.$watch $scope
-           (.-formShown $scope)
+  (.$watch $scope $scope.formShown
            (fn [state]
              (.updateLabel $scope)))
 
-  (set! (.-deleteStream $scope)
+  (set! $scope.deleteStream
         (fn [item]
           (p/delete-stream app item)))
 
-  (set! (.-addStream $scope)
+  (set! $scope.addStream
         (fn []
           (if-let [stream-name (.. $scope -stream -name)]
             (p/add-stream app stream-name)
             (throw (js/Error. "Could not determine stream name")))))
 
-  (set! (.-updateLabel $scope)
+  (set! $scope.updateLabel
         (fn []
-          (set! (.-btnLabel $scope)
-                (if (.-formShown $scope) "-" "+"))))
+          (set! $scope.btnLabel (if $scope.formShown "-" "+"))))
 
   (this-as $ctrl (helpers/init-subpage $ctrl $scope app Users "streams"))
   (.updateLabel $scope))

@@ -17,13 +17,13 @@
                  :url uri
                  :controller #js ["$scope" "$stateParams"
                                   (fn [$scope $stateParams]
-                                    (set! (.-$stateParams $scope) $stateParams))]
+                                    (set! $scope.$stateParams $stateParams))]
                  :template (html template)})))
 
 (defn get-toggle-fn
   "Returns a function capable of toggling a component's form"
   [$scope]
-  (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (fn [] (set! $scope.formShown (not (.-formShown $scope)))))
 
 (defn fetch-page
   "Fetch the url and put assign its response to the scope"
@@ -33,7 +33,7 @@
         (.get url)
         (.success
          (fn [data]
-           (set! (.-page $scope) data))))))
+           (set! $scope.page data))))))
 
 (defn setup-hotkeys
   "register all hotkeys"
@@ -56,29 +56,29 @@
   [$ctrl $scope $stateParams app collection]
   (set! $scope.init
         (fn [id]
-          (set! (.-loaded $scope) false)
-          (let [id (.-id $ctrl)]
+          (set! $scope.loaded false)
+          (let [id $ctrl.id]
             (when (seq id)
               (timbre/debugf "Binding item id: %s" id)
               (.bindOne collection id $scope "item")
               (-> (.find collection id)
-                  (.then (fn [_] (set! (.-loaded $scope) true))))))))
+                  (.then (fn [_] (set! $scope.loaded true))))))))
 
   (set! $ctrl.$onChanges
         (fn [changes]
           (when-let [id (some-> changes .-id .-currentValue)]
-            (timbre/debugf "Item controller binding changed - %s" (.-name collection))
+            (timbre/debugf "Item controller binding changed - %s" collection.name)
             (.init $scope))))
 
   (set! $scope.loaded false)
   (set! $scope.loading false)
   (set! $scope.errored false)
   (set! $scope.app app)
-  (set! $scope.refresh (fn [] (.init $scope (.-id $scope))))
+  (set! $scope.refresh (fn [] (.init $scope $scope.id)))
   (set! $scope.deleteRecord
         (fn [item]
-          (let [id (.-id $scope)]
-            (-> (.invokeAction app (.-name collection) "delete" id)
+          (let [id $scope.id]
+            (-> (.invokeAction app collection.name "delete" id)
                 (.then (fn [] (.refresh app)))))))
 
   (.init $scope))
@@ -91,7 +91,7 @@
   (set! $scope.loading false)
   (set! $scope.errored false)
   (set! $scope.formShown false)
-  (set! $scope.toggle (fn [] (set! (.-formShown $scope) (not (.-formShown $scope)))))
+  (set! $scope.toggle (fn [] (set! $scope.formShown (not $scope.formShown))))
 
   (.$watch $scope
            #(.-item $scope)
@@ -106,9 +106,9 @@
   (set! $scope.init
         (fn [item]
           (let [subpageService (.inject app "subpageService")]
-            (timbre/debugf "init subpage %s(%s)=>%s" (.-name collection) (.-_id item) subpage)
-            (set! (.-item $scope) item)
-            (set! (.-loaded $scope) false)
+            (timbre/debugf "init subpage %s(%s)=>%s" collection.name item._id subpage)
+            (set! $scope.item item)
+            (set! $scope.loaded false)
             (-> (.fetch subpageService item subpage)
                 (.then (fn [page]
                          (timbre/debugf "Subpage resolved - %s(%s)=>%s"

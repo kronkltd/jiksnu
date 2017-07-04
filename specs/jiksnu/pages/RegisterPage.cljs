@@ -5,29 +5,29 @@
 (defn RegisterPage
   [])
 
-(set! (.-get (.-prototype RegisterPage))
+(set! RegisterPage.prototype.get
       (fn []
         (timbre/debug "loading register page")
         (.get js/browser "/main/register")))
 
-(set! (.-setUsername (.-prototype RegisterPage))
+(set! RegisterPage.prototype.setUsername
       (fn [username]
         (-> (by-model "reg.username")
             (.sendKeys username))))
 
-(set! (.-setPassword (.-prototype RegisterPage))
+(set! RegisterPage.prototype.setPassword
       (fn [password]
         (-> (by-model "reg.password")
             (.sendKeys password))
         (-> (by-model "reg.confirmPassword")
             (.sendKeys password))))
 
-(set! (.-submit (.-prototype RegisterPage))
+(set! RegisterPage.prototype.submit
       (fn []
         (timbre/debug "submitting register form")
         (.submit (js/$ ".register-form"))))
 
-(set! (.-waitForLoaded (.-prototype RegisterPage))
+(set! RegisterPage.prototype.waitForLoaded
       (fn []
         (.wait js/browser
          (fn []

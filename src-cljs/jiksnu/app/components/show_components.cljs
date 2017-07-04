@@ -58,7 +58,7 @@
 
 (defn ShowGroupController
   [$scope $stateParams app Groups]
-  (set! (.-join $scope)
+  (set! $scope.join
         (fn []
           (timbre/info "Joining group")
           (let [id (.-_id (.-item $scope))]
@@ -112,11 +112,11 @@
 (defn ShowStreamMinimalController
   [$scope $stateParams app Streams]
   (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Streams))
-  (set! (.-toggle $scope)
+  (set! $scope.toggle
         (fn []
           (let [shown? (not (.-formShown $scope))]
-            (set! (.-formShown $scope) shown?)
-            (set! (.-btnLabel $scope) (if shown? "-" "+"))))))
+            (set! $scope.formShown shown?)
+            (set! $scope.btnLabel  (if shown? "-" "+"))))))
 
 (defn ShowSubscriptionController
   [$scope $stateParams app Subscriptions]

@@ -13,10 +13,10 @@
 
 (defn LoginPageController
   [$scope $state app $mdToast]
-  (set! (.-login $scope)
+  (set! $scope.login
         (fn []
-          (let [username (.-username $scope)
-                password (.-password $scope)]
+          (let [username $scope.username
+                password $scope.password]
             (-> (.login app username password)
                 (.then (fn [r] (.go $state "home"))
                        (fn [e] (.showSimple $mdToast "login failed"))))))))
@@ -30,7 +30,7 @@
   [$location $scope $stateParams app RequestTokens]
   (timbre/info "Location: " $location)
   (timbre/info "State Params: " $stateParams)
-  (set! (.-id $scope) (aget (.search $location) "oauth_token"))
+  (set! $scope.id (aget (.search $location) "oauth_token"))
   (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app RequestTokens)))
 
 (.component
@@ -47,7 +47,7 @@
 
 (defn RegisterPageController
   [app $scope]
-  (set! (.-register $scope)
+  (set! $scope.register
         (fn []
           (-> (p/register app $scope)
               (.then (fn [data]
