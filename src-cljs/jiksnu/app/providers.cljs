@@ -8,7 +8,6 @@
 
 (def app-methods
   {:connect       methods/connect
-   :deleteStream  methods/delete-stream
    :fetchStatus   methods/fetch-status
    :follow        methods/follow
    :getUserId     p/get-user-id
