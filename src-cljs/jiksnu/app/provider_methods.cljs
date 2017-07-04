@@ -225,14 +225,14 @@
 (defn invoke-action
   [connection model-name action-name id]
   (timbre/debugf "Invoking Action. %s(%s)=>%s" model-name id action-name)
-  (let [msg (str "invoke-action \""
+  (let [command (str "invoke-action \""
                  model-name
                  "\", \""
                  action-name
                  "\", \""
                  id
                  "\"")]
-    (send connection msg)))
+    (send connection command)))
 
 (defn ping
   "Send a ping command"

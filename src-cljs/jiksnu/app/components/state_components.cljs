@@ -27,16 +27,14 @@
       :templateUrl "/templates/login-page"})
 
 (defn AuthorizeClientController
-  [$location $scope $stateParams app RequestTokens]
+  [$location $scope app RequestTokens]
   (timbre/info "Location: " $location)
-  (timbre/info "State Params: " $stateParams)
   (set! $scope.id (aget (.search $location) "oauth_token"))
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app RequestTokens)))
+  (this-as $ctrl (helpers/init-item $ctrl $scope app RequestTokens)))
 
 (.component
  jiksnu "authorizeClient"
- #js {:controller #js ["$location" "$scope" "$stateParams" "app" "RequestTokens"
-                       AuthorizeClientController]
+ #js {:controller #js ["$location" "$scope" "app" "RequestTokens" AuthorizeClientController]
       :templateUrl "/templates/authorize-client"})
 
 (defn LogoutController [])

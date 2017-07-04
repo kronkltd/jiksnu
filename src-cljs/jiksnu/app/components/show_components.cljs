@@ -17,101 +17,101 @@
     (.component  module component-name component-options)))
 
 (defn ShowActivityController
-  [$scope $stateParams app Activities]
-  (set! (.-likeActivity $scope)
+  [$scope app Activities]
+  (set! $scope.likeActivity
         (fn [activity]
           (-> (proto/invoke-action app "activity" "like" $scope.id)
               (.then (fn [] (.refresh $scope))))))
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Activities)))
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Activities)))
 
 (defn ShowAlbumController
-  [$scope $stateParams app Albums]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Albums)))
+  [$scope app Albums]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Albums)))
 
 (defn ShowAlbumMinimalController
-  [$scope $stateParams app Albums]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Albums)))
+  [$scope app Albums]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Albums)))
 
 (defn ShowClientController
-  [$scope $stateParams app Clients]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Clients)))
+  [$scope app Clients]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Clients)))
 
 (defn ShowClientMinimalController
-  [$scope $stateParams app Clients]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Clients)))
+  [$scope app Clients]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Clients)))
 
 (defn ShowConversationController
-  [$scope $stateParams app Conversations]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Conversations)))
+  [$scope app Conversations]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Conversations)))
 
 (defn ShowDomainController
-  [$scope $stateParams app Domains]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Domains)))
+  [$scope app Domains]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Domains)))
 
 (defn ShowFollowersMinimalController
-  [$scope $stateParams app Subscriptions]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Subscriptions)))
+  [$scope app Subscriptions]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Subscriptions)))
 
 (defn ShowFollowingMinimalController
-  [$scope $stateParams app Subscriptions]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Subscriptions)))
+  [$scope app Subscriptions]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Subscriptions)))
 
 (defn ShowGroupController
-  [$scope $stateParams app Groups]
+  [$scope app Groups]
   (set! $scope.join
         (fn []
           (timbre/info "Joining group")
           (let [id (.-_id (.-item $scope))]
             (proto/invoke-action app "group" "join" id))))
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Groups)))
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Groups)))
 
 (defn ShowGroupMinimalController
-  [$scope $stateParams app Groups]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Groups)))
+  [$scope app Groups]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Groups)))
 
 (defn ShowGroupMembershipController
-  [$scope $stateParams app GroupMemberships]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app GroupMemberships)))
+  [$scope app GroupMemberships]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app GroupMemberships)))
 
 (defn ShowGroupMembershipMinimalController
-  [$scope $stateParams app GroupMemberships]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app GroupMemberships)))
+  [$scope app GroupMemberships]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app GroupMemberships)))
 
 (defn ShowLikeController
-  [$scope $stateParams app Likes]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Likes)))
+  [$scope app Likes]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Likes)))
 
 (defn ShowLikedByController
-  [$scope $stateParams app Likes]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Likes)))
+  [$scope app Likes]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Likes)))
 
 (defn ShowNotificationController
-  [$scope $stateParams app Notifications]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Notifications)))
+  [$scope app Notifications]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Notifications)))
 
 (defn ShowPictureController
-  [$scope $stateParams app Pictures]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Pictures)))
+  [$scope app Pictures]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Pictures)))
 
 (defn ShowPictureMinimalController
-  [$scope $stateParams app Pictures]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Pictures)))
+  [$scope app Pictures]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Pictures)))
 
 (defn ShowRequestTokenController
-  [$scope $stateParams app RequestTokens]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app RequestTokens)))
+  [$scope app RequestTokens]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app RequestTokens)))
 
 (defn ShowServiceController
-  [$scope $stateParams app Services]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Services)))
+  [$scope app Services]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Services)))
 
 (defn ShowStreamController
-  [$scope $stateParams app Streams]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Streams)))
+  [$scope app Streams]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Streams)))
 
 (defn ShowStreamMinimalController
-  [$scope $stateParams app Streams]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Streams))
+  [$scope app Streams]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Streams))
   (set! $scope.toggle
         (fn []
           (let [shown? (not (.-formShown $scope))]
@@ -119,113 +119,113 @@
             (set! $scope.btnLabel  (if shown? "-" "+"))))))
 
 (defn ShowSubscriptionController
-  [$scope $stateParams app Subscriptions]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Subscriptions)))
+  [$scope app Subscriptions]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Subscriptions)))
 
 (defn ShowUserController
-  [$scope $stateParams app Users]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Users)))
+  [$scope app Users]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Users)))
 
 (defn ShowUserMinimalController
-  [$scope $stateParams app Users]
-  (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Users)))
+  [$scope app Users]
+  (this-as $ctrl (helpers/init-item $ctrl $scope app Users)))
 
 (item-directive
  jiksnu "activity"
- #js ["$scope" "$stateParams" "app" "Activities" ShowActivityController])
+ #js ["$scope" "app" "Activities" ShowActivityController])
 
 (item-directive
  jiksnu "album"
- #js ["$scope" "$stateParams" "app" "Albums" ShowAlbumController])
+ #js ["$scope" "app" "Albums" ShowAlbumController])
 
 (item-directive
  jiksnu "album-minimal"
- #js ["$scope" "$stateParams" "app" "Albums" ShowAlbumMinimalController])
+ #js ["$scope" "app" "Albums" ShowAlbumMinimalController])
 
 (item-directive
  jiksnu "client"
- #js ["$scope" "$stateParams" "app" "Clients" ShowClientController])
+ #js ["$scope" "app" "Clients" ShowClientController])
 
 (item-directive
  jiksnu "client-minimal"
- #js ["$scope" "$stateParams" "app" "Clients"  ShowClientMinimalController])
+ #js ["$scope" "app" "Clients"  ShowClientMinimalController])
 
 (item-directive
  jiksnu "conversation"
- #js ["$scope" "$stateParams" "app" "Conversations"  ShowConversationController])
+ #js ["$scope" "app" "Conversations"  ShowConversationController])
 
 (item-directive
  jiksnu "domain"
- #js ["$scope" "$stateParams" "app" "Domains"  ShowDomainController])
+ #js ["$scope" "app" "Domains"  ShowDomainController])
 
 (item-directive
  jiksnu "followers-minimal"
- #js ["$scope" "$stateParams" "app" "Subscriptions"  ShowFollowersMinimalController])
+ #js ["$scope" "app" "Subscriptions"  ShowFollowersMinimalController])
 
 (item-directive
  jiksnu "following-minimal"
- #js ["$scope" "$stateParams" "app" "Subscriptions"  ShowFollowingMinimalController])
+ #js ["$scope" "app" "Subscriptions"  ShowFollowingMinimalController])
 
 (item-directive
  jiksnu "group"
- #js ["$scope" "$stateParams" "app" "Groups"  ShowGroupController])
+ #js ["$scope" "app" "Groups"  ShowGroupController])
 
 (item-directive
  jiksnu "group-minimal"
- #js ["$scope" "$stateParams" "app" "Groups"  ShowGroupMinimalController])
+ #js ["$scope" "app" "Groups"  ShowGroupMinimalController])
 
 (item-directive
  jiksnu "group-membership"
- #js ["$scope" "$stateParams" "app" "GroupMemberships"  ShowGroupMembershipController])
+ #js ["$scope" "app" "GroupMemberships"  ShowGroupMembershipController])
 
 (item-directive
  jiksnu "group-membership-minimal"
- #js ["$scope" "$stateParams" "app" "GroupMemberships"  ShowGroupMembershipMinimalController])
+ #js ["$scope" "app" "GroupMemberships"  ShowGroupMembershipMinimalController])
 
 (item-directive
  jiksnu "like"
- #js ["$scope" "$stateParams" "app" "Likes" ShowLikeController])
+ #js ["$scope" "app" "Likes" ShowLikeController])
 
 (item-directive
  jiksnu "liked-by"
- #js ["$scope" "$stateParams" "app" "Likes" ShowLikedByController])
+ #js ["$scope" "app" "Likes" ShowLikedByController])
 
 (item-directive
  jiksnu "notification"
- #js ["$scope" "$stateParams" "app" "Notifications"  ShowNotificationController])
+ #js ["$scope" "app" "Notifications"  ShowNotificationController])
 
 (item-directive
  jiksnu "picture"
- #js ["$scope" "$stateParams" "app" "Pictures"  ShowPictureController])
+ #js ["$scope" "app" "Pictures"  ShowPictureController])
 
 (item-directive
  jiksnu "picture-minimal"
- #js ["$scope" "$stateParams" "app" "Pictures" ShowPictureMinimalController])
+ #js ["$scope" "app" "Pictures" ShowPictureMinimalController])
 
 (item-directive
  jiksnu "request-token"
- #js ["$scope" "$stateParams" "app" "RequestToken" ShowRequestTokenController])
+ #js ["$scope" "app" "RequestToken" ShowRequestTokenController])
 
 (item-directive
  jiksnu "service"
- #js ["$scope" "$stateParams" "app" "Services" ShowServiceController])
+ #js ["$scope" "app" "Services" ShowServiceController])
 
 (item-directive
  jiksnu "stream"
- #js ["$scope" "$stateParams" "app" "Streams" ShowStreamController])
+ #js ["$scope" "app" "Streams" ShowStreamController])
 
 (item-directive
  jiksnu "stream-minimal"
- #js ["$scope" "$stateParams" "app" "Streams" ShowStreamMinimalController])
+ #js ["$scope" "app" "Streams" ShowStreamMinimalController])
 
 (item-directive
  jiksnu "subscription"
- #js ["$scope" "$stateParams" "app" "Subscriptions"  ShowSubscriptionController])
+ #js ["$scope" "app" "Subscriptions"  ShowSubscriptionController])
 
 (item-directive
  jiksnu "user"
- #js ["$scope" "$stateParams" "app" "Users" ShowUserController])
+ #js ["$scope" "app" "Users" ShowUserController])
 
 (item-directive
  jiksnu "user-minimal"
- #js ["$scope" "$stateParams" "app" "Users" ShowUserMinimalController])
+ #js ["$scope" "app" "Users" ShowUserMinimalController])

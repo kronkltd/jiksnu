@@ -54,7 +54,7 @@
 
 (defn init-item
   "Common initialization for an item component"
-  [$ctrl $scope $stateParams app collection]
+  [$ctrl $scope app collection]
   (set! $scope.init
         (fn [id]
           (set! $scope.loaded false)
