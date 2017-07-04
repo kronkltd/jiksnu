@@ -79,6 +79,7 @@
   (set! $scope.deleteRecord
         (fn [item]
           (let [id $scope.id]
+            (timbre/infof "collection: %s" collection)
             (-> (proto/invoke-action app collection.name "delete" id)
                 (.then (fn [] (.refresh app)))))))
 
