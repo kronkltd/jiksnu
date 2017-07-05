@@ -22,6 +22,7 @@
 (defn Activities       [DS] (define-resource DS "activity"))
 (defn Albums           [DS] (define-resource DS "album"))
 (defn Clients          [DS] (define-resource DS "client"))
+(defn Conversations    [DS] (define-resource DS "conversations"))
 (defn Domains          [DS] (define-resource DS "domain"))
 (defn FeedSources      [DS] (define-resource DS "feed-source"))
 (defn Followings       [DS] (define-resource DS "following"))
@@ -37,17 +38,6 @@
 (defn Services         [DS] (define-resource DS "services"))
 (defn Subscriptions    [DS] (define-resource DS "subscription"))
 
-(defn Conversations
-  [DS subpageService]
-  (.defineResource
-   DS
-   (clj->js
-    {:name "conversation"
-     :endpoint "conversations"
-     :deserialize deserializer
-     :methods {:getActivities (fn [] (this-as item (.fetch subpageService item "activities")))
-               :getType (constantly "Conversation")}})))
-
 (defn Users
   [DS subpageService]
   (.defineResource
@@ -58,8 +48,4 @@
      :deserialize deserializer
      :methods
      {:getType      (constantly "User")
-      :getSubpage   (fn [page-name] (this-as item (.fetch subpageService item page-name)))
-      :getFollowers (fn [] (this-as item (.fetch subpageService item "followers")))
-      :getFollowing (fn [] (this-as item (.fetch subpageService item "following")))
-      :getGroups    (fn [] (this-as item (.fetch subpageService item "groups")))
-      :getStreams   (fn [] (this-as item (.fetch subpageService item "streams")))}})))
+      :getFollowing (fn [] (this-as item (.fetch subpageService item "following")))}})))

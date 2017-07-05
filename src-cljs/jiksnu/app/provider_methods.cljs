@@ -99,7 +99,7 @@
        (-> (get-user $q Users data)
            (.then (fn [user]
                     (if user
-                      (if (= (.-_id user) (.-_id target))
+                      (if (= user._id target._id)
                        (do
                          (timbre/info "target is user")
                          nil)
@@ -150,14 +150,14 @@
 
 (defmethod handle-action "delete"
   [app data]
-  (let [message (str "Deleted item: " (js/JSON.stringify (.-action data)))]
+  (let [message (str "Deleted item: " (js/JSON.stringify data.action))]
     (.. app
         (inject "$mdToast")
         (showSimple message))))
 
 (defmethod handle-action :default
   [app data]
-  (let [message (str "Unknown message: " (.stringify js/JSON data))]
+  (let [message (str "Unknown message: " (js/JSON.stringify data))]
     (.. app
         (inject "$mdToast")
         (showSimple message))))
@@ -169,7 +169,7 @@
   "Handler for incoming messages from websocket connection"
   [app message]
   (let [$mdToast (.inject app "$mdToast")
-        data-str (.-data message)
+        data-str message.data
         data (js/JSON.parse data-str)]
     (timbre/debugf "Received Message - %s" data-str)
     (cond
@@ -177,22 +177,10 @@
       data.action         (handle-action app data)
       :default            nil #_(.warning Notification (str "Unknown message: " data-str)))))
 
-(defn invoke-action
-  [app model-name action-name id]
-  (timbre/debugf "Invoking Action. %s(%s)=>%s" model-name id action-name)
-  (let [msg (str "invoke-action \""
-                 model-name
-                 "\", \""
-                 action-name
-                 "\", \""
-                 id
-                 "\"")]
-    (.send app msg)))
-
 ;; TODO: Find a cljs version of this check
 (defn response-ok?
   [response]
-  (let [status (.-status response)]
+  (let [status response.status]
     (and (<= 200 status) (> 299 status))))
 
 (defn login
@@ -226,7 +214,7 @@
   (timbre/debugf "Registering - %s" params.reg)
   (let [params #js {:method "post"
                     :url    "/main/register"
-                    :data   (.-reg params)}]
+                    :data   params.reg}]
     (-> ($http params)
         (.then (fn [data]
                  (timbre/debug "Response" data)
@@ -237,6 +225,18 @@
   [connection command]
   (timbre/debugf "Sending command: %s" command)
   (.send connection command))
+
+(defn invoke-action
+  [connection model-name action-name id]
+  (timbre/debugf "Invoking Action. %s(%s)=>%s" model-name id action-name)
+  (let [msg (str "invoke-action \""
+                 model-name
+                 "\", \""
+                 action-name
+                 "\", \""
+                 id
+                 "\"")]
+    (send connection msg)))
 
 (defn ping
   "Send a ping command"

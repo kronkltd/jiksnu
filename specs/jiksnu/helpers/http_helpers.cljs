@@ -35,7 +35,7 @@
                  (if (#{200 303} (.-status data))
                    (.fulfill d data)
                    (.reject d data)))))
-     (.-promise d))))
+     d.promise)))
 
 (defn get-fortune
   []
@@ -45,12 +45,12 @@
              (if err
                (.reject d)
                (.fulfill d (string/replace stdout #"\n" "\n\n")))))
-    (.-promise d)))
+    d.promise))
 
 (defn an-activity-exists
   "Create a mock activity"
   []
-  (let [d (.defer (.-promise js/protractor))]
+  (let [d (.defer js/protractor.promise)]
     (.. (get-fortune)
         (then (fn [text]
                 (timbre/infof "Text: %s" text)
@@ -59,12 +59,12 @@
                       data #js {:auth #js {:username "test" :password "test"}}]
                   (.POST http-adapter url activity data))))
         (then (fn [response]
-                (let [status-code (.-status response)]
+                (let [status-code response.status]
                   (timbre/debugf "Status Code: %s" status-code)
                   (if (#{200 201} status-code)
                     (.fulfill d response)
                     (.reject d response))))))
-    (.-promise d)))
+    d.promise))
 
 (defn user-exists?
   "Queries the server to see if a user exists with that name"

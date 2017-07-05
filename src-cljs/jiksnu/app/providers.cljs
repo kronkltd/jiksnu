@@ -7,15 +7,13 @@
             [taoensso.timbre :as timbre]))
 
 (def app-methods
-  {:addStream     p/add-stream
-   :connect       methods/connect
-   :deleteStream  methods/delete-stream
+  {:connect       methods/connect
    :fetchStatus   methods/fetch-status
    :follow        methods/follow
    :getUserId     p/get-user-id
    :go            methods/go
    :handleMessage methods/handle-message
-   :invokeAction  methods/invoke-action
+   :invokeAction  p/invoke-action
    :isFollowing   methods/following?
    :login         methods/login
    :logout        methods/logout
@@ -77,7 +75,7 @@
       (methods/get-user $q Users data)))
 
   (get-user-id [app]
-    (methods/get-user-id (.-data app)))
+    (methods/get-user-id app.data))
 
   (get-websocket-url [app]
     (let [$location (.inject app "$location")]
@@ -92,6 +90,10 @@
   (handle-message [app message])
 
   (inject [app atom])
+
+  (invoke-action [app collection-name action-name id]
+    (let [connection (.-connection app)]
+      (methods/invoke-action connection collection-name action-name id)))
 
   (login [app username password]
     (let [$http (.inject app "$http")
@@ -110,7 +112,7 @@
       (methods/register $http params)))
 
   (send [app command]
-    (let [connection (.-connection app)]
+    (let [connection app.connection]
       (methods/send connection command)))
 
   (unfollow [app target]
@@ -125,13 +127,13 @@
   []
   (let [f (fn [$injector]
             (timbre/debug "creating app service")
-            (let [$inject (.-get $injector)
+            (let [$inject $injector.get
                   app (AppProvider. $inject)]
               (doseq [[n f] app-methods]
                 (aset app (name n) (partial f app)))
 
-              (set! (.-connection app) (get-websocket-connection app))
-              (set! (.-data app)       #js {})
+              (set! app.connection (get-websocket-connection app))
+              (set! app.data       #js {})
 
               ;; Bind to window for easy debugging
               (set! (.-app js/window) app)

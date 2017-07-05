@@ -2,6 +2,7 @@
   (:require [inflections.core :as inf]
             [jiksnu.app :refer [jiksnu]]
             [jiksnu.app.helpers :as helpers]
+            [jiksnu.app.protocols :as proto]
             [taoensso.timbre :as timbre]))
 
 (defn item-directive
@@ -19,8 +20,7 @@
   [$scope $stateParams app Activities]
   (set! (.-likeActivity $scope)
         (fn [activity]
-          (-> app
-              (.invokeAction "activity" "like" (.-id $scope))
+          (-> (proto/invoke-action app "activity" "like" $scope.id)
               (.then (fn [] (.refresh $scope))))))
   (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Activities)))
 
@@ -58,11 +58,11 @@
 
 (defn ShowGroupController
   [$scope $stateParams app Groups]
-  (set! (.-join $scope)
+  (set! $scope.join
         (fn []
           (timbre/info "Joining group")
           (let [id (.-_id (.-item $scope))]
-            (.invokeAction app "group" "join" id))))
+            (proto/invoke-action app "group" "join" id))))
   (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Groups)))
 
 (defn ShowGroupMinimalController
@@ -112,11 +112,11 @@
 (defn ShowStreamMinimalController
   [$scope $stateParams app Streams]
   (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app Streams))
-  (set! (.-toggle $scope)
+  (set! $scope.toggle
         (fn []
           (let [shown? (not (.-formShown $scope))]
-            (set! (.-formShown $scope) shown?)
-            (set! (.-btnLabel $scope) (if shown? "-" "+"))))))
+            (set! $scope.formShown shown?)
+            (set! $scope.btnLabel  (if shown? "-" "+"))))))
 
 (defn ShowSubscriptionController
   [$scope $stateParams app Subscriptions]

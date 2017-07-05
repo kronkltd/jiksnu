@@ -26,15 +26,14 @@
     (js/beforeEach
      (fn []
        (js/inject
-        #js ["$controller" "$rootScope" "$q"
-             "app" "$httpBackend"
+        #js ["$controller" "$rootScope" "$q" "app" "$httpBackend"
              (fn [_$controller_ _$rootScope_ _$q_ _app_ _$httpBackend_]
                (reset! $controller _$controller_)
-               (set! app _app_)
-               (set! $rootScope _$rootScope_)
-               (set! $scope (.$new $rootScope))
-               (set! $q _$q_)
-               (set! $httpBackend _$httpBackend_)
+               (set! app           _app_)
+               (set! $rootScope    _$rootScope_)
+               (set! $scope        (.$new $rootScope))
+               (set! $q            _$q_)
+               (set! $httpBackend  _$httpBackend_)
                (doto $httpBackend
                  (.. (whenGET #"/templates/.*") (respond "<div></div>"))
                  (.. (whenGET #"/model/.*")     (respond "{}")))
@@ -45,25 +44,26 @@
         (fn []
           (js/beforeEach
            (fn []
-             (set! (.-id $scope) "1")
-             (set! (.-init $scope)
+             (set! $scope.id  "1")
+             (set! $scope.init
                    (fn [id]
                      (timbre/info "mocked init")
-                     (set! (.-item $scope) #js {:id "1"})
-                     (set! (.-loaded $scope) true)))))
+                     (set! $scope.item   #js {:id "1"})
+                     (set! $scope.loaded true)))))
 
           (js/describe ".deleteRecord"
             (fn []
               (js/it "sends a delete action"
                 (fn []
                   (@$controller controller-name injections)
-                  (.. (js/spyOn app "invokeAction") -and (returnValue ($q #(%))))
-                  (.. $httpBackend
-                      (expectGET (str "conversations/" (.-id $scope)))
-                      (respond (constantly (clj->js [201 {:items []}]))))
 
-                  (let [item (.-item $scope)
+                  (-> (js/spyOn app.connection "send") .-and (.returnValue ($q #(% true))))
+
+                  (-> (.expectGET $httpBackend (str "conversations/" $scope.id))
+                      (.respond (constantly (clj->js [201 {:items []}]))))
+
+                  (let [item $scope.item
                         p (.deleteRecord $scope item)]
                     (.$apply $scope)
-                    (.. (js/expect p) (toBeResolved))
-                    (.. (js/expect (.-invokeAction app)) (toHaveBeenCalled))))))))))))
+                    (-> (js/expect p)                   .toBeResolved)
+                    (-> (js/expect app.connection.send) .toHaveBeenCalled)))))))))))

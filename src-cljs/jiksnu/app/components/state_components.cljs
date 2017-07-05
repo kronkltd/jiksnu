@@ -1,7 +1,7 @@
 (ns jiksnu.app.components.state-components
   (:require [jiksnu.app :refer [jiksnu]]
             [jiksnu.app.helpers :as helpers]
-            [jiksnu.app.protocols :as p]
+            [jiksnu.app.protocols :as proto]
             [taoensso.timbre :as timbre]))
 
 (defn AvatarPageController [])
@@ -13,13 +13,13 @@
 
 (defn LoginPageController
   [$scope $state app $mdToast]
-  (set! (.-login $scope)
+  (set! $scope.login
         (fn []
-          (let [username (.-username $scope)
-                password (.-password $scope)]
+          (let [username $scope.username
+                password $scope.password]
             (-> (.login app username password)
-                (.then (fn [r] (.go $state "home"))
-                       (fn [e] (.showSimple $mdToast "login failed"))))))))
+                (.then (fn [_] (.go $state "home"))
+                       (fn [_] (.showSimple $mdToast "login failed"))))))))
 
 (.component
  jiksnu "loginPage"
@@ -30,7 +30,7 @@
   [$location $scope $stateParams app RequestTokens]
   (timbre/info "Location: " $location)
   (timbre/info "State Params: " $stateParams)
-  (set! (.-id $scope) (aget (.search $location) "oauth_token"))
+  (set! $scope.id (aget (.search $location) "oauth_token"))
   (this-as $ctrl (helpers/init-item $ctrl $scope $stateParams app RequestTokens)))
 
 (.component
@@ -47,14 +47,14 @@
 
 (defn RegisterPageController
   [app $scope]
-  (set! (.-register $scope)
+  (set! $scope.register
         (fn []
-          (-> (p/register app $scope)
+          (-> (proto/register app $scope)
               (.then (fn [data]
-                       ;; Should we copy the whole data object?
-                       (set! (.. app -data -user) (.. data -data -user))
-                       (-> (p/fetch-status app)
-                           (.then #(p/go app "home")))))))))
+                        ;; Should we copy the whole data object?
+                        (set! app.data.user (.. data -data -user))
+                        (-> (proto/fetch-status app)
+                            (.then #(proto/go app "home")))))))))
 
 (.component
  jiksnu "registerPage"

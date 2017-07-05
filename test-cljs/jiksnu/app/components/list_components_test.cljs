@@ -45,7 +45,7 @@
           (js/beforeEach
            (fn []
              (let [user #js {:_id "foo"}]
-               (set! (.-user $scope) user))))
+               (set! $scope.user user))))
 
           (js/describe ".addStream"
             (fn []
@@ -56,7 +56,7 @@
                     ;; TODO: Just mock app.addStream
                     (.. $httpBackend (expectPOST "/model/streams") (respond (constantly #js [201])))
                     (@$controller controller-name injections)
-                    (set! (.-stream $scope) params)
+                    (set! $scope.stream params)
                     (let [p (.addStream $scope)]
                       (.$apply $scope)
                       (.flush $httpBackend)
