@@ -6,8 +6,7 @@
             [manifold.time :as time]
             [jiksnu.specs.protocols :as lp]
             [midje.sweet :refer :all]
-            [slingshot.slingshot :refer [throw+ try+]])
-  (:import (jiksnu.specs.pages LoginPage)))
+            [slingshot.slingshot :refer [throw+ try+]]))
 
 (def default-sleep-time (time/seconds 5))
 
@@ -83,22 +82,24 @@
   []
   (timbre/info (get-body)))
 
-;(defn be-at-the-page
-;  [page-name]
-;  (let [path (get page-names page-name)]
-;    (fetch-page-browser :get path)))
+#_(defn be-at-the-page
+    [page-name]
+    (let [path (get page-names page-name)]
+      (fetch-page-browser :get path)))
 
 (defn register-user
   [password]
+  (timbre/info "registering user")
+  (taxi/to (expand-url "/"))
   nil)
 
 (defn login-user
   "Log in with test user"
   []
-  (let [page (LoginPage.)]
-    (timbre/info "Fetching login Page")
-    (.get page)
+  #_(let [page (LoginPage.)]
+      (timbre/info "Fetching login Page")
+      (lp/load-page page)
 
-    (timbre/info "Logging in")
-    (-> (lp/login page "test" "test")
-        (.then (fn [] (timbre/info "login finished"))))))
+      (timbre/info "Logging in")
+      (-> (lp/login page "test" "test")
+          (.then (fn [] (timbre/info "login finished"))))))
