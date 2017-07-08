@@ -2,8 +2,8 @@
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.mock :as mock]
-            [jiksnu.factory :as factory]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.modules.core.factory :as f]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [validateur.validation :refer [valid?]])
@@ -28,7 +28,7 @@
   (let [domain (mock/a-domain-exists)
         feed-source (mock/a-feed-source-exists {:domain domain})
         conversation (mock/a-conversation-exists {:feed-source feed-source})
-        id (factory/make-uri (:_id domain) (fseq :path))
+        id (f/make-uri (:_id domain) (fseq :path))
         activity (actions.activity/prepare-create
                   (factory :full-activity {:conversation (:_id conversation)
                                            :id id

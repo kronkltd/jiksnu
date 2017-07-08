@@ -1,7 +1,6 @@
 (ns jiksnu.actions.webfinger-actions-test
   (:require [ciste.config :refer [config]]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
-            jiksnu.factory
             [jiksnu.mock :as mock]
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]

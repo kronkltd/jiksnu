@@ -1,4 +1,4 @@
-(ns jiksnu.factory
+(ns jiksnu.modules.core.factory
   (:require [ciste.config :refer [config]]
             [clj-factory.core :refer [defseq deffactory defrecordfactory
                                       fseq factory]]

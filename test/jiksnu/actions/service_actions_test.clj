@@ -4,9 +4,9 @@
             [clojure.data.json :as json]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.factory :as factory]
             [jiksnu.mock :as mock]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.core.factory :as f]
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
             [midje.sweet :refer :all])
@@ -18,7 +18,7 @@
 
 (fact "#'actions.service/create"
   (let [domain (mock/a-remote-domain-exists)
-        params (factory :service {:topic (factory/make-uri (:_id domain))})]
+        params (factory :service {:topic (f/make-uri (:_id domain))})]
     (actions.service/create params) => (partial instance? Service)))
 
 (fact "#'actions.service/fetch-xrd"
@@ -110,14 +110,14 @@
       (model.domain/set-field! domain :http false)
       (model.domain/set-field! domain :https false)
 
-      (let [url (factory/make-uri domain-name "/1")]
+      (let [url (f/make-uri domain-name "/1")]
         (actions.service/discover-webfinger domain url) => nil
         (provided
          (actions.service/fetch-xrd domain url) => nil)))
 
     (fact "when there is no url context"
-      (let [url (factory/make-uri domain-name "/1")
-            hm-url (factory/make-uri domain-name "/.well-known/host-meta")]
+      (let [url (f/make-uri domain-name "/1")
+            hm-url (f/make-uri domain-name "/.well-known/host-meta")]
 
         (actions.service/discover-webfinger domain url) => (contains {:_id domain-name})
 

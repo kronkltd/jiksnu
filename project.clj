@@ -58,9 +58,9 @@
             [lein-figwheel "0.5.8"]
             [lein-midje "3.1.3" :exclusions [org.clojure/clojure]]
             [lein-shell "0.4.0" :exclusions [org.clojure/clojure]]]
-  :hiera {:ignore-ns #{"jiksnu.channels" "jiksnu.db" "jiksnu.factory" "jiksnu.mock"
-                       "jiksnu.model" "jiksnu.namespace" "jiksnu.ops" "jiksnu.registry"
-                       "jiksnu.session" "jiksnu.util"}}
+  :hiera {:ignore-ns #{"jiksnu.channels" "jiksnu.db" "jiksnu.mock" "jiksnu.model"
+                       "jiksnu.modules.core.factory" "jiksnu.namespace" "jiksnu.ops"
+                       "jiksnu.registry" "jiksnu.session" "jiksnu.util"}}
   :aliases {"guard"            ["shell" "bundle" "exec" "guard"]
             "karma"            ["shell" "./node_modules/.bin/karma" "start"]
             "protractor"       ["shell" "./node_modules/.bin/protractor" "protractor.config.js"]

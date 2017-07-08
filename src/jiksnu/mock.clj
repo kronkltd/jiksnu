@@ -19,11 +19,11 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.factory :refer [make-uri]]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.factory :as f]
             [jiksnu.referrant :refer [get-this get-that set-this set-that this that]]
             [jiksnu.session :as session]
             [slingshot.slingshot :refer [throw+]]))
@@ -54,7 +54,7 @@
   (let [domain (or (:domain options)
                    (a-domain-exists))
         params (factory :resource {:_id (or (:url options)
-                                            (make-uri (:_id domain)))})
+                                            (f/make-uri (:_id domain)))})
         resource (actions.resource/create params)]
     (set-this :resource resource)
     resource))
@@ -131,7 +131,7 @@
                     (factory :feed-source
                       {:domain (:_id domain)
                        :topic url
-                       :hub (make-uri (:_id domain) "/push/hub")})))]
+                       :hub (f/make-uri (:_id domain) "/push/hub")})))]
     (set-this :feed-source source)
     source))
 

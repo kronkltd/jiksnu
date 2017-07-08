@@ -1,7 +1,6 @@
 (ns jiksnu.transforms.conversation-transforms-test
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [jiksnu.transforms.conversation-transforms :refer [set-update-source]]

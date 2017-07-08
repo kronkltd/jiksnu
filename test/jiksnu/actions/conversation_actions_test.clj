@@ -1,9 +1,9 @@
 (ns jiksnu.actions.conversation-actions-test
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.actions.conversation-actions :refer [create delete index show]]
-            [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
             [jiksnu.model.conversation :as model.conversation]
+            [jiksnu.modules.core.factory :as f]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 
@@ -12,7 +12,7 @@
 (facts "#'create"
   (let [domain (mock/a-domain-exists)
         domain-name (:_id domain)
-        url (make-uri domain-name)
+        url (f/make-uri domain-name)
         source (mock/a-feed-source-exists {:domain domain
                                            :url url})
         params (factory :conversation {:domain domain-name

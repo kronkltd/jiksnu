@@ -4,8 +4,8 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.service-actions :as actions.service]
             [jiksnu.mock :as mock]
-            [jiksnu.factory :as factory]
             [jiksnu.model.resource :as model.resource]
+            [jiksnu.modules.core.factory :as f]
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
@@ -23,7 +23,7 @@
 
 (fact "#'actions.feed-source/create"
   (let [domain (mock/a-remote-domain-exists)
-        params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
+        params (factory :feed-source {:topic (f/make-uri (:_id domain))})]
     (actions.feed-source/create params) => (partial instance? FeedSource)
     (provided
      (actions.service/get-discovered domain nil nil) => domain)))
@@ -34,7 +34,7 @@
     (actions.feed-source/update-record source) => (partial instance? FeedSource)))
 
 (fact "#'actions.feed-source/discover-source"
-  (let [url (factory/make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
+  (let [url (f/make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
         resource (mock/a-resource-exists {:url url})
         topic (str url ".atom")
         response ""

@@ -7,9 +7,9 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.factory :as factory]
             [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.core.factory :as f]
             [jiksnu.namespace :as ns]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
@@ -41,7 +41,7 @@
   (fact "when the uri does not have user info"
     (let [username (fseq :username)
           domain-name (fseq :domain)
-          uri (factory/make-uri domain-name "/users/1")
+          uri (f/make-uri domain-name "/users/1")
           params {:_id uri}
           params2 (assoc params :domain domain-name)]
       (actions.user/get-username-from-http-uri params) =>
@@ -61,7 +61,7 @@
     (fact "when given a http uri"
       (fact "and it does not have user info"
         (fact "and the xrd request returns info"
-          (let [uri (factory/make-uri domain-name "/users/1")
+          (let [uri (f/make-uri domain-name "/users/1")
                 params {:_id uri}]
             (actions.user/get-username params) => (contains {:username username})
             (provided

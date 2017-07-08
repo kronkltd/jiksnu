@@ -3,7 +3,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
             [jiksnu.mock :as mock]
-            [jiksnu.factory :as factory]
+            [jiksnu.modules.core.factory :as f]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
@@ -17,7 +17,7 @@
         source (mock/a-feed-source-exists
                 {:domain (actions.domain/current-domain)})
         topic-url (:topic source)
-        callback-url (factory/make-uri (:_id domain))
+        callback-url (f/make-uri (:_id domain))
         params {"hub.topic"        topic-url
                 "hub.secret"       (fseq :secret-key)
                 "hub.verify_token" (fseq :verify-token)
