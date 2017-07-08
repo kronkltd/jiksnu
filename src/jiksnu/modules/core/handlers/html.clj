@@ -1,4 +1,4 @@
-(ns jiksnu.handlers.html
+(ns jiksnu.modules.core.handlers.html
   (:require [taoensso.timbre :as timbre]
             [jiksnu.modules.core.actions.resource-actions :as actions.resource]
             [jiksnu.model.resource :as model.resource]

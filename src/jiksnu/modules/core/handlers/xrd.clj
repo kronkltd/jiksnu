@@ -1,4 +1,4 @@
-(ns jiksnu.handlers.xrd
+(ns jiksnu.modules.core.handlers.xrd
   (:require [ciste.model :as cm]
             [jiksnu.modules.core.actions.resource-actions :as actions.resource]
             [jiksnu.model.webfinger :as model.webfinger]))

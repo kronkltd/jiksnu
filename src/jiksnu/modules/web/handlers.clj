@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.handlers
   (:require [ciste.loader :refer [defhandler]]
-            [jiksnu.handlers :as handler]
-            jiksnu.handlers.html
-            jiksnu.handlers.xrd
+            [jiksnu.modules.core.handlers :as handler]
+            jiksnu.modules.core.handlers.html
+            jiksnu.modules.core.handlers.xrd
             jiksnu.modules.web.formats
             jiksnu.plugins.google-analytics
             [taoensso.timbre :as timbre]))

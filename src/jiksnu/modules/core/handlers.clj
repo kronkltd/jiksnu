@@ -1,4 +1,4 @@
-(ns jiksnu.handlers
+(ns jiksnu.modules.core.handlers
   (:require [clojure.pprint :refer [pprint]]
             [taoensso.timbre :as timbre])
   (:import clojure.lang.ExceptionInfo))
