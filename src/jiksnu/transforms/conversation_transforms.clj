@@ -1,7 +1,7 @@
 (ns jiksnu.transforms.conversation-transforms
   (:require [ciste.config :refer [config]]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.modules.core.actions.domain-actions :as actions.domain]
+            [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.routes.helpers :as rh]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])

@@ -2,7 +2,7 @@
   (:require [cemerick.friend :as friend]
             [ciste.commands :refer [add-command!]]
             [ciste.core :refer [with-context]]
-            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.modules.core.actions.stream-actions :as actions.stream]
             [jiksnu.model.stream :as model.stream]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
@@ -76,12 +76,12 @@
   :schema {:type "object"
            :properties {:name {:type "string"}}
            :required [:name]}
-  :ns 'jiksnu.actions.stream-actions)
+  :ns 'jiksnu.modules.core.actions.stream-actions)
 
 (defresource streams-api :item
   :desc "Resource routes for single Stream"
   :url "/{_id}"
-  :ns 'jiksnu.actions.stream-actions
+  :ns 'jiksnu.modules.core.actions.stream-actions
   :allowed? stream-allowed?
   :parameters {:_id (path :model.stream/id)}
   :mixins [item-resource])

@@ -1,6 +1,6 @@
 (ns jiksnu.transforms.feed-source-transforms-test
   (:require [clj-factory.core :refer [factory]]
-            [jiksnu.actions.service-actions :as actions.service]
+            [jiksnu.modules.core.actions.service-actions :as actions.service]
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.factory :as f]
             [jiksnu.test-helper :as th]

@@ -1,6 +1,6 @@
 (ns jiksnu.model.resource-test
   (:require [clj-factory.core :refer [factory]]
-            [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.modules.core.actions.resource-actions :as actions.resource]
             [jiksnu.mock :as mock]
             [jiksnu.model.resource :refer [count-records create delete drop!
                                            fetch-all fetch-by-id]]

@@ -1,6 +1,6 @@
 (ns jiksnu.model.subscription-test
   (:require [clj-factory.core :refer [factory]]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.modules.core.actions.subscription-actions :as actions.subscription]
             [jiksnu.mock :as mock]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.test-helper :as th]

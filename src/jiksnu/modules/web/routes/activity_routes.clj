@@ -1,9 +1,9 @@
 (ns jiksnu.modules.web.routes.activity-routes
   (:require [cemerick.friend :as friend]
             [ciste.config :refer [config]]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.album-actions :as actions.album]
-            [jiksnu.actions.picture-actions :as actions.picture]
+            [jiksnu.modules.core.actions.activity-actions :as actions.activity]
+            [jiksnu.modules.core.actions.album-actions :as actions.album]
+            [jiksnu.modules.core.actions.picture-actions :as actions.picture]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
@@ -70,7 +70,7 @@
             :post {:summary "Create Activity"}}
   :post! activities-api-post
   :schema activity-schema
-  :ns 'jiksnu.actions.activity-actions)
+  :ns 'jiksnu.modules.core.actions.activity-actions)
 
 (defresource activities-api :item
   :desc "Resource routes for single Activity"
@@ -81,7 +81,7 @@
                      :authenticated true}}
   :mixins [item-resource]
   :target-model "activity"
-  :ns 'jiksnu.actions.activity-actions)
+  :ns 'jiksnu.modules.core.actions.activity-actions)
 
 (defresource activities-api :likes
   :url "/{_id}/likes"

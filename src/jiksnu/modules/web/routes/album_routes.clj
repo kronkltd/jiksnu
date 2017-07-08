@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.album-routes
   (:require [cemerick.friend :as friend]
             [ciste.config :refer [config]]
-            [jiksnu.actions.album-actions :as actions.album]
+            [jiksnu.modules.core.actions.album-actions :as actions.album]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource ciste-resource
@@ -61,7 +61,7 @@
             :post {:summary "Create Album"}}
   :post! albums-api-post
   :schema album-schema
-  :ns 'jiksnu.actions.album-actions)
+  :ns 'jiksnu.modules.core.actions.album-actions)
 
 (defresource albums-api :item
   :desc "Resource routes for single Album"
@@ -70,7 +70,7 @@
   :methods {:get {:summary "Show Album"}
             :delete {:summary "Delete Album"
                      :authenticated true}}
-  :ns 'jiksnu.actions.album-actions
+  :ns 'jiksnu.modules.core.actions.album-actions
   :mixins [item-resource])
 
 (defresource albums-api :pictures

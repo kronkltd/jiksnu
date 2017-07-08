@@ -1,6 +1,6 @@
 (ns jiksnu.handlers.xrd
   (:require [ciste.model :as cm]
-            [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.modules.core.actions.resource-actions :as actions.resource]
             [jiksnu.model.webfinger :as model.webfinger]))
 
 (defmethod actions.resource/process-response-content "application/xrd+xml"

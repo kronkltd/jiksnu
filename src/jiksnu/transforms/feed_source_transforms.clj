@@ -1,5 +1,5 @@
 (ns jiksnu.transforms.feed-source-transforms
-  (:require [jiksnu.actions.domain-actions :as actions.domain]
+  (:require [jiksnu.modules.core.actions.domain-actions :as actions.domain]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))

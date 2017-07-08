@@ -1,7 +1,7 @@
 (ns jiksnu.model.user-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.modules.core.actions.domain-actions :as actions.domain]
+            [jiksnu.modules.core.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :refer :all]

@@ -4,11 +4,11 @@
                                       fseq factory]]
             [clj-time.core :as time]
             [inflections.core :as inf]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.conversation-actions :as actions.conversation]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.modules.core.actions.activity-actions :as actions.activity]
+            [jiksnu.modules.core.actions.conversation-actions :as actions.conversation]
+            [jiksnu.modules.core.actions.domain-actions :as actions.domain]
+            [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.modules.core.actions.user-actions :as actions.user]
             [jiksnu.model :as model]))
 
 (defn domain-id

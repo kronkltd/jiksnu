@@ -29,11 +29,11 @@
 (defresource request-tokens-api :collection
   :mixins [page-resource]
   :page "request-tokens"
-  :ns 'jiksnu.actions.request-token-actions)
+  :ns 'jiksnu.modules.core.actions.request-token-actions)
 
 (defresource request-tokens-api :item
   :desc "Resource routes for single Request Token"
   :url "/{_id}"
-  :ns 'jiksnu.actions.request-token-actions
+  :ns 'jiksnu.modules.core.actions.request-token-actions
   :parameters {:_id (path :model.request-token/id)}
   :mixins [item-resource])

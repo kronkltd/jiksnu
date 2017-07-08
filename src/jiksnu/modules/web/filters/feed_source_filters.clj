@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.feed-source-filters
   (:require [ciste.filters :refer [deffilter]]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]))
 

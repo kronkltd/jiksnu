@@ -35,7 +35,7 @@
 (defresource subscriptions-api :collection
   :mixins [page-resource]
   :available-formats [:json]
-  :ns 'jiksnu.actions.subscription-actions)
+  :ns 'jiksnu.modules.core.actions.subscription-actions)
 
 (defresource subscriptions-api :item
   :desc "Resource routes for single Subscription"

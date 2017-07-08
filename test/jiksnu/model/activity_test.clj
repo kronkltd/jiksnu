@@ -1,6 +1,6 @@
 (ns jiksnu.model.activity-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.mock :as mock]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.modules.core.factory :as f]

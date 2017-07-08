@@ -7,7 +7,7 @@
             [ciste.routes :refer [resolve-routes]]
             [clojure.data.json :as json]
             [taoensso.timbre :as timbre]
-            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.modules.core.actions.stream-actions :as actions.stream]
             [jiksnu.util :as util]
             [manifold.bus :as bus]
             [manifold.stream :as s]

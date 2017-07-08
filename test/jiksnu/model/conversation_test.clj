@@ -1,6 +1,6 @@
 (ns jiksnu.model.conversation-test
   (:require [clj-factory.core :refer [factory]]
-            [jiksnu.actions.conversation-actions :as actions.conversation]
+            [jiksnu.modules.core.actions.conversation-actions :as actions.conversation]
             [jiksnu.mock :as mock]
             [jiksnu.model.conversation :refer [count-records create delete drop!
                                                fetch-all fetch-by-id]]

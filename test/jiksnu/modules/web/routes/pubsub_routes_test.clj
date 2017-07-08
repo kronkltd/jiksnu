@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.pubsub-routes-test
   (:require [clj-factory.core :refer [factory fseq]]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.pubsub-actions :as actions.pubsub]
+            [jiksnu.modules.core.actions.domain-actions :as actions.domain]
+            [jiksnu.modules.core.actions.pubsub-actions :as actions.pubsub]
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.factory :as f]
             [jiksnu.routes-helper :refer [response-for]]

@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.routes.group-routes
-  (:require [jiksnu.actions.group-actions :as actions.group]
+  (:require [jiksnu.modules.core.actions.group-actions :as actions.group]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource
@@ -52,12 +52,12 @@
            :properties {:name {:type "string"}}
            :required [:name]}
   :post! groups-api-post
-  :ns 'jiksnu.actions.group-actions)
+  :ns 'jiksnu.modules.core.actions.group-actions)
 
 (defresource groups-api :item
   :desc "Resource routes for single Group"
   :url "/{_id}"
-  :ns 'jiksnu.actions.group-actions
+  :ns 'jiksnu.modules.core.actions.group-actions
   :parameters {:_id (path :model.group/id)}
   :mixins [item-resource])
 

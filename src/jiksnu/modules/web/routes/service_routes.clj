@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.service-routes
   (:require [taoensso.timbre :as timbre]
-            [jiksnu.actions.service-actions :as actions.service]
+            [jiksnu.modules.core.actions.service-actions :as actions.service]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter
@@ -67,12 +67,12 @@
   :new? :data
   :post-redirect? (fn [ctx] {:location (format "/model/services/%s" (:data ctx))})
   :post! services-api-post
-  :ns 'jiksnu.actions.service-actions)
+  :ns 'jiksnu.modules.core.actions.service-actions)
 
 (defresource services-api :item
   :desc "Resource routes for single Service"
   :url "/{_id}"
-  :ns 'jiksnu.actions.service-actions
+  :ns 'jiksnu.modules.core.actions.service-actions
   :allowed? services-allowed?
   :parameters {:_id (path :model.service/id)}
   :mixins [item-resource])

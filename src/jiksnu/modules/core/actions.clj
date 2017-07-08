@@ -85,7 +85,7 @@
   [model-name action-name id & [_options]]
   (try+
    (timbre/infof "Invoking Action. %s(%s) => %s" model-name id action-name)
-   (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
+   (let [action-ns (symbol (str "jiksnu.modules.core.actions." model-name "-actions"))]
      (require action-ns)
 
      (if-let [action (ns-resolve action-ns (symbol action-name))]

@@ -1,5 +1,5 @@
 (ns jiksnu.modules.admin.actions.group-actions
-  (:require [jiksnu.actions.group-actions :as actions.group]))
+  (:require [jiksnu.modules.core.actions.group-actions :as actions.group]))
 
 (defn index
   [& options]

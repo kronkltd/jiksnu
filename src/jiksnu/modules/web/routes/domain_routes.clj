@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.domain-routes
   (:require [taoensso.timbre :as timbre]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.webfinger-actions :as actions.webfinger]
+            [jiksnu.modules.core.actions.domain-actions :as actions.domain]
+            [jiksnu.modules.core.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter
@@ -51,12 +51,12 @@
   :page "domains"
   :available-formats [:json]
   :target-model "Domain"
-  :ns 'jiksnu.actions.domain-actions)
+  :ns 'jiksnu.modules.core.actions.domain-actions)
 
 (defresource domains-api :item
   :desc "Resource routes for single Domain"
   :url "/{_id}"
-  :ns 'jiksnu.actions.domain-actions
+  :ns 'jiksnu.modules.core.actions.domain-actions
   :parameters {:_id (path :model.domain/id)}
   :mixins [item-resource])
 

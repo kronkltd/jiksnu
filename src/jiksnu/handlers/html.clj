@@ -1,6 +1,6 @@
 (ns jiksnu.handlers.html
   (:require [taoensso.timbre :as timbre]
-            [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.modules.core.actions.resource-actions :as actions.resource]
             [jiksnu.model.resource :as model.resource]
             [net.cgrand.enlive-html :as enlive]))
 

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.filters.pubsub-filters
   (:require [ciste.filters :refer [deffilter]]
-            [jiksnu.actions.pubsub-actions :as actions.pubsub]))
+            [jiksnu.modules.core.actions.pubsub-actions :as actions.pubsub]))
 
 (deffilter #'actions.pubsub/hub-dispatch :http
   [action request]

@@ -34,12 +34,12 @@
   :page "notifications"
   :methods {:get {:summary "Index Notifications"}
             :post {:summary "Create Notification"}}
-  :ns 'jiksnu.actions.notification-actions)
+  :ns 'jiksnu.modules.core.actions.notification-actions)
 
 (defresource notifications-api :item
   :desc "Resource routes for single Notification"
   :url "/{_id}"
-  :ns 'jiksnu.actions.notification-actions
+  :ns 'jiksnu.modules.core.actions.notification-actions
   :parameters {:_id (path :model.notification/id)}
   :methods {:get {:summary "Show Notification"}
             :delete {:summary "Delete Notification"}}

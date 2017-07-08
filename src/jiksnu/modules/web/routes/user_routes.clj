@@ -2,8 +2,8 @@
   (:require [cemerick.friend :as friend]
             [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [index-section show-section]]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.modules.core.actions.activity-actions :as actions.activity]
+            [jiksnu.modules.core.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
@@ -221,12 +221,12 @@
 (defresource users-api :collection
   :mixins [page-resource]
   :page "users"
-  :ns 'jiksnu.actions.user-actions)
+  :ns 'jiksnu.modules.core.actions.user-actions)
 
 (defresource users-api :item
   :url "/{_id}"
   :name "user routes"
-  :ns 'jiksnu.actions.user-actions
+  :ns 'jiksnu.modules.core.actions.user-actions
   :description "Resource routes for single User"
   :mixins [item-resource]
   :parameters {:_id (path :model.user/id)})
