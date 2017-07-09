@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.routes.group-membership-routes
-  (:require [jiksnu.actions.group-membership-actions :as actions.group-membership]
+  (:require [jiksnu.modules.core.actions.group-membership-actions :as actions.group-membership]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter
@@ -44,11 +44,11 @@
            :properties {:name {:type "string"}}
            :required [:name]}
   :post! group-membership-api-collection-post!
-  :ns 'jiksnu.actions.group-membership-actions)
+  :ns 'jiksnu.modules.core.actions.group-membership-actions)
 
 (defresource group-memberships-api :item
   :desc "Resource routes for single Group Membership"
   :url "/{_id}"
-  :ns 'jiksnu.actions.group-membership-actions
+  :ns 'jiksnu.modules.core.actions.group-membership-actions
   :parameters {:_id (path :model.group-membership/id)}
   :mixins [item-resource])

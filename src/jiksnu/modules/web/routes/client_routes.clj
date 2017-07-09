@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.routes.client-routes
   (:require [cemerick.friend :as friend]
-            [jiksnu.actions.access-token-actions :as actions.access-token]
-            [jiksnu.actions.client-actions :as actions.client]
-            [jiksnu.actions.request-token-actions :as actions.request-token]
+            [jiksnu.modules.core.actions.access-token-actions :as actions.access-token]
+            [jiksnu.modules.core.actions.client-actions :as actions.client]
+            [jiksnu.modules.core.actions.request-token-actions :as actions.request-token]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
@@ -43,12 +43,12 @@
   :mixins [page-resource]
   :available-formats [:json]
   :page "clients"
-  :ns 'jiksnu.actions.client-actions)
+  :ns 'jiksnu.modules.core.actions.client-actions)
 
 (defresource clients-api :item
   :desc "Resource routes for single Conversation"
   :url "/{_id}"
-  :ns 'jiksnu.actions.client-actions
+  :ns 'jiksnu.modules.core.actions.client-actions
   :parameters {:_id (path :model.client/id)}
   :mixins [item-resource])
 

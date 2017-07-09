@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.resource-routes
   (:require [ciste.loader :refer [require-namespaces]]
-            [jiksnu.actions.resource-actions :refer [delete discover index show
+            [jiksnu.modules.core.actions.resource-actions :refer [delete discover index show
                                                      update-record]]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
@@ -36,4 +36,4 @@
   :mixins [page-resource]
   :page "resources"
   :available-formats [:json]
-  :ns 'jiksnu.actions.resource-actions)
+  :ns 'jiksnu.modules.core.actions.resource-actions)

@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.auth-routes
   (:require [cemerick.friend :as friend]
-            [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.modules.core.actions.auth-actions :as actions.auth]
+            [jiksnu.modules.core.actions.user-actions :as actions.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource page-resource]]

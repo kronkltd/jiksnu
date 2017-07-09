@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.routes.setting-routes
-  (:require [jiksnu.actions.setting-actions :as setting]
+  (:require [jiksnu.modules.core.actions.setting-actions :as setting]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [octohipster.mixins :as mixin]))

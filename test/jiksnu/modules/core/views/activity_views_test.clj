@@ -5,7 +5,7 @@
             jiksnu.modules.web.routes.activity-routes
             [jiksnu.routes-helper :refer [as-user json-response response-for]]
             [midje.sweet :refer :all]
-            [jiksnu.actions.activity-actions :as actions.activity]))
+            [jiksnu.modules.core.actions.activity-actions :as actions.activity]))
 
 (future-fact "apply-view #'actions.activity/oembed [:http :json]"
   (let [action #'actions.activity/oembed]

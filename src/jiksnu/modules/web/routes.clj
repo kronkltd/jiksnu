@@ -3,7 +3,7 @@
             [cemerick.friend.workflows :as workflows]
             [compojure.core :refer [GET routes]]
             [compojure.route :as route]
-            [jiksnu.actions.auth-actions :as actions.auth]
+            [jiksnu.modules.core.actions.auth-actions :as actions.auth]
             [jiksnu.db :as db]
             [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.modules.web.core :as core]

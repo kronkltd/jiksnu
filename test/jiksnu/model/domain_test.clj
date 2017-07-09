@@ -1,6 +1,6 @@
 (ns jiksnu.model.domain-test
   (:require [clj-factory.core :refer [factory]]
-            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.modules.core.actions.domain-actions :as actions.domain]
             [jiksnu.mock :as mock]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.test-helper :as th]

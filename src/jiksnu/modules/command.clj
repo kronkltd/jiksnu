@@ -2,9 +2,9 @@
   (:require [ciste.commands :refer [add-command! command-names]]
             [jiksnu.modules.core.actions :as actions]
             jiksnu.modules.command.filters
-            [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.actions.site-actions :as actions.site]
-            [jiksnu.actions.stream-actions :as actions.stream]))
+            [jiksnu.modules.core.actions.auth-actions :as actions.auth]
+            [jiksnu.modules.core.actions.site-actions :as actions.site]
+            [jiksnu.modules.core.actions.stream-actions :as actions.stream]))
 
 ;; This is where the module definition will be
 

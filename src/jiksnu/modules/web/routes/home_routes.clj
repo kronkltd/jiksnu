@@ -2,7 +2,7 @@
   (:require [cemerick.friend :as friend]
             [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [show-section]]
-            [jiksnu.actions.site-actions :as site]
+            [jiksnu.modules.core.actions.site-actions :as site]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup resources]]

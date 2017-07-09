@@ -36,12 +36,12 @@
             :post {:summary "Create Like"}}
   ;; :post! likes-api-post
   ;; :schema like-schema
-  :ns 'jiksnu.actions.like-actions)
+  :ns 'jiksnu.modules.core.actions.like-actions)
 
 (defresource likes-api :item
   :desc "Resource routes for single Like"
   :url "/{_id}"
-  :ns 'jiksnu.actions.like-actions
+  :ns 'jiksnu.modules.core.actions.like-actions
   :parameters {:_id (path :model.like/id)}
   :methods {:get {:summary "Show Like"}
             :delete {:summary "Delete Like"}}

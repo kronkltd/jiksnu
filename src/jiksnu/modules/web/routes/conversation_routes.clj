@@ -48,12 +48,12 @@
   :mixins [page-resource]
   :page "conversations"
   :available-formats [:json]
-  :ns 'jiksnu.actions.conversation-actions)
+  :ns 'jiksnu.modules.core.actions.conversation-actions)
 
 (defresource conversations-api :item
   :desc "Resource routes for single Conversation"
   :url "/{_id}"
-  :ns 'jiksnu.actions.conversation-actions
+  :ns 'jiksnu.modules.core.actions.conversation-actions
   :parameters {:_id (path :model.conversation/id)}
   :mixins [item-resource])
 

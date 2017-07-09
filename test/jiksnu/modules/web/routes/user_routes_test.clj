@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.user-routes-test
   (:require [clojure.data.json :as json]
-            [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.modules.core.actions.group-actions :as actions.group]
             [jiksnu.mock :as mock]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]

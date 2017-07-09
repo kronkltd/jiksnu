@@ -2,7 +2,7 @@
   (:require [ciste.config :refer [config]]
             [clj-time.core :as time]
             [clojure.string :as string]
-            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.modules.core.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.ops :as ops]

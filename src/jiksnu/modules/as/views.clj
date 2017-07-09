@@ -1,11 +1,11 @@
 (ns jiksnu.modules.as.views
   (:require [ciste.views :refer [defview]]
             [ciste.sections.default :refer [index-section show-section]]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.favorite-actions :as actions.favorite]
-            [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.actions.user-actions :as actions.user]))
+            [jiksnu.modules.core.actions.activity-actions :as actions.activity]
+            [jiksnu.modules.core.actions.favorite-actions :as actions.favorite]
+            [jiksnu.modules.core.actions.stream-actions :as actions.stream]
+            [jiksnu.modules.core.actions.subscription-actions :as actions.subscription]
+            [jiksnu.modules.core.actions.user-actions :as actions.user]))
 
 (defview #'actions.favorite/user-list :as
   [request [user page]]

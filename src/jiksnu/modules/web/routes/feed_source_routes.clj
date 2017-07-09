@@ -31,4 +31,4 @@
 (defresource feed-sources-api :collection
   :mixins [page-resource]
   :available-formats [:json]
-  :ns 'jiksnu.actions.feed-source-actions)
+  :ns 'jiksnu.modules.core.actions.feed-source-actions)

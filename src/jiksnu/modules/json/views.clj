@@ -2,11 +2,11 @@
   (:require [ciste.core :refer [with-format]]
             [ciste.sections.default :refer [index-section]]
             [ciste.views :refer [defview]]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.actions.site-actions :as actions.site]
-            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.modules.core.actions.activity-actions :as actions.activity]
+            [jiksnu.modules.core.actions.auth-actions :as actions.auth]
+            [jiksnu.modules.core.actions.resource-actions :as actions.resource]
+            [jiksnu.modules.core.actions.site-actions :as actions.site]
+            [jiksnu.modules.core.actions.stream-actions :as actions.stream]
             [jiksnu.modules.core.actions :as actions]
             [jiksnu.modules.http.actions :as http.actions]))
 

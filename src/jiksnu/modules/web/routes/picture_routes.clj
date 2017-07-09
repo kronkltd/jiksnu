@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.picture-routes
   (:require [ciste.config :refer [config]]
-            [jiksnu.actions.picture-actions :as actions.picture]
+            [jiksnu.modules.core.actions.picture-actions :as actions.picture]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
@@ -47,12 +47,12 @@
                    (actions.picture/upload (:_id user) (:album params) file)))
                (throw+ {:body "Could not get user"}))))
   ;; :schema picture-schema
-  :ns 'jiksnu.actions.picture-actions)
+  :ns 'jiksnu.modules.core.actions.picture-actions)
 
 (defresource pictures-api :item
   :desc "Resource routes for single Picture"
   :url "/{_id}"
-  :ns 'jiksnu.actions.picture-actions
+  :ns 'jiksnu.modules.core.actions.picture-actions
   :parameters {:_id (path :model.picture/id)}
   :methods {:get {:summary "Show Picture"}
             :delete {:summary "Delete Picture"

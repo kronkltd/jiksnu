@@ -1,6 +1,6 @@
 (ns jiksnu.util-test
   (:require [clj-factory.core :refer [fseq]]
-            jiksnu.factory
+            jiksnu.modules.core.factory
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all])

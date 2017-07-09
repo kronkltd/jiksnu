@@ -1,7 +1,7 @@
 (ns jiksnu.transforms.user-transforms
   (:require [ciste.config :refer [config]]
             [clj-gravatar.core :refer [gravatar-image]]
-            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.modules.core.actions.domain-actions :as actions.domain]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
