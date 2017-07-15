@@ -2,22 +2,22 @@
   (:require [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-_id set-created-time set-updated-time]]
-            [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set presence-of]]))
+            [validateur.validation :as v]))
 
 (def collection-name "pictures")
 (def maker #'model/map->Picture)
 (def default-page-size 20)
 
 (def create-validators
-  (validation-set
-   (presence-of :_id)
-   (presence-of :created)
-   (presence-of :updated)
-   ;; (presence-of :activity)
-   (type-of :user String)))
+  (v/validation-set
+   (v/presence-of :_id)
+   (v/presence-of :created)
+   (v/presence-of :updated)
+   #_(v/presence-of :activity)
+   (vc/type-of :user String)))
 
 (defn prepare
   [record]

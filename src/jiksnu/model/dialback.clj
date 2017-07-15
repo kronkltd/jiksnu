@@ -1,8 +1,8 @@
 (ns jiksnu.model.dialback
   (:require [jiksnu.model :as model]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set presence-of]])
+            [validateur.validation :as v])
   (:import (org.bson.types ObjectId)
            (org.joda.time DateTime)))
 
@@ -15,11 +15,11 @@
 ;; :webfinger String
 ;; TODO: webfinger and host are mutually exclusive
 (def create-validators
-  (validation-set
-   (type-of :_id ObjectId)
-   (type-of :token String)
-   (type-of :date DateTime)
-   (type-of :url String)))
+  (v/validation-set
+   (vc/type-of :_id   ObjectId)
+   (vc/type-of :token String)
+   (vc/type-of :date  DateTime)
+   (vc/type-of :url   String)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

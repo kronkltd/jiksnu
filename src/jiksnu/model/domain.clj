@@ -2,12 +2,13 @@
   (:require [ciste.config :refer [config]]
             [jiksnu.db :as db]
             [jiksnu.model :as model]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-updated-time set-created-time]]
             [jiksnu.util :as util]
-            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]]))
+            [validateur.validation :as v])
+  (:import (org.joda.time DateTime)))
 
 (def collection-name "domains")
 (def maker           #'model/map->Domain)
@@ -18,13 +19,12 @@
   (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
 
 (def create-validators
-  (validation-set
-   ;; (type-of :_id        String)
-   ;; (type-of :created    DateTime)
-   ;; (type-of :updated    DateTime)
-   ;; (type-of :local      Boolean)
-   ;; (type-of :discovered Boolean)
-))
+  (v/validation-set
+   (vc/type-of :_id     String)
+   (vc/type-of :created DateTime)
+   (vc/type-of :updated DateTime)
+   #_(vc/type-of :local      Boolean)
+   #_(vc/type-of :discovered Boolean)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

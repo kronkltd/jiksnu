@@ -2,13 +2,12 @@
   (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]
-            [validateur.validation :refer [acceptance-of presence-of
-                                           validation-set]])
+            [validateur.validation :as v])
   (:import java.math.BigInteger
            java.security.KeyFactory
            java.security.KeyPair
@@ -31,8 +30,8 @@
 (def default-page-size 20)
 
 (def create-validators
-  (validation-set
-   (type-of :_id ObjectId)))
+  (v/validation-set
+   (vc/type-of :_id ObjectId)))
 
 (def ^KeyFactory key-factory (KeyFactory/getInstance "RSA"))
 (def ^KeyPairGenerator keypair-generator (KeyPairGenerator/getInstance "RSA"))

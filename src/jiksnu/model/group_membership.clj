@@ -1,10 +1,10 @@
 (ns jiksnu.model.group-membership
   (:require [jiksnu.model :as model]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-_id set-created-time
                                        set-updated-time]]
-            [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set presence-of]])
+            [validateur.validation :as v])
   (:import (org.bson.types ObjectId)
            (org.joda.time DateTime)))
 
@@ -13,10 +13,10 @@
 (def page-size       20)
 
 (def create-validators
-  (validation-set
-   (type-of :_id ObjectId)
-   (type-of :created DateTime)
-   (type-of :updated DateTime)))
+  (v/validation-set
+   (vc/type-of :_id     ObjectId)
+   (vc/type-of :created DateTime)
+   (vc/type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

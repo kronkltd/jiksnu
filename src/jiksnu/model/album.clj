@@ -1,7 +1,7 @@
 (ns jiksnu.model.album
   (:require [jiksnu.model :as model]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.validators :refer [type-of]]
             [validateur.validation :refer [validation-set presence-of]])
   (:import org.bson.types.ObjectId
            org.joda.time.DateTime))
@@ -12,11 +12,11 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id     ObjectId)
-   (type-of :name    String)
-   (type-of :owner   String)
-   (type-of :created DateTime)
-   (type-of :updated DateTime)))
+   (vc/type-of :_id     ObjectId)
+   (vc/type-of :name    String)
+   (vc/type-of :owner   String)
+   (vc/type-of :created DateTime)
+   (vc/type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

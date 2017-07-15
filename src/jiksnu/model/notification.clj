@@ -3,20 +3,19 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-_id set-created-time set-updated-time]]
-            [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set presence-of]]))
+            [validateur.validation :as v]))
 
 (def collection-name "notifications")
 (def maker #'model/map->Notification)
 (def default-page-size 20)
 
 (def create-validators
-  (validation-set
-   (presence-of :_id)
-   (presence-of :created)
-   (presence-of :updated)
-   (presence-of :user)
-   (presence-of :activity)))
+  (v/validation-set
+   (v/presence-of :_id)
+   (v/presence-of :created)
+   (v/presence-of :updated)
+   (v/presence-of :user)
+   (v/presence-of :activity)))
 
 (defn prepare
   [record]

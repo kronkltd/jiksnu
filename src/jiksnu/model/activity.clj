@@ -3,11 +3,11 @@
             [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.session :as session]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [validateur.validation :refer [validation-set presence-of]])
+            [validateur.validation :as v])
   (:import org.bson.types.ObjectId
            org.joda.time.DateTime))
 
@@ -16,28 +16,21 @@
 (def maker model/map->Activity)
 
 (def create-validators
-  (validation-set
-   (type-of :_id                   ObjectId)
-
-   (type-of :id                    String)
-   (type-of :title                 String)
-   (type-of :content               String)
-   (type-of :verb                  String)
-   (type-of [:object :type]        String)
-
-   (type-of :local                 Boolean)
-   (type-of :public                Boolean)
-
-   (type-of :author                String)
-   ;; (type-of :update-source         ObjectId)
-   ;; (type-of :conversation          ObjectId)
-
-   ;; (presence-of :created)
-   (type-of :created               DateTime)
-   ;; (presence-of :published)
-   (type-of :published             DateTime)
-   ;; (presence-of :updated)
-   (type-of :updated               DateTime)))
+  (v/validation-set
+   (vc/type-of :_id            ObjectId)
+   (vc/type-of :id             String)
+   (vc/type-of :title          String)
+   (vc/type-of :content        String)
+   (vc/type-of :verb           String)
+   (vc/type-of [:object :type] String)
+   (vc/type-of :local          Boolean)
+   (vc/type-of :public         Boolean)
+   (vc/type-of :author         String)
+   #_(vc/type-of :update-source  ObjectId)
+   #_(vc/type-of :conversation   ObjectId)
+   (vc/type-of :created        DateTime)
+   (vc/type-of :published      DateTime)
+   (vc/type-of :updated        DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
