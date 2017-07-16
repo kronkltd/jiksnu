@@ -21,6 +21,7 @@
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
   (:import java.net.URI
+           jiksnu.modules.core.model.Repo
            jiksnu.modules.core.model.User
            nu.xom.Document))
 
@@ -69,6 +70,15 @@
         :fn string?)
 
 (stest/instrument 'prepare-create)
+
+(deftype UserRepo []
+  Repo
+
+  (collection-name [this] "users")
+
+  (index [this]
+    (templates.actions/make-indexer 'jiksnu.model.user
+                                    :sort-clause {:username 1})))
 
 ;; utils
 

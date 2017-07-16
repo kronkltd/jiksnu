@@ -2,7 +2,8 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.spec.test.alpha :as stest]
-            [jiksnu.util :as util]))
+            [jiksnu.util :as util]
+            [taoensso.timbre :as timbre]))
 
 ;; TODO: pull these from ns/
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
@@ -47,6 +48,11 @@
 (defrecord Service                 [])
 (defrecord Stream                  [])
 (defrecord Subscription            [])
+
+(defprotocol Repo
+  (collection-name [this])
+  (index           [this]))
+
 (defrecord User                    [_id])
 
 (s/def ::_id
