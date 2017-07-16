@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.actions.feed-subscription-actions
-  (:require [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.templates.actions :as templates.actions]
+  (:require [jiksnu.model.feed-subscription :as model.feed-subscription]
+            [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))
 

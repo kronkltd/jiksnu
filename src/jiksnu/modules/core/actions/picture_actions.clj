@@ -2,7 +2,7 @@
   (:require [clj-time.core :as time]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.picture :as model.picture]
-            [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]

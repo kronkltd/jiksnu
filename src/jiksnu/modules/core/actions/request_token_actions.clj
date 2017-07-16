@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.actions.request-token-actions
   (:require [jiksnu.model.request-token :as model.request-token]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.session :as session]
-            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.request-token-transforms :as transforms.request-token]
             [slingshot.slingshot :refer [throw+]]

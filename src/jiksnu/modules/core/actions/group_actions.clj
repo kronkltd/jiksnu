@@ -1,10 +1,10 @@
 (ns jiksnu.modules.core.actions.group-actions
   (:require [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.model.group :as model.group]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.group-transforms :as transforms.group]
-            [jiksnu.templates.actions :as templates.actions]
             [slingshot.slingshot :refer [throw+]]))
 
 (def model-ns 'jiksnu.model.group)

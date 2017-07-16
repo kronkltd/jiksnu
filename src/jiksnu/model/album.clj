@@ -1,7 +1,7 @@
 (ns jiksnu.model.album
   (:require [jiksnu.model :as model]
+            [jiksnu.modules.core.templates.model :as templates.model]
             [jiksnu.modules.core.validators :as vc]
-            [jiksnu.templates.model :as templates.model]
             [validateur.validation :refer [validation-set presence-of]])
   (:import org.bson.types.ObjectId
            org.joda.time.DateTime))

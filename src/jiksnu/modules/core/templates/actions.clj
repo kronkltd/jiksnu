@@ -1,4 +1,4 @@
-(ns jiksnu.templates.actions
+(ns jiksnu.modules.core.templates.actions
   (:require [ciste.event :as event]
             [jiksnu.db :as db]
             [monger.collection :as mc]

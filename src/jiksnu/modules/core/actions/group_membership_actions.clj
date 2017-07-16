@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.actions.group-membership-actions
   (:require [jiksnu.model.group-membership :as model.group-membership]
-            [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]))
 
 (def model-ns 'jiksnu.model.group-membership)

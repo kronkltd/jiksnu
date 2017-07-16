@@ -1,8 +1,8 @@
 (ns jiksnu.model.authentication-mechanism
   (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
+            [jiksnu.modules.core.templates.model :as templates.model]
             [jiksnu.modules.core.validators :as vc]
-            [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
             [monger.collection :as mc]
             [validateur.validation :as v])

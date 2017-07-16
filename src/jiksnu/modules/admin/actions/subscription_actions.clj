@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.actions.subscription-actions
   (:require [ciste.model :as cm]
             [jiksnu.modules.core.actions.subscription-actions :as actions.subscription]
-            [jiksnu.templates.actions :as templates.actions]))
+            [jiksnu.modules.core.templates.actions :as templates.actions]))
 
 (defn create
   [params & options]

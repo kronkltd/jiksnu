@@ -3,8 +3,8 @@
             [ciste.event :as event]
             [clojure.set :as set]
             [jiksnu.model.album :as model.album]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.session :as session]
-            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.album-transforms :as transforms.album]
             [slingshot.slingshot :refer [throw+]]))

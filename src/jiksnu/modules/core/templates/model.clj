@@ -1,4 +1,4 @@
-(ns jiksnu.templates.model
+(ns jiksnu.modules.core.templates.model
   (:require [ciste.event :refer [defkey notify]]
             [jiksnu.db :as db]
             [jiksnu.util :as util]

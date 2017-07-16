@@ -2,7 +2,7 @@
   (:require jiksnu.model.access-token
             [jiksnu.model.client :as model.client]
             [jiksnu.model.request-token :as model.request-token]
-            [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.access-token-transforms :as transforms.access-token]
             [slingshot.slingshot :refer [throw+]]

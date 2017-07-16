@@ -1,10 +1,10 @@
 (ns jiksnu.modules.core.actions.conversation-actions
   (:require [ciste.event :as event]
             [clj-time.core :as time]
-            [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
             [slingshot.slingshot :refer [throw+]]

@@ -3,9 +3,9 @@
             [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.templates.model :as templates.model]
             [jiksnu.modules.core.validators :as vc]
             [jiksnu.session :as session]
-            [jiksnu.templates.model :as templates.model]
             [monger.collection :as mc]
             [validateur.validation :as v])
   (:import org.bson.types.ObjectId

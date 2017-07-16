@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.actions.feed-subscription-actions
   (:require [ciste.core :refer [defaction]]
             [ciste.model :as cm]
-            [jiksnu.templates.actions :as templates.actions]))
+            [jiksnu.modules.core.templates.actions :as templates.actions]))
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.feed-subscription))

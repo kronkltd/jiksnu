@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.actions.notification-actions
   (:require [jiksnu.model.notification :as model.notification]
-            [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))
 

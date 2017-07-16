@@ -3,7 +3,7 @@
             [clj-time.coerce :as coerce]
             [clojure.string :as string]
             jiksnu.model.client
-            [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.client-transforms :as transforms.client]
             [slingshot.slingshot :refer [throw+]]))

@@ -1,7 +1,7 @@
 (ns jiksnu.model.resource
   (:require [jiksnu.model :as model]
             [jiksnu.modules.core.validators :as vc]
-            [jiksnu.templates.model :as templates.model]
+            [jiksnu.modules.core.templates.model :as templates.model]
             [net.cgrand.enlive-html :as enlive]
             [validateur.validation :as v])
   (:import java.io.StringReader

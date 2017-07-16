@@ -2,8 +2,8 @@
   (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.templates.model :as templates.model]
             [jiksnu.modules.core.validators :as vc]
-            [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-_id set-updated-time set-created-time]]
             [monger.collection :as mc]
             [validateur.validation :as v])
