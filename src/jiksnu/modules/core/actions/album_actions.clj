@@ -2,14 +2,14 @@
   (:require [ciste.config :refer [config]]
             [ciste.event :as event]
             [clojure.set :as set]
-            [jiksnu.model.album :as model.album]
+            [jiksnu.modules.core.model.album :as model.album]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.album-transforms :as transforms.album]
             [slingshot.slingshot :refer [throw+]]))
 
-(def model-ns 'jiksnu.model.album)
+(def model-ns 'jiksnu.modules.core.model.album)
 
 (defn can-delete?
   [item]

@@ -4,7 +4,7 @@
             [jiksnu.modules.core.templates.actions :as templates.actions]))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.feed-subscription))
+  (templates.actions/make-indexer 'jiksnu.modules.core.model.feed-subscription))
 
 (defaction index
   [& options]

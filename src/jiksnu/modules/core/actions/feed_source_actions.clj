@@ -1,8 +1,8 @@
 (ns jiksnu.modules.core.actions.feed-source-actions
   (:require [clj-http.client :as client]
             [clj-time.core :as time]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.resource :as model.resource]
+            [jiksnu.modules.core.model.feed-source :as model.feed-source]
+            [jiksnu.modules.core.model.resource :as model.resource]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
@@ -12,10 +12,10 @@
             [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
-  (:import jiksnu.model.FeedSource
-           jiksnu.model.User))
+  (:import jiksnu.modules.core.model.FeedSource
+           jiksnu.modules.core.model.User))
 
-(def model-ns 'jiksnu.model.feed-source)
+(def model-ns 'jiksnu.modules.core.model.feed-source)
 
 (defonce pending-discovers (ref {}))
 

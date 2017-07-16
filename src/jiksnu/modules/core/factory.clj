@@ -9,7 +9,7 @@
             [jiksnu.modules.core.actions.domain-actions :as actions.domain]
             [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.modules.core.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]))
+            [jiksnu.modules.core.model :as model]))
 
 (defn domain-id
   []

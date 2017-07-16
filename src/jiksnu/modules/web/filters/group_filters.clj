@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.filters.group-filters
   (:require [ciste.filters :refer [deffilter]]
             [jiksnu.modules.core.actions.group-actions :as actions.group]
-            [jiksnu.model.group :as model.group]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.modules.core.model.group :as model.group]
+            [jiksnu.modules.core.model.user :as model.user]))
 
 (deffilter #'actions.group/add :http
   [action request]

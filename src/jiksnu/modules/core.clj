@@ -2,10 +2,10 @@
   (:require [ciste.loader :refer [defmodule]]
             [jiksnu.db :as db]
             [jiksnu.metrics :as metrics]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
             [jiksnu.modules.core.filters :as core.filters]
             jiksnu.modules.core.formats
+            [jiksnu.modules.core.model.feed-source :as model.feed-source]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.core.helpers :as helpers]
             jiksnu.modules.core.pages
             jiksnu.modules.core.sections

@@ -1,14 +1,14 @@
 (ns jiksnu.modules.core.actions.access-token-actions
-  (:require jiksnu.model.access-token
-            [jiksnu.model.client :as model.client]
-            [jiksnu.model.request-token :as model.request-token]
+  (:require jiksnu.modules.core.model.access-token
+            [jiksnu.modules.core.model.client :as model.client]
+            [jiksnu.modules.core.model.request-token :as model.request-token]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.access-token-transforms :as transforms.access-token]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 
-(def model-ns 'jiksnu.model.access-token)
+(def model-ns 'jiksnu.modules.core.model.access-token)
 
 (def create-fn (ns-resolve (the-ns model-ns) 'create))
 (def delete-fn (ns-resolve (the-ns model-ns) 'delete))

@@ -1,12 +1,12 @@
 (ns jiksnu.ops
   (:require [jiksnu.channels :as ch]
-            jiksnu.model
+            jiksnu.modules.core.model
             [manifold.deferred :as d]
             [manifold.stream :as s]
             [manifold.time :as time]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre])
-  (:import jiksnu.model.Domain))
+  (:import jiksnu.modules.core.model.Domain))
 
 ;; TODO: Config option
 (def default-timeout

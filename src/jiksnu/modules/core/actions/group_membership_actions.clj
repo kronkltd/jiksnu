@@ -1,9 +1,9 @@
 (ns jiksnu.modules.core.actions.group-membership-actions
-  (:require [jiksnu.model.group-membership :as model.group-membership]
+  (:require [jiksnu.modules.core.model.group-membership :as model.group-membership]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]))
 
-(def model-ns 'jiksnu.model.group-membership)
+(def model-ns 'jiksnu.modules.core.model.group-membership)
 
 (defn prepare-create
   [params]

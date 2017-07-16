@@ -1,12 +1,12 @@
 (ns jiksnu.modules.core.actions.like-actions
   (:require [clj-time.core :as time]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.like :as model.like]
+            [jiksnu.modules.core.model.activity :as model.activity]
+            [jiksnu.modules.core.model.like :as model.like]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))
 
-(def model-ns 'jiksnu.model.like)
+(def model-ns 'jiksnu.modules.core.model.like)
 
 (defn prepare-create
   [activity]

@@ -5,13 +5,13 @@
             [jiksnu.modules.core.actions.service-actions :as actions.service]
             [jiksnu.modules.core.actions.resource-actions :as actions.resource]
             [jiksnu.mock :as mock]
-            [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.core.model.domain :as model.domain]
             [jiksnu.modules.core.factory :as f]
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Domain
-           jiksnu.model.Service
+  (:import jiksnu.modules.core.model.Domain
+           jiksnu.modules.core.model.Service
            nu.xom.Document))
 
 (th/module-test ["jiksnu.modules.core"])

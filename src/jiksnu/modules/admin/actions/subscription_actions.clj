@@ -16,7 +16,7 @@
   (actions.subscription/delete subscription))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.subscription))
+  (templates.actions/make-indexer 'jiksnu.modules.core.model.subscription))
 
 ;; requires admin
 (defn index

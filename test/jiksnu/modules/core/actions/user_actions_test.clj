@@ -3,19 +3,19 @@
             [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
             [hiccup.core :as h]
-            [jiksnu.modules.core.actions.domain-actions :as actions.domain]
-            [jiksnu.modules.core.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
-            [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.core.actions.domain-actions :as actions.domain]
+            [jiksnu.modules.core.actions.user-actions :as actions.user]
+            [jiksnu.modules.core.model.authentication-mechanism :as model.auth-mechanism]
+            [jiksnu.modules.core.model.domain :as model.domain]
             [jiksnu.modules.core.factory :as f]
             [jiksnu.namespace :as ns]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Domain
-           jiksnu.model.User))
+  (:import jiksnu.modules.core.model.Domain
+           jiksnu.modules.core.model.User))
 
 (defn mock-user-meta
   [username domain-name uri source-link]

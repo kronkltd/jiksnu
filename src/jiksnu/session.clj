@@ -1,5 +1,5 @@
 (ns jiksnu.session
-  (:require [jiksnu.model.user :as model.user]))
+  (:require [jiksnu.modules.core.model.user :as model.user]))
 
 (def ^:dynamic *current-user-id* (ref nil))
 

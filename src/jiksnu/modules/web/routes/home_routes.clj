@@ -3,7 +3,7 @@
             [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [show-section]]
             [jiksnu.modules.core.actions.site-actions :as site]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup resources]]
             [jiksnu.modules.web.helpers :refer [angular-resource as-collection-resource]]

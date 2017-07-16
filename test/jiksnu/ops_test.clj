@@ -3,8 +3,8 @@
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Domain
-           jiksnu.model.Resource))
+  (:import jiksnu.modules.core.model.Domain
+           jiksnu.modules.core.model.Resource))
 
 (def test-url "http://www.example.com/")
 

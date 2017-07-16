@@ -2,7 +2,7 @@
   (:require [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
             [jiksnu.mock :as mock]
-            [jiksnu.model.activity :as model.activity]
+            [jiksnu.modules.core.model.activity :as model.activity]
             jiksnu.modules.web.routes.activity-routes
             [jiksnu.routes-helper :refer [as-user json-response response-for]]
             [jiksnu.test-helper :as th]

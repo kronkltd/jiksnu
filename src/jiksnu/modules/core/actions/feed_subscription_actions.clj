@@ -1,11 +1,11 @@
 (ns jiksnu.modules.core.actions.feed-subscription-actions
-  (:require [jiksnu.model.feed-subscription :as model.feed-subscription]
+  (:require [jiksnu.modules.core.model.feed-subscription :as model.feed-subscription]
             [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))
 
-(def model-ns 'jiksnu.model.feed-subscription)
+(def model-ns 'jiksnu.modules.core.model.feed-subscription)
 
 (defn prepare-create
   [item]
@@ -35,7 +35,7 @@
     (create params options)))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.feed-subscription
+  (templates.actions/make-indexer 'jiksnu.modules.core.model.feed-subscription
                                   :sort-clause {:_id 1}))
 
 (defn index

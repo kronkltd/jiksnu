@@ -1,10 +1,10 @@
 (ns jiksnu.modules.core.actions.notification-actions
-  (:require [jiksnu.model.notification :as model.notification]
+  (:require [jiksnu.modules.core.model.notification :as model.notification]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]))
 
-(def model-ns 'jiksnu.model.notification)
+(def model-ns 'jiksnu.modules.core.model.notification)
 
 (defn prepare-create
   [activity]

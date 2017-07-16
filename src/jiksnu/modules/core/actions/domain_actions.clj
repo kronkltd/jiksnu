@@ -1,13 +1,13 @@
 (ns jiksnu.modules.core.actions.domain-actions
   (:require [ciste.config :refer [config]]
-            [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.core.model :as model]
+            [jiksnu.modules.core.model.domain :as model.domain]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]))
 
-(def model-ns 'jiksnu.model.domain)
+(def model-ns 'jiksnu.modules.core.model.domain)
 
 (defonce delete-hooks (ref []))
 
@@ -55,7 +55,7 @@
   nil)
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.domain
+  (templates.actions/make-indexer 'jiksnu.modules.core.model.domain
                                   :sort-clause {:username 1}))
 
 (defn index

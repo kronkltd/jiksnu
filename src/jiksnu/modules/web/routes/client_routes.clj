@@ -3,8 +3,8 @@
             [jiksnu.modules.core.actions.access-token-actions :as actions.access-token]
             [jiksnu.modules.core.actions.client-actions :as actions.client]
             [jiksnu.modules.core.actions.request-token-actions :as actions.request-token]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.model.request-token :as model.request-token]
+            [jiksnu.modules.core.model.user :as model.user]
+            [jiksnu.modules.core.model.request-token :as model.request-token]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource

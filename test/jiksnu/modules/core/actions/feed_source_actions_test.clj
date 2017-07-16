@@ -4,14 +4,14 @@
             [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.modules.core.actions.service-actions :as actions.service]
             [jiksnu.mock :as mock]
-            [jiksnu.model.resource :as model.resource]
+            [jiksnu.modules.core.model.resource :as model.resource]
             [jiksnu.modules.core.factory :as f]
             [jiksnu.ops :as ops]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [manifold.deferred :as d]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.FeedSource))
+  (:import jiksnu.modules.core.model.FeedSource))
 
 (th/module-test ["jiksnu.modules.core"])
 

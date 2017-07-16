@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.actions.comment-actions
   (:require [jiksnu.modules.core.actions.activity-actions :as actions.activity]
-            [jiksnu.model.activity :as model.activity]
+            [jiksnu.modules.core.model.activity :as model.activity]
             [jiksnu.namespace :as ns]))
 
 ;; TODO: What id should be used here?

@@ -1,10 +1,10 @@
 (ns jiksnu.modules.core.actions.group-actions-test
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.modules.core.actions.group-actions :as actions.group]
-            [jiksnu.model.group :as model.group]
+            [jiksnu.modules.core.model.group :as model.group]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Group))
+  (:import jiksnu.modules.core.model.Group))
 
 (th/module-test ["jiksnu.modules.core"])
 

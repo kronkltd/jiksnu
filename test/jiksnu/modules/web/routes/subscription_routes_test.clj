@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.subscription-routes-test
   (:require [clj-factory.core :refer [fseq]]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
+            [jiksnu.modules.core.model :as model]
             [jiksnu.ops :as ops]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]

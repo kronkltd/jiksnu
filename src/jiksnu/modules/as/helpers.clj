@@ -3,7 +3,7 @@
             [ciste.core :refer [with-context]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri index-section show-section]]
-            [jiksnu.model.domain :as model.domain]))
+            [jiksnu.modules.core.model.domain :as model.domain]))
 
 (def url-pattern       "%s://%s/main/users/%s")
 (def profile-pattern   "%s://%s/api/user/%s/profile")

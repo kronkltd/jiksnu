@@ -2,23 +2,23 @@
   (:require [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Album
-           jiksnu.model.Client
-           jiksnu.model.Conversation
-           jiksnu.model.Domain
-           jiksnu.model.FeedSource
-           jiksnu.model.FeedSubscription
-           jiksnu.model.Group
-           jiksnu.model.Like
-           jiksnu.model.Notification
-           jiksnu.model.Picture
-           jiksnu.model.RequestToken
-           jiksnu.model.Resource
-           jiksnu.model.Service
-           jiksnu.model.Stream
-           jiksnu.model.Subscription
-           jiksnu.model.User))
+  (:import jiksnu.modules.core.model.Activity
+           jiksnu.modules.core.model.Album
+           jiksnu.modules.core.model.Client
+           jiksnu.modules.core.model.Conversation
+           jiksnu.modules.core.model.Domain
+           jiksnu.modules.core.model.FeedSource
+           jiksnu.modules.core.model.FeedSubscription
+           jiksnu.modules.core.model.Group
+           jiksnu.modules.core.model.Like
+           jiksnu.modules.core.model.Notification
+           jiksnu.modules.core.model.Picture
+           jiksnu.modules.core.model.RequestToken
+           jiksnu.modules.core.model.Resource
+           jiksnu.modules.core.model.Service
+           jiksnu.modules.core.model.Stream
+           jiksnu.modules.core.model.Subscription
+           jiksnu.modules.core.model.User))
 
 (th/module-test ["jiksnu.modules.core"])
 

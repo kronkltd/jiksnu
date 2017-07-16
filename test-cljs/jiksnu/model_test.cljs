@@ -1,4 +1,4 @@
-(ns jiksnu.model-test
+(ns jiksnu.modules.core.model-test
   (:require jiksnu.main
             [taoensso.timbre :as timbre]))
 

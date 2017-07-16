@@ -2,17 +2,17 @@
   (:require [clojure.string :as string]
             [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.modules.core.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model :as model]
+            [jiksnu.modules.core.model.feed-source :as model.feed-source]
+            [jiksnu.modules.core.model.subscription :as model.subscription]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 
-(def model-ns 'jiksnu.model.subscription)
+(def model-ns 'jiksnu.modules.core.model.subscription)
 
 (defonce delete-hooks (ref []))
 

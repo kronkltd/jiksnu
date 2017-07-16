@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.filters.resource-filters
   (:require [ciste.filters :refer [deffilter]]
             [jiksnu.modules.core.actions.resource-actions :as actions.resource]
-            [jiksnu.model.resource :as model.resource]
+            [jiksnu.modules.core.model.resource :as model.resource]
             [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]))
 
 ;; create

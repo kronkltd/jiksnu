@@ -3,7 +3,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.AccessToken))
+  (:import jiksnu.modules.core.model.AccessToken))
 
 (th/module-test ["jiksnu.modules.core"])
 

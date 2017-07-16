@@ -2,10 +2,10 @@
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.modules.core.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.mock :as mock]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]
+            [jiksnu.modules.core.model.feed-subscription :as model.feed-subscription]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.FeedSubscription))
+  (:import jiksnu.modules.core.model.FeedSubscription))
 
 (th/module-test ["jiksnu.modules.core"])
 

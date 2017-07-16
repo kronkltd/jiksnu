@@ -1,14 +1,14 @@
 (ns jiksnu.modules.core.actions.picture-actions
   (:require [clj-time.core :as time]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.picture :as model.picture]
+            [jiksnu.modules.core.model.activity :as model.activity]
+            [jiksnu.modules.core.model.picture :as model.picture]
             [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]
             [clojure.java.io :as io]))
 
-(def model-ns 'jiksnu.model.picture)
+(def model-ns 'jiksnu.modules.core.model.picture)
 
 (defn prepare-create
   [activity]
@@ -40,7 +40,7 @@
     :created (time/now)}))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.picture))
+  (templates.actions/make-indexer 'jiksnu.modules.core.model.picture))
 
 (defn index
   [& options]

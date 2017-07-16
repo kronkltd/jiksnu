@@ -10,7 +10,7 @@
 
 (defn get-model
   [model-name id]
-  (let [model-ns (symbol (str "jiksnu.model." model-name))]
+  (let [model-ns (symbol (str "jiksnu.modules.core.model." model-name))]
     (require model-ns)
     (let [fetcher (ns-resolve model-ns 'fetch-by-id)]
       (timbre/debugf "getting model %s(%s)" model-name id)

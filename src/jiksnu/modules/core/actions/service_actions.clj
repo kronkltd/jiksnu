@@ -3,9 +3,9 @@
             [ciste.model :as cm]
             [clj-time.core :as time]
             [clojure.data.json :as json]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.service :as model.service]
-            [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.modules.core.model.domain :as model.domain]
+            [jiksnu.modules.core.model.service :as model.service]
+            [jiksnu.modules.core.model.webfinger :as model.webfinger]
             [jiksnu.modules.core.actions.domain-actions :as actions.domain]
             [jiksnu.modules.core.actions.resource-actions :as actions.resource]
             [jiksnu.modules.core.templates.actions :as templates.actions]
@@ -16,10 +16,10 @@
             [manifold.time :as lt]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre])
-  (:import jiksnu.model.Domain
+  (:import jiksnu.modules.core.model.Domain
            (org.apache.http HttpStatus)))
 
-(def model-ns 'jiksnu.model.service)
+(def model-ns 'jiksnu.modules.core.model.service)
 
 (defonce pending-discovers (ref {}))
 
