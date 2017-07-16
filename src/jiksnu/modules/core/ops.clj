@@ -1,5 +1,5 @@
 (ns jiksnu.modules.core.ops
-  (:require [jiksnu.channels :as ch]
+  (:require [jiksnu.modules.core.channels :as ch]
             jiksnu.modules.core.model
             [manifold.deferred :as d]
             [manifold.stream :as s]

@@ -1,7 +1,6 @@
 (ns jiksnu.modules.core.triggers
   (:require [ciste.core :refer [with-context]]
             [ciste.event :as event]
-            [jiksnu.channels :as ch]
             [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.modules.core.actions.domain-actions :as actions.domain]
             [jiksnu.modules.core.actions.conversation-actions :as actions.conversation]
@@ -14,6 +13,7 @@
             [jiksnu.modules.core.actions.stream-actions :as actions.stream]
             [jiksnu.modules.core.actions.subscription-actions :as actions.subscription]
             [jiksnu.modules.core.actions.user-actions :as actions.user]
+            [jiksnu.modules.core.channels :as ch]
             [jiksnu.modules.core.metrics :as metrics]
             [jiksnu.modules.core.model.activity :as model.activity]
             [jiksnu.modules.core.model.conversation :as model.conversation]

@@ -1,4 +1,4 @@
-(ns jiksnu.channels
+(ns jiksnu.modules.core.channels
   (:require [manifold.stream :as s]))
 
 ;; async fetchers
