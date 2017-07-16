@@ -3,7 +3,7 @@
             [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
             [hiccup.core :as h]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.actions.domain-actions :as actions.domain]
             [jiksnu.modules.core.actions.user-actions :as actions.user]

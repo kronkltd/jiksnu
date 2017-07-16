@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.actions.subscription-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.modules.core.actions.subscription-actions :as actions.subscription]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.model.subscription :as model.subscription]
             [jiksnu.modules.core.model.user :as model.user]

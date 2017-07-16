@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.model.group-test
   (:require [clj-factory.core :refer [factory]]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.model.group :as model.group]
             [jiksnu.test-helper :as th]

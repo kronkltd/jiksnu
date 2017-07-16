@@ -1,5 +1,5 @@
 (ns jiksnu.modules.core.model.key
-  (:require [jiksnu.db :as db]
+  (:require [jiksnu.modules.core.db :as db]
             [jiksnu.modules.core.model :as model]
             [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.core.templates.model :as templates.model]

@@ -1,5 +1,5 @@
 (ns jiksnu.modules.core.model.item
-  (:require [jiksnu.db :as db]
+  (:require [jiksnu.modules.core.db :as db]
             [jiksnu.modules.core.model :as model]
             [jiksnu.modules.core.templates.model :as templates.model]
             [jiksnu.modules.core.validators :as vc]

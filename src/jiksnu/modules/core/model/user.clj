@@ -3,7 +3,7 @@
             [clj-gravatar.core :refer [gravatar-image]]
             [clojure.string :as string]
             [taoensso.timbre :as timbre]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.modules.core.model :as model]
             [jiksnu.modules.core.model.domain :as model.domain]
             [jiksnu.modules.core.templates.model :as templates.model]

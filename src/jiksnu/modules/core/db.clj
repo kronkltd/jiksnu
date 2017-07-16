@@ -1,4 +1,4 @@
-(ns jiksnu.db
+(ns jiksnu.modules.core.db
   (:require [ciste.config :refer [config config* describe-config]]
             [inflections.core :as inf]
             [monger.collection :as mc]

@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.model.domain
   (:require [ciste.config :refer [config]]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.modules.core.model :as model]
             [jiksnu.modules.core.templates.model :as templates.model]
             [jiksnu.modules.core.validators :as vc]

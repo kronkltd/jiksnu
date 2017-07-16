@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.routes.home-routes-test
   (:require [ciste.formats :refer [format-as]]
             [ciste.model :as cm]
-            [jiksnu.db :as db]
             [jiksnu.mock :as mock]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.test-helper :as th]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [midje.sweet :refer :all]

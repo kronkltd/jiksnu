@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.routes.service-routes-test
   (:require [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
-            [jiksnu.db :as db]
             [jiksnu.mock :as mock]
+            [jiksnu.modules.core.db :as db]
             jiksnu.modules.web.routes.service-routes
             [jiksnu.test-helper :as th]
             [jiksnu.routes-helper :refer [as-user response-for]]

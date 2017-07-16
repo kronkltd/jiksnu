@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core
   (:require [ciste.loader :refer [defmodule]]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.modules.core.filters :as core.filters]
             jiksnu.modules.core.formats
             [jiksnu.modules.core.metrics :as metrics]

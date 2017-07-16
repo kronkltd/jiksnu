@@ -1,7 +1,7 @@
 (ns jiksnu.test-helper
   (:require [ciste.runner :refer [start-application! stop-application!]]
             [hiccup.core :as h]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.referrant :as r]
             [midje.sweet :refer [=> =not=> fact future-fact namespace-state-changes throws]]
             [net.cgrand.enlive-html :as enlive]

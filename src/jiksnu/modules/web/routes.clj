@@ -4,7 +4,7 @@
             [compojure.core :refer [GET routes]]
             [compojure.route :as route]
             [jiksnu.modules.core.actions.auth-actions :as actions.auth]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.modules.http.actions :as http.actions]
             [jiksnu.modules.web.core :as core]
             [jiksnu.modules.web.helpers :as helpers]

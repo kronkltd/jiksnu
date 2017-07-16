@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.actions.resource-actions-test
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.modules.core.actions.resource-actions :as actions.resource]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [org.httpkit.client :as client])

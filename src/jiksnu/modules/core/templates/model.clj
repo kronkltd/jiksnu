@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.templates.model
   (:require [ciste.event :refer [defkey notify]]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.util :as util]
             [monger.collection :as mc]
             [monger.query :as mq]

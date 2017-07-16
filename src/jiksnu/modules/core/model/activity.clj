@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.model.activity
   (:require [clojure.java.io :as io]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.modules.core.model :as model]
             [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.core.templates.model :as templates.model]

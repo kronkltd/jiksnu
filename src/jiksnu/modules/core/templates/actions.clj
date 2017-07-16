@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.templates.actions
   (:require [ciste.event :as event]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [monger.collection :as mc]
             monger.json
             [slingshot.slingshot :refer [throw+]]

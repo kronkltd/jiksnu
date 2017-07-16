@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.actions.stream-actions-test
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.modules.core.actions.stream-actions :as actions.stream]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
