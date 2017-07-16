@@ -92,11 +92,3 @@
   [request [user {:keys [items] :as response}]]
   {:template false
    :body {:items (index-section items response)}})
-
-(defview #'actions.user/show :as
-  [request user]
-  {:template false
-   :body {:profile (show-section user)
-          :updated (:updated user)
-          :published (:created user)
-          :nickname (:username user)}})
