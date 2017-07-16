@@ -1,19 +1,19 @@
 (ns jiksnu.model.item
   (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [validateur.validation :refer [validation-set]]))
+            [validateur.validation :as v])
+  (:import (org.bson.types ObjectId)))
 
 (def collection-name "items")
 (def maker #'model/map->Item)
 (def default-page-size 20)
 
 (def create-validators
-  (validation-set
-   ;; (type-of :_id           ObjectId)
-))
+  (v/validation-set
+    (vc/type-of :_id ObjectId)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

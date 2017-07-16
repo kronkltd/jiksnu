@@ -1,14 +1,11 @@
 (ns jiksnu.model.authentication-mechanism
   (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
-            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [validateur.validation :refer [acceptance-of
-                                           presence-of
-                                           valid?
-                                           validation-set]])
+            [validateur.validation :as v])
   (:import (org.bson.types ObjectId)
            (org.joda.time DateTime)))
 
@@ -17,12 +14,12 @@
 (def set-field! (templates.model/make-set-field! collection-name))
 
 (def create-validators
-  (validation-set
-   (type-of :_id ObjectId)
-   ;; ;; (type-of :local      Boolean)
-   ;; ;; (type-of :discovered Boolean)
-   (type-of :created DateTime)
-   (type-of :updated DateTime)))
+  (v/validation-set
+   (vc/type-of :_id ObjectId)
+   #_(vc/type-of :local      Boolean)
+   #_(vc/type-of :discovered Boolean)
+   (vc/type-of :created DateTime)
+   (vc/type-of :updated DateTime)))
 
 (defn fetch-by-id
   [id]

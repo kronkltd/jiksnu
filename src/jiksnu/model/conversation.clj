@@ -1,12 +1,10 @@
 (ns jiksnu.model.conversation
   (:require [jiksnu.db :as db]
             [jiksnu.model :as model]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [validateur.validation :refer [acceptance-of
-                                           presence-of
-                                           validation-set]])
+            [validateur.validation :as v])
   (:import (org.joda.time DateTime)
            (org.bson.types ObjectId)))
 
@@ -15,14 +13,14 @@
 (def default-page-size 20)
 
 (def create-validators
-  (validation-set
-   (type-of :_id ObjectId)
-   ;; ;; (type-of :url           String)
-   ;; (type-of :domain        String)
-   ;; (type-of :local         Boolean)
-   ;; ;; (type-of :update-source ObjectId)
-   (type-of :created DateTime)
-   (type-of :updated DateTime)))
+  (v/validation-set
+   (vc/type-of :_id     ObjectId)
+   #_(vc/type-of :url           String)
+   #_(vc/type-of :domain        String)
+   #_(vc/type-of :local         Boolean)
+   #_(vc/type-of :update-source ObjectId)
+   (vc/type-of :created DateTime)
+   (vc/type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

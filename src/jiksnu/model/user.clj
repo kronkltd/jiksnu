@@ -6,14 +6,14 @@
             [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.namespace :as ns]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.transforms :refer [set-_id set-updated-time set-created-time]]
             [jiksnu.util :as util]
-            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [slingshot.slingshot :refer [throw+]]
-            [validateur.validation :refer [acceptance-of validation-set presence-of]])
+            [validateur.validation :as v])
   (:import jiksnu.model.User
            (org.joda.time DateTime)))
 
@@ -22,16 +22,16 @@
 (def maker model/map->User)
 
 (def create-validators
-  (validation-set
-   (type-of :_id String)
-    ;; (type-of :username  String)
-    ;; (type-of :domain    String)
-    ;; ;; (acceptance-of :url          :accept string?)
-    ;; ;; (presence-of   :update-source)
-    ;; (presence-of   :avatarUrl)
-    ;; (acceptance-of :local         :accept (partial instance? Boolean))
-   (type-of :created DateTime)
-   (type-of :updated DateTime)))
+  (v/validation-set
+   (vc/type-of :_id String)
+   #_(vc/type-of :username  String)
+   #_(vc/type-of :domain    String)
+   #_(v/acceptance-of :url          :accept string?)
+   #_(v/presence-of   :update-source)
+   #_(v/presence-of   :avatarUrl)
+   #_(v/acceptance-of :local         :accept (partial instance? Boolean))
+   (vc/type-of :created DateTime)
+   (vc/type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

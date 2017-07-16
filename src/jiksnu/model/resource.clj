@@ -1,9 +1,9 @@
 (ns jiksnu.model.resource
   (:require [jiksnu.model :as model]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.validators :refer [type-of]]
             [net.cgrand.enlive-html :as enlive]
-            [validateur.validation :refer [validation-set presence-of acceptance-of]])
+            [validateur.validation :as v])
   (:import java.io.StringReader
            org.joda.time.DateTime))
 
@@ -12,12 +12,12 @@
 (def page-size       20)
 
 (def create-validators
-  (validation-set
-   ;; (type-of :_id     String)
-   ;; (type-of :domain  String)
-   ;; (type-of :local   Boolean)
-   (type-of :created DateTime)
-   (type-of :updated DateTime)))
+  (v/validation-set
+   #_(vc/type-of :_id     String)
+   #_(vc/type-of :domain  String)
+   #_(vc/type-of :local   Boolean)
+   (vc/type-of :created DateTime)
+   (vc/type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))

@@ -1,4 +1,4 @@
-(ns jiksnu.validators)
+(ns jiksnu.modules.core.validators)
 
 (defn type-of
   [attr type]

@@ -1,8 +1,8 @@
 (ns jiksnu.model.stream
   (:require [jiksnu.model :as model]
+            [jiksnu.modules.core.validators :as vc]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.validators :refer [type-of]]
-            [validateur.validation :refer [validation-set presence-of]])
+            [validateur.validation :as v])
   (:import (org.bson.types ObjectId)
            (org.joda.time DateTime)))
 
@@ -11,14 +11,14 @@
 (def maker model/map->Stream)
 
 (def create-validators
-  (validation-set
-   (type-of :_id ObjectId)
-   (type-of :name String)
-   ;; (type-of :local Boolean)
-   ;; ;; (type-of :public                Boolean)
-   (type-of :owner String)
-   (type-of :created DateTime)
-   (type-of :updated DateTime)))
+  (v/validation-set
+   (vc/type-of :_id ObjectId)
+   (vc/type-of :name String)
+   #_(vc/type-of :local Boolean)
+   #_(vc/type-of :public                Boolean)
+   (vc/type-of :owner String)
+   (vc/type-of :created DateTime)
+   (vc/type-of :updated DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
