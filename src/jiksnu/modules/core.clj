@@ -1,9 +1,9 @@
 (ns jiksnu.modules.core
   (:require [ciste.loader :refer [defmodule]]
             [jiksnu.db :as db]
-            [jiksnu.metrics :as metrics]
             [jiksnu.modules.core.filters :as core.filters]
             jiksnu.modules.core.formats
+            [jiksnu.modules.core.metrics :as metrics]
             [jiksnu.modules.core.model.feed-source :as model.feed-source]
             [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.core.helpers :as helpers]

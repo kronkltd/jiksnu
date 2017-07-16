@@ -3,7 +3,7 @@
             [taoensso.timbre :as timbre]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
-            [jiksnu.metrics :as metrics]
+            [jiksnu.modules.core.metrics :as metrics]
             [jiksnu.modules.core.model.access-token :as model.access-token]
             [jiksnu.modules.core.model.request-token :as model.request-token]
             [jiksnu.modules.core.model.client :as model.client]

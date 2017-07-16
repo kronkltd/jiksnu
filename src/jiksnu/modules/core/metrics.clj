@@ -1,4 +1,4 @@
-(ns jiksnu.metrics
+(ns jiksnu.modules.core.metrics
   #_(:import kamon.Kamon))
 
 (defmacro with-trace
