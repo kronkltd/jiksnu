@@ -1,7 +1,7 @@
 (ns jiksnu.transforms
   (:require [ciste.config :refer [config]]
             [clj-time.core :as time]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))
 

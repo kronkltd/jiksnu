@@ -1,6 +1,6 @@
-(ns jiksnu.ops-test
+(ns jiksnu.modules.core.ops-test
   (:require [jiksnu.mock :as mock]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
   (:import jiksnu.modules.core.model.Domain

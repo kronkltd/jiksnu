@@ -6,7 +6,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.model.resource :as model.resource]
             [jiksnu.modules.core.factory :as f]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [manifold.deferred :as d]

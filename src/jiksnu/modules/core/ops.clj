@@ -1,4 +1,4 @@
-(ns jiksnu.ops
+(ns jiksnu.modules.core.ops
   (:require [jiksnu.channels :as ch]
             jiksnu.modules.core.model
             [manifold.deferred :as d]

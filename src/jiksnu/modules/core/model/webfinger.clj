@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.model.webfinger
   (:require [ciste.model :as cm]
             [jiksnu.namespace :as ns]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [try+]])
   (:import jiksnu.modules.core.model.Domain

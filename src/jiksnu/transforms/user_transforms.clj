@@ -5,8 +5,8 @@
             [jiksnu.modules.core.model.domain :as model.domain]
             [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.core.model.webfinger :as model.webfinger]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.routes.helpers :refer [formatted-url]]
-            [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI))

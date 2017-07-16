@@ -3,7 +3,7 @@
             [jiksnu.modules.core.actions.domain-actions :as actions.domain]
             [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.core.model.webfinger :as model.webfinger]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])

@@ -2,7 +2,7 @@
   (:require [clj-factory.core :refer [fseq]]
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.model :as model]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
