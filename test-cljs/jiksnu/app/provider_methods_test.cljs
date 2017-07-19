@@ -190,12 +190,12 @@
 
                       (let [p (methods/following? $q Users auth-data target)]
                         (.$digest $rootScope)
-                        (-> (js/expect p) (.toBeResolvedWith true)))))))))))
+                        (-> (js/expect p) (.toBeResolvedWith true))))))))))))
 
-      (js/describe "login"
-        (fn []
-          (js/describe "with valid credentials"
-            (fn []
+    (js/describe "login"
+      (fn []
+        (js/describe "with valid credentials"
+          (fn []
               (js/it "returns successfully"
                 (fn []
                   (-> (.expectPOST $httpBackend "/main/login")
@@ -213,7 +213,7 @@
                     (.$digest $rootScope)
                     (-> (js/expect p) (.toBeResolvedWith true)))))))
 
-          (js/describe "with invalid credentials"
+        (js/describe "with invalid credentials"
             (fn []
               (js/it "is rejected"
                 (fn []
@@ -228,7 +228,7 @@
                     (.$digest $rootScope)
                     (-> (js/expect p) (.toBeRejected)))))))))
 
-      (js/describe "post"
+    (js/describe "post"
         (fn []
           (js/it "should return the id of the posted entry"
             (fn []
