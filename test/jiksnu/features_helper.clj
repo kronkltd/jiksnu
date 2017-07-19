@@ -1,6 +1,6 @@
 (ns jiksnu.features-helper
   (:require #_[clj-webdriver.taxi :as taxi]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.mock :refer [my-password]]
             [jiksnu.referrant :refer [this that set-this set-that]]
             [slingshot.slingshot :refer [throw+ try+]]

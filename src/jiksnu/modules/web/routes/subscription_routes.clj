@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.routes.subscription-routes
   (:require [ciste.core :refer [with-context]]
-            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.modules.core.model.subscription :as model.subscription]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter page-resource

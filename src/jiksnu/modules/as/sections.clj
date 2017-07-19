@@ -3,12 +3,12 @@
             [ciste.core :refer [with-context]]
             [ciste.sections :refer [defsection]]
             [ciste.sections.default :refer [full-uri index-section show-section]]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.modules.as.helpers :as as.helpers])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+            [jiksnu.modules.as.helpers :as as.helpers]
+            [jiksnu.modules.core.model.activity :as model.activity]
+            [jiksnu.modules.core.model.domain :as model.domain]
+            [jiksnu.modules.core.model.user :as model.user])
+  (:import jiksnu.modules.core.model.Activity
+           jiksnu.modules.core.model.User))
 
 (defsection index-section [Activity :as]
   [activities page]

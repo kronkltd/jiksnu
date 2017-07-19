@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.actions.feed-subscription-actions-test
-  (:require [jiksnu.db :as db]
-            [jiksnu.mock :as mock]
+  (:require [jiksnu.mock :as mock]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.modules.admin.actions.feed-subscription-actions
              :as actions.feed-subscription]
             [jiksnu.test-helper :as th]

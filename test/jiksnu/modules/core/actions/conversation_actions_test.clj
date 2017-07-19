@@ -2,7 +2,7 @@
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.modules.core.actions.conversation-actions :refer [create delete index show]]
             [jiksnu.mock :as mock]
-            [jiksnu.model.conversation :as model.conversation]
+            [jiksnu.modules.core.model.conversation :as model.conversation]
             [jiksnu.modules.core.factory :as f]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))

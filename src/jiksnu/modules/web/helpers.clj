@@ -2,7 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.tools.reader.edn :as edn]
             [hiccup.core :as h]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.as.helpers :as as.helpers]
             [jiksnu.modules.core.actions :as actions]
             [jiksnu.modules.core.helpers :as core.helpers]

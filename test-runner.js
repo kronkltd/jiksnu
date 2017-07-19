@@ -7,4 +7,4 @@ goog.require("jiksnu.app.components.page_element_components_test");
 goog.require("jiksnu.app.components.show_components_test");
 goog.require("jiksnu.app.providers_test");
 goog.require("jiksnu.app.provider_methods_test");
-goog.require("jiksnu.model_test");
+goog.require("jiksnu.modules.core.model_test");

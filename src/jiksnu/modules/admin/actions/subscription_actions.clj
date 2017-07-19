@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.actions.subscription-actions
   (:require [ciste.model :as cm]
             [jiksnu.modules.core.actions.subscription-actions :as actions.subscription]
-            [jiksnu.templates.actions :as templates.actions]))
+            [jiksnu.modules.core.templates.actions :as templates.actions]))
 
 (defn create
   [params & options]
@@ -16,7 +16,7 @@
   (actions.subscription/delete subscription))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.subscription))
+  (templates.actions/make-indexer 'jiksnu.modules.core.model.subscription))
 
 ;; requires admin
 (defn index

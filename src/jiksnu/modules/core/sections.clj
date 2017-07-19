@@ -5,11 +5,11 @@
             [ciste.sections.default :refer [full-uri index-block index-line index-section link-to
                                             show-section title uri]]
             [hiccup.core :as h]
-            [jiksnu.model.activity :as model.activity]
+            [jiksnu.modules.core.model.activity :as model.activity]
             [jiksnu.namespace :as ns]
             [jiksnu.util :as util])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Domain))
+  (:import jiksnu.modules.core.model.Activity
+           jiksnu.modules.core.model.Domain))
 
 (defsection full-uri :default
   [record & options]

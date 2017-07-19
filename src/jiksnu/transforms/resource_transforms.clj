@@ -1,6 +1,6 @@
 (ns jiksnu.transforms.resource-transforms
   (:require [ciste.config :refer [config]]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))
 

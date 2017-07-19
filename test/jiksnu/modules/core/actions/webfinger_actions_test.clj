@@ -2,7 +2,7 @@
   (:require [ciste.config :refer [config]]
             [jiksnu.modules.core.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.mock :as mock]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
   (:import nu.xom.Document

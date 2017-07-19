@@ -3,7 +3,7 @@
             [clojure.string :as string]
             [jiksnu.action-helpers :refer [expand-url fetch-page page-names
                                            that-stream]]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.referrant :refer [get-this get-that]]
             [manifold.stream :as s]))
 

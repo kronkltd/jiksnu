@@ -1,11 +1,11 @@
 (ns jiksnu.modules.core.actions.resource-actions-test
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.modules.core.actions.resource-actions :as actions.resource]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [org.httpkit.client :as client])
-  (:import jiksnu.model.Resource
+  (:import jiksnu.modules.core.model.Resource
            org.joda.time.DateTime))
 
 (def test-url "http://www.example.com/")

@@ -1,10 +1,10 @@
 (ns jiksnu.modules.core.actions.key-actions
-  (:require [jiksnu.model.key :as model.key]
-            [jiksnu.templates.actions :as templates.actions]
+  (:require [jiksnu.modules.core.model.key :as model.key]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms])
-  (:import jiksnu.model.User))
+  (:import jiksnu.modules.core.model.User))
 
-(def model-ns 'jiksnu.model.key)
+(def model-ns 'jiksnu.modules.core.model.key)
 
 (defn prepare-create
   [user]
@@ -36,7 +36,7 @@
   [item] item)
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.key))
+  (templates.actions/make-indexer 'jiksnu.modules.core.model.key))
 
 (defn index
   [& options]

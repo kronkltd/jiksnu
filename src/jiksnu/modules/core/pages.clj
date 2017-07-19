@@ -18,12 +18,12 @@
             [jiksnu.modules.core.actions.stream-actions :as stream]
             [jiksnu.modules.core.actions.subscription-actions :as subscription]
             [jiksnu.modules.core.actions.user-actions :as user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Album
-           jiksnu.model.Conversation
-           jiksnu.model.Group
-           jiksnu.model.Stream
-           jiksnu.model.User))
+  (:import jiksnu.modules.core.model.Activity
+           jiksnu.modules.core.model.Album
+           jiksnu.modules.core.model.Conversation
+           jiksnu.modules.core.model.Group
+           jiksnu.modules.core.model.Stream
+           jiksnu.modules.core.model.User))
 
 (defn pages
   []

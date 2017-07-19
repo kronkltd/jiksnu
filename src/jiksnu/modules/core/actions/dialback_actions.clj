@@ -1,9 +1,9 @@
 (ns jiksnu.modules.core.actions.dialback-actions
-  (:require [jiksnu.model.dialback :as model.dialback]
-            [jiksnu.templates.actions :as templates.actions]
+  (:require [jiksnu.modules.core.model.dialback :as model.dialback]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]))
 
-(def index*    (templates.actions/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))
+(def index*    (templates.actions/make-indexer 'jiksnu.modules.core.model.dialback :sort-clause {:date 1}))
 
 (defn index
   [& options]

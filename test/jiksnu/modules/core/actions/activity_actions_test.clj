@@ -1,16 +1,16 @@
 (ns jiksnu.modules.core.actions.activity-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
+            [jiksnu.mock :as mock]
             [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.modules.core.actions.stream-actions :as actions.stream]
-            [jiksnu.db :as db]
-            [jiksnu.mock :as mock]
-            [jiksnu.model.activity :as model.activity]
+            [jiksnu.modules.core.db :as db]
+            [jiksnu.modules.core.model.activity :as model.activity]
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Activity
+  (:import jiksnu.modules.core.model.Activity
            org.bson.types.ObjectId
            org.joda.time.DateTime))
 

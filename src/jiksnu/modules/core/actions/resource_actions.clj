@@ -4,10 +4,10 @@
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
-            [jiksnu.model :as model]
-            [jiksnu.model.resource :as model.resource]
+            [jiksnu.modules.core.model :as model]
+            [jiksnu.modules.core.model.resource :as model.resource]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.session :as session]
-            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [jiksnu.util :as util]
@@ -16,10 +16,10 @@
             [org.httpkit.client :as client]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
-  (:import jiksnu.model.Resource
+  (:import jiksnu.modules.core.model.Resource
            org.joda.time.DateTime))
 
-(def model-ns 'jiksnu.model.resource)
+(def model-ns 'jiksnu.modules.core.model.resource)
 
 (defkey ::resource-realized
   "Whenever a resource is realized, this event is fired"

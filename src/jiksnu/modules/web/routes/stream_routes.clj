@@ -3,8 +3,8 @@
             [ciste.commands :refer [add-command!]]
             [ciste.core :refer [with-context]]
             [jiksnu.modules.core.actions.stream-actions :as actions.stream]
-            [jiksnu.model.stream :as model.stream]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model.stream :as model.stream]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource

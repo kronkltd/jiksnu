@@ -1,16 +1,16 @@
 (ns jiksnu.modules.core.actions.conversation-actions
   (:require [ciste.event :as event]
             [clj-time.core :as time]
+            [jiksnu.modules.core.model.conversation :as model.conversation]
+            [jiksnu.modules.core.model.feed-source :as model.feed-source]
             [jiksnu.modules.core.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre]))
 
-(def model-ns 'jiksnu.model.conversation)
+(def model-ns 'jiksnu.modules.core.model.conversation)
 
 (defonce delete-hooks (ref []))
 
@@ -46,7 +46,7 @@
   (let [item (prepare-delete item)]
     (model.conversation/delete item)))
 
-(def index* (templates.actions/make-indexer 'jiksnu.model.conversation))
+(def index* (templates.actions/make-indexer 'jiksnu.modules.core.model.conversation))
 
 (defn index
   [& [params & [options]]]

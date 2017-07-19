@@ -2,13 +2,13 @@
   (:require [ciste.config :refer [config]]
             [clj-time.coerce :as coerce]
             [clojure.string :as string]
-            jiksnu.model.client
-            [jiksnu.templates.actions :as templates.actions]
+            jiksnu.modules.core.model.client
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.client-transforms :as transforms.client]
             [slingshot.slingshot :refer [throw+]]))
 
-(def model-ns 'jiksnu.model.client)
+(def model-ns 'jiksnu.modules.core.model.client)
 
 (def create-fn (ns-resolve (the-ns model-ns) 'create))
 (def delete-fn (ns-resolve (the-ns model-ns) 'delete))

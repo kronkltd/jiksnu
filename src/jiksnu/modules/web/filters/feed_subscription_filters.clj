@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.filters.feed-subscription-filters
   (:require [ciste.filters :refer [deffilter]]
             [jiksnu.modules.core.actions.feed-subscription-actions :as actions.feed-subscription]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]))
+            [jiksnu.modules.core.model.feed-subscription :as model.feed-subscription]))
 
 (deffilter #'actions.feed-subscription/show :http
   [action request]

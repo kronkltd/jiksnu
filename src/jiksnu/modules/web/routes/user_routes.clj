@@ -4,9 +4,9 @@
             [ciste.sections.default :refer [index-section show-section]]
             [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.modules.core.actions.subscription-actions :as actions.subscription]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model.activity :as model.activity]
+            [jiksnu.modules.core.model.subscription :as model.subscription]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource as-collection-resource

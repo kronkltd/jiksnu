@@ -1,6 +1,6 @@
 (ns jiksnu.app.model
   (:require [jiksnu.app :refer [jiksnu]]
-            [jiksnu.model :as model]))
+            [jiksnu.modules.core.model :as model]))
 
 (-> jiksnu
     (.factory "Activities"       #js ["DS" model/Activities])

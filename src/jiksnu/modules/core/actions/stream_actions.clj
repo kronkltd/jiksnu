@@ -7,16 +7,16 @@
             [hiccup.core :as h]
             [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.modules.core.actions.conversation-actions :as actions.conversation]
-            [jiksnu.model.stream :as model.stream]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
+            [jiksnu.modules.core.model.stream :as model.stream]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.session :as session]
-            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.stream-transforms :as transforms.stream]
             [slingshot.slingshot :refer [throw+ try+]]
             [taoensso.timbre :as timbre]))
 
-(def model-ns 'jiksnu.model.stream)
+(def model-ns 'jiksnu.modules.core.model.stream)
 
 ;; hooks
 
@@ -63,7 +63,7 @@
   nil)
 
 (def public-timeline*
-  (templates.actions/make-indexer 'jiksnu.model.conversation))
+  (templates.actions/make-indexer 'jiksnu.modules.core.model.conversation))
 
 (defn public-timeline
   [& [params & [options & _]]]

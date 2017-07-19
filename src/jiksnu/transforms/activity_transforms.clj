@@ -3,9 +3,9 @@
             [clj-time.core :as time]
             [clojure.string :as string]
             [jiksnu.modules.core.actions.user-actions :as actions.user]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.model.activity :as model.activity]
+            [jiksnu.modules.core.model.feed-source :as model.feed-source]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])

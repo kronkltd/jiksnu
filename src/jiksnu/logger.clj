@@ -42,7 +42,7 @@
                    "ciste.runner"
                    "ciste.service"
                    ;; "ring.logger.timbre"
-                   "jiksnu.db"
+                   "jiksnu.modules.core.db"
                    ;; "jiksnu.modules.http.actions"
                    ;; "jiksnu.modules.web.helpers"
                    "jiksnu.test-helper"]

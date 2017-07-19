@@ -1,4 +1,4 @@
-(ns jiksnu.model
+(ns jiksnu.modules.core.model
   (:require [inflections.core :as inf]))
 
 (defn deserializer

@@ -2,27 +2,27 @@
   (:require [ciste.config :refer [config]]
             [ciste.model :as cm]
             [clojure.data.json :as json]
+            [jiksnu.modules.core.model :as model]
+            [jiksnu.modules.core.model.domain :as model.domain]
+            [jiksnu.modules.core.model.key :as model.key]
+            [jiksnu.modules.core.model.user :as model.user]
+            [jiksnu.modules.core.model.webfinger :as model.webfinger]
             [jiksnu.modules.core.actions.auth-actions :as actions.auth]
             [jiksnu.modules.core.actions.domain-actions :as actions.domain]
             [jiksnu.modules.core.actions.key-actions :as actions.key]
-            [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.key :as model.key]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger]
-            [jiksnu.ops :as ops]
+            [jiksnu.modules.core.ops :as ops]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.session :as session]
-            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]
             [taoensso.timbre :as timbre])
   (:import java.net.URI
-           jiksnu.model.User
+           jiksnu.modules.core.model.User
            nu.xom.Document))
 
-(def model-ns 'jiksnu.model.user)
+(def model-ns 'jiksnu.modules.core.model.user)
 
 ;; hooks
 
@@ -132,7 +132,7 @@
   (model.user/fetch-by-id (:_id user)))
 
 (def index*
-  (templates.actions/make-indexer 'jiksnu.model.user
+  (templates.actions/make-indexer 'jiksnu.modules.core.model.user
                                   :sort-clause {:username 1}))
 
 (defn index

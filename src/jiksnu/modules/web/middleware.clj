@@ -3,10 +3,10 @@
             [taoensso.timbre :as timbre]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
-            [jiksnu.metrics :as metrics]
-            [jiksnu.model.access-token :as model.access-token]
-            [jiksnu.model.request-token :as model.request-token]
-            [jiksnu.model.client :as model.client]
+            [jiksnu.modules.core.metrics :as metrics]
+            [jiksnu.modules.core.model.access-token :as model.access-token]
+            [jiksnu.modules.core.model.request-token :as model.request-token]
+            [jiksnu.modules.core.model.client :as model.client]
             [jiksnu.session :refer [with-user-id]]
             [slingshot.slingshot :refer [try+]])
   (:import javax.security.auth.login.LoginException))

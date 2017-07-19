@@ -1,8 +1,8 @@
 (ns jiksnu.modules.web.actions.user-actions
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
-            [jiksnu.model.key :as model.key]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model.key :as model.key]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [slingshot.slingshot :refer [throw+]]))
 

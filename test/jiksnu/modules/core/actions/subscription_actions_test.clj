@@ -1,15 +1,15 @@
 (ns jiksnu.modules.core.actions.subscription-actions-test
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.modules.core.actions.subscription-actions :as actions.subscription]
-            [jiksnu.db :as db]
+            [jiksnu.modules.core.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model.subscription :as model.subscription]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Subscription
-           jiksnu.model.User
+  (:import jiksnu.modules.core.model.Subscription
+           jiksnu.modules.core.model.User
            org.bson.types.ObjectId))
 
 (th/module-test ["jiksnu.modules.core"])

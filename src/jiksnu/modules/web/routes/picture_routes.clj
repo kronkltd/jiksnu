@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.picture-routes
   (:require [ciste.config :refer [config]]
             [jiksnu.modules.core.actions.picture-actions :as actions.picture]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.modules.http.resources :refer [add-group! defresource defgroup]]
             [jiksnu.modules.web.core :refer [jiksnu]]
             [jiksnu.modules.web.helpers :refer [angular-resource defparameter item-resource

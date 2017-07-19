@@ -2,7 +2,7 @@
   (:require [clj-factory.core :refer [factory fseq]]
             [jiksnu.modules.core.actions.like-actions :as actions.like]
             [jiksnu.mock :as mock]
-            [jiksnu.model.like :as model.like]
+            [jiksnu.modules.core.model.like :as model.like]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]))
 

@@ -3,10 +3,10 @@
             [ciste.event :as event]
             [clojure.set :as set]
             [jiksnu.modules.core.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
+            [jiksnu.modules.core.model :as model]
+            [jiksnu.modules.core.model.activity :as model.activity]
+            [jiksnu.modules.core.templates.actions :as templates.actions]
             [jiksnu.session :as session]
-            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [slingshot.slingshot :refer [throw+]]
@@ -19,7 +19,7 @@
     (or (session/is-admin?)
         (= actor-id author))))
 
-(def model-ns 'jiksnu.model.activity)
+(def model-ns 'jiksnu.modules.core.model.activity)
 (def add-link* (templates.actions/make-add-link* model.activity/collection-name))
 (def index*    (templates.actions/make-indexer model-ns :sort-clause {:updated 1}))
 (def delete    (templates.actions/make-delete model.activity/delete can-delete?))

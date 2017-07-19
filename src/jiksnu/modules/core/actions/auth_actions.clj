@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.actions.auth-actions
   (:require [cemerick.friend.credentials :as creds]
-            [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.model.authentication-mechanism :as model.authentication-mechanism]
+            [jiksnu.modules.core.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
             [slingshot.slingshot :refer [throw+]]

@@ -2,11 +2,11 @@
   (:require [ciste.config :refer [config]]
             [clj-gravatar.core :refer [gravatar-image]]
             [jiksnu.modules.core.actions.domain-actions :as actions.domain]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.modules.core.model.domain :as model.domain]
+            [jiksnu.modules.core.model.user :as model.user]
+            [jiksnu.modules.core.model.webfinger :as model.webfinger]
+            [jiksnu.modules.core.ops :as ops]
             [jiksnu.routes.helpers :refer [formatted-url]]
-            [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI))

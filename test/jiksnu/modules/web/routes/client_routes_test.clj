@@ -2,10 +2,10 @@
   (:require [clj-factory.core :refer [fseq]]
             [clojure.data.json :as json]
             [clojure.string :as string]
-            [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model.access-token :as model.access-token]
-            [jiksnu.model.request-token :as model.request-token]
+            [jiksnu.modules.core.db :as db]
+            [jiksnu.modules.core.model.access-token :as model.access-token]
+            [jiksnu.modules.core.model.request-token :as model.request-token]
             [jiksnu.modules.web.middleware :as m]
             jiksnu.modules.web.routes.client-routes
             [jiksnu.routes-helper :refer [json-response response-for]]

@@ -3,7 +3,7 @@
             [jiksnu.modules.core.actions.client-actions :as actions.client]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all])
-  (:import jiksnu.model.Client))
+  (:import jiksnu.modules.core.model.Client))
 
 (th/module-test ["jiksnu.modules.core"])
 
