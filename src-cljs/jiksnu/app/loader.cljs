@@ -19,5 +19,4 @@
 (defn initialize-module!
   []
   (let [plugins (clj->js (initialize-plugins!))]
-    (timbre/debugf "p: %s" (js/JSON.stringify p))
     (js/angular.module "jiksnu" plugins)))

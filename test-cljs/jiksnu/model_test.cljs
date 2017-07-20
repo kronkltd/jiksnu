@@ -4,6 +4,7 @@
 
 (declare Users)
 (declare $httpBackend)
+(declare $rootScope)
 (declare username)
 (def domain "example.com")
 
@@ -33,9 +34,10 @@
        (js/module "jiksnu")
        (js/installPromiseMatchers)
        (js/inject
-        #js ["$httpBackend" "Users"
-             (fn [_$httpBackend_ _Users_]
+        #js ["$httpBackend" "$rootScope" "Users"
+             (fn [_$httpBackend_ _$rootScope_ _Users_]
                (update-auth-data! nil "example.com")
+               (set! $rootScope _$rootScope_)
                (set! Users _Users_)
                #_(doto $httpBackend
                  (.. (whenGET #"/templates/.*") (respond "<div></div>"))
