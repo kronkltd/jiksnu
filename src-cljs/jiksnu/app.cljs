@@ -6,6 +6,7 @@
 
 (defonce models  (atom {}))
 
+(timbre/info "setting app")
 (defonce jiksnu (loader/initialize-module!))
 
 (.provider jiksnu "app" providers/app)

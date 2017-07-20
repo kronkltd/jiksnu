@@ -1,6 +1,7 @@
 (ns jiksnu.app.services
-  (:require [jiksnu.app :as a]
-            [jiksnu.registry :as registry]))
+  (:require [jiksnu.app :refer [jiksnu]]
+            [jiksnu.registry :as registry]
+            [taoensso.timbre :as timbre]))
 
 (defn fetch-page
   [$http page-name]
@@ -28,5 +29,7 @@
   [$http]
   #js {:fetch #(fetch-sub-page $http %1 %2)})
 
-(.service a/jiksnu "pageService" #js ["$http" pageService])
-(.service a/jiksnu "subpageService" #js ["$http" subpageService])
+(timbre/info "page service")
+
+(.service jiksnu "pageService" #js ["$http" pageService])
+(.service jiksnu "subpageService" #js ["$http" subpageService])
