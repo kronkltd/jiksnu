@@ -6,7 +6,7 @@
 
 (defonce models  (atom {}))
 
-(defonce jiksnu (loader/initialize-module! {}))
+(defonce jiksnu (loader/initialize-module!))
 
 (.provider jiksnu "app" providers/app)
 
