@@ -4,7 +4,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.db :as db]
             jiksnu.modules.web.routes.auth-routes
-            [jiksnu.routes-helper :refer [parse-cookie response-for]]
+            [jiksnu.helpers.routes :refer [parse-cookie response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]

@@ -1,4 +1,4 @@
-(ns jiksnu.navigation-helpers
+(ns jiksnu.helpers.navigation
   (:require [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [uri]]
             [jiksnu.referrant :refer [get-this get-that]]))

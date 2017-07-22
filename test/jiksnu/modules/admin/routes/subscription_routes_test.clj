@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.routes.subscription-routes-test
   (:require [jiksnu.mock :as mock]
-            [jiksnu.routes-helper :refer [as-admin response-for]]
+            [jiksnu.helpers.routes :refer [as-admin response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req])

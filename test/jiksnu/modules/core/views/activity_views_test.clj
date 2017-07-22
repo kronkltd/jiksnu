@@ -3,7 +3,7 @@
             [clj-factory.core :refer [fseq]]
             [jiksnu.mock :as mock]
             jiksnu.modules.web.routes.activity-routes
-            [jiksnu.routes-helper :refer [as-user json-response response-for]]
+            [jiksnu.helpers.routes :refer [as-user json-response response-for]]
             [midje.sweet :refer :all]
             [jiksnu.modules.core.actions.activity-actions :as actions.activity]))
 

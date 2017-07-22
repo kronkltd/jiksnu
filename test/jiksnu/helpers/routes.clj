@@ -1,4 +1,4 @@
-(ns jiksnu.routes-helper
+(ns jiksnu.helpers.routes
   (:require [ciste.config :refer [config]]
             [clj-factory.core :refer [factory fseq]]
             [clj-http.cookies :as cookies]

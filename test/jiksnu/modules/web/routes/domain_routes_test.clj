@@ -3,7 +3,7 @@
             [clj-factory.core :refer [factory]]
             [clojure.data.json :as json]
             [jiksnu.modules.core.actions.domain-actions :as actions.domain]
-            [jiksnu.routes-helper :refer [response-for]]
+            [jiksnu.helpers.routes :refer [response-for]]
             [jiksnu.test-helper :as th]
             [jiksnu.util :as util]
             [midje.sweet :refer :all]

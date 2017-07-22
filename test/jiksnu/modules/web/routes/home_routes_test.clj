@@ -4,7 +4,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.db :as db]
             [jiksnu.test-helper :as th]
-            [jiksnu.routes-helper :refer [as-user response-for]]
+            [jiksnu.helpers.routes :refer [as-user response-for]]
             [midje.sweet :refer :all]
             [ring.mock.request :as req])
   (:import (org.apache.http HttpStatus)))

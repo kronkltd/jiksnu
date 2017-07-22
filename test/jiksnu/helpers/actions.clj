@@ -1,4 +1,4 @@
-(ns jiksnu.action-helpers
+(ns jiksnu.helpers.actions
   (:require [clj-http.client :as client]
             #_[clj-webdriver.taxi :refer [to]]
             [taoensso.timbre :as timbre]
