@@ -3,6 +3,7 @@
             [clj-factory.core :refer [defseq deffactory defrecordfactory
                                       fseq factory]]
             [clj-time.core :as time]
+            [clojure.spec :as s]
             [inflections.core :as inf]
             [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.modules.core.actions.conversation-actions :as actions.conversation]
@@ -14,6 +15,8 @@
 (defn domain-id
   []
   (:_id (actions.domain/create (factory :domain))))
+
+(s/fdef domain-id :ret (s/fspec :ret string?))
 
 (defn activity-id
   [] (:_id (actions.activity/create (factory :activity))))

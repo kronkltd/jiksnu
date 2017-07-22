@@ -1,6 +1,7 @@
 (ns jiksnu.mock
   (:require [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
+            [clojure.spec :as s]
             [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.modules.core.actions.album-actions :as actions.album]
             [jiksnu.modules.core.actions.client-actions :as actions.client]
@@ -40,6 +41,8 @@
         (let [domain (actions.domain/create params)]
           (set-this :domain domain)
           domain))))
+
+(s/fdef a-domain-exists :ret nil?)
 
 (defn a-remote-domain-exists
   [& [options]]

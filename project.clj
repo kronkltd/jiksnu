@@ -104,6 +104,7 @@
                    [[midje "1.9.0-alpha5" :exclusions [org.clojure/clojure]]
                     [figwheel-sidecar "0.5.10"
                      :exclusions [http-kit org.clojure/core.cache]]
+                    [org.clojure/test.check "0.9.0"]
                     [org.clojure/tools.nrepl "0.2.13"]
                     [ring-mock "0.1.5"]
                     [slamhound "1.5.5"]]}
