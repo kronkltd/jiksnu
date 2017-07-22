@@ -4,7 +4,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.model.activity :as model.activity]
             jiksnu.modules.web.routes.activity-routes
-            [jiksnu.routes-helper :refer [as-user json-response response-for]]
+            [jiksnu.helpers.routes :refer [as-user json-response response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req])

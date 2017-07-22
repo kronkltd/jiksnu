@@ -4,7 +4,7 @@
             [clojure.data.json :as json]
             [jiksnu.mock :as mock]
             jiksnu.modules.web.routes.group-membership-routes
-            [jiksnu.routes-helper :refer [response-for]]
+            [jiksnu.helpers.routes :refer [response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req])

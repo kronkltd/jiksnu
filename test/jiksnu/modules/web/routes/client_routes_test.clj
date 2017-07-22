@@ -8,7 +8,7 @@
             [jiksnu.modules.core.model.request-token :as model.request-token]
             [jiksnu.modules.web.middleware :as m]
             jiksnu.modules.web.routes.client-routes
-            [jiksnu.routes-helper :refer [json-response response-for]]
+            [jiksnu.helpers.routes :refer [json-response response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]

@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.routes.notification-routes-test
   (:require [clojure.data.json :as json]
             [jiksnu.mock :as mock]
-            [jiksnu.routes-helper :refer [as-user response-for]]
+            [jiksnu.helpers.routes :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req])

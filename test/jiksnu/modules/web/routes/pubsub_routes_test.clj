@@ -4,7 +4,7 @@
             [jiksnu.modules.core.actions.pubsub-actions :as actions.pubsub]
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.factory :as f]
-            [jiksnu.routes-helper :refer [response-for]]
+            [jiksnu.helpers.routes :refer [response-for]]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]))

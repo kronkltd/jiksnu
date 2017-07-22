@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.routes.auth-routes-test
   (:require [clj-factory.core :refer [factory]]
             [jiksnu.modules.core.actions.user-actions :as actions.user]
-            [jiksnu.routes-helper :refer [response-for]]
+            [jiksnu.helpers.routes :refer [response-for]]
             [jiksnu.session :as session]
             [jiksnu.test-helper :as th]
             [midje.sweet :refer :all]

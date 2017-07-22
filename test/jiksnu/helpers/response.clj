@@ -1,5 +1,5 @@
-(ns jiksnu.response-helpers
-  (:require [jiksnu.action-helpers :refer [current-page check-response]]
+(ns jiksnu.helpers.response
+  (:require [jiksnu.helpers.actions :refer [current-page check-response]]
             [midje.sweet :refer :all]))
 
 (defn response-should-be-redirect
@@ -12,4 +12,3 @@
   []
   (check-response
    (:status @current-page) => 200))
-

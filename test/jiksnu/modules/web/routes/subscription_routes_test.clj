@@ -3,7 +3,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.modules.core.model :as model]
             [jiksnu.modules.core.ops :as ops]
-            [jiksnu.routes-helper :refer [as-user response-for]]
+            [jiksnu.helpers.routes :refer [as-user response-for]]
             [jiksnu.test-helper :as th]
             [manifold.deferred :as d]
             [midje.sweet :refer :all]
