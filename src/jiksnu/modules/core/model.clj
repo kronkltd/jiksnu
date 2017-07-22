@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.model
-  (:require [clojure.spec :as s]
-            [clojure.spec.gen :as gen]
-            [clojure.spec.test :as stest]
+  (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
+            [clojure.spec.test.alpha :as stest]
             [jiksnu.util :as util]))
 
 ;; TODO: pull these from ns/

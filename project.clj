@@ -7,7 +7,7 @@
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths ["src" "src-cljs"]
   :resource-paths ["resources" "target/resources" "node_modules"]
-  :dependencies [[cider/cider-nrepl "0.14.0"]
+  :dependencies [[cider/cider-nrepl "0.15.0"]
                  [ciste "0.6.0-20170108.005400-4"
                   :exclusions [ring/ring-core
                                org.clojure/clojure
@@ -16,11 +16,11 @@
                                xerces/xercesImpl]]
                  [ciste/ciste-incubator "0.1.0-20170109.012825-2" :exclusions [ciste ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
-                 [clj-time "0.13.0"]
-                 [clj-http "3.5.0"]
-                 [compojure "1.5.2"]
+                 [clj-time "0.14.0"]
+                 [clj-http "3.6.1"]
+                 [compojure "1.6.0"]
                  [com.cemerick/friend "0.2.3"]
-                 [com.getsentry.raven/raven "8.0.2"
+                 [com.getsentry.raven/raven "8.0.3"
                   :exclusions [org.slf4j/slf4j-api]]
                  [com.novemberain/monger "3.1.0" :exclusions [com.google.guava/guava]]
                  [com.novemberain/validateur "2.5.0"]
@@ -28,22 +28,22 @@
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
                  [hiccups "0.3.0"]
-                 [liberator "0.14.1"]
+                 [liberator "0.15.1"]
                  [manifold "0.1.6"]
                  [mvxcvi/puget "1.0.1"]
                  [net.kronkltd/clj-gravatar "0.1.0-20120321.005702-1"]
                  [net.kronkltd/octohipster "0.3.0-20151001.045924-2"
                   :exclusions [inflections]]
-                 [org.clojure/clojure "1.9.0-alpha13"]
-                 [org.clojure/clojurescript "1.9.521"]
-                 [org.clojure/core.async "0.3.442"
-                  :exclusions [org.clojure/tools.reader]]
-                 [org.clojure/tools.logging "0.3.1"]
-                 [org.clojure/tools.reader "1.0.0-beta3"]
+                 [org.clojure/clojure "1.9.0-alpha17"]
+                 [org.clojure/clojurescript "1.9.671"]
+                 [org.clojure/core.async "0.3.443"
+                  :exclusions [org.clojure/tools.reader org.clojure/core.cache]]
+                 [org.clojure/tools.logging "0.4.0"]
+                 [org.clojure/tools.reader "1.0.3"]
                  [org.clojure/data.json "0.2.6"]
                  [org.slf4j/slf4j-log4j12 "1.7.25"]
-                 [ring "1.5.1"]
-                 [ring/ring-defaults "0.2.3"]
+                 [ring "1.6.2"]
+                 [ring/ring-defaults "0.3.0"]
                  [slingshot "0.12.2"]]
   :cljfmt {:indents {#".*fact.*" [[:inner 0]]}}
   :plugins [[codox "0.8.13" :exclusions [org.clojure/clojure]]
@@ -55,7 +55,8 @@
                                                org.clojure/tools.reader]]
             [lein-cljsbuild "1.1.4" :exclusions [org.clojure/clojure]]
             [lein-cloverage "1.0.2" :exclusions [org.clojure/clojure]]
-            [lein-figwheel "0.5.8"]
+            [lein-figwheel "0.5.8"
+             :exclusions [net.java.dev.jna/jna]]
             [lein-midje "3.1.3" :exclusions [org.clojure/clojure]]
             [lein-shell "0.4.0" :exclusions [org.clojure/clojure]]]
   :hiera {:ignore-ns #{"jiksnu.modules.core.db" "jiksnu.mock" "jiksnu.modules.core.channels" "jiksnu.modules.core.model"
@@ -102,7 +103,7 @@
                                  :pretty-print true}}}}
   :profiles {:dev {:dependencies
                    [[midje "1.9.0-alpha5" :exclusions [org.clojure/clojure]]
-                    [figwheel-sidecar "0.5.10"
+                    [figwheel-sidecar "0.5.11"
                      :exclusions [http-kit org.clojure/core.cache]]
                     [org.clojure/test.check "0.9.0"]
                     [org.clojure/tools.nrepl "0.2.13"]
