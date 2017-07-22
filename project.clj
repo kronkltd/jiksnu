@@ -61,6 +61,7 @@
              :exclusions [net.java.dev.jna/jna]]
             [lein-midje "3.1.3" :exclusions [org.clojure/clojure]]
             [lein-shell "0.4.0" :exclusions [org.clojure/clojure]]
+            [com.roomkey/lein-v "6.1.0"]
             [org.clojars.punkisdead/lein-cucumber "1.0.7"]]
   :hiera {:ignore-ns #{"jiksnu.modules.core.db" "jiksnu.mock" "jiksnu.modules.core.channels" "jiksnu.modules.core.model"
                        "jiksnu.modules.core.factory" "jiksnu.modules.core.ops" "jiksnu.namespace"
