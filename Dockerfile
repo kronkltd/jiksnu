@@ -3,7 +3,7 @@ FROM clojure
 MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 
 ENV APP_HOME /app
-WORKDIR ${APP_HOME}
+WORKDIR /app
 
 # Default application settings
 ENV JIKSNU_DB_HOST mongo
