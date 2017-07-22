@@ -31,13 +31,20 @@ node('docker') {
         dbImage = docker.image('mongo')
         dbImage.pull()
 
+        env.REPOSITORY_PATH = "${repo}${org}/${project}"
+
+        docker.image("${env.REPOSITORY_PATH}:latest").pull()
+        docker.image("${env.REPOSITORY_PATH}:${env.BRANCH_TAG}").pull()
+        docker.image("${env.REPOSITORY_PATH}:latest-dev").pull()
+        docker.image("${env.REPOSITORY_PATH}:${env.BRANCH_TAG}-dev").pull()
+
         // Print Environment
         sh 'env | sort'
       }
 
       stage('Dev Image') {
         devImage = docker.build(
-          "${repo}${org}/${project}:${env.BRANCH_TAG}-dev",
+          "${env.REPOSITORY_PATH}:${env.BRANCH_TAG}-dev",
           ["--label net.kronkltd.built-by=${env.BUILD_TAG}", '.'].join(' '))
         devImage.push()
       }
@@ -65,7 +72,7 @@ node('docker') {
         sh 'cp target/jiksnu-*-standalone.jar jiksnu.jar'
 
         mainImage = docker.build(
-          "${repo}${org}/${project}:${env.BRANCH_TAG}",
+          "${env.REPOSITORY_PATH}:${env.BRANCH_TAG}",
           ['-f Dockerfile.run',
            "--label net.kronkltd.built-by=${env.BUILD_TAG}", '.'].join(' '))
         mainImage.push()
