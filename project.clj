@@ -7,6 +7,8 @@
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths ["src" "src-cljs"]
   :resource-paths ["resources" "target/resources" "node_modules"]
+  :test-paths ["test" "test-cljs" "specs"]
+  :cucumber-glue-paths ["specs"]
   :dependencies [[cider/cider-nrepl "0.15.0"]
                  [ciste "0.6.0-20170108.005400-4"
                   :exclusions [ring/ring-core
@@ -58,7 +60,8 @@
             [lein-figwheel "0.5.8"
              :exclusions [net.java.dev.jna/jna]]
             [lein-midje "3.1.3" :exclusions [org.clojure/clojure]]
-            [lein-shell "0.4.0" :exclusions [org.clojure/clojure]]]
+            [lein-shell "0.4.0" :exclusions [org.clojure/clojure]]
+            [org.clojars.punkisdead/lein-cucumber "1.0.7"]]
   :hiera {:ignore-ns #{"jiksnu.modules.core.db" "jiksnu.mock" "jiksnu.modules.core.channels" "jiksnu.modules.core.model"
                        "jiksnu.modules.core.factory" "jiksnu.modules.core.ops" "jiksnu.namespace"
                        "jiksnu.registry" "jiksnu.session" "jiksnu.util"}}
@@ -108,6 +111,15 @@
                     [org.clojure/test.check "0.9.0"]
                     [org.clojure/tools.nrepl "0.2.13"]
                     [ring-mock "0.1.5"]
+                    [clj-webdriver "0.7.2"]
+                    [org.seleniumhq.selenium/selenium-server "3.4.0"
+                     :exclusions [org.eclipse.jetty/jetty-io
+                                  org.eclipse.jetty/jetty-util
+                                  net.java.dev.jna/jna xerces/xercesImpl
+                                  org.seleniumhq.selenium/selenium-support
+                                  org.seleniumhq.selenium/selenium-api]]
+                    [org.seleniumhq.selenium/selenium-api "3.4.0"]
+                    [org.seleniumhq.selenium/selenium-support "3.4.0"]
                     [slamhound "1.5.5"]]}
              :e2e {:cljsbuild {:builds
                                {:protractor
