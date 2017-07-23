@@ -36,7 +36,7 @@
 
 (defn after-hook
   []
-  (taxi/close))
+  (taxi/quit))
 
 (defn before-hook
   []
@@ -44,7 +44,11 @@
     (try+
      (restart-session)
      (-> @driver driver/init-driver taxi/set-driver!)
-     (.addShutdownHook (Runtime/getRuntime) (Thread. after-hook))
+     (.addShutdownHook
+      (Runtime/getRuntime)
+      (Thread. (fn []
+                 (timbre/info "Running shutdown hook")
+                 (after-hook))))
      (dosync
       (ref-set this {})
       (ref-set that {})
