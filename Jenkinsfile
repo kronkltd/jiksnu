@@ -47,6 +47,9 @@ node('docker') {
           "${env.REPOSITORY_PATH}:${env.BRANCH_TAG}-dev",
           ["--label net.kronkltd.built-by=${env.BUILD_TAG}", '.'].join(' '))
         devImage.push()
+        sh "docker history -q ${env.REPOSITORY_PATH}:${env.BRANCH_TAG}-dev | grep -v missing > images.txt"
+        sh "cat images.txt | xargs docker save ${env.REPOSITORY_PATH}:${env.BRANCH_TAG}-dev > build-context.tar"
+        archive "build-context.tar"
       }
 
       stage('Unit Tests') {
