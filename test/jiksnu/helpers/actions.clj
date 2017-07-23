@@ -68,7 +68,7 @@
 
 (defn get-body
   []
-  (-> @current-page :body))
+  (:body @current-page))
 
 (defmacro check-response
   [& body]

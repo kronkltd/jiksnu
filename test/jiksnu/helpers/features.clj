@@ -23,7 +23,7 @@
 
 (defn restart-session
   []
-  (when (not @driver)
+  (when-not @driver
     (let [{:keys [url]} (get-selenium-config)
           caps (doto (DesiredCapabilities.)
                  (.setCapability CapabilityType/BROWSER_NAME "firefox")
