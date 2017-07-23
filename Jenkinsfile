@@ -11,6 +11,8 @@ node('docker') {
   ansiColor('xterm') {
     timestamps {
       stage('Init') {
+        cleanWs()
+
         // Set current git commit
         checkout scm
 
