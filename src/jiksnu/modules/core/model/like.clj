@@ -26,6 +26,10 @@
       set-created-time
       set-updated-time))
 
+(def model-data
+  {:model/name       "like"
+   :model/collection "likes"})
+
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
 (def drop!         (templates.model/make-dropper       collection-name))
