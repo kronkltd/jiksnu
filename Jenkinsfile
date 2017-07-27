@@ -14,6 +14,8 @@ node('docker') {
         // Set current git commit
         checkout scm
 
+        slackSend botUser: true, message: 'foo', teamDomain: 'kronkltd'
+
         env.BUILD_TAG = env.BUILD_TAG.replaceAll('%2F', '-')
         repo = "${env.DOCKER_REGISTRY_HOST}/"
 
