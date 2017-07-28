@@ -52,13 +52,15 @@ RUN groupadd -g ${gid} ${group} \
 # Add base project files
 COPY script/gather-dependencies ${APP_HOME}/script/gather-dependencies
 COPY package.json project.clj .yarnclean yarn.lock ${APP_HOME}/
-RUN script/gather-dependencies
+RUN chown -R ${uid}:${gid} ${APP_HOME}
+RUN su ${user} -c script/gather-dependencies
+RUN chown -R ${uid}:${gid} ${APP_HOME} /home/${user}/.m2
 
 ### Add application
 COPY . ${APP_HOME}/
-RUN script/bootstrap \
-    && mv /root/.m2 /home/${user}/ \
-    && chown -R ${uid}:${gid} ${APP_HOME} /home/${user}/.m2
+RUN chown -R ${uid}:${gid} ${APP_HOME} /home/${user}/.m2
+RUN su ${user} -c script/bootstrap
+RUN chown -R ${uid}:${gid} ${APP_HOME} /home/${user}/.m2
 USER ${user}
 
 ENTRYPOINT []
