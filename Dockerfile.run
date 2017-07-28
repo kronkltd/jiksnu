@@ -30,8 +30,6 @@ COPY config                ${APP_HOME}/config
 COPY script                ${APP_HOME}/script
 COPY jiksnu.jar            ${APP_HOME}/jiksnu.jar
 
-RUN chown -R ${uid}:${gid} ${APP_HOME}
-
 USER ${user}
 
 ### Set start script
