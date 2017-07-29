@@ -111,7 +111,7 @@
                     [slamhound "1.5.5"]]}
              :e2e {:cljsbuild {:builds
                                {:protractor
-                                {:source-paths ["specs"]
+                                {:source-paths ["specs-cljs"]
                                  :notify-command ["notify-send"]
                                  :compiler {
                                             :output-to "target/protractor-tests.js"
