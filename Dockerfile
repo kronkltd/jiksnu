@@ -29,6 +29,7 @@ RUN set -x \
        build-essential \
        curl \
        git \
+       jq \
        netcat \
        nodejs \
        yarn \
