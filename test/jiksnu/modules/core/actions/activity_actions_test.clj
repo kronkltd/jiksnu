@@ -21,9 +21,9 @@
     (fact "and it is a valid activity"
       ;; (db/drop-all! )
       (let [domain (mock/a-domain-exists)
-            feed-source (mock/a-feed-source-exists)
-            conversation (mock/a-conversation-exists)
-            user (mock/a-user-exists)
+            feed-source (mock/a-feed-source-exists {:domain domain})
+            conversation (mock/a-conversation-exists {:domain domain :feed-source feed-source})
+            user (mock/a-user-exists {:domain domain})
             activity (factory :activity {:author        (:_id user)
                                          :conversation  (:_id conversation)
                                          :update-source (:_id feed-source)
