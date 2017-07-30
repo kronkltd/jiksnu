@@ -22,7 +22,6 @@
 
 (def depth (ref 0))
 
-#_
 (defmacro context
   [description & body]
   `(let [var-name# (str ~description)]
