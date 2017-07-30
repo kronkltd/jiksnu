@@ -52,7 +52,7 @@
      (alter depth inc))
 
     ;; (loader/register-module "jiksnu.modules.core")
-    (db/drop-all! )
+    ;; (db/drop-all! )
     (dosync
      (ref-set r/this {})
      (ref-set r/that {}))
