@@ -60,18 +60,38 @@ fi
 # -e DOMAIN=localhost \
 # -e JIKSNU_SCRIPT_DEBUG=true \
 
+CONTAINER_OPTIONS="${CONTAINER_OPTIONS?} -p 3449:3449"
+
+# Karma UI
+CONTAINER_OPTIONS="${CONTAINER_OPTIONS?} -p 5060:5060"
+CONTAINER_OPTIONS="${CONTAINER_OPTIONS?} -p 9876:9876"
+
+# nRepl
+CONTAINER_OPTIONS="${CONTAINER_OPTIONS?} -p 7888:7888"
+
+# Main interface
+CONTAINER_OPTIONS="${CONTAINER_OPTIONS?} -p 8081:8080"
+
+# Mount project directory to container
+if [ -z "${DONT_BIND_APP_DIRECTORY}" ]; then
+  CONTAINER_OPTIONS="${CONTAINER_OPTIONS?} -v ${PWD?}:/app"
+fi
+
+# Save bash history to a file outside of container
+mkdir -p tmp
+touch tmp/.bash_history
+CONTAINER_OPTIONS="${CONTAINER_OPTIONS?} -v ${PWD}/tmp/.bash_history:/home/${PROJECT?}/.bash_history"
+
+if [ ! -z "${BIND_M2}" ]; then
+  CONTAINER_OPTIONS+=" -v ${HOME}/.m2:/home/${PROJECT?}/.m2"
+fi
+
 docker run \
   --rm \
   --name ${CONTAINER_NAME?} \
-  -it \
-  -p 3449:3449 \
-  -p 5060:5060 \
-  -p 7888:7888 \
-  -p 8081:8080 \
-  -p 9876:9876 \
-  -v ${PWD}:/app \
-  -v jiksnu-dev-media:/data \
   --net ${NETWORK_NAME?} \
+  -it \
+  -v jiksnu-dev-media:/data \
   ${CONTAINER_OPTIONS?} \
   ${DEV_IMAGE_TAG?} \
   ${ENTRYPOINT?}

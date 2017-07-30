@@ -1,5 +1,5 @@
 (ns jiksnu.types
-  (:require [clojure.spec :as s])
+  (:require [clojure.spec.alpha :as s])
   (:import org.joda.time.DateTime))
 
 (s/def ::date (partial instance? DateTime))

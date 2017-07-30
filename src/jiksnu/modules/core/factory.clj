@@ -3,7 +3,7 @@
             [clj-factory.core :refer [defseq deffactory defrecordfactory
                                       fseq factory]]
             [clj-time.core :as time]
-            [clojure.spec :as s]
+            [clojure.spec.alpha :as s]
             [inflections.core :as inf]
             [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.modules.core.actions.conversation-actions :as actions.conversation]

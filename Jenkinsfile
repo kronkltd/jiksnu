@@ -3,14 +3,14 @@
 def org = 'kronkltd'
 def project = 'jiksnu'
 
-def dbImage, devImage, err, mainImage, repo
-
-def integrationTests = false
+def dbImage, devImage, err, integrationTests, mainImage, repo
 
 node('docker') {
   ansiColor('xterm') {
     timestamps {
       stage('Init') {
+        cleanWs()
+
         // Set current git commit
         checkout scm
 
@@ -25,6 +25,8 @@ node('docker') {
         } else {
           env.BRANCH_TAG = env.BRANCH_NAME.replaceAll('/', '-')
         }
+
+        integrationTests = false
 
         dbImage = docker.image('mongo')
         dbImage.pull()
@@ -82,11 +84,32 @@ node('docker') {
 
       if (integrationTests) {
         stage('Integration Tests') {
-          mainImage.withRun() {
-            integrationContainer ->
-              mainImage.inside {
-                sh 'script/test-integration'
+          def seleniumImage = docker.image('elgalu/selenium')
+          seleniumImage.pull()
+          def seleniumOpts = ["-e VNC_PASSWORD=hunter2"].join(' ')
+
+          seleniumImage.withRun(seleniumOpts) {seleniumContainer ->
+
+            sleep 20
+
+            dbImage.withRun() {dbContainer ->
+              sleep 20
+
+              def mainOpts = ["--link ${dbContainer.id}:mongo"].join(' ')
+
+              mainImage.withRun(mainOpts) {mainContainer ->
+                sleep 20
+
+                def devOpts = ["--link ${seleniumContainer.id}:selenium",
+                               "--link ${mainContainer.id}:jiksnu-dev"].join(' ')
+
+                devImage.inside(devOpts) {integrationContainer ->
+                  sleep 20
+
+                  sh 'script/test-integration'
+                }
               }
+            }
           }
         }
       }

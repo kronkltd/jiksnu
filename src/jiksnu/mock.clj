@@ -1,7 +1,7 @@
 (ns jiksnu.mock
   (:require [clj-factory.core :refer [factory fseq]]
             [clj-time.core :as time]
-            [clojure.spec :as s]
+            [clojure.spec.alpha :as s]
             [jiksnu.modules.core.actions.activity-actions :as actions.activity]
             [jiksnu.modules.core.actions.album-actions :as actions.album]
             [jiksnu.modules.core.actions.client-actions :as actions.client]

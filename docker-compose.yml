@@ -1,5 +1,17 @@
 version: '2'
 services:
+  selenium:
+    image: elgalu/selenium
+    environment:
+      VNC_PASSWORD: "hunter2"
+      NOVNC: "true"
+    ports:
+      - 4444:24444
+      - 5900:25900
+      - 6080:26080
+    volumes:
+      - /dev/shm:/dev/shm
+
   mongo:
     image: mongo
     ports:

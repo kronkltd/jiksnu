@@ -1,6 +1,6 @@
 (ns jiksnu.helpers.actions
   (:require [clj-http.client :as client]
-            #_[clj-webdriver.taxi :refer [to]]
+            [clj-webdriver.taxi :as taxi]
             [taoensso.timbre :as timbre]
             [manifold.stream :as s]
             [manifold.time :as time]
@@ -26,8 +26,8 @@
    "firehose"                       "/main/events"})
 
 (def current-page (ref nil))
-(def domain "localhost")
-(def port 8175)
+(def domain "jiksnu-dev")
+(def port 8080)
 (def that-stream (s/stream* {:permanent? true}))
 
 (defn get-domain
@@ -42,7 +42,7 @@
 
 (defn expand-url
   [path]
-  (str "https://" (get-host) path))
+  (str "http://" (get-host) path))
 
 (defn do-wait
   []
@@ -59,9 +59,11 @@
     (dosync
      (ref-set current-page response))))
 
-;(defn fetch-page-browser
-;  [method path]
-;  (to (expand-url path)))
+(defn fetch-page-browser
+  [method path]
+  (let [url (expand-url path)]
+    (timbre/info "Navigating to" url)
+    (taxi/to url)))
 
 (defn get-body
   []

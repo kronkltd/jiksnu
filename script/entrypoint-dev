@@ -5,14 +5,10 @@
 
 . script/set-defaults
 
-script/update
-
 byobu new-session -d -s dev
 
 # Add additional commands here
-byobu new-window -t dev:1 -n "Server" "UPDATED=1 script/server; bash"
-byobu new-window -t dev:2 -n "cljs"   "UPDATED=1 script/watch-cljs; bash"
-byobu new-window -t dev:3 -n "karma"  "UPDATED=1 script/watch-karma; bash"
+byobu new-window -t dev:1 -n "Server" "script/entrypoint-byobu-dev; bash"
 
 byobu select-window -t dev:1
 

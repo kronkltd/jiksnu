@@ -29,6 +29,7 @@ RUN set -x \
        build-essential \
        curl \
        git \
+       jq \
        netcat \
        nodejs \
        yarn \
@@ -45,7 +46,8 @@ ARG group=jiksnu
 ARG uid=1000
 ARG gid=1000
 RUN groupadd -g ${gid} ${group} \
-    && useradd -u ${uid} -g ${gid} --create-home -s /bin/bash ${user}
+    && useradd -u ${uid} -g ${gid} --create-home -s /bin/bash ${user} \
+    && su ${user} -c "byobu-ctrl-a screen"
 
 # Add base project files
 COPY script/gather-dependencies ${APP_HOME}/script/gather-dependencies

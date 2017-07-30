@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -ex
+
+script/update
+export UPDATED=1
+script/compile
+byobu new-window -t dev:2 -n cljs  "UPDATED=1 script/watch-cljs; bash"
+byobu new-window -t dev:3 -n karma "UPDATED=1 script/watch-karma; bash"
+script/server

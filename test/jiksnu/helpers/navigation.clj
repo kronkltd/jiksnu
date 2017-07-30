@@ -1,14 +1,15 @@
 (ns jiksnu.helpers.navigation
   (:require [ciste.core :refer [with-context]]
             [ciste.sections.default :refer [uri]]
+            [jiksnu.helpers.actions :as helpers.actions]
             [jiksnu.referrant :refer [get-this get-that]]))
 
-;(defn go-to-the-page
-;  [page-name]
-;  (if-let [path (get page-names page-name)]
-;    (fetch-page-browser :get path)
-;    (throw (RuntimeException. (str "No path defined for " page-name)))))
-;
+(defn go-to-the-page
+ [page-name]
+ (if-let [path (get helpers.actions/page-names page-name)]
+   (helpers.actions/fetch-page-browser :get path)
+   (throw (RuntimeException. (str "No path defined for " page-name)))))
+
 ;(defn go-to-the-page-for-activity
 ;  [page-name]
 ;  (condp = page-name

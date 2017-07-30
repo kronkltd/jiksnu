@@ -7,6 +7,7 @@ printenv | sort
 script/await-connections
 
 script/update
+script/compile
 
 echo ">> Running"
 lein run
