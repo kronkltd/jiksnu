@@ -29,7 +29,8 @@
 (def site-options
   (-> site-defaults
       (assoc-in [:security :anti-forgery] false)
-      (assoc-in [:session :store] (ms/session-store (db/get-connection) "session"))))
+      #_(assoc-in [:session :store] (ms/session-store (db/get-connection) "session"))
+      ))
 
 (def app
   (middleware/wrap-stacktrace
