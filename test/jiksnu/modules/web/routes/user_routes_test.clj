@@ -3,7 +3,7 @@
             [jiksnu.helpers.routes :refer [as-user response-for]]
             [jiksnu.modules.core.actions.group-actions :as actions.group]
             [jiksnu.mock :as mock]
-            [jiksnu.test-helper :as th]
+            [jiksnu.test-helper :as th :refer [context]]
             [midje.sweet :refer :all]
             [ring.mock.request :as req]
             [net.cgrand.enlive-html :as enlive])
@@ -12,14 +12,14 @@
 (th/module-test ["jiksnu.modules.core"
                  "jiksnu.modules.web"])
 
-(fact "route: users-api/index :get"
+(context "route: users-api/index :get"
   (let [url "/main/users"]
     (response-for (req/request :get url)) =>
     (contains {:status HttpStatus/SC_OK
                :body   string?})))
 
-(fact "route: users-api/activities :get"
-  (fact "When the user exists"
+(context "route: users-api/activities :get"
+  (context "When the user exists"
     (let [user (mock/a-user-exists)
           m 1]
       (dotimes [n m] (mock/an-activity-exists {:user user}))
@@ -33,8 +33,8 @@
           (contains {:items      (has every? string?)
                      :totalItems m}))))))
 
-(fact "route: users-api/groups :get"
-  (fact "When the user exists"
+(context "route: users-api/groups :get"
+  (context "When the user exists"
     (let [user (mock/a-user-exists)
           m 1]
       (dotimes [n m]
