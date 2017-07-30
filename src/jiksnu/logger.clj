@@ -1,10 +1,22 @@
 (ns jiksnu.logger
-  (:require [clojure.data.json :as json]
+  (:require [ciste.config :refer [config config* describe-config]]
+            [clojure.data.json :as json]
+            [clojure.string :as string]
             [jiksnu.sentry :as sentry]
             jiksnu.serializers
             [puget.printer :as puget]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]))
+
+(describe-config [:jiksnu :logger :appenders]
+  :string
+  "Comma-separated list of logging appenders to be enabled"
+  :default "")
+
+(describe-config [:jiksnu :logger :blacklist]
+  :string
+  "Comma-separated list of namespaces to blacklist"
+  :default "")
 
 (defn json-formatter
   ([data] (json-formatter nil data))
@@ -37,23 +49,15 @@
 
 (defn set-logger
   []
-  (timbre/set-config!
-   {:level :debug
-    :ns-whitelist []
-    :ns-blacklist ["ciste.commands"
-                   "ciste.config"
-                   "ciste.loader"
-                   ;; "ciste.initializer"
-                   "ciste.runner"
-                   "ciste.service"
-                   ;; "ring.logger.timbre"
-                   "jiksnu.modules.core.db"
-                   ;; "jiksnu.modules.http.actions"
-                   ;; "jiksnu.modules.web.helpers"
-                   "jiksnu.test-helper"]
-    :middleware []
-    :timestamp-opts timbre/default-timestamp-opts
-    :appenders
-    {:spit json-appender
-     :raven sentry/raven-appender
-     :println stdout-appender}}))
+  (let [appenders (config :jiksnu :logger :appenders)
+        ns-blacklist (string/split (config :jiksnu :logger :blacklist) #",")
+        opts {:level :debug
+              :ns-whitelist []
+              :ns-blacklist ns-blacklist
+              :middleware []
+              :timestamp-opts timbre/default-timestamp-opts
+              :appenders
+              {:spit json-appender
+               :raven sentry/raven-appender
+               :println stdout-appender}}]
+    (timbre/set-config! opts)))
