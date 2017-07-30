@@ -8,8 +8,8 @@
             [taoensso.timbre :as timbre])
   (:import com.mongodb.WriteConcern))
 
-(def _db (ref nil))
-(def _conn (ref nil))
+(defonce _db (ref nil))
+(defonce _conn (ref nil))
 
 (describe-config
  [:jiksnu :db :host]
