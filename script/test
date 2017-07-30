@@ -3,6 +3,6 @@
 set -e
 
 script/update
-UPDATED=1
+export UPDATED=1
 script/test-clojure
 script/test-javascript
