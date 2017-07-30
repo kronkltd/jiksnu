@@ -25,12 +25,17 @@
 (defmacro context
   [description & body]
   `(let [var-name# (str ~description)]
-     (print (apply str (repeat *depth* "  ")))
+     (print (apply str (repeat @depth "  ")))
      (println var-name#)
+     (if (zero? @depth) (setup-testing []))
      (fact ~description
-       (binding [*depth* (inc *depth*)]
-         ~@body))
-     (when (zero? *depth*)
+       (dosync
+        (alter depth inc))
+       ~@body
+       (dosync
+        (alter depth dec)))
+     (when (zero? @depth)
+       (stop-testing)
        (println " "))))
 
 (defmacro future-context
@@ -47,8 +52,8 @@
     (when (zero? @depth)
       (start-application! modules))
 
-    (dosync
-     (alter depth inc))
+    ;; (dosync
+    ;;  (alter depth inc))
 
     ;; (loader/register-module "jiksnu.modules.core")
     ;; (db/drop-all! )
@@ -64,8 +69,8 @@
 (defn stop-testing
   []
   (try+
-   (dosync
-    (alter depth dec))
+   ;; (dosync
+   ;;  (alter depth dec))
 
    (timbre/debugf "stop-testing(%s)" @depth)
 
@@ -79,9 +84,12 @@
 
 (defmacro module-test
   [modules]
-  `(namespace-state-changes
-    [(before :facts (setup-testing ~modules))
-     (after :facts (stop-testing))]))
+
+  ;; `(namespace-state-changes
+  ;;   [(before :facts (setup-testing ~modules))
+  ;;    (after :facts (stop-testing))])
+
+  )
 
 (defmacro test-environment-fixture
   [& body]
