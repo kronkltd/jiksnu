@@ -4,7 +4,6 @@
             [taoensso.timbre :as timbre]
             [manifold.stream :as s]
             [manifold.time :as time]
-            [midje.sweet :refer :all]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (def default-sleep-time (time/seconds 5))
