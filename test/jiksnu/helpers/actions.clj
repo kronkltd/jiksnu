@@ -68,14 +68,6 @@
   []
   (-> @current-page :body))
 
-(defmacro check-response
-  [& body]
-  `(try+ (and (not (fact ~@body))
-              (throw+ "failed"))
-         (catch RuntimeException ex#
-           (.printStackTrace ex#)
-           (throw+ ex#))))
-
 (defn log-response
   []
   (timbre/info (get-body)))
