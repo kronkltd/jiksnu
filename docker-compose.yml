@@ -18,7 +18,7 @@ services:
       - "27017:27017"
 
   web:
-    image: registry.kronkltd.net/kronkltd/jiksnu:feature-entrypoint
+    image: registry.kronkltd.net/kronkltd/jiksnu:latest
     depends_on:
       - mongo
     environment:
