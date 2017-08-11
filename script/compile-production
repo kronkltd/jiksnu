@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# build production jars
+
+set -e
+
+echo ">> Building production jar"
+lein with-profile +production,+test uberjar
+cp -f target/jiksnu-*-standalone.jar jiksnu.jar
