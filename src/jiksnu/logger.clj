@@ -11,12 +11,24 @@
 (describe-config [:jiksnu :logger :appenders]
   :string
   "Comma-separated list of logging appenders to be enabled"
-  :default "")
+  :default (string/join "," ["jiksnu.logger/json-appender"
+                             "jiksnu.logger/json-stdout-appender"
+                             "jiksnu.sentry/raven-appender"]))
 
 (describe-config [:jiksnu :logger :blacklist]
   :string
   "Comma-separated list of namespaces to blacklist"
   :default "")
+
+(defn get-appenders
+  []
+  (->> (string/split (config :jiksnu :logger :appenders) #",")
+       (map (fn [f]
+              (let [[ns-part var-part] (string/split f #"/")
+                    ns-ref (the-ns (symbol ns-part))
+                    fn-ref (symbol var-part)]
+                [f (var-get (ns-resolve ns-ref fn-ref))])))
+       (into {})))
 
 (defn json-formatter
   ([data] (json-formatter nil data))
@@ -49,15 +61,12 @@
 
 (defn set-logger
   []
-  (let [appenders (config :jiksnu :logger :appenders)
+  (let [appenders (get-appenders)
         ns-blacklist (string/split (config :jiksnu :logger :blacklist) #",")
         opts {:level :debug
               :ns-whitelist []
               :ns-blacklist ns-blacklist
               :middleware []
               :timestamp-opts timbre/default-timestamp-opts
-              :appenders
-              {:spit json-appender
-               :raven sentry/raven-appender
-               :println stdout-appender}}]
+              :appenders appenders}]
     (timbre/set-config! opts)))
