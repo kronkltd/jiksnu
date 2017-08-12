@@ -50,6 +50,7 @@ node('docker') {
               sh 'script/update'
               sh 'script/compile'
               sh 'script/cibuild'
+              sh 'script/compile-production'
             }
         }
 

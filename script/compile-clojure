@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
-# Compile all clojure code and build production jars
+# Compile clojure code
 
 set -e
 
 echo ">> Compiling Clojure code"
 lein install
-
-echo ">> Building production jar"
-lein with-profile +production,+test uberjar
-cp -f target/jiksnu-*-standalone.jar jiksnu.jar
