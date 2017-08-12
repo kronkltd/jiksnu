@@ -8,4 +8,4 @@ set -e
 cd "$(dirname "$0")/.."
 
 script/gather-dependencies
-script/update-webdriver
+# script/update-webdriver
