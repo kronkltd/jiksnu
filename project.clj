@@ -10,7 +10,7 @@
   :test-paths ["test" "test-cljs" "specs"]
   :cucumber-glue-paths ["specs"]
   :dependencies [[cider/cider-nrepl "0.15.0"]
-                 [ciste "0.6.0-20170108.005400-4"
+                 [ciste "0.6.0-SNAPSHOT"
                   :exclusions [ring/ring-core
                                org.clojure/clojure
                                org.clojure/tools.reader

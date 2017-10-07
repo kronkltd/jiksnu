@@ -1,9 +1,34 @@
 (ns jiksnu.logger
-  (:require [clojure.data.json :as json]
+  (:require [ciste.config :refer [config config* describe-config]]
+            [clojure.data.json :as json]
+            [clojure.string :as string]
             [jiksnu.sentry :as sentry]
             jiksnu.serializers
+            [puget.printer :as puget]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :refer [println-appender spit-appender]]))
+
+(describe-config [:jiksnu :logger :appenders]
+  :string
+  "Comma-separated list of logging appenders to be enabled"
+  :default (string/join "," ["jiksnu.logger/json-appender"
+                             "jiksnu.logger/json-stdout-appender"
+                             "jiksnu.sentry/raven-appender"]))
+
+(describe-config [:jiksnu :logger :blacklist]
+  :string
+  "Comma-separated list of namespaces to blacklist"
+  :default "")
+
+(defn get-appenders
+  []
+  (->> (string/split (config :jiksnu :logger :appenders) #",")
+       (map (fn [f]
+              (let [[ns-part var-part] (string/split f #"/")
+                    ns-ref (the-ns (symbol ns-part))
+                    fn-ref (symbol var-part)]
+                [f (var-get (ns-resolve ns-ref fn-ref))])))
+       (into {})))
 
 (defn json-formatter
   ([data] (json-formatter nil data))
@@ -28,27 +53,20 @@
 
 (def json-appender (-> (spit-appender {:fname "logs/timbre-spit.log"})
                        (assoc :output-fn json-formatter)))
+(def json-stdout-appender (-> (println-appender {:stream :auto})
+                              (assoc :output-fn json-formatter)))
+(def pretty-stdout-appender (-> (println-appender {:stream :auto})
+                                (assoc :output-fn (comp puget/cprint-str #(dissoc % :config)))))
 (def stdout-appender (println-appender {:stream :auto}))
 
 (defn set-logger
   []
-  (timbre/set-config!
-   {:level :debug
-    :ns-whitelist []
-    :ns-blacklist ["ciste.commands"
-                   "ciste.config"
-                   "ciste.loader"
-                   ;; "ciste.initializer"
-                   "ciste.runner"
-                   "ciste.service"
-                   ;; "ring.logger.timbre"
-                   "jiksnu.modules.core.db"
-                   ;; "jiksnu.modules.http.actions"
-                   ;; "jiksnu.modules.web.helpers"
-                   "jiksnu.test-helper"]
-    :middleware []
-    :timestamp-opts timbre/default-timestamp-opts
-    :appenders
-    {:spit json-appender
-     :raven sentry/raven-appender
-     :println stdout-appender}}))
+  (let [appenders (get-appenders)
+        ns-blacklist (string/split (config :jiksnu :logger :blacklist) #",")
+        opts {:level :debug
+              :ns-whitelist []
+              :ns-blacklist ns-blacklist
+              :middleware []
+              :timestamp-opts timbre/default-timestamp-opts
+              :appenders appenders}]
+    (timbre/set-config! opts)))
