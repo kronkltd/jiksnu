@@ -32,18 +32,18 @@
       (assoc-in [:session :store] (ms/session-store (db/get-connection) "session"))))
 
 (def app
-  (-> (routes
-       (route/resources "/")
-       (route/files "/assets" {:root "/data"})
-       (route/files "/vendor" {:root "node_modules"})
-       (GET "/templates/*" [] #'helpers/serve-template)
-       (-> (routes async-handler #'core/jiksnu-routes)
-           middleware/wrap-response-logging
-           (wrap-trace :ui)
-           middleware/wrap-user-binding
-           (friend/authenticate auth-config)
-           middleware/wrap-authorization-header
-           middleware/wrap-authentication-handler
-           middleware/wrap-debug-param
-           (wrap-defaults site-options)))
-      middleware/wrap-stacktrace))
+  (middleware/wrap-stacktrace
+   (routes
+    (route/resources "/")
+    (route/files "/assets" {:root "/data"})
+    (route/files "/vendor" {:root "node_modules"})
+    (GET "/templates/*" [] #'helpers/serve-template)
+    (-> (routes async-handler #'core/jiksnu-routes)
+        middleware/wrap-response-logging
+        (wrap-trace :ui)
+        middleware/wrap-user-binding
+        (friend/authenticate auth-config)
+        middleware/wrap-authorization-header
+        middleware/wrap-authentication-handler
+        middleware/wrap-debug-param
+        (wrap-defaults site-options)))))

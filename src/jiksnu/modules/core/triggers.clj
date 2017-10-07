@@ -153,26 +153,34 @@
         (when-let [conversation (model.conversation/fetch-by-id id)]
           (actions.conversation/add-activity conversation activity))))))
 
+(defn handle-create-like
+  [{:keys [user activity]}]
+  (actions.notification/create
+   {:user user :activity activity}))
+
+(defn handle-create-user
+  [item]
+  (actions.stream/add-stream item "* major")
+  (actions.stream/add-stream item "* minor"))
+
+(defn handle-create-activity2
+  [item]
+  (when (= (:verb item) "join")
+    (let [object-id (get-in item [:object :id])
+          group (model.group/fetch-by-id object-id)]
+      (actions.group-membership/create
+       {:user (:author item)
+        :group (:_id group)}))))
+
 (defn handle-created
   [{:keys [collection-name event item] :as data}]
   (timbre/debugf "%s(%s)=>%s" collection-name (:_id item) event)
   (metrics/increment-counter! :records-created)
   (try
     (condp = collection-name
-      "activities" (when (= (:verb item) "join")
-                     (let [object-id (get-in item [:object :id])
-                           group (model.group/fetch-by-id object-id)]
-                       (actions.group-membership/create
-                        {:user (:author item)
-                         :group (:_id group)})))
-
-      "likes" (do
-                (actions.notification/create {:user (:user item)
-                                              :activity (:activity item)}))
-
-      "users" (do (actions.stream/add-stream item "* major")
-                  (actions.stream/add-stream item "* minor"))
-
+      "activities" (handle-create-activity2 item)
+      "likes"      (handle-create-like      item)
+      "users"      (handle-create-user      item)
       nil)
     (catch Exception ex
       (timbre/error ex "Error in handle-created"))))
