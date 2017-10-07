@@ -40,8 +40,7 @@
 
 (defn prepare-post
   [album]
-  (-> album
-      transforms.album/set-owner))
+  (transforms.album/set-owner album))
 
 (defn create
   "create an album"

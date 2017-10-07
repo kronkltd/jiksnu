@@ -19,8 +19,7 @@
 (defn links-section
   [request response]
   (map
-   (fn [format]
-     [:link format])
+   (fn [format] [:link {} format])
    (concat (:formats response)
            (:links response)
            [{:href "/rsd.xml"
