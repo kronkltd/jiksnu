@@ -8,20 +8,20 @@
 
 (def app-methods
   {:connect       methods/connect
-   :fetchStatus   methods/fetch-status
+   :fetchStatus   p/fetch-status
    :follow        methods/follow
    :getUserId     p/get-user-id
-   :go            methods/go
+   :go            p/go
    :handleMessage methods/handle-message
    :invokeAction  p/invoke-action
    :isFollowing   methods/following?
-   :login         methods/login
-   :logout        methods/logout
+   :login         p/login
+   :logout        p/logout
    :ping          methods/ping
    :post          methods/post
    :refresh       methods/refresh
    :register      p/register
-   :send          methods/send
+   :send          p/send
    :unfollow      p/unfollow})
 
 (defn get-websocket-connection
@@ -101,7 +101,12 @@
       (-> (methods/login $http $httpParamSerializerJQLike username password)
           (.then (fn [] (.fetchStatus app))))))
 
-  (logout [app])
+  (logout [app]
+    (let [$http (.inject app "$http")]
+      (-> (methods/logout $http)
+          (.then (fn [data]
+                   (set! app.user nil)
+                   (.fetchStatus app))))))
 
   (post [app activity pictures]
     (let [$http (.inject app "$http")]
