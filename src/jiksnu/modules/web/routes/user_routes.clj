@@ -73,7 +73,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :feed
   :url "/{username}/feed"
@@ -81,14 +81,12 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/fetch-by-user user))
-  :fetcher (fn [id] (model.activity/fetch-by-id id))
-  :post! (fn [ctx]
+  :fetcher model.activity/fetch-by-id
+  :post! (fn [{:keys [request] :as ctx}]
            (timbre/info "receiving post")
-           (let [request (:request ctx)]
-             (if-let [author (model.user/get-user (:current (friend/identity request)))]
-               (let [params (-> (:params (:request ctx))
-                                (assoc :author (:_id author)))]
-                 (actions.activity/post params))))))
+           (if-let [author (model.user/get-user (:current (friend/identity request)))]
+             (let [params (assoc (:params request) :author (:_id author))]
+               (actions.activity/post params)))))
 
 (defresource user-pump-api :feed-major
   :url "/{username}/feed/major"
@@ -112,7 +110,7 @@
   :mixins [as-collection-resource]
   :collection-type "person"
   :indexer (fn [ctx user] (nth (actions.subscription/get-subscribers user) 1))
-  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id :from model.user/fetch-by-id)))
+  :fetcher #(some-> % model.subscription/fetch-by-id :from model.user/fetch-by-id))
 
 (defresource user-pump-api :following
   :url "/{username}/following"
@@ -120,7 +118,7 @@
   :mixins [as-collection-resource]
   :collection-type "person"
   :indexer (fn [ctx user] (nth (actions.subscription/get-subscriptions user) 1))
-  :fetcher (fn [id] (some-> id model.subscription/fetch-by-id :to model.user/fetch-by-id)))
+  :fetcher #(some-> % model.subscription/fetch-by-id :to model.user/fetch-by-id))
 
 (defresource user-pump-api :inbox-direct-major
   :url "/{username}/inbox/direct/major"
@@ -160,7 +158,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :lists
   :url "/{username}/lists/person"
@@ -168,7 +166,7 @@
   :mixins [as-collection-resource]
   :collection-type "activity"
   :indexer (fn [ctx user] (actions.activity/index {}))
-  :fetcher (fn [id] (model.activity/fetch-by-id id)))
+  :fetcher model.activity/fetch-by-id)
 
 (defresource user-pump-api :profile
   :url "/{username}/profile"
@@ -264,10 +262,10 @@
   :parameters {:_id  (path :model.user/id)}
   :available-media-types ["application/json"]
   :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)]
-               (let [user (model.user/fetch-by-id id)]
-                 (let [[_ page] (actions.subscription/get-subscribers user)]
-                   {:data page})))))
+             (let [id (-> ctx :request :route-params :_id)
+                   user (model.user/fetch-by-id id)
+                   [_ page] (actions.subscription/get-subscribers user)]
+               {:data page})))
 
 (defresource users-api :following
   :url "/{_id}/following"
@@ -275,10 +273,10 @@
   :mixins [mixin/item-resource]
   :available-media-types ["application/json"]
   :exists? (fn [ctx]
-             (let [id (-> ctx :request :route-params :_id)]
-               (let [user (model.user/fetch-by-id id)]
-                 (let [[_ page] (actions.subscription/get-subscriptions user)]
-                   {:data page})))))
+             (let [id (-> ctx :request :route-params :_id)
+                   user (model.user/fetch-by-id id)
+                   [_ page] (actions.subscription/get-subscriptions user)]
+               {:data page})))
 
 (defresource users-api :streams
   :url "/{_id}/streams"

@@ -5,18 +5,18 @@
 (defmethod format-as :clj
   [format request response]
   (-> response
-      (assoc-in  [:headers "Content-Type"] "text/plain")
+      (assoc-in [:headers "Content-Type"] "text/plain")
       (assoc :body (:body response))))
 
 (defmethod format-as :html
   [format request response]
-  (-> response
-      (assoc :body (h/html (:body response)))))
+  (update-in response [:body] #(h/html %)))
 
 (defmethod format-as :text
   [request format response]
-  (-> response
-      (assoc-in [:headers "Content-Type"] "text/plain; charset=utf-8")))
+  (assoc-in response
+            [:headers "Content-Type"]
+            "text/plain; charset=utf-8"))
 
 (defmethod format-as :xrd
   [format request response]

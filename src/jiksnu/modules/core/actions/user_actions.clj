@@ -270,6 +270,7 @@
   [^User user _]
   (if-let [_source-id (:update-source user)]
     (do
+      (timbre/debugf "Updating user record for: %s" (:_id user))
       #_(invoke-action "feed-source" "update" (str source-id))
       nil)
     (timbre/warn "user does not have an update source"))

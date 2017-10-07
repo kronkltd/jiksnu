@@ -93,8 +93,8 @@
                {:data
                 (codec/form-encode {:oauth_token (:_id at)
                                     :oauth_token_secret (:secret at)})}))
-  :handle-ok (fn [ctx] (:data ctx))
-  :post! (fn [ctx] (:data ctx)))
+  :handle-ok :data
+  :post! :data)
 
 (defresource oauth :authorize
   :name "Authorize"
@@ -153,5 +153,5 @@
                            {:oauth_token (:_id rt)
                             :oauth_token_secret (:secret rt)})})
                  (throw+ {:message "Invalid version"}))))
-  :handle-ok (fn [ctx] (:data ctx))
-  :post! (fn [ctx] (:data ctx)))
+  :handle-ok :data
+  :post! :data)

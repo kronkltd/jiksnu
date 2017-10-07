@@ -51,13 +51,20 @@
           (into {})
           json/write-str))))
 
-(def json-appender (-> (spit-appender {:fname "logs/timbre-spit.log"})
-                       (assoc :output-fn json-formatter)))
-(def json-stdout-appender (-> (println-appender {:stream :auto})
-                              (assoc :output-fn json-formatter)))
-(def pretty-stdout-appender (-> (println-appender {:stream :auto})
-                                (assoc :output-fn (comp puget/cprint-str #(dissoc % :config)))))
-(def stdout-appender (println-appender {:stream :auto}))
+(def json-appender
+  (assoc (spit-appender {:fname "logs/timbre-spit.log"})
+         :output-fn json-formatter))
+
+(def json-stdout-appender
+  (assoc (println-appender {:stream :auto})
+         :output-fn json-formatter))
+
+(def pretty-stdout-appender
+  (assoc (println-appender {:stream :auto})
+         :output-fn (comp puget/cprint-str #(dissoc % :config))))
+
+(def stdout-appender
+  (println-appender {:stream :auto}))
 
 (defn set-logger
   []
