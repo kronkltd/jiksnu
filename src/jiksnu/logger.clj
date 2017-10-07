@@ -12,7 +12,7 @@
   :string
   "Comma-separated list of logging appenders to be enabled"
   :default (string/join "," ["jiksnu.logger/json-appender"
-                             "jiksnu.logger/json-stdout-appender"
+                             "jiksnu.logger/stdout-appender"
                              "jiksnu.sentry/raven-appender"]))
 
 (describe-config [:jiksnu :logger :blacklist]
