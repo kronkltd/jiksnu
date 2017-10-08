@@ -195,12 +195,8 @@
 
 (defn logout
   "Log out the authenticated user"
-  [app]
-  (let [$http (.inject app "$http")]
-    (-> (.post $http "/main/logout")
-        (.then (fn [data]
-                 (set! app.user nil)
-                 (.fetchStatus app))))))
+  [$http]
+  (.post $http "/main/logout"))
 
 (defn refresh
   "Send a signal for collections to refresh themselves"
