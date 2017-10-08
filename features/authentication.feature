@@ -12,11 +12,11 @@ Feature: Authentication
 # Scenario: Logging in
 #   Given a user exists with the password "hunter2"
 #   And I am not logged in
-#   And I am on the "login" page
+#   And I am at the "login" page
 #   When I put my username in the "username" field
 #   And I put my password in the "password" field
 #   And I click the "login" link
-#   Then I should be on the "home" page
+#   Then I should be at the "home" page
 #   And I should be logged in
 
 # Scenario: Logging out
