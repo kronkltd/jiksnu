@@ -38,8 +38,7 @@
 
 (defn after-hook
   []
-  (timbre/info "Running after hook")
-  (taxi/quit))
+  (timbre/info "Running after hook"))
 
 (defn before-hook
   []
@@ -51,7 +50,8 @@
       (Runtime/getRuntime)
       (Thread. (fn []
                  (timbre/info "Running shutdown hook")
-                 (after-hook))))
+                 (after-hook)
+                 (taxi/quit))))
      (dosync
       (ref-set this {})
       (ref-set that {})
