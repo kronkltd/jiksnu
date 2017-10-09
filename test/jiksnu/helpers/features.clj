@@ -23,7 +23,9 @@
 
 (defn restart-session
   []
+  (timbre/info "Checking session")
   (when (not @driver)
+    (timbre/info "Starting session")
     (let [{:keys [url]} (get-selenium-config)
           caps (doto (DesiredCapabilities.)
                  (.setCapability CapabilityType/BROWSER_NAME "firefox")
@@ -36,6 +38,7 @@
 
 (defn after-hook
   []
+  (timbre/info "Running after hook")
   (taxi/quit))
 
 (defn before-hook

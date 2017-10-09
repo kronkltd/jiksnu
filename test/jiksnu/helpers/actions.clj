@@ -62,6 +62,7 @@
 
 (defn fetch-page-browser
   [method path]
+  (timbre/info "Fetching page via browser")
   (let [url (expand-url path)]
     (timbre/info "Navigating to" url)
     (taxi/to url)))
