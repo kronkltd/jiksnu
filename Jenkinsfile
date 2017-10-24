@@ -50,7 +50,9 @@ node('docker') {
         devImage = docker.build("${env.IMAGE_TAG}-dev", devOptions)
 
         if (shouldDeployImages) {
-          devImage.push()
+          docker.withRegistry('https://registry.kronkltd.net/', 'registry-auth') {
+            devImage.push()
+          }
         }
       }
 
@@ -85,7 +87,9 @@ node('docker') {
         mainImage = docker.build("${env.IMAGE_TAG}", mainOptions)
 
         if (shouldDeployImages) {
-          mainImage.push()
+          docker.withRegistry('https://registry.kronkltd.net/', 'registry-auth') {
+            mainImage.push()
+          }
         }
       }
 
