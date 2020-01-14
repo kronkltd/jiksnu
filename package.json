@@ -1,7 +1,7 @@
 {
   "license": "GPL-3.0",
   "dependencies": {
-    "angular": "1.6.0",
+    "angular": "1.7.9",
     "angular-animate": "1.5.8",
     "angular-aria": "1.5.8",
     "angular-busy": "^4.1.3",
