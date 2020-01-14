@@ -60,7 +60,7 @@
     "protractor": "^4.0.2",
     "protractor-console": "^2.0.0",
     "protractor-cucumber-framework": "^0.6.0",
-    "swagger-ui": "3.18.0",
+    "swagger-ui": "3.23.11",
     "watchify": "^3.7.0",
     "wscat": "^1.0.1"
   },
