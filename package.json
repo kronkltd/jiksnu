@@ -33,7 +33,7 @@
     "moment": "^2.19.3",
     "phantomjs-prebuilt": "^2.1.7",
     "raven-js": "^3.0.4",
-    "showdown": "^1.6.4",
+    "showdown": "^1.9.1",
     "ui-select": "^0.19.4",
     "utf-8-validate": "2.0.0"
   },
