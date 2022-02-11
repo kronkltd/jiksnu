@@ -46,7 +46,7 @@
     "cukefarm": "^3.0.1",
     "es6-promise": "^4.1.0",
     "jasmine-promise-matchers": "^2.0.2",
-    "karma": "^1.1.2",
+    "karma": "^6.3.14",
     "karma-browserify": "^5.1.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-coverage": "^1.1.1",
