@@ -192,9 +192,9 @@ angular-websocket@2.0.1:
     angular "*"
     ws "^1.0.0"
 
-angular@*, angular@1.7.9, angular@>=1.3.0, angular@^1.0.1, angular@^1.0.8:
-  version "1.7.9"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.7.9.tgz#e52616e8701c17724c3c238cfe4f9446fd570bc4"
+angular@*, angular@1.8.3, angular@>=1.3.0, angular@^1.0.1, angular@^1.0.8:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.3.tgz#851ad75d5163c105a7e329555ef70c90aa706894"
 
 angularjs-geolocation@0.1.3:
   version "0.1.3"
